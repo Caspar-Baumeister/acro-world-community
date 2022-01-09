@@ -1,8 +1,8 @@
 import 'package:acroworld/models/message_model.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/loading.dart';
-import 'package:acroworld/utiles/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -78,9 +78,9 @@ class _MessageTextFieldState extends State<MessageTextField> {
 
   Future<void> sendMessage() async {
     String userId = UserIdPreferences.getToken();
-    print(userId);
+    print("userid: $userId");
     await DataBaseService(uid: userId).updateMessageData(
-        cid: widget.cId, message: message, username: "caspar", netImgUrl: "");
+        cid: widget.cId, message: message, username: "caspar", imgUrl: "");
     _controller.clear();
     FocusScope.of(context).unfocus();
   }
@@ -148,7 +148,7 @@ class MessageWidget extends StatelessWidget {
         if (!isMe)
           const CircleAvatar(
             radius: 16,
-            backgroundImage: NetworkImage(MORTY),
+            backgroundImage: NetworkImage(MORTY_IMG_URL),
           ),
         Container(
             padding: const EdgeInsets.all(16),

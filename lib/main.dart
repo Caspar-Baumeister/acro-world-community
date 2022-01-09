@@ -36,7 +36,7 @@ class App extends StatelessWidget {
                   initialData: null,
                 )
               ],
-              child: MaterialApp(
+              child: const MaterialApp(
                 home: Wrapper(),
               ));
         }

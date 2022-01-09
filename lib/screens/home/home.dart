@@ -7,12 +7,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatelessWidget {
+  Home({required this.uid, Key? key}) : super(key: key);
+
+  String uid;
   final AuthService _auth = AuthService();
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot?>.value(
+    return StreamProvider<DocumentSnapshot?>.value(
       initialData: null,
-      value: DataBaseService().info,
+      value: DataBaseService(uid: uid).infoStream,
       child: Scaffold(
           backgroundColor: Colors.grey[100],
           appBar: AppBar(
@@ -31,11 +34,14 @@ class Home extends StatelessWidget {
               ),
               IconButton(
                   onPressed: () => Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SettingsPage())),
-                  icon: Icon(Icons.person))
+                        MaterialPageRoute(
+                          builder: (context) => const SettingsPage(),
+                        ),
+                      ),
+                  icon: const Icon(Icons.person))
             ],
           ),
-          body: CommunitiesOverview()),
+          body: const CommunitiesOverview()),
     );
   }
 }

@@ -113,7 +113,7 @@ class _SignInState extends State<SignIn> {
         });
       } else {
         // safe token to preferences
-        UserIdPreferences.setToken(user.uid);
+        await UserIdPreferences.setToken(user.uid);
         setState(() {
           loading = false;
         });

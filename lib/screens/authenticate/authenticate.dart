@@ -3,7 +3,7 @@ import 'package:acroworld/screens/authenticate/sign_in.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  Authenticate({Key? key}) : super(key: key);
+  const Authenticate({Key? key}) : super(key: key);
 
   @override
   State<Authenticate> createState() => _AuthenticateState();

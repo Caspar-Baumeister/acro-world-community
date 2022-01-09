@@ -11,17 +11,17 @@ class DataBaseService {
   Future updateUserData(
       {required String userName,
       String bio = "",
-      required String networkImageUrl}) async {
+      required String imgUrl}) async {
     return await infoCollection
         .doc(uid)
-        .set({'userName': userName, 'bio': bio, 'imgUrl': networkImageUrl});
+        .set({'userName': userName, 'bio': bio, 'imgUrl': imgUrl});
   }
 
   Future updateMessageData(
       {required String cid,
       required String message,
       required String username,
-      required String netImgUrl}) async {
+      required String imgUrl}) async {
     final messageCollection =
         FirebaseFirestore.instance.collection('communities/$cid/messages');
 
@@ -29,7 +29,7 @@ class DataBaseService {
       'message': message,
       'uid': uid,
       'username': username,
-      'netImgUrl': netImgUrl,
+      'imgUrl': imgUrl,
       "createdAt": DateTime.now()
     };
 
@@ -39,6 +39,12 @@ class DataBaseService {
   // get info Stream
   Stream<QuerySnapshot> get info {
     return infoCollection.snapshots();
+  }
+
+  // get info Stream
+  Stream<DocumentSnapshot<Object?>> get infoStream {
+    print("inside stream: ${infoCollection.doc(uid).snapshots()}");
+    return infoCollection.doc(uid).snapshots();
   }
 
   // get info Stream

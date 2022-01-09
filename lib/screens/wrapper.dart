@@ -15,6 +15,6 @@ class Wrapper extends StatelessWidget {
 
     // return either Home or Authenticate Widget
 
-    return (user != null) ? Home() : Authenticate();
+    return (user != null) ? Home(uid: user.uid) : const Authenticate();
   }
 }

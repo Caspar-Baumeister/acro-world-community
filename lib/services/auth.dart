@@ -1,5 +1,6 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/services/database.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -7,7 +8,7 @@ class AuthService {
 
   // create user object base on Firebase user
   UserModel? _userFromFirebaseUser(User? user) {
-    return user != null ? UserModel(uid: user.uid, userName: user.email) : null;
+    return user != null ? UserModel(uid: user.uid) : null;
   }
 
   // auth change user stream
@@ -37,9 +38,11 @@ class AuthService {
           email: email, password: password);
 
       User? user = result.user;
+
+      // create a new User-info object
       if (user != null) {
         await DataBaseService(uid: user.uid)
-            .updateUserData(userName: user.email ?? "", networkImageUrl: "");
+            .updateUserData(userName: user.email ?? "", imgUrl: MORTY_IMG_URL);
       }
       return _userFromFirebaseUser(user);
     } catch (e) {
@@ -49,7 +52,8 @@ class AuthService {
   }
 
   // register with email and password
-  Future registerWithEmailAndPassword(String email, String password) async {
+  Future<UserModel?> registerWithEmailAndPassword(
+      String email, String password) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);

@@ -16,6 +16,7 @@ class CommunitiesOverview extends StatelessWidget {
         stream: DataBaseService(uid: userId).getCommunities(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
+            print("the error is: ${snapshot.error}");
             return const Text('Something went wrong');
           }
 
@@ -28,8 +29,7 @@ class CommunitiesOverview extends StatelessWidget {
 
           // print("snapshot data:${snapshot.data!.docs.first.id.runtimeType}");
           List<Community> communities = snapshot.data!.docs.map((e) {
-            print(e.id.runtimeType);
-            return Community.fromJson(e.id.toString());
+            return Community.fromJson(e.id);
           }).toList();
           return ListView.builder(
             itemCount: communities.length,

@@ -1,9 +1,9 @@
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -51,6 +51,12 @@ class _SettingsPageState extends State<SettingsPage> {
           key: _formKey,
           child: Column(
             children: <Widget>[
+              Consumer<DocumentSnapshot?>(builder: (BuildContext context,
+                  DocumentSnapshot<Object?>? doc, Widget? child) {
+                print("inside consumer");
+                doc != null ? print(doc.data()) : null;
+                return Container();
+              }),
               const SizedBox(height: 20.0),
               TextFormField(
                 decoration: textInputDecoration.copyWith(hintText: 'imgUrl'),
@@ -84,8 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     if (_formKey.currentState != null) {
                       String uId = UserIdPreferences.getToken();
                       dynamic result = await DataBaseService(uid: uId)
-                          .updateUserData(
-                              networkImageUrl: imgUrl, userName: userName);
+                          .updateUserData(imgUrl: imgUrl, userName: userName);
                     }
                   }),
               const SizedBox(height: 12.0),
