@@ -4,7 +4,7 @@ import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatefulWidget {
-  const Register({required this.toggleView});
+  const Register({required this.toggleView, Key? key}) : super(key: key);
 
   final Function toggleView;
 
@@ -41,7 +41,7 @@ class _RegisterState extends State<Register> {
                     color: Colors.black,
                   ),
                   label: const Text(
-                    'Sign In',
+                    'Login',
                     style: TextStyle(color: Colors.black),
                   ),
                   onPressed: () => widget.toggleView(),

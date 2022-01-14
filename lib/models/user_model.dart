@@ -5,4 +5,12 @@ class UserModel {
   String? bio;
 
   UserModel({required this.uid, this.imgUrl, this.userName, this.bio});
+
+  factory UserModel.fromJson(Map json, String uid) {
+    return UserModel(
+        uid: uid,
+        userName: json["userName"],
+        imgUrl: json["imgUrl"],
+        bio: json["bio"]);
+  }
 }

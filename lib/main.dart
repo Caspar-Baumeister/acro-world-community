@@ -1,8 +1,9 @@
-import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/wrapper.dart';
 import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +32,10 @@ class App extends StatelessWidget {
           print(snapshot.connectionState);
           return MultiProvider(
               providers: [
-                StreamProvider<UserModel?>.value(
+                ChangeNotifierProvider(create: (_) => UserProvider()),
+
+                // Streamprovider listenes if a user is authenticated and returns that user (with id)
+                StreamProvider<User?>.value(
                   value: AuthService().user,
                   initialData: null,
                 )

@@ -1,13 +1,13 @@
-import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
-  final Function toggleView;
   SignIn({required this.toggleView});
+  final Function toggleView;
 
   @override
   _SignInState createState() => _SignInState();
@@ -26,13 +26,13 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? const Loading()
         : Scaffold(
             backgroundColor: Colors.grey[100],
             appBar: AppBar(
               backgroundColor: Colors.grey[400],
               elevation: 0.0,
-              title: const Text('Sign in to Acro World'),
+              title: const Text('Login to Acro World'),
               actions: <Widget>[
                 TextButton.icon(
                   icon: const Icon(
@@ -57,7 +57,7 @@ class _SignInState extends State<SignIn> {
                     const SizedBox(height: 20.0),
                     TextFormField(
                       decoration:
-                          textInputDecoration.copyWith(hintText: 'email'),
+                          textInputDecoration.copyWith(hintText: 'Email'),
                       validator: (val) => (val == null || val.isEmpty)
                           ? 'Enter an email'
                           : null,
@@ -69,7 +69,7 @@ class _SignInState extends State<SignIn> {
                     TextFormField(
                       obscureText: true,
                       decoration:
-                          textInputDecoration.copyWith(hintText: 'password'),
+                          textInputDecoration.copyWith(hintText: 'Password'),
                       validator: (val) => (val == null || val.length < 6)
                           ? 'Enter a password 6+ chars long'
                           : null,
@@ -99,22 +99,28 @@ class _SignInState extends State<SignIn> {
           );
   }
 
+  // triggert when login is pressed
   void onSignin() async {
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         loading = true;
       });
 
-      UserModel? user = await _auth.signInWithEmailAndPassword(email, password);
-      if (user == null) {
-        setState(() {
-          error = 'Could not sign in with those credentials';
-          loading = false;
-        });
-      } else {
-        // safe token to preferences
+      // posts the email and password to firebase auth and gets an user? back
+      User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+      // success (wrapper will automatically push the screen to home)
+      if (user != null) {
+        // safe token to local preferences
         await UserIdPreferences.setToken(user.uid);
         setState(() {
+          loading = false;
+        });
+
+        // error handling
+      } else {
+        setState(() {
+          error = 'Could not sign in with those credentials';
           loading = false;
         });
       }

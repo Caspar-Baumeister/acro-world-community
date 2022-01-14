@@ -1,25 +1,26 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Message {
-  String message;
-  String? cid;
+  String text;
+  String cid;
   String uid;
   String userName;
   Timestamp createdAt;
 
   Message({
-    required this.message,
-    this.cid,
+    required this.text,
+    required this.cid,
     required this.uid,
     required this.userName,
     required this.createdAt,
   });
 
-  set setCid(newCid) => cid = newCid;
+  //set setCid(newCid) => cid = newCid;
 
-  factory Message.fromJson(dynamic json) {
+  factory Message.fromJson(dynamic json, String cid) {
     return Message(
-        message: json["message"],
+        text: json["message"],
+        cid: cid,
         uid: json["uid"],
         userName: json["username"],
         createdAt: json["createdAt"]);

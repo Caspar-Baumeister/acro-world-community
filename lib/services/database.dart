@@ -8,6 +8,9 @@ class DataBaseService {
   final CollectionReference infoCollection =
       FirebaseFirestore.instance.collection('info');
 
+  // USER DATA
+
+  // set all by id
   Future updateUserData(
       {required String userName,
       String bio = "",
@@ -17,6 +20,28 @@ class DataBaseService {
         .set({'userName': userName, 'bio': bio, 'imgUrl': imgUrl});
   }
 
+  // set specific by id
+  Future updateUserDataField({
+    required String field,
+    required String value,
+  }) async {
+    return await infoCollection
+        .doc(uid)
+        .set({field: value}, SetOptions(merge: true));
+  }
+
+  // get by id
+  Future<DocumentSnapshot<Object?>> getUserInfo() async {
+    return infoCollection.doc(uid).get();
+  }
+
+  // get field by id
+  Future<DocumentSnapshot<Object?>> getUserInfoField(String field) async {
+    return infoCollection.doc(uid).get().then((value) => value.get(field));
+  }
+
+  // MESSAGES
+  // set by id
   Future updateMessageData(
       {required String cid,
       required String message,
@@ -36,23 +61,7 @@ class DataBaseService {
     await messageCollection.add(newMessage);
   }
 
-  // get info Stream
-  Stream<QuerySnapshot> get info {
-    return infoCollection.snapshots();
-  }
-
-  // get info Stream
-  Stream<DocumentSnapshot<Object?>> get infoStream {
-    print("inside stream: ${infoCollection.doc(uid).snapshots()}");
-    return infoCollection.doc(uid).snapshots();
-  }
-
-  // get info Stream
-  Future<DocumentSnapshot<Object?>> getUserInfo() async {
-    return infoCollection.doc(uid).get();
-  }
-
-  // get messages for a specific community id
+  // get by id
   Stream<QuerySnapshot<Object?>>? getMessages(String cid) {
     return FirebaseFirestore.instance
         .collection('communities/$cid/messages')
@@ -60,11 +69,23 @@ class DataBaseService {
         .snapshots();
   }
 
-  // get all communitys
+  // COMMUNITIES
+  // get all
   Stream<QuerySnapshot<Object?>>? getCommunities() {
     return FirebaseFirestore.instance
         .collection('communities')
         // .orderBy("createdAt", descending: true)
         .snapshots();
   }
+
+  // // get info Stream
+  // Stream<QuerySnapshot> get info {
+  //   return infoCollection.snapshots();
+  // }
+
+  // // get info Stream
+  // Stream<DocumentSnapshot<Object?>> get infoStream {
+  //   print("inside stream: ${infoCollection.doc(uid).snapshots()}");
+  //   return infoCollection.doc(uid).snapshots();
+  // }
 }
