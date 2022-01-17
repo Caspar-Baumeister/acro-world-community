@@ -1,16 +1,35 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Jam {
+  String jid;
+  String name;
+  String imgUrl;
   String createdBy;
   Timestamp createdAt;
-  Timestamp takesPlaceAt;
+  String date;
   String location;
-  List<String> participant;
+  List<String> participants;
 
   Jam(
-      {required this.createdAt,
+      {required this.jid,
+      required this.createdAt,
       required this.createdBy,
       required this.location,
-      required this.participant,
-      required this.takesPlaceAt});
+      required this.participants,
+      required this.date,
+      required this.name,
+      required this.imgUrl});
+
+  factory Jam.fromJson(dynamic json, String jid) {
+    return Jam(
+        jid: jid,
+        location: json["location"],
+        participants:
+            List<String>.from(json["participants"].map((e) => e.toString())),
+        date: json["date"],
+        name: json["name"],
+        imgUrl: json["imgUrl"],
+        createdBy: json["createdBy"],
+        createdAt: json["createdAt"]);
+  }
 }

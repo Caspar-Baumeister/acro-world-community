@@ -1,6 +1,7 @@
 import 'package:acroworld/models/message_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/message_list.dart';
+import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -13,6 +14,9 @@ class MessagesStream extends StatelessWidget {
   final String cid;
   @override
   Widget build(BuildContext context) {
+    if (Provider.of<UserProvider>(context).activeUser == null) {
+      AuthService().signOut();
+    }
     String uid = Provider.of<UserProvider>(context).activeUser!.uid;
     return StreamBuilder<QuerySnapshot>(
         stream: DataBaseService(uid: uid).getMessages(cid),

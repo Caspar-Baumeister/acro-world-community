@@ -18,37 +18,43 @@ class _MessageTextFieldState extends State<MessageTextField> {
   String message = "";
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 60.0,
-      child: Row(
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(8.0, 8.0, 0.0, 8.0),
-              child: TextField(
-                controller: _controller,
-                textCapitalization: TextCapitalization.sentences,
-                autocorrect: true,
-                enableSuggestions: true,
-                decoration: InputDecoration(
-                  labelText: "Type in your message",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                  ),
-                ),
-                onChanged: (value) => setState(() {
-                  message = value;
-                }),
+    return Row(
+      children: [
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.all(8.0),
+            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+            decoration: BoxDecoration(
+              color: Colors.grey[400],
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+            ),
+            child: TextField(
+              cursorColor: Colors.black,
+              keyboardType: TextInputType.multiline,
+              maxLines: null,
+              controller: _controller,
+              textCapitalization: TextCapitalization.sentences,
+              autocorrect: true,
+              enableSuggestions: true,
+              decoration: const InputDecoration(
+                isDense: true, // this will remove the default content padding
+                // now you can customize it here or add padding widget
+                contentPadding: EdgeInsets.only(bottom: 10.0),
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                border: InputBorder.none,
+                labelText: "Message",
               ),
+              onChanged: (value) => setState(() {
+                message = value;
+              }),
             ),
           ),
-          IconButton(
-            onPressed:
-                message.trim().isEmpty ? null : () async => sendMessage(),
-            icon: const Icon(Icons.send),
-          ),
-        ],
-      ),
+        ),
+        IconButton(
+          onPressed: message.trim().isEmpty ? null : () async => sendMessage(),
+          icon: const Icon(Icons.send),
+        ),
+      ],
     );
   }
 
@@ -56,7 +62,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
     UserModel user = userProvider.activeUser!;
-    await DataBaseService(uid: user.uid).updateMessageData(
+    await DataBaseService(uid: user.uid).addMessageData(
         cid: widget.cId,
         message: message,
         username: user.userName ?? "user",
