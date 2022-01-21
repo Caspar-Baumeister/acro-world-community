@@ -5,6 +5,7 @@ class Message {
   String cid;
   String uid;
   String userName;
+  String imgUrl;
   Timestamp createdAt;
 
   Message({
@@ -12,6 +13,7 @@ class Message {
     required this.cid,
     required this.uid,
     required this.userName,
+    required this.imgUrl,
     required this.createdAt,
   });
 
@@ -23,6 +25,7 @@ class Message {
         cid: cid,
         uid: json["uid"],
         userName: json["username"],
+        imgUrl: json["imgUrl"],
         createdAt: json["createdAt"]);
   }
 }

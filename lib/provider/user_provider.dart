@@ -13,6 +13,14 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  set activeUserImgUrl(String imgUrl) {
+    if (_activeUser == null) return;
+    UserModel user = _activeUser!;
+    user.imgUrl = imgUrl;
+    _activeUser = user;
+    notifyListeners();
+  }
+
   Future<void> updateUser(String uid) async {
     try {
       final DocumentSnapshot<Object?> snapshot =

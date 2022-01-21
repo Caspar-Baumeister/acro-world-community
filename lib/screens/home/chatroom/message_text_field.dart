@@ -66,7 +66,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
         cid: widget.cId,
         message: message,
         username: user.userName ?? "user",
-        imgUrl: user.imgUrl ?? MORTY_IMG_URL);
+        imgUrl: user.imgUrl ?? "");
     _controller.clear();
     FocusScope.of(context).unfocus();
   }

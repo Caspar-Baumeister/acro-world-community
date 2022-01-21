@@ -17,9 +17,9 @@ class MessageTile extends StatelessWidget {
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         if (!isMe)
-          const CircleAvatar(
+          CircleAvatar(
             radius: 16,
-            backgroundImage: NetworkImage(MORTY_IMG_URL),
+            backgroundImage: NetworkImage(message.imgUrl),
           ),
         Container(
             padding: const EdgeInsets.all(16),
