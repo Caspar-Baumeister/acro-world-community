@@ -15,9 +15,20 @@ class MessageList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      shrinkWrap: true,
       itemBuilder: (context, index) {
-        final message = messages[index];
-        return MessageTile(message: message, isMe: message.uid == uid);
+        final Message message = messages[index];
+        final Message? bevorMessage = (index > 0) ? messages[index - 1] : null;
+        var sameAuthorThenNext = false;
+        if (bevorMessage != null) {
+          if (message.uid == bevorMessage.uid) {
+            sameAuthorThenNext = true;
+          }
+        }
+        return MessageTile(
+            message: message,
+            isMe: message.uid == uid,
+            sameAuthorThenNext: sameAuthorThenNext);
       },
       reverse: true,
       itemCount: messages.length,

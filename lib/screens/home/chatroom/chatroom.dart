@@ -1,8 +1,6 @@
 import 'package:acroworld/screens/home/chatroom/message_text_field.dart';
 import 'package:acroworld/screens/home/chatroom/messages_stream.dart';
-import 'package:acroworld/screens/home/jams/jam_stream.dart';
 import 'package:acroworld/screens/home/jams/jams.dart';
-import 'package:acroworld/screens/home/jams/jams_list.dart';
 import 'package:flutter/material.dart';
 
 class Chatroom extends StatelessWidget {
@@ -13,14 +11,15 @@ class Chatroom extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.grey[400],
-        title: Text(cId),
-        leading: BackButton(color: Colors.white),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        title: Text(cId, style: const TextStyle(color: Colors.white)),
+        leading: const BackButton(color: Colors.black),
         actions: [
           ElevatedButton(
-            style: ElevatedButton.styleFrom(primary: Colors.transparent),
+            style: ElevatedButton.styleFrom(primary: Colors.white),
             onPressed: () {
               Navigator.push(
                 context,
@@ -38,12 +37,12 @@ class Chatroom extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                 ),
-                Icon(
-                  Icons.arrow_forward,
-                  color: Colors.white,
+                ImageIcon(
+                  AssetImage("assets/acro_jam_icon.png"),
+                  color: Colors.black,
                 )
               ],
             ),
