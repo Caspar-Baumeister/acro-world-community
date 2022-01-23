@@ -1,10 +1,12 @@
 import 'package:acroworld/models/message_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class MessageTile extends StatelessWidget {
   const MessageTile(
       {required this.sameAuthorThenNext,
+      required this.sameAuthorThenBevor,
       required this.message,
       required this.isMe,
       Key? key})
@@ -12,6 +14,7 @@ class MessageTile extends StatelessWidget {
 
   final Message message;
   final bool isMe;
+  final bool sameAuthorThenBevor;
   final bool sameAuthorThenNext;
   @override
   Widget build(BuildContext context) {
@@ -24,8 +27,10 @@ class MessageTile extends StatelessWidget {
         leadingDecide(),
         Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-            margin: const EdgeInsets.symmetric(vertical: 3.0),
-            constraints: const BoxConstraints(maxWidth: 220, minWidth: 30),
+            // this is the padding of the message tile:
+            margin: EdgeInsets.only(bottom: sameAuthorThenBevor ? 2.0 : 10.0),
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.7),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.grey[200]!,
@@ -39,8 +44,7 @@ class MessageTile extends StatelessWidget {
                       : borderRadius.subtract(
                           const BorderRadius.only(bottomLeft: radius)),
             ),
-            // alignment:
-            //     isMe ? Alignment.centerRight : Alignment.centerLeft,
+            //alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
             child: buildMessage())
       ],
     );
@@ -48,7 +52,7 @@ class MessageTile extends StatelessWidget {
 
   Widget leadingDecide() {
     final double imgRadius = 20;
-    if (!isMe && !sameAuthorThenNext) {
+    if (!isMe && !sameAuthorThenBevor) {
       return Container(
         alignment: Alignment.bottomCenter,
         child: CircleAvatar(
@@ -56,10 +60,9 @@ class MessageTile extends StatelessWidget {
           backgroundImage: NetworkImage(message.imgUrl),
         ),
       );
-    } else if (!isMe && sameAuthorThenNext) {
+    } else if (!isMe && sameAuthorThenBevor) {
       return SizedBox(
         width: imgRadius * 2,
-        height: 1,
       );
     } else {
       return Container();
@@ -70,17 +73,19 @@ class MessageTile extends StatelessWidget {
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
-          (isMe)
-              ? Container()
+          (isMe || sameAuthorThenNext)
+              ? SizedBox(
+                  width: 0,
+                )
               : Text(
                   message.userName,
                   style: const TextStyle(
-                    color: Colors.blue,
-                  ),
+                      color: Colors.black, fontWeight: FontWeight.w800),
                   //textAlign: isMe ? TextAlign.end : TextAlign.start,
                 ),
           Text(
             message.text,
+            textWidthBasis: TextWidthBasis.longestLine,
             style: const TextStyle(
               color: Colors.black,
             ),

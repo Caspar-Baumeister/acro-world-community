@@ -1,5 +1,5 @@
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/home/jams/jam_overview.dart';
+import 'package:acroworld/screens/home/jam/jams/jam_overview.dart';
 import 'package:flutter/material.dart';
 
 class JamTile extends StatelessWidget {

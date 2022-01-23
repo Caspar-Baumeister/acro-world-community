@@ -1,7 +1,5 @@
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home/communities/communities_stream.dart';
-import 'package:acroworld/screens/home/settings/settings.dart';
-import 'package:acroworld/services/auth.dart';
+import 'package:acroworld/screens/home/communities/communities.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +15,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool loading = true;
   bool initialized = false;
-  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -29,36 +26,7 @@ class _HomeState extends State<Home> {
         initialized = true;
       });
     }
-    return loading
-        ? const Loading()
-        // TODO the Scaffold should only be in the leaves
-        // TODO make a Appbar widget that can be reused in all leaves
-        : Scaffold(
-            backgroundColor: Colors.grey[100],
-            appBar: AppBar(
-              backgroundColor: Colors.grey[400],
-              elevation: 0,
-              title: const Text("HomePage"),
-              actions: <Widget>[
-                TextButton(
-                  onPressed: () async {
-                    await _auth.signOut();
-                  },
-                  child: const Text(
-                    "logout",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                IconButton(
-                    onPressed: () => Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const SettingsPage(),
-                          ),
-                        ),
-                    icon: const Icon(Icons.person))
-              ],
-            ),
-            body: const CommunitiesStream());
+    return loading ? const Loading() : const Communities();
   }
 
   Future<void> setUser() async {

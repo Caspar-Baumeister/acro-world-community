@@ -1,6 +1,6 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home/jams/jams_list.dart';
+import 'package:acroworld/screens/home/jam/jams/jams_list.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

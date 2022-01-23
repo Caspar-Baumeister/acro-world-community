@@ -19,16 +19,25 @@ class MessageList extends StatelessWidget {
       itemBuilder: (context, index) {
         final Message message = messages[index];
         final Message? bevorMessage = (index > 0) ? messages[index - 1] : null;
+        final Message? nextMessage =
+            (index < messages.length - 1) ? messages[index + 1] : null;
         var sameAuthorThenNext = false;
+        var sameAuthorThenBevor = false;
         if (bevorMessage != null) {
           if (message.uid == bevorMessage.uid) {
+            sameAuthorThenBevor = true;
+          }
+        }
+        if (nextMessage != null) {
+          if (message.uid == nextMessage.uid) {
             sameAuthorThenNext = true;
           }
         }
         return MessageTile(
             message: message,
             isMe: message.uid == uid,
-            sameAuthorThenNext: sameAuthorThenNext);
+            sameAuthorThenNext: sameAuthorThenNext,
+            sameAuthorThenBevor: sameAuthorThenBevor);
       },
       reverse: true,
       itemCount: messages.length,
