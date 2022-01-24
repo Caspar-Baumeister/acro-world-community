@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -62,6 +63,8 @@ class _ProfilePictureState extends State<ProfilePicture> {
           }));
 
       String imgUrl = await task.ref.getDownloadURL();
+      DataBaseService(uid: id)
+          .updateUserDataField(field: "imgUrl", value: imgUrl);
 
       Provider.of<UserProvider>(context, listen: false).activeUserImgUrl =
           imgUrl;

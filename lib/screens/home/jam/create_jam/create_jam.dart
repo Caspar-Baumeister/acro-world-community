@@ -30,11 +30,15 @@ class _CreateJamState extends State<CreateJam> {
     return loading
         ? const Loading()
         : Scaffold(
-            backgroundColor: Colors.grey[100],
+            backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.grey[400],
+              leading: const BackButton(color: Colors.black),
+              backgroundColor: Colors.white,
               elevation: 0.0,
-              title: const Text('Create a new jam'),
+              title: const Text(
+                "New Jam",
+                style: TextStyle(color: Colors.black),
+              ),
               actions: <Widget>[
                 TextButton.icon(
                   icon: const Icon(

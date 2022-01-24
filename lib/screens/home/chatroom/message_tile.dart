@@ -1,4 +1,6 @@
 import 'package:acroworld/models/message_model.dart';
+import 'package:acroworld/services/database.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -51,14 +53,38 @@ class MessageTile extends StatelessWidget {
   }
 
   Widget leadingDecide() {
-    final double imgRadius = 20;
+    const double imgRadius = 20;
     if (!isMe && !sameAuthorThenBevor) {
-      return Container(
-        alignment: Alignment.bottomCenter,
-        child: CircleAvatar(
-          radius: imgRadius,
-          backgroundImage: NetworkImage(message.imgUrl),
-        ),
+      return FutureBuilder(
+        future: DataBaseService(uid: message.uid).getProfileImage(),
+        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+          // AsyncSnapshot<Your object type>
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(
+                child: CircularProgressIndicator(
+              backgroundColor: Colors.white,
+              color: Colors.grey[200],
+            ));
+          } else {
+            if (snapshot.hasError) {
+              return Container(
+                alignment: Alignment.bottomCenter,
+                child: const CircleAvatar(
+                  radius: imgRadius,
+                  backgroundImage: NetworkImage(MORTY_IMG_URL),
+                ),
+              );
+            } else {
+              return Container(
+                alignment: Alignment.bottomCenter,
+                child: CircleAvatar(
+                  radius: imgRadius,
+                  backgroundImage: NetworkImage(snapshot.data ?? MORTY_IMG_URL),
+                ),
+              );
+            }
+          }
+        },
       );
     } else if (!isMe && sameAuthorThenBevor) {
       return SizedBox(
@@ -74,7 +100,7 @@ class MessageTile extends StatelessWidget {
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
           (isMe || sameAuthorThenNext)
-              ? SizedBox(
+              ? const SizedBox(
                   width: 0,
                 )
               : Text(

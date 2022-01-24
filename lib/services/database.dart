@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DataBaseService {
   final String? uid;
@@ -40,6 +41,11 @@ class DataBaseService {
   // get field by id
   Future<DocumentSnapshot<Object?>> getUserInfoField(String field) async {
     return infoCollection.doc(uid).get().then((value) => value.get(field));
+  }
+
+  // User profile image by id
+  Future<String> getProfileImage() async {
+    return await FirebaseStorage.instance.ref(uid).getDownloadURL();
   }
 
   // MESSAGES

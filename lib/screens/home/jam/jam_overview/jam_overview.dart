@@ -4,6 +4,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 
 class JamOverview extends StatefulWidget {
@@ -26,11 +27,15 @@ class _JamOverviewState extends State<JamOverview> {
     return loading
         ? const Loading()
         : Scaffold(
-            backgroundColor: Colors.grey[100],
+            backgroundColor: Colors.white,
             appBar: AppBar(
-              backgroundColor: Colors.grey[400],
+              leading: const BackButton(color: Colors.black),
+              backgroundColor: Colors.white,
               elevation: 0.0,
-              title: Text(widget.jam.name),
+              title: Text(
+                widget.jam.name,
+                style: const TextStyle(color: Colors.black),
+              ),
               actions: <Widget>[
                 TextButton.icon(
                   icon: Icon(
@@ -47,9 +52,12 @@ class _JamOverviewState extends State<JamOverview> {
             ),
             body: Column(
               children: [
-                Text(widget.jam.name),
                 Text(widget.jam.createdBy),
                 Text(widget.jam.date),
+                IconButton(
+                    onPressed: () =>
+                        MapsLauncher.launchQuery(widget.jam.location),
+                    icon: const Icon(Icons.location_on)),
                 Text(widget.jam.location),
                 ...widget.jam.participants.map((e) => Text(e))
                 // ListView(

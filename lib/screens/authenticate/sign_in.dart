@@ -3,6 +3,7 @@ import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -56,6 +57,7 @@ class _SignInState extends State<SignIn> {
                   children: <Widget>[
                     const SizedBox(height: 20.0),
                     TextFormField(
+                      keyboardType: TextInputType.emailAddress,
                       decoration:
                           textInputDecoration.copyWith(hintText: 'Email'),
                       validator: (val) => (val == null || val.isEmpty)
