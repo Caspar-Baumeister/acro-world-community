@@ -23,7 +23,7 @@ class _JamOverviewState extends State<JamOverview> {
   @override
   Widget build(BuildContext context) {
     UserModel user = Provider.of<UserProvider>(context).activeUser!;
-    bool userPressed = widget.jam.participants.contains(user.uid);
+    bool userParticipates = widget.jam.participants.contains(user.uid);
     return loading
         ? const Loading()
         : Scaffold(
@@ -40,35 +40,117 @@ class _JamOverviewState extends State<JamOverview> {
                 TextButton.icon(
                   icon: Icon(
                     Icons.add_circle_outline,
-                    color: userPressed ? Colors.black54 : Colors.black,
+                    color: userParticipates ? Colors.black54 : Colors.black,
                   ),
                   label: Text(
-                    userPressed ? 'exit' : 'apply',
+                    userParticipates ? 'exit' : 'apply',
                     style: const TextStyle(color: Colors.black),
                   ),
-                  onPressed: () => userPressed ? null : onParticipate(),
+                  onPressed: () => onChangeParticipation(userParticipates),
                 ),
               ],
             ),
-            body: Column(
-              children: [
-                Text(widget.jam.createdBy),
-                Text(widget.jam.date),
-                IconButton(
-                    onPressed: () =>
-                        MapsLauncher.launchQuery(widget.jam.location),
-                    icon: const Icon(Icons.location_on)),
-                Text(widget.jam.location),
-                ...widget.jam.participants.map((e) => Text(e))
-                // ListView(
-                //     children: List<ListTile>.from(widget.jam.participants
-                //         .map((e) => ListTile(title: Text(e)))))
-              ],
+
+            body: SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 50.0),
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 20.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.grey,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      constraints: const BoxConstraints(maxWidth: 250),
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                widget.jam.location,
+                                style: const TextStyle(
+                                    color: Color(0xFFA4A4A4), fontSize: 16.0),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () =>
+                                  MapsLauncher.launchQuery(widget.jam.location),
+                              icon: const Icon(Icons.location_on)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.grey,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      constraints: const BoxConstraints(maxWidth: 250),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.jam.date.toString(),
+                        style: const TextStyle(
+                            color: Color(0xFFA4A4A4), fontSize: 16.0),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 4,
+                            color: Colors.grey,
+                          ),
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(20))),
+                      constraints: const BoxConstraints(maxWidth: 250),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "widget.jam.info",
+                        maxLines: 10,
+                        style: const TextStyle(
+                            color: Color(0xFFA4A4A4), fontSize: 16.0),
+                      ),
+                    ),
+                    // Button open participant list
+                  ],
+                ),
+              ),
             ),
+
+            // Column(
+            //   children: [
+            //     Text(widget.jam.createdBy),
+            //     Text(widget.jam.date),
+            //     IconButton(
+            //         onPressed: () =>
+            //             MapsLauncher.launchQuery(widget.jam.location),
+            //         icon: const Icon(Icons.location_on)),
+            //     Text(widget.jam.location),
+            //     ...widget.jam.participants.map((e) => Text(e))
+            //     // ListView(
+            //     //     children: List<ListTile>.from(widget.jam.participants
+            //     //         .map((e) => ListTile(title: Text(e)))))
+            //   ],
+            // ),
           );
   }
 
-  void onParticipate() async {
+  void onChangeParticipation(bool userParticipates) async {
     setState(() {
       loading = true;
     });
@@ -76,9 +158,13 @@ class _JamOverviewState extends State<JamOverview> {
     // get activ user to safe the id
     UserModel user =
         Provider.of<UserProvider>(context, listen: false).activeUser!;
-
     List<String> participants = widget.jam.participants;
-    participants.add(user.uid);
+
+    if (userParticipates) {
+      participants.remove(user.uid);
+    } else {
+      participants.add(user.uid);
+    }
 
     // creates a new jam object
     DataBaseService(uid: user.uid).updateJamField(

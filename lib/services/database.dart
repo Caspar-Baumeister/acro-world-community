@@ -93,7 +93,7 @@ class DataBaseService {
     required String name,
     required String imgUrl,
     required String location,
-    required String date,
+    required DateTime date,
   }) async {
     final jamsCollection =
         FirebaseFirestore.instance.collection('communities/$cid/jams');

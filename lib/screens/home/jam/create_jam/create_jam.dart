@@ -1,8 +1,11 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
+import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,6 +18,7 @@ class CreateJam extends StatefulWidget {
 }
 
 class _CreateJamState extends State<CreateJam> {
+  DateTime _chosenDateTime = DateTime.now();
   final _formKey = GlobalKey<FormState>();
   String error = '';
 
@@ -22,7 +26,13 @@ class _CreateJamState extends State<CreateJam> {
   String name = '';
   String location = '';
   String imgUrl = '';
-  String date = '';
+  String info = '';
+
+  setDateTime(newDateTime) {
+    setState(() {
+      _chosenDateTime = newDateTime;
+    });
+  }
 
   bool loading = false;
   @override
@@ -31,88 +41,90 @@ class _CreateJamState extends State<CreateJam> {
         ? const Loading()
         : Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              leading: const BackButton(color: Colors.black),
-              backgroundColor: Colors.white,
-              elevation: 0.0,
-              title: const Text(
-                "New Jam",
-                style: TextStyle(color: Colors.black),
-              ),
-              actions: <Widget>[
-                TextButton.icon(
-                  icon: const Icon(
-                    Icons.add_circle_outline,
-                    color: Colors.black,
-                  ),
-                  label: const Text(
-                    'create',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () => onCreate(),
-                ),
-              ],
-            ),
+            appBar: AppBarCreateJam(onCreate: onCreate),
             body: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 50.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration:
-                            textInputDecoration.copyWith(hintText: 'Name'),
-                        validator: (val) =>
-                            (val == null || val.isEmpty || val == "")
-                                ? 'Enter a valid jam name'
-                                : null,
-                        onChanged: (val) {
-                          setState(() => name = val);
-                        },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20.0, horizontal: 50.0),
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        children: <Widget>[
+                          const SizedBox(height: 20.0),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 250),
+                            child: TextFormField(
+                              keyboardType: TextInputType.url,
+                              decoration:
+                                  buildInputDecoration(labelText: 'Image path'),
+                              onChanged: (val) {
+                                setState(() => imgUrl = val);
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 250),
+                            child: TextFormField(
+                              keyboardType: TextInputType.name,
+                              decoration:
+                                  buildInputDecoration(labelText: 'Name'),
+                              validator: (val) =>
+                                  (val == null || val.isEmpty || val == "")
+                                      ? 'Enter a valid jam name'
+                                      : null,
+                              onChanged: (val) {
+                                setState(() => name = val);
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 250),
+                            child: TextFormField(
+                              keyboardType: TextInputType.streetAddress,
+                              decoration:
+                                  buildInputDecoration(labelText: 'Location'),
+                              validator: (val) =>
+                                  (val == null || val.isEmpty || val == "")
+                                      ? 'Enter a valid location'
+                                      : null,
+                              onChanged: (val) {
+                                setState(() => location = val);
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 20.0),
+                          DateTimeChooser(
+                            chosenDateTime: _chosenDateTime,
+                            setDateTime: setDateTime,
+                          ),
+                          Text(
+                            error,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                          const SizedBox(height: 20.0),
+                          Container(
+                            constraints: const BoxConstraints(maxWidth: 250),
+                            child: TextFormField(
+                              maxLines: 10,
+                              keyboardType: TextInputType.text,
+                              decoration:
+                                  buildInputDecoration(labelText: 'Info'),
+                              onChanged: (val) {
+                                setState(() => info = val);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration:
-                            textInputDecoration.copyWith(hintText: 'Location'),
-                        validator: (val) =>
-                            (val == null || val.isEmpty || val == "")
-                                ? 'Enter a valid location'
-                                : null,
-                        onChanged: (val) {
-                          setState(() => location = val);
-                        },
-                      ),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration: textInputDecoration.copyWith(
-                            hintText: 'Image path'),
-                        onChanged: (val) {
-                          setState(() => imgUrl = val);
-                        },
-                      ),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                        decoration: textInputDecoration.copyWith(
-                            hintText: 'jjjj-mm-dd'),
-                        validator: (val) =>
-                            (val == null || val.isEmpty || val == "")
-                                ? 'Enter a valid date'
-                                : null,
-                        onChanged: (val) {
-                          setState(() => date = val);
-                        },
-                      ),
-                      Text(
-                        error,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           );
@@ -135,7 +147,7 @@ class _CreateJamState extends State<CreateJam> {
           name: name,
           imgUrl: imgUrl,
           location: location,
-          date: date);
+          date: _chosenDateTime);
       // redirects to jams
 
       setState(() {

@@ -1,5 +1,6 @@
 import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 
@@ -57,8 +58,7 @@ class _RegisterState extends State<Register> {
                   children: <Widget>[
                     const SizedBox(height: 20.0),
                     TextFormField(
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'email'),
+                      decoration: buildInputDecoration(labelText: 'email'),
                       validator: (val) => (val == null || val.isEmpty)
                           ? 'Enter an email'
                           : null,
@@ -68,8 +68,7 @@ class _RegisterState extends State<Register> {
                     ),
                     const SizedBox(height: 20.0),
                     TextFormField(
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'password'),
+                      decoration: buildInputDecoration(labelText: 'password'),
                       obscureText: true,
                       validator: (val) => (val == null || val.length < 6)
                           ? 'Enter a password 6+ chars long'

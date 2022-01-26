@@ -1,6 +1,7 @@
 import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,8 +59,7 @@ class _SignInState extends State<SignIn> {
                     const SizedBox(height: 20.0),
                     TextFormField(
                       keyboardType: TextInputType.emailAddress,
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'Email'),
+                      decoration: buildInputDecoration(labelText: 'Email'),
                       validator: (val) => (val == null || val.isEmpty)
                           ? 'Enter an email'
                           : null,
@@ -70,8 +70,7 @@ class _SignInState extends State<SignIn> {
                     const SizedBox(height: 20.0),
                     TextFormField(
                       obscureText: true,
-                      decoration:
-                          textInputDecoration.copyWith(hintText: 'Password'),
+                      decoration: buildInputDecoration(labelText: 'Password'),
                       validator: (val) => (val == null || val.length < 6)
                           ? 'Enter a password 6+ chars long'
                           : null,

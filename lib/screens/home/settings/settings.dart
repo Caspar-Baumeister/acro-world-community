@@ -3,6 +3,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/settings/widgets/profile_picture.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -52,8 +53,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 children: [
                   Flexible(
                     child: TextFormField(
-                      decoration: textInputDecoration.copyWith(
-                          hintText: 'new username'),
+                      decoration:
+                          buildInputDecoration(labelText: 'new username'),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
