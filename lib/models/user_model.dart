@@ -6,7 +6,7 @@ class UserModel {
 
   UserModel({required this.uid, this.imgUrl, this.userName, this.bio});
 
-  factory UserModel.fromJson(Map json, String uid) {
+  factory UserModel.fromJson(dynamic json, String uid) {
     return UserModel(
         uid: uid,
         userName: json["userName"],

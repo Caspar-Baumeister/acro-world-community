@@ -11,6 +11,9 @@ class JamTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var now = DateTime.now();
+    DateTime date = jam.date.toDate();
+    final difference = date.difference(now).inDays;
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -19,10 +22,16 @@ class JamTile extends StatelessWidget {
                   cid: cid,
                 )),
       ),
-      child: ListTile(
-        title: Text(jam.name),
-        subtitle: Text(jam.date),
-        trailing: Text(jam.participants.length.toString() + " participants"),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 300.0),
+        child: Card(
+          child: ListTile(
+            title: Text(jam.name),
+            subtitle: Text("in ${difference.toString()} days"),
+            trailing:
+                Text(jam.participants.length.toString() + " participants"),
+          ),
+        ),
       ),
     );
   }

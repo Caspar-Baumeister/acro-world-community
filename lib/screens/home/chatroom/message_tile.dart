@@ -1,9 +1,12 @@
 import 'package:acroworld/models/message_model.dart';
+import 'package:acroworld/screens/home/profile/profile.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+// Let the messagetile fetch the user data from the user id (dont safe other things then message and uid in the message, created at)
 
 class MessageTile extends StatelessWidget {
   const MessageTile(
@@ -24,6 +27,7 @@ class MessageTile extends StatelessWidget {
     const radius = Radius.circular(12.0);
     const borderRadius = BorderRadius.all(radius);
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
       children: [
         leadingDecide(),
@@ -47,7 +51,7 @@ class MessageTile extends StatelessWidget {
                           const BorderRadius.only(bottomLeft: radius)),
             ),
             //alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-            child: buildMessage())
+            child: buildMessage(context))
       ],
     );
   }
@@ -67,19 +71,42 @@ class MessageTile extends StatelessWidget {
             ));
           } else {
             if (snapshot.hasError) {
-              return Container(
-                alignment: Alignment.bottomCenter,
-                child: const CircleAvatar(
-                  radius: imgRadius,
-                  backgroundImage: NetworkImage(MORTY_IMG_URL),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Profile(
+                              uid: message.uid,
+                            )),
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: const CircleAvatar(
+                    radius: imgRadius,
+                    backgroundImage: NetworkImage(MORTY_IMG_URL),
+                  ),
                 ),
               );
             } else {
-              return Container(
-                alignment: Alignment.bottomCenter,
-                child: CircleAvatar(
-                  radius: imgRadius,
-                  backgroundImage: NetworkImage(snapshot.data ?? MORTY_IMG_URL),
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => Profile(
+                              uid: message.uid,
+                            )),
+                  );
+                },
+                child: Container(
+                  alignment: Alignment.bottomCenter,
+                  child: CircleAvatar(
+                    radius: imgRadius,
+                    backgroundImage:
+                        NetworkImage(snapshot.data ?? MORTY_IMG_URL),
+                  ),
                 ),
               );
             }
@@ -87,7 +114,7 @@ class MessageTile extends StatelessWidget {
         },
       );
     } else if (!isMe && sameAuthorThenBevor) {
-      return SizedBox(
+      return const SizedBox(
         width: imgRadius * 2,
       );
     } else {
@@ -95,7 +122,7 @@ class MessageTile extends StatelessWidget {
     }
   }
 
-  Widget buildMessage() => Column(
+  Widget buildMessage(BuildContext context) => Column(
         crossAxisAlignment:
             isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: <Widget>[
@@ -103,17 +130,31 @@ class MessageTile extends StatelessWidget {
               ? const SizedBox(
                   width: 0,
                 )
-              : Text(
-                  message.userName,
-                  style: const TextStyle(
-                      color: Colors.black, fontWeight: FontWeight.w800),
-                  //textAlign: isMe ? TextAlign.end : TextAlign.start,
+              : GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Profile(
+                                uid: message.uid,
+                              )),
+                    );
+                  },
+                  child: Text(
+                    message.userName,
+                    style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16),
+                    //textAlign: isMe ? TextAlign.end : TextAlign.start,
+                  ),
                 ),
           Text(
             message.text,
             textWidthBasis: TextWidthBasis.longestLine,
             style: const TextStyle(
               color: Colors.black,
+              fontSize: 16,
             ),
             textAlign: isMe ? TextAlign.end : TextAlign.start,
           )

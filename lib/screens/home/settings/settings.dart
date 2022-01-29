@@ -22,6 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
   // text field state
   String imgUrl = '';
   String userName = '';
+  String userBio = '';
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +32,36 @@ class _SettingsPageState extends State<SettingsPage> {
         DataBaseService(uid: userProvider.activeUser!.uid);
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              const ProfilePicture(),
+      appBar: AppBar(
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        title: const Text("Profile", style: TextStyle(color: Colors.black)),
+        leading: const BackButton(color: Colors.black),
+      ),
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                const ProfilePicture(),
 
-              //isnt used because of mainaxis size max
-              const SizedBox(height: 24.0),
-              Text(userProvider.activeUser!.userName ?? "no username",
-                  style: const TextStyle(fontSize: 16)),
-              //isnt used because of mainaxis size max
-              const SizedBox(height: 12.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: TextFormField(
+                //isnt used because of mainaxis size max
+                const SizedBox(height: 24.0),
+                Text(userProvider.activeUser!.userName ?? "no username",
+                    style: const TextStyle(fontSize: 16)),
+                //isnt used because of mainaxis size max
+                const SizedBox(height: 12.0),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
                       decoration:
-                          buildInputDecoration(labelText: 'new username'),
+                          buildInputDecoration(labelText: 'New username'),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
@@ -62,38 +69,66 @@ class _SettingsPageState extends State<SettingsPage> {
                         setState(() => userName = val);
                       },
                     ),
-                  ),
-                  //isnt used because of mainaxis size max
-                  const SizedBox(width: 20.0),
-                  ElevatedButton(
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.grey[400])),
-                      child: const Text(
-                        'safe',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onPressed: () async {
-                        if (_formKey.currentState != null) {
-                          database.updateUserDataField(
-                              field: "userName", value: userName);
-                          UserModel user = userProvider.activeUser!;
-                          user.userName = userName;
-                          userProvider.activeUser = user;
-                        }
-                      }),
-                ],
-              ),
-              //isnt used because of mainaxis size max
-              const SizedBox(height: 12.0),
-              Text(
-                error,
-                style: const TextStyle(color: Colors.red, fontSize: 14.0),
-              )
-            ],
+                    //isnt used because of mainaxis size max
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                      maxLines: 10,
+                      decoration: buildInputDecoration(labelText: 'Your bio'),
+                      // validator: (val) => (val == null || val.length < 6)
+                      //     ? 'Enter a userName 6+ chars long'
+                      //     : null,
+                      onChanged: (val) {
+                        setState(() => userBio = val);
+                      },
+                    ),
+                    //isnt used because of mainaxis size max
+                    const SizedBox(height: 20.0),
+                    ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white),
+                            shape: MaterialStateProperty.all<
+                                    RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0),
+                                    side: BorderSide(color: Colors.grey)))),
+                        child: const Text(
+                          'Safe',
+                          style: TextStyle(color: Colors.black),
+                        ),
+                        onPressed: () {
+                          updateUsername(database, userProvider);
+                        }),
+                  ],
+                ),
+                //isnt used because of mainaxis size max
+                const SizedBox(height: 12.0),
+                Text(
+                  error,
+                  style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                )
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  updateUsername(database, userProvider) {
+    if (_formKey.currentState != null) {
+      if (userName != "") {
+        database.updateUserDataField(field: "userName", value: userName);
+        UserModel user = userProvider.activeUser!;
+        user.userName = userName;
+        userProvider.activeUser = user;
+      }
+      if (userBio != "") {
+        database.updateUserDataField(field: "bio", value: userBio);
+        UserModel user = userProvider.activeUser!;
+        user.bio = userBio;
+        userProvider.activeUser = user;
+      }
+    }
   }
 }

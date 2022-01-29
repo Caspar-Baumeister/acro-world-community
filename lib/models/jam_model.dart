@@ -6,9 +6,10 @@ class Jam {
   String imgUrl;
   String createdBy;
   Timestamp createdAt;
-  String date;
+  Timestamp date;
   String location;
   List<String> participants;
+  String info;
 
   Jam(
       {required this.jid,
@@ -18,7 +19,8 @@ class Jam {
       required this.participants,
       required this.date,
       required this.name,
-      required this.imgUrl});
+      required this.imgUrl,
+      required this.info});
 
   factory Jam.fromJson(dynamic json, String jid) {
     return Jam(
@@ -30,6 +32,7 @@ class Jam {
         name: json["name"],
         imgUrl: json["imgUrl"],
         createdBy: json["createdBy"],
-        createdAt: json["createdAt"]);
+        createdAt: json["createdAt"],
+        info: json["info"]);
   }
 }

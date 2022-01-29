@@ -88,13 +88,13 @@ class DataBaseService {
 
   // JAMS //
   // set by id
-  Future addJam({
-    required String cid,
-    required String name,
-    required String imgUrl,
-    required String location,
-    required DateTime date,
-  }) async {
+  Future addJam(
+      {required String cid,
+      required String name,
+      required String imgUrl,
+      required String location,
+      required Timestamp date,
+      String info = ""}) async {
     final jamsCollection =
         FirebaseFirestore.instance.collection('communities/$cid/jams');
 
@@ -105,6 +105,7 @@ class DataBaseService {
       'date': date,
       'participants': [],
       'createdBy': uid,
+      'info': info,
       'createdAt': DateTime.now()
     };
 

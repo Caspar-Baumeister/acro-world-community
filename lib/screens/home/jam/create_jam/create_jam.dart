@@ -5,6 +5,7 @@ import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,6 @@ class CreateJam extends StatefulWidget {
 class _CreateJamState extends State<CreateJam> {
   DateTime _chosenDateTime = DateTime.now();
   final _formKey = GlobalKey<FormState>();
-  String error = '';
 
   // text field state
   String name = '';
@@ -102,11 +102,6 @@ class _CreateJamState extends State<CreateJam> {
                             chosenDateTime: _chosenDateTime,
                             setDateTime: setDateTime,
                           ),
-                          Text(
-                            error,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0),
-                          ),
                           const SizedBox(height: 20.0),
                           Container(
                             constraints: const BoxConstraints(maxWidth: 250),
@@ -147,7 +142,9 @@ class _CreateJamState extends State<CreateJam> {
           name: name,
           imgUrl: imgUrl,
           location: location,
-          date: _chosenDateTime);
+          date: Timestamp.fromDate(_chosenDateTime),
+          info: info);
+
       // redirects to jams
 
       setState(() {
@@ -158,7 +155,6 @@ class _CreateJamState extends State<CreateJam> {
       // error handling
     } else {
       setState(() {
-        error = 'Could not sign in with those credentials';
         loading = false;
       });
     }

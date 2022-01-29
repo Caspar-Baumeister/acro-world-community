@@ -6,6 +6,7 @@ import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class JamOverview extends StatefulWidget {
   const JamOverview({required this.jam, required this.cid, Key? key})
@@ -24,6 +25,9 @@ class _JamOverviewState extends State<JamOverview> {
   Widget build(BuildContext context) {
     UserModel user = Provider.of<UserProvider>(context).activeUser!;
     bool userParticipates = widget.jam.participants.contains(user.uid);
+    DateTime date = DateTime.fromMicrosecondsSinceEpoch(
+        widget.jam.date.microsecondsSinceEpoch);
+    String dateString = DateFormat('yyyy.MM.dd – kk:mm').format(date);
     return loading
         ? const Loading()
         : Scaffold(
@@ -58,15 +62,25 @@ class _JamOverviewState extends State<JamOverview> {
                 child: Column(
                   children: <Widget>[
                     const SizedBox(height: 20.0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
+                      child: Text("Place",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.grey,
+                              fontFamily: "rubik")),
+                    ),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 12.0),
                       decoration: BoxDecoration(
                           border: Border.all(
-                            width: 4,
+                            width: 1,
                             color: Colors.grey,
                           ),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
+                              const BorderRadius.all(Radius.circular(30))),
                       constraints: const BoxConstraints(maxWidth: 250),
                       alignment: Alignment.center,
                       child: Row(
@@ -90,37 +104,57 @@ class _JamOverviewState extends State<JamOverview> {
                       ),
                     ),
                     const SizedBox(height: 20.0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
+                      child: Text("Date",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.grey,
+                              fontFamily: "rubik")),
+                    ),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 12.0),
                       decoration: BoxDecoration(
                           border: Border.all(
-                            width: 4,
+                            width: 1,
                             color: Colors.grey,
                           ),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
+                              const BorderRadius.all(Radius.circular(30))),
                       constraints: const BoxConstraints(maxWidth: 250),
                       alignment: Alignment.center,
                       child: Text(
-                        widget.jam.date.toString(),
+                        dateString,
                         style: const TextStyle(
                             color: Color(0xFFA4A4A4), fontSize: 16.0),
                       ),
                     ),
                     const SizedBox(height: 20.0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
+                      child: Text("Information",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.grey,
+                              fontFamily: "rubik")),
+                    ),
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 12.0, horizontal: 12.0),
                       decoration: BoxDecoration(
                           border: Border.all(
-                            width: 4,
+                            width: 1,
                             color: Colors.grey,
                           ),
                           borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
+                              const BorderRadius.all(Radius.circular(30))),
                       constraints: const BoxConstraints(maxWidth: 250),
                       alignment: Alignment.center,
                       child: Text(
-                        "widget.jam.info",
+                        widget.jam.info,
                         maxLines: 10,
                         style: const TextStyle(
                             color: Color(0xFFA4A4A4), fontSize: 16.0),
