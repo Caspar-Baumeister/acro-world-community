@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/authenticate/authenticate.dart';
-import 'package:acroworld/screens/home/home.dart';
+import 'package:acroworld/screens/verify_email.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +19,6 @@ class Wrapper extends StatelessWidget {
     // if (user != null) print(user.uid);
 
     // return either Home or Authenticate Widget
-    return (user != null) ? Home() : const Authenticate();
+    return (user != null) ? const VerifyEmailPage() : const Authenticate();
   }
 }

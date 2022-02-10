@@ -2,7 +2,6 @@ import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/settings/widgets/profile_picture.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -97,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
-                          updateUsername(database, userProvider);
+                          updateUserData(database, userProvider);
                         }),
                   ],
                 ),
@@ -115,20 +114,32 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 
-  updateUsername(database, userProvider) {
+  updateUserData(database, userProvider) {
     if (_formKey.currentState != null) {
+      bool updated = false;
       if (userName != "") {
         database.updateUserDataField(field: "userName", value: userName);
         UserModel user = userProvider.activeUser!;
         user.userName = userName;
         userProvider.activeUser = user;
+        updated = true;
       }
       if (userBio != "") {
         database.updateUserDataField(field: "bio", value: userBio);
         UserModel user = userProvider.activeUser!;
         user.bio = userBio;
         userProvider.activeUser = user;
+        updated = true;
       }
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: const Text('Yay! A SnackBar!'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            // Some code to undo the change.
+          },
+        ),
+      ));
     }
   }
 }

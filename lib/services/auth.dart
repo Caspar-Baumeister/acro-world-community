@@ -58,6 +58,7 @@ class AuthService {
       if (user != null) {
         await DataBaseService(uid: user.uid).updateUserData(
             userName: user.email ?? "", imgUrl: MORTY_IMG_URL, bio: "");
+        user.sendEmailVerification();
       }
       return result.user;
     } catch (e) {

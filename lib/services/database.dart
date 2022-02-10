@@ -87,6 +87,18 @@ class DataBaseService {
   }
 
   // JAMS //
+
+  // delete jam
+  Future deleteJam({
+    required String jid,
+    required String cid,
+  }) async {
+    return await FirebaseFirestore.instance
+        .collection('communities/$cid/jams')
+        .doc(jid)
+        .delete();
+  }
+
   // set by id
   Future addJam(
       {required String cid,

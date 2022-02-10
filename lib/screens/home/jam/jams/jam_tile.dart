@@ -1,5 +1,6 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
 
 class JamTile extends StatelessWidget {
@@ -14,6 +15,9 @@ class JamTile extends StatelessWidget {
     var now = DateTime.now();
     DateTime date = jam.date.toDate();
     final difference = date.difference(now).inDays;
+    if (date.difference(now).inHours < 3) {
+      DataBaseService().deleteJam(cid: cid, jid: jam.jid);
+    }
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
