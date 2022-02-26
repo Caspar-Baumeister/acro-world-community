@@ -47,7 +47,7 @@ class AuthService {
 
   // register with email and password
   Future<User?> registerWithEmailAndPassword(
-      String email, String password) async {
+      String email, String password, String name) async {
     try {
       UserCredential result = await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -56,8 +56,8 @@ class AuthService {
 
       // create a new User-info object
       if (user != null) {
-        await DataBaseService(uid: user.uid).updateUserData(
-            userName: user.email ?? "", imgUrl: MORTY_IMG_URL, bio: "");
+        await DataBaseService(uid: user.uid)
+            .updateUserData(userName: name, imgUrl: MORTY_IMG_URL, bio: "");
         user.sendEmailVerification();
       }
       return result.user;

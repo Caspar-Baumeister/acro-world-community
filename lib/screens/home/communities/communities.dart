@@ -1,5 +1,6 @@
 import 'package:acroworld/screens/home/communities/app_bar_communities.dart';
 import 'package:acroworld/screens/home/communities/communities_stream.dart';
+import 'package:acroworld/screens/home/communities/settings_drawer.dart';
 import 'package:flutter/material.dart';
 
 class Communities extends StatelessWidget {
@@ -8,8 +9,10 @@ class Communities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBarCommunities(),
-        body: const CommunitiesStream());
+      backgroundColor: Colors.white,
+      appBar: AppBarCommunities(),
+      body: const CommunitiesStream(),
+      endDrawer: const SettingsDrawer(),
+    );
   }
 }

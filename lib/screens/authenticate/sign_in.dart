@@ -58,7 +58,9 @@ class _SignInState extends State<SignIn> {
                   children: <Widget>[
                     const SizedBox(height: 20.0),
                     TextFormField(
+                      autofocus: true,
                       keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
                       decoration: buildInputDecoration(labelText: 'Email'),
                       validator: (val) => (val == null || val.isEmpty)
                           ? 'Enter an email'
@@ -69,6 +71,7 @@ class _SignInState extends State<SignIn> {
                     ),
                     const SizedBox(height: 20.0),
                     TextFormField(
+                      textInputAction: TextInputAction.done,
                       obscureText: true,
                       decoration: buildInputDecoration(labelText: 'Password'),
                       validator: (val) => (val == null || val.length < 6)
@@ -77,6 +80,7 @@ class _SignInState extends State<SignIn> {
                       onChanged: (val) {
                         setState(() => password = val);
                       },
+                      onFieldSubmitted: (_) => onSignin(),
                     ),
                     const SizedBox(height: 20.0),
                     ElevatedButton(

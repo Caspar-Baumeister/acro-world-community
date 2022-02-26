@@ -1,5 +1,6 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/communities/communities_list.dart';
+import 'package:acroworld/screens/home/communities/communities_search.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,7 +27,7 @@ class CommunitiesStream extends StatelessWidget {
         List<Community> communities = snapshot.data!.docs.map((e) {
           return Community.fromJson(e.id);
         }).toList();
-        return CommunitiesList(communities: communities);
+        return CommunitiesSearch(allCommunities: communities);
       },
     );
   }

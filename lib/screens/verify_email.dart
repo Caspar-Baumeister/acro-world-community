@@ -80,6 +80,11 @@ class _VerifyEmailPageState extends State<VerifyEmailPage> {
                     GestureDetector(
                       onTap: () => FirebaseAuth.instance.signOut(),
                       child: const Text("Log out", style: MAINTEXT),
+                    ),
+                    const SizedBox(height: 90),
+                    const Text(
+                      "this step is only to protect the app from spammers and thus protect ourself for unpredictable service costs",
+                      textAlign: TextAlign.center,
                     )
                   ],
                 ),
