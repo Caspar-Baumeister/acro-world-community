@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Community {
   String id;
-  Community({required this.id});
+  DateTime nextJam;
+  Community({required this.id, required this.nextJam});
 
-  factory Community.fromJson(String id) {
-    return Community(id: id);
+  factory Community.fromJson(String id, Timestamp timestamp) {
+    return Community(id: id, nextJam: timestamp.toDate());
   }
 }

@@ -5,8 +5,8 @@ class Jam {
   String name;
   String imgUrl;
   String createdBy;
-  Timestamp createdAt;
-  Timestamp date;
+  DateTime createdAt;
+  DateTime date;
   String location;
   List<String> participants;
   String info;
@@ -28,11 +28,11 @@ class Jam {
         location: json["location"],
         participants:
             List<String>.from(json["participants"].map((e) => e.toString())),
-        date: json["date"],
+        date: json["date"].toDate(),
         name: json["name"],
         imgUrl: json["imgUrl"],
         createdBy: json["createdBy"],
-        createdAt: json["createdAt"],
+        createdAt: json["createdAt"].toDate(),
         info: json["info"]);
   }
 }

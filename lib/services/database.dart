@@ -86,6 +86,22 @@ class DataBaseService {
         .snapshots();
   }
 
+  // change/set specific by id
+  Future updateCommunityDataField({
+    required String cid,
+    required String field,
+    required dynamic value,
+  }) async {
+    return await communitiesCollection
+        .doc(cid)
+        .set({field: value}, SetOptions(merge: true));
+  }
+
+  // get by id
+  Future<DocumentSnapshot<Object?>> getCommunity(String cid) async {
+    return communitiesCollection.doc(cid).get();
+  }
+
   // JAMS //
 
   // delete jam

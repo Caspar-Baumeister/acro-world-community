@@ -1,7 +1,7 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class JamTile extends StatelessWidget {
   const JamTile({required this.jam, required this.cid, Key? key})
@@ -12,12 +12,6 @@ class JamTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var now = DateTime.now();
-    DateTime date = jam.date.toDate();
-    final difference = date.difference(now).inDays;
-    if (date.difference(now).inHours < 3) {
-      DataBaseService().deleteJam(cid: cid, jid: jam.jid);
-    }
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -31,7 +25,7 @@ class JamTile extends StatelessWidget {
         child: Card(
           child: ListTile(
             title: Text(jam.name),
-            subtitle: Text("in ${difference.toString()} days"),
+            subtitle: Text(timeago.format(jam.date, allowFromNow: true)),
             trailing:
                 Text(jam.participants.length.toString() + " participants"),
           ),

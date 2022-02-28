@@ -6,7 +6,6 @@ import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -136,14 +135,39 @@ class _CreateJamState extends State<CreateJam> {
       UserModel user =
           Provider.of<UserProvider>(context, listen: false).activeUser!;
 
+      DataBaseService dataBaseService = DataBaseService(uid: user.uid);
       // creates a new jam object
-      DataBaseService(uid: user.uid).addJam(
+      dataBaseService.addJam(
           cid: widget.cid,
           name: name,
           imgUrl: imgUrl,
           location: location,
           date: Timestamp.fromDate(_chosenDateTime),
           info: info);
+
+      // update next jam if newer one occurs
+      DocumentSnapshot community =
+          await dataBaseService.getCommunity(widget.cid);
+
+      print(community.get("next_jam"));
+      print(community
+          .get("next_jam")
+          .toDate()
+          .difference(_chosenDateTime)
+          .inHours);
+
+      if (community
+              .get("next_jam")
+              .toDate()
+              .difference(_chosenDateTime)
+              .inHours >
+          0) {
+        dataBaseService.updateCommunityDataField(
+            cid: widget.cid,
+            field: "next_jam",
+            value: Timestamp.fromDate(_chosenDateTime));
+      }
+      //
 
       // redirects to jams
 

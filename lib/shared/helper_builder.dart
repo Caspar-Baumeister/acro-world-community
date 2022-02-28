@@ -1,6 +1,6 @@
-// decoration property of text fields
 import 'package:flutter/material.dart';
 
+// decoration property of text fields
 InputDecoration buildInputDecoration({
   String? labelText,
   Widget? suffixIcon,
