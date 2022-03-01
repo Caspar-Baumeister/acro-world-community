@@ -1,5 +1,4 @@
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/screens/home/communities/communities_list.dart';
 import 'package:acroworld/screens/home/communities/communities_body.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
@@ -24,7 +23,8 @@ class CommunitiesStream extends StatelessWidget {
           return const Text("Loading");
         }
 
-        List<Community> communities = snapshot.data!.docs.map((e) {
+        List<Community> communities =
+            snapshot.data!.docs.where((com) => com.get("confirmed")).map((e) {
           return Community.fromJson(e.id, e.get("next_jam"));
         }).toList();
         return CommunitiesBody(allCommunities: communities);

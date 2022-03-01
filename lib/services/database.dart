@@ -102,6 +102,17 @@ class DataBaseService {
     return communitiesCollection.doc(cid).get();
   }
 
+  // set by id
+  Future<void> createCommunity({
+    required String cid,
+  }) async {
+    final newCommunity = {
+      'confirmed': false,
+      'next_jam': Timestamp.now(),
+    };
+    await communitiesCollection.doc(cid).set(newCommunity);
+  }
+
   // JAMS //
 
   // delete jam

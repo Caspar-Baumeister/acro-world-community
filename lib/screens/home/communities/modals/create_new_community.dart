@@ -1,4 +1,5 @@
 import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 
@@ -11,9 +12,10 @@ class CreateNewCommunityModal extends StatefulWidget {
 }
 
 class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
+  String name = "";
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
-    String name = "";
     return Container(
       padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 24.0),
       width: double.infinity,
@@ -46,22 +48,39 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
             ),
             const SizedBox(height: 30.0),
 
-            ElevatedButton(
-              child: const Text(
-                "Suggest community",
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () => {},
-              style: ElevatedButton.styleFrom(
-                padding: const EdgeInsets.all(12.0),
-                primary: Colors.grey[100],
-                shape: RoundedRectangleBorder(
-                  side: const BorderSide(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(30.0),
+            IgnorePointer(
+              ignoring: loading,
+              child: ElevatedButton(
+                child: const Text(
+                  "Suggest community",
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () => suggestCommunity(),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.all(12.0),
+                  primary: Colors.grey[100],
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
                 ),
               ),
             )
           ]),
     );
+  }
+
+  suggestCommunity() {
+    setState(() {
+      loading = true;
+    });
+    if (name != "") {
+      DataBaseService().createCommunity(cid: name);
+      Navigator.of(context).pop();
+    }
+
+    setState(() {
+      loading = false;
+    });
   }
 }
