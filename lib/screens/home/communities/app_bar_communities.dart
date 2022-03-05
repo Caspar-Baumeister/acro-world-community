@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class AppBarCommunities extends StatelessWidget with PreferredSizeWidget {
+  AppBarCommunities({Key? key}) : super(key: key);
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 

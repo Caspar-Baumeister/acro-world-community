@@ -1,3 +1,4 @@
+import 'package:acroworld/screens/home/communities/all_communities/all_communities_app_bar.dart';
 import 'package:acroworld/screens/home/communities/all_communities/all_communities_stream.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class AllCommunities extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       backgroundColor: Colors.white,
-      //appBar: AppBarCommunities(),
+      appBar: AllCommunitiesAppBar(),
       body: AllCommunitiesStream(),
       // endDrawer: const SettingsDrawer(),
     );

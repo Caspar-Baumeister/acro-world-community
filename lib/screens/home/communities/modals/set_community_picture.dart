@@ -1,9 +1,5 @@
-import 'dart:io';
 import 'package:acroworld/shared/constants.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-
-import 'package:firebase_storage/firebase_storage.dart';
 
 class SetCommunityPicture extends StatefulWidget {
   const SetCommunityPicture({Key? key}) : super(key: key);
@@ -37,14 +33,14 @@ class _SetCommunityPictureState extends State<SetCommunityPicture> {
   }
 
   Future pickFile() async {
-    FirebaseStorage storage = FirebaseStorage.instance;
-    final FilePickerResult? result =
-        await FilePicker.platform.pickFiles(allowMultiple: false);
-    if (result == null) return;
+    // FirebaseStorage storage = FirebaseStorage.instance;
+    // final FilePickerResult? result =
+    //     await FilePicker.platform.pickFiles(allowMultiple: false);
+    // if (result == null) return;
 
-    final String path = result.files.single.path!;
+    // final String path = result.files.single.path!;
 
-    File file = File(path);
+    // File file = File(path);
 
     //   try {
     //     // Uploading the selected image with some custom meta data

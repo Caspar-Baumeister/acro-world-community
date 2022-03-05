@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Home extends StatefulWidget {
-  Home({Key? key}) : super(key: key);
+  const Home({Key? key}) : super(key: key);
 
   @override
   State<Home> createState() => _HomeState();
@@ -21,10 +21,9 @@ class _HomeState extends State<Home> {
     // the first build time, the userdata regarding the logged in user is fetched
     // and a global state provider is created that contains all the user information
     if (!initialized) {
-      setUser();
-      setState(() {
-        initialized = true;
-      });
+      setUser().then((value) => setState(() {
+            initialized = true;
+          }));
     }
     return loading ? const Loading() : const Communities();
   }

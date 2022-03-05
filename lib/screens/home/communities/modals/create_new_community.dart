@@ -34,7 +34,7 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
             ),
             const SizedBox(height: 30.0),
             const Text(
-              "Create a new community",
+              "Suggest a new community",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 30.0),

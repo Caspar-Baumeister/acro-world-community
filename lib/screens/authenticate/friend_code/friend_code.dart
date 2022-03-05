@@ -1,13 +1,13 @@
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class FriendCode extends StatelessWidget {
-  FriendCode({Key? key, required this.confirmFriend, required this.toggleView})
+  const FriendCode(
+      {Key? key, required this.confirmFriend, required this.toggleView})
       : super(key: key);
 
-  Function confirmFriend;
-  Function toggleView;
+  final Function confirmFriend;
+  final Function toggleView;
 
   @override
   Widget build(BuildContext context) {

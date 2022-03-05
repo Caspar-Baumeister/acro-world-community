@@ -1,14 +1,12 @@
 import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
-  SignIn({required this.toggleView});
+  const SignIn({required this.toggleView, Key? key}) : super(key: key);
   final Function toggleView;
 
   @override

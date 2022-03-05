@@ -1,4 +1,3 @@
-import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:acroworld/screens/home/jam/jams/jam_stream.dart';
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
 import 'package:flutter/material.dart';

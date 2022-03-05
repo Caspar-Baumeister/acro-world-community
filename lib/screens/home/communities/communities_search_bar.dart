@@ -11,7 +11,7 @@ class CommunitiesSearchBar extends StatefulWidget {
 }
 
 class _CommunitiesSearchBarState extends State<CommunitiesSearchBar> {
-  late final controller;
+  late TextEditingController controller;
 
   @override
   void initState() {
@@ -21,8 +21,8 @@ class _CommunitiesSearchBarState extends State<CommunitiesSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    final styleActive = TextStyle(color: Colors.black);
-    final styleHint = TextStyle(color: Colors.black54);
+    const styleActive = TextStyle(color: Colors.black);
+    const styleHint = TextStyle(color: Colors.black54);
     final style = controller.text != "" ? styleHint : styleActive;
     return Container(
       height: 42,

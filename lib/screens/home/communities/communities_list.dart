@@ -12,12 +12,17 @@ class CommunitiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: communities.length,
-      itemBuilder: (context, index) {
-        return CommunityCard(community: communities[index]);
-      },
+    return SingleChildScrollView(
+      child: Column(
+        children: [...communities.map((com) => CommunityCard(community: com))],
+      ),
     );
+    // ListView.builder(
+    //   shrinkWrap: true,
+    //   itemCount: communities.length,
+    //   itemBuilder: (context, index) {
+    //     return CommunityCard(community: communities[index]);
+    //   },
+    // );
   }
 }

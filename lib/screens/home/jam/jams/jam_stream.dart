@@ -30,14 +30,13 @@ class JamsStream extends StatelessWidget {
             return buildText("There are no jams jet");
           }
           List<Jam> jams = snapshot.data!.docs.map((e) {
-            print(e.data());
             return Jam.fromJson(e.data(), e.id);
           }).toList();
-          print(jams[0].name);
 
           // snapshot arrived and jams exist
           return JamsList(jams: jams, cid: cid);
         } catch (e) {
+          // ignore: avoid_print
           print(
               "JamStream: couldnt translate snapshot into jam widgets with error: ${e.toString()}");
           return Center(

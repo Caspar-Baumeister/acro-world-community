@@ -1,5 +1,5 @@
-import 'package:acroworld/screens/home/communities/modals/create_new_community.dart';
-import 'package:acroworld/shared/helper_functions.dart';
+import 'package:acroworld/screens/home/communities/all_communities/all_communities.dart';
+
 import 'package:flutter/material.dart';
 
 class NewCommunityButton extends StatelessWidget {
@@ -14,7 +14,9 @@ class NewCommunityButton extends StatelessWidget {
       padding: const EdgeInsets.only(right: 8.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(primary: Colors.white, elevation: 0),
-        onPressed: () => buildMortal(context, CreateNewCommunityModal()),
+        onPressed: () => Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const AllCommunities()),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: const <Widget>[
@@ -25,7 +27,7 @@ class NewCommunityButton extends StatelessWidget {
                 color: Colors.black,
               ),
             ),
-            Text("New",
+            Text("Add",
                 style: TextStyle(
                   color: Colors.black,
                 )),

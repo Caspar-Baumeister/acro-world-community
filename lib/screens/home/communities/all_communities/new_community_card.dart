@@ -1,0 +1,52 @@
+import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/screens/home/chatroom/chatroom.dart';
+import 'package:acroworld/services/database.dart';
+import 'package:acroworld/services/preferences/user_id.dart';
+import 'package:acroworld/shared/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:timeago/timeago.dart' as timeago;
+
+class NewCommunityCard extends StatelessWidget {
+  const NewCommunityCard({
+    Key? key,
+    required this.community,
+  }) : super(key: key);
+
+  final Community community;
+
+  @override
+  Widget build(BuildContext context) {
+    // String nextDate = "No current jams";
+    // var now = DateTime.now();
+    // final difference = community.nextJam.difference(now).inDays;
+    // if (difference >= 0) {
+    //   nextDate = "Next jam in ${difference.toString()} days";
+    // }
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => Chatroom(cId: community.id)),
+      ),
+      child: ListTile(
+        leading: const CircleAvatar(
+          radius: 32,
+          backgroundImage: NetworkImage(COMMUNITY_IMG_URL),
+        ),
+        title: Text(community.id),
+        subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
+            style: const TextStyle(fontWeight: FontWeight.w300)),
+        trailing: GestureDetector(
+          onTap: () => addCommunity(),
+          child: const Icon(
+            Icons.add_circle_outline_rounded,
+            color: Colors.green,
+          ),
+        ),
+      ),
+    );
+  }
+
+  void addCommunity() {
+    String userId = UserIdPreferences.getToken();
+    DataBaseService(uid: userId).addCommunityToUser(community: community.id);
+  }
+}

@@ -42,83 +42,76 @@ class _CreateJamState extends State<CreateJam> {
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
             body: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 20.0, horizontal: 50.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        children: <Widget>[
-                          const SizedBox(height: 20.0),
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 250),
-                            child: TextFormField(
-                              keyboardType: TextInputType.url,
-                              decoration:
-                                  buildInputDecoration(labelText: 'Image path'),
-                              onChanged: (val) {
-                                setState(() => imgUrl = val);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 250),
-                            child: TextFormField(
-                              keyboardType: TextInputType.name,
-                              decoration:
-                                  buildInputDecoration(labelText: 'Name'),
-                              validator: (val) =>
-                                  (val == null || val.isEmpty || val == "")
-                                      ? 'Enter a valid jam name'
-                                      : null,
-                              onChanged: (val) {
-                                setState(() => name = val);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 250),
-                            child: TextFormField(
-                              keyboardType: TextInputType.streetAddress,
-                              decoration:
-                                  buildInputDecoration(labelText: 'Location'),
-                              validator: (val) =>
-                                  (val == null || val.isEmpty || val == "")
-                                      ? 'Enter a valid location'
-                                      : null,
-                              onChanged: (val) {
-                                setState(() => location = val);
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 20.0),
-                          DateTimeChooser(
-                            chosenDateTime: _chosenDateTime,
-                            setDateTime: setDateTime,
-                          ),
-                          const SizedBox(height: 20.0),
-                          Container(
-                            constraints: const BoxConstraints(maxWidth: 250),
-                            child: TextFormField(
-                              maxLines: 10,
-                              keyboardType: TextInputType.text,
-                              decoration:
-                                  buildInputDecoration(labelText: 'Info'),
-                              onChanged: (val) {
-                                setState(() => info = val);
-                              },
-                            ),
-                          ),
-                        ],
+              child: Form(
+                key: _formKey,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      // const SizedBox(height: 20.0),
+                      // Container(
+                      //   constraints: const BoxConstraints(maxWidth: 250),
+                      //   child: TextFormField(
+                      //     keyboardType: TextInputType.url,
+                      //     decoration:
+                      //         buildInputDecoration(labelText: 'Image path'),
+                      //     onChanged: (val) {
+                      //       setState(() => imgUrl = val);
+                      //     },
+                      //   ),
+                      // ),
+                      const SizedBox(height: 20.0),
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        child: TextFormField(
+                          keyboardType: TextInputType.name,
+                          decoration: buildInputDecoration(labelText: 'Name'),
+                          validator: (val) =>
+                              (val == null || val.isEmpty || val == "")
+                                  ? 'Enter a valid jam name'
+                                  : null,
+                          onChanged: (val) {
+                            setState(() => name = val);
+                          },
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 20.0),
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        child: TextFormField(
+                          keyboardType: TextInputType.streetAddress,
+                          decoration:
+                              buildInputDecoration(labelText: 'Location'),
+                          validator: (val) =>
+                              (val == null || val.isEmpty || val == "")
+                                  ? 'Enter a valid location'
+                                  : null,
+                          onChanged: (val) {
+                            setState(() => location = val);
+                          },
+                        ),
+                      ),
+                      const SizedBox(height: 20.0),
+                      DateTimeChooser(
+                        chosenDateTime: _chosenDateTime,
+                        setDateTime: setDateTime,
+                      ),
+                      const SizedBox(height: 20.0),
+                      Container(
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        child: TextFormField(
+                          maxLines: 10,
+                          keyboardType: TextInputType.text,
+                          decoration: buildInputDecoration(labelText: 'Info'),
+                          onChanged: (val) {
+                            setState(() => info = val);
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
           );
@@ -148,13 +141,6 @@ class _CreateJamState extends State<CreateJam> {
       // update next jam if newer one occurs
       DocumentSnapshot community =
           await dataBaseService.getCommunity(widget.cid);
-
-      print(community.get("next_jam"));
-      print(community
-          .get("next_jam")
-          .toDate()
-          .difference(_chosenDateTime)
-          .inHours);
 
       if (community
               .get("next_jam")

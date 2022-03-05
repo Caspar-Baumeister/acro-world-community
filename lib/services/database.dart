@@ -58,10 +58,10 @@ class DataBaseService {
     required String community,
   }) async {
     // get existing list
-    List<String> communities = await infoCollection
+    List<String> communities = List<String>.from(await infoCollection
         .doc(uid)
         .get()
-        .then((value) => value.get("communities"));
+        .then((value) => value.get("communities")));
     // add community
     communities.add(community);
     // post updated list

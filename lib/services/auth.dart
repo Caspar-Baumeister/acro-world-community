@@ -1,5 +1,6 @@
+// ignore_for_file: avoid_print
+
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
@@ -68,7 +69,6 @@ class AuthService {
 
   // sign out
   Future signOut() async {
-    print("signout triggered");
     try {
       return await _auth.signOut();
     } catch (e) {

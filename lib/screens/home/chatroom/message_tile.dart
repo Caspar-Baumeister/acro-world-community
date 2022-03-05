@@ -2,9 +2,7 @@ import 'package:acroworld/models/message_model.dart';
 import 'package:acroworld/screens/home/profile/profile.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // Let the messagetile fetch the user data from the user id (dont safe other things then message and uid in the message, created at)
 

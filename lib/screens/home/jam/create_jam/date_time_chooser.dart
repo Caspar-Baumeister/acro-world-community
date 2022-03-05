@@ -73,10 +73,8 @@ class DateTimeChooser extends StatelessWidget {
                         initialDateTime: DateTime.now(),
                         onDateTimeChanged: (val) => _val = val),
                   ),
-                  const SizedBox(
-                    height: 6.0,
-                  ),
-                  Container(
+                  const SizedBox(height: 6.0),
+                  SizedBox(
                     width: 250.0,
                     child: CupertinoButton(
                       child: const Text('OK'),

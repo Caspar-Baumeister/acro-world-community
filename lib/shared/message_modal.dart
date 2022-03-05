@@ -1,6 +1,3 @@
-import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
-import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 
 class MessageModal extends StatelessWidget {

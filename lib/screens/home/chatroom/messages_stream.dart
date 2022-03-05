@@ -34,13 +34,14 @@ class MessagesStream extends StatelessWidget {
               return Message.fromJson(e.data(), cid);
             }).toList();
 
-            if (messages == null || messages.isEmpty) {
+            if (messages.isEmpty) {
               return buildText("A beautiful new community");
             }
 
             // snapshot arrived and messages exist
             return MessageList(messages: messages, uid: uid);
           } catch (e) {
+            // ignore: avoid_print
             print(
                 "MessageWidget: couldnt translate snapshot into message widgets with error: ${e.toString()}");
             return Center(

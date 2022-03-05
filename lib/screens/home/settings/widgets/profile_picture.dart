@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 import 'package:acroworld/provider/user_provider.dart';
@@ -69,7 +71,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
       Provider.of<UserProvider>(context, listen: false).activeUserImgUrl =
           imgUrl;
 
-      if (task == null) return;
+      //if (task == null) return;
       // Refresh the UI
       setState(() {});
     } on FirebaseException catch (error) {

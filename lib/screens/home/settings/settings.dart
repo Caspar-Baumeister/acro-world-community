@@ -51,16 +51,17 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 //isnt used because of mainaxis size max
                 const SizedBox(height: 24.0),
-                Text(userProvider.activeUser!.userName ?? "no username",
-                    style: const TextStyle(fontSize: 16)),
-                //isnt used because of mainaxis size max
-                const SizedBox(height: 12.0),
+                // Text(userProvider.activeUser!.userName ?? "no username",
+                //     style: const TextStyle(fontSize: 16)),
+                // //isnt used because of mainaxis size max
+                // const SizedBox(height: 12.0),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextFormField(
-                      decoration:
-                          buildInputDecoration(labelText: 'New username'),
+                      decoration: buildInputDecoration(
+                          labelText: userProvider.activeUser!.userName ??
+                              "new username"),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
@@ -72,7 +73,9 @@ class _SettingsPageState extends State<SettingsPage> {
                     const SizedBox(height: 20.0),
                     TextFormField(
                       maxLines: 10,
-                      decoration: buildInputDecoration(labelText: 'Your bio'),
+                      decoration: buildInputDecoration(
+                          labelText:
+                              userProvider.activeUser!.bio ?? 'Your bio'),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
@@ -90,7 +93,8 @@ class _SettingsPageState extends State<SettingsPage> {
                                     RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0),
-                                    side: BorderSide(color: Colors.grey)))),
+                                    side:
+                                        const BorderSide(color: Colors.grey)))),
                         child: const Text(
                           'Safe',
                           style: TextStyle(color: Colors.black),
@@ -116,20 +120,20 @@ class _SettingsPageState extends State<SettingsPage> {
 
   updateUserData(database, userProvider) {
     if (_formKey.currentState != null) {
-      bool updated = false;
+      //bool updated = false;
       if (userName != "") {
         database.updateUserDataField(field: "userName", value: userName);
         UserModel user = userProvider.activeUser!;
         user.userName = userName;
         userProvider.activeUser = user;
-        updated = true;
+        //updated = true;
       }
       if (userBio != "") {
         database.updateUserDataField(field: "bio", value: userBio);
         UserModel user = userProvider.activeUser!;
         user.bio = userBio;
         userProvider.activeUser = user;
-        updated = true;
+        //updated = true;
       }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text('Yay! A SnackBar!'),
