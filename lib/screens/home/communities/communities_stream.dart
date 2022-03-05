@@ -12,8 +12,8 @@ class CommunitiesStream extends StatelessWidget {
   Widget build(BuildContext context) {
     String userId = UserIdPreferences.getToken();
 
-    return StreamBuilder<QuerySnapshot>(
-      stream: DataBaseService(uid: userId).getCommunities(),
+    return StreamBuilder<DocumentSnapshot>(
+      stream: DataBaseService(uid: userId).getUserCommunities(),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text('Something went wrong with error : ${snapshot.error}');
@@ -23,12 +23,62 @@ class CommunitiesStream extends StatelessWidget {
           return const Text("Loading");
         }
 
-        List<Community> communities =
-            snapshot.data!.docs.where((com) => com.get("confirmed")).map((e) {
-          return Community.fromJson(e.id, e.get("next_jam"));
-        }).toList();
-        return CommunitiesBody(allCommunities: communities);
+        List<String> communityIds =
+            List<String>.from(snapshot.data!.get("communities"));
+
+        return CommunityLoader(communityIds: communityIds);
       },
     );
+  }
+}
+
+class CommunityLoader extends StatefulWidget {
+  const CommunityLoader({Key? key, required this.communityIds})
+      : super(key: key);
+
+  final List<String> communityIds;
+
+  @override
+  State<CommunityLoader> createState() => _CommunityLoaderState();
+}
+
+class _CommunityLoaderState extends State<CommunityLoader> {
+  late Future<List<Community>> future;
+
+  @override
+  void initState() {
+    future = getCommunities();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<Community>>(
+        future: future,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong with error : ${snapshot.error}');
+          }
+
+          if (snapshot.hasData) {
+            return CommunitiesBody(allCommunities: snapshot.data!);
+          } else {
+            return const Text("Loading");
+          }
+        });
+  }
+
+  Future<List<Community>> getCommunities() async {
+    List<Community> communities = [];
+
+    for (String id in widget.communityIds) {
+      String userId = UserIdPreferences.getToken();
+      DocumentSnapshot<Object?> communityObject =
+          await DataBaseService(uid: userId).getCommunity(id);
+      Community community = Community.fromJson(
+          communityObject.id, communityObject.get("next_jam"));
+      communities.add(community);
+    }
+    return communities;
   }
 }

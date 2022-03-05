@@ -1,6 +1,8 @@
 import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
+import 'package:acroworld/shared/helper_functions.dart';
+import 'package:acroworld/shared/message_modal.dart';
 import 'package:flutter/material.dart';
 
 class CreateNewCommunityModal extends StatefulWidget {
@@ -77,6 +79,18 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
     if (name != "") {
       DataBaseService().createCommunity(cid: name);
       Navigator.of(context).pop();
+      buildMortal(
+          context,
+          MessageModal(
+              message:
+                  "You successfully suggested the community $name. It can take a while until we reviewed it"));
+    } else {
+      Navigator.of(context).pop();
+      buildMortal(
+          context,
+          const MessageModal(
+              success: false,
+              message: "Please give the community a valid name"));
     }
 
     setState(() {

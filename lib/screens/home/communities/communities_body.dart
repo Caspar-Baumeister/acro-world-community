@@ -39,7 +39,7 @@ class _CommunitiesBodyState extends State<CommunitiesBody> {
         ),
 
         // Community List
-        CommunitiesList(communities: communities)
+        Expanded(child: CommunitiesList(communities: communities)),
       ],
     );
   }

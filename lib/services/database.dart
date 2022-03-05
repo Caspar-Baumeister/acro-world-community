@@ -13,20 +13,25 @@ class DataBaseService {
       FirebaseFirestore.instance.collection('communities');
   // USER DATA
 
-  // set all by id
-  Future updateUserData(
-      {required String userName,
-      String bio = "",
-      required String imgUrl}) async {
-    return await infoCollection
-        .doc(uid)
-        .set({'userName': userName, 'bio': bio, 'imgUrl': imgUrl});
+  // create by id
+  Future createUserInfo({
+    String userName = "",
+    String bio = "",
+    String imgUrl = "",
+    List<String> communities = const [],
+  }) async {
+    return await infoCollection.doc(uid).set({
+      "userName": userName,
+      "bio": bio,
+      "imgUrl": imgUrl,
+      "communities": communities,
+    });
   }
 
-  // set specific by id
+  // update field by id
   Future updateUserDataField({
     required String field,
-    required String value,
+    required value,
   }) async {
     return await infoCollection
         .doc(uid)
@@ -39,13 +44,43 @@ class DataBaseService {
   }
 
   // get field by id
-  Future<DocumentSnapshot<Object?>> getUserInfoField(String field) async {
+  Future<Object?> getUserInfoField(String field) async {
     return infoCollection.doc(uid).get().then((value) => value.get(field));
   }
 
   // User profile image by id
   Future<String> getProfileImage() async {
     return await FirebaseStorage.instance.ref(uid).getDownloadURL();
+  }
+
+  // add community to communities of user
+  Future addCommunityToUser({
+    required String community,
+  }) async {
+    // get existing list
+    List<String> communities = await infoCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.get("communities"));
+    // add community
+    communities.add(community);
+    // post updated list
+    return await infoCollection.doc(uid).update({"communities": communities});
+  }
+
+  // add community to communities of user
+  Future deleteCommunityOfUser({
+    required String community,
+  }) async {
+    // get existing list
+    List<String> communities = await infoCollection
+        .doc(uid)
+        .get()
+        .then((value) => value.get("communities"));
+    // remove community
+    communities.remove(community);
+    // post updated list
+    return await infoCollection.doc(uid).update({"communities": communities});
   }
 
   // MESSAGES
@@ -84,6 +119,11 @@ class DataBaseService {
         .collection('communities')
         // .orderBy("createdAt", descending: true)
         .snapshots();
+  }
+
+  // get all
+  Stream<DocumentSnapshot<Object?>>? getUserCommunities() {
+    return infoCollection.doc(uid).snapshots();
   }
 
   // change/set specific by id

@@ -32,6 +32,10 @@ class CommunityCard extends StatelessWidget {
         title: Text(community.id),
         subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
             style: const TextStyle(fontWeight: FontWeight.w300)),
+        trailing: const Icon(
+          Icons.check_circle,
+          color: Colors.green,
+        ),
       ),
     );
   }

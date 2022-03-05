@@ -56,8 +56,7 @@ class AuthService {
 
       // create a new User-info object
       if (user != null) {
-        await DataBaseService(uid: user.uid)
-            .updateUserData(userName: name, imgUrl: MORTY_IMG_URL, bio: "");
+        await DataBaseService(uid: user.uid).createUserInfo(userName: name);
         user.sendEmailVerification();
       }
       return result.user;
