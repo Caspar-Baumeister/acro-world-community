@@ -1,10 +1,9 @@
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CommunitiesSearchBar extends StatefulWidget {
-  const CommunitiesSearchBar({required this.onChanged, Key? key})
-      : super(key: key);
-
-  final ValueChanged<String> onChanged;
+  const CommunitiesSearchBar({Key? key}) : super(key: key);
 
   @override
   _CommunitiesSearchBarState createState() => _CommunitiesSearchBarState();
@@ -49,7 +48,8 @@ class _CommunitiesSearchBarState extends State<CommunitiesSearchBar> {
                   ),
                   onTap: () {
                     controller.clear();
-                    widget.onChanged('');
+                    Provider.of<UserCommunitiesProvider>(context, listen: false)
+                        .search();
                     //FocusScope.of(context).requestFocus(FocusNode());
                   },
                 )
@@ -59,7 +59,9 @@ class _CommunitiesSearchBarState extends State<CommunitiesSearchBar> {
           border: InputBorder.none,
         ),
         style: style,
-        onChanged: widget.onChanged,
+        onChanged: (value) =>
+            Provider.of<UserCommunitiesProvider>(context, listen: false)
+                .search(query: value),
       ),
     );
   }

@@ -1,7 +1,7 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
-import 'package:acroworld/screens/home/communities/all_communities/all_communities_list.dart';
-import 'package:acroworld/screens/home/communities/communities_search_bar.dart';
+import 'package:acroworld/screens/home/communities/all_communities/body/all_communities_list.dart';
+import 'package:acroworld/screens/home/communities/all_communities/body/all_communities_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,14 +30,14 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
         Provider.of<UserCommunitiesProvider>(context);
 
     List<Community> otherCommunities = List<Community>.from(communities.where(
-        (com) => !userCommunitiesProvider.userCommunities.contains(com.id)));
+        (com) => !userCommunitiesProvider.userCommunityIds.contains(com.id)));
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 20),
       child: Column(
         children: [
           // Searchbar
-          CommunitiesSearchBar(onChanged: (query) => search(query)),
+          AllCommunitiesSearchBar(onChanged: (query) => search(query)),
 
           // Community List
           Expanded(

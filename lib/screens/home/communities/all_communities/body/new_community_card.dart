@@ -1,9 +1,11 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NewCommunityCard extends StatelessWidget {
@@ -16,12 +18,6 @@ class NewCommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String nextDate = "No current jams";
-    // var now = DateTime.now();
-    // final difference = community.nextJam.difference(now).inDays;
-    // if (difference >= 0) {
-    //   nextDate = "Next jam in ${difference.toString()} days";
-    // }
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => Chatroom(cId: community.id)),
@@ -35,7 +31,7 @@ class NewCommunityCard extends StatelessWidget {
         subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
             style: const TextStyle(fontWeight: FontWeight.w300)),
         trailing: GestureDetector(
-          onTap: () => addCommunity(),
+          onTap: () => addCommunity(context),
           child: const Icon(
             Icons.add_circle_outline_rounded,
             color: Colors.green,
@@ -45,8 +41,12 @@ class NewCommunityCard extends StatelessWidget {
     );
   }
 
-  void addCommunity() {
+  void addCommunity(BuildContext context) {
+    UserCommunitiesProvider userCommunitiesProvider =
+        Provider.of<UserCommunitiesProvider>(context, listen: false);
     String userId = UserIdPreferences.getToken();
+
+    userCommunitiesProvider.addCommunityAndUpdate(community);
     DataBaseService(uid: userId).addCommunityToUser(community: community.id);
   }
 }

@@ -1,5 +1,5 @@
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/screens/home/communities/all_communities/all_communities_body.dart';
+import 'package:acroworld/screens/home/communities/all_communities/body/all_communities_body.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
