@@ -16,58 +16,32 @@ class CommunitiesBody extends StatefulWidget {
 }
 
 class _CommunitiesBodyState extends State<CommunitiesBody> {
-  late GoogleMapController mapController;
+  late List<Community> communities;
 
-  final LatLng _center = const LatLng(52.5200, 13.4050);
-
-  void _onMapCreated(GoogleMapController controller) {
-    mapController = controller;
+  @override
+  void initState() {
+    communities = widget.allCommunities;
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Google Maps Sample'),
-          backgroundColor: Colors.green[700],
+    return Column(
+      children: [
+        // Searchbar
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Expanded(
+              child: CommunitiesSearchBar(),
+            ),
+            NewCommunityButton(),
+          ],
         ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
-        ),
-      ),
+
+        // Community List
+        const Expanded(child: CommunitiesList()),
+      ],
     );
   }
-  // late List<Community> communities;
-
-  // @override
-  // void initState() {
-  //   communities = widget.allCommunities;
-  //   super.initState();
-  // }
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Column(
-  //     children: [
-  //       // Searchbar
-  //       Row(
-  //         mainAxisSize: MainAxisSize.min,
-  //         children: const [
-  //           Expanded(
-  //             child: CommunitiesSearchBar(),
-  //           ),
-  //           NewCommunityButton(),
-  //         ],
-  //       ),
-
-  //       // Community List
-  //       const Expanded(child: CommunitiesList()),
-  //     ],
-  //   );
-  // }
 }

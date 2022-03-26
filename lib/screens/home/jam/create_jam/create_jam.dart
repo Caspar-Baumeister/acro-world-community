@@ -2,12 +2,14 @@ import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
+import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class CreateJam extends StatefulWidget {
   const CreateJam({required this.cid, Key? key}) : super(key: key);
@@ -26,6 +28,7 @@ class _CreateJamState extends State<CreateJam> {
   String location = '';
   String imgUrl = '';
   String info = '';
+  LatLng? latlng;
 
   setDateTime(newDateTime) {
     setState(() {
@@ -77,22 +80,6 @@ class _CreateJamState extends State<CreateJam> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      Container(
-                        constraints: const BoxConstraints(maxWidth: 250),
-                        child: TextFormField(
-                          keyboardType: TextInputType.streetAddress,
-                          decoration:
-                              buildInputDecoration(labelText: 'Location'),
-                          validator: (val) =>
-                              (val == null || val.isEmpty || val == "")
-                                  ? 'Enter a valid location'
-                                  : null,
-                          onChanged: (val) {
-                            setState(() => location = val);
-                          },
-                        ),
-                      ),
-                      const SizedBox(height: 20.0),
                       DateTimeChooser(
                         chosenDateTime: _chosenDateTime,
                         setDateTime: setDateTime,
@@ -107,6 +94,14 @@ class _CreateJamState extends State<CreateJam> {
                           onChanged: (val) {
                             setState(() => info = val);
                           },
+                        ),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        constraints: const BoxConstraints(maxHeight: 350),
+                        child: MapWidget(
+                          onLocationSelected: (location) =>
+                              {setState(() => latlng = location)},
                         ),
                       ),
                     ],
