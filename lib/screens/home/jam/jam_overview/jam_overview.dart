@@ -1,6 +1,7 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
@@ -61,16 +62,6 @@ class _JamOverviewState extends State<JamOverview> {
                     vertical: 20.0, horizontal: 50.0),
                 child: Column(
                   children: <Widget>[
-                    const SizedBox(height: 20.0),
-                    const Padding(
-                      padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
-                      child: Text("Place",
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.grey,
-                              fontFamily: "rubik")),
-                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 12.0, horizontal: 12.0),
@@ -158,6 +149,14 @@ class _JamOverviewState extends State<JamOverview> {
                         maxLines: 10,
                         style: const TextStyle(
                             color: Color(0xFFA4A4A4), fontSize: 16.0),
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      constraints: const BoxConstraints(maxHeight: 350),
+                      child: MapWidget(
+                        center: widget.jam.latLng,
+                        markerLocation: widget.jam.latLng,
                       ),
                     ),
                     // Button open participant list
