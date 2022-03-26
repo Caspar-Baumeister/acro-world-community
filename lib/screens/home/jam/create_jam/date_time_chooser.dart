@@ -15,15 +15,15 @@ class DateTimeChooser extends StatelessWidget {
     return GestureDetector(
         onTap: () => _showDatePicker(context),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12.0),
+          padding: const EdgeInsets.all(12.0),
           decoration: BoxDecoration(
               border: Border.all(
                 width: 4,
                 color: Colors.grey,
               ),
               borderRadius: const BorderRadius.all(Radius.circular(20))),
-          constraints: const BoxConstraints(maxWidth: 250),
-          alignment: Alignment.center,
+          // constraints: const BoxConstraints(maxWidth: 250),
+          alignment: Alignment.centerLeft,
           child: Text(
             timeString,
             style: const TextStyle(color: Color(0xFFA4A4A4), fontSize: 16.0),

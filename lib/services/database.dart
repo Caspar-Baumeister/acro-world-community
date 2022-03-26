@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DataBaseService {
   final String? uid;
@@ -173,6 +174,7 @@ class DataBaseService {
       required String imgUrl,
       required String location,
       required Timestamp date,
+      required LatLng latlng,
       String info = ""}) async {
     final jamsCollection =
         FirebaseFirestore.instance.collection('communities/$cid/jams');
@@ -185,6 +187,7 @@ class DataBaseService {
       'participants': [],
       'createdBy': uid,
       'info': info,
+      'latlng': [latlng.latitude, latlng.longitude],
       'createdAt': DateTime.now()
     };
 

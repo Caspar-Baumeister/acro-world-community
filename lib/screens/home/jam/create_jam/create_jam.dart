@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateJam extends StatefulWidget {
   const CreateJam({required this.cid, Key? key}) : super(key: key);
@@ -45,6 +46,7 @@ class _CreateJamState extends State<CreateJam> {
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
             body: SingleChildScrollView(
+              padding: EdgeInsets.all(10),
               child: Form(
                 key: _formKey,
                 child: Center(
@@ -52,21 +54,9 @@ class _CreateJamState extends State<CreateJam> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      // const SizedBox(height: 20.0),
-                      // Container(
-                      //   constraints: const BoxConstraints(maxWidth: 250),
-                      //   child: TextFormField(
-                      //     keyboardType: TextInputType.url,
-                      //     decoration:
-                      //         buildInputDecoration(labelText: 'Image path'),
-                      //     onChanged: (val) {
-                      //       setState(() => imgUrl = val);
-                      //     },
-                      //   ),
-                      // ),
                       const SizedBox(height: 20.0),
                       Container(
-                        constraints: const BoxConstraints(maxWidth: 250),
+                        // constraints: const BoxConstraints(maxWidth: 250),
                         child: TextFormField(
                           keyboardType: TextInputType.name,
                           decoration: buildInputDecoration(labelText: 'Name'),
@@ -86,7 +76,7 @@ class _CreateJamState extends State<CreateJam> {
                       ),
                       const SizedBox(height: 20.0),
                       Container(
-                        constraints: const BoxConstraints(maxWidth: 250),
+                        // constraints: const BoxConstraints(maxWidth: 250),
                         child: TextFormField(
                           maxLines: 10,
                           keyboardType: TextInputType.text,
@@ -114,6 +104,17 @@ class _CreateJamState extends State<CreateJam> {
 
   // triggert when create is pressed
   void onCreate() async {
+    if (latlng == null) {
+      Fluttertoast.showToast(
+          msg: "Set a location before creating",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -131,6 +132,7 @@ class _CreateJamState extends State<CreateJam> {
           imgUrl: imgUrl,
           location: location,
           date: Timestamp.fromDate(_chosenDateTime),
+          latlng: latlng!,
           info: info);
 
       // update next jam if newer one occurs
