@@ -26,6 +26,8 @@ class DataBaseService {
       "bio": bio,
       "imgUrl": imgUrl,
       "communities": communities,
+      "last_created_jam": DateTime.now(),
+      "last_created_community": DateTime.now()
     });
   }
 

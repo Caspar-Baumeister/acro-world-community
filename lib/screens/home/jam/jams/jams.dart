@@ -1,3 +1,4 @@
+import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:acroworld/screens/home/jam/jams/jam_stream.dart';
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,21 @@ class Jams extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBarJams(cId: cId),
       body: JamsStream(cid: cId),
+      floatingActionButton: IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => CreateJam(
+                      cid: cId,
+                    )),
+          );
+        },
+        icon: const ImageIcon(
+          AssetImage("assets/muscleup_drawing.png"),
+          color: Colors.black,
+        ),
+      ),
       // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       // floatingActionButton: FloatingActionButton(
       //   backgroundColor: Colors.black,

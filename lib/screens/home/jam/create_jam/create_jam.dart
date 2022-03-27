@@ -40,6 +40,7 @@ class _CreateJamState extends State<CreateJam> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    int maxLenght = 30;
     return loading
         ? const Loading()
         : Scaffold(
@@ -75,17 +76,25 @@ class _CreateJamState extends State<CreateJam> {
                         setDateTime: setDateTime,
                       ),
                       const SizedBox(height: 20.0),
-                      Container(
-                        // constraints: const BoxConstraints(maxWidth: 250),
-                        child: TextFormField(
-                          maxLines: 10,
-                          keyboardType: TextInputType.text,
+                      TextFormField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          textCapitalization: TextCapitalization.sentences,
+                          autocorrect: true,
+                          enableSuggestions: true,
                           decoration: buildInputDecoration(labelText: 'Info'),
                           onChanged: (val) {
                             setState(() => info = val);
                           },
-                        ),
-                      ),
+                          validator: (val) {
+                            if (val == null || val.isEmpty || val == "") {
+                              return 'Provide a short description of the jam';
+                            }
+                            if (val.split(' ').length > maxLenght) {
+                              return 'You cannot use more then $maxLenght';
+                            }
+                            return null;
+                          }),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         constraints: const BoxConstraints(maxHeight: 350),
@@ -115,6 +124,7 @@ class _CreateJamState extends State<CreateJam> {
           fontSize: 16.0);
       return;
     }
+
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         loading = true;

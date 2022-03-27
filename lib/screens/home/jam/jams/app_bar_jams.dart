@@ -18,23 +18,6 @@ class AppBarJams extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.white,
       title: Text("Jams in $cId", style: const TextStyle(color: Colors.black)),
       leading: const BackButton(color: Colors.black),
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CreateJam(
-                        cid: cId,
-                      )),
-            );
-          },
-          icon: const ImageIcon(
-            AssetImage("assets/muscleup_drawing.png"),
-            color: Colors.black,
-          ),
-        ),
-      ],
     );
   }
 }
