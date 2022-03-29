@@ -36,6 +36,8 @@ class _HomeState extends State<Home> {
     // get active user from Firebase Stream
     final User user = Provider.of<User?>(context)!;
 
+    print(user);
+
     // fetch the information for that user and update the user provider
     Provider.of<UserProvider>(context, listen: false).updateUser(user.uid);
 

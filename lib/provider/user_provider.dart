@@ -35,20 +35,21 @@ class UserProvider extends ChangeNotifier {
     try {
       final DocumentSnapshot<Object?> snapshot =
           await DataBaseService(uid: uid).getUserInfo();
-
       // create UserModel
       UserModel userModel = UserModel(
         uid: uid,
         userName: snapshot.get("userName"),
         imgUrl: snapshot.get("imgUrl"),
         bio: snapshot.get("bio"),
+        lastCreatedCommunity: snapshot.get("last_created_community"),
+        lastCreatedJam: snapshot.get("last_created_jam"),
       );
 
       _activeUser = userModel;
       notifyListeners();
     } catch (e) {
       print(
-          "an error in the updateUser method of the user_provider file happendd:");
+          "an error in the updateUser method of the user_provider file happend:");
       print(e.toString());
       print("the user information may not exist.");
     }

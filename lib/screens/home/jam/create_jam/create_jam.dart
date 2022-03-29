@@ -47,7 +47,7 @@ class _CreateJamState extends State<CreateJam> {
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
             body: SingleChildScrollView(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Form(
                 key: _formKey,
                 child: Center(
@@ -124,7 +124,6 @@ class _CreateJamState extends State<CreateJam> {
           fontSize: 16.0);
       return;
     }
-
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -133,6 +132,8 @@ class _CreateJamState extends State<CreateJam> {
       // get activ user to safe the id
       UserModel user =
           Provider.of<UserProvider>(context, listen: false).activeUser!;
+
+      print(user.lastCreatedCommunity);
 
       DataBaseService dataBaseService = DataBaseService(uid: user.uid);
       // creates a new jam object

@@ -24,9 +24,13 @@ class CommunitiesStream extends StatelessWidget {
         }
 
         if (snapshot.hasData) {
-          List<String> communityIds =
-              List<String>.from(snapshot.data!.get("communities"));
-//
+          List<Map> communityIds = [];
+
+          if (snapshot.data!.data() != null) {
+            print(snapshot.data!.get("communities"));
+            communityIds = List<Map>.from(snapshot.data!.get("communities"));
+          }
+
           // if provider is initialized
           if (userCommunitiesProvider.initialized) {
             // update provider

@@ -61,12 +61,12 @@ class DataBaseService {
     required String community,
   }) async {
     // get existing list
-    List<String> communities = List<String>.from(await infoCollection
+    List<Map> communities = List<Map>.from(await infoCollection
         .doc(uid)
         .get()
         .then((value) => value.get("communities")));
     // add community
-    communities.add(community);
+    communities.add({"community_id": community, "created_at": Timestamp.now()});
     // post updated list
     return await infoCollection.doc(uid).update({"communities": communities});
   }
@@ -76,12 +76,12 @@ class DataBaseService {
     required String community,
   }) async {
     // get existing list
-    List<String> communities = await infoCollection
+    List<Map> communities = await infoCollection
         .doc(uid)
         .get()
         .then((value) => value.get("communities"));
     // remove community
-    communities.remove(community);
+    communities.removeWhere((map) => map["community_id"] == community);
     // post updated list
     return await infoCollection.doc(uid).update({"communities": communities});
   }
