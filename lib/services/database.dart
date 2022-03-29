@@ -217,6 +217,14 @@ class DataBaseService {
         .snapshots();
   }
 
+  // // get jam by id
+  // Stream<QuerySnapshot<Object?>>? getJam(String cid) {
+  //   return FirebaseFirestore.instance
+  //       .collection('communities/$cid/jams')
+  //       .orderBy("createdAt", descending: true)
+  //       .snapshots();
+  // }
+
   // // get info Stream
   // Stream<QuerySnapshot> get info {
   //   return infoCollection.snapshots();

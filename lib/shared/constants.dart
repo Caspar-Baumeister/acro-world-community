@@ -9,3 +9,5 @@ const TextStyle MAINTEXT = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
 
 const String COMMUNITY_IMG_URL =
     "https://media.istockphoto.com/photos/group-of-people-holding-each-other-cooperation-concept-picture-id607882898?k=20&m=607882898&s=612x612&w=0&h=csJJkfDj4Odl0eEN3PDsAqZCbivQ0xvs8Lw20aqi8k4=";
+
+const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;

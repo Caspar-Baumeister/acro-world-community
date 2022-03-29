@@ -1,4 +1,5 @@
 import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
@@ -133,8 +134,6 @@ class _CreateJamState extends State<CreateJam> {
       UserModel user =
           Provider.of<UserProvider>(context, listen: false).activeUser!;
 
-      print(user.lastCreatedCommunity);
-
       DataBaseService dataBaseService = DataBaseService(uid: user.uid);
       // creates a new jam object
       dataBaseService.addJam(
@@ -145,6 +144,28 @@ class _CreateJamState extends State<CreateJam> {
           date: Timestamp.fromDate(_chosenDateTime),
           latlng: latlng!,
           info: info);
+
+      // update the usercommunityprovider and the database,
+      // that the user just created a new jam
+      UserCommunitiesProvider userCommunitiesProvider =
+          Provider.of<UserCommunitiesProvider>(context, listen: false);
+
+      Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
+          .firstWhere((element) => element["community_id"] == widget.cid));
+
+      communityMap["created_at"] = Timestamp.now();
+
+      List<Map> newCommunities =
+          List<Map>.from(userCommunitiesProvider.userCommunityMaps);
+
+      newCommunities
+          .removeWhere((element) => element["community_id"] == widget.cid);
+
+      newCommunities.add(communityMap);
+
+      userCommunitiesProvider.userCommunityMaps = newCommunities;
+      dataBaseService.updateUserDataField(
+          field: "communities", value: newCommunities);
 
       // update next jam if newer one occurs
       DocumentSnapshot community =
@@ -161,7 +182,6 @@ class _CreateJamState extends State<CreateJam> {
             field: "next_jam",
             value: Timestamp.fromDate(_chosenDateTime));
       }
-      //
 
       // redirects to jams
 

@@ -4,7 +4,10 @@ import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+// keeps track of all the communities of the user
 class UserCommunitiesProvider extends ChangeNotifier {
+  // user communities and the last date that the user created a jam
+  List<Map> _userCommunityMaps = [];
   List<String> _userCommunityIds = [];
   List<Community> _userCommunities = [];
   // this is the list that users see later also ordered
@@ -12,6 +15,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
   bool _initialized = false;
 
   List<String> get userCommunityIds => _userCommunityIds;
+  List<Map> get userCommunityMaps => _userCommunityMaps;
   List<Community> get userCommunities => _userCommunities;
   List<Community> get userCommunitiesSearch => _userCommunitiesSearch;
 
@@ -19,6 +23,11 @@ class UserCommunitiesProvider extends ChangeNotifier {
 
   set userCommunityIds(List<String> ids) {
     _userCommunityIds = ids;
+    notifyListeners();
+  }
+
+  set userCommunityMaps(List<Map> maps) {
+    _userCommunityMaps = maps;
     notifyListeners();
   }
 
@@ -79,6 +88,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
     _userCommunities = communities;
     _userCommunityIds =
         List<String>.from(communityIds.map((Map map) => map["community_id"]));
+    _userCommunityMaps = communityIds;
     _userCommunitiesSearch = List<Community>.from(communities);
     _initialized = true;
     notifyListeners();
@@ -88,6 +98,8 @@ class UserCommunitiesProvider extends ChangeNotifier {
     print("inside update");
     print(userCommunityIds);
     String userId = UserIdPreferences.getToken();
+
+    _userCommunityMaps = communityIds;
 
     // if there is a new element in communityIds, that is not in userComIds
     // add it to the provider
