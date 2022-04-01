@@ -36,8 +36,7 @@ class UserProvider extends ChangeNotifier {
 
     final DocumentSnapshot<Object?> snapshot =
         await DataBaseService(uid: uid).getUserInfo();
-    print(snapshot.get("userName"));
-    // create UserModel
+    // Create UserModel
     UserModel userModel = UserModel(
       uid: uid,
       userName: snapshot.get("userName"),

@@ -7,6 +7,7 @@ import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/widgets/view_root.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,64 +48,64 @@ class _CreateJamState extends State<CreateJam> {
         : Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(10),
-              child: Form(
-                key: _formKey,
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      const SizedBox(height: 20.0),
-                      Container(
-                        // constraints: const BoxConstraints(maxWidth: 250),
-                        child: TextFormField(
-                          keyboardType: TextInputType.name,
-                          decoration: buildInputDecoration(labelText: 'Name'),
-                          validator: (val) =>
-                              (val == null || val.isEmpty || val == "")
-                                  ? 'Enter a valid jam name'
-                                  : null,
-                          onChanged: (val) {
-                            setState(() => name = val);
-                          },
+            body: ViewRoot(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const SizedBox(height: 20.0),
+                        Container(
+                          // constraints: const BoxConstraints(maxWidth: 250),
+                          child: TextFormField(
+                            keyboardType: TextInputType.name,
+                            decoration: buildInputDecoration(labelText: 'Name'),
+                            validator: (val) =>
+                                (val == null || val.isEmpty || val == "")
+                                    ? 'Enter a valid jam name'
+                                    : null,
+                            onChanged: (val) {
+                              setState(() => name = val);
+                            },
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 20.0),
-                      DateTimeChooser(
-                        chosenDateTime: _chosenDateTime,
-                        setDateTime: setDateTime,
-                      ),
-                      const SizedBox(height: 20.0),
-                      TextFormField(
-                          keyboardType: TextInputType.multiline,
-                          maxLines: null,
-                          textCapitalization: TextCapitalization.sentences,
-                          autocorrect: true,
-                          enableSuggestions: true,
-                          decoration: buildInputDecoration(labelText: 'Info'),
-                          onChanged: (val) {
-                            setState(() => info = val);
-                          },
-                          validator: (val) {
-                            if (val == null || val.isEmpty || val == "") {
-                              return 'Provide a short description of the jam';
-                            }
-                            if (val.split(' ').length > maxLenght) {
-                              return 'You cannot use more then $maxLenght';
-                            }
-                            return null;
-                          }),
-                      Container(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        constraints: const BoxConstraints(maxHeight: 350),
-                        child: MapWidget(
-                          onLocationSelected: (location) =>
-                              {setState(() => latlng = location)},
+                        const SizedBox(height: 20.0),
+                        DateTimeChooser(
+                          chosenDateTime: _chosenDateTime,
+                          setDateTime: setDateTime,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 20.0),
+                        TextFormField(
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                            textCapitalization: TextCapitalization.sentences,
+                            autocorrect: true,
+                            enableSuggestions: true,
+                            decoration: buildInputDecoration(labelText: 'Info'),
+                            onChanged: (val) {
+                              setState(() => info = val);
+                            },
+                            validator: (val) {
+                              if (val == null || val.isEmpty || val == "") {
+                                return 'Provide a short description of the jam';
+                              }
+                              if (val.split(' ').length > maxLenght) {
+                                return 'You cannot use more then $maxLenght';
+                              }
+                              return null;
+                            }),
+                        Container(
+                          constraints: const BoxConstraints(maxHeight: 350),
+                          child: MapWidget(
+                            onLocationSelected: (location) =>
+                                {setState(() => latlng = location)},
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

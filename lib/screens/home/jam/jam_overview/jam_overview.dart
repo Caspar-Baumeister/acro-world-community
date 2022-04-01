@@ -7,6 +7,7 @@ import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
@@ -46,9 +47,9 @@ class _JamOverviewState extends State<JamOverview> {
             backgroundColor: Colors.white,
             appBar: AppBarJamOverview(jam: widget.jam),
             body: SingleChildScrollView(
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 50.0),
+              child: ViewRoot(
+                // padding: const EdgeInsets.symmetric(
+                //     vertical: 20.0, horizontal: 50.0),
                 child: Column(
                   children: <Widget>[
                     // Container(
@@ -103,7 +104,6 @@ class _JamOverviewState extends State<JamOverview> {
                           ),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(30))),
-                      constraints: const BoxConstraints(maxWidth: 250),
                       alignment: Alignment.center,
                       child: Text(
                         dateString,
@@ -131,7 +131,6 @@ class _JamOverviewState extends State<JamOverview> {
                           ),
                           borderRadius:
                               const BorderRadius.all(Radius.circular(30))),
-                      constraints: const BoxConstraints(maxWidth: 250),
                       alignment: Alignment.center,
                       child: Text(
                         widget.jam.info,
@@ -143,7 +142,7 @@ class _JamOverviewState extends State<JamOverview> {
                     const SizedBox(height: 20.0),
                     const Padding(
                       padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
-                      child: Text("Paticipants",
+                      child: Text("Participants",
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w300,
@@ -156,7 +155,6 @@ class _JamOverviewState extends State<JamOverview> {
                           ParticipantModal(
                               participants: widget.jam.participants)),
                       child: Container(
-                        constraints: const BoxConstraints(maxWidth: 250),
                         padding: const EdgeInsets.symmetric(
                             vertical: 12.0, horizontal: 12.0),
                         decoration: BoxDecoration(
@@ -168,7 +166,7 @@ class _JamOverviewState extends State<JamOverview> {
                                 const BorderRadius.all(Radius.circular(30))),
                         alignment: Alignment.center,
                         child: Text(
-                          "show ${widget.jam.participants.length.toString()} paticipants",
+                          "Show ${widget.jam.participants.length.toString()} participants",
                           maxLines: 10,
                           style: const TextStyle(
                               color: Color(0xFFA4A4A4), fontSize: 16.0),
