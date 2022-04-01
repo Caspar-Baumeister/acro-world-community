@@ -1,4 +1,6 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
+import 'package:acroworld/screens/authenticate/sign_in.dart';
 import 'package:acroworld/screens/home/communities/communities.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,15 +17,18 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   bool loading = true;
   bool initialized = false;
+  dynamic error;
 
   @override
   Widget build(BuildContext context) {
     // the first build time, the userdata regarding the logged in user is fetched
     // and a global state provider is created that contains all the user information
     if (!initialized) {
-      setUser().then((value) => setState(() {
-            initialized = true;
-          }));
+      setUser()
+          .then((value) => setState(() {
+                initialized = true;
+              }))
+          .catchError((onError) => {error = onError});
     }
     return loading ? const Loading() : const Communities();
   }
@@ -39,7 +44,8 @@ class _HomeState extends State<Home> {
     print(user);
 
     // fetch the information for that user and update the user provider
-    Provider.of<UserProvider>(context, listen: false).updateUser(user.uid);
+    await Provider.of<UserProvider>(context, listen: false)
+        .updateUser(user.uid);
 
     setState(() {
       loading = false;
