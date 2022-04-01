@@ -143,6 +143,11 @@ class DataBaseService {
     return communitiesCollection.doc(cid).get();
   }
 
+  Future<QuerySnapshot<Object?>> getCommunitiesByIds(List<String> cids) async {
+    return communitiesCollection.where('id', arrayContains: cids).get();
+    // return communitiesCollection.doc(cid).get();
+  }
+
   // set by id
   Future<void> createCommunity({
     required String cid,

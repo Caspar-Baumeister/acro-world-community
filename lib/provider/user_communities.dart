@@ -85,6 +85,11 @@ class UserCommunitiesProvider extends ChangeNotifier {
   Future<void> update(communityIds) async {
     String userId = UserIdPreferences.getToken();
 
+    QuerySnapshot<Object?> communityObject =
+        await DataBaseService(uid: userId).getCommunitiesByIds(communityIds);
+
+    print(communityObject);
+
     // if there is a new element in communityIds, add it to the provider
     for (String id in communityIds) {
       if (!userCommunityIds.contains(id)) {
