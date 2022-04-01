@@ -4,7 +4,10 @@ import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+// keeps track of all the communities of the user
 class UserCommunitiesProvider extends ChangeNotifier {
+  // user communities and the last date that the user created a jam
+  List<Map> _userCommunityMaps = [];
   List<String> _userCommunityIds = [];
   List<Community> _userCommunities = [];
   // this is the list that users see later also ordered
@@ -12,6 +15,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
   bool _initialized = false;
 
   List<String> get userCommunityIds => _userCommunityIds;
+  List<Map> get userCommunityMaps => _userCommunityMaps;
   List<Community> get userCommunities => _userCommunities;
   List<Community> get userCommunitiesSearch => _userCommunitiesSearch;
 
@@ -19,6 +23,11 @@ class UserCommunitiesProvider extends ChangeNotifier {
 
   set userCommunityIds(List<String> ids) {
     _userCommunityIds = ids;
+    notifyListeners();
+  }
+
+  set userCommunityMaps(List<Map> maps) {
+    _userCommunityMaps = maps;
     notifyListeners();
   }
 
@@ -64,53 +73,66 @@ class UserCommunitiesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> initialize(communityIds) async {
+  Future<void> initialize(List<Map> communityIds) async {
     String userId = UserIdPreferences.getToken();
     List<Community> communities = [];
 
-    for (String id in communityIds) {
+    for (Map mapId in communityIds) {
       DocumentSnapshot<Object?> communityObject =
-          await DataBaseService(uid: userId).getCommunity(id);
+          await DataBaseService(uid: userId)
+              .getCommunity(mapId["community_id"]);
       Community community = Community.fromJson(
           communityObject.id, communityObject.get("next_jam"));
       communities.add(community);
     }
     _userCommunities = communities;
-    _userCommunityIds = communityIds;
+    _userCommunityIds =
+        List<String>.from(communityIds.map((Map map) => map["community_id"]));
+    _userCommunityMaps = communityIds;
     _userCommunitiesSearch = List<Community>.from(communities);
     _initialized = true;
     notifyListeners();
   }
 
-  Future<void> update(communityIds) async {
+  Future<void> update(List<Map> communityIds) async {
+    print("inside update");
+    print(userCommunityIds);
     String userId = UserIdPreferences.getToken();
 
-    QuerySnapshot<Object?> communityObject =
-        await DataBaseService(uid: userId).getCommunitiesByIds(communityIds);
+    _userCommunityMaps = communityIds;
 
-    print(communityObject);
-
-    // if there is a new element in communityIds, add it to the provider
-    for (String id in communityIds) {
-      if (!userCommunityIds.contains(id)) {
+    // if there is a new element in communityIds, that is not in userComIds
+    // add it to the provider
+    for (Map communityMap in communityIds) {
+      print(communityMap["community_id"]);
+      if (!userCommunityIds.contains(communityMap["community_id"])) {
         // get community from database
         DocumentSnapshot<Object?> communityObject =
-            await DataBaseService(uid: userId).getCommunity(id);
+            await DataBaseService(uid: userId)
+                .getCommunity(communityMap["community_id"]);
         Community community = Community.fromJson(
             communityObject.id, communityObject.get("next_jam"));
         // add to communities
         addToCommunities(community);
       }
     }
-    // if there is a community missing, delete it from provider
+    // if there is an element in the userComIds that is not in the communityIds
+    // delete it from provider
+
     for (String id in userCommunityIds) {
-      if (!communityIds.contains(id)) {
-        // remove to communities
+      bool isIn = false;
+      for (var map in communityIds) {
+        if (map.containsValue(id)) {
+          isIn = true;
+        }
+      }
+      if (!isIn) {
         removeFromCommunities(id);
       }
     }
     // update usercommunityids
-    _userCommunityIds = communityIds;
+    _userCommunityIds =
+        List<String>.from(communityIds.map((e) => e["community_id"]));
 
     _userCommunitiesSearch = List<Community>.from(_userCommunities);
     notifyListeners();

@@ -1,4 +1,5 @@
 import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
@@ -40,13 +41,14 @@ class _CreateJamState extends State<CreateJam> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    int maxLenght = 30;
     return loading
         ? const Loading()
         : Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
             body: SingleChildScrollView(
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Form(
                 key: _formKey,
                 child: Center(
@@ -75,17 +77,25 @@ class _CreateJamState extends State<CreateJam> {
                         setDateTime: setDateTime,
                       ),
                       const SizedBox(height: 20.0),
-                      Container(
-                        // constraints: const BoxConstraints(maxWidth: 250),
-                        child: TextFormField(
-                          maxLines: 10,
-                          keyboardType: TextInputType.text,
+                      TextFormField(
+                          keyboardType: TextInputType.multiline,
+                          maxLines: null,
+                          textCapitalization: TextCapitalization.sentences,
+                          autocorrect: true,
+                          enableSuggestions: true,
                           decoration: buildInputDecoration(labelText: 'Info'),
                           onChanged: (val) {
                             setState(() => info = val);
                           },
-                        ),
-                      ),
+                          validator: (val) {
+                            if (val == null || val.isEmpty || val == "") {
+                              return 'Provide a short description of the jam';
+                            }
+                            if (val.split(' ').length > maxLenght) {
+                              return 'You cannot use more then $maxLenght';
+                            }
+                            return null;
+                          }),
                       Container(
                         padding: const EdgeInsets.symmetric(vertical: 20),
                         constraints: const BoxConstraints(maxHeight: 350),
@@ -135,6 +145,28 @@ class _CreateJamState extends State<CreateJam> {
           latlng: latlng!,
           info: info);
 
+      // update the usercommunityprovider and the database,
+      // that the user just created a new jam
+      UserCommunitiesProvider userCommunitiesProvider =
+          Provider.of<UserCommunitiesProvider>(context, listen: false);
+
+      Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
+          .firstWhere((element) => element["community_id"] == widget.cid));
+
+      communityMap["created_at"] = Timestamp.now();
+
+      List<Map> newCommunities =
+          List<Map>.from(userCommunitiesProvider.userCommunityMaps);
+
+      newCommunities
+          .removeWhere((element) => element["community_id"] == widget.cid);
+
+      newCommunities.add(communityMap);
+
+      userCommunitiesProvider.userCommunityMaps = newCommunities;
+      dataBaseService.updateUserDataField(
+          field: "communities", value: newCommunities);
+
       // update next jam if newer one occurs
       DocumentSnapshot community =
           await dataBaseService.getCommunity(widget.cid);
@@ -150,7 +182,6 @@ class _CreateJamState extends State<CreateJam> {
             field: "next_jam",
             value: Timestamp.fromDate(_chosenDateTime));
       }
-      //
 
       // redirects to jams
 

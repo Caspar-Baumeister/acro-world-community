@@ -25,6 +25,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    print("inside sign in");
     return loading
         ? const Loading()
         : Scaffold(
@@ -104,6 +105,7 @@ class _SignInState extends State<SignIn> {
 
   // triggert when login is pressed
   void onSignin() async {
+    print("on signin");
     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       setState(() {
         loading = true;
@@ -111,6 +113,8 @@ class _SignInState extends State<SignIn> {
 
       // posts the email and password to firebase auth and gets an user? back
       User? user = await _auth.signInWithEmailAndPassword(email, password);
+
+      print(user);
 
       // success (wrapper will automatically push the screen to home)
       if (user != null) {

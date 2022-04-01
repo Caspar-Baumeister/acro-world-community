@@ -1,8 +1,11 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/jam/jam_overview/app_bar_jam_overview.dart';
+import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
 import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
+import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:maps_launcher/maps_launcher.dart';
@@ -29,71 +32,57 @@ class _JamOverviewState extends State<JamOverview> {
     DateTime date = DateTime.fromMicrosecondsSinceEpoch(
         widget.jam.date.microsecondsSinceEpoch);
     String dateString = DateFormat('yyyy.MM.dd – kk:mm').format(date);
+    bool userPressed = widget.jam.participants.contains(user.uid);
     return loading
         ? const Loading()
         : Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBar(
-              leading: const BackButton(color: Colors.black),
-              backgroundColor: Colors.white,
-              elevation: 0.0,
-              title: Text(
-                widget.jam.name,
-                style: const TextStyle(color: Colors.black),
+            floatingActionButton: Builder(
+              builder: (context) => FloatingActionButton(
+                backgroundColor: Colors.grey,
+                child: Icon(!userPressed ? Icons.add : Icons.exit_to_app),
+                onPressed: () => onChangeParticipation(userParticipates),
               ),
-              actions: <Widget>[
-                TextButton.icon(
-                  icon: Icon(
-                    Icons.add_circle_outline,
-                    color: userParticipates ? Colors.black54 : Colors.black,
-                  ),
-                  label: Text(
-                    userParticipates ? 'exit' : 'apply',
-                    style: const TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () => onChangeParticipation(userParticipates),
-                ),
-              ],
             ),
-
+            backgroundColor: Colors.white,
+            appBar: AppBarJamOverview(jam: widget.jam),
             body: SingleChildScrollView(
               child: Container(
                 padding: const EdgeInsets.symmetric(
                     vertical: 20.0, horizontal: 50.0),
                 child: Column(
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 12.0, horizontal: 12.0),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 1,
-                            color: Colors.grey,
-                          ),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(30))),
-                      constraints: const BoxConstraints(maxWidth: 250),
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                widget.jam.location,
-                                style: const TextStyle(
-                                    color: Color(0xFFA4A4A4), fontSize: 16.0),
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                              onPressed: () =>
-                                  MapsLauncher.launchQuery(widget.jam.location),
-                              icon: const Icon(Icons.location_on)),
-                        ],
-                      ),
-                    ),
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(
+                    //       vertical: 12.0, horizontal: 12.0),
+                    //   decoration: BoxDecoration(
+                    //       border: Border.all(
+                    //         width: 1,
+                    //         color: Colors.grey,
+                    //       ),
+                    //       borderRadius:
+                    //           const BorderRadius.all(Radius.circular(30))),
+                    //   constraints: const BoxConstraints(maxWidth: 250),
+                    //   alignment: Alignment.center,
+                    //   child: Row(
+                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //     children: [
+                    //       Expanded(
+                    //         child: Container(
+                    //           alignment: Alignment.center,
+                    //           child: Text(
+                    //             widget.jam.location,
+                    //             style: const TextStyle(
+                    //                 color: Color(0xFFA4A4A4), fontSize: 16.0),
+                    //           ),
+                    //         ),
+                    //       ),
+                    //       IconButton(
+                    //           onPressed: () =>
+                    //               MapsLauncher.launchQuery(widget.jam.location),
+                    //           icon: const Icon(Icons.location_on)),
+                    //     ],
+                    //   ),
+                    // ),
                     const SizedBox(height: 20.0),
                     const Padding(
                       padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
@@ -149,6 +138,41 @@ class _JamOverviewState extends State<JamOverview> {
                         maxLines: 10,
                         style: const TextStyle(
                             color: Color(0xFFA4A4A4), fontSize: 16.0),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
+                      child: Text("Paticipants",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w300,
+                              color: Colors.grey,
+                              fontFamily: "rubik")),
+                    ),
+                    GestureDetector(
+                      onTap: () => buildMortal(
+                          context,
+                          ParticipantModal(
+                              participants: widget.jam.participants)),
+                      child: Container(
+                        constraints: const BoxConstraints(maxWidth: 250),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 12.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              width: 1,
+                              color: Colors.grey,
+                            ),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(30))),
+                        alignment: Alignment.center,
+                        child: Text(
+                          "show ${widget.jam.participants.length.toString()} paticipants",
+                          maxLines: 10,
+                          style: const TextStyle(
+                              color: Color(0xFFA4A4A4), fontSize: 16.0),
+                        ),
                       ),
                     ),
                     Container(
