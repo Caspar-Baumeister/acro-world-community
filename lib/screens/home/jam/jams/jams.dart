@@ -42,7 +42,7 @@ class Jams extends StatelessWidget {
 
     // check if user can create new jam
     int daysSinceLastCreated =
-        lastJamCreatedAtDate.difference(DateTime.now()).inDays;
+        DateTime.now().difference(lastJamCreatedAtDate).inDays;
 
     if (daysSinceLastCreated > DAYS_UNTIL_CREATE_NEXT_JAM) {
       Navigator.push(
