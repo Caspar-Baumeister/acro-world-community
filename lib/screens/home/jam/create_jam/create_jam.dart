@@ -58,19 +58,16 @@ class _CreateJamState extends State<CreateJam> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         const SizedBox(height: 20.0),
-                        Container(
-                          // constraints: const BoxConstraints(maxWidth: 250),
-                          child: TextFormField(
-                            keyboardType: TextInputType.name,
-                            decoration: buildInputDecoration(labelText: 'Name'),
-                            validator: (val) =>
-                                (val == null || val.isEmpty || val == "")
-                                    ? 'Enter a valid jam name'
-                                    : null,
-                            onChanged: (val) {
-                              setState(() => name = val);
-                            },
-                          ),
+                        TextFormField(
+                          keyboardType: TextInputType.name,
+                          decoration: buildInputDecoration(labelText: 'Name'),
+                          validator: (val) =>
+                              (val == null || val.isEmpty || val == "")
+                                  ? 'Enter a valid jam name'
+                                  : null,
+                          onChanged: (val) {
+                            setState(() => name = val);
+                          },
                         ),
                         const SizedBox(height: 20.0),
                         DateTimeChooser(

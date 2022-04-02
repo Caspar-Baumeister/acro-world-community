@@ -3,6 +3,7 @@ import 'package:acroworld/screens/home/profile/profile.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 // Let the messagetile fetch the user data from the user id (dont safe other things then message and uid in the message, created at)
 
@@ -19,6 +20,7 @@ class MessageTile extends StatelessWidget {
   final bool isMe;
   final bool sameAuthorThenBevor;
   final bool sameAuthorThenNext;
+
   @override
   Widget build(BuildContext context) {
     //double messageWidth = MediaQuery.of(context).size.width * 0.8;
@@ -60,55 +62,27 @@ class MessageTile extends StatelessWidget {
       return FutureBuilder(
         future: DataBaseService(uid: message.uid).getProfileImage(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-          // AsyncSnapshot<Your object type>
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
-                child: CircularProgressIndicator(
-              backgroundColor: Colors.white,
-              color: Colors.grey[200],
-            ));
-          } else {
-            if (snapshot.hasError) {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Profile(
-                              uid: message.uid,
-                            )),
-                  );
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: const CircleAvatar(
-                    radius: imgRadius,
-                    backgroundImage: NetworkImage(MORTY_IMG_URL),
-                  ),
-                ),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Profile(
+                          uid: message.uid,
+                        )),
               );
-            } else {
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => Profile(
-                              uid: message.uid,
-                            )),
-                  );
-                },
-                child: Container(
-                  alignment: Alignment.bottomCenter,
-                  child: CircleAvatar(
-                    radius: imgRadius,
-                    backgroundImage:
-                        NetworkImage(snapshot.data ?? MORTY_IMG_URL),
-                  ),
+            },
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              child: ClipOval(
+                child: CachedNetworkImage(
+                  imageUrl: MORTY_IMG_URL,
+                  width: 36,
+                  height: 36,
                 ),
-              );
-            }
-          }
+              ),
+            ),
+          );
         },
       );
     } else if (!isMe && sameAuthorThenBevor) {

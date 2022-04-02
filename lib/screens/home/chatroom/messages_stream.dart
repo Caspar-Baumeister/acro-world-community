@@ -18,6 +18,7 @@ class MessagesStream extends StatelessWidget {
       AuthService().signOut();
     }
     String uid = Provider.of<UserProvider>(context).activeUser!.uid;
+
     return StreamBuilder<QuerySnapshot>(
         stream: DataBaseService(uid: uid).getMessages(cid),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
