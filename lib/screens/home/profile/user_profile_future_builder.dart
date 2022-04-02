@@ -1,3 +1,4 @@
+import 'package:acroworld/exceptions/missing_user_info_exception.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/screens/home/profile/user_profile.dart';
 import 'package:acroworld/services/database.dart';
@@ -24,8 +25,20 @@ class UserProfileFutureBuilder extends StatelessWidget {
           ));
         }
         if (snapshot.hasError) {
+          Exception error = snapshot.error as Exception;
+          String errorMessage;
+
+          if (error is MissingUserInfoException) {
+            errorMessage = error.cause;
+          } else {
+            errorMessage = snapshot.error.toString();
+          }
+
           return Center(
-            child: Text(snapshot.error.toString()),
+            child: Text(
+              errorMessage,
+              textAlign: TextAlign.center,
+            ),
           );
         }
 
@@ -40,6 +53,11 @@ class UserProfileFutureBuilder extends StatelessWidget {
   Future<UserModel> getUserModel(String uid) async {
     DocumentSnapshot<Object?> snapshot =
         await DataBaseService(uid: uid).getUserInfo();
+
+    if (snapshot.data() == null) {
+      throw MissingUserInfoException(
+          "Could not retrieve user information. Maybe the user deleted their profile.");
+    }
 
     return UserModel.fromJson(snapshot.data(), uid);
   }
