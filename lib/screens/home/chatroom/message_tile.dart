@@ -58,7 +58,7 @@ class MessageTile extends StatelessWidget {
 
   Widget leadingDecide() {
     const double imgRadius = 20;
-    if (!isMe && !sameAuthorThenBevor) {
+    if (!isMe && !sameAuthorThenNext) {
       return FutureBuilder(
         future: DataBaseService(uid: message.uid).getProfileImage(),
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
@@ -73,7 +73,7 @@ class MessageTile extends StatelessWidget {
               );
             },
             child: Container(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: ClipOval(
                 child: CachedNetworkImage(
                   imageUrl: MORTY_IMG_URL,
@@ -85,7 +85,7 @@ class MessageTile extends StatelessWidget {
           );
         },
       );
-    } else if (!isMe && sameAuthorThenBevor) {
+    } else if (!isMe && sameAuthorThenNext) {
       return const SizedBox(
         width: imgRadius * 2,
       );
@@ -107,9 +107,10 @@ class MessageTile extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => Profile(
-                                uid: message.uid,
-                              )),
+                        builder: (context) => Profile(
+                          uid: message.uid,
+                        ),
+                      ),
                     );
                   },
                   child: Text(
