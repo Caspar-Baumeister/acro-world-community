@@ -2,6 +2,7 @@ import 'package:acroworld/models/message_model.dart';
 import 'package:acroworld/screens/home/profile/profile.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -60,8 +61,19 @@ class MessageTile extends StatelessWidget {
     const double imgRadius = 20;
     if (!isMe && !sameAuthorThenNext) {
       return FutureBuilder(
-        future: DataBaseService(uid: message.uid).getProfileImage(),
-        builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        future: DataBaseService(uid: message.uid).getUserInfo(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot<Object?>> snapshot) {
+          var imgUrl;
+          if (snapshot.hasData) {
+            try {
+              imgUrl = snapshot.data?.get("imgUrl");
+            } catch (_) {
+              imgUrl = MORTY_IMG_URL;
+            }
+          } else {
+            imgUrl = MORTY_IMG_URL;
+          }
           return GestureDetector(
             onTap: () {
               Navigator.push(
@@ -76,7 +88,7 @@ class MessageTile extends StatelessWidget {
               alignment: Alignment.topCenter,
               child: ClipOval(
                 child: CachedNetworkImage(
-                  imageUrl: MORTY_IMG_URL,
+                  imageUrl: imgUrl,
                   width: 36,
                   height: 36,
                 ),

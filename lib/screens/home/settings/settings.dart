@@ -96,7 +96,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     side:
                                         const BorderSide(color: Colors.grey)))),
                         child: const Text(
-                          'Safe',
+                          'Save',
                           style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
