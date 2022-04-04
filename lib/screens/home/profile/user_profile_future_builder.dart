@@ -19,13 +19,14 @@ class UserProfileFutureBuilder extends StatelessWidget {
         // AsyncSnapshot<Your object type>
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-              child: CircularProgressIndicator(
-            backgroundColor: Colors.white,
-            color: Colors.grey[200],
-          ));
+            child: CircularProgressIndicator(
+              backgroundColor: Colors.white,
+              color: Colors.grey[200],
+            ),
+          );
         }
         if (snapshot.hasError) {
-          Exception error = snapshot.error as Exception;
+          Object? error = snapshot.error;
           String errorMessage;
 
           if (error is MissingUserInfoException) {
