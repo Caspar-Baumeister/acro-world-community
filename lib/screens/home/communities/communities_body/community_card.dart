@@ -29,7 +29,7 @@ class CommunityCard extends StatelessWidget {
           radius: 32,
           backgroundImage: NetworkImage(COMMUNITY_IMG_URL),
         ),
-        title: Text(community.id),
+        title: Text(community.name),
         subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
             style: const TextStyle(fontWeight: FontWeight.w300)),
         trailing: const Icon(

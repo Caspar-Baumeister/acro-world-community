@@ -9,10 +9,11 @@ class UserProvider extends ChangeNotifier {
   UserModel? _activeUser;
   List<String>? _userCommunities;
 
+  // getter
   UserModel? get activeUser => _activeUser;
-
   List<String>? get userCommunities => _userCommunities;
 
+  // setter
   set activeUser(UserModel? user) {
     _activeUser = user;
     notifyListeners();
@@ -20,6 +21,12 @@ class UserProvider extends ChangeNotifier {
 
   set userCommunities(List<String>? communities) {
     _userCommunities = communities;
+    notifyListeners();
+  }
+
+  addUserCommunities(String communityId) {
+    if (_userCommunities == null) return;
+    _userCommunities!.add(communityId);
     notifyListeners();
   }
 
@@ -32,8 +39,6 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<void> updateUser(String uid) async {
-    print('uid: ' + uid);
-
     final DocumentSnapshot<Object?> snapshot =
         await DataBaseService(uid: uid).getUserInfo();
     // Create UserModel
@@ -49,11 +54,4 @@ class UserProvider extends ChangeNotifier {
     _activeUser = userModel;
     notifyListeners();
   }
-
-  // changeUserProperty(String field, String value){
-  //   if (_activeUser != null)
-  //   {UserModel oldUser = _activeUser!;
-  //   if field == "bio"
-  //   oldUser.bio
-
 }

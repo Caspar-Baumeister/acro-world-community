@@ -2,14 +2,18 @@ import 'package:acroworld/provider/user_communities.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class CommunitiesSearchBar extends StatefulWidget {
-  const CommunitiesSearchBar({Key? key}) : super(key: key);
+class UserCommunitiesSearchBar extends StatefulWidget {
+  const UserCommunitiesSearchBar({Key? key, required this.onChanged})
+      : super(key: key);
+
+  final ValueChanged<String> onChanged;
 
   @override
-  _CommunitiesSearchBarState createState() => _CommunitiesSearchBarState();
+  _UserCommunitiesSearchBarState createState() =>
+      _UserCommunitiesSearchBarState();
 }
 
-class _CommunitiesSearchBarState extends State<CommunitiesSearchBar> {
+class _UserCommunitiesSearchBarState extends State<UserCommunitiesSearchBar> {
   late TextEditingController controller;
 
   @override

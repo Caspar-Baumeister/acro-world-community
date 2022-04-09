@@ -46,10 +46,15 @@ class DataBaseService {
     return infoCollection.doc(uid).get();
   }
 
-  // get field by id
-  Future<Object?> getUserInfoField(String field) async {
-    return infoCollection.doc(uid).get().then((value) => value.get(field));
+  // get by id
+  Stream<DocumentSnapshot<Object?>> userInfoStream() {
+    print("--- userInfo stream is called ---");
+    return infoCollection.doc(uid).snapshots();
   }
+  // // get field by id
+  // Future<Object?> getUserInfoField(String field) async {
+  //   return infoCollection.doc(uid).get().then((value) => value.get(field));
+  // }
 
   // User profile image by id
   Future<String> getProfileImage() async {
@@ -116,6 +121,28 @@ class DataBaseService {
   }
 
   // COMMUNITIES
+
+  // stream communities where the ids are contained in a given list of ids
+  Stream<QuerySnapshot<Object?>> getUserCommunities(List<String> ids) {
+    print("getUserCommunities is called: $ids");
+    return communitiesCollection
+        .where(FieldPath.documentId, whereIn: ids)
+        .snapshots();
+  }
+
+  // stream communities where the ids are not contained in a given list of ids
+  Stream<QuerySnapshot<Object?>> getNonUserCommunities(List<String> ids) {
+    print("getNonUserCommunities ids:");
+    return communitiesCollection
+        .where(FieldPath.documentId, whereNotIn: ids)
+        .snapshots();
+  }
+
+//  // get communities where the ids are contain a given list of ids
+//   Future<QuerySnapshot<Object?>> getCommunitiesByIds(List<String> cids) async {
+//     return communitiesCollection.where('id', arrayContains: cids).get();
+
+//   }
   // get all
   Stream<QuerySnapshot<Object?>>? getCommunities() {
     return FirebaseFirestore.instance
@@ -124,10 +151,10 @@ class DataBaseService {
         .snapshots();
   }
 
-  // get all
-  Stream<DocumentSnapshot<Object?>>? getUserCommunities() {
-    return infoCollection.doc(uid).snapshots();
-  }
+  // // get all
+  // Stream<DocumentSnapshot<Object?>>? getUserCommunities() {
+  //   return infoCollection.doc(uid).snapshots();
+  // }
 
   // change/set specific by id
   Future updateCommunityDataField({
@@ -145,20 +172,16 @@ class DataBaseService {
     return communitiesCollection.doc(cid).get();
   }
 
-  Future<QuerySnapshot<Object?>> getCommunitiesByIds(List<String> cids) async {
-    return communitiesCollection.where('id', arrayContains: cids).get();
-    // return communitiesCollection.doc(cid).get();
-  }
-
   // set by id
   Future<void> createCommunity({
-    required String cid,
+    required String name,
   }) async {
     final newCommunity = {
+      'name': name,
       'confirmed': false,
       'next_jam': Timestamp.now(),
     };
-    await communitiesCollection.doc(cid).set(newCommunity);
+    await communitiesCollection.doc().set(newCommunity);
   }
 
   // JAMS //

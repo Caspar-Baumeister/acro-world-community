@@ -1,3 +1,4 @@
+import 'package:acroworld/provider/refresh_user_info_provider.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/wrapper.dart';
@@ -35,6 +36,8 @@ class App extends StatelessWidget {
                 ChangeNotifierProvider(create: (_) => UserProvider()),
                 ChangeNotifierProvider(
                     create: (_) => UserCommunitiesProvider()),
+                ChangeNotifierProvider(
+                    create: (_) => RefreshUserInfoProvider()),
 
                 // Streamprovider listenes if a user is authenticated and returns that user (with id)
                 StreamProvider<User?>.value(

@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:acroworld/screens/home/home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// checks reguraly if the email is verified
 class VerifyEmailGuard extends StatefulWidget {
   const VerifyEmailGuard({Key? key}) : super(key: key);
 

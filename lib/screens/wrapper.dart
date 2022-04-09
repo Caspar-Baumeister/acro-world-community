@@ -14,10 +14,6 @@ class Wrapper extends StatelessWidget {
     // this is a firebase user object listened to by authchange stream in main
     final User? user = Provider.of<User?>(context);
 
-    // if (user != null) print(user.email ?? "no email");
-    // if (user != null) print(user.displayName ?? "no displayName");
-    // if (user != null) print(user.uid);
-
     // return either Home or Authenticate Widget
     return (user != null) ? const VerifyEmailGuard() : const Authenticate();
   }

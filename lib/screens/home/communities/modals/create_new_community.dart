@@ -77,7 +77,7 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
       loading = true;
     });
     if (name != "") {
-      DataBaseService().createCommunity(cid: name);
+      DataBaseService().createCommunity(name: name);
       Navigator.of(context).pop();
       buildMortal(
           context,

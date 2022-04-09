@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 
-class AllCommunitiesSearchBar extends StatefulWidget {
-  const AllCommunitiesSearchBar({required this.onChanged, Key? key})
-      : super(key: key);
+class SearchBarWidget extends StatefulWidget {
+  const SearchBarWidget({required this.onChanged, Key? key}) : super(key: key);
 
   final ValueChanged<String> onChanged;
 
   @override
-  _AllCommunitiesSearchBarState createState() =>
-      _AllCommunitiesSearchBarState();
+  _SearchBarWidgetState createState() => _SearchBarWidgetState();
 }
 
-class _AllCommunitiesSearchBarState extends State<AllCommunitiesSearchBar> {
+class _SearchBarWidgetState extends State<SearchBarWidget> {
   late TextEditingController controller;
 
   @override

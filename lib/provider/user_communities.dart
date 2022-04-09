@@ -81,8 +81,8 @@ class UserCommunitiesProvider extends ChangeNotifier {
       DocumentSnapshot<Object?> communityObject =
           await DataBaseService(uid: userId)
               .getCommunity(mapId["community_id"]);
-      Community community = Community.fromJson(
-          communityObject.id, communityObject.get("next_jam"));
+      Community community = Community.fromJson(communityObject.id,
+          communityObject.get("next_jam"), communityObject.get("name"));
       communities.add(community);
     }
     _userCommunities = communities;
@@ -95,8 +95,6 @@ class UserCommunitiesProvider extends ChangeNotifier {
   }
 
   Future<void> update(List<Map> communityIds) async {
-    print("inside update");
-    print(userCommunityIds);
     String userId = UserIdPreferences.getToken();
 
     _userCommunityMaps = communityIds;
@@ -110,8 +108,8 @@ class UserCommunitiesProvider extends ChangeNotifier {
         DocumentSnapshot<Object?> communityObject =
             await DataBaseService(uid: userId)
                 .getCommunity(communityMap["community_id"]);
-        Community community = Community.fromJson(
-            communityObject.id, communityObject.get("next_jam"));
+        Community community = Community.fromJson(communityObject.id,
+            communityObject.get("next_jam"), communityObject.get("name"));
         // add to communities
         addToCommunities(community);
       }
