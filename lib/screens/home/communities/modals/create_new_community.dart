@@ -1,9 +1,13 @@
+import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/message_modal.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateNewCommunityModal extends StatefulWidget {
   const CreateNewCommunityModal({Key? key}) : super(key: key);
@@ -77,7 +81,14 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
       loading = true;
     });
     if (name != "") {
-      DataBaseService().createCommunity(name: name);
+      // get activ user to safe the id
+      UserModel user =
+          Provider.of<UserProvider>(context, listen: false).activeUser!;
+
+      DataBaseService dataBaseService = DataBaseService(uid: user.uid);
+      dataBaseService.createCommunity(name: name);
+      dataBaseService.updateUserDataField(
+          field: "last_created_community", value: Timestamp.now());
       Navigator.of(context).pop();
       buildMortal(
           context,
