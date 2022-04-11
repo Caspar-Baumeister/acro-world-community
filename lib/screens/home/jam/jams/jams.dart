@@ -1,7 +1,9 @@
 import 'package:acroworld/provider/user_communities.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:acroworld/screens/home/jam/jams/jam_stream.dart';
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -30,14 +32,22 @@ class Jams extends StatelessWidget {
   }
 
   void handleCreateJam(BuildContext context) async {
-    // get user communitys
-    UserCommunitiesProvider userCommunitiesProvider =
-        Provider.of<UserCommunitiesProvider>(context, listen: false);
+    // // get user communitys
+    // UserCommunitiesProvider userCommunitiesProvider =
+    //     Provider.of<UserCommunitiesProvider>(context, listen: false);
 
-    // get user community timestamp
+    // get the databaseservice of the user
+    final user = Provider.of<UserProvider>(context, listen: false);
+    final dataBaseService = DataBaseService(uid: user.activeUser!.uid);
+
+    // get user community by the cid
+    dataBaseService.get
+
+
+
     Map communityMap = userCommunitiesProvider.userCommunityMaps
         .firstWhere((element) => element["community_id"] == cId);
-    Timestamp lastJamCreatedAt = communityMap["created_at"];
+    Timestamp lastJamCreatedAt = communityMap["last_created_jam_at"];
     DateTime lastJamCreatedAtDate = lastJamCreatedAt.toDate();
 
     // check if user can create new jam

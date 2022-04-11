@@ -77,32 +77,39 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
   }
 
   suggestCommunity() {
-    setState(() {
-      loading = true;
-    });
-    if (name != "") {
-      // get activ user to safe the id
-      UserModel user =
-          Provider.of<UserProvider>(context, listen: false).activeUser!;
-
-      DataBaseService dataBaseService = DataBaseService(uid: user.uid);
-      dataBaseService.createCommunity(name: name);
-      dataBaseService.updateUserDataField(
-          field: "last_created_community", value: Timestamp.now());
-      Navigator.of(context).pop();
-      buildMortal(
-          context,
-          MessageModal(
-              message:
-                  "You successfully suggested the community $name. It can take a while until we reviewed it"));
-    } else {
+    // check if name is empty
+    if (name == "") {
       Navigator.of(context).pop();
       buildMortal(
           context,
           const MessageModal(
               success: false,
               message: "Please give the community a valid name"));
+      return;
     }
+
+    // loading for databse tasks
+    setState(() {
+      loading = true;
+    });
+
+    UserModel user =
+        Provider.of<UserProvider>(context, listen: false).activeUser!;
+    DataBaseService dataBaseService = DataBaseService(uid: user.uid);
+    // check if the user can create another community
+    if ()
+
+    // get activ user to safe the id
+
+    dataBaseService.createCommunity(name: name);
+    dataBaseService.updateUserDataField(
+        field: "last_created_community", value: Timestamp.now());
+    Navigator.of(context).pop();
+    buildMortal(
+        context,
+        MessageModal(
+            message:
+                "You successfully suggested the community $name. It can take a while until we reviewed it"));
 
     setState(() {
       loading = false;

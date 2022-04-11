@@ -14,7 +14,14 @@ class DataBaseService {
       FirebaseFirestore.instance.collection('communities');
   // USER DATA
 
+  // // get user community last created jam at by cid
+  // Future getLastCreatedJamAt(String cid) {
+  //  return infoCollection.doc(uid).get()
+  //       .where(FieldPath.documentId, whereIn: ids)
+  //       .snapshots();
+  // }
   // create by id
+
   Future createUserInfo({
     String userName = "",
     String bio = "",
@@ -51,10 +58,6 @@ class DataBaseService {
     print("--- userInfo stream is called ---");
     return infoCollection.doc(uid).snapshots();
   }
-  // // get field by id
-  // Future<Object?> getUserInfoField(String field) async {
-  //   return infoCollection.doc(uid).get().then((value) => value.get(field));
-  // }
 
   // User profile image by id
   Future<String> getProfileImage() async {
@@ -71,7 +74,8 @@ class DataBaseService {
         .get()
         .then((value) => value.get("communities")));
     // add community
-    communities.add({"community_id": community, "created_at": Timestamp.now()});
+    communities.add(
+        {"community_id": community, "last_created_jam_at": Timestamp.now()});
     // post updated list
     return await infoCollection.doc(uid).update({"communities": communities});
   }
@@ -138,10 +142,6 @@ class DataBaseService {
         .snapshots();
   }
 
-//  // get communities where the ids are contain a given list of ids
-//   Future<QuerySnapshot<Object?>> getCommunitiesByIds(List<String> cids) async {
-//     return communitiesCollection.where('id', arrayContains: cids).get();
-
 //   }
   // get all
   Stream<QuerySnapshot<Object?>>? getCommunities() {
@@ -150,11 +150,6 @@ class DataBaseService {
         // .orderBy("createdAt", descending: true)
         .snapshots();
   }
-
-  // // get all
-  // Stream<DocumentSnapshot<Object?>>? getUserCommunities() {
-  //   return infoCollection.doc(uid).snapshots();
-  // }
 
   // change/set specific by id
   Future updateCommunityDataField({

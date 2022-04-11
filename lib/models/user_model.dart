@@ -12,7 +12,7 @@ class Community {
   factory Community.fromJson(dynamic json) {
     return Community(
       communityId: json["community_id"],
-      createdAt: json["created_at"],
+      createdAt: json["last_created_jam_at"],
     );
   }
 }

@@ -7,6 +7,7 @@ import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +45,7 @@ class _CreateJamState extends State<CreateJam> {
   Widget build(BuildContext context) {
     int maxLenght = 30;
     return loading
-        ? const Loading()
+        ? const LoadingScaffold()
         : Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBarCreateJam(onCreate: onCreate),
@@ -151,7 +152,7 @@ class _CreateJamState extends State<CreateJam> {
       Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
           .firstWhere((element) => element["community_id"] == widget.cid));
 
-      communityMap["created_at"] = Timestamp.now();
+      communityMap["last_created_jam_at"] = Timestamp.now();
 
       List<Map> newCommunities =
           List<Map>.from(userCommunitiesProvider.userCommunityMaps);
@@ -180,8 +181,6 @@ class _CreateJamState extends State<CreateJam> {
             field: "next_jam",
             value: Timestamp.fromDate(_chosenDateTime));
       }
-
-      // redirects to jams
 
       setState(() {
         loading = false;
