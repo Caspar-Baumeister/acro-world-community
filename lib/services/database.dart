@@ -234,8 +234,13 @@ class DataBaseService {
 
   // get all
   Stream<QuerySnapshot<Object?>>? getJams(String cid) {
+    DateTime now = DateTime.now();
+    DateTime currentDayStart =
+        DateTime.utc(now.year, now.month, now.day, 0, 0, 0);
     return FirebaseFirestore.instance
         .collection('communities/$cid/jams')
+        .where(FieldPath.fromString("date"),
+            isGreaterThanOrEqualTo: currentDayStart)
         .orderBy("createdAt", descending: true)
         .snapshots();
   }
