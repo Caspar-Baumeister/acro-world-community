@@ -1,9 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/services/database.dart';
+import 'package:acroworld/services/user_db_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
+  final UserDBService userDBService = UserDBService();
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // create user object base on Firebase user
@@ -57,7 +60,8 @@ class AuthService {
 
       // create a new User-info object
       if (user != null) {
-        await DataBaseService(uid: user.uid).createUserInfo(userName: name);
+        await userDBService.create(CreateUserDto(userName: name));
+        // await DataBaseService(uid: user.uid).createUserInfo(userName: name);
         user.sendEmailVerification();
       }
       return result.user;
