@@ -4,7 +4,8 @@ abstract class Serializable {
   Map<String, dynamic> toJson();
 }
 
-abstract class FirestoreService<T, TCreateDto extends Serializable> {
+abstract class FirestoreService<T, TCreateDto extends Serializable,
+    TUpdateDto extends Serializable> {
   late CollectionReference collection;
 
   FirestoreService(String collectionName) {

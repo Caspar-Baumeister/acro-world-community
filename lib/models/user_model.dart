@@ -2,11 +2,28 @@ import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/services/db_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+class UserCommunityDto {
+  String communityId;
+  Timestamp createdAt;
+
+  UserCommunityDto({
+    required this.communityId,
+    required this.createdAt,
+  });
+
+  factory UserCommunityDto.fromJson(dynamic json) {
+    return UserCommunityDto(
+      communityId: json["community_id"],
+      createdAt: json["created_at"],
+    );
+  }
+}
+
 class UpdateUserDto extends Serializable {
   String? userName;
   String? imgUrl;
   String? bio;
-  List<UserCommunity>? communities;
+  List<UserCommunityDto>? communities;
   Timestamp? lastCreatedJam;
   Timestamp? lastCreatedCommunity;
   UpdateUserDto(
@@ -17,9 +34,25 @@ class UpdateUserDto extends Serializable {
       this.lastCreatedCommunity,
       this.lastCreatedJam});
 
+  Map<String, dynamic> addIfNotNull(
+      String key, dynamic value, Map<String, dynamic> map) {
+    if (value != null) {
+      map[key] = value;
+    }
+    return map;
+  }
+
   @override
   Map<String, dynamic> toJson() {
-    Map<String, dynamic> map = Map();
+    Map<String, dynamic> map = {};
+
+    map = addIfNotNull("userName", userName, map);
+    map = addIfNotNull("imgUrl", imgUrl, map);
+    map = addIfNotNull("bio", bio, map);
+    map = addIfNotNull("communities", communities, map);
+    map = addIfNotNull("lastCreatedJam", lastCreatedJam, map);
+    map = addIfNotNull("lastCreatedCommunity", lastCreatedCommunity, map);
+
     return map;
   }
 }
@@ -41,7 +74,7 @@ class UserDto {
   String? userName;
   String? imgUrl;
   String? bio;
-  List<UserCommunity>? communities;
+  List<UserCommunityDto>? communities;
   Timestamp lastCreatedJam;
   Timestamp lastCreatedCommunity;
 
@@ -56,8 +89,11 @@ class UserDto {
   });
 
   factory UserDto.fromJson(dynamic json, String uid) {
-    List<UserCommunity>? communities = List<UserCommunity>.from(
-        json["communities"].map((json) => UserCommunity.fromJson(json)));
+    List<UserCommunityDto>? communities = List<UserCommunityDto>.from(
+      json["communities"].map(
+        (json) => UserCommunityDto.fromJson(json),
+      ),
+    );
     return UserDto(
       uid: uid,
       userName: json["userName"],
