@@ -10,4 +10,11 @@ class UserDBService
   UserDto fromSnapshot(DocumentSnapshot<Object?> snapshot) {
     return UserDto.fromJson(snapshot.data(), snapshot.id);
   }
+
+  @override
+  UserDto fromQuerySnapshot(QuerySnapshot<Object?> snapshot) {
+    print(snapshot.docs);
+    // TODO: implement fromQuerySnapshot
+    throw UnimplementedError();
+  }
 }

@@ -10,4 +10,11 @@ class CommunityDBService
   CommunityDto fromSnapshot(DocumentSnapshot<Object?> snapshot) {
     return CommunityDto.fromJson(snapshot.data());
   }
+
+  @override
+  CommunityDto fromQuerySnapshot(QuerySnapshot<Object?> snapshot) {
+    print(snapshot.docs);
+    // TODO: implement fromQuerySnapshot
+    throw UnimplementedError();
+  }
 }

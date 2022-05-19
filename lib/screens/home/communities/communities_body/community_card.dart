@@ -10,7 +10,7 @@ class CommunityCard extends StatelessWidget {
     required this.community,
   }) : super(key: key);
 
-  final Community community;
+  final CommunityDto community;
 
   @override
   Widget build(BuildContext context) {

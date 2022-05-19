@@ -8,7 +8,7 @@ class UserCommunitiesList extends StatelessWidget {
     required this.communities,
   }) : super(key: key);
 
-  final List<Community> communities;
+  final List<CommunityDto> communities;
 
   @override
   Widget build(BuildContext context) {

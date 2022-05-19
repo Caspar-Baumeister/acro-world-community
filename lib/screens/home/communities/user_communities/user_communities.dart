@@ -11,7 +11,7 @@ class UserCommunities extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarUserCommunities(),
-      body: const UserCommunitiesStream(),
+      body: UserCommunitiesStream(),
       endDrawer: const SettingsDrawer(),
     );
   }

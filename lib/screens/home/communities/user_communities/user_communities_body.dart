@@ -1,4 +1,5 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/home/communities/user_communities/user_communities_list.dart';
 import 'package:acroworld/screens/home/communities/communities_body/communities_search_bar.dart';
@@ -10,15 +11,15 @@ class UserCommunitiesBody extends StatefulWidget {
   const UserCommunitiesBody({Key? key, required this.userCommunities})
       : super(key: key);
 
-  final List<Community> userCommunities;
+  final List<UserCommunityDto> userCommunities;
 
   @override
-  State<UserCommunitiesBody> createState() => _UserCommunitiesBodyState();
+  State<UserCommunityDto> createState() => _UserCommunitiesBodyState();
 }
 
 class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
-  late List<Community> searchResults;
-  late List<Community> userCommunities;
+  late List<UserCommunityDto> searchResults;
+  late List<UserCommunityDto> userCommunities;
 
   @override
   void initState() {
@@ -58,8 +59,8 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
 
   void search(String query) {
     final searchLower = query.toLowerCase();
-    final List<Community> results = List<Community>.from(
-        widget.userCommunities.where((Community community) {
+    final List<UserCommunityDto> results = List<UserCommunityDto>.from(
+        widget.userCommunities.where((UserCommunityDto community) {
       final name = community.name.toLowerCase();
 
       return name.contains(searchLower);

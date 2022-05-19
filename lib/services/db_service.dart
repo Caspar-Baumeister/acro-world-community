@@ -13,6 +13,11 @@ abstract class FirestoreService<T, TCreateDto extends Serializable,
   }
 
   T fromSnapshot(DocumentSnapshot<Object?> snapshot);
+  T fromQuerySnapshot(QuerySnapshot<Object?> snapshot);
+
+  Stream<T> stream() {
+    return collection.snapshots().map((event) => fromQuerySnapshot(event));
+  }
 
   Future<T> get(String uid) async {
     return fromSnapshot(await collection.doc(uid).get());
