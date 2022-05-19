@@ -1,4 +1,3 @@
-import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,7 @@ class RegisterBody extends StatefulWidget {
 }
 
 class _RegisterBodyState extends State<RegisterBody> {
-  final AuthService _auth = AuthService();
+  // final AuthService _auth = AuthService();
 
   bool loading = false;
 
@@ -128,21 +127,21 @@ class _RegisterBodyState extends State<RegisterBody> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () async {
-                        if (_formKey.currentState != null &&
-                            _formKey.currentState!.validate()) {
-                          setState(() {
-                            loading = true;
-                          });
-                          dynamic result =
-                              await _auth.registerWithEmailAndPassword(
-                                  email, password, name);
-                          if (result == null) {
-                            setState(() {
-                              loading = false;
-                              error = 'Please supply a valid email';
-                            });
-                          }
-                        }
+                        // if (_formKey.currentState != null &&
+                        //     _formKey.currentState!.validate()) {
+                        //   setState(() {
+                        //     loading = true;
+                        //   });
+                        //   dynamic result =
+                        //       await _auth.registerWithEmailAndPassword(
+                        //           email, password, name);
+                        //   if (result == null) {
+                        //     setState(() {
+                        //       loading = false;
+                        //       error = 'Please supply a valid email';
+                        //     });
+                        //   }
+                        // }
                       }),
                   const SizedBox(height: 12.0),
                   Text(

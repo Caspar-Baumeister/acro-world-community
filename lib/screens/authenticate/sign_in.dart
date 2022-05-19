@@ -1,8 +1,5 @@
-import 'package:acroworld/services/auth.dart';
-import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class SignIn extends StatefulWidget {
@@ -14,7 +11,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  final AuthService _auth = AuthService();
+  // final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
 
@@ -105,32 +102,32 @@ class _SignInState extends State<SignIn> {
 
   // triggert when login is pressed
   void onSignin() async {
-    print("on signin");
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      setState(() {
-        loading = true;
-      });
+    // print("on signin");
+    // if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+    //   setState(() {
+    //     loading = true;
+    //   });
 
-      // posts the email and password to firebase auth and gets an user? back
-      User? user = await _auth.signInWithEmailAndPassword(email, password);
+    //   // posts the email and password to firebase auth and gets an user? back
+    //   User? user = await _auth.signInWithEmailAndPassword(email, password);
 
-      print(user);
+    //   print(user);
 
-      // success (wrapper will automatically push the screen to home)
-      if (user != null) {
-        // safe token to local preferences
-        await UserIdPreferences.setToken(user.uid);
-        setState(() {
-          loading = false;
-        });
+    //   // success (wrapper will automatically push the screen to home)
+    //   if (user != null) {
+    //     // safe token to local preferences
+    //     await UserIdPreferences.setToken(user.uid);
+    //     setState(() {
+    //       loading = false;
+    //     });
 
-        // error handling
-      } else {
-        setState(() {
-          error = 'Could not sign in with those credentials';
-          loading = false;
-        });
-      }
-    }
+    //     // error handling
+    //   } else {
+    //     setState(() {
+    //       error = 'Could not sign in with those credentials';
+    //       loading = false;
+    //     });
+    //   }
+    // }
   }
 }

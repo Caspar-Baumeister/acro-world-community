@@ -1,57 +1,72 @@
 // ignore_for_file: avoid_print
 
 import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/services/database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
   UserModel? _activeUser;
-  List<String>? _userCommunities;
+  List<String> _userCommunities = [];
 
   // getter
   UserModel? get activeUser => _activeUser;
-  List<String>? get userCommunities => _userCommunities;
+  List<String> get userCommunities => _userCommunities;
 
   // setter
-  set activeUser(UserModel? user) {
-    _activeUser = user;
-    notifyListeners();
-  }
+  // set activeUser(UserModel? user) {
+  //   _activeUser = user;
+  //   notifyListeners();
+  // }
 
-  set userCommunities(List<String>? communities) {
+  set userCommunities(List<String> communities) {
     _userCommunities = communities;
     notifyListeners();
   }
 
   addUserCommunities(String communityId) {
     if (_userCommunities == null) return;
-    _userCommunities!.add(communityId);
+    _userCommunities.add(communityId);
     notifyListeners();
   }
 
-  set activeUserImgUrl(String imgUrl) {
-    if (_activeUser == null) return;
-    UserModel user = _activeUser!;
-    user.imgUrl = imgUrl;
-    _activeUser = user;
-    notifyListeners();
-  }
+  // set activeUserImgUrl(String imgUrl) {
+  //   if (_activeUser == null) return;
+  //   UserModel user = _activeUser!;
+  //   user.imgUrl = imgUrl;
+  //   _activeUser = user;
+  //   notifyListeners();
+  // }
 
-  Future<void> updateUser(String uid) async {
-    final DocumentSnapshot<Object?> snapshot =
-        await DataBaseService(uid: uid).getUserInfo();
-    // Create UserModel
-    UserModel userModel = UserModel(
-      uid: uid,
-      userName: snapshot.get("userName"),
-      imgUrl: snapshot.get("imgUrl"),
-      bio: snapshot.get("bio"),
-      lastCreatedCommunity: snapshot.get("last_created_community"),
-      lastCreatedJam: snapshot.get("last_created_jam"),
-    );
+  // updates the user provider based on the firebase database
+  // Future<void> updateUser(String uid) async {
+  //   final database = DataBaseService(uid: uid);
 
-    _activeUser = userModel;
+  //   //gets the raw user and user communities
+  //   DocumentSnapshot<Object?> infoSnapshot = await database.getUserInfo();
+  //   QuerySnapshot<Object?> communitiesSnapshot =
+  //       await database.getAllUserCommunities();
+
+  //   // Create UserModel
+  //   UserModel userModel = UserModel(
+  //     uid: uid,
+  //     userName: infoSnapshot.get("userName"),
+  //     imgUrl: infoSnapshot.get("imgUrl"),
+  //     bio: infoSnapshot.get("bio"),
+  //     lastCreatedCommunity: infoSnapshot.get("last_proposed_community"),
+  //     createdAt: infoSnapshot.get("created_at"),
+  //   );
+
+  //   // create user communities list
+  //   List<String> communities =
+  //       List<String>.from(communitiesSnapshot.docs.map((doc) => doc.id));
+  //   //, lastCreatedJamAt: doc.get("last_created_jam_at"))));
+
+  //   _activeUser = userModel;
+  //   userCommunities = communities;
+  //   notifyListeners();
+  // }
+
+  setUser(Map data) {
+    _activeUser = UserModel.fromJson(data, data["id"]);
     notifyListeners();
   }
 }

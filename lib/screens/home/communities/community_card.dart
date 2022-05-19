@@ -22,7 +22,11 @@ class CommunityCard extends StatelessWidget {
     // }
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Chatroom(cId: community.id)),
+        MaterialPageRoute(
+            builder: (context) => Chatroom(
+                  cId: community.id,
+                  name: community.name,
+                )),
       ),
       child: ListTile(
         leading: const CircleAvatar(

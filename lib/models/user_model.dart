@@ -1,52 +1,47 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+// class Community {
+//   String communityId;
+//   Timestamp createdAt;
 
-class Community {
-  String communityId;
-  Timestamp createdAt;
+//   Community({
+//     required this.communityId,
+//     required this.createdAt,
+//   });
 
-  Community({
-    required this.communityId,
-    required this.createdAt,
-  });
-
-  factory Community.fromJson(dynamic json) {
-    return Community(
-      communityId: json["community_id"],
-      createdAt: json["last_created_jam_at"],
-    );
-  }
-}
+//   factory Community.fromJson(dynamic json) {
+//     return Community(
+//       communityId: json["community_id"],
+//       createdAt: json["last_created_jam_at"],
+//     );
+//   }
+// }
 
 class UserModel {
   String uid;
   String? userName;
   String? imgUrl;
   String? bio;
-  List<Community>? communities;
-  Timestamp lastCreatedJam;
-  Timestamp lastCreatedCommunity;
+  // List<UserCommunityModel>? communities;
+  //Timestamp createdAt;
+  //Timestamp lastCreatedCommunity;
 
   UserModel({
     required this.uid,
     this.imgUrl,
     this.userName,
     this.bio,
-    this.communities,
-    required this.lastCreatedJam,
-    required this.lastCreatedCommunity,
+    // this.communities,
+    //required this.createdAt,
+    //required this.lastCreatedCommunity,
   });
 
   factory UserModel.fromJson(dynamic json, String uid) {
-    List<Community>? communities = List<Community>.from(
-        json["communities"].map((json) => Community.fromJson(json)));
     return UserModel(
       uid: uid,
-      userName: json["userName"],
-      imgUrl: json["imgUrl"],
+      userName: json["name"],
+      imgUrl: json["img"],
       bio: json["bio"],
-      communities: communities,
-      lastCreatedJam: json["last_created_jam"],
-      lastCreatedCommunity: json["last_created_community"],
+      //createdAt: json["created_at"],
+      //lastCreatedCommunity: json["last_proposed_community"],
     );
   }
 }

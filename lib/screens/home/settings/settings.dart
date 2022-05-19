@@ -1,7 +1,6 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/settings/widgets/profile_picture.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -27,8 +26,8 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     // final String uid = Provider.of<User?>(context)!.uid;
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    DataBaseService database =
-        DataBaseService(uid: userProvider.activeUser!.uid);
+    // DataBaseService database =
+    //     DataBaseService(uid: userProvider.activeUser!.uid);
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +99,7 @@ class _SettingsPageState extends State<SettingsPage> {
                           style: TextStyle(color: Colors.black),
                         ),
                         onPressed: () {
-                          updateUserData(database, userProvider);
+                          //updateUserData(database, userProvider);
                         }),
                   ],
                 ),

@@ -1,5 +1,4 @@
 import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/screens/home/communities/communities_body/community_card.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +32,9 @@ class UserProfile extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16)),
             ),
-            Column(
-              children: user.communities!
-                  .map((com) => Container(child: Text(com.communityId)))
-                  .toList(),
-            ),
+            // Column(
+            //   children: user.communities!.map((com) => Text(com.id)).toList(),
+            // ),
           ],
         ),
       ),

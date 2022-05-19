@@ -1,6 +1,6 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/home/settings/settings.dart';
-import 'package:acroworld/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,12 +29,30 @@ class SettingsDrawer extends StatelessWidget {
                         NetworkImage(userProvider.activeUser!.imgUrl!),
                   )),
             ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Calender(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.calendar_month_rounded),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Calendar")
+                ],
+              )),
+            ),
             const Divider(color: Colors.grey, height: 1),
             buildMenuItem(
-              text: "Log out",
-              icon: Icons.logout,
-              onPressed: () async => await AuthService().signOut(),
-            )
+                text: "Log out",
+                icon: Icons.logout,
+                onPressed: () async {} //=> await AuthService().signOut(),
+                )
           ],
         ),
       ),

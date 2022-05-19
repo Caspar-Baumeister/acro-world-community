@@ -1,12 +1,6 @@
-import 'package:acroworld/provider/refresh_user_info_provider.dart';
-import 'package:acroworld/provider/user_communities.dart';
+import 'package:acroworld/loggin_wrapper.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/wrapper.dart';
-import 'package:acroworld/services/auth.dart';
 import 'package:acroworld/services/preferences/user_id.dart';
-import 'package:acroworld/shared/loading.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,39 +15,15 @@ class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: Firebase.initializeApp(),
-      builder: (context, snapshot) {
-        // Check for errors
-        if (snapshot.hasError) {
-          return Center(child: Text(snapshot.error.toString()));
-        }
-
-        // Once complete, show your application
-        if (snapshot.connectionState == ConnectionState.done) {
-          return MultiProvider(
-              providers: [
-                ChangeNotifierProvider(create: (_) => UserProvider()),
-                ChangeNotifierProvider(
-                    create: (_) => UserCommunitiesProvider()),
-                ChangeNotifierProvider(
-                    create: (_) => RefreshUserInfoProvider()),
-
-                // Streamprovider listenes if a user is authenticated and returns that user (with id)
-                StreamProvider<User?>.value(
-                  value: AuthService().user,
-                  initialData: null,
-                )
-              ],
-              child: const MaterialApp(
-                debugShowCheckedModeBanner: false,
-                home: Wrapper(),
-              ));
-        }
-
-        // Otherwise, show something whilst waiting for initialization to complete
-        return const Loading();
-      },
-    );
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_) => UserProvider()),
+        ],
+        child: const MaterialApp(
+          debugShowCheckedModeBanner: false,
+          // LoginWrapper checks for token?
+          // Also possible: Routerdelegate with auth check and guards
+          home: LogginWrapper(),
+        ));
   }
 }

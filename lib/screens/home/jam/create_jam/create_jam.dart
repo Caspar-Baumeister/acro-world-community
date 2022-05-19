@@ -1,19 +1,11 @@
-import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/provider/user_communities.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/screens/home/map/map.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
-import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:acroworld/widgets/view_root.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CreateJam extends StatefulWidget {
   const CreateJam({required this.cid, Key? key}) : super(key: key);
@@ -48,7 +40,7 @@ class _CreateJamState extends State<CreateJam> {
         ? const LoadingScaffold()
         : Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBarCreateJam(onCreate: onCreate),
+            appBar: AppBarCreateJam(onCreate: () {}),
             body: ViewRoot(
               child: SingleChildScrollView(
                 child: Form(
@@ -111,87 +103,87 @@ class _CreateJamState extends State<CreateJam> {
           );
   }
 
-  // triggert when create is pressed
-  void onCreate() async {
-    if (latlng == null) {
-      Fluttertoast.showToast(
-          msg: "Set a location before creating",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-      return;
-    }
-    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-      setState(() {
-        loading = true;
-      });
+//   // triggert when create is pressed
+//   void onCreate() async {
+//     if (latlng == null) {
+//       Fluttertoast.showToast(
+//           msg: "Set a location before creating",
+//           toastLength: Toast.LENGTH_SHORT,
+//           gravity: ToastGravity.TOP,
+//           timeInSecForIosWeb: 1,
+//           backgroundColor: Colors.red,
+//           textColor: Colors.white,
+//           fontSize: 16.0);
+//       return;
+//     }
+//     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
+//       setState(() {
+//         loading = true;
+//       });
 
-      // get activ user to safe the id
-      UserModel user =
-          Provider.of<UserProvider>(context, listen: false).activeUser!;
+//       // get activ user to safe the id
+//       UserModel user =
+//           Provider.of<UserProvider>(context, listen: false).activeUser!;
 
-      DataBaseService dataBaseService = DataBaseService(uid: user.uid);
-      // creates a new jam object
-      dataBaseService.addJam(
-          cid: widget.cid,
-          name: name,
-          imgUrl: imgUrl,
-          location: location,
-          date: Timestamp.fromDate(_chosenDateTime),
-          latlng: latlng!,
-          info: info);
+//       DataBaseService dataBaseService = DataBaseService(uid: user.uid);
+//       // creates a new jam object
+//       dataBaseService.addJam(
+//           cid: widget.cid,
+//           name: name,
+//           imgUrl: imgUrl,
+//           location: location,
+//           date: Timestamp.fromDate(_chosenDateTime),
+//           latlng: latlng!,
+//           info: info);
 
-      // update the usercommunityprovider and the database,
-      // that the user just created a new jam
-      UserCommunitiesProvider userCommunitiesProvider =
-          Provider.of<UserCommunitiesProvider>(context, listen: false);
+//       // update the usercommunityprovider and the database,
+//       // that the user just created a new jam
+//       UserCommunitiesProvider userCommunitiesProvider =
+//           Provider.of<UserCommunitiesProvider>(context, listen: false);
 
-      Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
-          .firstWhere((element) => element["community_id"] == widget.cid));
+//       Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
+//           .firstWhere((element) => element["community_id"] == widget.cid));
 
-      communityMap["last_created_jam_at"] = Timestamp.now();
+//       communityMap["last_created_jam_at"] = Timestamp.now();
 
-      List<Map> newCommunities =
-          List<Map>.from(userCommunitiesProvider.userCommunityMaps);
+//       List<Map> newCommunities =
+//           List<Map>.from(userCommunitiesProvider.userCommunityMaps);
 
-      newCommunities
-          .removeWhere((element) => element["community_id"] == widget.cid);
+//       newCommunities
+//           .removeWhere((element) => element["community_id"] == widget.cid);
 
-      newCommunities.add(communityMap);
+//       newCommunities.add(communityMap);
 
-      userCommunitiesProvider.userCommunityMaps = newCommunities;
-      dataBaseService.updateUserDataField(
-          field: "communities", value: newCommunities);
+//       userCommunitiesProvider.userCommunityMaps = newCommunities;
+//       dataBaseService.updateUserDataField(
+//           field: "communities", value: newCommunities);
 
-      // update next jam if newer one occurs
-      DocumentSnapshot community =
-          await dataBaseService.getCommunity(widget.cid);
+//       // update next jam if newer one occurs
+//       DocumentSnapshot community =
+//           await dataBaseService.getCommunity(widget.cid);
 
-      if (community
-              .get("next_jam")
-              .toDate()
-              .difference(_chosenDateTime)
-              .inHours >
-          0) {
-        dataBaseService.updateCommunityDataField(
-            cid: widget.cid,
-            field: "next_jam",
-            value: Timestamp.fromDate(_chosenDateTime));
-      }
+//       if (community
+//               .get("next_jam")
+//               .toDate()
+//               .difference(_chosenDateTime)
+//               .inHours >
+//           0) {
+//         dataBaseService.updateCommunityDataField(
+//             cid: widget.cid,
+//             field: "next_jam",
+//             value: Timestamp.fromDate(_chosenDateTime));
+//       }
 
-      setState(() {
-        loading = false;
-      });
-      Navigator.pop(context);
+//       setState(() {
+//         loading = false;
+//       });
+//       Navigator.pop(context);
 
-      // error handling
-    } else {
-      setState(() {
-        loading = false;
-      });
-    }
-  }
+//       // error handling
+//     } else {
+//       setState(() {
+//         loading = false;
+//       });
+//     }
+//   }
 }

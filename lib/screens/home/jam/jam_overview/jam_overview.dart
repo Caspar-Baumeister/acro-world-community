@@ -4,12 +4,10 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/app_bar_jam_overview.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
 import 'package:acroworld/screens/home/map/map.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
-import 'package:maps_launcher/maps_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -221,13 +219,13 @@ class _JamOverviewState extends State<JamOverview> {
       participants.add(user.uid);
     }
 
-    // creates a new jam object
-    DataBaseService(uid: user.uid).updateJamField(
-        jid: widget.jam.jid,
-        cid: widget.cid,
-        field: "participants",
-        value: participants);
-    // redirects to jams
+    // // creates a new jam object
+    // DataBaseService(uid: user.uid).updateJamField(
+    //     jid: widget.jam.jid,
+    //     cid: widget.cid,
+    //     field: "participants",
+    //     value: participants);
+    // // redirects to jams
 
     setState(() {
       loading = false;

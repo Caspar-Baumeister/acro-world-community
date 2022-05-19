@@ -8,16 +8,19 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   const AppBarChatroom({
     Key? key,
     required this.cId,
+    required this.name,
   }) : super(key: key);
 
   final String cId;
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: Text(cId, style: const TextStyle(color: Colors.black)),
+      title: Text(name, style: const TextStyle(color: Colors.black)),
       leading: const BackButton(color: Colors.black),
       actions: [
         Padding(

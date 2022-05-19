@@ -1,13 +1,8 @@
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/provider/refresh_user_info_provider.dart';
-import 'package:acroworld/provider/user_communities.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NewCommunityCard extends StatelessWidget {
@@ -22,7 +17,11 @@ class NewCommunityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => Chatroom(cId: community.id)),
+        MaterialPageRoute(
+            builder: (context) => Chatroom(
+                  cId: community.id,
+                  name: community.name,
+                )),
       ),
       child: ListTile(
         leading: const CircleAvatar(
@@ -43,19 +42,29 @@ class NewCommunityCard extends StatelessWidget {
     );
   }
 
-  void addCommunity(BuildContext context) {
+  void addCommunity(BuildContext context) async {
+    // TODO later get token from shared pref
+    // TODO filter out the communities that the user is part of
+    final database = Database();
+    await database.fakeToken();
+
+    print("addCommunity");
+
+    final response = await database.insertUserCommunitiesOne(community.id);
+    print(response);
+
     // UserCommunitiesProvider userCommunitiesProvider =
     //     Provider.of<UserCommunitiesProvider>(context, listen: false);
-    String userId = UserIdPreferences.getToken();
+    // String userId = UserIdPreferences.getToken();
 
-    Provider.of<UserProvider>(context, listen: false)
-        .addUserCommunities(community.id);
+    // Provider.of<UserProvider>(context, listen: false)
+    //     .addUserCommunities(community.id);
 
     // // reloads the user informations
     // Provider.of<RefreshUserInfoProvider>(context, listen: false)
     //     .notifyFunction();
 
     //userCommunitiesProvider.addCommunityAndUpdate(community);
-    DataBaseService(uid: userId).addCommunityToUser(community: community.id);
+    // DataBaseService(uid: userId).addCommunityToUser(communityId: community.id);
   }
 }

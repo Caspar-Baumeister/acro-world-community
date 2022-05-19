@@ -1,6 +1,4 @@
-import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +17,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
   Widget build(BuildContext context) {
     UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-    UserModel user = userProvider.activeUser!;
+    //UserModel user = userProvider.activeUser!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 8.0),
       child: Row(
@@ -57,7 +55,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
           ),
           IconButton(
             onPressed:
-                message.trim().isEmpty ? null : () async => sendMessage(user),
+                message.trim().isEmpty ? null : () async => sendMessage(),
             icon: const Icon(Icons.send),
           ),
         ],
@@ -65,14 +63,14 @@ class _MessageTextFieldState extends State<MessageTextField> {
     );
   }
 
-  Future<void> sendMessage(UserModel user) async {
+  Future<void> sendMessage() async {
     String sendMessage = message;
     _controller.clear();
     FocusScope.of(context).unfocus();
-    await DataBaseService(uid: user.uid).addMessageData(
-        cid: widget.cId,
-        message: sendMessage,
-        username: user.userName ?? "user",
-        imgUrl: user.imgUrl ?? "");
+    //   await DataBaseService(uid: user.uid).addMessageData(
+    //       cid: widget.cId,
+    //       message: sendMessage,
+    //       username: user.userName ?? "user",
+    //       imgUrl: user.imgUrl ?? "");
   }
 }
