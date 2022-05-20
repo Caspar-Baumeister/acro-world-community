@@ -73,6 +73,27 @@ class Database {
     }
   }
 
+  insertCommunityMessagesOne(
+    String communityId,
+    String content,
+  ) async {
+    try {
+      final response = await http.post(uri,
+          headers: {
+            'content-type': 'application/json',
+            'authorization': 'Bearer $token'
+          },
+          body: json.encode({
+            'query':
+                "mutation MyMutation {insert_community_messages_one(object: {communty_id: \"$communityId\", content: \"$content\"}) {from_user_id}}"
+          }));
+      print(response.body);
+      return jsonDecode(response.body.toString());
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
   authorizedApi(String query) async {
     try {
       final response = await http.post(uri,

@@ -55,6 +55,10 @@ import 'package:provider/provider.dart';
 class LogginWrapper extends StatefulWidget {
   const LogginWrapper({Key? key}) : super(key: key);
 
+  // checkes if there are credentials
+  // sends a login request with the credentials
+  // updates the user provider or sends to login
+
   @override
   State<LogginWrapper> createState() => _LogginWrapperState();
 }

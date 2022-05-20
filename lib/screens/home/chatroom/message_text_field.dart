@@ -1,4 +1,5 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,9 @@ class _MessageTextFieldState extends State<MessageTextField> {
     String sendMessage = message;
     _controller.clear();
     FocusScope.of(context).unfocus();
+    Database database = Database();
+    await database.fakeToken();
+    await database.insertCommunityMessagesOne(widget.cId, sendMessage);
     //   await DataBaseService(uid: user.uid).addMessageData(
     //       cid: widget.cId,
     //       message: sendMessage,
