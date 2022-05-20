@@ -1,6 +1,11 @@
+import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({required this.toggleView, Key? key}) : super(key: key);
@@ -22,7 +27,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    print("inside sign in");
     return loading
         ? const Loading()
         : Scaffold(
@@ -88,11 +92,16 @@ class _SignInState extends State<SignIn> {
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: onSignin),
-                    const SizedBox(height: 12.0),
-                    Text(
-                      error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    ),
+                    error != ""
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: Text(
+                              error,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
                   ],
                 ),
               ),
@@ -102,6 +111,43 @@ class _SignInState extends State<SignIn> {
 
   // triggert when login is pressed
   void onSignin() async {
+    setState(() {
+      error = '';
+    });
+
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
+    setState(() {
+      loading = true;
+    });
+
+    // get the token trough the credentials
+    // (invalid credentials) return false
+    String? _token = await Database().loginApi(email, password);
+    if (_token == null) {
+      setState(() {
+        error = 'Could not sign in with those credentials';
+        loading = false;
+      });
+      return;
+    }
+
+    // safe the user to provider
+    Provider.of<UserProvider>(context, listen: false).setUserFromToken(_token);
+
+    // safe the credentials to shared preferences
+    CredentialPreferences.setEmail(email);
+    CredentialPreferences.setPassword(password);
+
+    // send to UserCommunities
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const UserCommunities()));
+
+    setState(() {
+      loading = false;
+    });
+
     // print("on signin");
     // if (_formKey.currentState != null && _formKey.currentState!.validate()) {
     //   setState(() {

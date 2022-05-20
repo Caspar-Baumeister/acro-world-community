@@ -2,31 +2,40 @@
 
 import 'package:acroworld/models/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 
 class UserProvider extends ChangeNotifier {
   UserModel? _activeUser;
-  List<String> _userCommunities = [];
+  String? token;
+  //List<String> _userCommunities = [];
 
   // getter
   UserModel? get activeUser => _activeUser;
-  List<String> get userCommunities => _userCommunities;
+  //List<String> get userCommunities => _userCommunities;
 
-  // setter
-  // set activeUser(UserModel? user) {
-  //   _activeUser = user;
+  setUserFromToken(String token) {
+    this.token = token;
+    Map<String, dynamic> payload = Jwt.parseJwt(token);
+    print(payload);
+  }
+
+  bool tokenIsExpired() {
+    if (token == null) {
+      return true;
+    }
+    return Jwt.isExpired(token!);
+  }
+
+  // set userCommunities(List<String> communities) {
+  //   _userCommunities = communities;
   //   notifyListeners();
   // }
 
-  set userCommunities(List<String> communities) {
-    _userCommunities = communities;
-    notifyListeners();
-  }
-
-  addUserCommunities(String communityId) {
-    if (_userCommunities == null) return;
-    _userCommunities.add(communityId);
-    notifyListeners();
-  }
+  // addUserCommunities(String communityId) {
+  //   if (_userCommunities == null) return;
+  //   _userCommunities.add(communityId);
+  //   notifyListeners();
+  // }
 
   // set activeUserImgUrl(String imgUrl) {
   //   if (_activeUser == null) return;

@@ -107,4 +107,22 @@ class Database {
       print(e.toString());
     }
   }
+
+  Future<String?> loginApi(String email, String password) async {
+    try {
+      final response = await http.post(uri,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: json.encode({
+            'query':
+                "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
+          }));
+      print(response.body);
+      return jsonDecode(response.body.toString())["data"]["login"]["token"];
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
 }

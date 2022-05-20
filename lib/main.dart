@@ -1,13 +1,13 @@
 import 'package:acroworld/loggin_wrapper.dart';
+import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/services/preferences/user_id.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await UserIdPreferences.init();
+  await CredentialPreferences.init();
   return runApp(const App());
 }
 
