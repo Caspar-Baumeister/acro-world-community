@@ -1,10 +1,13 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/communities/user_communities/body.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/querys.dart';
 import 'package:acroworld/shared/error_page.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class FutureCommunity extends StatelessWidget {
   const FutureCommunity({Key? key}) : super(key: key);
@@ -12,8 +15,8 @@ class FutureCommunity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final UserProvider user = Provider.of<UserProvider>(context, listen: true);
-    return FutureBuilder<List<Community>>(
-        future: loadUserCommunities(),
+    return FutureBuilder<List<Community>?>(
+        future: loadUserCommunities(context),
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
             //Provider.of<User?>(context)?.reload();
@@ -29,11 +32,18 @@ class FutureCommunity extends StatelessWidget {
         }));
   }
 
-  Future<List<Community>> loadUserCommunities() async {
+  Future<List<Community>?> loadUserCommunities(BuildContext context) async {
     // TODO later get token from shared pref
-    final database = Database();
-    await database.fakeToken();
 
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return null;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+    final database = Database(token: token);
     final response = await database.authorizedApi(Querys.userCommunities);
     print("usercoms response:$response");
     List userCommunities = response["data"]["user_communities"];

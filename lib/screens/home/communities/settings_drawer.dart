@@ -1,4 +1,5 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/home/settings/settings.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,9 @@ class SettingsDrawer extends StatelessWidget {
             buildMenuItem(
                 text: "Log out",
                 icon: Icons.logout,
-                onPressed: () async {} //=> await AuthService().signOut(),
+                onPressed: () async {
+                  await logOut(context);
+                } //=> await AuthService().signOut(),
                 )
           ],
         ),
@@ -70,5 +73,10 @@ class SettingsDrawer extends StatelessWidget {
       ),
       onTap: onPressed,
     );
+  }
+
+  logOut(BuildContext context) {
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const Authenticate()));
   }
 }

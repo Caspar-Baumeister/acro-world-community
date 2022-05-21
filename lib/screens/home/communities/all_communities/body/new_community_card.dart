@@ -1,8 +1,11 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 class NewCommunityCard extends StatelessWidget {
@@ -45,10 +48,15 @@ class NewCommunityCard extends StatelessWidget {
   void addCommunity(BuildContext context) async {
     // TODO later get token from shared pref
     // TODO filter out the communities that the user is part of
-    final database = Database();
-    await database.fakeToken();
-
-    print("addCommunity");
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return null;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+    final database = Database(token: token);
 
     final response = await database.insertUserCommunitiesOne(community.id);
     print(response);

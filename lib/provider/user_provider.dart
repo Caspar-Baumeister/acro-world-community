@@ -1,22 +1,52 @@
 // ignore_for_file: avoid_print
 
 import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class UserProvider extends ChangeNotifier {
   UserModel? _activeUser;
-  String? token;
+  String? _token;
   //List<String> _userCommunities = [];
 
   // getter
   UserModel? get activeUser => _activeUser;
+  String? get token => _token;
+
   //List<String> get userCommunities => _userCommunities;
 
+  Future<bool> validToken() async {
+    if (_token == null) {
+      return false;
+    }
+    if (!tokenIsExpired()) {
+      return true;
+    }
+    return await refreshToken();
+  }
+
   setUserFromToken(String token) {
-    this.token = token;
+    _token = token;
     Map<String, dynamic> payload = Jwt.parseJwt(token);
-    print(payload);
+
+    String userId = payload["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
+    final response = Database(token: _token).getUserData(userId);
+
+    print(response);
+//     {
+//   "data": {
+//     "users": [
+//       {
+//         "bio": null,
+//         "id": "51b867eb-9d28-4570-b42a-34359eecb7c0",
+//         "name": "Caspar",
+//         "image_url": null
+//       }
+//     ]
+//   }
+// }
   }
 
   bool tokenIsExpired() {
@@ -25,6 +55,27 @@ class UserProvider extends ChangeNotifier {
     }
     return Jwt.isExpired(token!);
   }
+
+  Future<bool> refreshToken() async {
+    String? _email = CredentialPreferences.getEmail();
+    String? _password = CredentialPreferences.getPassword();
+
+    if (_email == null || _password == null) {
+      return false;
+    }
+
+    // get the token trough the credentials
+    // (invalid credentials) return false
+    String? _newToken = await Database().loginApi(_email, _password);
+    if (_newToken == null) {
+      return false;
+    }
+
+    // safe the user to provider
+    _token = _newToken;
+    return true;
+  }
+}
 
   // set userCommunities(List<String> communities) {
   //   _userCommunities = communities;
@@ -74,8 +125,8 @@ class UserProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  setUser(Map data) {
-    _activeUser = UserModel.fromJson(data, data["id"]);
-    notifyListeners();
-  }
-}
+//   setUser(Map data) {
+//     _activeUser = UserModel.fromJson(data, data["id"]);
+//     notifyListeners();
+//   }
+// }

@@ -8,93 +8,27 @@ class Database {
 
   Database({this.token});
 
-  userJamsApi() async {
-    return await http.post(uri,
-        headers: {
-          'content-type': 'application/json',
-          'authorization': 'Bearer $token'
-        },
-        body: json.encode({
-          'query': '''
-            query MyQuery {
-              jams {
-                name
-              }
-          }'''
-        }));
-  }
-
-  fakeToken() async {
-    try {
-      final response = await http.post(uri,
-          headers: {
-            'content-type': 'application/json',
-          },
-          body: json.encode({
-            'query': '''
-                mutation MyMutation {
-                  login(
-                    input: {
-                      email: "foo@bar.com", password: "penis123"
-                    }
-                  ) 
-                  {
-                    token
-                    user {
-                      id
-                    }
-                  }
-                }'''
-          }));
-      Map responseDecode = jsonDecode(response.body.toString());
-      token = responseDecode["data"]["login"]["token"];
-      userId = responseDecode["data"]["login"]["user"]["id"];
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   insertUserCommunitiesOne(String communityId) async {
-    print(communityId);
-    print(userId);
-    try {
-      final response = await http.post(uri,
-          headers: {
-            'content-type': 'application/json',
-            'authorization': 'Bearer $token'
-          },
-          body: json.encode({
-            'query':
-                "mutation MyMutation {insert_user_communities_one(object: {community_id: $userId, user_id: $communityId}){community_id}}"
-          }));
-      return jsonDecode(response.body.toString());
-    } catch (e) {
-      print(e.toString());
-    }
+    return authorizedApi(
+        "mutation MyMutation {insert_user_communities_one(object: {community_id: $userId, user_id: $communityId}){community_id}}");
   }
 
   insertCommunityMessagesOne(
     String communityId,
     String content,
   ) async {
-    try {
-      final response = await http.post(uri,
-          headers: {
-            'content-type': 'application/json',
-            'authorization': 'Bearer $token'
-          },
-          body: json.encode({
-            'query':
-                "mutation MyMutation {insert_community_messages_one(object: {communty_id: \"$communityId\", content: \"$content\"}) {from_user_id}}"
-          }));
-      print(response.body);
-      return jsonDecode(response.body.toString());
-    } catch (e) {
-      print(e.toString());
-    }
+    return authorizedApi(
+        "mutation MyMutation {insert_community_messages_one(object: {communty_id: \"$communityId\", content: \"$content\"}) {from_user_id}}");
   }
 
-  authorizedApi(String query) async {
+  getUserData(
+    String userId,
+  ) async {
+    return authorizedApi(
+        "query MyQuery {users(where: {id: {_eq: \"$userId\"}}) {bio id name image_url}}");
+  }
+
+  Future authorizedApi(String query) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -118,8 +52,24 @@ class Database {
             'query':
                 "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
           }));
-      print(response.body);
       return jsonDecode(response.body.toString())["data"]["login"]["token"];
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+
+  Future registerApi(String email, String password, String username) async {
+    try {
+      final response = await http.post(uri,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: json.encode({
+            'query':
+                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$password\"}){token}}"
+          }));
+      return jsonDecode(response.body.toString());
     } catch (e) {
       print(e.toString());
     }

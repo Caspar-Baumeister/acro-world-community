@@ -1,6 +1,11 @@
+import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class RegisterBody extends StatefulWidget {
   const RegisterBody({Key? key}) : super(key: key);
@@ -127,6 +132,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                         style: TextStyle(color: Colors.white),
                       ),
                       onPressed: () async {
+                        onRegister();
                         // if (_formKey.currentState != null &&
                         //     _formKey.currentState!.validate()) {
                         //   setState(() {
@@ -152,5 +158,60 @@ class _RegisterBodyState extends State<RegisterBody> {
               ),
             ),
           );
+  }
+
+  onRegister() async {
+    setState(() {
+      error = '';
+    });
+
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
+    setState(() {
+      loading = true;
+    });
+
+    // register response
+    final response = await Database().registerApi(email, password, name);
+
+    // error handling
+    String errorResponse = "try it again later";
+    if (response["errors"] != null) {
+      if (response["error"][0]["message"] != null) {
+        errorResponse = response["error"][0]["message"];
+      }
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
+      return;
+    } else if (response["data"] == null ||
+        response["data"]["login"] == null ||
+        response["data"]["login"]["token"] == null) {
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
+      return;
+    }
+
+    // no error and token exist
+    String _token = response["data"]["login"]["token"];
+
+    // safe the user to provider
+    Provider.of<UserProvider>(context, listen: false).setUserFromToken(_token);
+
+    // safe the credentials to shared preferences
+    CredentialPreferences.setEmail(email);
+    CredentialPreferences.setPassword(password);
+
+    // send to UserCommunities
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => const UserCommunities()));
+
+    setState(() {
+      loading = false;
+    });
   }
 }
