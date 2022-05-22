@@ -8,6 +8,20 @@ class Database {
 
   Database({this.token});
 
+  Future getCommunityJams(String cId) {
+    return authorizedApi(""" query MyQuery {
+  jams(where: {community_id: {_eq: "$cId"}}) {
+    created_at
+    created_by_id
+    date
+    id
+    latitude
+    longitude
+    name
+  }
+}""");
+  }
+
   insertUserCommunitiesOne(String communityId) async {
     return authorizedApi(
         "mutation MyMutation {insert_user_communities_one(object: {community_id: $userId, user_id: $communityId}){community_id}}");
@@ -19,13 +33,6 @@ class Database {
   ) async {
     return authorizedApi(
         "mutation MyMutation {insert_community_messages_one(object: {communty_id: \"$communityId\", content: \"$content\"}) {from_user_id}}");
-  }
-
-  getUserData(
-    String userId,
-  ) async {
-    return authorizedApi(
-        "query MyQuery {users(where: {id: {_eq: \"$userId\"}}) {bio id name image_url}}");
   }
 
   Future authorizedApi(String query) async {

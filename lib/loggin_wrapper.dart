@@ -89,25 +89,15 @@ class _LogginWrapperState extends State<LogginWrapper> {
         }));
   }
 
-  // Future<bool> checkCredentials() async {
-  //   // get the credentials from preferences
-  //   // (no credentials) return false
-  //   String? _email = CredentialPreferences.getEmail();
-  //   String? _password = CredentialPreferences.getPassword();
+  Future<bool> checkCredentials() async {
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).refreshToken();
 
-  //   if (_email == null || _password == null) {
-  //     return false;
-  //   }
+    if (!isValidToken) {
+      return false;
+    }
 
-  //   // get the token trough the credentials
-  //   // (invalid credentials) return false
-  //   String? _token = await Database().loginApi(_email, _password);
-  //   if (_token == null) {
-  //     return false;
-  //   }
-
-  //   // safe the user to provider
-  //   Provider.of<UserProvider>(context, listen: false).refreshToken();
-  //   return true;
-  // }
+    await Provider.of<UserProvider>(context, listen: false).setUserFromToken();
+    return true;
+  }
 }

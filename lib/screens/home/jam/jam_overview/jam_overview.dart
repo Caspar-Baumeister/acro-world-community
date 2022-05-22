@@ -26,22 +26,24 @@ class _JamOverviewState extends State<JamOverview> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel user = Provider.of<UserProvider>(context).activeUser!;
-    bool userParticipates = widget.jam.participants.contains(user.uid);
+    UserModel? user = Provider.of<UserProvider>(context).activeUser;
+
+    //bool userParticipates = widget.jam.participants.contains(user.uid);
     DateTime date = DateTime.fromMicrosecondsSinceEpoch(
         widget.jam.date.microsecondsSinceEpoch);
     String dateString = DateFormat('yyyy.MM.dd – kk:mm').format(date);
-    bool userPressed = widget.jam.participants.contains(user.uid);
+    //bool userPressed = widget.jam.participants.contains(user.uid);
     return loading
         ? const Loading()
         : Scaffold(
-            floatingActionButton: Builder(
-              builder: (context) => FloatingActionButton(
-                backgroundColor: Colors.grey,
-                child: Icon(!userPressed ? Icons.add : Icons.exit_to_app),
-                onPressed: () => onChangeParticipation(userParticipates),
-              ),
-            ),
+            // floatingActionButton: Builder(
+            //   builder: (context) =>
+            //   FloatingActionButton(
+            //     backgroundColor: Colors.grey,
+            //     child: Icon(!userPressed ? Icons.add : Icons.exit_to_app),
+            //     onPressed: () => onChangeParticipation(userParticipates),
+            //   ),
+            // ),
             backgroundColor: Colors.white,
             appBar: AppBarJamOverview(jam: widget.jam),
             body: SingleChildScrollView(

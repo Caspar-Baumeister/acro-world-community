@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
-import 'package:acroworld/screens/home/jam/jams/jams_body.dart';
+import 'package:acroworld/screens/home/jam/jams/future_jams.dart';
 import 'package:flutter/material.dart';
 
 // Here are all jams of that community imported
@@ -13,17 +13,17 @@ class Jams extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBarJams(cId: cId),
-      body: JamsBody(cId: cId), //JamsStream(cid: cId),
-      floatingActionButton: IconButton(
-        onPressed: () => handleCreateJam(context),
-        icon: const ImageIcon(
-          AssetImage("assets/muscleup_drawing.png"),
-          color: Colors.black,
+        backgroundColor: Colors.white,
+        appBar: AppBarJams(cId: cId),
+        floatingActionButton: IconButton(
+          onPressed: () => handleCreateJam(context),
+          icon: const ImageIcon(
+            AssetImage("assets/muscleup_drawing.png"),
+            color: Colors.black,
+          ),
         ),
-      ),
-    );
+        body: FutureJams(cId: cId) //JamsBody(cId: cId), //JamsStream(cid: cId),
+        );
   }
 
   void handleCreateJam(BuildContext context) async {
