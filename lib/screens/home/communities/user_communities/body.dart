@@ -1,70 +1,89 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/home/communities/user_communities/list_coms.dart';
 import 'package:acroworld/screens/home/communities/user_communities/new_button.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserCommunitiesBody extends StatefulWidget {
-  const UserCommunitiesBody({Key? key, required this.userCommunities})
-      : super(key: key);
-
-  final List<Community> userCommunities;
+  const UserCommunitiesBody({Key? key}) : super(key: key);
 
   @override
   State<UserCommunitiesBody> createState() => _UserCommunitiesBodyState();
 }
 
 class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
-  late List<Community> searchResults;
-  late List<Community> userCommunities;
-
-  @override
-  void initState() {
-    searchResults = widget.userCommunities;
-    userCommunities = widget.userCommunities;
-    super.initState();
-  }
-
+  List<Community> searchResults = [];
+  String query = "";
   @override
   Widget build(BuildContext context) {
-    if (widget.userCommunities != userCommunities) {
-      setState(() {
-        searchResults = widget.userCommunities;
-        userCommunities = widget.userCommunities;
-      });
-    }
-    return Column(
-      children: [
-        // Searchbar
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Expanded(
-              child: SearchBarWidget(onChanged: (query) => search(query)),
-            ),
-            const NewCommunityButton(),
-          ],
-        ),
+    UserCommunitiesProvider userCommunitiesProvider =
+        Provider.of<UserCommunitiesProvider>(context);
+    searchResults = getSearchResults(userCommunitiesProvider.userCommunities);
 
-        // Community List
-        Expanded(
-          child: UserCommunitiesList(communities: searchResults),
+    return RefreshIndicator(
+      onRefresh: () => loadUserCommunities(context),
+      child: SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Searchbar
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: SearchBarWidget(onChanged: (query) => search(query)),
+                  ),
+                  const NewCommunityButton(),
+                ],
+              ),
+
+              // Community List
+              Expanded(
+                child: UserCommunitiesList(communities: searchResults),
+              ),
+            ],
+          ),
         ),
-      ],
+      ),
     );
   }
 
-  void search(String query) {
+  List<Community> getSearchResults(List<Community> userCommunities) {
+    if (query == "") return userCommunities;
     final searchLower = query.toLowerCase();
-    final List<Community> results = List<Community>.from(
-        widget.userCommunities.where((Community community) {
+    return List<Community>.from(userCommunities.where((Community community) {
       final name = community.name.toLowerCase();
 
       return name.contains(searchLower);
     }));
+  }
 
+  void search(String newQuery) {
     setState(() {
-      searchResults = results;
+      query = newQuery;
     });
+  }
+
+  Future<bool> loadUserCommunities(BuildContext context) async {
+    // validates that the user is loged in and the token is valid
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return false;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+
+    // updates the user communities in provider
+    await Provider.of<UserCommunitiesProvider>(context, listen: false)
+        .loadDataFromDatabase(token);
+    return true;
   }
 }

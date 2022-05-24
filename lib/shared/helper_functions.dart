@@ -46,13 +46,37 @@ String dateToText(DateTime date) {
   return "";
 }
 
-jamListToHash(List<Jam> jams) {
-  return LinkedHashMap<DateTime, List<Jam>>(
+Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
+  // Map<DateTime, List<Jam>> jamMap = {};
+
+  // for (Jam jam in jams) {
+  //   if (jamMap[jam.date] != null) {
+  //     jamMap[jam.date]!.add(jam);
+  //   } else {
+  //     jamMap[jam.date] = [jam];
+  //   }
+  // }
+  // print(jamMap);
+  // return jamMap;
+  LinkedHashMap<DateTime, List<Jam>> jamMap =
+      LinkedHashMap<DateTime, List<Jam>>(
     equals: isSameDay,
     hashCode: getHashCode,
-  )..addAll({
-      for (var jam in jams) jam.date: [jam]
-    });
+  );
+  for (Jam jam in jams) {
+    if (jamMap[jam.date] != null) {
+      jamMap[jam.date]!.add(jam);
+    } else {
+      jamMap[jam.date] = [jam];
+    }
+  }
+  return jamMap;
+
+  // jamMap..addAll({
+  //     for (var jam in jams)
+
+  //     jam.date: [jam]
+  //   });
 }
 
 int getHashCode(DateTime key) {

@@ -32,9 +32,7 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Jams(
-                          cId: cId,
-                        )),
+                    builder: (context) => Jams(cId: cId, name: name)),
               );
             },
             child: Row(

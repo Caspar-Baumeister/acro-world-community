@@ -58,7 +58,9 @@ class NewCommunityCard extends StatelessWidget {
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
 
-    final response = await database.insertUserCommunitiesOne(community.id);
+    String uid = Provider.of<UserProvider>(context, listen: false).getId();
+
+    final response = await database.insertUserCommunitiesOne(community.id, uid);
     print(response);
 
     // UserCommunitiesProvider userCommunitiesProvider =

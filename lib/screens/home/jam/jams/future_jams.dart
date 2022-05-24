@@ -9,10 +9,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class FutureJams extends StatelessWidget {
+class FutureJams extends StatefulWidget {
   const FutureJams({Key? key, required this.cId}) : super(key: key);
 
   final String cId;
+
+  @override
+  State<FutureJams> createState() => _FutureJamsState();
+}
+
+class _FutureJamsState extends State<FutureJams> {
   @override
   Widget build(BuildContext context) {
     //final UserProvider user = Provider.of<UserProvider>(context, listen: true);
@@ -24,9 +30,18 @@ class FutureJams extends StatelessWidget {
             return ErrorScreenWidget(error: snapshot.error.toString());
           }
           if (snapshot.hasData) {
-            return JamsBody(
-              jams: snapshot.data ?? [],
-              cId: cId,
+            List<Jam>? data = snapshot.data;
+            return RefreshIndicator(
+              onRefresh: (() async => data = await loadJams(context)),
+              child: SingleChildScrollView(
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.height,
+                  child: JamsBody(
+                    jams: data ?? [],
+                    cId: widget.cId,
+                  ),
+                ),
+              ),
             );
           }
           return const LoadingScaffold();
@@ -34,6 +49,7 @@ class FutureJams extends StatelessWidget {
   }
 
   Future<List<Jam>?> loadJams(BuildContext context) async {
+    print("loadjams executed");
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).validToken();
     if (!isValidToken) {
@@ -43,11 +59,8 @@ class FutureJams extends StatelessWidget {
     }
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
-    final response = await database.getCommunityJams(cId);
-    print("jams response:$response");
+    final response = await database.getCommunityJams(widget.cId);
     List jams = response["data"]["jams"];
-
-    print(jams[0]["created_at"].runtimeType);
 
     return List<Jam>.from(jams.map((jam) => Jam(
         jid: jam["id"],
@@ -57,7 +70,7 @@ class FutureJams extends StatelessWidget {
         date: DateTime.parse(jam["date"]),
         name: jam["name"],
         // imgUrl: "",
-        info: "Info is not implemented jet (future jam)",
+        info: jam["info"],
         latLng: LatLng(jam["latitude"], jam["longitude"]))));
   }
 }

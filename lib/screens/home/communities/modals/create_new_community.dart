@@ -1,8 +1,12 @@
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/message_modal.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CreateNewCommunityModal extends StatefulWidget {
   const CreateNewCommunityModal({Key? key}) : super(key: key);
@@ -13,6 +17,7 @@ class CreateNewCommunityModal extends StatefulWidget {
 }
 
 class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
+  String error = "";
   String name = "";
   bool loading = false;
   @override
@@ -47,6 +52,15 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
                         name = val;
                       })),
             ),
+            error != ""
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      error,
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                  )
+                : Container(),
             const SizedBox(height: 30.0),
 
             IgnorePointer(
@@ -71,39 +85,40 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
     );
   }
 
-  suggestCommunity() {
+  suggestCommunity() async {
     // check if name is empty
     if (name == "") {
-      Navigator.of(context).pop();
-      buildMortal(
-          context,
-          const MessageModal(
-              success: false,
-              message: "Please give the community a valid name"));
+      setState(() {
+        error = "Provide a valid name";
+      });
       return;
     }
 
     // loading for databse tasks
     setState(() {
       loading = true;
+      error = "";
     });
 
-    // UserModel user =
-    //     Provider.of<UserProvider>(context, listen: false).activeUser!;
-    // DataBaseService dataBaseService = DataBaseService(uid: user.uid);
-    // TODO check if the user can create another community
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return null;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+    final database = Database(token: token);
 
-    // get activ user to safe the id
+    final response = await database.createCommunity(name);
+    print(response);
 
-    // dataBaseService.createCommunity(name: name);
-    // dataBaseService.updateUserDataField(
-    //     field: "last_proposed_community", value: Timestamp.now());
-    // Navigator.of(context).pop();
-    // buildMortal(
-    //     context,
-    //     MessageModal(
-    //         message:
-    //             "You successfully suggested the community $name. It can take a while until we reviewed it"));
+    Navigator.of(context).pop();
+    buildMortal(
+        context,
+        MessageModal(
+            message:
+                "You successfully suggested the community $name. It can take a while until we reviewed it"));
 
     setState(() {
       loading = false;

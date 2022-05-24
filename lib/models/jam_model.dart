@@ -8,7 +8,7 @@ class Jam {
   DateTime createdAt;
   DateTime date;
   List<String> participants;
-  String info;
+  String? info;
   LatLng latLng;
 
   Jam(

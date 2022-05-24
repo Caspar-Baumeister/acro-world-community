@@ -2,6 +2,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/home/settings/settings.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,6 +12,7 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    print(userProvider.activeUser);
     return Drawer(
       child: Material(
         child: ListView(
@@ -23,11 +25,11 @@ class SettingsDrawer extends StatelessWidget {
               ),
               child: ListTile(
                   leading: Text(
-                    userProvider.activeUser!.userName!,
+                    userProvider.activeUser!.userName ?? "",
                   ),
                   trailing: CircleAvatar(
-                    backgroundImage:
-                        NetworkImage(userProvider.activeUser!.imgUrl!),
+                    backgroundImage: NetworkImage(
+                        userProvider.activeUser!.imgUrl ?? MORTY_IMG_URL),
                   )),
             ),
             GestureDetector(

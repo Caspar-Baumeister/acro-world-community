@@ -1,3 +1,4 @@
+import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
 import 'package:acroworld/screens/home/jam/jams/future_jams.dart';
 import 'package:flutter/material.dart';
@@ -6,15 +7,17 @@ import 'package:flutter/material.dart';
 // getComms(cid) => List<Map<String, dynamic>> List<communityJson>
 
 class Jams extends StatelessWidget {
-  const Jams({required this.cId, Key? key}) : super(key: key);
+  const Jams({required this.cId, required this.name, Key? key})
+      : super(key: key);
 
   final String cId;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBarJams(cId: cId),
+        appBar: AppBarJams(name: name),
         floatingActionButton: IconButton(
           onPressed: () => handleCreateJam(context),
           icon: const ImageIcon(
@@ -50,13 +53,13 @@ class Jams extends StatelessWidget {
     //       DateTime.now().difference(lastJamCreatedAtDate).inDays;
 
     //   if (daysSinceLastCreated > DAYS_UNTIL_CREATE_NEXT_JAM) {
-    //     Navigator.push(
-    //       context,
-    //       MaterialPageRoute(
-    //           builder: (context) => CreateJam(
-    //                 cid: cId,
-    //               )),
-    //     );
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => CreateJam(
+                cid: cId,
+              )),
+    );
     //   } else {
     //     Fluttertoast.showToast(
     //         msg:

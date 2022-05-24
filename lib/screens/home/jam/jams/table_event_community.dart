@@ -1,6 +1,6 @@
 // import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
+import 'package:acroworld/screens/home/jam/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -42,6 +42,8 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
 
   List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
+
+    print("days: ${widget.kEvents[day]}");
     return widget.kEvents[day] ?? [];
   }
 
@@ -128,25 +130,15 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                 itemCount: value.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => JamOverview(
-                                  jam: value[index],
-                                  cid: widget.cid,
-                                )),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
                       ),
-                      title: Text(value[index].name),
-                    ),
-                  );
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: JamTile(jam: value[index], cid: widget.cid));
                 },
               );
             },

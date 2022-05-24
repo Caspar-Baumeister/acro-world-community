@@ -70,8 +70,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-        future:
-            Provider.of<UserProvider>(context, listen: false).refreshToken(),
+        future: checkCredentials(),
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
             //Provider.of<User?>(context)?.reload();

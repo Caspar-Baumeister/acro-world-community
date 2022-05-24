@@ -1,4 +1,3 @@
-import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:flutter/material.dart';
 
 class AppBarJams extends StatelessWidget with PreferredSizeWidget {
@@ -6,17 +5,17 @@ class AppBarJams extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
   const AppBarJams({
     Key? key,
-    required this.cId,
+    required this.name,
   }) : super(key: key);
 
-  final String cId;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: Text("Jams in $cId", style: const TextStyle(color: Colors.black)),
+      title: Text("Jams in $name", style: const TextStyle(color: Colors.black)),
       leading: const BackButton(color: Colors.black),
     );
   }

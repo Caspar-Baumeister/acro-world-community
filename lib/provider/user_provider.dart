@@ -20,6 +20,12 @@ class UserProvider extends ChangeNotifier {
 
   //List<String> get userCommunities => _userCommunities;
 
+  getId() {
+    Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
+    print(parseJwt);
+    return parseJwt["user_id"];
+  }
+
   Future<bool> validToken() async {
     if (_token == null) {
       return false;

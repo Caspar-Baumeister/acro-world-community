@@ -1,3 +1,41 @@
+import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/services/database.dart';
+import 'package:acroworld/services/querys.dart';
+import 'package:flutter/material.dart';
+
+class UserCommunitiesProvider extends ChangeNotifier {
+  List<Community> _userCommunities = [];
+
+  List<Community> get userCommunities => _userCommunities;
+
+  loadDataFromDatabase(token) async {
+    final database = Database(token: token);
+    final response = await database.authorizedApi(Querys.userCommunities);
+    // TODO error handling at some point
+    List userCommunities = response["data"]["user_communities"];
+
+    _userCommunities = List<Community>.from(userCommunities.map((com) =>
+        Community(
+            id: com["community"]["id"],
+            nextJam: DateTime.now(),
+            name: com["community"]["name"],
+            confirmed: true)));
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // import 'package:acroworld/models/community_model.dart';
 // import 'package:acroworld/services/database.dart';
 // import 'package:acroworld/services/preferences/user_id.dart';
