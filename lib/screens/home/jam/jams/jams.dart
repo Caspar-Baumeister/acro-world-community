@@ -18,11 +18,28 @@ class Jams extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBarJams(name: name),
-        floatingActionButton: IconButton(
-          onPressed: () => handleCreateJam(context),
-          icon: const ImageIcon(
-            AssetImage("assets/muscleup_drawing.png"),
-            color: Colors.black,
+        floatingActionButton: GestureDetector(
+          onTap: () => handleCreateJam(context),
+          child: Container(
+            width: 80,
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+                border: Border.all(
+                  width: 1,
+                  color: Colors.grey,
+                ),
+                borderRadius: const BorderRadius.all(Radius.circular(30))),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: const [
+                Text("New"),
+                SizedBox(width: 6),
+                ImageIcon(
+                  AssetImage("assets/muscleup_drawing.png"),
+                  color: Colors.black,
+                ),
+              ],
+            ),
           ),
         ),
         body: FutureJams(cId: cId) //JamsBody(cId: cId), //JamsStream(cid: cId),
