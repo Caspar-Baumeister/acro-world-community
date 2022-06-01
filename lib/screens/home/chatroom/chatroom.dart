@@ -25,10 +25,10 @@ class Chatroom extends StatelessWidget {
             Expanded(
               child: Subscription(
                 options: SubscriptionOptions(
-                  document: gql(
-                    Subscriptions.fetchUsers,
-                  ),
-                ),
+                    document: gql(
+                      Subscriptions.communityMessages,
+                    ),
+                    variables: {'community_id': cId}),
                 builder: (result) {
                   if (result.hasException) {
                     return Text(result.exception.toString());
@@ -38,12 +38,17 @@ class Chatroom extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   }
+
+                  print(result.data!['community_messages'][0]['content']
+                      as String);
+
                   return Expanded(
                     child: ListView.builder(
                       itemBuilder: (context, index) {
-                        return const Card(
+                        return Card(
                           child: ListTile(
-                            title: Text("Test"),
+                            title: Text(result.data!['community_messages']
+                                [index]['content']),
                           ),
                         );
                       },

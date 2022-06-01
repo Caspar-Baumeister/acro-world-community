@@ -3,6 +3,7 @@ import 'package:acroworld/loggin_wrapper.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:jwt_decode/jwt_decode.dart';
 import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -21,9 +22,11 @@ void main() async {
       autoReconnect: true,
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
-        print('initialPayload');
         String token = await AuthProvider.fetchToken();
-        return {'Authorization': 'Bearer $token'};
+
+        return {
+          'headers': {'Authorization': 'Bearer $token'}
+        };
       },
     ),
   );
@@ -31,7 +34,7 @@ void main() async {
   final AuthLink authLink = AuthLink(
     getToken: () async {
       String token = await AuthProvider.fetchToken();
-      print(token);
+      print('token $token');
       return 'Bearer $token';
     },
   );
