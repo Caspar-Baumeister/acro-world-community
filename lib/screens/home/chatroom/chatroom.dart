@@ -25,9 +25,8 @@ class Chatroom extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-    final Map<String, dynamic>? parsedJwt = userProvider.parsedJwt;
 
-    final String userId = parsedJwt!['sub'];
+    final String userId = userProvider.activeUser!.uid;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarChatroom(cId: cId, name: name),
