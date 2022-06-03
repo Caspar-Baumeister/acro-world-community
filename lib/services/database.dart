@@ -45,7 +45,7 @@ class Database {
 
   insertUserCommunitiesOne(String communityId, String uid) async {
     return authorizedApi(
-        "mutation MyMutation {insert_user_communities_one(object: {community_id: $uid, user_id: $communityId}){community_id}}");
+        """mutation MyMutation {insert_user_communities(objects: {community_id: "$communityId", user_id: "$uid"}) {affected_rows}}""");
   }
 
   Future getCommunityJams(String cId) {

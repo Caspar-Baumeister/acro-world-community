@@ -1,40 +1,83 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/services/querys.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 class UserCommunitiesProvider extends ChangeNotifier {
   List<Community> _userCommunities = [];
 
   List<Community> get userCommunities => _userCommunities;
 
+  bool setDataFromGraphQlResponse(response) {
+    try {
+      List userCommunities = response["data"]["user_communities"];
+
+      _userCommunities = List<Community>.from(userCommunities.map((com) =>
+          Community(
+              id: com["community"]["id"],
+              nextJam: DateTime.now(),
+              name: com["community"]["name"],
+              confirmed: true)));
+      return true;
+    } catch (e) {
+      _userCommunities = [];
+      print(e.toString());
+      return false;
+    }
+  }
+
   loadDataFromDatabase(token) async {
     final database = Database(token: token);
     final response = await database.authorizedApi(Querys.userCommunities);
-    // TODO error handling at some point
-    List userCommunities = response["data"]["user_communities"];
+    // load data with await from api
 
-    _userCommunities = List<Community>.from(userCommunities.map((com) =>
-        Community(
-            id: com["community"]["id"],
-            nextJam: DateTime.now(),
-            name: com["community"]["name"],
-            confirmed: true)));
+    bool isDataSetSuccess = setDataFromGraphQlResponse(response);
+
+    // if successfull loaded cache data
+    if (isDataSetSuccess) {
+      String fileName = "userCommunities.json";
+      var dir = await getTemporaryDirectory();
+      File file = File(dir.path + "/" + fileName);
+      file.writeAsStringSync(jsonEncode(response),
+          flush: true, mode: FileMode.write);
+    }
+
+    notifyListeners();
+  }
+
+  // loading the data using cache
+  loadData(token) async {
+    // load data from cache
+    String fileName = "userCommunities.json";
+    var dir = await getTemporaryDirectory();
+    File file = File(dir.path + "/" + fileName);
+    Map<String, dynamic> response;
+    if (file.existsSync()) {
+      // if success and data ligit:
+
+      // set data
+      var jsonData = file.readAsStringSync();
+      response = jsonDecode(jsonData);
+      setDataFromGraphQlResponse(response);
+
+      // notify listener
+      notifyListeners();
+
+      // load data from api in background (no await)
+      loadDataFromDatabase(token);
+      // data = data
+
+    } else {
+      // else if cache load not works
+      // wait for the database loas
+      await loadDataFromDatabase(token);
+    }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import 'package:acroworld/models/community_model.dart';
 // import 'package:acroworld/services/database.dart';

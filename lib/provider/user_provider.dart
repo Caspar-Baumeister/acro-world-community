@@ -37,11 +37,14 @@ class UserProvider extends ChangeNotifier {
   }
 
   setUserFromToken() async {
+    if (token == "") {
+      _activeUser = null;
+      return;
+    }
+
     //TODO fill in rest of data
     final response = await Database(token: _token).authorizedApi(Querys.me);
-
     Map user = response["data"]["me"][0];
-
     _activeUser = UserModel(uid: user["id"], userName: user["name"]);
   }
 

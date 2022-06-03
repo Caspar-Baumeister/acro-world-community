@@ -41,7 +41,7 @@ class FutureCommunity extends StatelessWidget {
 
     // updates the user communities in provider
     await Provider.of<UserCommunitiesProvider>(context, listen: false)
-        .loadDataFromDatabase(token);
+        .loadData(token);
     return true;
   }
 }
