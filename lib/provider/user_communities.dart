@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/services/querys.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:path_provider/path_provider.dart';
