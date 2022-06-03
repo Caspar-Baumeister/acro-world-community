@@ -73,6 +73,16 @@ class Database {
       }""");
   }
 
+  getUserCommunities(String uid) {
+    return authorizedApi("""
+      query MyQuery {
+        communities(where: {users: {user_id: {_eq: "$uid"}}}) {
+          name
+          id
+        }
+      }""");
+  }
+
   insertJam(
     String communityId,
     String name,
