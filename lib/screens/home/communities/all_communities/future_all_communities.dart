@@ -3,7 +3,6 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/communities/all_communities/body/all_communities_body.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/services/querys.dart';
 import 'package:acroworld/shared/error_page.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +43,9 @@ class FutureAllCommunity extends StatelessWidget {
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
 
-    final response = await database.authorizedApi(Querys.allCommunities);
+    String uid = Provider.of<UserProvider>(context, listen: false).getId();
+
+    final response = await database.getAllOtherCommunities(uid);
     List allCommunities = response["data"]["communities"];
 
     // TODO nextJam from database

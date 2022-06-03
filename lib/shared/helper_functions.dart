@@ -1,3 +1,6 @@
+import 'dart:collection';
+
+import 'package:acroworld/models/jam_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -41,4 +44,49 @@ String dateToText(DateTime date) {
     return "In ${days.toString()} days";
   }
   return "";
+}
+
+Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
+  // Map<DateTime, List<Jam>> jamMap = {};
+
+  // for (Jam jam in jams) {
+  //   if (jamMap[jam.date] != null) {
+  //     jamMap[jam.date]!.add(jam);
+  //   } else {
+  //     jamMap[jam.date] = [jam];
+  //   }
+  // }
+  // print(jamMap);
+  // return jamMap;
+  LinkedHashMap<DateTime, List<Jam>> jamMap =
+      LinkedHashMap<DateTime, List<Jam>>(
+    equals: isSameDay,
+    hashCode: getHashCode,
+  );
+  for (Jam jam in jams) {
+    if (jamMap[jam.date] != null) {
+      jamMap[jam.date]!.add(jam);
+    } else {
+      jamMap[jam.date] = [jam];
+    }
+  }
+  return jamMap;
+
+  // jamMap..addAll({
+  //     for (var jam in jams)
+
+  //     jam.date: [jam]
+  //   });
+}
+
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
+}
+
+bool isSameDay(DateTime? a, DateTime? b) {
+  if (a == null || b == null) {
+    return false;
+  }
+
+  return a.year == b.year && a.month == b.month && a.day == b.day;
 }

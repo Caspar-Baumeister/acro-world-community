@@ -133,12 +133,14 @@ class _SignInState extends State<SignIn> {
       return;
     }
 
-    // safe the user to provider
-    Provider.of<UserProvider>(context, listen: false).setUserFromToken(_token);
-
     // safe the credentials to shared preferences
     CredentialPreferences.setEmail(email);
     CredentialPreferences.setPassword(password);
+
+    Provider.of<UserProvider>(context, listen: false).token = _token;
+
+    // safe the user to provider
+    Provider.of<UserProvider>(context, listen: false).setUserFromToken();
 
     // send to UserCommunities
     Navigator.of(context)

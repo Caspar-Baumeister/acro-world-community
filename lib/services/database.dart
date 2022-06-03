@@ -4,13 +4,88 @@ import 'package:http/http.dart' as http;
 class Database {
   final uri = Uri.https("bro-devs.com", "hasura/v1/graphql");
   String? token;
-  String? userId;
 
   Database({this.token});
 
-  insertUserCommunitiesOne(String communityId) async {
+  Future participateToJam(String uid, String jid) {
+    return authorizedApi("""
+      mutation MyMutation {
+  insert_jam_participants_one(object: {jam_id: "$jid", user_id: "$uid"}) {
+    id
+  }
+}""");
+  }
+
+  Future createCommunity(String name) {
+    return authorizedApi("""
+      mutation {
+        insert_communities(objects: {name: "$name"}) {
+          affected_rows
+          returning {
+            name
+            id
+          }
+        }
+      }""");
+  }
+
+  getJamsUserIsInCommunity(String uid) {
+    return authorizedApi("""  
+      query MyQuery{
+        jams(where: {participants: {id: {_eq: "$uid"}}}, order_by: {date: asc}) {
+          date
+          info
+          latitude
+          longitude
+          name
+          id
+        }
+      }""");
+  }
+
+  insertUserCommunitiesOne(String communityId, String uid) async {
     return authorizedApi(
-        "mutation MyMutation {insert_user_communities_one(object: {community_id: $userId, user_id: $communityId}){community_id}}");
+        """mutation MyMutation {insert_user_communities(objects: {community_id: "$communityId", user_id: "$uid"}) {affected_rows}}""");
+  }
+
+  Future getCommunityJams(String cId) {
+    return authorizedApi(""" query MyQuery {
+      jams(where: {community_id: {_eq: "$cId"}}) {
+        created_at
+        created_by_id
+        date
+        id
+        info
+        latitude
+        longitude
+        name
+      }
+    }""");
+  }
+
+  getAllOtherCommunities(String uid) {
+    return authorizedApi("""
+      query MyQuery {
+        communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}}) {
+          name
+          id
+        }
+      }""");
+  }
+
+  insertJam(
+    String communityId,
+    String name,
+    String date,
+    double latitude,
+    double longitude,
+  ) {
+    return authorizedApi("""
+      mutation MyMutation {
+        insert_jams_one(object: {date: "$date", latitude: "$latitude", longitude: "$longitude", name: "$name", community_id: "$communityId"}) {
+          id
+        }
+      }""");
   }
 
   insertCommunityMessagesOne(
@@ -19,13 +94,6 @@ class Database {
   ) async {
     return authorizedApi(
         "mutation MyMutation {insert_community_messages_one(object: {communty_id: \"$communityId\", content: \"$content\"}) {from_user_id}}");
-  }
-
-  getUserData(
-    String userId,
-  ) async {
-    return authorizedApi(
-        "query MyQuery {users(where: {id: {_eq: \"$userId\"}}) {bio id name image_url}}");
   }
 
   Future authorizedApi(String query) async {

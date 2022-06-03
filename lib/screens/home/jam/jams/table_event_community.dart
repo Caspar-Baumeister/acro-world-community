@@ -1,5 +1,6 @@
-import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
+// import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/models/jam_model.dart';
+import 'package:acroworld/screens/home/jam/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -8,7 +9,7 @@ class TableEventsCommunity extends StatefulWidget {
       {required this.kEvents, Key? key, required this.cid})
       : super(key: key);
 
-  final Map<DateTime, List<Event>> kEvents;
+  final Map<DateTime, List<Jam>> kEvents;
   final String cid;
 
   @override
@@ -16,7 +17,7 @@ class TableEventsCommunity extends StatefulWidget {
 }
 
 class _TableEventsCommunityState extends State<TableEventsCommunity> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+  late final ValueNotifier<List<Jam>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by longpressing a date
@@ -39,12 +40,14 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
     super.dispose();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
+  List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
+
+    print("days: ${widget.kEvents[day]}");
     return widget.kEvents[day] ?? [];
   }
 
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+  List<Jam> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation
     final days = daysInRange(start, end);
 
@@ -90,7 +93,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TableCalendar<Event>(
+        TableCalendar<Jam>(
           firstDay: kFirstDay,
           lastDay: kLastDay,
           focusedDay: _focusedDay,
@@ -120,32 +123,22 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
         ),
         const SizedBox(height: 8.0),
         Expanded(
-          child: ValueListenableBuilder<List<Event>>(
+          child: ValueListenableBuilder<List<Jam>>(
             valueListenable: _selectedEvents,
             builder: (context, value, _) {
               return ListView.builder(
                 itemCount: value.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => JamOverview(
-                                  jam: value[index].jam,
-                                  cid: widget.cid,
-                                )),
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
                       ),
-                      title: Text(value[index].jam.name),
-                    ),
-                  );
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: JamTile(jam: value[index], cid: widget.cid));
                 },
               );
             },

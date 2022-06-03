@@ -199,8 +199,10 @@ class _RegisterBodyState extends State<RegisterBody> {
     // no error and token exist
     String _token = response["data"]["login"]["token"];
 
+    Provider.of<UserProvider>(context, listen: false).token = _token;
+
     // safe the user to provider
-    Provider.of<UserProvider>(context, listen: false).setUserFromToken(_token);
+    Provider.of<UserProvider>(context, listen: false).setUserFromToken();
 
     // safe the credentials to shared preferences
     CredentialPreferences.setEmail(email);

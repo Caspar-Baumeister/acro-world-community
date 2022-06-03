@@ -3,6 +3,7 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/services/database.dart';
+import 'package:acroworld/services/querys.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -16,6 +17,16 @@ class UserProvider extends ChangeNotifier {
   String? get token => _token;
   Map<String, dynamic>? get parsedJwt => _parsedJwt;
 
+  set token(String? token) => _token = token;
+
+  //List<String> get userCommunities => _userCommunities;
+
+  getId() {
+    Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
+    print(parseJwt);
+    return parseJwt["user_id"];
+  }
+
   Future<bool> validToken() async {
     if (_token == null) {
       return false;
@@ -26,15 +37,16 @@ class UserProvider extends ChangeNotifier {
     return await refreshToken();
   }
 
-  setUserFromToken(String token) {
-    _token = token;
-    Map<String, dynamic> payload = Jwt.parseJwt(token);
-    _parsedJwt = payload;
+  setUserFromToken() async {
+    if (token == "") {
+      _activeUser = null;
+      return;
+    }
 
-    String userId = payload["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
-    final response = Database(token: _token).getUserData(userId);
-
-    print(response);
+    //TODO fill in rest of data
+    final response = await Database(token: _token).authorizedApi(Querys.me);
+    Map user = response["data"]["me"][0];
+    _activeUser = UserModel(uid: user["id"], userName: user["name"]);
   }
 
   bool tokenIsExpired() {
@@ -59,10 +71,9 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
 
-    this.setUserFromToken(_newToken);
-
     // safe the user to provider
     _token = _newToken;
+    setUserFromToken();
     return true;
   }
 }

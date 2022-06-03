@@ -1,7 +1,9 @@
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
+import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
@@ -58,8 +60,17 @@ class NewCommunityCard extends StatelessWidget {
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
 
-    final response = await database.insertUserCommunitiesOne(community.id);
+    String uid = Provider.of<UserProvider>(context, listen: false).getId();
+
+    final response = await database.insertUserCommunitiesOne(community.id, uid);
     print(response);
+
+    // update the usercommunities
+    Provider.of<UserCommunitiesProvider>(context, listen: false)
+        .loadDataFromDatabase(token);
+
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: ((context) => const UserCommunities())));
 
     // UserCommunitiesProvider userCommunitiesProvider =
     //     Provider.of<UserCommunitiesProvider>(context, listen: false);

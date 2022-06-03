@@ -22,8 +22,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-        future:
-            Provider.of<UserProvider>(context, listen: false).refreshToken(),
+        future: checkCredentials(),
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
             return ErrorScreenWidget(error: snapshot.error.toString());
@@ -38,5 +37,17 @@ class _LogginWrapperState extends State<LogginWrapper> {
 
           return const LoadingScaffold();
         }));
+  }
+
+  Future<bool> checkCredentials() async {
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).refreshToken();
+
+    if (!isValidToken) {
+      return false;
+    }
+
+    await Provider.of<UserProvider>(context, listen: false).setUserFromToken();
+    return true;
   }
 }

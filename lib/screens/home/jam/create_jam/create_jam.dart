@@ -1,11 +1,16 @@
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/screens/home/map/map.dart';
+import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class CreateJam extends StatefulWidget {
   const CreateJam({required this.cid, Key? key}) : super(key: key);
@@ -40,7 +45,7 @@ class _CreateJamState extends State<CreateJam> {
         ? const LoadingScaffold()
         : Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBarCreateJam(onCreate: () {}),
+            appBar: AppBarCreateJam(onCreate: () => onCreate()),
             body: ViewRoot(
               child: SingleChildScrollView(
                 child: Form(
@@ -83,11 +88,14 @@ class _CreateJamState extends State<CreateJam> {
                                 return 'Provide a short description of the jam';
                               }
                               if (val.split(' ').length > maxLenght) {
-                                return 'You cannot use more then $maxLenght';
+                                return 'You cannot use more then $maxLenght words';
                               }
                               return null;
                             }),
+                        const SizedBox(height: 20),
                         Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
                           constraints: const BoxConstraints(maxHeight: 350),
                           child: MapWidget(
                             onLocationSelected: (location) =>
@@ -103,87 +111,74 @@ class _CreateJamState extends State<CreateJam> {
           );
   }
 
-//   // triggert when create is pressed
-//   void onCreate() async {
-//     if (latlng == null) {
-//       Fluttertoast.showToast(
-//           msg: "Set a location before creating",
-//           toastLength: Toast.LENGTH_SHORT,
-//           gravity: ToastGravity.TOP,
-//           timeInSecForIosWeb: 1,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white,
-//           fontSize: 16.0);
-//       return;
-//     }
-//     if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-//       setState(() {
-//         loading = true;
-//       });
+  // triggert when create is pressed
+  void onCreate() async {
+    if (latlng == null) {
+      Fluttertoast.showToast(
+          msg: "Set a location before creating",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.TOP,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+      return;
+    }
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
 
-//       // get activ user to safe the id
-//       UserModel user =
-//           Provider.of<UserProvider>(context, listen: false).activeUser!;
+    setState(() {
+      loading = true;
+    });
 
-//       DataBaseService dataBaseService = DataBaseService(uid: user.uid);
-//       // creates a new jam object
-//       dataBaseService.addJam(
-//           cid: widget.cid,
-//           name: name,
-//           imgUrl: imgUrl,
-//           location: location,
-//           date: Timestamp.fromDate(_chosenDateTime),
-//           latlng: latlng!,
-//           info: info);
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return null;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+    final database = Database(token: token);
+    final response = await database.insertJam(widget.cid, name,
+        _chosenDateTime.toIso8601String(), latlng!.latitude, latlng!.longitude);
 
-//       // update the usercommunityprovider and the database,
-//       // that the user just created a new jam
-//       UserCommunitiesProvider userCommunitiesProvider =
-//           Provider.of<UserCommunitiesProvider>(context, listen: false);
+    print("create jam response: $response");
 
-//       Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
-//           .firstWhere((element) => element["community_id"] == widget.cid));
+    // Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
+    //     .firstWhere((element) => element["community_id"] == widget.cid));
 
-//       communityMap["last_created_jam_at"] = Timestamp.now();
+    // communityMap["last_created_jam_at"] = Timestamp.now();
 
-//       List<Map> newCommunities =
-//           List<Map>.from(userCommunitiesProvider.userCommunityMaps);
+    // List<Map> newCommunities =
+    //     List<Map>.from(userCommunitiesProvider.userCommunityMaps);
 
-//       newCommunities
-//           .removeWhere((element) => element["community_id"] == widget.cid);
+    // newCommunities
+    //     .removeWhere((element) => element["community_id"] == widget.cid);
 
-//       newCommunities.add(communityMap);
+    // newCommunities.add(communityMap);
 
-//       userCommunitiesProvider.userCommunityMaps = newCommunities;
-//       dataBaseService.updateUserDataField(
-//           field: "communities", value: newCommunities);
+    // userCommunitiesProvider.userCommunityMaps = newCommunities;
+    // dataBaseService.updateUserDataField(
+    //     field: "communities", value: newCommunities);
 
-//       // update next jam if newer one occurs
-//       DocumentSnapshot community =
-//           await dataBaseService.getCommunity(widget.cid);
+    // // update next jam if newer one occurs
+    // DocumentSnapshot community = await dataBaseService.getCommunity(widget.cid);
 
-//       if (community
-//               .get("next_jam")
-//               .toDate()
-//               .difference(_chosenDateTime)
-//               .inHours >
-//           0) {
-//         dataBaseService.updateCommunityDataField(
-//             cid: widget.cid,
-//             field: "next_jam",
-//             value: Timestamp.fromDate(_chosenDateTime));
-//       }
+    // if (community.get("next_jam").toDate().difference(_chosenDateTime).inHours >
+    //     0) {
+    //   dataBaseService.updateCommunityDataField(
+    //       cid: widget.cid,
+    //       field: "next_jam",
+    //       value: Timestamp.fromDate(_chosenDateTime));
+    // }
 
-//       setState(() {
-//         loading = false;
-//       });
-//       Navigator.pop(context);
+    setState(() {
+      loading = false;
+    });
+    Navigator.pop(context);
 
-//       // error handling
-//     } else {
-//       setState(() {
-//         loading = false;
-//       });
-//     }
-//   }
+    // error handling
+  }
 }
