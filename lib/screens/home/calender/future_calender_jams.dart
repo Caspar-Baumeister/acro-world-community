@@ -1,7 +1,7 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
-import 'package:acroworld/screens/home/jam/jams/jams_body.dart';
+import 'package:acroworld/screens/home/calender/calender_body.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/error_page.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
@@ -9,16 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class FutureJams extends StatefulWidget {
-  const FutureJams({Key? key, required this.cId}) : super(key: key);
-
-  final String cId;
+class FutureCalenderJams extends StatefulWidget {
+  const FutureCalenderJams({Key? key}) : super(key: key);
 
   @override
-  State<FutureJams> createState() => _FutureJamsState();
+  State<FutureCalenderJams> createState() => _FutureCalenderJamsState();
 }
 
-class _FutureJamsState extends State<FutureJams> {
+class _FutureCalenderJamsState extends State<FutureCalenderJams> {
   @override
   Widget build(BuildContext context) {
     //final UserProvider user = Provider.of<UserProvider>(context, listen: true);
@@ -36,9 +34,8 @@ class _FutureJamsState extends State<FutureJams> {
               child: SingleChildScrollView(
                 child: SizedBox(
                   height: MediaQuery.of(context).size.height,
-                  child: JamsBody(
-                    jams: data ?? [],
-                    cId: widget.cId,
+                  child: CalenderBody(
+                    userJams: data ?? [],
                   ),
                 ),
               ),
@@ -59,19 +56,45 @@ class _FutureJamsState extends State<FutureJams> {
     }
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
-    final response = await database.getCommunityJams(widget.cId);
-    List jams = response["data"]["jams"];
+    // get all jams from my communities
+    //final response = await database.getUserJams(widget.cId);
 
-    return List<Jam>.from(jams.map((jam) => Jam(
-        cid: jam["community_id"],
-        jid: jam["id"],
-        createdAt: DateTime.parse(jam["created_at"]),
-        createdBy: jam["created_by_id"],
-        participants: [],
-        date: DateTime.parse(jam["date"]),
-        name: jam["name"],
-        // imgUrl: "",
-        info: jam["info"],
-        latLng: LatLng(jam["latitude"], jam["longitude"]))));
+    // get all participated jams
+    final response = await database.getJamsParticipated(
+        Provider.of<UserProvider>(context, listen: false).activeUser!.uid);
+
+    final jams = response["data"]["me"][0]["participates"];
+
+    final jamList = List<Jam>.from(jams.map((jamjson) {
+      print(jamjson);
+      final jam = jamjson["jam"];
+      print(jam.toString());
+
+      print(jam["id"]);
+      print(jam["name"]);
+      print(jam["latitude"]);
+      print(jam["latitude"]);
+      print(jam["date"]);
+      print(jam["created_by_id"]);
+
+      final jamObject = Jam(
+          cid: jam["community_id"],
+          jid: jam["id"],
+          createdAt: DateTime.parse(jam["created_at"]),
+          createdBy: jam["created_by_id"],
+          participants: [],
+          date: DateTime.parse(jam["date"]),
+          name: jam["name"],
+          // imgUrl: "",
+          info: jam["info"],
+          latLng: LatLng(jam["latitude"], jam["longitude"]));
+
+      print(jamObject.toString());
+
+      return jamObject;
+    }));
+
+    print(jamList);
+    return jamList;
   }
 }

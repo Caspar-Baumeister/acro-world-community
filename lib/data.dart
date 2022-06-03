@@ -63,6 +63,7 @@ class DataClass {
             item % 4 + 1,
             (index) => Event(
                   Jam(
+                    cid: "",
                     jid: "ji2d",
                     createdAt: DateTime.now(),
                     createdBy: "lksAdfn4390asd",
@@ -79,6 +80,7 @@ class DataClass {
 
   List<Jam> jams = [
     Jam(
+      cid: "",
       jid: "jid",
       createdAt: DateTime.now(),
       createdBy: "lksAdfn4390asd",
@@ -90,6 +92,7 @@ class DataClass {
       latLng: const LatLng(10.000002, 12.00001),
     ),
     Jam(
+      cid: "",
       jid: "ji2d",
       createdAt: DateTime.now(),
       createdBy: "lksAdfn4390asd",

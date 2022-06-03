@@ -49,7 +49,8 @@ class _MessageTextFieldState extends State<MessageTextField> {
                   child: TextField(
                     cursorColor: Colors.black,
                     keyboardType: TextInputType.multiline,
-                    maxLines: null,
+                    maxLines: 8,
+                    minLines: 1,
                     controller: _controller,
                     textCapitalization: TextCapitalization.sentences,
                     autocorrect: true,

@@ -1,5 +1,6 @@
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/home/calender/table_event.dart';
+import 'package:acroworld/screens/home/calender/table_event_participates.dart';
+import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class CalenderBody extends StatelessWidget {
@@ -9,6 +10,6 @@ class CalenderBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const TableEvents();
+    return TableEventsParticipates(kEvents: jamListToHash(userJams));
   }
 }

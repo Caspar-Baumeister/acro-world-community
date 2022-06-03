@@ -1,5 +1,4 @@
 import 'package:acroworld/models/message_model.dart';
-import 'package:acroworld/screens/home/profile/profile.dart';
 import 'package:flutter/material.dart';
 
 // Let the messagetile fetch the user data from the user id (dont safe other things then message and uid in the message, created at)
@@ -111,25 +110,13 @@ class MessageTile extends StatelessWidget {
               ? const SizedBox(
                   width: 0,
                 )
-              : GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Profile(
-                          uid: message.uid,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    message.userName,
-                    style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16),
-                    //textAlign: isMe ? TextAlign.end : TextAlign.start,
-                  ),
+              : Text(
+                  message.userName,
+                  style: const TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16),
+                  //textAlign: isMe ? TextAlign.end : TextAlign.start,
                 ),
           Text(
             message.text,

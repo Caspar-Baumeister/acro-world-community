@@ -1,6 +1,7 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Jam {
+  String cid;
   String jid;
   String name;
   String? imgUrl;
@@ -13,6 +14,7 @@ class Jam {
 
   Jam(
       {required this.jid,
+      required this.cid,
       required this.createdAt,
       required this.createdBy,
       required this.participants,
@@ -24,6 +26,7 @@ class Jam {
 
   factory Jam.fromJson(dynamic json, String jid) {
     return Jam(
+        cid: json["community_id"],
         jid: jid,
         participants:
             List<String>.from(json["participants"].map((e) => e.toString())),

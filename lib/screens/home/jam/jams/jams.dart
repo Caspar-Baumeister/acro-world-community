@@ -21,9 +21,10 @@ class Jams extends StatelessWidget {
         floatingActionButton: GestureDetector(
           onTap: () => handleCreateJam(context),
           child: Container(
-            width: 80,
+            width: 86,
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
+                color: Colors.grey,
                 border: Border.all(
                   width: 1,
                   color: Colors.grey,
@@ -32,7 +33,11 @@ class Jams extends StatelessWidget {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: const [
-                Text("New"),
+                SizedBox(width: 6),
+                Text(
+                  "New",
+                  style: TextStyle(color: Colors.black),
+                ),
                 SizedBox(width: 6),
                 ImageIcon(
                   AssetImage("assets/muscleup_drawing.png"),

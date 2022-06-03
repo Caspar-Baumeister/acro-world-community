@@ -1,21 +1,22 @@
-import 'dart:collection';
-
-import 'package:acroworld/models/event_model.dart';
+// import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/screens/home/jam/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class TableEvents extends StatefulWidget {
-  const TableEvents({Key? key}) : super(key: key);
+class TableEventsParticipates extends StatefulWidget {
+  const TableEventsParticipates({required this.kEvents, Key? key})
+      : super(key: key);
+
+  final Map<DateTime, List<Jam>> kEvents;
 
   @override
-  _TableEventsState createState() => _TableEventsState();
+  _TableEventsParticipatesState createState() =>
+      _TableEventsParticipatesState();
 }
 
-class _TableEventsState extends State<TableEvents> {
-  late final ValueNotifier<List<Event>> _selectedEvents;
+class _TableEventsParticipatesState extends State<TableEventsParticipates> {
+  late final ValueNotifier<List<Jam>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by longpressing a date
@@ -38,12 +39,14 @@ class _TableEventsState extends State<TableEvents> {
     super.dispose();
   }
 
-  List<Event> _getEventsForDay(DateTime day) {
+  List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
-    return kEvents[day] ?? [];
+
+    print("days: ${widget.kEvents[day]}");
+    return widget.kEvents[day] ?? [];
   }
 
-  List<Event> _getEventsForRange(DateTime start, DateTime end) {
+  List<Jam> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation
     final days = daysInRange(start, end);
 
@@ -89,7 +92,7 @@ class _TableEventsState extends State<TableEvents> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        TableCalendar<Event>(
+        TableCalendar<Jam>(
           firstDay: kFirstDay,
           lastDay: kLastDay,
           focusedDay: _focusedDay,
@@ -119,26 +122,25 @@ class _TableEventsState extends State<TableEvents> {
         ),
         const SizedBox(height: 8.0),
         Expanded(
-          child: ValueListenableBuilder<List<Event>>(
+          child: ValueListenableBuilder<List<Jam>>(
             valueListenable: _selectedEvents,
             builder: (context, value, _) {
               return ListView.builder(
                 itemCount: value.length,
                 itemBuilder: (context, index) {
                   return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      onTap: () => print('${value[index]}'),
-                      title: Text(value[index].jam.name),
-                    ),
-                  );
+                      margin: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(),
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: JamTile(
+                        jam: value[index],
+                        cid: value[index].cid,
+                      ));
                 },
               );
             },
@@ -147,39 +149,6 @@ class _TableEventsState extends State<TableEvents> {
       ],
     );
   }
-}
-
-///  events.
-///
-/// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-final now = DateTime.now();
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-)..addAll(_kEventSource);
-
-final _kEventSource = {
-  for (var item in List.generate(50, (index) => index))
-    DateTime.utc(kFirstDay.year, kFirstDay.month, item * 5): List.generate(
-        item % 4 + 1,
-        (index) => Event(
-              Jam(
-                cid: "",
-                jid: "ji2d",
-                createdAt: DateTime.now(),
-                createdBy: "lksAdfn4390asd",
-                participants: [],
-                date: DateTime(now.year, now.month, now.day + 1),
-                name: "Jam nummer $index",
-                imgUrl: MORTY_IMG_URL,
-                info: "Why Poor People remain Poor?",
-                latLng: const LatLng(20.000002, 18.00001),
-              ),
-            ))
-};
-
-int getHashCode(DateTime key) {
-  return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
 /// Returns a list of [DateTime] objects from [first] to [last], inclusive.

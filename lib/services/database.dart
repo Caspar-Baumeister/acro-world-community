@@ -48,6 +48,27 @@ class Database {
         """mutation MyMutation {insert_user_communities(objects: {community_id: "$communityId", user_id: "$uid"}) {affected_rows}}""");
   }
 
+  getJamsParticipated(String uid) {
+    return authorizedApi("""
+      query MyQuery {
+  me {
+    participates(order_by: {jam: {date: asc}}) {
+      jam {
+        name
+        longitude
+        latitude
+        info
+        id
+        date
+        created_by_id
+        created_at
+        community_id
+      }
+    }
+  }
+}""");
+  }
+
   Future getCommunityJams(String cId) {
     return authorizedApi(""" query MyQuery {
       jams(where: {community_id: {_eq: "$cId"}}) {
@@ -59,6 +80,7 @@ class Database {
         latitude
         longitude
         name
+        community_id
       }
     }""");
   }
