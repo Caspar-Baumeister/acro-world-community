@@ -9,13 +9,12 @@ import 'package:jwt_decode/jwt_decode.dart';
 class UserProvider extends ChangeNotifier {
   UserModel? _activeUser;
   String? _token;
-  //List<String> _userCommunities = [];
+  Map<String, dynamic>? _parsedJwt;
 
   // getter
   UserModel? get activeUser => _activeUser;
   String? get token => _token;
-
-  //List<String> get userCommunities => _userCommunities;
+  Map<String, dynamic>? get parsedJwt => _parsedJwt;
 
   Future<bool> validToken() async {
     if (_token == null) {
@@ -30,23 +29,12 @@ class UserProvider extends ChangeNotifier {
   setUserFromToken(String token) {
     _token = token;
     Map<String, dynamic> payload = Jwt.parseJwt(token);
+    _parsedJwt = payload;
 
     String userId = payload["https://hasura.io/jwt/claims"]["x-hasura-user-id"];
     final response = Database(token: _token).getUserData(userId);
 
     print(response);
-//     {
-//   "data": {
-//     "users": [
-//       {
-//         "bio": null,
-//         "id": "51b867eb-9d28-4570-b42a-34359eecb7c0",
-//         "name": "Caspar",
-//         "image_url": null
-//       }
-//     ]
-//   }
-// }
   }
 
   bool tokenIsExpired() {
@@ -71,62 +59,10 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
 
+    this.setUserFromToken(_newToken);
+
     // safe the user to provider
     _token = _newToken;
     return true;
   }
 }
-
-  // set userCommunities(List<String> communities) {
-  //   _userCommunities = communities;
-  //   notifyListeners();
-  // }
-
-  // addUserCommunities(String communityId) {
-  //   if (_userCommunities == null) return;
-  //   _userCommunities.add(communityId);
-  //   notifyListeners();
-  // }
-
-  // set activeUserImgUrl(String imgUrl) {
-  //   if (_activeUser == null) return;
-  //   UserModel user = _activeUser!;
-  //   user.imgUrl = imgUrl;
-  //   _activeUser = user;
-  //   notifyListeners();
-  // }
-
-  // updates the user provider based on the firebase database
-  // Future<void> updateUser(String uid) async {
-  //   final database = DataBaseService(uid: uid);
-
-  //   //gets the raw user and user communities
-  //   DocumentSnapshot<Object?> infoSnapshot = await database.getUserInfo();
-  //   QuerySnapshot<Object?> communitiesSnapshot =
-  //       await database.getAllUserCommunities();
-
-  //   // Create UserModel
-  //   UserModel userModel = UserModel(
-  //     uid: uid,
-  //     userName: infoSnapshot.get("userName"),
-  //     imgUrl: infoSnapshot.get("imgUrl"),
-  //     bio: infoSnapshot.get("bio"),
-  //     lastCreatedCommunity: infoSnapshot.get("last_proposed_community"),
-  //     createdAt: infoSnapshot.get("created_at"),
-  //   );
-
-  //   // create user communities list
-  //   List<String> communities =
-  //       List<String>.from(communitiesSnapshot.docs.map((doc) => doc.id));
-  //   //, lastCreatedJamAt: doc.get("last_created_jam_at"))));
-
-  //   _activeUser = userModel;
-  //   userCommunities = communities;
-  //   notifyListeners();
-  // }
-
-//   setUser(Map data) {
-//     _activeUser = UserModel.fromJson(data, data["id"]);
-//     notifyListeners();
-//   }
-// }

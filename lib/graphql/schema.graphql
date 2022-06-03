@@ -1,0 +1,3602 @@
+schema {
+  query: query_root
+  mutation: mutation_root
+  subscription: subscription_root
+}
+
+"""whether this query should be cached (Hasura Cloud only)"""
+directive @cached(
+  """measured in seconds"""
+  ttl: Int! = 60
+
+  """refresh the cache entry"""
+  refresh: Boolean! = false
+) on QUERY
+
+"""
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+input LocationInput {
+  latitude: Float!
+  longitude: Float!
+}
+
+type LocationReturn {
+  latitude: Float!
+  location_name: String!
+  longitude: Float!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  token: String!
+  user: UserResponse!
+}
+
+type MatchedSubstring {
+  length: Float!
+  offset: Float!
+}
+
+input MessageInput {
+  text: String!
+  to_user_id: Int!
+}
+
+type MessageReturn {
+  id: Float!
+}
+
+type Place {
+  description: String!
+  id: String!
+  latitude: Float!
+  longitude: Float!
+}
+
+type PlaceSuggestion {
+  description: String!
+  id: String!
+  matched_substrings: [MatchedSubstring!]!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  userName: String!
+}
+
+type RegisterResponse {
+  token: String!
+  user: RegisterUserResponse!
+}
+
+type RegisterUserResponse {
+  id: String!
+  name: String!
+}
+
+"""
+Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'.
+"""
+input String_comparison_exp {
+  _eq: String
+  _gt: String
+  _gte: String
+
+  """does the column match the given case-insensitive pattern"""
+  _ilike: String
+  _in: [String!]
+
+  """
+  does the column match the given POSIX regular expression, case insensitive
+  """
+  _iregex: String
+  _is_null: Boolean
+
+  """does the column match the given pattern"""
+  _like: String
+  _lt: String
+  _lte: String
+  _neq: String
+
+  """does the column NOT match the given case-insensitive pattern"""
+  _nilike: String
+  _nin: [String!]
+
+  """
+  does the column NOT match the given POSIX regular expression, case insensitive
+  """
+  _niregex: String
+
+  """does the column NOT match the given pattern"""
+  _nlike: String
+
+  """
+  does the column NOT match the given POSIX regular expression, case sensitive
+  """
+  _nregex: String
+
+  """does the column NOT match the given SQL regular expression"""
+  _nsimilar: String
+
+  """
+  does the column match the given POSIX regular expression, case sensitive
+  """
+  _regex: String
+
+  """does the column match the given SQL regular expression"""
+  _similar: String
+}
+
+type UserResponse {
+  id: String!
+  name: String!
+}
+
+"""
+columns and relationships of "communities"
+"""
+type communities {
+  confirmed: Boolean!
+  id: uuid!
+
+  """An array relationship"""
+  jams(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): [jams!]!
+
+  """An aggregate relationship"""
+  jams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): jams_aggregate!
+  name: String!
+  proposed_by_id: uuid!
+
+  """An object relationship"""
+  proposed_by_user: users!
+
+  """An array relationship"""
+  users(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): [user_communities!]!
+
+  """An aggregate relationship"""
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): user_communities_aggregate!
+}
+
+"""
+aggregated selection of "communities"
+"""
+type communities_aggregate {
+  aggregate: communities_aggregate_fields
+  nodes: [communities!]!
+}
+
+"""
+aggregate fields of "communities"
+"""
+type communities_aggregate_fields {
+  count(columns: [communities_select_column!], distinct: Boolean): Int!
+  max: communities_max_fields
+  min: communities_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "communities". All fields are combined with a logical 'AND'.
+"""
+input communities_bool_exp {
+  _and: [communities_bool_exp!]
+  _not: communities_bool_exp
+  _or: [communities_bool_exp!]
+  confirmed: Boolean_comparison_exp
+  id: uuid_comparison_exp
+  jams: jams_bool_exp
+  name: String_comparison_exp
+  proposed_by_id: uuid_comparison_exp
+  proposed_by_user: users_bool_exp
+  users: user_communities_bool_exp
+}
+
+"""
+unique or primary key constraints on table "communities"
+"""
+enum communities_constraint {
+  """unique or primary key constraint"""
+  community_pkey
+}
+
+"""
+input type for inserting data into table "communities"
+"""
+input communities_insert_input {
+  confirmed: Boolean
+  id: uuid
+  jams: jams_arr_rel_insert_input
+  name: String
+  proposed_by_id: uuid
+  proposed_by_user: users_obj_rel_insert_input
+  users: user_communities_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type communities_max_fields {
+  id: uuid
+  name: String
+  proposed_by_id: uuid
+}
+
+"""aggregate min on columns"""
+type communities_min_fields {
+  id: uuid
+  name: String
+  proposed_by_id: uuid
+}
+
+"""
+response of any mutation on the table "communities"
+"""
+type communities_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [communities!]!
+}
+
+"""
+input type for inserting object relation for remote table "communities"
+"""
+input communities_obj_rel_insert_input {
+  data: communities_insert_input!
+
+  """upsert condition"""
+  on_conflict: communities_on_conflict
+}
+
+"""
+on_conflict condition type for table "communities"
+"""
+input communities_on_conflict {
+  constraint: communities_constraint!
+  update_columns: [communities_update_column!]! = []
+  where: communities_bool_exp
+}
+
+"""Ordering options when selecting data from "communities"."""
+input communities_order_by {
+  confirmed: order_by
+  id: order_by
+  jams_aggregate: jams_aggregate_order_by
+  name: order_by
+  proposed_by_id: order_by
+  proposed_by_user: users_order_by
+  users_aggregate: user_communities_aggregate_order_by
+}
+
+"""primary key columns input for table: communities"""
+input communities_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "communities"
+"""
+enum communities_select_column {
+  """column name"""
+  confirmed
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  proposed_by_id
+}
+
+"""
+input type for updating data in table "communities"
+"""
+input communities_set_input {
+  confirmed: Boolean
+  id: uuid
+  name: String
+  proposed_by_id: uuid
+}
+
+"""
+update columns of table "communities"
+"""
+enum communities_update_column {
+  """column name"""
+  confirmed
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  proposed_by_id
+}
+
+"""
+columns and relationships of "community_messages"
+"""
+type community_messages {
+  """An object relationship"""
+  community: communities!
+  community_id: uuid!
+  content: String!
+  created_at: timestamptz!
+
+  """An object relationship"""
+  from_user: users!
+  from_user_id: uuid!
+  id: uuid!
+}
+
+"""
+aggregated selection of "community_messages"
+"""
+type community_messages_aggregate {
+  aggregate: community_messages_aggregate_fields
+  nodes: [community_messages!]!
+}
+
+"""
+aggregate fields of "community_messages"
+"""
+type community_messages_aggregate_fields {
+  count(columns: [community_messages_select_column!], distinct: Boolean): Int!
+  max: community_messages_max_fields
+  min: community_messages_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "community_messages". All fields are combined with a logical 'AND'.
+"""
+input community_messages_bool_exp {
+  _and: [community_messages_bool_exp!]
+  _not: community_messages_bool_exp
+  _or: [community_messages_bool_exp!]
+  community: communities_bool_exp
+  community_id: uuid_comparison_exp
+  content: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  from_user: users_bool_exp
+  from_user_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "community_messages"
+"""
+enum community_messages_constraint {
+  """unique or primary key constraint"""
+  community_messages_pkey
+}
+
+"""
+input type for inserting data into table "community_messages"
+"""
+input community_messages_insert_input {
+  community: communities_obj_rel_insert_input
+  community_id: uuid
+  content: String
+  created_at: timestamptz
+  from_user: users_obj_rel_insert_input
+  from_user_id: uuid
+  id: uuid
+}
+
+"""aggregate max on columns"""
+type community_messages_max_fields {
+  community_id: uuid
+  content: String
+  created_at: timestamptz
+  from_user_id: uuid
+  id: uuid
+}
+
+"""aggregate min on columns"""
+type community_messages_min_fields {
+  community_id: uuid
+  content: String
+  created_at: timestamptz
+  from_user_id: uuid
+  id: uuid
+}
+
+"""
+response of any mutation on the table "community_messages"
+"""
+type community_messages_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [community_messages!]!
+}
+
+"""
+on_conflict condition type for table "community_messages"
+"""
+input community_messages_on_conflict {
+  constraint: community_messages_constraint!
+  update_columns: [community_messages_update_column!]! = []
+  where: community_messages_bool_exp
+}
+
+"""Ordering options when selecting data from "community_messages"."""
+input community_messages_order_by {
+  community: communities_order_by
+  community_id: order_by
+  content: order_by
+  created_at: order_by
+  from_user: users_order_by
+  from_user_id: order_by
+  id: order_by
+}
+
+"""primary key columns input for table: community_messages"""
+input community_messages_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "community_messages"
+"""
+enum community_messages_select_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  content
+
+  """column name"""
+  created_at
+
+  """column name"""
+  from_user_id
+
+  """column name"""
+  id
+}
+
+"""
+input type for updating data in table "community_messages"
+"""
+input community_messages_set_input {
+  community_id: uuid
+  content: String
+  created_at: timestamptz
+  from_user_id: uuid
+  id: uuid
+}
+
+"""
+update columns of table "community_messages"
+"""
+enum community_messages_update_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  content
+
+  """column name"""
+  created_at
+
+  """column name"""
+  from_user_id
+
+  """column name"""
+  id
+}
+
+"""
+columns and relationships of "jam_participants"
+"""
+type jam_participants {
+  id: uuid!
+
+  """An object relationship"""
+  jam: jams!
+  jam_id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "jam_participants"
+"""
+type jam_participants_aggregate {
+  aggregate: jam_participants_aggregate_fields
+  nodes: [jam_participants!]!
+}
+
+"""
+aggregate fields of "jam_participants"
+"""
+type jam_participants_aggregate_fields {
+  count(columns: [jam_participants_select_column!], distinct: Boolean): Int!
+  max: jam_participants_max_fields
+  min: jam_participants_min_fields
+}
+
+"""
+order by aggregate values of table "jam_participants"
+"""
+input jam_participants_aggregate_order_by {
+  count: order_by
+  max: jam_participants_max_order_by
+  min: jam_participants_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "jam_participants"
+"""
+input jam_participants_arr_rel_insert_input {
+  data: [jam_participants_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: jam_participants_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "jam_participants". All fields are combined with a logical 'AND'.
+"""
+input jam_participants_bool_exp {
+  _and: [jam_participants_bool_exp!]
+  _not: jam_participants_bool_exp
+  _or: [jam_participants_bool_exp!]
+  id: uuid_comparison_exp
+  jam: jams_bool_exp
+  jam_id: uuid_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "jam_participants"
+"""
+enum jam_participants_constraint {
+  """unique or primary key constraint"""
+  jam_participants_pkey
+}
+
+"""
+input type for inserting data into table "jam_participants"
+"""
+input jam_participants_insert_input {
+  id: uuid
+  jam: jams_obj_rel_insert_input
+  jam_id: uuid
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type jam_participants_max_fields {
+  id: uuid
+  jam_id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "jam_participants"
+"""
+input jam_participants_max_order_by {
+  id: order_by
+  jam_id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type jam_participants_min_fields {
+  id: uuid
+  jam_id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "jam_participants"
+"""
+input jam_participants_min_order_by {
+  id: order_by
+  jam_id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "jam_participants"
+"""
+type jam_participants_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [jam_participants!]!
+}
+
+"""
+on_conflict condition type for table "jam_participants"
+"""
+input jam_participants_on_conflict {
+  constraint: jam_participants_constraint!
+  update_columns: [jam_participants_update_column!]! = []
+  where: jam_participants_bool_exp
+}
+
+"""Ordering options when selecting data from "jam_participants"."""
+input jam_participants_order_by {
+  id: order_by
+  jam: jams_order_by
+  jam_id: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: jam_participants"""
+input jam_participants_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "jam_participants"
+"""
+enum jam_participants_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  jam_id
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "jam_participants"
+"""
+input jam_participants_set_input {
+  id: uuid
+  jam_id: uuid
+  user_id: uuid
+}
+
+"""
+update columns of table "jam_participants"
+"""
+enum jam_participants_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  jam_id
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "jams"
+"""
+type jams {
+  """An object relationship"""
+  community: communities!
+  community_id: uuid!
+  created_at: timestamptz!
+
+  """An object relationship"""
+  created_by: users!
+  created_by_id: uuid!
+  date: timestamptz!
+  id: uuid!
+  info: String
+  latitude: numeric!
+  longitude: numeric!
+  name: String!
+
+  """An array relationship"""
+  participants(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): [jam_participants!]!
+
+  """An aggregate relationship"""
+  participants_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): jam_participants_aggregate!
+}
+
+"""
+aggregated selection of "jams"
+"""
+type jams_aggregate {
+  aggregate: jams_aggregate_fields
+  nodes: [jams!]!
+}
+
+"""
+aggregate fields of "jams"
+"""
+type jams_aggregate_fields {
+  avg: jams_avg_fields
+  count(columns: [jams_select_column!], distinct: Boolean): Int!
+  max: jams_max_fields
+  min: jams_min_fields
+  stddev: jams_stddev_fields
+  stddev_pop: jams_stddev_pop_fields
+  stddev_samp: jams_stddev_samp_fields
+  sum: jams_sum_fields
+  var_pop: jams_var_pop_fields
+  var_samp: jams_var_samp_fields
+  variance: jams_variance_fields
+}
+
+"""
+order by aggregate values of table "jams"
+"""
+input jams_aggregate_order_by {
+  avg: jams_avg_order_by
+  count: order_by
+  max: jams_max_order_by
+  min: jams_min_order_by
+  stddev: jams_stddev_order_by
+  stddev_pop: jams_stddev_pop_order_by
+  stddev_samp: jams_stddev_samp_order_by
+  sum: jams_sum_order_by
+  var_pop: jams_var_pop_order_by
+  var_samp: jams_var_samp_order_by
+  variance: jams_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "jams"
+"""
+input jams_arr_rel_insert_input {
+  data: [jams_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: jams_on_conflict
+}
+
+"""aggregate avg on columns"""
+type jams_avg_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by avg() on columns of table "jams"
+"""
+input jams_avg_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "jams". All fields are combined with a logical 'AND'.
+"""
+input jams_bool_exp {
+  _and: [jams_bool_exp!]
+  _not: jams_bool_exp
+  _or: [jams_bool_exp!]
+  community: communities_bool_exp
+  community_id: uuid_comparison_exp
+  created_at: timestamptz_comparison_exp
+  created_by: users_bool_exp
+  created_by_id: uuid_comparison_exp
+  date: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  info: String_comparison_exp
+  latitude: numeric_comparison_exp
+  longitude: numeric_comparison_exp
+  name: String_comparison_exp
+  participants: jam_participants_bool_exp
+}
+
+"""
+unique or primary key constraints on table "jams"
+"""
+enum jams_constraint {
+  """unique or primary key constraint"""
+  jam_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "jams"
+"""
+input jams_inc_input {
+  latitude: numeric
+  longitude: numeric
+}
+
+"""
+input type for inserting data into table "jams"
+"""
+input jams_insert_input {
+  community: communities_obj_rel_insert_input
+  community_id: uuid
+  created_at: timestamptz
+  created_by: users_obj_rel_insert_input
+  created_by_id: uuid
+  date: timestamptz
+  id: uuid
+  info: String
+  latitude: numeric
+  longitude: numeric
+  name: String
+  participants: jam_participants_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type jams_max_fields {
+  community_id: uuid
+  created_at: timestamptz
+  created_by_id: uuid
+  date: timestamptz
+  id: uuid
+  info: String
+  latitude: numeric
+  longitude: numeric
+  name: String
+}
+
+"""
+order by max() on columns of table "jams"
+"""
+input jams_max_order_by {
+  community_id: order_by
+  created_at: order_by
+  created_by_id: order_by
+  date: order_by
+  id: order_by
+  info: order_by
+  latitude: order_by
+  longitude: order_by
+  name: order_by
+}
+
+"""aggregate min on columns"""
+type jams_min_fields {
+  community_id: uuid
+  created_at: timestamptz
+  created_by_id: uuid
+  date: timestamptz
+  id: uuid
+  info: String
+  latitude: numeric
+  longitude: numeric
+  name: String
+}
+
+"""
+order by min() on columns of table "jams"
+"""
+input jams_min_order_by {
+  community_id: order_by
+  created_at: order_by
+  created_by_id: order_by
+  date: order_by
+  id: order_by
+  info: order_by
+  latitude: order_by
+  longitude: order_by
+  name: order_by
+}
+
+"""
+response of any mutation on the table "jams"
+"""
+type jams_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [jams!]!
+}
+
+"""
+input type for inserting object relation for remote table "jams"
+"""
+input jams_obj_rel_insert_input {
+  data: jams_insert_input!
+
+  """upsert condition"""
+  on_conflict: jams_on_conflict
+}
+
+"""
+on_conflict condition type for table "jams"
+"""
+input jams_on_conflict {
+  constraint: jams_constraint!
+  update_columns: [jams_update_column!]! = []
+  where: jams_bool_exp
+}
+
+"""Ordering options when selecting data from "jams"."""
+input jams_order_by {
+  community: communities_order_by
+  community_id: order_by
+  created_at: order_by
+  created_by: users_order_by
+  created_by_id: order_by
+  date: order_by
+  id: order_by
+  info: order_by
+  latitude: order_by
+  longitude: order_by
+  name: order_by
+  participants_aggregate: jam_participants_aggregate_order_by
+}
+
+"""primary key columns input for table: jams"""
+input jams_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "jams"
+"""
+enum jams_select_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  created_by_id
+
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  info
+
+  """column name"""
+  latitude
+
+  """column name"""
+  longitude
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "jams"
+"""
+input jams_set_input {
+  community_id: uuid
+  created_at: timestamptz
+  created_by_id: uuid
+  date: timestamptz
+  id: uuid
+  info: String
+  latitude: numeric
+  longitude: numeric
+  name: String
+}
+
+"""aggregate stddev on columns"""
+type jams_stddev_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by stddev() on columns of table "jams"
+"""
+input jams_stddev_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type jams_stddev_pop_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by stddev_pop() on columns of table "jams"
+"""
+input jams_stddev_pop_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type jams_stddev_samp_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by stddev_samp() on columns of table "jams"
+"""
+input jams_stddev_samp_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""aggregate sum on columns"""
+type jams_sum_fields {
+  latitude: numeric
+  longitude: numeric
+}
+
+"""
+order by sum() on columns of table "jams"
+"""
+input jams_sum_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""
+update columns of table "jams"
+"""
+enum jams_update_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  created_at
+
+  """column name"""
+  created_by_id
+
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  info
+
+  """column name"""
+  latitude
+
+  """column name"""
+  longitude
+
+  """column name"""
+  name
+}
+
+"""aggregate var_pop on columns"""
+type jams_var_pop_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by var_pop() on columns of table "jams"
+"""
+input jams_var_pop_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""aggregate var_samp on columns"""
+type jams_var_samp_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by var_samp() on columns of table "jams"
+"""
+input jams_var_samp_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""aggregate variance on columns"""
+type jams_variance_fields {
+  latitude: Float
+  longitude: Float
+}
+
+"""
+order by variance() on columns of table "jams"
+"""
+input jams_variance_order_by {
+  latitude: order_by
+  longitude: order_by
+}
+
+"""
+columns and relationships of "me"
+"""
+type me {
+  bio: String
+
+  """An array relationship"""
+  communities(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): [user_communities!]!
+
+  """An aggregate relationship"""
+  communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): user_communities_aggregate!
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+
+  """An array relationship"""
+  participates_in_jams(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): [jam_participants!]!
+
+  """An aggregate relationship"""
+  participates_in_jams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): jam_participants_aggregate!
+}
+
+"""
+aggregated selection of "me"
+"""
+type me_aggregate {
+  aggregate: me_aggregate_fields
+  nodes: [me!]!
+}
+
+"""
+aggregate fields of "me"
+"""
+type me_aggregate_fields {
+  count(columns: [me_select_column!], distinct: Boolean): Int!
+  max: me_max_fields
+  min: me_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "me". All fields are combined with a logical 'AND'.
+"""
+input me_bool_exp {
+  _and: [me_bool_exp!]
+  _not: me_bool_exp
+  _or: [me_bool_exp!]
+  bio: String_comparison_exp
+  communities: user_communities_bool_exp
+  created_at: timestamptz_comparison_exp
+  id: uuid_comparison_exp
+  image_url: String_comparison_exp
+  last_proposed_community_at: timestamptz_comparison_exp
+  name: String_comparison_exp
+  origin_id: String_comparison_exp
+  participates_in_jams: jam_participants_bool_exp
+}
+
+"""
+input type for inserting data into table "me"
+"""
+input me_insert_input {
+  bio: String
+  communities: user_communities_arr_rel_insert_input
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+  participates_in_jams: jam_participants_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type me_max_fields {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+}
+
+"""aggregate min on columns"""
+type me_min_fields {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+}
+
+"""
+response of any mutation on the table "me"
+"""
+type me_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [me!]!
+}
+
+"""Ordering options when selecting data from "me"."""
+input me_order_by {
+  bio: order_by
+  communities_aggregate: user_communities_aggregate_order_by
+  created_at: order_by
+  id: order_by
+  image_url: order_by
+  last_proposed_community_at: order_by
+  name: order_by
+  origin_id: order_by
+  participates_in_jams_aggregate: jam_participants_aggregate_order_by
+}
+
+"""
+select columns of table "me"
+"""
+enum me_select_column {
+  """column name"""
+  bio
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  image_url
+
+  """column name"""
+  last_proposed_community_at
+
+  """column name"""
+  name
+
+  """column name"""
+  origin_id
+}
+
+"""
+input type for updating data in table "me"
+"""
+input me_set_input {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+}
+
+"""mutation root"""
+type mutation_root {
+  """
+  delete data from the table: "communities"
+  """
+  delete_communities(
+    """filter the rows which have to be deleted"""
+    where: communities_bool_exp!
+  ): communities_mutation_response
+
+  """
+  delete single row from the table: "communities"
+  """
+  delete_communities_by_pk(id: uuid!): communities
+
+  """
+  delete data from the table: "community_messages"
+  """
+  delete_community_messages(
+    """filter the rows which have to be deleted"""
+    where: community_messages_bool_exp!
+  ): community_messages_mutation_response
+
+  """
+  delete single row from the table: "community_messages"
+  """
+  delete_community_messages_by_pk(id: uuid!): community_messages
+
+  """
+  delete data from the table: "jam_participants"
+  """
+  delete_jam_participants(
+    """filter the rows which have to be deleted"""
+    where: jam_participants_bool_exp!
+  ): jam_participants_mutation_response
+
+  """
+  delete single row from the table: "jam_participants"
+  """
+  delete_jam_participants_by_pk(id: uuid!): jam_participants
+
+  """
+  delete data from the table: "jams"
+  """
+  delete_jams(
+    """filter the rows which have to be deleted"""
+    where: jams_bool_exp!
+  ): jams_mutation_response
+
+  """
+  delete single row from the table: "jams"
+  """
+  delete_jams_by_pk(id: uuid!): jams
+
+  """
+  delete data from the table: "me"
+  """
+  delete_me(
+    """filter the rows which have to be deleted"""
+    where: me_bool_exp!
+  ): me_mutation_response
+
+  """
+  delete data from the table: "roles"
+  """
+  delete_roles(
+    """filter the rows which have to be deleted"""
+    where: roles_bool_exp!
+  ): roles_mutation_response
+
+  """
+  delete single row from the table: "roles"
+  """
+  delete_roles_by_pk(id: uuid!): roles
+
+  """
+  delete data from the table: "user_communities"
+  """
+  delete_user_communities(
+    """filter the rows which have to be deleted"""
+    where: user_communities_bool_exp!
+  ): user_communities_mutation_response
+
+  """
+  delete single row from the table: "user_communities"
+  """
+  delete_user_communities_by_pk(id: uuid!): user_communities
+
+  """
+  delete data from the table: "user_roles"
+  """
+  delete_user_roles(
+    """filter the rows which have to be deleted"""
+    where: user_roles_bool_exp!
+  ): user_roles_mutation_response
+
+  """
+  delete single row from the table: "user_roles"
+  """
+  delete_user_roles_by_pk(id: uuid!): user_roles
+
+  """
+  delete data from the table: "users"
+  """
+  delete_users(
+    """filter the rows which have to be deleted"""
+    where: users_bool_exp!
+  ): users_mutation_response
+
+  """
+  delete single row from the table: "users"
+  """
+  delete_users_by_pk(id: uuid!): users
+
+  """
+  insert data into the table: "communities"
+  """
+  insert_communities(
+    """the rows to be inserted"""
+    objects: [communities_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: communities_on_conflict
+  ): communities_mutation_response
+
+  """
+  insert a single row into the table: "communities"
+  """
+  insert_communities_one(
+    """the row to be inserted"""
+    object: communities_insert_input!
+
+    """upsert condition"""
+    on_conflict: communities_on_conflict
+  ): communities
+
+  """
+  insert data into the table: "community_messages"
+  """
+  insert_community_messages(
+    """the rows to be inserted"""
+    objects: [community_messages_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: community_messages_on_conflict
+  ): community_messages_mutation_response
+
+  """
+  insert a single row into the table: "community_messages"
+  """
+  insert_community_messages_one(
+    """the row to be inserted"""
+    object: community_messages_insert_input!
+
+    """upsert condition"""
+    on_conflict: community_messages_on_conflict
+  ): community_messages
+
+  """
+  insert data into the table: "jam_participants"
+  """
+  insert_jam_participants(
+    """the rows to be inserted"""
+    objects: [jam_participants_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: jam_participants_on_conflict
+  ): jam_participants_mutation_response
+
+  """
+  insert a single row into the table: "jam_participants"
+  """
+  insert_jam_participants_one(
+    """the row to be inserted"""
+    object: jam_participants_insert_input!
+
+    """upsert condition"""
+    on_conflict: jam_participants_on_conflict
+  ): jam_participants
+
+  """
+  insert data into the table: "jams"
+  """
+  insert_jams(
+    """the rows to be inserted"""
+    objects: [jams_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: jams_on_conflict
+  ): jams_mutation_response
+
+  """
+  insert a single row into the table: "jams"
+  """
+  insert_jams_one(
+    """the row to be inserted"""
+    object: jams_insert_input!
+
+    """upsert condition"""
+    on_conflict: jams_on_conflict
+  ): jams
+
+  """
+  insert data into the table: "me"
+  """
+  insert_me(
+    """the rows to be inserted"""
+    objects: [me_insert_input!]!
+  ): me_mutation_response
+
+  """
+  insert a single row into the table: "me"
+  """
+  insert_me_one(
+    """the row to be inserted"""
+    object: me_insert_input!
+  ): me
+
+  """
+  insert data into the table: "roles"
+  """
+  insert_roles(
+    """the rows to be inserted"""
+    objects: [roles_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: roles_on_conflict
+  ): roles_mutation_response
+
+  """
+  insert a single row into the table: "roles"
+  """
+  insert_roles_one(
+    """the row to be inserted"""
+    object: roles_insert_input!
+
+    """upsert condition"""
+    on_conflict: roles_on_conflict
+  ): roles
+
+  """
+  insert data into the table: "user_communities"
+  """
+  insert_user_communities(
+    """the rows to be inserted"""
+    objects: [user_communities_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: user_communities_on_conflict
+  ): user_communities_mutation_response
+
+  """
+  insert a single row into the table: "user_communities"
+  """
+  insert_user_communities_one(
+    """the row to be inserted"""
+    object: user_communities_insert_input!
+
+    """upsert condition"""
+    on_conflict: user_communities_on_conflict
+  ): user_communities
+
+  """
+  insert data into the table: "user_roles"
+  """
+  insert_user_roles(
+    """the rows to be inserted"""
+    objects: [user_roles_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: user_roles_on_conflict
+  ): user_roles_mutation_response
+
+  """
+  insert a single row into the table: "user_roles"
+  """
+  insert_user_roles_one(
+    """the row to be inserted"""
+    object: user_roles_insert_input!
+
+    """upsert condition"""
+    on_conflict: user_roles_on_conflict
+  ): user_roles
+
+  """
+  insert data into the table: "users"
+  """
+  insert_users(
+    """the rows to be inserted"""
+    objects: [users_insert_input!]!
+
+    """upsert condition"""
+    on_conflict: users_on_conflict
+  ): users_mutation_response
+
+  """
+  insert a single row into the table: "users"
+  """
+  insert_users_one(
+    """the row to be inserted"""
+    object: users_insert_input!
+
+    """upsert condition"""
+    on_conflict: users_on_conflict
+  ): users
+  login(input: LoginInput!): LoginResponse!
+  register(input: RegisterInput!): RegisterResponse!
+  sendMessage(message: MessageInput!): MessageReturn!
+  updateUserLocation(location: LocationInput!): LocationReturn!
+
+  """
+  update data of the table: "communities"
+  """
+  update_communities(
+    """sets the columns of the filtered rows to the given values"""
+    _set: communities_set_input
+
+    """filter the rows which have to be updated"""
+    where: communities_bool_exp!
+  ): communities_mutation_response
+
+  """
+  update single row of the table: "communities"
+  """
+  update_communities_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: communities_set_input
+    pk_columns: communities_pk_columns_input!
+  ): communities
+
+  """
+  update data of the table: "community_messages"
+  """
+  update_community_messages(
+    """sets the columns of the filtered rows to the given values"""
+    _set: community_messages_set_input
+
+    """filter the rows which have to be updated"""
+    where: community_messages_bool_exp!
+  ): community_messages_mutation_response
+
+  """
+  update single row of the table: "community_messages"
+  """
+  update_community_messages_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: community_messages_set_input
+    pk_columns: community_messages_pk_columns_input!
+  ): community_messages
+
+  """
+  update data of the table: "jam_participants"
+  """
+  update_jam_participants(
+    """sets the columns of the filtered rows to the given values"""
+    _set: jam_participants_set_input
+
+    """filter the rows which have to be updated"""
+    where: jam_participants_bool_exp!
+  ): jam_participants_mutation_response
+
+  """
+  update single row of the table: "jam_participants"
+  """
+  update_jam_participants_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: jam_participants_set_input
+    pk_columns: jam_participants_pk_columns_input!
+  ): jam_participants
+
+  """
+  update data of the table: "jams"
+  """
+  update_jams(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: jams_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: jams_set_input
+
+    """filter the rows which have to be updated"""
+    where: jams_bool_exp!
+  ): jams_mutation_response
+
+  """
+  update single row of the table: "jams"
+  """
+  update_jams_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: jams_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: jams_set_input
+    pk_columns: jams_pk_columns_input!
+  ): jams
+
+  """
+  update data of the table: "me"
+  """
+  update_me(
+    """sets the columns of the filtered rows to the given values"""
+    _set: me_set_input
+
+    """filter the rows which have to be updated"""
+    where: me_bool_exp!
+  ): me_mutation_response
+
+  """
+  update data of the table: "roles"
+  """
+  update_roles(
+    """sets the columns of the filtered rows to the given values"""
+    _set: roles_set_input
+
+    """filter the rows which have to be updated"""
+    where: roles_bool_exp!
+  ): roles_mutation_response
+
+  """
+  update single row of the table: "roles"
+  """
+  update_roles_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: roles_set_input
+    pk_columns: roles_pk_columns_input!
+  ): roles
+
+  """
+  update data of the table: "user_communities"
+  """
+  update_user_communities(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_communities_set_input
+
+    """filter the rows which have to be updated"""
+    where: user_communities_bool_exp!
+  ): user_communities_mutation_response
+
+  """
+  update single row of the table: "user_communities"
+  """
+  update_user_communities_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_communities_set_input
+    pk_columns: user_communities_pk_columns_input!
+  ): user_communities
+
+  """
+  update data of the table: "user_roles"
+  """
+  update_user_roles(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_roles_set_input
+
+    """filter the rows which have to be updated"""
+    where: user_roles_bool_exp!
+  ): user_roles_mutation_response
+
+  """
+  update single row of the table: "user_roles"
+  """
+  update_user_roles_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_roles_set_input
+    pk_columns: user_roles_pk_columns_input!
+  ): user_roles
+
+  """
+  update data of the table: "users"
+  """
+  update_users(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+
+    """filter the rows which have to be updated"""
+    where: users_bool_exp!
+  ): users_mutation_response
+
+  """
+  update single row of the table: "users"
+  """
+  update_users_by_pk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_set_input
+    pk_columns: users_pk_columns_input!
+  ): users
+}
+
+scalar numeric
+
+"""
+Boolean expression to compare columns of type "numeric". All fields are combined with logical 'AND'.
+"""
+input numeric_comparison_exp {
+  _eq: numeric
+  _gt: numeric
+  _gte: numeric
+  _in: [numeric!]
+  _is_null: Boolean
+  _lt: numeric
+  _lte: numeric
+  _neq: numeric
+  _nin: [numeric!]
+}
+
+"""column ordering options"""
+enum order_by {
+  """in ascending order, nulls last"""
+  asc
+
+  """in ascending order, nulls first"""
+  asc_nulls_first
+
+  """in ascending order, nulls last"""
+  asc_nulls_last
+
+  """in descending order, nulls first"""
+  desc
+
+  """in descending order, nulls first"""
+  desc_nulls_first
+
+  """in descending order, nulls last"""
+  desc_nulls_last
+}
+
+type query_root {
+  """
+  fetch data from the table: "communities"
+  """
+  communities(
+    """distinct select on columns"""
+    distinct_on: [communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [communities_order_by!]
+
+    """filter the rows returned"""
+    where: communities_bool_exp
+  ): [communities!]!
+
+  """
+  fetch aggregated fields from the table: "communities"
+  """
+  communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [communities_order_by!]
+
+    """filter the rows returned"""
+    where: communities_bool_exp
+  ): communities_aggregate!
+
+  """fetch data from the table: "communities" using primary key columns"""
+  communities_by_pk(id: uuid!): communities
+
+  """
+  fetch data from the table: "community_messages"
+  """
+  community_messages(
+    """distinct select on columns"""
+    distinct_on: [community_messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [community_messages_order_by!]
+
+    """filter the rows returned"""
+    where: community_messages_bool_exp
+  ): [community_messages!]!
+
+  """
+  fetch aggregated fields from the table: "community_messages"
+  """
+  community_messages_aggregate(
+    """distinct select on columns"""
+    distinct_on: [community_messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [community_messages_order_by!]
+
+    """filter the rows returned"""
+    where: community_messages_bool_exp
+  ): community_messages_aggregate!
+
+  """
+  fetch data from the table: "community_messages" using primary key columns
+  """
+  community_messages_by_pk(id: uuid!): community_messages
+
+  """
+  fetch data from the table: "jam_participants"
+  """
+  jam_participants(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): [jam_participants!]!
+
+  """
+  fetch aggregated fields from the table: "jam_participants"
+  """
+  jam_participants_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): jam_participants_aggregate!
+
+  """
+  fetch data from the table: "jam_participants" using primary key columns
+  """
+  jam_participants_by_pk(id: uuid!): jam_participants
+
+  """An array relationship"""
+  jams(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): [jams!]!
+
+  """An aggregate relationship"""
+  jams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): jams_aggregate!
+
+  """fetch data from the table: "jams" using primary key columns"""
+  jams_by_pk(id: uuid!): jams
+
+  """
+  fetch data from the table: "me"
+  """
+  me(
+    """distinct select on columns"""
+    distinct_on: [me_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [me_order_by!]
+
+    """filter the rows returned"""
+    where: me_bool_exp
+  ): [me!]!
+
+  """
+  fetch aggregated fields from the table: "me"
+  """
+  me_aggregate(
+    """distinct select on columns"""
+    distinct_on: [me_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [me_order_by!]
+
+    """filter the rows returned"""
+    where: me_bool_exp
+  ): me_aggregate!
+  nothing: String!
+  place(id: String!): Place!
+  places(searchQuery: String!): [PlaceSuggestion!]!
+
+  """
+  fetch data from the table: "roles"
+  """
+  roles(
+    """distinct select on columns"""
+    distinct_on: [roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_order_by!]
+
+    """filter the rows returned"""
+    where: roles_bool_exp
+  ): [roles!]!
+
+  """
+  fetch aggregated fields from the table: "roles"
+  """
+  roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_order_by!]
+
+    """filter the rows returned"""
+    where: roles_bool_exp
+  ): roles_aggregate!
+
+  """fetch data from the table: "roles" using primary key columns"""
+  roles_by_pk(id: uuid!): roles
+
+  """An array relationship"""
+  user_communities(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): [user_communities!]!
+
+  """An aggregate relationship"""
+  user_communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): user_communities_aggregate!
+
+  """
+  fetch data from the table: "user_communities" using primary key columns
+  """
+  user_communities_by_pk(id: uuid!): user_communities
+
+  """An array relationship"""
+  user_roles(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): [user_roles!]!
+
+  """An aggregate relationship"""
+  user_roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): user_roles_aggregate!
+
+  """fetch data from the table: "user_roles" using primary key columns"""
+  user_roles_by_pk(id: uuid!): user_roles
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """
+  fetch aggregated fields from the table: "users"
+  """
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): users_aggregate!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+}
+
+"""
+columns and relationships of "roles"
+"""
+type roles {
+  id: uuid!
+  name: String!
+}
+
+"""
+aggregated selection of "roles"
+"""
+type roles_aggregate {
+  aggregate: roles_aggregate_fields
+  nodes: [roles!]!
+}
+
+"""
+aggregate fields of "roles"
+"""
+type roles_aggregate_fields {
+  count(columns: [roles_select_column!], distinct: Boolean): Int!
+  max: roles_max_fields
+  min: roles_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "roles". All fields are combined with a logical 'AND'.
+"""
+input roles_bool_exp {
+  _and: [roles_bool_exp!]
+  _not: roles_bool_exp
+  _or: [roles_bool_exp!]
+  id: uuid_comparison_exp
+  name: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "roles"
+"""
+enum roles_constraint {
+  """unique or primary key constraint"""
+  role_pkey
+}
+
+"""
+input type for inserting data into table "roles"
+"""
+input roles_insert_input {
+  id: uuid
+  name: String
+}
+
+"""aggregate max on columns"""
+type roles_max_fields {
+  id: uuid
+  name: String
+}
+
+"""aggregate min on columns"""
+type roles_min_fields {
+  id: uuid
+  name: String
+}
+
+"""
+response of any mutation on the table "roles"
+"""
+type roles_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [roles!]!
+}
+
+"""
+input type for inserting object relation for remote table "roles"
+"""
+input roles_obj_rel_insert_input {
+  data: roles_insert_input!
+
+  """upsert condition"""
+  on_conflict: roles_on_conflict
+}
+
+"""
+on_conflict condition type for table "roles"
+"""
+input roles_on_conflict {
+  constraint: roles_constraint!
+  update_columns: [roles_update_column!]! = []
+  where: roles_bool_exp
+}
+
+"""Ordering options when selecting data from "roles"."""
+input roles_order_by {
+  id: order_by
+  name: order_by
+}
+
+"""primary key columns input for table: roles"""
+input roles_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "roles"
+"""
+enum roles_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "roles"
+"""
+input roles_set_input {
+  id: uuid
+  name: String
+}
+
+"""
+update columns of table "roles"
+"""
+enum roles_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+type subscription_root {
+  """
+  fetch data from the table: "communities"
+  """
+  communities(
+    """distinct select on columns"""
+    distinct_on: [communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [communities_order_by!]
+
+    """filter the rows returned"""
+    where: communities_bool_exp
+  ): [communities!]!
+
+  """
+  fetch aggregated fields from the table: "communities"
+  """
+  communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [communities_order_by!]
+
+    """filter the rows returned"""
+    where: communities_bool_exp
+  ): communities_aggregate!
+
+  """fetch data from the table: "communities" using primary key columns"""
+  communities_by_pk(id: uuid!): communities
+
+  """
+  fetch data from the table: "community_messages"
+  """
+  community_messages(
+    """distinct select on columns"""
+    distinct_on: [community_messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [community_messages_order_by!]
+
+    """filter the rows returned"""
+    where: community_messages_bool_exp
+  ): [community_messages!]!
+
+  """
+  fetch aggregated fields from the table: "community_messages"
+  """
+  community_messages_aggregate(
+    """distinct select on columns"""
+    distinct_on: [community_messages_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [community_messages_order_by!]
+
+    """filter the rows returned"""
+    where: community_messages_bool_exp
+  ): community_messages_aggregate!
+
+  """
+  fetch data from the table: "community_messages" using primary key columns
+  """
+  community_messages_by_pk(id: uuid!): community_messages
+
+  """
+  fetch data from the table: "jam_participants"
+  """
+  jam_participants(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): [jam_participants!]!
+
+  """
+  fetch aggregated fields from the table: "jam_participants"
+  """
+  jam_participants_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jam_participants_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jam_participants_order_by!]
+
+    """filter the rows returned"""
+    where: jam_participants_bool_exp
+  ): jam_participants_aggregate!
+
+  """
+  fetch data from the table: "jam_participants" using primary key columns
+  """
+  jam_participants_by_pk(id: uuid!): jam_participants
+
+  """An array relationship"""
+  jams(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): [jams!]!
+
+  """An aggregate relationship"""
+  jams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): jams_aggregate!
+
+  """fetch data from the table: "jams" using primary key columns"""
+  jams_by_pk(id: uuid!): jams
+
+  """
+  fetch data from the table: "me"
+  """
+  me(
+    """distinct select on columns"""
+    distinct_on: [me_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [me_order_by!]
+
+    """filter the rows returned"""
+    where: me_bool_exp
+  ): [me!]!
+
+  """
+  fetch aggregated fields from the table: "me"
+  """
+  me_aggregate(
+    """distinct select on columns"""
+    distinct_on: [me_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [me_order_by!]
+
+    """filter the rows returned"""
+    where: me_bool_exp
+  ): me_aggregate!
+
+  """
+  fetch data from the table: "roles"
+  """
+  roles(
+    """distinct select on columns"""
+    distinct_on: [roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_order_by!]
+
+    """filter the rows returned"""
+    where: roles_bool_exp
+  ): [roles!]!
+
+  """
+  fetch aggregated fields from the table: "roles"
+  """
+  roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [roles_order_by!]
+
+    """filter the rows returned"""
+    where: roles_bool_exp
+  ): roles_aggregate!
+
+  """fetch data from the table: "roles" using primary key columns"""
+  roles_by_pk(id: uuid!): roles
+
+  """An array relationship"""
+  user_communities(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): [user_communities!]!
+
+  """An aggregate relationship"""
+  user_communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): user_communities_aggregate!
+
+  """
+  fetch data from the table: "user_communities" using primary key columns
+  """
+  user_communities_by_pk(id: uuid!): user_communities
+
+  """An array relationship"""
+  user_roles(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): [user_roles!]!
+
+  """An aggregate relationship"""
+  user_roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): user_roles_aggregate!
+
+  """fetch data from the table: "user_roles" using primary key columns"""
+  user_roles_by_pk(id: uuid!): user_roles
+
+  """
+  fetch data from the table: "users"
+  """
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """
+  fetch aggregated fields from the table: "users"
+  """
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): users_aggregate!
+
+  """fetch data from the table: "users" using primary key columns"""
+  users_by_pk(id: uuid!): users
+}
+
+scalar timestamptz
+
+"""
+Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
+"""
+input timestamptz_comparison_exp {
+  _eq: timestamptz
+  _gt: timestamptz
+  _gte: timestamptz
+  _in: [timestamptz!]
+  _is_null: Boolean
+  _lt: timestamptz
+  _lte: timestamptz
+  _neq: timestamptz
+  _nin: [timestamptz!]
+}
+
+"""
+columns and relationships of "user_communities"
+"""
+type user_communities {
+  """An object relationship"""
+  community: communities!
+  community_id: uuid!
+  id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "user_communities"
+"""
+type user_communities_aggregate {
+  aggregate: user_communities_aggregate_fields
+  nodes: [user_communities!]!
+}
+
+"""
+aggregate fields of "user_communities"
+"""
+type user_communities_aggregate_fields {
+  count(columns: [user_communities_select_column!], distinct: Boolean): Int!
+  max: user_communities_max_fields
+  min: user_communities_min_fields
+}
+
+"""
+order by aggregate values of table "user_communities"
+"""
+input user_communities_aggregate_order_by {
+  count: order_by
+  max: user_communities_max_order_by
+  min: user_communities_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "user_communities"
+"""
+input user_communities_arr_rel_insert_input {
+  data: [user_communities_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: user_communities_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "user_communities". All fields are combined with a logical 'AND'.
+"""
+input user_communities_bool_exp {
+  _and: [user_communities_bool_exp!]
+  _not: user_communities_bool_exp
+  _or: [user_communities_bool_exp!]
+  community: communities_bool_exp
+  community_id: uuid_comparison_exp
+  id: uuid_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_communities"
+"""
+enum user_communities_constraint {
+  """unique or primary key constraint"""
+  user_communities_pkey
+}
+
+"""
+input type for inserting data into table "user_communities"
+"""
+input user_communities_insert_input {
+  community: communities_obj_rel_insert_input
+  community_id: uuid
+  id: uuid
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type user_communities_max_fields {
+  community_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "user_communities"
+"""
+input user_communities_max_order_by {
+  community_id: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type user_communities_min_fields {
+  community_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "user_communities"
+"""
+input user_communities_min_order_by {
+  community_id: order_by
+  id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "user_communities"
+"""
+type user_communities_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [user_communities!]!
+}
+
+"""
+on_conflict condition type for table "user_communities"
+"""
+input user_communities_on_conflict {
+  constraint: user_communities_constraint!
+  update_columns: [user_communities_update_column!]! = []
+  where: user_communities_bool_exp
+}
+
+"""Ordering options when selecting data from "user_communities"."""
+input user_communities_order_by {
+  community: communities_order_by
+  community_id: order_by
+  id: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: user_communities"""
+input user_communities_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "user_communities"
+"""
+enum user_communities_select_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  id
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "user_communities"
+"""
+input user_communities_set_input {
+  community_id: uuid
+  id: uuid
+  user_id: uuid
+}
+
+"""
+update columns of table "user_communities"
+"""
+enum user_communities_update_column {
+  """column name"""
+  community_id
+
+  """column name"""
+  id
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "user_roles"
+"""
+type user_roles {
+  id: uuid!
+
+  """An object relationship"""
+  role: roles!
+  role_id: uuid!
+
+  """An object relationship"""
+  user: users!
+  user_id: uuid!
+}
+
+"""
+aggregated selection of "user_roles"
+"""
+type user_roles_aggregate {
+  aggregate: user_roles_aggregate_fields
+  nodes: [user_roles!]!
+}
+
+"""
+aggregate fields of "user_roles"
+"""
+type user_roles_aggregate_fields {
+  count(columns: [user_roles_select_column!], distinct: Boolean): Int!
+  max: user_roles_max_fields
+  min: user_roles_min_fields
+}
+
+"""
+order by aggregate values of table "user_roles"
+"""
+input user_roles_aggregate_order_by {
+  count: order_by
+  max: user_roles_max_order_by
+  min: user_roles_min_order_by
+}
+
+"""
+input type for inserting array relation for remote table "user_roles"
+"""
+input user_roles_arr_rel_insert_input {
+  data: [user_roles_insert_input!]!
+
+  """upsert condition"""
+  on_conflict: user_roles_on_conflict
+}
+
+"""
+Boolean expression to filter rows from the table "user_roles". All fields are combined with a logical 'AND'.
+"""
+input user_roles_bool_exp {
+  _and: [user_roles_bool_exp!]
+  _not: user_roles_bool_exp
+  _or: [user_roles_bool_exp!]
+  id: uuid_comparison_exp
+  role: roles_bool_exp
+  role_id: uuid_comparison_exp
+  user: users_bool_exp
+  user_id: uuid_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_roles"
+"""
+enum user_roles_constraint {
+  """unique or primary key constraint"""
+  user_roles_pkey
+}
+
+"""
+input type for inserting data into table "user_roles"
+"""
+input user_roles_insert_input {
+  id: uuid
+  role: roles_obj_rel_insert_input
+  role_id: uuid
+  user: users_obj_rel_insert_input
+  user_id: uuid
+}
+
+"""aggregate max on columns"""
+type user_roles_max_fields {
+  id: uuid
+  role_id: uuid
+  user_id: uuid
+}
+
+"""
+order by max() on columns of table "user_roles"
+"""
+input user_roles_max_order_by {
+  id: order_by
+  role_id: order_by
+  user_id: order_by
+}
+
+"""aggregate min on columns"""
+type user_roles_min_fields {
+  id: uuid
+  role_id: uuid
+  user_id: uuid
+}
+
+"""
+order by min() on columns of table "user_roles"
+"""
+input user_roles_min_order_by {
+  id: order_by
+  role_id: order_by
+  user_id: order_by
+}
+
+"""
+response of any mutation on the table "user_roles"
+"""
+type user_roles_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [user_roles!]!
+}
+
+"""
+on_conflict condition type for table "user_roles"
+"""
+input user_roles_on_conflict {
+  constraint: user_roles_constraint!
+  update_columns: [user_roles_update_column!]! = []
+  where: user_roles_bool_exp
+}
+
+"""Ordering options when selecting data from "user_roles"."""
+input user_roles_order_by {
+  id: order_by
+  role: roles_order_by
+  role_id: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: user_roles"""
+input user_roles_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "user_roles"
+"""
+enum user_roles_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  role_id
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "user_roles"
+"""
+input user_roles_set_input {
+  id: uuid
+  role_id: uuid
+  user_id: uuid
+}
+
+"""
+update columns of table "user_roles"
+"""
+enum user_roles_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  role_id
+
+  """column name"""
+  user_id
+}
+
+"""
+columns and relationships of "users"
+"""
+type users {
+  bio: String
+  created_at: timestamptz!
+
+  """An array relationship"""
+  created_jams(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): [jams!]!
+
+  """An aggregate relationship"""
+  created_jams_aggregate(
+    """distinct select on columns"""
+    distinct_on: [jams_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [jams_order_by!]
+
+    """filter the rows returned"""
+    where: jams_bool_exp
+  ): jams_aggregate!
+  id: uuid!
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String!
+  origin_id: String!
+  updated_at: timestamptz!
+
+  """An array relationship"""
+  user_communities(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): [user_communities!]!
+
+  """An aggregate relationship"""
+  user_communities_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_communities_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_communities_order_by!]
+
+    """filter the rows returned"""
+    where: user_communities_bool_exp
+  ): user_communities_aggregate!
+
+  """An array relationship"""
+  user_roles(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): [user_roles!]!
+
+  """An aggregate relationship"""
+  user_roles_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_roles_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_roles_order_by!]
+
+    """filter the rows returned"""
+    where: user_roles_bool_exp
+  ): user_roles_aggregate!
+}
+
+"""
+aggregated selection of "users"
+"""
+type users_aggregate {
+  aggregate: users_aggregate_fields
+  nodes: [users!]!
+}
+
+"""
+aggregate fields of "users"
+"""
+type users_aggregate_fields {
+  count(columns: [users_select_column!], distinct: Boolean): Int!
+  max: users_max_fields
+  min: users_min_fields
+}
+
+"""
+Boolean expression to filter rows from the table "users". All fields are combined with a logical 'AND'.
+"""
+input users_bool_exp {
+  _and: [users_bool_exp!]
+  _not: users_bool_exp
+  _or: [users_bool_exp!]
+  bio: String_comparison_exp
+  created_at: timestamptz_comparison_exp
+  created_jams: jams_bool_exp
+  id: uuid_comparison_exp
+  image_url: String_comparison_exp
+  last_proposed_community_at: timestamptz_comparison_exp
+  name: String_comparison_exp
+  origin_id: String_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user_communities: user_communities_bool_exp
+  user_roles: user_roles_bool_exp
+}
+
+"""
+unique or primary key constraints on table "users"
+"""
+enum users_constraint {
+  """unique or primary key constraint"""
+  user_origin_id_key
+
+  """unique or primary key constraint"""
+  users_pkey
+}
+
+"""
+input type for inserting data into table "users"
+"""
+input users_insert_input {
+  bio: String
+  created_at: timestamptz
+  created_jams: jams_arr_rel_insert_input
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+  updated_at: timestamptz
+  user_communities: user_communities_arr_rel_insert_input
+  user_roles: user_roles_arr_rel_insert_input
+}
+
+"""aggregate max on columns"""
+type users_max_fields {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+  updated_at: timestamptz
+}
+
+"""aggregate min on columns"""
+type users_min_fields {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "users"
+"""
+type users_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [users!]!
+}
+
+"""
+input type for inserting object relation for remote table "users"
+"""
+input users_obj_rel_insert_input {
+  data: users_insert_input!
+
+  """upsert condition"""
+  on_conflict: users_on_conflict
+}
+
+"""
+on_conflict condition type for table "users"
+"""
+input users_on_conflict {
+  constraint: users_constraint!
+  update_columns: [users_update_column!]! = []
+  where: users_bool_exp
+}
+
+"""Ordering options when selecting data from "users"."""
+input users_order_by {
+  bio: order_by
+  created_at: order_by
+  created_jams_aggregate: jams_aggregate_order_by
+  id: order_by
+  image_url: order_by
+  last_proposed_community_at: order_by
+  name: order_by
+  origin_id: order_by
+  updated_at: order_by
+  user_communities_aggregate: user_communities_aggregate_order_by
+  user_roles_aggregate: user_roles_aggregate_order_by
+}
+
+"""primary key columns input for table: users"""
+input users_pk_columns_input {
+  id: uuid!
+}
+
+"""
+select columns of table "users"
+"""
+enum users_select_column {
+  """column name"""
+  bio
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  image_url
+
+  """column name"""
+  last_proposed_community_at
+
+  """column name"""
+  name
+
+  """column name"""
+  origin_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "users"
+"""
+input users_set_input {
+  bio: String
+  created_at: timestamptz
+  id: uuid
+  image_url: String
+  last_proposed_community_at: timestamptz
+  name: String
+  origin_id: String
+  updated_at: timestamptz
+}
+
+"""
+update columns of table "users"
+"""
+enum users_update_column {
+  """column name"""
+  bio
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  image_url
+
+  """column name"""
+  last_proposed_community_at
+
+  """column name"""
+  name
+
+  """column name"""
+  origin_id
+
+  """column name"""
+  updated_at
+}
+
+scalar uuid
+
+"""
+Boolean expression to compare columns of type "uuid". All fields are combined with logical 'AND'.
+"""
+input uuid_comparison_exp {
+  _eq: uuid
+  _gt: uuid
+  _gte: uuid
+  _in: [uuid!]
+  _is_null: Boolean
+  _lt: uuid
+  _lte: uuid
+  _neq: uuid
+  _nin: [uuid!]
+}
+
