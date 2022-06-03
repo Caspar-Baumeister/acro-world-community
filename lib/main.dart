@@ -23,7 +23,6 @@ void main() async {
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
         String token = await AuthProvider.fetchToken();
-
         return {
           'headers': {'Authorization': 'Bearer $token'}
         };
@@ -34,7 +33,6 @@ void main() async {
   final AuthLink authLink = AuthLink(
     getToken: () async {
       String token = await AuthProvider.fetchToken();
-      print('token $token');
       return 'Bearer $token';
     },
   );

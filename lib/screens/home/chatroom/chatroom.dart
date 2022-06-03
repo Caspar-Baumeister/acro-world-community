@@ -61,6 +61,7 @@ class Chatroom extends StatelessWidget {
                     );
                   } else {
                     return ListView.builder(
+                      reverse: true,
                       itemCount: messageCount,
                       itemBuilder: (context, index) {
                         CommunityMessage? message = messages[index];
@@ -69,11 +70,14 @@ class Chatroom extends StatelessWidget {
                         User? fromUser = message!.fromUser;
 
                         final isMe = userId == fromUser!.id;
+
                         final isSameAuthorThenNext = nextMessage != null &&
-                            nextMessage.fromUser == message.fromUser;
+                            nextMessage.fromUser!.id == message.fromUser!.id;
+
                         final isSameAuthorThenPrevious =
                             previousMessage != null &&
-                                previousMessage.fromUser == message.fromUser;
+                                previousMessage.fromUser!.id ==
+                                    message.fromUser!.id;
 
                         return MessageTile(
                             message: Message(

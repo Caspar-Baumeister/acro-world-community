@@ -1,8 +1,6 @@
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authenticate/authenticate.dart';
-import 'package:acroworld/services/database.dart';
+import 'package:acroworld/graphql/mutations.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class MessageTextField extends StatefulWidget {
   const MessageTextField({required this.cId, Key? key}) : super(key: key);
@@ -13,77 +11,86 @@ class MessageTextField extends StatefulWidget {
 }
 
 class _MessageTextFieldState extends State<MessageTextField> {
+  bool isLoading = false;
   final _controller = TextEditingController();
   String message = "";
+
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    //UserModel user = userProvider.activeUser!;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 8.0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.grey[200]!,
-                ),
-                //color: Colors.grey[300],
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-              ),
-              child: TextField(
-                cursorColor: Colors.black,
-                keyboardType: TextInputType.multiline,
-                maxLines: null,
-                controller: _controller,
-                textCapitalization: TextCapitalization.sentences,
-                autocorrect: true,
-                enableSuggestions: true,
-                decoration: const InputDecoration(
-                  isDense: true, // this will remove the default content padding
-
-                  contentPadding: EdgeInsets.only(bottom: 10.0, left: 8.0),
-                  floatingLabelBehavior: FloatingLabelBehavior.never,
-                  border: InputBorder.none,
-                  labelText: "send message ...",
-                ),
-                onChanged: (value) => setState(() {
-                  message = value;
-                }),
-              ),
-            ),
-          ),
-          IconButton(
-            onPressed:
-                message.trim().isEmpty ? null : () async => sendMessage(),
-            icon: const Icon(Icons.send),
-          ),
-        ],
+    return Mutation(
+      options: MutationOptions(
+        document: gql(Mutations
+            .insertCommunityMessage), // this is the mutation string you just created
+        onCompleted: (dynamic resultData) {
+          if (resultData['insert_community_messages']['affected_rows'] == 1) {
+            _controller.clear();
+            FocusScope.of(context).unfocus();
+          }
+          isLoading = false;
+        },
       ),
+      builder: (MultiSourceResult<Object?> Function(Map<String, dynamic>,
+                  {Object? optimisticResult})
+              runMutation,
+          QueryResult<Object?>? result) {
+        return Padding(
+          padding: const EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey[200]!,
+                    ),
+                    //color: Colors.grey[300],
+                    borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  ),
+                  child: TextField(
+                    cursorColor: Colors.black,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
+                    controller: _controller,
+                    textCapitalization: TextCapitalization.sentences,
+                    autocorrect: true,
+                    enableSuggestions: true,
+                    decoration: const InputDecoration(
+                      isDense:
+                          true, // this will remove the default content padding
+                      contentPadding: EdgeInsets.only(bottom: 10.0, left: 8.0),
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      labelText: "send message ...",
+                    ),
+                    onChanged: (value) => setState(() {
+                      message = value;
+                    }),
+                  ),
+                ),
+              ),
+              isLoading
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        CircularProgressIndicator(),
+                      ],
+                    )
+                  : IconButton(
+                      onPressed: message.trim().isEmpty
+                          ? null
+                          : () {
+                              isLoading = true;
+                              runMutation({
+                                'content': message,
+                                'communityId': widget.cId
+                              });
+                            },
+                      icon: const Icon(Icons.send),
+                    ),
+            ],
+          ),
+        );
+      },
     );
-  }
-
-  Future<void> sendMessage() async {
-    String sendMessage = message;
-    _controller.clear();
-    FocusScope.of(context).unfocus();
-
-    bool isValidToken =
-        await Provider.of<UserProvider>(context, listen: false).validToken();
-    if (!isValidToken) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: ((context) => const Authenticate())));
-      return;
-    }
-    String token = Provider.of<UserProvider>(context, listen: false).token!;
-    final database = Database(token: token);
-    await database.insertCommunityMessagesOne(widget.cId, sendMessage);
-    //   await DataBaseService(uid: user.uid).addMessageData(
-    //       cid: widget.cId,
-    //       message: sendMessage,
-    //       username: user.userName ?? "user",
-    //       imgUrl: user.imgUrl ?? "");
   }
 }
