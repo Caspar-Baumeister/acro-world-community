@@ -1,6 +1,7 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jams/jams_body.dart';
+import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -23,7 +24,6 @@ class _FutureJamsState extends State<FutureJams> {
         variables: {
           'communityId': widget.cId,
         },
-        // pollInterval: const Duration(seconds: 10),
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -32,7 +32,7 @@ class _FutureJamsState extends State<FutureJams> {
         }
 
         if (result.isLoading) {
-          return const Text('Loading');
+          return const Loading();
         }
 
         List jams = result.data?['jams'];
