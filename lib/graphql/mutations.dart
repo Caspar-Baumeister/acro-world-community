@@ -6,4 +6,12 @@ class Mutations {
       }
     }
     """;
+
+  static const String particapteToJam = """
+    mutation InsertJamParticipants(\$jamId: uuid) {
+      insert_jam_participants(objects: {jam_id: \$jamId}) {
+        affected_rows
+      }
+    }
+    """;
 }

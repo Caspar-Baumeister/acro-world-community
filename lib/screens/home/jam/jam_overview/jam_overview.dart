@@ -23,36 +23,11 @@ class _JamOverviewState extends State<JamOverview> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // floatingActionButton: Builder(
-        //   builder: (context) =>
-        //   FloatingActionButton(
-        //     backgroundColor: Colors.grey,
-        //     child: Icon(!userPressed ? Icons.add : Icons.exit_to_app),
-        //     onPressed: () => onChangeParticipation(userParticipates),
-        //   ),
-        // ),
         backgroundColor: Colors.white,
         appBar: AppBarJamOverview(jam: widget.jam),
         body: loading
             ? const Loading()
-            : JamOverviewBody(jam: widget.jam, cid: widget.cid)
-
-        // Column(
-        //   children: [
-        //     Text(widget.jam.createdBy),
-        //     Text(widget.jam.date),
-        //     IconButton(
-        //         onPressed: () =>
-        //             MapsLauncher.launchQuery(widget.jam.location),
-        //         icon: const Icon(Icons.location_on)),
-        //     Text(widget.jam.location),
-        //     ...widget.jam.participants.map((e) => Text(e))
-        //     // ListView(
-        //     //     children: List<ListTile>.from(widget.jam.participants
-        //     //         .map((e) => ListTile(title: Text(e)))))
-        //   ],
-        // ),
-        );
+            : JamOverviewBody(jam: widget.jam, cid: widget.cid));
   }
 
   void onChangeParticipation(bool userParticipates) async {
@@ -60,7 +35,7 @@ class _JamOverviewState extends State<JamOverview> {
       loading = true;
     });
 
-    // get activ user to safe the id
+    // get active user to save the id
     UserModel user =
         Provider.of<UserProvider>(context, listen: false).activeUser!;
     List<String> participants = widget.jam.participants;
@@ -71,18 +46,8 @@ class _JamOverviewState extends State<JamOverview> {
       participants.add(user.uid);
     }
 
-    // // creates a new jam object
-    // DataBaseService(uid: user.uid).updateJamField(
-    //     jid: widget.jam.jid,
-    //     cid: widget.cid,
-    //     field: "participants",
-    //     value: participants);
-    // // redirects to jams
-
     setState(() {
       loading = false;
     });
-
-    // error handling
   }
 }
