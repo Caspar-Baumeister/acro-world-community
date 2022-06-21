@@ -24,7 +24,7 @@ class SettingsDrawer extends StatelessWidget {
               // ),
               child: ListTile(
                 leading: Text(
-                  userProvider.activeUser!.userName ?? "",
+                  userProvider.activeUser!.userName,
                 ),
                 // trailing: CircleAvatar(
                 //   backgroundImage: NetworkImage(

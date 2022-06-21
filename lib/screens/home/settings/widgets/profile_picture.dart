@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_print
 
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,8 +18,7 @@ class _ProfilePictureState extends State<ProfilePicture> {
     return Stack(children: [
       CircleAvatar(
           radius: 100.0,
-          backgroundImage:
-              NetworkImage(userProvider.activeUser!.imgUrl ?? MORTY_IMG_URL)),
+          backgroundImage: NetworkImage(userProvider.activeUser!.imgUrl)),
       Positioned(
         bottom: 10.0,
         right: 10.0,
