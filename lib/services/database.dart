@@ -10,7 +10,7 @@ class Database {
   Future participateToJam(String uid, String jid) {
     return authorizedApi("""
       mutation MyMutation {
-  insert_jam_participants_one(object: {jam_id: "$jid", user_id: "$uid"}) {
+  insert_jam_participants(objects: {jam_id: "$jid", user_id: "$uid"}) {
     id
   }
 }""");
@@ -46,6 +46,14 @@ class Database {
   insertUserCommunitiesOne(String communityId, String uid) async {
     return authorizedApi(
         """mutation MyMutation {insert_user_communities(objects: {community_id: "$communityId", user_id: "$uid"}) {affected_rows}}""");
+  }
+
+  deleteUserCommunitiesOne(String communityId) async {
+    return authorizedApi("""mutation MyMutation {
+      delete_user_communities(where: {community_id: {_eq: "$communityId"}}) {
+        affected_rows
+      }
+    }""");
   }
 
   getJamsParticipated(String uid) {

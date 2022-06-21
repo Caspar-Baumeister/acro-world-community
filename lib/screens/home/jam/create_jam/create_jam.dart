@@ -13,8 +13,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateJam extends StatefulWidget {
-  const CreateJam({required this.cid, Key? key}) : super(key: key);
+  const CreateJam({required this.cid, Key? key, required this.refreshState})
+      : super(key: key);
   final String cid;
+  final VoidCallback refreshState;
 
   @override
   State<CreateJam> createState() => _CreateJamState();
@@ -145,40 +147,11 @@ class _CreateJamState extends State<CreateJam> {
         _chosenDateTime.toIso8601String(), latlng!.latitude, latlng!.longitude);
 
     print("create jam response: $response");
-
-    // Map communityMap = Map.from(userCommunitiesProvider.userCommunityMaps
-    //     .firstWhere((element) => element["community_id"] == widget.cid));
-
-    // communityMap["last_created_jam_at"] = Timestamp.now();
-
-    // List<Map> newCommunities =
-    //     List<Map>.from(userCommunitiesProvider.userCommunityMaps);
-
-    // newCommunities
-    //     .removeWhere((element) => element["community_id"] == widget.cid);
-
-    // newCommunities.add(communityMap);
-
-    // userCommunitiesProvider.userCommunityMaps = newCommunities;
-    // dataBaseService.updateUserDataField(
-    //     field: "communities", value: newCommunities);
-
-    // // update next jam if newer one occurs
-    // DocumentSnapshot community = await dataBaseService.getCommunity(widget.cid);
-
-    // if (community.get("next_jam").toDate().difference(_chosenDateTime).inHours >
-    //     0) {
-    //   dataBaseService.updateCommunityDataField(
-    //       cid: widget.cid,
-    //       field: "next_jam",
-    //       value: Timestamp.fromDate(_chosenDateTime));
-    // }
-
+    widget.refreshState();
     setState(() {
       loading = false;
     });
-    Navigator.pop(context);
 
-    // error handling
+    Navigator.pop(context);
   }
 }

@@ -58,16 +58,19 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   // }
   // print(jamMap);
   // return jamMap;
+
+  List<Jam> sortedJams = List<Jam>.from(jams);
+  sortedJams.sort((j1, j2) => j1.date.isBefore(j2.date) ? 1 : 0);
   LinkedHashMap<DateTime, List<Jam>> jamMap =
       LinkedHashMap<DateTime, List<Jam>>(
     equals: isSameDay,
     hashCode: getHashCode,
   );
-  for (Jam jam in jams) {
+  for (Jam jam in sortedJams) {
     if (jamMap[jam.date] != null) {
       jamMap[jam.date]!.add(jam);
     } else {
-      jamMap[jam.date] = [jam];
+      jamMap[jam.date] = List.from([jam]);
     }
   }
   return jamMap;
