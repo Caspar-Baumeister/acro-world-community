@@ -1,6 +1,5 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
-import 'package:acroworld/graphql/model/user/user.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';

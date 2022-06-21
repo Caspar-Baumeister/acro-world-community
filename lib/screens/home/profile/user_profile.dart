@@ -1,5 +1,4 @@
 import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
 
@@ -17,18 +16,17 @@ class UserProfile extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             CircleAvatar(
-                radius: 100.0,
-                backgroundImage: NetworkImage(user.imgUrl ?? MORTY_IMG_URL)),
+                radius: 100.0, backgroundImage: NetworkImage(user.imgUrl)),
 
             //isnt used because of mainaxis size max
             const SizedBox(height: 24.0),
-            Text(user.userName ?? "", style: const TextStyle(fontSize: 16)),
+            Text(user.userName, style: const TextStyle(fontSize: 16)),
             //isnt used because of mainaxis size max
             const SizedBox(height: 12.0),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               alignment: Alignment.centerLeft,
-              child: Text(user.bio ?? "",
+              child: Text(user.bio,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 16)),
             ),

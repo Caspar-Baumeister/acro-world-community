@@ -59,8 +59,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     TextFormField(
                       decoration: buildInputDecoration(
-                          labelText: userProvider.activeUser!.userName ??
-                              "new username"),
+                          labelText: userProvider.activeUser!.userName),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
@@ -73,8 +72,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     TextFormField(
                       maxLines: 10,
                       decoration: buildInputDecoration(
-                          labelText:
-                              userProvider.activeUser!.bio ?? 'Your bio'),
+                          labelText: userProvider.activeUser!.bio),
                       // validator: (val) => (val == null || val.length < 6)
                       //     ? 'Enter a userName 6+ chars long'
                       //     : null,
