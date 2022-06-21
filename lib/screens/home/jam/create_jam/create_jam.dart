@@ -143,10 +143,14 @@ class _CreateJamState extends State<CreateJam> {
     }
     String token = Provider.of<UserProvider>(context, listen: false).token!;
     final database = Database(token: token);
-    final response = await database.insertJam(widget.cid, name,
-        _chosenDateTime.toIso8601String(), latlng!.latitude, latlng!.longitude);
+    final response = await database.insertJam(
+        widget.cid,
+        name,
+        _chosenDateTime.toIso8601String(),
+        info,
+        latlng!.latitude,
+        latlng!.longitude);
 
-    print("create jam response: $response");
     widget.refreshState();
     setState(() {
       loading = false;

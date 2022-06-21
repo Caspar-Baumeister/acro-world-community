@@ -77,6 +77,29 @@ class Database {
 }""");
   }
 
+  getJamsFromMyComs() {
+    return authorizedApi("""
+      query MyQuery {
+        me {
+          communities {
+            community {
+              jams {
+                community_id
+                created_at
+                created_by_id
+                date
+                id
+                info
+                latitude
+                longitude
+                name
+              }
+            }
+          }
+        }
+      }""");
+  }
+
   Future getCommunityJams(String cId) {
     return authorizedApi(""" query MyQuery {
       jams(where: {community_id: {_eq: "$cId"}}) {
@@ -117,12 +140,13 @@ class Database {
     String communityId,
     String name,
     String date,
+    String info,
     double latitude,
     double longitude,
   ) {
     return authorizedApi("""
       mutation MyMutation {
-        insert_jams_one(object: {date: "$date", latitude: "$latitude", longitude: "$longitude", name: "$name", community_id: "$communityId"}) {
+        insert_jams_one(object: {info: "$info", date: "$date", latitude: "$latitude", longitude: "$longitude", name: "$name", community_id: "$communityId"}) {
           id
         }
       }""");
