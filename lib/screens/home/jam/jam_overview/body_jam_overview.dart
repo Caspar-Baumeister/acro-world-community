@@ -1,7 +1,10 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
+import 'package:acroworld/graphql/model/user/user.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
+import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +21,7 @@ class JamOverviewBody extends StatelessWidget {
   final Jam jam;
   final String cid;
   bool isLoading = false;
+  bool isUserParticipating = false;
 
   void onError(OperationException? errorData) {
     String errorMessage = "";
@@ -42,8 +46,12 @@ class JamOverviewBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context);
-
     final EventBus eventBus = eventBusProvider.eventBus;
+    final UserModel user = Provider.of<UserProvider>(context).activeUser!;
+
+    isUserParticipating =
+        jam.participants.any((participant) => participant.uid == user.uid);
+
     String timeString = timeago.format(jam.date);
     String dateString =
         DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(jam.date);
@@ -51,11 +59,12 @@ class JamOverviewBody extends StatelessWidget {
     return SingleChildScrollView(
       child: Mutation(
         options: MutationOptions(
-          document: gql(Mutations
-              .particapteToJam), // this is the mutation string you just created
+          document: isUserParticipating
+              ? gql(Mutations.removeJamParticipation)
+              : gql(Mutations
+                  .particapteToJam), // this is the mutation string you just created
           onCompleted: (dynamic resultData) {
             isLoading = false;
-            print('fire ParticipateToJamEvent');
             eventBus.fire(ParticipateToJamEvent(jam.jid));
           },
           onError: onError,
@@ -124,10 +133,14 @@ class JamOverviewBody extends StatelessWidget {
                                   horizontal: 10, vertical: 10),
                               textStyle: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold)),
-                          onPressed: () => buildMortal(context,
-                              ParticipantModal(participants: jam.participants)),
+                          onPressed: () => buildMortal(
+                              context,
+                              ParticipantModal(
+                                  participants: jam.participants
+                                      .map((e) => e.userName)
+                                      .toList())),
                           child: Text(
-                            "${jam.participants.length.toString()} participants",
+                            "${jam.participants.length.toString()} participant/s",
                             maxLines: 10,
                             style: const TextStyle(
                                 fontSize: 16.0, color: Colors.black54),
@@ -161,13 +174,18 @@ class JamOverviewBody extends StatelessWidget {
                                       )
                                     ]
                                   : [
-                                      const Icon(Icons.add,
-                                          color: Colors.black54),
+                                      isUserParticipating
+                                          ? const Icon(Icons.remove,
+                                              color: Colors.black54)
+                                          : const Icon(Icons.add,
+                                              color: Colors.black54),
                                       const SizedBox(width: 8),
-                                      const Text(
-                                        "Participate",
+                                      Text(
+                                        isUserParticipating
+                                            ? "Leave"
+                                            : "Participate",
                                         maxLines: 10,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 16.0,
                                             color: Colors.black54),
                                       ),
