@@ -15,37 +15,41 @@ class JamOverviewBody extends StatelessWidget {
   final String cid;
   bool isLoading = false;
 
+  void onError(OperationException? errorData) {
+    String errorMessage = "";
+    if (errorData != null) {
+      if (errorData.graphqlErrors.isNotEmpty) {
+        errorMessage = errorData.graphqlErrors[0].message;
+      }
+    }
+    if (errorMessage == "") {
+      errorMessage = "An unknown error occured";
+    }
+    Fluttertoast.showToast(
+        msg: errorMessage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   @override
   Widget build(BuildContext context) {
     String timeString = timeago.format(jam.date);
     String dateString =
         DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(jam.date);
+
     return SingleChildScrollView(
       child: Mutation(
         options: MutationOptions(
-            document: gql(Mutations
-                .particapteToJam), // this is the mutation string you just created
-            onCompleted: (dynamic resultData) {
-              isLoading = false;
-            },
-            onError: (OperationException? errorData) {
-              String errorMessage = "";
-              if (errorData != null) {
-                if (errorData.graphqlErrors.isNotEmpty) {
-                  errorMessage = errorData.graphqlErrors[0].message;
-                }
-              }
-              if (errorMessage == "") {
-                errorMessage = "An unknown error occured";
-              }
-              Fluttertoast.showToast(
-                  msg: errorMessage,
-                  toastLength: Toast.LENGTH_LONG,
-                  gravity: ToastGravity.TOP,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
-            }),
+          document: gql(Mutations
+              .particapteToJam), // this is the mutation string you just created
+          onCompleted: (dynamic resultData) {
+            isLoading = false;
+          },
+          onError: onError,
+        ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
                     {Object? optimisticResult})
                 runMutation,
