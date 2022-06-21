@@ -12,6 +12,7 @@ class JamsBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TableEventsCommunity(kEvents: jamListToHash(jams), cid: cId);
+    Map<DateTime, List<Jam>> kEvents = jamListToHash(jams);
+    return TableEventsCommunity(kEvents: kEvents, cid: cId);
   }
 }

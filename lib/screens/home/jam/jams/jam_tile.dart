@@ -25,7 +25,8 @@ class JamTile extends StatelessWidget {
         child: Card(
           child: ListTile(
             title: Text(jam.name),
-            subtitle: Text(timeago.format(jam.date, allowFromNow: true)),
+            subtitle: Text(timeago.format(jam.date, allowFromNow: true),
+                locale: const Locale('de', 'DE')),
             trailing:
                 Text(jam.participants.length.toString() + " participants"),
           ),

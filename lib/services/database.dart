@@ -10,7 +10,7 @@ class Database {
   Future participateToJam(String uid, String jid) {
     return authorizedApi("""
       mutation MyMutation {
-  insert_jam_participants_one(object: {jam_id: "$jid", user_id: "$uid"}) {
+  insert_jam_participants(objects: {jam_id: "$jid", user_id: "$uid"}) {
     id
   }
 }""");

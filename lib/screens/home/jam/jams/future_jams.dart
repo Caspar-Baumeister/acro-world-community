@@ -33,13 +33,11 @@ class _FutureJamsState extends State<FutureJams> {
             List<Jam>? data = snapshot.data;
             return RefreshIndicator(
               onRefresh: (() async => data = await loadJams(context)),
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  child: JamsBody(
-                    jams: data ?? [],
-                    cId: widget.cId,
-                  ),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: JamsBody(
+                  jams: data ?? [],
+                  cId: widget.cId,
                 ),
               ),
             );

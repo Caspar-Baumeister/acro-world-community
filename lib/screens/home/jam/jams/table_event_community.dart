@@ -28,6 +28,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
 
   @override
   void initState() {
+    print("initState");
     super.initState();
 
     _selectedDay = _focusedDay;
@@ -92,6 +93,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         TableCalendar<Jam>(
           firstDay: kFirstDay,
@@ -105,6 +107,8 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
           calendarStyle: const CalendarStyle(
+            canMarkersOverflow: false,
+            markersMaxCount: 100,
             // Use `CalendarStyle` to customize the UI
             outsideDaysVisible: false,
           ),
@@ -123,25 +127,34 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
         ),
         const SizedBox(height: 8.0),
         Expanded(
-          child: ValueListenableBuilder<List<Jam>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: JamTile(jam: value[index], cid: widget.cid));
-                },
-              );
-            },
+          child: SingleChildScrollView(
+            child: ValueListenableBuilder<List<Jam>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  reverse: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: value.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return const SizedBox(height: 55);
+                    }
+                    print(index);
+                    return Container(
+                        margin: const EdgeInsets.symmetric(
+                          horizontal: 12.0,
+                          vertical: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: JamTile(jam: value[index - 1], cid: widget.cid));
+                  },
+                );
+              },
+            ),
           ),
         ),
       ],
