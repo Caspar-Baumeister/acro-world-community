@@ -6,18 +6,19 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class JamTile extends StatelessWidget {
-  const JamTile({required this.jam, required this.cid, Key? key})
+  const JamTile(
+      {required this.jam, required this.cid, this.communityName, Key? key})
       : super(key: key);
 
   final Jam jam;
   final String cid;
+  final String? communityName;
 
   @override
   Widget build(BuildContext context) {
     String uid = Provider.of<UserProvider>(context, listen: false).getId();
-    print("uid: $uid");
-    print(jam.participants);
-    bool paticipate = jam.participants.contains(uid);
+    List<String> uids = jam.participants.map((e) => e.uid).toList();
+    bool paticipate = uids.contains(uid);
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -27,17 +28,31 @@ class JamTile extends StatelessWidget {
                 )),
       ),
       child: Container(
-        constraints: const BoxConstraints(maxWidth: 300.0),
-        child: Card(
-          color: paticipate ? Colors.green : Colors.white,
-          child: ListTile(
-            title: Text(jam.name),
-            subtitle: Text(DateFormat('kk:mm').format(jam.date)),
-            // Text(timeago.format(jam.date, allowFromNow: true),
-            //     locale: const Locale('de', 'DE')),
-            trailing:
-                Text(jam.participants.length.toString() + " participants"),
+        margin: const EdgeInsets.symmetric(
+          horizontal: 12.0,
+          vertical: 4.0,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(15.0)),
+          border: Border.all(
+            color: paticipate ? Colors.green : Colors.grey,
+            width: 2.0,
           ),
+        ),
+        constraints: const BoxConstraints(maxWidth: 300.0),
+        child: ListTile(
+          title: Text(jam.name),
+          subtitle: Text(DateFormat('kk:mm').format(jam.date)),
+          // Text(timeago.format(jam.date, allowFromNow: true),
+          //     locale: const Locale('de', 'DE')),
+          trailing: communityName != null
+              ? Column(
+                  children: [
+                    Text(communityName!),
+                    Text(jam.participants.length.toString() + " participants"),
+                  ],
+                )
+              : Text(jam.participants.length.toString() + " participants"),
         ),
       ),
     );

@@ -128,19 +128,10 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
               return ListView.builder(
                 itemCount: value.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: JamTile(
-                        jam: value[index],
-                        cid: value[index].cid,
-                      ));
+                  return JamTile(
+                    jam: value[index],
+                    cid: value[index].cid,
+                  );
                 },
               );
             },
