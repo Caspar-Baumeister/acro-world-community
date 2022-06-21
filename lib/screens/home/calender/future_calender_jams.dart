@@ -26,6 +26,7 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
     return Query(
       options: QueryOptions(
         document: Queries.getAllJamsFromMyCommunities,
+        fetchPolicy: FetchPolicy.networkOnly,
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -37,6 +38,11 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
           return const Loading();
         }
 
+        eventBus.on<ParticipateToJamEvent>().listen((event) {
+          print('refetch');
+          refetch!();
+        });
+
         List<Jam> jams = [];
 
         for (Map<String, dynamic> com in result.data!["me"][0]["communities"]) {
@@ -44,10 +50,6 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
             jams.add(Jam.fromJson(jam));
           }
         }
-
-        eventBus.on<ParticipateToJamEvent>().listen((event) {
-          refetch!();
-        });
 
         return RefreshIndicator(
           onRefresh: (() async => refetch!()),

@@ -44,7 +44,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
   List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
 
-    print("days: ${widget.kEvents[day]}");
+    // print("days: ${widget.kEvents[day]}");
     return widget.kEvents[day] ?? [];
   }
 
@@ -140,7 +140,6 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                     if (index == 0) {
                       return const SizedBox(height: 55);
                     }
-                    print(index);
                     return Container(
                         margin: const EdgeInsets.symmetric(
                           horizontal: 12.0,

@@ -45,6 +45,7 @@ class _FutureJamsState extends State<FutureJams> {
         List jams = result.data?['jams'];
 
         eventBus.on<ParticipateToJamEvent>().listen((event) {
+          print('refetch');
           refetch!();
         });
 

@@ -23,7 +23,6 @@ class UserProvider extends ChangeNotifier {
 
   getId() {
     Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
-    print(parseJwt);
     return parseJwt["user_id"];
   }
 

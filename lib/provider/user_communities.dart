@@ -34,7 +34,6 @@ class UserCommunitiesProvider extends ChangeNotifier {
     Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
     final database = Database(token: token);
     final response = await database.getUserCommunities(parseJwt['sub']);
-    print(response);
     // load data with await from api
 
     bool isDataSetSuccess = setDataFromGraphQlResponse(response);

@@ -69,9 +69,10 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
               : Mutations.particapteToJam,
           onCompleted: (dynamic resultData) {
             isLoading = false;
-            isUserParticipating = !isUserParticipating;
+            setState(() {
+              isUserParticipating = !isUserParticipating;
+            });
             eventBus.fire(ParticipateToJamEvent(widget.jam.jid));
-            print(resultData);
             dynamic returnObject = resultData['insert_jam_participants'] ??
                 resultData['delete_jam_participants'];
             widget.jam = Jam.fromJson(returnObject['returning'][0]['jam']);

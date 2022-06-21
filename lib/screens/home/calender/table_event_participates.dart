@@ -42,7 +42,7 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
   List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
 
-    print("days: ${widget.kEvents[day]}");
+    // print("days: ${widget.kEvents[day]}");
     return widget.kEvents[day] ?? [];
   }
 
