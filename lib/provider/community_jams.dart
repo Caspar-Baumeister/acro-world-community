@@ -56,7 +56,7 @@ class CommunityJamsProvider extends ChangeNotifier {
           cid: jam["community_id"],
           jid: jam["id"],
           createdAt: DateTime.parse(jam["created_at"]),
-          createdBy: jam["created_by_id"],
+          createdById: jam["created_by_id"],
           participants: [],
           date: DateTime.parse(jam["date"]),
           name: jam["name"],

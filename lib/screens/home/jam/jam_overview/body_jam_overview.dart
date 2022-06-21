@@ -60,10 +60,10 @@ class JamOverviewBody extends StatelessWidget {
         options: MutationOptions(
           document: isUserParticipating
               ? gql(Mutations.removeJamParticipation)
-              : gql(Mutations
-                  .particapteToJam), // this is the mutation string you just created
+              : gql(Mutations.particapteToJam),
           onCompleted: (dynamic resultData) {
             isLoading = false;
+            isUserParticipating = !isUserParticipating;
             eventBus.fire(ParticipateToJamEvent(jam.jid));
           },
           onError: onError,

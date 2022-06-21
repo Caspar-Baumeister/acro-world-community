@@ -167,7 +167,7 @@ final _kEventSource = {
                 cid: "",
                 jid: "ji2d",
                 createdAt: DateTime.now(),
-                createdBy: "lksAdfn4390asd",
+                createdById: "lksAdfn4390asd",
                 participants: [],
                 date: DateTime(now.year, now.month, now.day + 1),
                 name: "Jam nummer $index",

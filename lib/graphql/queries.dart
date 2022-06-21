@@ -27,4 +27,34 @@ class Queries {
       }
     }
     """;
+
+  static const String getAllJamsFromMyCommunities = """
+    query GetMyCommunities {
+        me {
+          communities {
+            community {
+              jams {
+                community_id
+                created_at
+                created_by_id
+                date
+                id
+                info
+                latitude
+                longitude
+                name
+                participants {
+                  user {
+                    name
+                    id
+                    image_url
+                    bio
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    """;
 }
