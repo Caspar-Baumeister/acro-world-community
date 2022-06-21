@@ -14,4 +14,12 @@ class Mutations {
       }
     }
     """;
+
+  static const String removeJamParticipation = """
+    mutation RemoveJamParticipation(\$jamId: uuid) {
+      delete_jam_participants(where: {jam_id: {_eq: \$jamId}}) {
+        affected_rows
+      }
+    }
+    """;
 }

@@ -1,3 +1,4 @@
+import 'package:acroworld/models/user_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Jam {
@@ -8,7 +9,7 @@ class Jam {
   Object createdBy;
   DateTime createdAt;
   DateTime date;
-  List<String> participants;
+  List<UserModel> participants;
   String? info;
   LatLng latLng;
 
@@ -29,8 +30,8 @@ class Jam {
     return Jam(
         cid: json["community_id"],
         jid: json['id'],
-        participants: List<String>.from(
-            participants.map((particpant) => particpant['user']['name'])),
+        participants: List<UserModel>.from(participants.map((particpant) =>
+            UserModel.fromJson(particpant['user'], particpant['user']['id']))),
         date: DateTime.parse(json["date"]),
         name: json["name"],
         imgUrl: json["imgUrl"],
