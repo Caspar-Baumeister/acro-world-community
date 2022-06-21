@@ -5,7 +5,7 @@ class Jam {
   String jid;
   String name;
   String? imgUrl;
-  String createdBy;
+  Object createdBy;
   DateTime createdAt;
   DateTime date;
   List<String> participants;
@@ -24,18 +24,19 @@ class Jam {
       required this.info,
       required this.latLng});
 
-  factory Jam.fromJson(dynamic json, String jid) {
+  factory Jam.fromJson(dynamic json) {
+    List participants = json["participants"];
     return Jam(
         cid: json["community_id"],
-        jid: jid,
-        participants:
-            List<String>.from(json["participants"].map((e) => e.toString())),
-        date: json["date"].toDate(),
+        jid: json['id'],
+        participants: List<String>.from(
+            participants.map((particpant) => particpant['user']['name'])),
+        date: DateTime.parse(json["date"]),
         name: json["name"],
         imgUrl: json["imgUrl"],
-        createdBy: json["createdBy"],
-        createdAt: json["createdAt"].toDate(),
+        createdBy: json["created_by"],
+        createdAt: DateTime.parse(json["created_at"]),
         info: json["info"],
-        latLng: LatLng(json["latlng"][0], json["latlng"][1]));
+        latLng: LatLng(json["latitude"], json["longitude"]));
   }
 }

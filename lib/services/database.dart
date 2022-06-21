@@ -48,6 +48,14 @@ class Database {
         """mutation MyMutation {insert_user_communities(objects: {community_id: "$communityId", user_id: "$uid"}) {affected_rows}}""");
   }
 
+  deleteUserCommunitiesOne(String communityId) async {
+    return authorizedApi("""mutation MyMutation {
+      delete_user_communities(where: {community_id: {_eq: "$communityId"}}) {
+        affected_rows
+      }
+    }""");
+  }
+
   getJamsParticipated(String uid) {
     return authorizedApi("""
       query MyQuery {
