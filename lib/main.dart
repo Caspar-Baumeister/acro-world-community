@@ -1,4 +1,5 @@
 import 'package:acroworld/auth/auth_provider.dart';
+import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/loggin_wrapper.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_communities.dart';
@@ -65,6 +66,7 @@ class App extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => UserCommunitiesProvider()),
+          ChangeNotifierProvider(create: (_) => EventBusProvider()),
         ],
         child: GraphQLProvider(
           client: client,
