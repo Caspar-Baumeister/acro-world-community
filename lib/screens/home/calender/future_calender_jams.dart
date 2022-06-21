@@ -25,8 +25,7 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
 
     return Query(
       options: QueryOptions(
-        document: gql(Queries
-            .getAllJamsFromMyCommunities), // this is the query string you just created
+        document: Queries.getAllJamsFromMyCommunities,
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {

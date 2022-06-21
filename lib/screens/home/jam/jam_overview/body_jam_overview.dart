@@ -15,11 +15,17 @@ import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:event_bus/event_bus.dart';
 
-class JamOverviewBody extends StatelessWidget {
+class JamOverviewBody extends StatefulWidget {
   JamOverviewBody({required this.jam, required this.cid, Key? key})
       : super(key: key);
-  final Jam jam;
+  Jam jam;
   final String cid;
+
+  @override
+  State<JamOverviewBody> createState() => _JamOverviewBodyState();
+}
+
+class _JamOverviewBodyState extends State<JamOverviewBody> {
   bool isLoading = false;
   bool isUserParticipating = false;
 
@@ -49,23 +55,27 @@ class JamOverviewBody extends StatelessWidget {
     final EventBus eventBus = eventBusProvider.eventBus;
     final UserModel user = Provider.of<UserProvider>(context).activeUser!;
 
-    isUserParticipating =
-        jam.participants.any((participant) => participant.uid == user.uid);
+    isUserParticipating = widget.jam.participants
+        .any((participant) => participant.uid == user.uid);
 
-    String timeString = timeago.format(jam.date);
+    String timeString = timeago.format(widget.jam.date);
     String dateString =
-        DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(jam.date);
+        DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(widget.jam.date);
 
     return SingleChildScrollView(
       child: Mutation(
         options: MutationOptions(
           document: isUserParticipating
-              ? gql(Mutations.removeJamParticipation)
-              : gql(Mutations.particapteToJam),
+              ? Mutations.removeJamParticipation
+              : Mutations.particapteToJam,
           onCompleted: (dynamic resultData) {
             isLoading = false;
             isUserParticipating = !isUserParticipating;
-            eventBus.fire(ParticipateToJamEvent(jam.jid));
+            eventBus.fire(ParticipateToJamEvent(widget.jam.jid));
+            print(resultData);
+            dynamic returnObject = resultData['insert_jam_participants'] ??
+                resultData['delete_jam_participants'];
+            widget.jam = Jam.fromJson(returnObject['returning'][0]['jam']);
           },
           onError: onError,
         ),
@@ -111,7 +121,7 @@ class JamOverviewBody extends StatelessWidget {
                       vertical: 12.0, horizontal: 12.0),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    jam.info ?? "",
+                    widget.jam.info ?? "",
                     maxLines: 10,
                     style: const TextStyle(
                         color: Color(0xFFA4A4A4), fontSize: 16.0),
@@ -136,11 +146,11 @@ class JamOverviewBody extends StatelessWidget {
                           onPressed: () => buildMortal(
                               context,
                               ParticipantModal(
-                                  participants: jam.participants
+                                  participants: widget.jam.participants
                                       .map((e) => e.userName)
                                       .toList())),
                           child: Text(
-                            "${jam.participants.length.toString()} participant/s",
+                            "${widget.jam.participants.length.toString()} participant/s",
                             maxLines: 10,
                             style: const TextStyle(
                                 fontSize: 16.0, color: Colors.black54),
@@ -161,7 +171,7 @@ class JamOverviewBody extends StatelessWidget {
                                     fontSize: 30, fontWeight: FontWeight.bold)),
                             onPressed: () {
                               isLoading = true;
-                              runMutation({'jamId': jam.jid});
+                              runMutation({'jamId': widget.jam.jid});
                             },
                             child: Row(
                               mainAxisSize: MainAxisSize.min,

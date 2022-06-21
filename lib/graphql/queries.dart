@@ -1,60 +1,26 @@
+import 'package:acroworld/graphql/fragments.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+
 class Queries {
-  static const String jamsByCommunityId = """
+  static final jamsByCommunityId = gql("""
     query JamsByCommunityId(\$communityId: uuid) {
       jams(where: {community_id: {_eq: \$communityId}}) {
-        created_at
-        created_by {
-          name
-          image_url
-          id
-          bio
-        }
-        date
-        id
-        info
-        latitude
-        longitude
-        name
-        community_id
-        participants {
-          user {
-            name
-            id
-            image_url
-            bio
-          }
-        }
+        ${Fragments.jamFragment}
       }
     }
-    """;
+    """);
 
-  static const String getAllJamsFromMyCommunities = """
+  static final getAllJamsFromMyCommunities = gql("""
     query GetMyCommunities {
         me {
           communities {
             community {
               jams {
-                community_id
-                created_at
-                created_by_id
-                date
-                id
-                info
-                latitude
-                longitude
-                name
-                participants {
-                  user {
-                    name
-                    id
-                    image_url
-                    bio
-                  }
-                }
+                ${Fragments.jamFragment}
               }
             }
           }
         }
       }
-    """;
+    """);
 }

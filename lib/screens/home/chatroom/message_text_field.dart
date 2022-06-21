@@ -19,8 +19,7 @@ class _MessageTextFieldState extends State<MessageTextField> {
   Widget build(BuildContext context) {
     return Mutation(
       options: MutationOptions(
-        document: gql(Mutations
-            .insertCommunityMessage), // this is the mutation string you just created
+        document: Mutations.insertCommunityMessage,
         onCompleted: (dynamic resultData) {
           if (resultData['insert_community_messages']['affected_rows'] == 1) {
             _controller.clear();

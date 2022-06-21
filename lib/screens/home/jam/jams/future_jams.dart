@@ -27,8 +27,7 @@ class _FutureJamsState extends State<FutureJams> {
 
     return Query(
       options: QueryOptions(
-        document: gql(Queries
-            .jamsByCommunityId), // this is the query string you just created
+        document: Queries.jamsByCommunityId,
         variables: {
           'communityId': widget.cId,
         },
