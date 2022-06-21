@@ -1,9 +1,13 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jams/jams_body.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:event_bus/event_bus.dart';
+import 'package:provider/provider.dart';
 
 class FutureJams extends StatefulWidget {
   const FutureJams({Key? key, required this.cId}) : super(key: key);
@@ -17,6 +21,10 @@ class FutureJams extends StatefulWidget {
 class _FutureJamsState extends State<FutureJams> {
   @override
   Widget build(BuildContext context) {
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context);
+    final EventBus eventBus = eventBusProvider.eventBus;
+
     return Query(
       options: QueryOptions(
         document: gql(Queries
@@ -36,6 +44,10 @@ class _FutureJamsState extends State<FutureJams> {
         }
 
         List jams = result.data?['jams'];
+
+        eventBus.on<ParticipateToJamEvent>().listen((event) {
+          refetch!();
+        });
 
         return RefreshIndicator(
           onRefresh: (() async => refetch!()),

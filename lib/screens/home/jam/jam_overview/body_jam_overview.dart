@@ -1,3 +1,5 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
@@ -6,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:event_bus/event_bus.dart';
 
 class JamOverviewBody extends StatelessWidget {
   JamOverviewBody({required this.jam, required this.cid, Key? key})
@@ -36,6 +40,10 @@ class JamOverviewBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context);
+
+    final EventBus eventBus = eventBusProvider.eventBus;
     String timeString = timeago.format(jam.date);
     String dateString =
         DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(jam.date);
@@ -47,6 +55,8 @@ class JamOverviewBody extends StatelessWidget {
               .particapteToJam), // this is the mutation string you just created
           onCompleted: (dynamic resultData) {
             isLoading = false;
+            print('fire ParticipateToJamEvent');
+            eventBus.fire(ParticipateToJamEvent(jam.jid));
           },
           onError: onError,
         ),
