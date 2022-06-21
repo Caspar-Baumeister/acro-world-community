@@ -1,7 +1,7 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
 import 'package:flutter/material.dart';
-import 'package:timeago/timeago.dart' as timeago;
+import 'package:intl/intl.dart';
 
 class JamTile extends StatelessWidget {
   const JamTile({required this.jam, required this.cid, Key? key})
@@ -25,8 +25,9 @@ class JamTile extends StatelessWidget {
         child: Card(
           child: ListTile(
             title: Text(jam.name),
-            subtitle: Text(timeago.format(jam.date, allowFromNow: true),
-                locale: const Locale('de', 'DE')),
+            subtitle: Text(DateFormat('kk:mm').format(jam.date)),
+            // Text(timeago.format(jam.date, allowFromNow: true),
+            //     locale: const Locale('de', 'DE')),
             trailing:
                 Text(jam.participants.length.toString() + " participants"),
           ),

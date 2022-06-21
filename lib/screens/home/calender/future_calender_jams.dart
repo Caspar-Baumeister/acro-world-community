@@ -60,23 +60,23 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
     //final response = await database.getUserJams(widget.cId);
 
     // get all participated jams
-    final response = await database.getJamsParticipated(
-        Provider.of<UserProvider>(context, listen: false).activeUser!.uid);
+    final response = await database.getJamsFromMyComs();
+    print(response.toString());
 
-    final jams = response["data"]["me"][0]["participates"];
+    //Provider.of<UserProvider>(context, listen: false).activeUser!.uid
 
-    final jamList = List<Jam>.from(jams.map((jamjson) {
-      print(jamjson);
-      final jam = jamjson["jam"];
-      print(jam.toString());
+    List<Map<String, dynamic>> jams = [];
 
-      print(jam["id"]);
-      print(jam["name"]);
-      print(jam["latitude"]);
-      print(jam["latitude"]);
-      print(jam["date"]);
-      print(jam["created_by_id"]);
+    for (Map<String, dynamic> com in response["data"]["me"][0]["communities"]) {
+      for (Map<String, dynamic> jam in com["community"]["jams"]) {
+        jams.add(jam);
+      }
+    }
 
+    // manage response of getJamsParticipated
+    //final jams = response["data"]["me"][0]["participates"];
+
+    final jamList = List<Jam>.from(jams.map((jam) {
       final jamObject = Jam(
           cid: jam["community_id"],
           jid: jam["id"],
@@ -89,12 +89,9 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
           info: jam["info"],
           latLng: LatLng(jam["latitude"], jam["longitude"]));
 
-      print(jamObject.toString());
-
       return jamObject;
     }));
 
-    print(jamList);
     return jamList;
   }
 }

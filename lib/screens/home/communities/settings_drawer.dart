@@ -2,8 +2,6 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
-import 'package:acroworld/screens/home/settings/settings.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,24 +17,25 @@ class SettingsDrawer extends StatelessWidget {
         child: ListView(
           children: <Widget>[
             GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const SettingsPage(),
-                ),
-              ),
+              // onTap: () => Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const SettingsPage(),
+              //   ),
+              // ),
               child: ListTile(
-                  leading: Text(
-                    userProvider.activeUser!.userName ?? "",
-                  ),
-                  trailing: CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        userProvider.activeUser!.imgUrl ?? MORTY_IMG_URL),
-                  )),
+                leading: Text(
+                  userProvider.activeUser!.userName ?? "",
+                ),
+                // trailing: CircleAvatar(
+                //   backgroundImage: NetworkImage(
+                //       userProvider.activeUser!.imgUrl ?? MORTY_IMG_URL),
+                // )
+              ),
             ),
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => Calender(),
+                  builder: (context) => const Calender(),
                 ),
               ),
               child: ListTile(
