@@ -6,7 +6,7 @@ class Jam {
   String jid;
   String name;
   String? imgUrl;
-  Object createdBy;
+  Object createdById;
   DateTime createdAt;
   DateTime date;
   List<UserModel> participants;
@@ -17,7 +17,7 @@ class Jam {
       {required this.jid,
       required this.cid,
       required this.createdAt,
-      required this.createdBy,
+      required this.createdById,
       required this.participants,
       required this.date,
       required this.name,
@@ -35,7 +35,7 @@ class Jam {
         date: DateTime.parse(json["date"]),
         name: json["name"],
         imgUrl: json["imgUrl"],
-        createdBy: json["created_by"],
+        createdById: json["created_by_id"],
         createdAt: DateTime.parse(json["created_at"]),
         info: json["info"],
         latLng: LatLng(json["latitude"], json["longitude"]));
