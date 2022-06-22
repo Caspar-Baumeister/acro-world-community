@@ -16,7 +16,7 @@ class TableEventsParticipates extends StatefulWidget {
 }
 
 class _TableEventsParticipatesState extends State<TableEventsParticipates> {
-  late final ValueNotifier<List<Jam>> _selectedEvents;
+  late ValueNotifier<List<Jam>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by longpressing a date
@@ -28,9 +28,6 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
   @override
   void initState() {
     super.initState();
-
-    _selectedDay = _focusedDay;
-    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
   }
 
   @override
@@ -90,6 +87,8 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
 
   @override
   Widget build(BuildContext context) {
+    _selectedDay = _focusedDay;
+    _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     return Column(
       children: [
         TableCalendar<Jam>(
