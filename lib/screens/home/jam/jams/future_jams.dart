@@ -42,8 +42,6 @@ class _FutureJamsState extends State<FutureJams> {
           return const Loading();
         }
 
-        List jams = result.data?['jams'];
-
         eventBus.on<ParticipateToJamEvent>().listen((event) {
           print('refetch');
           refetch!();
@@ -55,7 +53,8 @@ class _FutureJamsState extends State<FutureJams> {
             child: SizedBox(
               height: MediaQuery.of(context).size.height,
               child: JamsBody(
-                jams: jams.map((e) => Jam.fromJson(e)).toList(),
+                jams: List<Jam>.from(
+                    result.data?['jams'].map((e) => Jam.fromJson(e))),
                 cId: widget.cId,
               ),
             ),
