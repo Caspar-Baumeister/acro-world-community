@@ -39,7 +39,6 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
         }
 
         eventBus.on<ParticipateToJamEvent>().listen((event) {
-          print('refetch');
           refetch!();
         });
 
