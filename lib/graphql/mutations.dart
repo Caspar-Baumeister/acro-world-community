@@ -8,7 +8,7 @@ class Mutations {
         affected_rows
       }
     }
-    """);
+  """);
 
   static final particapteToJam = gql("""
     mutation InsertJamParticipants(\$jamId: uuid) {
@@ -21,7 +21,7 @@ class Mutations {
         }
       }
     }
-    """);
+  """);
 
   static final removeJamParticipation = gql("""
     mutation RemoveJamParticipation(\$jamId: uuid) {
@@ -34,5 +34,13 @@ class Mutations {
         }
       }
     }
-    """);
+  """);
+
+  static final insertJam = gql("""
+    mutation InsertJam(\$communityId: uuid = "", \$date: timestamptz = "", \$latitude: numeric = "", \$longitude: numeric = "", \$name: String = "", \$info: String = "") {
+      insert_jams_one(object: {community_id: \$communityId, date: \$date, latitude: \$latitude, longitude: \$longitude, name: \$name, info: \$info}) {
+         ${Fragments.jamFragment}
+      }
+    }
+  """);
 }

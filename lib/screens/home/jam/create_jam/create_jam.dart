@@ -1,3 +1,6 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/create_jam_event.dart';
+import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
@@ -7,9 +10,11 @@ import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:acroworld/widgets/view_root.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateJam extends StatefulWidget {
@@ -32,6 +37,7 @@ class _CreateJamState extends State<CreateJam> {
   String imgUrl = '';
   String info = '';
   LatLng? latlng;
+  bool isLoading = false;
 
   setDateTime(newDateTime) {
     setState(() {
@@ -39,82 +45,140 @@ class _CreateJamState extends State<CreateJam> {
     });
   }
 
-  bool loading = false;
+  void onError(OperationException? errorData) {
+    String errorMessage = "";
+    if (errorData != null) {
+      if (errorData.graphqlErrors.isNotEmpty) {
+        errorMessage = errorData.graphqlErrors[0].message;
+      }
+    }
+    if (errorMessage == "") {
+      errorMessage = "An unknown error occured";
+    }
+    Fluttertoast.showToast(
+        msg: errorMessage,
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.TOP,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   @override
   Widget build(BuildContext context) {
-    int maxLenght = 30;
-    return loading
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context);
+    final EventBus eventBus = eventBusProvider.eventBus;
+
+    int maxLength = 30;
+    return isLoading
         ? const LoadingScaffold()
-        : Scaffold(
-            backgroundColor: Colors.white,
-            appBar: AppBarCreateJam(onCreate: () => onCreate()),
-            body: ViewRoot(
-              child: SingleChildScrollView(
-                child: Form(
-                  key: _formKey,
-                  child: Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        const SizedBox(height: 20.0),
-                        TextFormField(
-                          keyboardType: TextInputType.name,
-                          decoration: buildInputDecoration(labelText: 'Name'),
-                          validator: (val) =>
-                              (val == null || val.isEmpty || val == "")
-                                  ? 'Enter a valid jam name'
-                                  : null,
-                          onChanged: (val) {
-                            setState(() => name = val);
-                          },
+        : Mutation(
+            options: MutationOptions(
+              document: Mutations.insertJam,
+              onCompleted: (dynamic resultData) {
+                setState(() {
+                  isLoading = false;
+                });
+                if (resultData['insert_jams_one'] != null) {
+                  eventBus.fire(CreateJamEvent());
+                  Navigator.pop(context);
+                }
+              },
+              onError: onError,
+            ),
+            builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
+                        {Object? optimisticResult})
+                    runMutation,
+                QueryResult<dynamic>? result) {
+              return Scaffold(
+                backgroundColor: Colors.white,
+                appBar: AppBarCreateJam(onCreate: () {
+                  if (checkForm()) {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    runMutation({
+                      "communityId": widget.cid,
+                      "name": name,
+                      "date": _chosenDateTime.toIso8601String(),
+                      "info": info,
+                      "latitude": latlng!.latitude,
+                      "longitude": latlng!.longitude
+                    });
+                  }
+                }),
+                body: ViewRoot(
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _formKey,
+                      child: Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                              keyboardType: TextInputType.name,
+                              decoration:
+                                  buildInputDecoration(labelText: 'Name'),
+                              validator: (val) =>
+                                  (val == null || val.isEmpty || val == "")
+                                      ? 'Enter a valid jam name'
+                                      : null,
+                              onChanged: (val) {
+                                setState(() => name = val);
+                              },
+                            ),
+                            const SizedBox(height: 20.0),
+                            DateTimeChooser(
+                              chosenDateTime: _chosenDateTime,
+                              setDateTime: setDateTime,
+                            ),
+                            const SizedBox(height: 20.0),
+                            TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                autocorrect: true,
+                                enableSuggestions: true,
+                                decoration:
+                                    buildInputDecoration(labelText: 'Info'),
+                                onChanged: (val) {
+                                  setState(() => info = val);
+                                },
+                                validator: (val) {
+                                  if (val == null || val.isEmpty || val == "") {
+                                    return 'Provide a short description of the jam';
+                                  }
+                                  if (val.split(' ').length > maxLength) {
+                                    return 'You cannot use more then $maxLength words';
+                                  }
+                                  return null;
+                                }),
+                            const SizedBox(height: 20),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20)),
+                              constraints: const BoxConstraints(maxHeight: 350),
+                              child: MapWidget(
+                                onLocationSelected: (location) =>
+                                    {setState(() => latlng = location)},
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 20.0),
-                        DateTimeChooser(
-                          chosenDateTime: _chosenDateTime,
-                          setDateTime: setDateTime,
-                        ),
-                        const SizedBox(height: 20.0),
-                        TextFormField(
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            textCapitalization: TextCapitalization.sentences,
-                            autocorrect: true,
-                            enableSuggestions: true,
-                            decoration: buildInputDecoration(labelText: 'Info'),
-                            onChanged: (val) {
-                              setState(() => info = val);
-                            },
-                            validator: (val) {
-                              if (val == null || val.isEmpty || val == "") {
-                                return 'Provide a short description of the jam';
-                              }
-                              if (val.split(' ').length > maxLenght) {
-                                return 'You cannot use more then $maxLenght words';
-                              }
-                              return null;
-                            }),
-                        const SizedBox(height: 20),
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20)),
-                          constraints: const BoxConstraints(maxHeight: 350),
-                          child: MapWidget(
-                            onLocationSelected: (location) =>
-                                {setState(() => latlng = location)},
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
+              );
+            },
           );
   }
 
-  // triggert when create is pressed
-  void onCreate() async {
+  bool checkForm() {
     if (latlng == null) {
       Fluttertoast.showToast(
           msg: "Set a location before creating",
@@ -124,38 +188,12 @@ class _CreateJamState extends State<CreateJam> {
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
-      return;
+      return false;
     }
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
+      return false;
     }
 
-    setState(() {
-      loading = true;
-    });
-
-    bool isValidToken =
-        await Provider.of<UserProvider>(context, listen: false).validToken();
-    if (!isValidToken) {
-      Navigator.of(context).push(
-          MaterialPageRoute(builder: ((context) => const Authenticate())));
-      return null;
-    }
-    String token = Provider.of<UserProvider>(context, listen: false).token!;
-    final database = Database(token: token);
-    final response = await database.insertJam(
-        widget.cid,
-        name,
-        _chosenDateTime.toIso8601String(),
-        info,
-        latlng!.latitude,
-        latlng!.longitude);
-
-    widget.refreshState();
-    setState(() {
-      loading = false;
-    });
-
-    Navigator.pop(context);
+    return true;
   }
 }
