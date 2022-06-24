@@ -5,7 +5,6 @@ import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // saves a map of jams associated with a community id locally (also in offline mode accesible)
 // {cid: [jid: {jamJson}, jid: {jamJson}]}
@@ -51,17 +50,7 @@ class CommunityJamsProvider extends ChangeNotifier {
     try {
       List jamsJson = response["data"]["jams"];
 
-      return List<Jam>.from(jamsJson.map((jam) => Jam(
-          cid: jam["community_id"],
-          jid: jam["id"],
-          createdAt: DateTime.parse(jam["created_at"]),
-          createdById: jam["created_by_id"],
-          participants: [],
-          date: DateTime.parse(jam["date"]),
-          name: jam["name"],
-          // imgUrl: "",
-          info: jam["info"],
-          latLng: LatLng(jam["latitude"], jam["longitude"]))));
+      return List<Jam>.from(jamsJson.map((jam) => Jam.fromJson(json)));
     } catch (e) {
       return [];
     }

@@ -128,9 +128,11 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
               return ListView.builder(
                 itemCount: value.length,
                 itemBuilder: (context, index) {
+                  print("name: ${value[index].communityName}");
                   return JamTile(
                     jam: value[index],
                     cid: value[index].cid,
+                    communityName: value[index].communityName,
                   );
                 },
               );
