@@ -103,7 +103,8 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
           rangeStartDay: _rangeStart,
           rangeEndDay: _rangeEnd,
           calendarFormat: _calendarFormat,
-          rangeSelectionMode: _rangeSelectionMode,
+          rangeSelectionMode:
+              RangeSelectionMode.disabled, //_rangeSelectionMode,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
           calendarStyle: const CalendarStyle(
@@ -113,7 +114,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
             outsideDaysVisible: false,
           ),
           onDaySelected: _onDaySelected,
-          onRangeSelected: _onRangeSelected,
+          //onRangeSelected: _onRangeSelected,
           onFormatChanged: (format) {
             if (_calendarFormat != format) {
               setState(() {
@@ -140,16 +141,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                     if (index == 0) {
                       return const SizedBox(height: 55);
                     }
-                    return Container(
-                        // margin: const EdgeInsets.symmetric(
-                        //   horizontal: 12.0,
-                        //   vertical: 4.0,
-                        // ),
-                        // decoration: BoxDecoration(
-                        //   border: Border.all(),
-                        //   borderRadius: BorderRadius.circular(12.0),
-                        // ),
-                        child: JamTile(jam: value[index - 1], cid: widget.cid));
+                    return JamTile(jam: value[index - 1], cid: widget.cid);
                   },
                 );
               },

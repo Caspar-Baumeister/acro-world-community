@@ -90,6 +90,7 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         TableCalendar<Jam>(
           firstDay: kFirstDay,
@@ -99,7 +100,8 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
           rangeStartDay: _rangeStart,
           rangeEndDay: _rangeEnd,
           calendarFormat: _calendarFormat,
-          rangeSelectionMode: _rangeSelectionMode,
+          rangeSelectionMode:
+              RangeSelectionMode.disabled, //_rangeSelectionMode,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
           calendarStyle: const CalendarStyle(
@@ -107,7 +109,7 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
             outsideDaysVisible: false,
           ),
           onDaySelected: _onDaySelected,
-          onRangeSelected: _onRangeSelected,
+          //onRangeSelected: _onRangeSelected,
           onFormatChanged: (format) {
             if (_calendarFormat != format) {
               setState(() {

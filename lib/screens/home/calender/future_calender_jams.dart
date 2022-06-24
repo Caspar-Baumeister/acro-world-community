@@ -57,13 +57,8 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
 
         return RefreshIndicator(
           onRefresh: (() async => refetch!()),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: CalenderBody(
-                userJams: jams,
-              ),
-            ),
+          child: CalenderBody(
+            userJams: jams,
           ),
         );
       },

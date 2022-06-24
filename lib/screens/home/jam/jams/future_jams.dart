@@ -53,15 +53,10 @@ class _FutureJamsState extends State<FutureJams> {
 
         return RefreshIndicator(
           onRefresh: (() async => refetch!()),
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: JamsBody(
-                jams: List<Jam>.from(
-                    result.data?['jams'].map((e) => Jam.fromJson(e))),
-                cId: widget.cId,
-              ),
-            ),
+          child: JamsBody(
+            jams: List<Jam>.from(
+                result.data?['jams'].map((e) => Jam.fromJson(e))),
+            cId: widget.cId,
           ),
         );
       },
