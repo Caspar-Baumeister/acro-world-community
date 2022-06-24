@@ -7,9 +7,9 @@ import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
+import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -75,8 +75,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                 runMutation,
             QueryResult<dynamic>? result) {
           return Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
+            padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -207,6 +206,16 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  Container(
+                    decoration:
+                        BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                    constraints: const BoxConstraints(maxHeight: 350),
+                    child: MapWidget(
+                      zoom: 15.0,
+                      center: widget.jam.latLng,
+                      markerLocation: widget.jam.latLng,
                     ),
                   ),
                 ],

@@ -200,7 +200,9 @@ class Database {
                 "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$password\"}){token}}"
           }));
       return jsonDecode(response.body.toString());
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     return null;
   }
 }

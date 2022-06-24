@@ -1,14 +1,21 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget(
-      {Key? key, this.center, this.markerLocation, this.onLocationSelected})
+      {Key? key,
+      this.center,
+      this.markerLocation,
+      this.onLocationSelected,
+      this.zoom})
       : super(key: key);
 
   final LatLng? center;
   final LatLng? markerLocation;
   final Function(LatLng)? onLocationSelected;
+  final double? zoom;
 
   @override
   State<MapWidget> createState() => _MapState();
@@ -59,7 +66,7 @@ class _MapState extends State<MapWidget> {
       myLocationButtonEnabled: false,
       initialCameraPosition: CameraPosition(
         target: center,
-        zoom: 11.0,
+        zoom: widget.zoom ?? 11.0,
       ),
       onLongPress: _onLongPress,
       markers: Set<Marker>.of(markers.values),
