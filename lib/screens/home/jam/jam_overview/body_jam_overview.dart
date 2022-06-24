@@ -1,4 +1,5 @@
 import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
@@ -41,6 +42,15 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
     // String timeString = timeago.format(widget.jam.date);
     String dateString =
         DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(widget.jam.date);
+
+    eventBus.on<CrudJamEvent>().listen((CrudJamEvent crudJamEvent) {
+      Jam crudJam = crudJamEvent.jam;
+      if (crudJam.jid == widget.jam.jid) {
+        setState(() {
+          widget.jam = crudJam;
+        });
+      }
+    });
 
     return SingleChildScrollView(
       child: Mutation(
