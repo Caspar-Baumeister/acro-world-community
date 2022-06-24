@@ -183,7 +183,9 @@ class Database {
                 "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
           }));
       return jsonDecode(response.body.toString())["data"]["login"]["token"];
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     return null;
   }
 

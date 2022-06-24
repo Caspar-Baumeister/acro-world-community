@@ -1,5 +1,7 @@
 import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
+import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
@@ -38,31 +40,15 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
       options: MutationOptions(
         fetchPolicy: FetchPolicy.networkOnly,
         document: Mutations.deleteJam,
-        onError: (OperationException? errorData) {
-          String errorMessage = "";
-          if (errorData != null) {
-            if (errorData.graphqlErrors.isNotEmpty) {
-              errorMessage = errorData.graphqlErrors[0].message;
-            }
-          }
-          if (errorMessage == "") {
-            errorMessage = "An unknown error occured";
-          }
-          Fluttertoast.showToast(
-              msg: errorMessage,
-              toastLength: Toast.LENGTH_LONG,
-              gravity: ToastGravity.TOP,
-              backgroundColor: Colors.red,
-              textColor: Colors.white,
-              fontSize: 16.0);
-        },
+        onError: GraphQLErrorHandler().handleError,
         onCompleted: (dynamic resultData) {
-          print(resultData);
           setState(() {
             isLoading = false;
           });
-          if (resultData != null && resultData['affected_rows'] == 1) {
-            eventBus.fire(ParticipateToJamEvent(widget.jam.jid));
+          if (resultData != null &&
+              resultData['delete_jams']['affected_rows'] == 1) {
+            eventBus.fire(CrudJamEvent(widget.jam));
+            Navigator.pop(context);
           }
         },
       ),
@@ -84,7 +70,16 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
                     onPressed: () => {},
                   ),
                   isLoading
-                      ? const CircularProgressIndicator()
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        )
                       : IconButton(
                           icon: const Icon(
                             Icons.delete,

@@ -28,6 +28,7 @@ class _FutureJamsState extends State<FutureJams> {
 
     return Query(
       options: QueryOptions(
+        fetchPolicy: FetchPolicy.networkOnly,
         document: Queries.jamsByCommunityId,
         variables: {
           'communityId': widget.cId,
