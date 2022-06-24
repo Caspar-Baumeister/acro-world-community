@@ -17,10 +17,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateJam extends StatefulWidget {
-  const CreateJam({required this.cid, Key? key, required this.refreshState})
-      : super(key: key);
+  const CreateJam({required this.cid, Key? key, this.jam}) : super(key: key);
   final String cid;
-  final VoidCallback refreshState;
+  final Jam? jam;
 
   @override
   State<CreateJam> createState() => _CreateJamState();
@@ -32,11 +31,26 @@ class _CreateJamState extends State<CreateJam> {
 
   // text field state
   String name = '';
-  String location = '';
-  String imgUrl = '';
   String info = '';
   LatLng? latlng;
+
   bool isLoading = false;
+  bool isEdit = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.jam != null) {
+      Jam jam = widget.jam!;
+      isEdit = true;
+      setState(() {
+        _chosenDateTime = jam.date;
+        name = jam.name;
+        info = jam.info;
+        latlng = jam.latLng;
+      });
+    }
+  }
 
   setDateTime(newDateTime) {
     setState(() {
@@ -55,15 +69,21 @@ class _CreateJamState extends State<CreateJam> {
         ? const LoadingScaffold()
         : Mutation(
             options: MutationOptions(
-              document: Mutations.insertJam,
+              document: isEdit ? Mutations.updateJam : Mutations.insertJam,
               onCompleted: (dynamic resultData) {
                 setState(() {
                   isLoading = false;
                 });
-                if (resultData['insert_jams_one'] != null) {
-                  Jam createdJam = Jam.fromJson(resultData['insert_jams_one']);
-                  eventBus.fire(CrudJamEvent(createdJam));
-                  Navigator.pop(context);
+                if (resultData != null) {
+                  dynamic returnedJamObject = isEdit
+                      ? resultData['update_jams_by_pk']
+                      : resultData['insert_jams_one'];
+
+                  if (returnedJamObject != null) {
+                    Jam createdJam = Jam.fromJson(returnedJamObject);
+                    eventBus.fire(CrudJamEvent(createdJam));
+                    Navigator.pop(context);
+                  }
                 }
               },
               onError: GraphQLErrorHandler().handleError,
@@ -74,21 +94,34 @@ class _CreateJamState extends State<CreateJam> {
                 QueryResult<dynamic>? result) {
               return Scaffold(
                 backgroundColor: Colors.white,
-                appBar: AppBarCreateJam(onCreate: () {
-                  if (checkForm()) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    runMutation({
-                      "communityId": widget.cid,
-                      "name": name,
-                      "date": _chosenDateTime.toIso8601String(),
-                      "info": info,
-                      "latitude": latlng!.latitude,
-                      "longitude": latlng!.longitude
-                    });
-                  }
-                }),
+                appBar: AppBarJam(
+                    title: isEdit ? 'Edit Jam' : 'Create Jam',
+                    onSubmit: () {
+                      if (checkForm()) {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        if (isEdit) {
+                          runMutation({
+                            "jamId": widget.jam!.jid,
+                            "name": name,
+                            "date": _chosenDateTime.toIso8601String(),
+                            "info": info,
+                            "latitude": latlng!.latitude,
+                            "longitude": latlng!.longitude
+                          });
+                        } else {
+                          runMutation({
+                            "communityId": widget.cid,
+                            "name": name,
+                            "date": _chosenDateTime.toIso8601String(),
+                            "info": info,
+                            "latitude": latlng!.latitude,
+                            "longitude": latlng!.longitude
+                          });
+                        }
+                      }
+                    }),
                 body: ViewRoot(
                   child: SingleChildScrollView(
                     child: Form(
@@ -100,6 +133,7 @@ class _CreateJamState extends State<CreateJam> {
                           children: <Widget>[
                             const SizedBox(height: 20.0),
                             TextFormField(
+                              initialValue: name,
                               keyboardType: TextInputType.name,
                               decoration:
                                   buildInputDecoration(labelText: 'Name'),
@@ -118,6 +152,7 @@ class _CreateJamState extends State<CreateJam> {
                             ),
                             const SizedBox(height: 20.0),
                             TextFormField(
+                                initialValue: info,
                                 keyboardType: TextInputType.multiline,
                                 maxLines: null,
                                 textCapitalization:
@@ -144,6 +179,7 @@ class _CreateJamState extends State<CreateJam> {
                                   borderRadius: BorderRadius.circular(20)),
                               constraints: const BoxConstraints(maxHeight: 350),
                               child: MapWidget(
+                                markerLocation: latlng,
                                 onLocationSelected: (location) =>
                                     {setState(() => latlng = location)},
                               ),
@@ -163,7 +199,7 @@ class _CreateJamState extends State<CreateJam> {
     if (latlng == null) {
       Fluttertoast.showToast(
           msg: "Set a location before creating",
-          toastLength: Toast.LENGTH_SHORT,
+          toastLength: Toast.LENGTH_LONG,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 1,
           backgroundColor: Colors.red,

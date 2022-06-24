@@ -1,14 +1,13 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
-import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -67,7 +66,16 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
                       Icons.edit,
                       color: Colors.black,
                     ),
-                    onPressed: () => {},
+                    onPressed: () => {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CreateJam(
+                                  cid: widget.jam.communityId,
+                                  jam: widget.jam,
+                                )),
+                      )
+                    },
                   ),
                   isLoading
                       ? const Padding(

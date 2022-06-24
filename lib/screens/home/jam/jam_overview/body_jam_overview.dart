@@ -113,7 +113,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                         vertical: 6.0, horizontal: 12.0),
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      widget.jam.info ?? "",
+                      widget.jam.info,
                       maxLines: 60,
                       style: const TextStyle(fontSize: 16.0),
                     ),

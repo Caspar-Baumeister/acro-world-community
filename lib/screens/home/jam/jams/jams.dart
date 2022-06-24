@@ -3,9 +3,6 @@ import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
 import 'package:acroworld/screens/home/jam/jams/future_jams.dart';
 import 'package:flutter/material.dart';
 
-// Here are all jams of that community imported
-// getComms(cid) => List<Map<String, dynamic>> List<communityJson>
-
 class Jams extends StatefulWidget {
   const Jams({required this.cId, required this.name, Key? key})
       : super(key: key);
@@ -31,7 +28,7 @@ class _JamsState extends State<Jams> {
 
   GestureDetector floatingActionButton(BuildContext context) {
     return GestureDetector(
-      onTap: () => handleCreateJam(context, (() => setState(() {}))),
+      onTap: () => handleCreateJam(context),
       child: Container(
         width: 86,
         padding: const EdgeInsets.all(6),
@@ -61,12 +58,10 @@ class _JamsState extends State<Jams> {
     );
   }
 
-  void handleCreateJam(BuildContext context, VoidCallback refreshState) async {
+  void handleCreateJam(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(
-          builder: (context) =>
-              CreateJam(cid: widget.cId, refreshState: refreshState)),
+      MaterialPageRoute(builder: (context) => CreateJam(cid: widget.cId)),
     );
   }
 }

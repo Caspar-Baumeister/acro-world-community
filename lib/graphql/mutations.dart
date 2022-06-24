@@ -37,9 +37,17 @@ class Mutations {
   """);
 
   static final insertJam = gql("""
-    mutation InsertJam(\$communityId: uuid = "", \$date: timestamptz = "", \$latitude: numeric = "", \$longitude: numeric = "", \$name: String = "", \$info: String = "") {
+    mutation InsertJam(\$communityId: uuid, \$date: timestamptz, \$latitude: numeric, \$longitude: numeric, \$name: String, \$info: String) {
       insert_jams_one(object: {community_id: \$communityId, date: \$date, latitude: \$latitude, longitude: \$longitude, name: \$name, info: \$info}) {
          ${Fragments.jamFragment}
+      }
+    }
+  """);
+
+  static final updateJam = gql("""
+    mutation UpdateJam(\$jamId: uuid!, \$date: timestamptz, \$latitude: numeric, \$longitude: numeric, \$name: String, \$info: String) {
+      update_jams_by_pk(pk_columns: {id: \$jamId}, _set: {name: \$name, longitude: \$longitude, latitude: \$latitude, info:  \$info, date: \$date}) {
+        ${Fragments.jamFragment}
       }
     }
   """);

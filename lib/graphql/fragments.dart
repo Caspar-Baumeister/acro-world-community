@@ -24,6 +24,7 @@ class Fragments {
       }
     }
     community {
+      id
       name
     }
 ''';

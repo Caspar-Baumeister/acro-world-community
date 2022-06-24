@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
-class AppBarCreateJam extends StatelessWidget with PreferredSizeWidget {
+class AppBarJam extends StatelessWidget with PreferredSizeWidget {
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
-  const AppBarCreateJam({
+  const AppBarJam({
     Key? key,
-    required this.onCreate,
+    required this.title,
+    required this.onSubmit,
   }) : super(key: key);
 
-  final Function onCreate;
+  final String title;
+  final Function onSubmit;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: const Text("New Jam", style: TextStyle(color: Colors.black)),
+      title: Text(title, style: const TextStyle(color: Colors.black)),
       leading: const BackButton(color: Colors.black),
       actions: <Widget>[
         TextButton.icon(
@@ -25,10 +27,10 @@ class AppBarCreateJam extends StatelessWidget with PreferredSizeWidget {
             color: Colors.black,
           ),
           label: const Text(
-            'create',
+            "Submit",
             style: TextStyle(color: Colors.black),
           ),
-          onPressed: () => onCreate(),
+          onPressed: () => onSubmit(),
         ),
       ],
     );
