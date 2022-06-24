@@ -12,6 +12,7 @@ class Jam {
   List<UserModel> participants;
   String? info;
   LatLng latLng;
+  String communityName;
 
   Jam(
       {required this.jid,
@@ -23,6 +24,7 @@ class Jam {
       required this.name,
       this.imgUrl,
       required this.info,
+      required this.communityName,
       required this.latLng});
 
   factory Jam.fromJson(dynamic json) {
@@ -38,6 +40,7 @@ class Jam {
         createdById: json["created_by_id"],
         createdAt: DateTime.parse(json["created_at"]),
         info: json["info"],
-        latLng: LatLng(json["latitude"], json["longitude"]));
+        latLng: LatLng(json["latitude"], json["longitude"]),
+        communityName: json["community"]["name"]);
   }
 }

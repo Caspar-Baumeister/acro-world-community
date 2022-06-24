@@ -12,7 +12,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:event_bus/event_bus.dart';
 
 class JamOverviewBody extends StatefulWidget {
@@ -39,7 +38,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
     isUserParticipating = widget.jam.participants
         .any((participant) => participant.uid == user.uid);
 
-    String timeString = timeago.format(widget.jam.date);
+    // String timeString = timeago.format(widget.jam.date);
     String dateString =
         DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(widget.jam.date);
 
@@ -68,82 +67,66 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
           return Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 20.0, horizontal: 30.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                const SizedBox(height: 20.0),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
-                  child: Text("Date",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "rubik")),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 12.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    dateString,
-                    style: const TextStyle(fontSize: 16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                            vertical: 12.0, horizontal: 12.0)
+                        .copyWith(top: 0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.jam.name,
+                      style: const TextStyle(fontSize: 24.0),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20.0),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(14.0, 0, 0.0, 8.0),
-                  child: Text("Information",
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w300,
-                          fontFamily: "rubik")),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 12.0, horizontal: 12.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    widget.jam.info ?? "",
-                    maxLines: 60,
-                    style: const TextStyle(
-                        color: Color(0xFFA4A4A4), fontSize: 16.0),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12.0, 0, 0.0, 0.0),
+                    child: Text("Date",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "rubik")),
                   ),
-                ),
-                const SizedBox(height: 20.0),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: 150,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              textStyle: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold)),
-                          onPressed: () => buildMortal(
-                              context,
-                              ParticipantModal(
-                                  participants: widget.jam.participants
-                                      .map((e) => e.userName)
-                                      .toList())),
-                          child: Text(
-                            "${widget.jam.participants.length.toString()} participant/s",
-                            maxLines: 10,
-                            style: const TextStyle(
-                                fontSize: 16.0, color: Colors.black54),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 150,
-                        height: 50,
-                        child: IgnorePointer(
-                          ignoring: isLoading,
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 12.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      dateString,
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  const SizedBox(height: 10.0),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12.0, 0, 0.0, 8.0),
+                    child: Text("Information",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "rubik")),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 12.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.jam.info ?? "",
+                      maxLines: 60,
+                      style: const TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 150,
+                          height: 50,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -151,45 +134,73 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                                     horizontal: 10, vertical: 10),
                                 textStyle: const TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
-                            onPressed: () {
-                              isLoading = true;
-                              runMutation({'jamId': widget.jam.jid});
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: isLoading
-                                  ? [
-                                      const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    ]
-                                  : [
-                                      isUserParticipating
-                                          ? const Icon(Icons.remove,
-                                              color: Colors.black54)
-                                          : const Icon(Icons.add,
-                                              color: Colors.black54),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        isUserParticipating
-                                            ? "Leave"
-                                            : "Participate",
-                                        maxLines: 10,
-                                        style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black54),
-                                      ),
-                                    ],
+                            onPressed: () => buildMortal(
+                                context,
+                                ParticipantModal(
+                                    participants: widget.jam.participants
+                                        .map((e) => e.userName)
+                                        .toList())),
+                            child: Text(
+                              "${widget.jam.participants.length.toString()} participant/s",
+                              maxLines: 10,
+                              style: const TextStyle(
+                                  fontSize: 16.0, color: Colors.black54),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          width: 150,
+                          height: 50,
+                          child: IgnorePointer(
+                            ignoring: isLoading,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10, vertical: 10),
+                                  textStyle: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold)),
+                              onPressed: () {
+                                isLoading = true;
+                                runMutation({'jamId': widget.jam.jid});
+                              },
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: isLoading
+                                    ? [
+                                        const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(),
+                                        )
+                                      ]
+                                    : [
+                                        isUserParticipating
+                                            ? const Icon(Icons.remove,
+                                                color: Colors.black54)
+                                            : const Icon(Icons.add,
+                                                color: Colors.black54),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          isUserParticipating
+                                              ? "Leave"
+                                              : "Participate",
+                                          maxLines: 10,
+                                          style: const TextStyle(
+                                              fontSize: 16.0,
+                                              color: Colors.black54),
+                                        ),
+                                      ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

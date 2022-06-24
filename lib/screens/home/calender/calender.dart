@@ -2,10 +2,7 @@
 // here i pretend the data ist there
 // data: all jams from the user with time from all usercommunities
 
-import 'package:acroworld/data.dart';
-import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/calender/app_bar_calendar.dart';
-import 'package:acroworld/screens/home/calender/calender_body.dart';
 import 'package:acroworld/screens/home/calender/future_calender_jams.dart';
 import 'package:flutter/material.dart';
 
