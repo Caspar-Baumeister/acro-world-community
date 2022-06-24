@@ -116,14 +116,14 @@ class Database {
     }""");
   }
 
-  getAllOtherCommunities(String uid) {
+  getAllOtherCommunities(String uid, String query) {
     return authorizedApi("""
       query MyQuery {
-        communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}}) {
-          name
-          id
-        }
-      }""");
+  communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}, name: {_ilike: "%$query%"}}, limit: 15) {
+    name
+    id
+  }
+}""");
   }
 
   getUserCommunities(String uid) {
