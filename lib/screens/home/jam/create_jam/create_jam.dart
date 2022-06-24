@@ -1,12 +1,9 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/screens/home/map/map.dart';
-import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:acroworld/widgets/view_root.dart';
