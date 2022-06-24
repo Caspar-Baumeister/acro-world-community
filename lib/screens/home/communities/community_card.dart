@@ -66,7 +66,6 @@ class CommunityCard extends StatelessWidget {
     final database = Database(token: token);
 
     final response = await database.deleteUserCommunitiesOne(community.id);
-    print(response);
 
     // update the usercommunities
     Provider.of<UserCommunitiesProvider>(context, listen: false)

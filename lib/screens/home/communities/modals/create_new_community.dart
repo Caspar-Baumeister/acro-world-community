@@ -111,7 +111,6 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
     final database = Database(token: token);
 
     final response = await database.createCommunity(name);
-    print(response);
 
     Navigator.of(context).pop();
     buildMortal(

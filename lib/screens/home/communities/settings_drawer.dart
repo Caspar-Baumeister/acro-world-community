@@ -11,7 +11,6 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    print(userProvider.activeUser);
     return Drawer(
       child: Material(
         child: ListView(

@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -64,7 +63,6 @@ class CommunityJamsProvider extends ChangeNotifier {
           info: jam["info"],
           latLng: LatLng(jam["latitude"], jam["longitude"]))));
     } catch (e) {
-      print(e.toString());
       return [];
     }
   }

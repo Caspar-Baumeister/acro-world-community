@@ -62,11 +62,9 @@ class _SetCommunityPictureState extends State<SetCommunityPicture> {
     //     // Refresh the UI
     //     setState(() {});
     //   } on FirebaseException catch (error) {
-    //     print(error);
     //   }
 
     //   (err) {
-    //     print(err);
     //   };
     // }
   }

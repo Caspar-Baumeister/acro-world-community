@@ -37,7 +37,6 @@ class _MapState extends State<MapWidget> {
   }
 
   void _onLongPress(LatLng clickedLocation) {
-    print(clickedLocation);
     _add(clickedLocation);
     widget.onLocationSelected!(clickedLocation);
   }

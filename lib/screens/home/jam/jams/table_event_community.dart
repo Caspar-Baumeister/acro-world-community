@@ -28,7 +28,6 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
 
   @override
   void initState() {
-    print("initState");
     super.initState();
   }
 
@@ -41,7 +40,6 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
   List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
 
-    // print("days: ${widget.kEvents[day]}");
     return widget.kEvents[day] ?? [];
   }
 

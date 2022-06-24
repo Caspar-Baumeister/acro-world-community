@@ -25,7 +25,6 @@ class UserCommunitiesProvider extends ChangeNotifier {
       return true;
     } catch (e) {
       _userCommunities = [];
-      print(e.toString());
       return false;
     }
   }
