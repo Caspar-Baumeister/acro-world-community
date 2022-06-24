@@ -47,9 +47,14 @@ class JamTile extends StatelessWidget {
           //     locale: const Locale('de', 'DE')),
           trailing: communityName != null
               ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(communityName!),
-                    Text(jam.participants.length.toString() + " participants"),
+                    const SizedBox(height: 3),
+                    Text(
+                      jam.participants.length.toString() + " participants",
+                      style: const TextStyle(color: Colors.grey),
+                    ),
                   ],
                 )
               : Text(jam.participants.length.toString() + " participants"),
