@@ -43,4 +43,12 @@ class Mutations {
       }
     }
   """);
+
+  static final deleteJam = gql("""
+    mutation DeleteJam(\$jamId: uuid) {
+      delete_jams(where: {id: {_eq: \$jamId}}) {
+        affected_rows
+      }
+    }
+  """);
 }

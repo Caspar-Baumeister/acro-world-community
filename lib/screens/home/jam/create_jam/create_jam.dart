@@ -1,6 +1,8 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
+import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
+import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
 import 'package:acroworld/screens/home/map/map.dart';
@@ -42,25 +44,6 @@ class _CreateJamState extends State<CreateJam> {
     });
   }
 
-  void onError(OperationException? errorData) {
-    String errorMessage = "";
-    if (errorData != null) {
-      if (errorData.graphqlErrors.isNotEmpty) {
-        errorMessage = errorData.graphqlErrors[0].message;
-      }
-    }
-    if (errorMessage == "") {
-      errorMessage = "An unknown error occured";
-    }
-    Fluttertoast.showToast(
-        msg: errorMessage,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.TOP,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0);
-  }
-
   @override
   Widget build(BuildContext context) {
     final EventBusProvider eventBusProvider =
@@ -78,11 +61,12 @@ class _CreateJamState extends State<CreateJam> {
                   isLoading = false;
                 });
                 if (resultData['insert_jams_one'] != null) {
-                  eventBus.fire(CreateJamEvent());
+                  Jam createdJam = Jam.fromJson(resultData['insert_jams_one']);
+                  eventBus.fire(CrudJamEvent(createdJam));
                   Navigator.pop(context);
                 }
               },
-              onError: onError,
+              onError: GraphQLErrorHandler().handleError,
             ),
             builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
                         {Object? optimisticResult})

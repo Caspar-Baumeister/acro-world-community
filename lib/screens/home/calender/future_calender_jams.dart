@@ -43,7 +43,7 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
           refetch!();
         });
 
-        eventBus.on<CreateJamEvent>().listen((event) {
+        eventBus.on<CrudJamEvent>().listen((event) {
           refetch!();
         });
 

@@ -1,5 +1,6 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
+import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
@@ -27,25 +28,6 @@ class JamOverviewBody extends StatefulWidget {
 class _JamOverviewBodyState extends State<JamOverviewBody> {
   bool isLoading = false;
   bool isUserParticipating = false;
-
-  void onError(OperationException? errorData) {
-    String errorMessage = "";
-    if (errorData != null) {
-      if (errorData.graphqlErrors.isNotEmpty) {
-        errorMessage = errorData.graphqlErrors[0].message;
-      }
-    }
-    if (errorMessage == "") {
-      errorMessage = "An unknown error occured";
-    }
-    Fluttertoast.showToast(
-        msg: errorMessage,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.TOP,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +59,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                 resultData['delete_jam_participants'];
             widget.jam = Jam.fromJson(returnObject['returning'][0]['jam']);
           },
-          onError: onError,
+          onError: GraphQLErrorHandler().handleError,
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
                     {Object? optimisticResult})

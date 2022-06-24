@@ -47,7 +47,7 @@ class _FutureJamsState extends State<FutureJams> {
           refetch!();
         });
 
-        eventBus.on<CreateJamEvent>().listen((event) {
+        eventBus.on<CrudJamEvent>().listen((event) {
           refetch!();
         });
 
