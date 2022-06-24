@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/services/database.dart';

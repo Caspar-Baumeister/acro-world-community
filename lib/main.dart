@@ -2,6 +2,7 @@ import 'package:acroworld/auth/auth_provider.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/loggin_wrapper.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:flutter/material.dart';
@@ -66,6 +67,7 @@ class App extends StatelessWidget {
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => UserCommunitiesProvider()),
+          ChangeNotifierProvider(create: (_) => AllOtherComs()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
         ],
         child: GraphQLProvider(

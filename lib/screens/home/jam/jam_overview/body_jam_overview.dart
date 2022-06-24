@@ -76,7 +76,6 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
             dynamic returnObject = resultData['insert_jam_participants'] ??
                 resultData['delete_jam_participants'];
             widget.jam = Jam.fromJson(returnObject['returning'][0]['jam']);
-            print(returnObject['returning'][0]['jam']);
           },
           onError: onError,
         ),

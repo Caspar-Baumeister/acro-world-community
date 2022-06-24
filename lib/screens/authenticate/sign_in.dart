@@ -149,33 +149,5 @@ class _SignInState extends State<SignIn> {
     setState(() {
       loading = false;
     });
-
-    // print("on signin");
-    // if (_formKey.currentState != null && _formKey.currentState!.validate()) {
-    //   setState(() {
-    //     loading = true;
-    //   });
-
-    //   // posts the email and password to firebase auth and gets an user? back
-    //   User? user = await _auth.signInWithEmailAndPassword(email, password);
-
-    //   print(user);
-
-    //   // success (wrapper will automatically push the screen to home)
-    //   if (user != null) {
-    //     // safe token to local preferences
-    //     await UserIdPreferences.setToken(user.uid);
-    //     setState(() {
-    //       loading = false;
-    //     });
-
-    //     // error handling
-    //   } else {
-    //     setState(() {
-    //       error = 'Could not sign in with those credentials';
-    //       loading = false;
-    //     });
-    //   }
-    // }
   }
 }

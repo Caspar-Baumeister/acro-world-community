@@ -116,14 +116,14 @@ class Database {
     }""");
   }
 
-  getAllOtherCommunities(String uid) {
+  getAllOtherCommunities(String uid, String query) {
     return authorizedApi("""
       query MyQuery {
-        communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}}) {
-          name
-          id
-        }
-      }""");
+  communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}, name: {_ilike: "%$query%"}}, limit: 15) {
+    name
+    id
+  }
+}""");
   }
 
   getUserCommunities(String uid) {
@@ -169,9 +169,7 @@ class Database {
           },
           body: json.encode({'query': query}));
       return jsonDecode(response.body.toString());
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
   }
 
   Future<String?> loginApi(String email, String password) async {
@@ -185,9 +183,7 @@ class Database {
                 "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
           }));
       return jsonDecode(response.body.toString())["data"]["login"]["token"];
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
     return null;
   }
 
@@ -202,9 +198,7 @@ class Database {
                 "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$password\"}){token}}"
           }));
       return jsonDecode(response.body.toString());
-    } catch (e) {
-      print(e.toString());
-    }
+    } catch (e) {}
     return null;
   }
 }
