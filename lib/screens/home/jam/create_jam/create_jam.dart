@@ -67,7 +67,7 @@ class _CreateJamState extends State<CreateJam> {
         Provider.of<EventBusProvider>(context);
     final EventBus eventBus = eventBusProvider.eventBus;
 
-    int maxLength = 30;
+    int maxLength = 300;
     return isLoading
         ? const LoadingScaffold()
         : Mutation(

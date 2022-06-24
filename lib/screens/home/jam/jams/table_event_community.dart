@@ -141,14 +141,14 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                       return const SizedBox(height: 55);
                     }
                     return Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
+                        // margin: const EdgeInsets.symmetric(
+                        //   horizontal: 12.0,
+                        //   vertical: 4.0,
+                        // ),
+                        // decoration: BoxDecoration(
+                        //   border: Border.all(),
+                        //   borderRadius: BorderRadius.circular(12.0),
+                        // ),
                         child: JamTile(jam: value[index - 1], cid: widget.cid));
                   },
                 );
