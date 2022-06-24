@@ -23,5 +23,8 @@ class Fragments {
         bio
       }
     }
+    community {
+      name
+    }
 ''';
 }
