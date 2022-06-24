@@ -81,8 +81,10 @@ class _MessageTextFieldState extends State<MessageTextField> {
                           : () {
                               isLoading = true;
                               runMutation({
-                                'content':
-                                    message.replaceAll(RegExp(r'\n+'), '\n'),
+                                'content': message
+                                    .replaceAll(RegExp(r'\n+'), '\n')
+                                    .replaceAll(RegExp(r'^\n'), '')
+                                    .replaceAll(RegExp(r'\n$'), ''),
                                 'communityId': widget.cId
                               });
                             },
