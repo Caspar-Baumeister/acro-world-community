@@ -175,11 +175,14 @@ class _RegisterBodyState extends State<RegisterBody> {
     // register response
     final response = await Database().registerApi(email, password, name);
 
+    print(response);
+
     // error handling
     String errorResponse = "try it again later";
     if (response["errors"] != null) {
-      if (response["error"][0]["message"] != null) {
-        errorResponse = response["error"][0]["message"];
+      if (response["errors"][0] != null &&
+          response["errors"][0]["message"] != null) {
+        errorResponse = response["errors"][0]["message"].toString();
       }
       setState(() {
         error = errorResponse;
@@ -187,8 +190,8 @@ class _RegisterBodyState extends State<RegisterBody> {
       });
       return;
     } else if (response["data"] == null ||
-        response["data"]["login"] == null ||
-        response["data"]["login"]["token"] == null) {
+        response["data"]["register"] == null ||
+        response["data"]["register"]["token"] == null) {
       setState(() {
         error = errorResponse;
         loading = false;
@@ -196,8 +199,10 @@ class _RegisterBodyState extends State<RegisterBody> {
       return;
     }
 
+    // error to null
+
     // no error and token exist
-    String _token = response["data"]["login"]["token"];
+    String _token = response["data"]["register"]["token"];
 
     Provider.of<UserProvider>(context, listen: false).token = _token;
 
