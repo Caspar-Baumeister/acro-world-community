@@ -17,8 +17,6 @@ class UserProvider extends ChangeNotifier {
 
   set token(String? token) => _token = token;
 
-  //List<String> get userCommunities => _userCommunities;
-
   getId() {
     Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
     return parseJwt["user_id"];
@@ -28,7 +26,7 @@ class UserProvider extends ChangeNotifier {
     if (_token == null) {
       return false;
     }
-    if (!tokenIsExpired()) {
+    if (!isTokenExpired()) {
       return true;
     }
     return await refreshToken();
@@ -40,7 +38,7 @@ class UserProvider extends ChangeNotifier {
       return;
     }
 
-    //TODO fill in rest of data
+    // TODO fill in rest of data
     final response = await Database(token: _token).authorizedApi(Querys.me);
     Map user = response["data"]["me"][0];
     _activeUser = UserModel(
@@ -50,7 +48,7 @@ class UserProvider extends ChangeNotifier {
         imgUrl: user["image_url"] ?? "");
   }
 
-  bool tokenIsExpired() {
+  bool isTokenExpired() {
     if (token == null) {
       return true;
     }
@@ -67,14 +65,16 @@ class UserProvider extends ChangeNotifier {
 
     // get the token trough the credentials
     // (invalid credentials) return false
-    String? _newToken = await Database().loginApi(_email, _password);
-    if (_newToken == null) {
-      return false;
+    if (isTokenExpired()) {
+      String? _newToken = await Database().loginApi(_email, _password);
+      if (_newToken == null) {
+        return false;
+      }
+      _token = _newToken;
+      setUserFromToken();
     }
 
     // safe the user to provider
-    _token = _newToken;
-    setUserFromToken();
     return true;
   }
 }
