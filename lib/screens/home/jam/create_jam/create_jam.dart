@@ -179,6 +179,7 @@ class _CreateJamState extends State<CreateJam> {
                                   borderRadius: BorderRadius.circular(20)),
                               constraints: const BoxConstraints(maxHeight: 350),
                               child: MapWidget(
+                                center: latlng,
                                 markerLocation: latlng,
                                 onLocationSelected: (location) =>
                                     {setState(() => latlng = location)},

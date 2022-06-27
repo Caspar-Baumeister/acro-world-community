@@ -1,4 +1,6 @@
+import 'package:acroworld/models/jam_model.dart';
+
 class ParticipateToJamEvent {
-  String jamId;
-  ParticipateToJamEvent(this.jamId);
+  Jam jam;
+  ParticipateToJamEvent(this.jam);
 }

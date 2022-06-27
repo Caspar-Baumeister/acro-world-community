@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
@@ -18,6 +20,16 @@ class FutureCalenderJams extends StatefulWidget {
 }
 
 class _FutureCalenderJamsState extends State<FutureCalenderJams> {
+  List<StreamSubscription> eventListeners = [];
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (final eventListener in eventListeners) {
+      eventListener.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final EventBusProvider eventBusProvider =
@@ -39,13 +51,22 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
           return const Loading();
         }
 
-        eventBus.on<ParticipateToJamEvent>().listen((event) {
-          refetch!();
+        VoidCallback runRefetch = (() {
+          try {
+            refetch!();
+          } catch (e) {
+            print('error');
+            // print(e);
+          }
         });
 
-        eventBus.on<CrudJamEvent>().listen((event) {
-          refetch!();
-        });
+        eventListeners.add(eventBus.on<ParticipateToJamEvent>().listen((event) {
+          runRefetch();
+        }));
+
+        eventListeners.add(eventBus.on<CrudJamEvent>().listen((event) {
+          runRefetch();
+        }));
 
         List<Jam> jams = [];
 
@@ -56,7 +77,7 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
         }
 
         return RefreshIndicator(
-          onRefresh: (() async => refetch!()),
+          onRefresh: (() async => runRefetch()),
           child: CalenderBody(
             userJams: jams,
           ),
