@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
@@ -20,6 +22,16 @@ class FutureJams extends StatefulWidget {
 }
 
 class _FutureJamsState extends State<FutureJams> {
+  List<StreamSubscription> eventListeners = [];
+
+  @override
+  void dispose() {
+    super.dispose();
+    for (final eventListener in eventListeners) {
+      eventListener.cancel();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final EventBusProvider eventBusProvider =
@@ -44,16 +56,24 @@ class _FutureJamsState extends State<FutureJams> {
           return const Loading();
         }
 
-        eventBus.on<ParticipateToJamEvent>().listen((event) {
+        VoidCallback runRefetch = (() {
           refetch!();
         });
 
-        eventBus.on<CrudJamEvent>().listen((event) {
-          refetch!();
-        });
+        eventListeners.add(eventBus.on<ParticipateToJamEvent>().listen((event) {
+          if (event.jam.communityId == widget.cId) {
+            runRefetch();
+          }
+        }));
+
+        eventListeners.add(eventBus.on<CrudJamEvent>().listen((event) {
+          if (event.jam.communityId == widget.cId) {
+            runRefetch();
+          }
+        }));
 
         return RefreshIndicator(
-          onRefresh: (() async => refetch!()),
+          onRefresh: (() async => runRefetch()),
           child: JamsBody(
             jams: List<Jam>.from(
                 result.data?['jams'].map((e) => Jam.fromJson(e))),

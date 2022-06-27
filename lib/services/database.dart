@@ -169,7 +169,9 @@ class Database {
           },
           body: json.encode({'query': query}));
       return jsonDecode(response.body.toString());
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<String?> loginApi(String email, String password) async {
