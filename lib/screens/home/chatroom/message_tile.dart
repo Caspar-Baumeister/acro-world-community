@@ -125,7 +125,7 @@ class MessageTile extends StatelessWidget {
               color: Colors.black,
               fontSize: 16,
             ),
-            textAlign: isMe ? TextAlign.end : TextAlign.start,
+            textAlign: TextAlign.start,
           )
         ],
       );
