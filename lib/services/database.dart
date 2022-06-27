@@ -197,7 +197,7 @@ class Database {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$password\"}){token}}"
+                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$username\"}){token}}"
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {

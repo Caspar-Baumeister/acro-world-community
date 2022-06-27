@@ -15,21 +15,21 @@ class UserProfile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            CircleAvatar(
-                radius: 100.0, backgroundImage: NetworkImage(user.imgUrl)),
+            // CircleAvatar(
+            //     radius: 100.0, backgroundImage: NetworkImage(user.imgUrl)),
 
             //isnt used because of mainaxis size max
             const SizedBox(height: 24.0),
             Text(user.userName, style: const TextStyle(fontSize: 16)),
             //isnt used because of mainaxis size max
-            const SizedBox(height: 12.0),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              alignment: Alignment.centerLeft,
-              child: Text(user.bio,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 16)),
-            ),
+            // const SizedBox(height: 12.0),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(horizontal: 20),
+            //   alignment: Alignment.centerLeft,
+            //   child: Text(user.bio,
+            //       textAlign: TextAlign.center,
+            //       style: const TextStyle(fontSize: 16)),
+            // ),
             // Column(
             //   children: user.communities!.map((com) => Text(com.id)).toList(),
             // ),

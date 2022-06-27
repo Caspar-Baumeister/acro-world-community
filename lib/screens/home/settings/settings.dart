@@ -1,6 +1,5 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home/settings/widgets/profile_picture.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                const ProfilePicture(),
+                // const ProfilePicture(),
 
                 //isnt used because of mainaxis size max
                 const SizedBox(height: 24.0),
@@ -69,17 +68,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     //isnt used because of mainaxis size max
                     const SizedBox(height: 20.0),
-                    TextFormField(
-                      maxLines: 10,
-                      decoration: buildInputDecoration(
-                          labelText: userProvider.activeUser!.bio),
-                      // validator: (val) => (val == null || val.length < 6)
-                      //     ? 'Enter a userName 6+ chars long'
-                      //     : null,
-                      onChanged: (val) {
-                        setState(() => userBio = val);
-                      },
-                    ),
+                    // TextFormField(
+                    //   maxLines: 10,
+                    //   decoration: buildInputDecoration(
+                    //       labelText: userProvider.activeUser!.bio),
+                    //   // validator: (val) => (val == null || val.length < 6)
+                    //   //     ? 'Enter a userName 6+ chars long'
+                    //   //     : null,
+                    //   onChanged: (val) {
+                    //     setState(() => userBio = val);
+                    //   },
+                    // ),
                     //isnt used because of mainaxis size max
                     const SizedBox(height: 20.0),
                     ElevatedButton(
@@ -125,13 +124,13 @@ class _SettingsPageState extends State<SettingsPage> {
         userProvider.activeUser = user;
         //updated = true;
       }
-      if (userBio != "") {
-        database.updateUserDataField(field: "bio", value: userBio);
-        UserModel user = userProvider.activeUser!;
-        user.bio = userBio;
-        userProvider.activeUser = user;
-        //updated = true;
-      }
+      // if (userBio != "") {
+      //   database.updateUserDataField(field: "bio", value: userBio);
+      //   UserModel user = userProvider.activeUser!;
+      //   user.bio = userBio;
+      //   userProvider.activeUser = user;
+      //   //updated = true;
+      // }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: const Text('Yay! A SnackBar!'),
         action: SnackBarAction(
