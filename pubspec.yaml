@@ -72,7 +72,7 @@ dev_dependencies:
   url_launcher: ^6.1.4
 
 flutter_icons:
-  image_path: "assets/logo/1024.png"
+  image_path: "assets/logo/play_store_512.png"
   ios: true
   android: true
   remove_alpha_ios: true
