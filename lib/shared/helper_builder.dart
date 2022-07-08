@@ -16,6 +16,10 @@ InputDecoration buildInputDecoration({
         borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 2.0),
         borderRadius: BorderRadius.circular(20),
       ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 2.0),
+        borderRadius: BorderRadius.circular(20),
+      ),
       enabledBorder: OutlineInputBorder(
         borderSide: const BorderSide(color: Colors.grey, width: 2.0),
         borderRadius: BorderRadius.circular(20),

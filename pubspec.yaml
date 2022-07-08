@@ -69,9 +69,10 @@ dev_dependencies:
   timeago: ^3.2.2
   table_calendar: ^3.0.5
   path_provider: ^2.0.10
+  url_launcher: ^6.1.4
 
 flutter_icons:
-  image_path: "assets/logo/1024.png"
+  image_path: "assets/logo/play_store_512.png"
   ios: true
   android: true
   remove_alpha_ios: true
