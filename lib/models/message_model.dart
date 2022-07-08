@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class Message {
   String text;
   String cid;
   String uid;
   String userName;
   String imgUrl;
-  Timestamp createdAt;
+  String createdAt;
 
   Message({
     required this.text,

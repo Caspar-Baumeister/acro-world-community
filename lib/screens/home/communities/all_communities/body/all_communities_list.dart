@@ -26,14 +26,31 @@ class AllCommunitiesList extends StatelessWidget {
           Center(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 35),
-              child: GestureDetector(
-                onTap: () =>
-                    buildMortal(context, const CreateNewCommunityModal()),
-                child: const Text(
-                  "Can't find the community your searching for? Suggest a new one",
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Can't find the community your searching for?",
+                    textAlign: TextAlign.center,
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        buildMortal(context, const CreateNewCommunityModal()),
+                    child: const Text(
+                      "Suggest a new one",
+                      textAlign: TextAlign.center,
+                    ),
+                  )
+                  // GestureDetector(
+                  //   onTap: () =>
+                  //       buildMortal(context, const CreateNewCommunityModal()),
+                  //   child: const Text(
+                  //     "Can't find the community your searching for? Suggest a new one",
+                  //     maxLines: 2,
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
+                ],
               ),
             ),
           )

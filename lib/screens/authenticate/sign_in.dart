@@ -16,17 +16,27 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  // final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
   String error = '';
 
-  // text field state
-  String email = '';
-  String password = '';
   bool loading = false;
+
+  bool isObscure = true;
+
+  TextEditingController? emailController;
+  TextEditingController? passwordController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    emailController = TextEditingController();
+    passwordController = TextEditingController();
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("new build");
     return loading
         ? const Loading()
         : Scaffold(
@@ -58,6 +68,7 @@ class _SignInState extends State<SignIn> {
                   children: <Widget>[
                     const SizedBox(height: 20.0),
                     TextFormField(
+                      controller: emailController,
                       autofocus: true,
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
@@ -65,21 +76,29 @@ class _SignInState extends State<SignIn> {
                       validator: (val) => (val == null || val.isEmpty)
                           ? 'Enter an email'
                           : null,
-                      onChanged: (val) {
-                        setState(() => email = val);
-                      },
                     ),
                     const SizedBox(height: 20.0),
                     TextFormField(
+                      controller: passwordController,
                       textInputAction: TextInputAction.done,
-                      obscureText: true,
-                      decoration: buildInputDecoration(labelText: 'Password'),
-                      validator: (val) => (val == null || val.length < 6)
-                          ? 'Enter a password 6+ chars long'
-                          : null,
-                      onChanged: (val) {
-                        setState(() => password = val);
-                      },
+                      obscureText: isObscure,
+                      decoration: buildInputDecoration(
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              isObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                          )),
                       onFieldSubmitted: (_) => onSignin(),
                     ),
                     const SizedBox(height: 20.0),
@@ -91,7 +110,7 @@ class _SignInState extends State<SignIn> {
                           'Sign In',
                           style: TextStyle(color: Colors.white),
                         ),
-                        onPressed: onSignin),
+                        onPressed: () => onSignin()),
                     error != ""
                         ? Padding(
                             padding: const EdgeInsets.only(top: 12.0),
@@ -124,18 +143,21 @@ class _SignInState extends State<SignIn> {
 
     // get the token trough the credentials
     // (invalid credentials) return false
-    String? _token = await Database().loginApi(email, password);
+    String? _token = await Database()
+        .loginApi(emailController?.text ?? "", passwordController?.text ?? "");
+
     if (_token == null) {
       setState(() {
         error = 'Could not sign in with those credentials';
         loading = false;
       });
+
       return;
     }
 
     // safe the credentials to shared preferences
-    CredentialPreferences.setEmail(email);
-    CredentialPreferences.setPassword(password);
+    CredentialPreferences.setEmail(emailController?.text ?? "");
+    CredentialPreferences.setPassword(passwordController?.text ?? "");
 
     Provider.of<UserProvider>(context, listen: false).token = _token;
 

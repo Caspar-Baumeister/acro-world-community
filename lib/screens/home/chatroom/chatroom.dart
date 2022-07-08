@@ -9,10 +9,10 @@ import 'package:acroworld/screens/home/chatroom/message_text_field.dart';
 import 'package:acroworld/screens/home/chatroom/message_tile.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/widgets/view_root.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class Chatroom extends StatelessWidget {
   const Chatroom({required this.cId, required this.name, Key? key})
@@ -67,7 +67,8 @@ class Chatroom extends StatelessWidget {
                         CommunityMessage? nextMessage = messages[index + 1];
                         CommunityMessage? previousMessage = messages[index - 1];
                         User? fromUser = message!.fromUser;
-
+                        var isSameDayAsPrevious = isSameDay(
+                            message.createdAt, nextMessage?.createdAt);
                         final isMe = userId == fromUser!.id;
 
                         final isSameAuthorThenNext = nextMessage != null &&
@@ -77,19 +78,39 @@ class Chatroom extends StatelessWidget {
                             previousMessage != null &&
                                 previousMessage.fromUser!.id ==
                                     message.fromUser!.id;
+                        if (!isSameDayAsPrevious) {
+                          return Column(
+                            children: [
+                              Center(
+                                  child: Text(DateFormat.EEEE().format(
+                                      DateTime.parse(message.createdAt!)))),
+                              MessageTile(
+                                  message: Message(
+                                      cid: message.id!,
+                                      uid: fromUser.id!,
+                                      text: message.content!,
+                                      imgUrl: MORTY_IMG_URL,
+                                      createdAt: message.createdAt!,
+                                      userName: fromUser.name!),
+                                  isMe: isMe,
+                                  sameAuthorThenNext: isSameAuthorThenNext,
+                                  sameAuthorThenBevor: isSameAuthorThenPrevious)
+                            ],
+                          );
+                        }
 
                         return MessageTile(
-                            message: Message(
-                                cid: message.id!,
-                                uid: fromUser.id!,
-                                text: message.content!,
-                                imgUrl: MORTY_IMG_URL,
-                                createdAt: Timestamp.fromDate(
-                                    DateTime.parse(message.createdAt!)),
-                                userName: fromUser.name!),
-                            isMe: isMe,
-                            sameAuthorThenNext: isSameAuthorThenNext,
-                            sameAuthorThenBevor: isSameAuthorThenPrevious);
+                          message: Message(
+                              cid: message.id!,
+                              uid: fromUser.id!,
+                              text: message.content!,
+                              imgUrl: MORTY_IMG_URL,
+                              createdAt: message.createdAt!,
+                              userName: fromUser.name!),
+                          isMe: isMe,
+                          sameAuthorThenNext: isSameAuthorThenNext,
+                          sameAuthorThenBevor: isSameAuthorThenPrevious,
+                        );
                       },
                     );
                   }
@@ -101,5 +122,12 @@ class Chatroom extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool isSameDay(String? t1, String? t2) {
+    if (t1 == null || t2 == null) {
+      return false;
+    }
+    return DateTime.parse(t1).day == DateTime.parse(t2).day;
   }
 }
