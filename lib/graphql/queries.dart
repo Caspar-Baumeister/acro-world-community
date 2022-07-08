@@ -23,4 +23,28 @@ class Queries {
         }
       }
     """);
+
+  static final getPlaces = gql("""
+    query GetPlaces(\$query: String!) {
+        places(searchQuery: \$query) {
+          id
+          description
+          matched_substrings {
+            length
+            offset
+          }
+        }
+      }
+    """);
+
+  static final getPlace = gql("""
+    query GetPlaces(\$id: String!) {
+        place(id: \$id) {
+          description
+          id
+          latitude
+          longitude
+        }
+      }
+    """);
 }

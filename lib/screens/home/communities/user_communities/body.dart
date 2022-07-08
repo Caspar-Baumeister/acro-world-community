@@ -5,6 +5,7 @@ import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/home/communities/user_communities/list_coms.dart';
 import 'package:acroworld/screens/home/communities/user_communities/new_button.dart';
+import 'package:acroworld/shared/widgets/location_search/location_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,25 +30,30 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
       child: SingleChildScrollView(
         child: SizedBox(
           height: MediaQuery.of(context).size.height,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Searchbar
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: SearchBarWidget(onChanged: (query) => search(query)),
-                  ),
-                  const NewCommunityButton(),
-                ],
-              ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const LocationSearch(),
+                // Searchbar
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Expanded(
+                      child:
+                          SearchBarWidget(onChanged: (query) => search(query)),
+                    ),
+                    const NewCommunityButton(),
+                  ],
+                ),
 
-              // Community List
-              Expanded(
-                child: UserCommunitiesList(communities: searchResults),
-              ),
-            ],
+                // Community List
+                Expanded(
+                  child: UserCommunitiesList(communities: searchResults),
+                ),
+              ],
+            ),
           ),
         ),
       ),

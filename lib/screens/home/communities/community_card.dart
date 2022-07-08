@@ -18,12 +18,6 @@ class CommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String nextDate = "No current jams";
-    // var now = DateTime.now();
-    // final difference = community.nextJam.difference(now).inDays;
-    // if (difference >= 0) {
-    //   nextDate = "Next jam in ${difference.toString()} days";
-    // }
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(

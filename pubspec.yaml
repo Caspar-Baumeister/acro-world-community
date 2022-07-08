@@ -55,6 +55,7 @@ dependencies:
   graphql_flutter: ^5.1.0
   google_maps_flutter: ^2.1.7
   event_bus: ^2.0.0
+  material_floating_search_bar: ^0.3.7
 
 dev_dependencies:
   flutter_test:

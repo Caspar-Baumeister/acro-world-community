@@ -25,7 +25,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     final style = controller.text != "" ? styleHint : styleActive;
     return Container(
       height: 42,
-      margin: const EdgeInsets.all(16.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(24.0),
         color: Colors.white,
