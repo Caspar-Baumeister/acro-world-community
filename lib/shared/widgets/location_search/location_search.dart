@@ -1,121 +1,10 @@
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/home/map/map.dart';
+import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
+import 'package:acroworld/shared/widgets/place_map/place_map.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
-
-class LoadingIndicator extends StatelessWidget {
-  const LoadingIndicator({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.0),
-      child: Center(
-        child: SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(),
-        ),
-      ),
-    );
-  }
-}
-
-class PlaceMapWidget extends StatefulWidget {
-  PlaceMapWidget({Key? key, required this.placeId}) : super(key: key);
-  final String? placeId;
-
-  @override
-  State<PlaceMapWidget> createState() => _PlaceMapWidgetState();
-}
-
-class _PlaceMapWidgetState extends State<PlaceMapWidget> {
-  @override
-  Widget build(BuildContext context) {
-    if (widget.placeId == null) {
-      return const MapWidget();
-    } else {
-      return Query(
-        options: QueryOptions(
-            document: Queries.getPlace,
-            fetchPolicy: FetchPolicy.networkOnly,
-            variables: {'id': widget.placeId}),
-        builder: (QueryResult placeResult,
-            {VoidCallback? refetch, FetchMore? fetchMore}) {
-          if (placeResult.hasException || !placeResult.isConcrete) {
-            return Container();
-          } else if (placeResult.isLoading) {
-            return const LoadingIndicator();
-          } else {
-            Place place = Place.fromJson(placeResult.data!['place']);
-            return MapWidget(
-              center: place.latLng,
-              markerLocation: place.latLng,
-            );
-          }
-        },
-      );
-    }
-  }
-}
-
-class PlaceWidget extends StatefulWidget {
-  PlaceWidget(
-      {Key? key, required this.placesResult, required this.onResultCallback})
-      : super(key: key);
-
-  QueryResult placesResult;
-  void Function(QueryResult result) onResultCallback;
-
-  @override
-  State<PlaceWidget> createState() => _PlaceWidgetState();
-}
-
-class _PlaceWidgetState extends State<PlaceWidget> {
-  String id = "";
-
-  @override
-  Widget build(BuildContext context) {
-    return Query(
-      options: QueryOptions(
-          document: Queries.getPlace,
-          fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'id': id}),
-      builder: (QueryResult placeResult,
-          {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (!placeResult.hasException) {
-          widget.onResultCallback(placeResult);
-        }
-
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: Material(
-            color: Colors.white,
-            elevation: 4.0,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: List<Widget>.from(
-                widget.placesResult.data?['places'].map((place) {
-                  return TextButton(
-                    onPressed: () {
-                      setState(() {
-                        id = place['id'];
-                      });
-                    },
-                    child: Text(place['description']),
-                  );
-                }),
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
 
 class LocationSearch extends StatefulWidget {
   const LocationSearch({Key? key}) : super(key: key);
@@ -131,15 +20,6 @@ class _LocationSearchState extends State<LocationSearch> {
   LatLng? latLng;
   String? placeId;
 
-  void onResultCallback(QueryResult result) {
-    if (result.isConcrete) {
-      // setState(() {
-      latLng = LatLng(result.data?['place']['latitude'],
-          result.data?['place']['longitude']);
-      // });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final isPortrait =
@@ -152,8 +32,7 @@ class _LocationSearchState extends State<LocationSearch> {
         Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           constraints: const BoxConstraints(maxHeight: 350),
-          // child: MapWidget(center: latLng),
-          child: PlaceMapWidget(placeId: placeId),
+          child: PlaceMap(placeId: placeId),
         ),
         Container(
             height: 350,
@@ -195,9 +74,6 @@ class _LocationSearchState extends State<LocationSearch> {
                           },
                         ),
                       ),
-                // FloatingSearchBarAction.searchToClear(
-                //   showIfClosed: false,
-                // ),
               ],
               builder: (context, transition) {
                 if (searchQuery == "") {
@@ -231,6 +107,7 @@ class _LocationSearchState extends State<LocationSearch> {
                                 return TextButton(
                                   onPressed: () {
                                     controller.clear();
+                                    controller.close();
                                     setState(() {
                                       searchQuery = "";
                                       queryInput = "";
