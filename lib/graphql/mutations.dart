@@ -59,4 +59,12 @@ class Mutations {
       }
     }
   """);
+
+  static final insertCommunity = gql("""
+    mutation InsertCommunity(\$latitude: numeric, \$longitude: numeric, \$name: String) {
+      insert_communities_one(object: {latitude: \$latitude, longitude: \$longitude, name: \$name}) {
+        id
+      }
+    }
+  """);
 }

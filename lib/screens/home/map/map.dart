@@ -70,7 +70,7 @@ class _MapState extends State<MapWidget> {
         myLocationButtonEnabled: false,
         initialCameraPosition: CameraPosition(
           target: center,
-          zoom: widget.zoom ?? 11.0,
+          zoom: widget.zoom ?? 0,
         ),
         onLongPress: _onLongPress,
         markers: Set<Marker>.of(markers.values),

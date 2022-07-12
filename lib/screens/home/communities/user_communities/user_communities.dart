@@ -14,13 +14,6 @@ class UserCommunities extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBarUserCommunities(),
       body: const FutureCommunity(),
-      // UserCommunitiesBody(
-      //   userCommunities: List<Community>.from(
-      //     DataClass().communities.where(
-      //           (element) => userProvider.userCommunities.contains(element.id),
-      //         ),
-      //   ),
-      // ),
       endDrawer: const SettingsDrawer(),
     );
   }

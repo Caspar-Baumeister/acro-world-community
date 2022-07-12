@@ -8,9 +8,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class LocationSearch extends StatefulWidget {
-  const LocationSearch({Key? key, required this.onPlaceSet}) : super(key: key);
+  const LocationSearch({Key? key, this.onPlaceSet}) : super(key: key);
 
-  final Function(Place place) onPlaceSet;
+  final Function(Place place)? onPlaceSet;
 
   @override
   State<LocationSearch> createState() => _LocationSearchState();

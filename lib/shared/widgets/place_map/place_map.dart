@@ -40,6 +40,7 @@ class _PlaceMapState extends State<PlaceMap> {
             return MapWidget(
               center: place.latLng,
               markerLocation: place.latLng,
+              zoom: 11.0,
             );
           }
         },
