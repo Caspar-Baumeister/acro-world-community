@@ -125,7 +125,9 @@ class LocationSearch extends StatefulWidget {
 }
 
 class _LocationSearchState extends State<LocationSearch> {
+  String queryInput = "";
   String searchQuery = "";
+  bool isLoading = false;
   LatLng? latLng;
   String? placeId;
 
@@ -166,69 +168,85 @@ class _LocationSearchState extends State<LocationSearch> {
               openAxisAlignment: 0.0,
               width: isPortrait ? 600 : 500,
               debounceDelay: const Duration(milliseconds: 500),
-              onQueryChanged: (query) {
+              automaticallyImplyBackButton: false,
+              automaticallyImplyDrawerHamburger: false,
+              onSubmitted: (query) {
                 setState(() {
+                  isLoading = true;
                   searchQuery = query;
                 });
               },
+              onQueryChanged: (query) {
+                queryInput = query;
+              },
               transition: CircularFloatingSearchBarTransition(),
               actions: [
-                FloatingSearchBarAction(
-                  showIfOpened: false,
-                  child: CircularButton(
-                    icon: const Icon(Icons.place),
-                    onPressed: () {},
-                  ),
-                ),
-                FloatingSearchBarAction.searchToClear(
-                  showIfClosed: false,
-                ),
+                isLoading
+                    ? const LoadingIndicator()
+                    : FloatingSearchBarAction(
+                        showIfOpened: true,
+                        child: CircularButton(
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: () {
+                            setState(() {
+                              isLoading = true;
+                              searchQuery = queryInput;
+                            });
+                          },
+                        ),
+                      ),
+                // FloatingSearchBarAction.searchToClear(
+                //   showIfClosed: false,
+                // ),
               ],
               builder: (context, transition) {
-                return Query(
-                  options: QueryOptions(
-                      document: Queries.getPlaces,
-                      fetchPolicy: FetchPolicy.networkOnly,
-                      variables: {'query': searchQuery}),
-                  builder: (QueryResult result,
-                      {VoidCallback? refetch, FetchMore? fetchMore}) {
-                    if (result.isLoading) {
-                      return const Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 12.0),
-                        child: Center(
-                          child: SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(),
+                if (searchQuery == "") {
+                  return Container();
+                } else {
+                  return Query(
+                    options: QueryOptions(
+                        document: Queries.getPlaces,
+                        fetchPolicy: FetchPolicy.networkOnly,
+                        variables: {'query': searchQuery}),
+                    builder: (QueryResult result,
+                        {VoidCallback? refetch, FetchMore? fetchMore}) {
+                      if (result.isLoading) {
+                        return Container();
+                      } else {
+                        Future.delayed(Duration.zero, () async {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        });
+                      }
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Material(
+                          color: Colors.white,
+                          elevation: 4.0,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List<Widget>.from(
+                              result.data?['places'].map((place) {
+                                return TextButton(
+                                  onPressed: () {
+                                    controller.clear();
+                                    setState(() {
+                                      searchQuery = "";
+                                      queryInput = "";
+                                      placeId = place['id'];
+                                    });
+                                  },
+                                  child: Text(place['description']),
+                                );
+                              }),
+                            ),
                           ),
                         ),
                       );
-                    }
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Material(
-                        color: Colors.white,
-                        elevation: 4.0,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: List<Widget>.from(
-                            result.data?['places'].map((place) {
-                              return TextButton(
-                                onPressed: () {
-                                  controller.clear();
-                                  setState(() {
-                                    placeId = place['id'];
-                                  });
-                                },
-                                child: Text(place['description']),
-                              );
-                            }),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
+                    },
+                  );
+                }
               },
             )),
       ],
