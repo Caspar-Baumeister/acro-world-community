@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class PlaceMap extends StatefulWidget {
-  const PlaceMap({Key? key, required this.placeId}) : super(key: key);
+  const PlaceMap({Key? key, required this.placeId, required this.onLoaded})
+      : super(key: key);
   final String? placeId;
+  final Function(Place place)? onLoaded;
 
   @override
   State<PlaceMap> createState() => _PlaceMapState();
@@ -32,6 +34,9 @@ class _PlaceMapState extends State<PlaceMap> {
             return const LoadingIndicator();
           } else {
             Place place = Place.fromJson(placeResult.data!['place']);
+            if (widget.onLoaded != null) {
+              widget.onLoaded!(place);
+            }
             return MapWidget(
               center: place.latLng,
               markerLocation: place.latLng,

@@ -35,7 +35,6 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const LocationSearch(),
                 // Searchbar
                 Row(
                   mainAxisSize: MainAxisSize.min,

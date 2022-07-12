@@ -5,6 +5,7 @@ import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/message_modal.dart';
+import 'package:acroworld/shared/widgets/location_search/location_search.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +63,7 @@ class _CreateNewCommunityModalState extends State<CreateNewCommunityModal> {
                   )
                 : Container(),
             const SizedBox(height: 30.0),
+            const LocationSearch(),
 
             IgnorePointer(
               ignoring: loading,

@@ -1,4 +1,5 @@
 import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/shared/widgets/place_map/place_map.dart';
 import 'package:flutter/material.dart';
@@ -7,7 +8,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class LocationSearch extends StatefulWidget {
-  const LocationSearch({Key? key}) : super(key: key);
+  const LocationSearch({Key? key, required this.onPlaceSet}) : super(key: key);
+
+  final Function(Place place) onPlaceSet;
 
   @override
   State<LocationSearch> createState() => _LocationSearchState();
@@ -32,7 +35,10 @@ class _LocationSearchState extends State<LocationSearch> {
         Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           constraints: const BoxConstraints(maxHeight: 350),
-          child: PlaceMap(placeId: placeId),
+          child: PlaceMap(
+            placeId: placeId,
+            onLoaded: widget.onPlaceSet,
+          ),
         ),
         Container(
             height: 350,
