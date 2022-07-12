@@ -13,17 +13,14 @@ class UserCommunitiesList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (communities.isEmpty) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Text(
-                'No communities joined yet. Start by clicking "Add" to join a community.',
-                textAlign: TextAlign.center,
-              )
-            ]),
-      );
+      return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Text(
+              'No communities joined yet. Start by clicking "Add" to join a community.',
+              textAlign: TextAlign.center,
+            )
+          ]);
     } else {
       return SingleChildScrollView(
         child: Column(

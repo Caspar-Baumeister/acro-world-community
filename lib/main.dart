@@ -1,4 +1,4 @@
-import 'package:acroworld/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/loggin_wrapper.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';

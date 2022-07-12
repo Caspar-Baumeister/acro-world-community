@@ -9,13 +9,15 @@ class MapWidget extends StatefulWidget {
       this.center,
       this.markerLocation,
       this.onLocationSelected,
-      this.zoom})
+      this.zoom,
+      this.height})
       : super(key: key);
 
   final LatLng? center;
   final LatLng? markerLocation;
   final Function(LatLng)? onLocationSelected;
   final double? zoom;
+  final double? height;
 
   @override
   State<MapWidget> createState() => _MapState();
@@ -60,16 +62,19 @@ class _MapState extends State<MapWidget> {
       _add(widget.markerLocation!);
     }
 
-    return GoogleMap(
-      myLocationEnabled: false,
-      onMapCreated: _onMapCreated,
-      myLocationButtonEnabled: false,
-      initialCameraPosition: CameraPosition(
-        target: center,
-        zoom: widget.zoom ?? 11.0,
+    return SizedBox(
+      height: widget.height ?? 350,
+      child: GoogleMap(
+        myLocationEnabled: false,
+        onMapCreated: _onMapCreated,
+        myLocationButtonEnabled: false,
+        initialCameraPosition: CameraPosition(
+          target: center,
+          zoom: widget.zoom ?? 11.0,
+        ),
+        onLongPress: _onLongPress,
+        markers: Set<Marker>.of(markers.values),
       ),
-      onLongPress: _onLongPress,
-      markers: Set<Marker>.of(markers.values),
     );
   }
 }

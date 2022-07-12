@@ -1,0 +1,255 @@
+import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/screens/home/map/map.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
+
+class LoadingIndicator extends StatelessWidget {
+  const LoadingIndicator({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 12.0),
+      child: Center(
+        child: SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
+  }
+}
+
+class PlaceMapWidget extends StatefulWidget {
+  PlaceMapWidget({Key? key, required this.placeId}) : super(key: key);
+  final String? placeId;
+
+  @override
+  State<PlaceMapWidget> createState() => _PlaceMapWidgetState();
+}
+
+class _PlaceMapWidgetState extends State<PlaceMapWidget> {
+  @override
+  Widget build(BuildContext context) {
+    if (widget.placeId == null) {
+      return const MapWidget();
+    } else {
+      return Query(
+        options: QueryOptions(
+            document: Queries.getPlace,
+            fetchPolicy: FetchPolicy.networkOnly,
+            variables: {'id': widget.placeId}),
+        builder: (QueryResult placeResult,
+            {VoidCallback? refetch, FetchMore? fetchMore}) {
+          if (placeResult.hasException || !placeResult.isConcrete) {
+            return Container();
+          } else if (placeResult.isLoading) {
+            return const LoadingIndicator();
+          } else {
+            Place place = Place.fromJson(placeResult.data!['place']);
+            return MapWidget(
+              center: place.latLng,
+              markerLocation: place.latLng,
+            );
+          }
+        },
+      );
+    }
+  }
+}
+
+class PlaceWidget extends StatefulWidget {
+  PlaceWidget(
+      {Key? key, required this.placesResult, required this.onResultCallback})
+      : super(key: key);
+
+  QueryResult placesResult;
+  void Function(QueryResult result) onResultCallback;
+
+  @override
+  State<PlaceWidget> createState() => _PlaceWidgetState();
+}
+
+class _PlaceWidgetState extends State<PlaceWidget> {
+  String id = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return Query(
+      options: QueryOptions(
+          document: Queries.getPlace,
+          fetchPolicy: FetchPolicy.networkOnly,
+          variables: {'id': id}),
+      builder: (QueryResult placeResult,
+          {VoidCallback? refetch, FetchMore? fetchMore}) {
+        if (!placeResult.hasException) {
+          widget.onResultCallback(placeResult);
+        }
+
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Material(
+            color: Colors.white,
+            elevation: 4.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: List<Widget>.from(
+                widget.placesResult.data?['places'].map((place) {
+                  return TextButton(
+                    onPressed: () {
+                      setState(() {
+                        id = place['id'];
+                      });
+                    },
+                    child: Text(place['description']),
+                  );
+                }),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class LocationSearch extends StatefulWidget {
+  const LocationSearch({Key? key}) : super(key: key);
+
+  @override
+  State<LocationSearch> createState() => _LocationSearchState();
+}
+
+class _LocationSearchState extends State<LocationSearch> {
+  String queryInput = "";
+  String searchQuery = "";
+  bool isLoading = false;
+  LatLng? latLng;
+  String? placeId;
+
+  void onResultCallback(QueryResult result) {
+    if (result.isConcrete) {
+      // setState(() {
+      latLng = LatLng(result.data?['place']['latitude'],
+          result.data?['place']['longitude']);
+      // });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
+    FloatingSearchBarController controller = FloatingSearchBarController();
+
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+          constraints: const BoxConstraints(maxHeight: 350),
+          // child: MapWidget(center: latLng),
+          child: PlaceMapWidget(placeId: placeId),
+        ),
+        Container(
+            height: 350,
+            child: FloatingSearchBar(
+              hint: 'Search...',
+              controller: controller,
+              scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+              transitionDuration: const Duration(milliseconds: 800),
+              transitionCurve: Curves.easeInOut,
+              physics: const BouncingScrollPhysics(),
+              axisAlignment: isPortrait ? 0.0 : -1.0,
+              openAxisAlignment: 0.0,
+              width: isPortrait ? 600 : 500,
+              debounceDelay: const Duration(milliseconds: 500),
+              automaticallyImplyBackButton: false,
+              automaticallyImplyDrawerHamburger: false,
+              onSubmitted: (query) {
+                setState(() {
+                  isLoading = true;
+                  searchQuery = query;
+                });
+              },
+              onQueryChanged: (query) {
+                queryInput = query;
+              },
+              transition: CircularFloatingSearchBarTransition(),
+              actions: [
+                isLoading
+                    ? const LoadingIndicator()
+                    : FloatingSearchBarAction(
+                        showIfOpened: true,
+                        child: CircularButton(
+                          icon: const Icon(Icons.arrow_forward),
+                          onPressed: () {
+                            setState(() {
+                              isLoading = true;
+                              searchQuery = queryInput;
+                            });
+                          },
+                        ),
+                      ),
+                // FloatingSearchBarAction.searchToClear(
+                //   showIfClosed: false,
+                // ),
+              ],
+              builder: (context, transition) {
+                if (searchQuery == "") {
+                  return Container();
+                } else {
+                  return Query(
+                    options: QueryOptions(
+                        document: Queries.getPlaces,
+                        fetchPolicy: FetchPolicy.networkOnly,
+                        variables: {'query': searchQuery}),
+                    builder: (QueryResult result,
+                        {VoidCallback? refetch, FetchMore? fetchMore}) {
+                      if (result.isLoading) {
+                        return Container();
+                      } else {
+                        Future.delayed(Duration.zero, () async {
+                          setState(() {
+                            isLoading = false;
+                          });
+                        });
+                      }
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Material(
+                          color: Colors.white,
+                          elevation: 4.0,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: List<Widget>.from(
+                              result.data?['places'].map((place) {
+                                return TextButton(
+                                  onPressed: () {
+                                    controller.clear();
+                                    setState(() {
+                                      searchQuery = "";
+                                      queryInput = "";
+                                      placeId = place['id'];
+                                    });
+                                  },
+                                  child: Text(place['description']),
+                                );
+                              }),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }
+              },
+            )),
+      ],
+    );
+  }
+}
