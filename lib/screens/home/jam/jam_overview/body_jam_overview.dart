@@ -90,6 +90,22 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
+                        "Creator",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "rubik"),
+                      ),
+                      Text(
+                        widget.jam.createdBy.userName,
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
                         "Date",
                         style: TextStyle(
                             fontSize: 14,
