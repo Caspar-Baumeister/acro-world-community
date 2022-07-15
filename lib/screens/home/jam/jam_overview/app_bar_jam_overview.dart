@@ -72,6 +72,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
                         MaterialPageRoute(
                             builder: (context) => CreateJam(
                                   cid: widget.jam.communityId,
+                                  community: widget.jam.community,
                                   jam: widget.jam,
                                 )),
                       )

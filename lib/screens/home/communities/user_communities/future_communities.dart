@@ -12,12 +12,10 @@ class FutureCommunity extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //final UserProvider user = Provider.of<UserProvider>(context, listen: true);
     return FutureBuilder<bool>(
         future: loadUserCommunities(context),
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
-            //Provider.of<User?>(context)?.reload();
             return ErrorScreenWidget(error: snapshot.error.toString());
           }
           if (snapshot.hasData) {

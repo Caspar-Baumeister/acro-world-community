@@ -1,11 +1,23 @@
 class Fragments {
-  static const String jamFragment = '''
+  static const userFragment = """
+  id
+  name
+  image_url
+  bio
+  """;
+
+  static const String communityFragment = """
+  id
+  name
+  confirmed
+  latitude
+  longitude
+  """;
+
+  static const String jamFragment = """
     created_at
     created_by {
-      name
-      image_url
-      id
-      bio
+      $userFragment
     }
     date
     id
@@ -17,15 +29,11 @@ class Fragments {
     created_by_id
     participants {
       user {
-        name
-        id
-        image_url
-        bio
+        $userFragment
       }
     }
     community {
-      id
-      name
+      $communityFragment
     }
-''';
+""";
 }

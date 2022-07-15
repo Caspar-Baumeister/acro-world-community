@@ -1,3 +1,4 @@
+import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/jam/jams/jams.dart';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,12 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
     Key? key,
     required this.cId,
     required this.name,
+    required this.community,
   }) : super(key: key);
 
   final String cId;
-
   final String name;
+  final Community community;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,8 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => Jams(cId: cId, name: name)),
+                    builder: (context) =>
+                        Jams(cId: cId, community: community, name: name)),
               );
             },
             child: Row(

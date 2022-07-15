@@ -13,11 +13,8 @@ class AllOtherComs extends ChangeNotifier {
     try {
       List allOtherComs = response["data"]["communities"];
 
-      _allOtherComs = List<Community>.from(allOtherComs.map((com) => Community(
-          id: com["id"],
-          nextJam: DateTime.now(),
-          name: com["name"],
-          confirmed: true)));
+      _allOtherComs = List<Community>.from(
+          allOtherComs.map((com) => Community.fromJson(com)));
       return true;
     } catch (e) {
       _allOtherComs = [];

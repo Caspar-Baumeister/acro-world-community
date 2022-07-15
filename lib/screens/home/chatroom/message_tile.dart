@@ -54,52 +54,6 @@ class MessageTile extends StatelessWidget {
   }
 
   Widget leadingDecide() {
-    // const double imgRadius = 20;
-    // if (!isMe && !sameAuthorThenNext) {
-    //   return FutureBuilder(
-    //     future: DataBaseService(uid: message.uid).getUserInfo(),
-    //     builder: (BuildContext context,
-    //         AsyncSnapshot<DocumentSnapshot<Object?>> snapshot) {
-    //       var imgUrl;
-    //       if (snapshot.hasData) {
-    //         try {
-    //           imgUrl = snapshot.data?.get("imgUrl");
-    //         } catch (_) {
-    //           imgUrl = MORTY_IMG_URL;
-    //         }
-    //       } else {
-    //         imgUrl = MORTY_IMG_URL;
-    //       }
-    //       return GestureDetector(
-    //         onTap: () {
-    //           Navigator.push(
-    //             context,
-    //             MaterialPageRoute(
-    //                 builder: (context) => Profile(
-    //                       uid: message.uid,
-    //                     )),
-    //           );
-    //         },
-    //         child: Container(
-    //           alignment: Alignment.topCenter,
-    //           child: ClipOval(
-    //             child: CachedNetworkImage(
-    //               imageUrl: imgUrl,
-    //               width: 36,
-    //               height: 36,
-    //             ),
-    //           ),
-    //         ),
-    //       );
-    //     },
-    //   );
-    // } else if (!isMe && sameAuthorThenNext) {
-    //   return const SizedBox(
-    //     width: imgRadius * 2,
-    //   );
-    // } else {
-    //   return Container();
-    // }
     return Container();
   }
 

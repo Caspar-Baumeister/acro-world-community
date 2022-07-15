@@ -1,19 +1,24 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class Community {
   String name;
   String id;
-  DateTime nextJam;
   bool confirmed;
-  Community(
-      {required this.id,
-      required this.nextJam,
-      required this.name,
-      required this.confirmed});
+  LatLng latLng;
 
-  factory Community.fromJson(String id, dynamic json) {
+  Community({
+    required this.id,
+    required this.name,
+    required this.confirmed,
+    required this.latLng,
+  });
+
+  factory Community.fromJson(dynamic json) {
     return Community(
-        id: id,
-        nextJam: json["next_jam"].toDate(),
-        name: json["name"],
-        confirmed: json["confirmed"]);
+      id: json['id'],
+      name: json["name"],
+      confirmed: json["confirmed"],
+      latLng: LatLng(json['latitude'], json['longitude']),
+    );
   }
 }

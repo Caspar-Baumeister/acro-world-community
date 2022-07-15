@@ -3,7 +3,7 @@ import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
-import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
+import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +25,7 @@ class NewCommunityCard extends StatelessWidget {
         MaterialPageRoute(
             builder: (context) => Chatroom(
                   cId: community.id,
+                  community: community,
                   name: community.name,
                 )),
       ),
@@ -34,8 +35,8 @@ class NewCommunityCard extends StatelessWidget {
           backgroundImage: NetworkImage(COMMUNITY_IMG_URL),
         ),
         title: Text(community.name),
-        subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
-            style: const TextStyle(fontWeight: FontWeight.w300)),
+        // subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
+        //     style: const TextStyle(fontWeight: FontWeight.w300)),
         trailing: GestureDetector(
           onTap: () => addCommunity(context),
           child: const Icon(
@@ -70,19 +71,5 @@ class NewCommunityCard extends StatelessWidget {
 
     Navigator.of(context).push(
         MaterialPageRoute(builder: ((context) => const UserCommunities())));
-
-    // UserCommunitiesProvider userCommunitiesProvider =
-    //     Provider.of<UserCommunitiesProvider>(context, listen: false);
-    // String userId = UserIdPreferences.getToken();
-
-    // Provider.of<UserProvider>(context, listen: false)
-    //     .addUserCommunities(community.id);
-
-    // // reloads the user informations
-    // Provider.of<RefreshUserInfoProvider>(context, listen: false)
-    //     .notifyFunction();
-
-    //userCommunitiesProvider.addCommunityAndUpdate(community);
-    // DataBaseService(uid: userId).addCommunityToUser(communityId: community.id);
   }
 }

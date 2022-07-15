@@ -16,12 +16,8 @@ class UserCommunitiesProvider extends ChangeNotifier {
     try {
       List userCommunities = response["data"]["communities"];
 
-      _userCommunities = List<Community>.from(userCommunities.map((com) =>
-          Community(
-              id: com["id"],
-              nextJam: DateTime.now(),
-              name: com["name"],
-              confirmed: true)));
+      _userCommunities = List<Community>.from(
+          userCommunities.map((com) => Community.fromJson(com)));
       return true;
     } catch (e) {
       _userCommunities = [];

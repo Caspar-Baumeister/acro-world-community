@@ -1,7 +1,7 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/register/widgets/check_box.dart';
-import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
+import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_builder.dart';
@@ -174,21 +174,6 @@ class _RegisterBodyState extends State<RegisterBody> {
                         ),
                         onPressed: () async {
                           onRegister();
-                          // if (_formKey.currentState != null &&
-                          //     _formKey.currentState!.validate()) {
-                          //   setState(() {
-                          //     loading = true;
-                          //   });
-                          //   dynamic result =
-                          //       await _auth.registerWithEmailAndPassword(
-                          //           email, password, name);
-                          //   if (result == null) {
-                          //     setState(() {
-                          //       loading = false;
-                          //       error = 'Please supply a valid email';
-                          //     });
-                          //   }
-                          // }
                         }),
                     const SizedBox(height: 12.0),
                     Text(

@@ -8,8 +8,6 @@ class UserCommunities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //UserProvider userProvider = Provider.of<UserProvider>(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarUserCommunities(),

@@ -10,8 +10,6 @@ class AllCommunities extends StatelessWidget {
     return const Scaffold(
         backgroundColor: Colors.white,
         appBar: AllCommunitiesAppBar(),
-        body: AllCommunitiesBody() //AllCommunitiesBody(),
-        // endDrawer: const SettingsDrawer(),
-        );
+        body: AllCommunitiesBody());
   }
 }

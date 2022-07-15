@@ -2,6 +2,7 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
+import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/home/jam/create_jam/date_time_chooser.dart';
@@ -17,8 +18,11 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CreateJam extends StatefulWidget {
-  const CreateJam({required this.cid, Key? key, this.jam}) : super(key: key);
+  const CreateJam(
+      {required this.cid, Key? key, this.jam, required this.community})
+      : super(key: key);
   final String cid;
+  final Community community;
   final Jam? jam;
 
   @override
@@ -179,7 +183,7 @@ class _CreateJamState extends State<CreateJam> {
                                   borderRadius: BorderRadius.circular(20)),
                               constraints: const BoxConstraints(maxHeight: 350),
                               child: MapWidget(
-                                center: latlng,
+                                center: widget.community.latLng,
                                 markerLocation: latlng,
                                 onLocationSelected: (location) =>
                                     {setState(() => latlng = location)},

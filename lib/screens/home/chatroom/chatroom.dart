@@ -2,6 +2,7 @@ import 'package:acroworld/graphql/model/community_messages/community_message.dar
 import 'package:acroworld/graphql/model/community_messages/community_messages.dart';
 import 'package:acroworld/graphql/model/user/user.dart';
 import 'package:acroworld/graphql/subscriptions.dart';
+import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/message_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/app_bar_chatroom.dart';
@@ -15,11 +16,16 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
 class Chatroom extends StatelessWidget {
-  const Chatroom({required this.cId, required this.name, Key? key})
+  const Chatroom(
+      {required this.cId,
+      required this.name,
+      Key? key,
+      required this.community})
       : super(key: key);
 
   final String cId;
   final String name;
+  final Community community;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +35,7 @@ class Chatroom extends StatelessWidget {
     final String userId = userProvider.activeUser!.uid;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBarChatroom(cId: cId, name: name),
+      appBar: AppBarChatroom(cId: cId, community: community, name: name),
       body: ViewRoot(
         child: Column(
           children: [

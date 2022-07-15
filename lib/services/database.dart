@@ -120,8 +120,11 @@ class Database {
     return authorizedApi("""
       query MyQuery {
   communities(where: {_not: {users: {user_id: {_eq: "$uid"}}}, name: {_ilike: "%$query%"}}, limit: 15) {
-    name
     id
+    name
+    confirmed
+    latitude
+    longitude
   }
 }""");
   }

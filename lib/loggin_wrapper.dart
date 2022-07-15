@@ -1,6 +1,6 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
-import 'package:acroworld/screens/home/communities/user_communities/user_communities.dart';
+import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/shared/error_page.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +18,6 @@ class LogginWrapper extends StatefulWidget {
 }
 
 class _LogginWrapperState extends State<LogginWrapper> {
-  @override
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(

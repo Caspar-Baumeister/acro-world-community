@@ -41,15 +41,6 @@ class AllCommunitiesList extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   )
-                  // GestureDetector(
-                  //   onTap: () =>
-                  //       buildMortal(context, const CreateNewCommunityModal()),
-                  //   child: const Text(
-                  //     "Can't find the community your searching for? Suggest a new one",
-                  //     maxLines: 2,
-                  //     textAlign: TextAlign.center,
-                  //   ),
-                  // ),
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -12,22 +13,25 @@ class Jam {
   List<UserModel> participants;
   String info;
   LatLng latLng;
+  Community community;
   String communityId;
   String communityName;
 
-  Jam(
-      {required this.jid,
-      required this.cid,
-      required this.createdAt,
-      required this.createdById,
-      required this.participants,
-      required this.date,
-      required this.name,
-      this.imgUrl,
-      required this.info,
-      required this.communityId,
-      required this.communityName,
-      required this.latLng});
+  Jam({
+    required this.jid,
+    required this.cid,
+    required this.createdAt,
+    required this.createdById,
+    required this.participants,
+    required this.date,
+    required this.name,
+    this.imgUrl,
+    required this.info,
+    required this.community,
+    required this.communityId,
+    required this.communityName,
+    required this.latLng,
+  });
 
   factory Jam.fromJson(dynamic json) {
     List participants = json["participants"];
@@ -43,6 +47,7 @@ class Jam {
       createdAt: DateTime.parse(json["created_at"]),
       info: json["info"],
       latLng: LatLng(json["latitude"], json["longitude"]),
+      community: Community.fromJson(json['community']),
       communityName: json["community"]["name"],
       communityId: json["community"]["id"],
     );

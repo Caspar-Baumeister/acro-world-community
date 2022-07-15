@@ -23,6 +23,7 @@ class CommunityCard extends StatelessWidget {
         MaterialPageRoute(
             builder: (context) => Chatroom(
                   cId: community.id,
+                  community: community,
                   name: community.name,
                 )),
       ),

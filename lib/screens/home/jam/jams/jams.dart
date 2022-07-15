@@ -1,14 +1,20 @@
+import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
 import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
 import 'package:acroworld/screens/home/jam/jams/future_jams.dart';
 import 'package:flutter/material.dart';
 
 class Jams extends StatefulWidget {
-  const Jams({required this.cId, required this.name, Key? key})
+  const Jams(
+      {required this.cId,
+      required this.name,
+      Key? key,
+      required this.community})
       : super(key: key);
 
   final String cId;
   final String name;
+  final Community community;
 
   @override
   State<Jams> createState() => _JamsState();
@@ -61,7 +67,9 @@ class _JamsState extends State<Jams> {
   void handleCreateJam(BuildContext context) async {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CreateJam(cid: widget.cId)),
+      MaterialPageRoute(
+          builder: (context) =>
+              CreateJam(cid: widget.cId, community: widget.community)),
     );
   }
 }
