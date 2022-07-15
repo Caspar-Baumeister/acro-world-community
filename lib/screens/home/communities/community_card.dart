@@ -1,3 +1,5 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -5,6 +7,7 @@ import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,7 +40,7 @@ class CommunityCard extends StatelessWidget {
         //     style: const TextStyle(fontWeight: FontWeight.w300)),
         // TODO delete community from usercommunities in backend and in state
         trailing: GestureDetector(
-          onTap: () => deleteCommunity(context),
+          onTap: () => leaveCommunity(context),
           child: const Icon(
             Icons.exit_to_app_rounded,
             color: Colors.red,
@@ -47,7 +50,10 @@ class CommunityCard extends StatelessWidget {
     );
   }
 
-  void deleteCommunity(BuildContext context) async {
+  void leaveCommunity(BuildContext context) async {
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context, listen: false);
+    final EventBus eventBus = eventBusProvider.eventBus;
     // TODO later get token from shared pref
     // TODO filter out the communities that the user is part of
     bool isValidToken =
@@ -66,6 +72,7 @@ class CommunityCard extends StatelessWidget {
     Provider.of<UserCommunitiesProvider>(context, listen: false)
         .loadDataFromDatabase(token);
 
+    eventBus.fire(CrudUserCommunityEvent());
     // Navigator.of(context).push(
     //     MaterialPageRoute(builder: ((context) => const UserCommunities())));
 
