@@ -55,7 +55,7 @@ class _FutureCalenderJamsState extends State<FutureCalenderJams> {
           try {
             refetch!();
           } catch (e) {
-            print('error');
+            print(e.toString());
             // print(e);
           }
         });

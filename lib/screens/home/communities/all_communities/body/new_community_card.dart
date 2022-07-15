@@ -1,3 +1,5 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -6,9 +8,9 @@ import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class NewCommunityCard extends StatelessWidget {
   const NewCommunityCard({
@@ -49,6 +51,9 @@ class NewCommunityCard extends StatelessWidget {
   }
 
   void addCommunity(BuildContext context) async {
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context, listen: false);
+    final EventBus eventBus = eventBusProvider.eventBus;
     // TODO later get token from shared pref
     // TODO filter out the communities that the user is part of
     bool isValidToken =
@@ -65,6 +70,7 @@ class NewCommunityCard extends StatelessWidget {
 
     final response = await database.insertUserCommunitiesOne(community.id, uid);
 
+    eventBus.fire(CrudUserCommunityEvent());
     // update the usercommunities
     Provider.of<UserCommunitiesProvider>(context, listen: false)
         .loadDataFromDatabase(token);
