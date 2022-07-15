@@ -90,7 +90,8 @@ class MessageTile extends StatelessWidget {
               Container(
                   alignment: Alignment.centerRight,
                   child: Text(
-                    DateFormat.Hm().format(DateTime.parse(message.createdAt)),
+                    DateFormat.Hm()
+                        .format(DateTime.parse(message.createdAt).toLocal()),
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ))
             ],
