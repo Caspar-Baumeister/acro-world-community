@@ -1,16 +1,22 @@
 class UserModel {
-  String uid;
+  String id;
   String userName;
+  String? imageUrl;
+  String? bio;
 
   UserModel({
-    required this.uid,
+    required this.id,
     required this.userName,
+    this.imageUrl,
+    this.bio,
   });
 
-  factory UserModel.fromJson(dynamic json, String uid) {
+  factory UserModel.fromJson(dynamic json) {
     return UserModel(
-      uid: uid,
+      id: json['id'],
       userName: json["name"],
+      bio: json['bio'],
+      imageUrl: json['image_url'],
     );
   }
 }

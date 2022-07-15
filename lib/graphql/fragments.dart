@@ -15,12 +15,9 @@ class Fragments {
   """;
 
   static const String jamFragment = """
-    created_at
-    created_by {
-      $userFragment
-    }
-    date
     id
+    created_at
+    date
     info
     latitude
     longitude
@@ -34,6 +31,9 @@ class Fragments {
     }
     community {
       $communityFragment
+    }
+    created_by {
+      $userFragment
     }
 """;
 }

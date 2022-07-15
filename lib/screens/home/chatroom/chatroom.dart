@@ -32,7 +32,7 @@ class Chatroom extends StatelessWidget {
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
-    final String userId = userProvider.activeUser!.uid;
+    final String userId = userProvider.activeUser!.id;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarChatroom(cId: cId, community: community, name: name),

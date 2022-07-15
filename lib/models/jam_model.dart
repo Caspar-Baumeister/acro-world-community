@@ -7,6 +7,7 @@ class Jam {
   String jid;
   String name;
   String? imgUrl;
+  UserModel createdBy;
   Object createdById;
   DateTime createdAt;
   DateTime date;
@@ -25,6 +26,7 @@ class Jam {
     required this.participants,
     required this.date,
     required this.name,
+    required this.createdBy,
     this.imgUrl,
     required this.info,
     required this.community,
@@ -38,8 +40,8 @@ class Jam {
     return Jam(
       cid: json["community_id"],
       jid: json['id'],
-      participants: List<UserModel>.from(participants.map((particpant) =>
-          UserModel.fromJson(particpant['user'], particpant['user']['id']))),
+      participants: List<UserModel>.from(participants
+          .map((particpant) => UserModel.fromJson(particpant['user']))),
       date: DateTime.parse(json["date"]),
       name: json["name"],
       imgUrl: json["imgUrl"],
@@ -50,6 +52,7 @@ class Jam {
       community: Community.fromJson(json['community']),
       communityName: json["community"]["name"],
       communityId: json["community"]["id"],
+      createdBy: UserModel.fromJson(json["created_by"]),
     );
   }
 }

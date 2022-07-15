@@ -59,7 +59,6 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
                                 query = value;
                               });
                             },
-                            // onChanged: (query) => search(query),
                           ),
                         ),
                         const NewCommunityButton(),
