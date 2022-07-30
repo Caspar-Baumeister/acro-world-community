@@ -30,7 +30,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context);
     final EventBus eventBus = eventBusProvider.eventBus;
-    UserModel user = Provider.of<UserProvider>(context).activeUser!;
+    User user = Provider.of<UserProvider>(context).activeUser!;
     final bool isOwnJam = widget.jam.createdById == user.id;
     final String jamName = widget.jam.name;
     final String jamId = widget.jam.jid;
@@ -110,7 +110,6 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    print("Delete Jam $jamId");
                                     runMutation({"jamId": widget.jam.jid});
                                     Navigator.pop(context, 'OK');
                                   },

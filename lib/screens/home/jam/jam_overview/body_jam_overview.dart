@@ -34,10 +34,10 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context);
     final EventBus eventBus = eventBusProvider.eventBus;
-    final UserModel user = Provider.of<UserProvider>(context).activeUser!;
+    final User user = Provider.of<UserProvider>(context).activeUser!;
 
-    isUserParticipating = widget.jam.participants
-        .any((participant) => participant.uid == user.uid);
+    isUserParticipating =
+        widget.jam.participants.any((participant) => participant.id == user.id);
 
     // String timeString = timeago.format(widget.jam.date);
     String dateString =
@@ -147,7 +147,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                                 context,
                                 ParticipantModal(
                                     participants: widget.jam.participants
-                                        .map((e) => e.userName)
+                                        .map((e) => e.name ?? "Unknown")
                                         .toList())),
                             child: Text(
                               "${widget.jam.participants.length.toString()} participant/s",

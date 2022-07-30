@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class UserProfile extends StatelessWidget {
   const UserProfile({required this.user, Key? key}) : super(key: key);
 
-  final UserModel user;
+  final User user;
   @override
   Widget build(BuildContext context) {
     return ViewRoot(
@@ -20,7 +20,7 @@ class UserProfile extends StatelessWidget {
 
             //isnt used because of mainaxis size max
             const SizedBox(height: 24.0),
-            Text(user.userName, style: const TextStyle(fontSize: 16)),
+            Text(user.name ?? "Unknown", style: const TextStyle(fontSize: 16)),
             //isnt used because of mainaxis size max
             // const SizedBox(height: 12.0),
             // Container(

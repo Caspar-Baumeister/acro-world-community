@@ -14,8 +14,8 @@
 //   @override
 //   Widget build(BuildContext context) {
 //     return FutureBuilder(
-//       future: getUserModel(uid),
-//       builder: (BuildContext context, AsyncSnapshot<UserModel> snapshot) {
+//       future: getUser(uid),
+//       builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
 //         // AsyncSnapshot<Your object type>
 //         if (snapshot.connectionState == ConnectionState.waiting) {
 //           return Center(
@@ -51,7 +51,7 @@
 //     );
 //   }
 
-//   Future<UserModel> getUserModel(String uid) async {
+//   Future<User> getUser(String uid) async {
 //     DocumentSnapshot<Object?> snapshot =
 //         await DataBaseService(uid: uid).getUserInfo();
 
@@ -60,6 +60,6 @@
 //           "Could not retrieve user information. Maybe the user deleted their profile.");
 //     }
 
-//     return UserModel.fromJson(snapshot.data(), uid);
+//     return User.fromJson(snapshot.data(), uid);
 //   }
 // }

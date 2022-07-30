@@ -17,7 +17,7 @@ class JamTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String uid = Provider.of<UserProvider>(context, listen: false).getId();
-    List<String> uids = jam.participants.map((e) => e.id).toList();
+    List<String> uids = jam.participants.map((e) => e.id!).toList();
     bool paticipate = uids.contains(uid);
     return GestureDetector(
       onTap: () => Navigator.of(context).push(

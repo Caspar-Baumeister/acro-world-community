@@ -1,4 +1,4 @@
-import 'package:acroworld/models/message_model.dart';
+import 'package:acroworld/models/community_messages/community_message.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -13,7 +13,7 @@ class MessageTile extends StatelessWidget {
       Key? key})
       : super(key: key);
 
-  final Message message;
+  final CommunityMessage message;
   final bool isMe;
   final bool sameAuthorThenBevor;
   final bool sameAuthorThenNext;
@@ -66,7 +66,7 @@ class MessageTile extends StatelessWidget {
                   width: 0,
                 )
               : Text(
-                  message.userName,
+                  message.fromUser?.name ?? "",
                   style: const TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w800,
@@ -79,7 +79,7 @@ class MessageTile extends StatelessWidget {
                 isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
             children: [
               Text(
-                message.text,
+                message.content ?? "",
                 textWidthBasis: TextWidthBasis.longestLine,
                 style: const TextStyle(
                   color: Colors.black,
@@ -87,13 +87,16 @@ class MessageTile extends StatelessWidget {
                 ),
                 textAlign: TextAlign.start,
               ),
-              Container(
-                  alignment: Alignment.centerRight,
-                  child: Text(
-                    DateFormat.Hm()
-                        .format(DateTime.parse(message.createdAt).toLocal()),
-                    style: const TextStyle(color: Colors.grey, fontSize: 12),
-                  ))
+              message.createdAt != null
+                  ? Container(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        DateFormat.Hm().format(
+                            DateTime.parse(message.createdAt!).toLocal()),
+                        style:
+                            const TextStyle(color: Colors.grey, fontSize: 12),
+                      ))
+                  : Container()
             ],
           )
         ],
