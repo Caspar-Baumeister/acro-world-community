@@ -9,6 +9,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
 import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/shared/helper_functions.dart';
+import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:intl/intl.dart';
@@ -77,65 +78,95 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: SpacedColumn(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                space: 20,
                 children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                            vertical: 12.0, horizontal: 12.0)
-                        .copyWith(top: 0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.jam.name,
-                      style: const TextStyle(fontSize: 24.0),
-                    ),
+                  Text(
+                    widget.jam.name,
+                    style: const TextStyle(fontSize: 24.0),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12.0, 0, 0.0, 0.0),
-                    child: Text("Date",
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Creator",
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w300,
-                            fontFamily: "rubik")),
+                            fontFamily: "rubik"),
+                      ),
+                      Text(
+                        widget.jam.createdBy.name ?? "Unknown",
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 12.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      dateString,
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12.0, 0, 0.0, 8.0),
-                    child: Text("Information",
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Date",
                         style: TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w300,
-                            fontFamily: "rubik")),
+                            fontFamily: "rubik"),
+                      ),
+                      Text(
+                        dateString,
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
                   ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 6.0, horizontal: 12.0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      widget.jam.info,
-                      maxLines: 60,
-                      style: const TextStyle(fontSize: 16.0),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Information",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "rubik"),
+                      ),
+                      Text(
+                        widget.jam.info,
+                        maxLines: 60,
+                        style: const TextStyle(fontSize: 16.0),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 20.0),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        SizedBox(
-                          width: 150,
-                          height: 50,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 10),
+                              textStyle: const TextStyle(
+                                  fontSize: 30, fontWeight: FontWeight.bold)),
+                          onPressed: () => buildMortal(
+                              context,
+                              ParticipantModal(
+                                  participants: widget.jam.participants
+                                      .map((e) => e.name ?? "Unknown")
+                                      .toList())),
+                          child: Text(
+                            "${widget.jam.participants.length.toString()} participant/s",
+                            maxLines: 10,
+                            style: const TextStyle(
+                                fontSize: 16.0, color: Colors.black54),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 150,
+                        height: 50,
+                        child: IgnorePointer(
+                          ignoring: isLoading,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                                 primary: Colors.white,
@@ -143,70 +174,42 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                                     horizontal: 10, vertical: 10),
                                 textStyle: const TextStyle(
                                     fontSize: 30, fontWeight: FontWeight.bold)),
-                            onPressed: () => buildMortal(
-                                context,
-                                ParticipantModal(
-                                    participants: widget.jam.participants
-                                        .map((e) => e.name ?? "Unknown")
-                                        .toList())),
-                            child: Text(
-                              "${widget.jam.participants.length.toString()} participant/s",
-                              maxLines: 10,
-                              style: const TextStyle(
-                                  fontSize: 16.0, color: Colors.black54),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 150,
-                          height: 50,
-                          child: IgnorePointer(
-                            ignoring: isLoading,
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  primary: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10, vertical: 10),
-                                  textStyle: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold)),
-                              onPressed: () {
-                                isLoading = true;
-                                runMutation({'jamId': widget.jam.jid});
-                              },
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: isLoading
-                                    ? [
-                                        const SizedBox(
-                                          width: 20,
-                                          height: 20,
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      ]
-                                    : [
-                                        isUserParticipating
-                                            ? const Icon(Icons.remove,
-                                                color: Colors.black54)
-                                            : const Icon(Icons.add,
-                                                color: Colors.black54),
-                                        const SizedBox(width: 8),
-                                        Text(
-                                          isUserParticipating
-                                              ? "Leave"
-                                              : "Participate",
-                                          maxLines: 10,
-                                          style: const TextStyle(
-                                              fontSize: 16.0,
+                            onPressed: () {
+                              isLoading = true;
+                              runMutation({'jamId': widget.jam.jid});
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: isLoading
+                                  ? [
+                                      const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(),
+                                      )
+                                    ]
+                                  : [
+                                      isUserParticipating
+                                          ? const Icon(Icons.remove,
+                                              color: Colors.black54)
+                                          : const Icon(Icons.add,
                                               color: Colors.black54),
-                                        ),
-                                      ],
-                              ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        isUserParticipating
+                                            ? "Leave"
+                                            : "Participate",
+                                        maxLines: 10,
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            color: Colors.black54),
+                                      ),
+                                    ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Container(
                     decoration:
