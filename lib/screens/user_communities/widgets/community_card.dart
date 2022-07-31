@@ -50,7 +50,7 @@ class CommunityCard extends StatelessWidget {
             child: ListTile(
               leading: const CircleAvatar(
                 radius: 32,
-                backgroundImage: NetworkImage(COMMUNITY_IMG_URL),
+                backgroundImage: AssetImage("assets/logo/play_store_512.png"),
               ),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -105,17 +105,16 @@ class CommunityCard extends StatelessWidget {
                           : null,
                     ),
                   ),
-                  Container(
-                    child: count != null && count > 0
-                        ? Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 187, 236, 189),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(20))),
-                            child: Text(count.toString()))
-                        : null,
-                  )
+                  count != null && count > 0
+                      ? Container(
+                          height: 28,
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                              color: SECONDARY_COLOR,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20))),
+                          child: Text(count.toString()))
+                      : Container()
                 ],
               ),
             ),

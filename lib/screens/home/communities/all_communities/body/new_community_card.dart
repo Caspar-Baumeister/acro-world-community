@@ -34,7 +34,7 @@ class NewCommunityCard extends StatelessWidget {
       child: ListTile(
         leading: const CircleAvatar(
           radius: 32,
-          backgroundImage: NetworkImage(COMMUNITY_IMG_URL),
+          backgroundImage: AssetImage("assets/logo/play_store_512.png"),
         ),
         title: Text(community.name),
         // subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
@@ -43,7 +43,7 @@ class NewCommunityCard extends StatelessWidget {
           onTap: () => addCommunity(context),
           child: const Icon(
             Icons.add_circle_outline_rounded,
-            color: Colors.green,
+            color: PRIMARY_COLOR,
           ),
         ),
       ),

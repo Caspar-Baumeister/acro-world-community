@@ -1,3 +1,4 @@
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class MessageModal extends StatelessWidget {
@@ -22,7 +23,7 @@ class MessageModal extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   border:
-                      Border.all(color: success ? Colors.green : Colors.red),
+                      Border.all(color: success ? PRIMARY_COLOR : Colors.red),
                   borderRadius: const BorderRadius.all(Radius.circular(20)),
                 ),
                 child: Padding(

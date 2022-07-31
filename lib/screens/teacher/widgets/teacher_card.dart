@@ -59,7 +59,7 @@ class TeacherCard extends StatelessWidget {
                           onPressed: () {},
                           icon: const Icon(
                             Icons.thumb_up,
-                            color: Colors.green,
+                            color: PRIMARY_COLOR,
                           )),
                       Text(teacher.likes.toString())
                     ],

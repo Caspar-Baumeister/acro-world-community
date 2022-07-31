@@ -1,6 +1,7 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/jam_overview.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -33,9 +34,10 @@ class JamTile extends StatelessWidget {
           vertical: 4.0,
         ),
         decoration: BoxDecoration(
+          color: SECONDARY_COLOR,
           borderRadius: const BorderRadius.all(Radius.circular(15.0)),
           border: Border.all(
-            color: paticipate ? Colors.green : Colors.grey,
+            color: paticipate ? PRIMARY_COLOR : Colors.grey,
             width: 2.0,
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class CheckBox extends StatefulWidget {
@@ -21,7 +22,7 @@ class _CheckBoxState extends State<CheckBox> {
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
-            color: widget.isChecked ? Colors.green : Colors.white,
+            color: widget.isChecked ? PRIMARY_COLOR : Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(6))),
         child: widget.isChecked
             ? Icon(
