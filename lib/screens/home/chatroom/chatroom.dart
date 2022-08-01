@@ -3,6 +3,7 @@ import 'package:acroworld/models/community_messages/community_messages.dart';
 import 'package:acroworld/graphql/subscriptions.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/app_bar_chatroom.dart';
 import 'package:acroworld/screens/home/chatroom/message_text_field.dart';
@@ -63,6 +64,9 @@ class Chatroom extends StatelessWidget {
                       child: Text('No messages yet'),
                     );
                   } else {
+                    print(messages[0]!.content);
+                    Provider.of<UserCommunitiesProvider>(context, listen: false)
+                        .setLastMessage(messages[0]!, cId);
                     return ListView.builder(
                       reverse: true,
                       itemCount: messageCount,

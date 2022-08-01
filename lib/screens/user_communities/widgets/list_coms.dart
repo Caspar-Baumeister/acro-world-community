@@ -1,18 +1,19 @@
-import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/user_communities/widgets/community_card.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserCommunitiesList extends StatelessWidget {
   const UserCommunitiesList({
     Key? key,
-    required this.communities,
   }) : super(key: key);
-
-  final List<Community> communities;
 
   @override
   Widget build(BuildContext context) {
-    if (communities.isEmpty) {
+    UserCommunitiesProvider userCommunitiesProvider =
+        Provider.of<UserCommunitiesProvider>(context);
+    print("UserCommunitiesList neu");
+    if (userCommunitiesProvider.userCommunities.isEmpty) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
@@ -25,7 +26,8 @@ class UserCommunitiesList extends StatelessWidget {
       return SingleChildScrollView(
         child: Column(
           children: [
-            ...communities.map((com) => CommunityCard(community: com))
+            ...userCommunitiesProvider.userCommunities
+                .map((com) => CommunityCard(community: com))
           ],
         ),
       );

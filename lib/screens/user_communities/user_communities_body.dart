@@ -4,6 +4,7 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/user_communities/widgets/list_coms.dart';
 import 'package:acroworld/screens/user_communities/widgets/new_button.dart';
@@ -73,6 +74,10 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
                 messageJson: messageJson);
           })));
         }
+        Future.delayed(const Duration(milliseconds: 200), () {
+          Provider.of<UserCommunitiesProvider>(context, listen: false)
+              .userCommunities = communities;
+        });
 
         return RefreshIndicator(
           onRefresh: () async => {refetch!()},
@@ -104,7 +109,7 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
                     Expanded(
                       child: result.isLoading
                           ? const LoadingIndicator()
-                          : UserCommunitiesList(communities: communities),
+                          : const UserCommunitiesList(),
                     ),
                   ],
                 ),

@@ -16,6 +16,8 @@ class CommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("CommunityCard neu");
+
     return Query(
         options: QueryOptions(
             document: Queries.getUserCommunityMessageCount,
