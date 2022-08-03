@@ -1,4 +1,4 @@
-import 'package:acroworld/graphql/model/community_messages/community_message.dart';
+import 'package:acroworld/models/community_messages/community_message.dart';
 
 class CommunityMessages {
   List<CommunityMessage>? communityMessages;

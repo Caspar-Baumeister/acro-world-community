@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:acroworld/models/community_messages/community_message.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,24 @@ class UserCommunitiesProvider extends ChangeNotifier {
   List<Community> _userCommunities = [];
 
   List<Community> get userCommunities => _userCommunities;
+  set userCommunities(List<Community> value) => _userCommunities = value;
+
+  // getUserCommunityByCommunityId(String cId) {}
+
+  setLastMessage(CommunityMessage message, String cId) {
+    for (int i = 0; i < _userCommunities.length; i++) {
+      if (_userCommunities[i].id == cId) {
+        if (_userCommunities[i].lastMessage != null &&
+            _userCommunities[i].lastMessage!.createdAt != message.createdAt) {
+          print(_userCommunities[i].lastMessage!.content);
+          print("last message was overwirten");
+          _userCommunities[i].lastMessage = message;
+          print(_userCommunities[i].lastMessage!.content);
+          notifyListeners();
+        }
+      }
+    }
+  }
 
   bool setDataFromGraphQlResponse(response) {
     try {

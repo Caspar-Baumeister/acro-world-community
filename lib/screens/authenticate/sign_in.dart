@@ -36,7 +36,6 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    print("new build");
     return loading
         ? const Loading()
         : Scaffold(

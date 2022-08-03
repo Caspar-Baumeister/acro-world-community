@@ -1,4 +1,4 @@
-import 'package:acroworld/graphql/model/user/user.dart';
+import 'package:acroworld/models/user_model.dart';
 
 class CommunityMessage {
   String? id;

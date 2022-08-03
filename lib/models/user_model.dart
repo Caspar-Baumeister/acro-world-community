@@ -1,22 +1,31 @@
-class UserModel {
-  String id;
-  String userName;
+class User {
+  String? id;
+  String? name;
   String? imageUrl;
   String? bio;
 
-  UserModel({
+  User({
     required this.id,
-    required this.userName,
+    required this.name,
     this.imageUrl,
     this.bio,
   });
 
-  factory UserModel.fromJson(dynamic json) {
-    return UserModel(
+  factory User.fromJson(dynamic json) {
+    return User(
       id: json['id'],
-      userName: json["name"],
+      name: json["name"],
       bio: json['bio'],
       imageUrl: json['image_url'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['id'] = id;
+    data['bio'] = bio;
+    data['imageUrl'] = imageUrl;
+    return data;
   }
 }

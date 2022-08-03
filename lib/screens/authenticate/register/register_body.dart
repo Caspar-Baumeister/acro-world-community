@@ -209,8 +209,6 @@ class _RegisterBodyState extends State<RegisterBody> {
     // register response
     final response = await Database().registerApi(email, password, name);
 
-    print(response);
-
     // error handling
     String errorResponse = "try it again later";
     if (response["errors"] != null) {

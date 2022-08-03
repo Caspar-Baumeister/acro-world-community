@@ -173,7 +173,7 @@ class Database {
           body: json.encode({'query': query}));
       return jsonDecode(response.body.toString());
     } catch (e) {
-      print(e);
+      print(e.toString());
     }
   }
 
@@ -189,12 +189,12 @@ class Database {
           }));
       return jsonDecode(response.body.toString())["data"]?["login"]?["token"];
     } catch (e) {
-      print(e);
+      print(e.toString());
     }
     return null;
   }
 
-  Future registerApi(String email, String password, String username) async {
+  Future registerApi(String email, String password, String name) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -202,11 +202,11 @@ class Database {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", userName: \"$username\"}){token}}"
+                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", name: \"$name\"}){token}}"
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {
-      print(e);
+      print(e.toString());
     }
     return null;
   }

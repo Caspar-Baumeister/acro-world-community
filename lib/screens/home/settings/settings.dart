@@ -18,7 +18,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   // text field state
   String imgUrl = '';
-  String userName = '';
+  String name = '';
   String userBio = '';
 
   @override
@@ -49,7 +49,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
                 //isnt used because of mainaxis size max
                 const SizedBox(height: 24.0),
-                // Text(userProvider.activeUser!.userName ?? "no username",
+                // Text(userProvider.activeUser!.name ?? "no name",
                 //     style: const TextStyle(fontSize: 16)),
                 // //isnt used because of mainaxis size max
                 // const SizedBox(height: 12.0),
@@ -58,12 +58,12 @@ class _SettingsPageState extends State<SettingsPage> {
                   children: [
                     TextFormField(
                       decoration: buildInputDecoration(
-                          labelText: userProvider.activeUser!.userName),
+                          labelText: userProvider.activeUser!.name),
                       // validator: (val) => (val == null || val.length < 6)
-                      //     ? 'Enter a userName 6+ chars long'
+                      //     ? 'Enter a name 6+ chars long'
                       //     : null,
                       onChanged: (val) {
-                        setState(() => userName = val);
+                        setState(() => name = val);
                       },
                     ),
                     //isnt used because of mainaxis size max
@@ -73,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     //   decoration: buildInputDecoration(
                     //       labelText: userProvider.activeUser!.bio),
                     //   // validator: (val) => (val == null || val.length < 6)
-                    //   //     ? 'Enter a userName 6+ chars long'
+                    //   //     ? 'Enter a name 6+ chars long'
                     //   //     : null,
                     //   onChanged: (val) {
                     //     setState(() => userBio = val);
@@ -117,16 +117,16 @@ class _SettingsPageState extends State<SettingsPage> {
   updateUserData(database, userProvider) {
     if (_formKey.currentState != null) {
       //bool updated = false;
-      if (userName != "") {
-        database.updateUserDataField(field: "userName", value: userName);
-        UserModel user = userProvider.activeUser!;
-        user.userName = userName;
+      if (name != "") {
+        database.updateUserDataField(field: "name", value: name);
+        User user = userProvider.activeUser!;
+        user.name = name;
         userProvider.activeUser = user;
         //updated = true;
       }
       // if (userBio != "") {
       //   database.updateUserDataField(field: "bio", value: userBio);
-      //   UserModel user = userProvider.activeUser!;
+      //   User user = userProvider.activeUser!;
       //   user.bio = userBio;
       //   userProvider.activeUser = user;
       //   //updated = true;

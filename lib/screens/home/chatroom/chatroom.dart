@@ -1,14 +1,13 @@
-import 'package:acroworld/graphql/model/community_messages/community_message.dart';
-import 'package:acroworld/graphql/model/community_messages/community_messages.dart';
-import 'package:acroworld/graphql/model/user/user.dart';
+import 'package:acroworld/models/community_messages/community_message.dart';
+import 'package:acroworld/models/community_messages/community_messages.dart';
 import 'package:acroworld/graphql/subscriptions.dart';
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/models/message_model.dart';
+import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/app_bar_chatroom.dart';
 import 'package:acroworld/screens/home/chatroom/message_text_field.dart';
 import 'package:acroworld/screens/home/chatroom/message_tile.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -32,7 +31,7 @@ class Chatroom extends StatelessWidget {
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
-    final String userId = userProvider.activeUser!.id;
+    final String userId = userProvider.activeUser!.id!;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBarChatroom(cId: cId, community: community, name: name),
@@ -65,6 +64,9 @@ class Chatroom extends StatelessWidget {
                       child: Text('No messages yet'),
                     );
                   } else {
+                    print(messages[0]!.content);
+                    Provider.of<UserCommunitiesProvider>(context, listen: false)
+                        .setLastMessage(messages[0]!, cId);
                     return ListView.builder(
                       reverse: true,
                       itemCount: messageCount,
@@ -91,13 +93,7 @@ class Chatroom extends StatelessWidget {
                                   child: Text(DateFormat.EEEE().format(
                                       DateTime.parse(message.createdAt!)))),
                               MessageTile(
-                                  message: Message(
-                                      cid: message.id!,
-                                      uid: fromUser.id!,
-                                      text: message.content!,
-                                      imgUrl: MORTY_IMG_URL,
-                                      createdAt: message.createdAt!,
-                                      userName: fromUser.name!),
+                                  message: message,
                                   isMe: isMe,
                                   sameAuthorThenNext: isSameAuthorThenNext,
                                   sameAuthorThenBevor: isSameAuthorThenPrevious)
@@ -106,13 +102,7 @@ class Chatroom extends StatelessWidget {
                         }
 
                         return MessageTile(
-                          message: Message(
-                              cid: message.id!,
-                              uid: fromUser.id!,
-                              text: message.content!,
-                              imgUrl: MORTY_IMG_URL,
-                              createdAt: message.createdAt!,
-                              userName: fromUser.name!),
+                          message: message,
                           isMe: isMe,
                           sameAuthorThenNext: isSameAuthorThenNext,
                           sameAuthorThenBevor: isSameAuthorThenPrevious,

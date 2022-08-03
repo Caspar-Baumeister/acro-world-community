@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class UserProvider extends ChangeNotifier {
-  UserModel? _activeUser;
+  User? _activeUser;
   String? _token;
   Map<String, dynamic>? _parsedJwt;
 
   // getter
-  UserModel? get activeUser => _activeUser;
+  User? get activeUser => _activeUser;
   String? get token => _token;
   Map<String, dynamic>? get parsedJwt => _parsedJwt;
 
@@ -41,7 +41,7 @@ class UserProvider extends ChangeNotifier {
     // TODO fill in rest of data
     final response = await Database(token: _token).authorizedApi(Querys.me);
     Map user = response["data"]["me"][0];
-    _activeUser = UserModel(id: user["id"], userName: user["name"]);
+    _activeUser = User(id: user["id"], name: user["name"]);
   }
 
   bool isTokenExpired() {

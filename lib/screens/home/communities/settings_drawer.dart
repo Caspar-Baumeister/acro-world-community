@@ -24,7 +24,7 @@ class SettingsDrawer extends StatelessWidget {
               // ),
               child: ListTile(
                 leading: Text(
-                  userProvider.activeUser!.userName,
+                  userProvider.activeUser!.name ?? "Unknown",
                 ),
                 // trailing: CircleAvatar(
                 //   backgroundImage: NetworkImage(
@@ -46,7 +46,7 @@ class SettingsDrawer extends StatelessWidget {
                   SizedBox(
                     width: 15,
                   ),
-                  Text("Calendar")
+                  Text("Jams")
                 ],
               )),
             ),

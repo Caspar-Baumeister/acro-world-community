@@ -1,6 +1,14 @@
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/user_communities.dart';
+import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/jam/jams/jams.dart';
+import 'package:acroworld/services/database.dart';
+import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   @override
@@ -39,9 +47,9 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               );
             },
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const <Widget>[
-                Text(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text(
                   'Jams',
                   style: TextStyle(
                     fontSize: 20,
@@ -49,10 +57,41 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
                     color: Colors.black,
                   ),
                 ),
-                SizedBox(width: 6.0),
-                ImageIcon(
+                const SizedBox(width: 6.0),
+                const ImageIcon(
                   AssetImage("assets/acro_jam_icon.png"),
                   color: Colors.black,
+                ),
+                const SizedBox(width: 6.0),
+                PopupMenuButton(
+                  offset: const Offset(0, 45),
+                  color: Colors.white,
+                  itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+                    PopupMenuItem(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 6, vertical: 0),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        leaveCommunity(context);
+                      },
+                      child: const ListTile(
+                        visualDensity: VisualDensity.compact,
+                        minVerticalPadding: 0,
+                        contentPadding: EdgeInsets.all(0),
+                        title: Text(
+                          'Exit community',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                  // visualDensity: VisualDensity.compact,
+                  padding: const EdgeInsets.all(0),
+                  // onPressed: () {},
+                  icon: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    color: Colors.black,
+                  ),
                 )
               ],
             ),
@@ -60,5 +99,46 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
         ),
       ],
     );
+  }
+
+  void leaveCommunity(BuildContext context) async {
+    final EventBusProvider eventBusProvider =
+        Provider.of<EventBusProvider>(context, listen: false);
+    final EventBus eventBus = eventBusProvider.eventBus;
+    // TODO later get token from shared pref
+    // TODO filter out the communities that the user is part of
+    bool isValidToken =
+        await Provider.of<UserProvider>(context, listen: false).validToken();
+    if (!isValidToken) {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: ((context) => const Authenticate())));
+      return null;
+    }
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
+    final database = Database(token: token);
+
+    final response = await database.deleteUserCommunitiesOne(community.id);
+
+    // update the usercommunities
+    Provider.of<UserCommunitiesProvider>(context, listen: false)
+        .loadDataFromDatabase(token);
+
+    eventBus.fire(CrudUserCommunityEvent());
+    // Navigator.of(context).push(
+    //     MaterialPageRoute(builder: ((context) => const UserCommunities())));
+
+    // UserCommunitiesProvider userCommunitiesProvider =
+    //     Provider.of<UserCommunitiesProvider>(context, listen: false);
+    // String userId = UserIdPreferences.getToken();
+
+    // Provider.of<UserProvider>(context, listen: false)
+    //     .addUserCommunities(community.id);
+
+    // // reloads the user informations
+    // Provider.of<RefreshUserInfoProvider>(context, listen: false)
+    //     .notifyFunction();
+
+    //userCommunitiesProvider.addCommunityAndUpdate(community);
+    // DataBaseService(uid: userId).addCommunityToUser(communityId: community.id);
   }
 }

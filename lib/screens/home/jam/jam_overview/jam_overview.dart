@@ -22,7 +22,7 @@ class _JamOverviewState extends State<JamOverview> {
 
   @override
   Widget build(BuildContext context) {
-    final UserModel user = Provider.of<UserProvider>(context).activeUser!;
+    final User user = Provider.of<UserProvider>(context).activeUser!;
 
     return Scaffold(
         backgroundColor: Colors.white,

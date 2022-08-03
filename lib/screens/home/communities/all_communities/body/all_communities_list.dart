@@ -1,6 +1,7 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/communities/all_communities/body/new_community_card.dart';
 import 'package:acroworld/screens/home/communities/modals/create_new_community.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +39,7 @@ class AllCommunitiesList extends StatelessWidget {
                         buildMortal(context, const CreateNewCommunityModal()),
                     child: const Text(
                       "Suggest a new one",
+                      style: TextStyle(color: PRIMARY_COLOR),
                       textAlign: TextAlign.center,
                     ),
                   )
