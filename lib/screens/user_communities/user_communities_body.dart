@@ -80,7 +80,7 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
         });
 
         return RefreshIndicator(
-          onRefresh: () async => {refetch!()},
+          onRefresh: () async => {runRefetch()},
           child: SingleChildScrollView(
             child: SizedBox(
               height: MediaQuery.of(context).size.height,

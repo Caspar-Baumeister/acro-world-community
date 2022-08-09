@@ -13,4 +13,19 @@ class Subscriptions {
       }
     }
     """;
+
+  static const String getUserCommunityMessageCount = """
+  subscription GetMyCommunityPreview(\$community_id: uuid!, \$last_visited_at: timestamptz!) {
+    user_communities(where: {community_id: {_eq: \$community_id}}) {
+      community {
+          community_messages_aggregate(where: {created_at: {_gte: \$last_visited_at}}) {
+            aggregate {
+              count
+            }
+          }
+          
+        }
+    }
+  }
+  """;
 }
