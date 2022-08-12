@@ -8,6 +8,7 @@ class Community {
   LatLng latLng;
   CommunityMessage? lastMessage;
   String? lastVisitedAt;
+  String? nextJamAt;
 
   Community({
     required this.id,
@@ -16,16 +17,18 @@ class Community {
     required this.latLng,
     this.lastMessage,
     this.lastVisitedAt,
+    this.nextJamAt,
   });
 
   factory Community.fromJson(dynamic json,
-      {String? lastVisitedAt, dynamic messageJson}) {
+      {String? lastVisitedAt, String? nextJamAt, dynamic messageJson}) {
     return Community(
         id: json['id'],
         name: json["name"],
         confirmed: json["confirmed"],
         latLng: LatLng(json['latitude'], json['longitude']),
         lastVisitedAt: lastVisitedAt,
+        nextJamAt: nextJamAt,
         lastMessage: messageJson != null
             ? CommunityMessage.fromJson(messageJson)
             : null);

@@ -1,3 +1,5 @@
+import 'package:acroworld/graphql/fragments.dart';
+
 class Subscriptions {
   static const String communityMessages = """
     subscription CommunityMessagesSubscription(\$community_id: uuid) {
@@ -27,5 +29,26 @@ class Subscriptions {
         }
     }
   }
+  """;
+
+  static const subscribeUserCommunities = """
+  subscription subscribeUserCommunities(\$query: String!) {
+  me {
+    communities(where: {community: {name: {_ilike: \$query}}}, limit: 10, order_by: {community: {community_messages_aggregate: {max: {created_at: desc_nulls_last}}}}) {
+      last_visited_at
+      community_id
+      community {
+        ${Fragments.communityFragment}
+          community_messages(limit: 1, order_by: {created_at: desc}) {
+          content
+          created_at
+          from_user {
+            name
+          }
+        }
+      }
+    }
+  }
+}
   """;
 }

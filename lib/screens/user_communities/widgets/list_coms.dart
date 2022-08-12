@@ -12,7 +12,6 @@ class UserCommunitiesList extends StatelessWidget {
   Widget build(BuildContext context) {
     UserCommunitiesProvider userCommunitiesProvider =
         Provider.of<UserCommunitiesProvider>(context);
-    print("UserCommunitiesList neu");
     if (userCommunitiesProvider.userCommunities.isEmpty) {
       return Column(
           mainAxisAlignment: MainAxisAlignment.center,

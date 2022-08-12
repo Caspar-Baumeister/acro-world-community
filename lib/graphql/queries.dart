@@ -52,7 +52,8 @@ class Queries {
   query GetMyCommunities(\$query: String!) {
     me {
       communities (where: {community: {name: {_ilike: \$query}}}) {
-        last_visited_at community_id
+        last_visited_at 
+        community_id
         community {
           ${Fragments.communityFragment}
           community_messages(limit: 1, order_by: {created_at: desc}) {

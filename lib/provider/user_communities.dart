@@ -24,10 +24,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
       if (_userCommunities[i].id == cId) {
         if (_userCommunities[i].lastMessage != null &&
             _userCommunities[i].lastMessage!.createdAt != message.createdAt) {
-          print(_userCommunities[i].lastMessage!.content);
-          print("last message was overwirten");
           _userCommunities[i].lastMessage = message;
-          print(_userCommunities[i].lastMessage!.content);
           notifyListeners();
         }
       }

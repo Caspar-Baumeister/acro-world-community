@@ -1,15 +1,12 @@
 import 'dart:async';
 
-import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/events/jams/leave_community_event.dart';
-import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/graphql/subscriptions.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/user_communities/widgets/list_coms.dart';
 import 'package:acroworld/screens/user_communities/widgets/new_button.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -35,12 +32,12 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
 
   @override
   Widget build(BuildContext context) {
-    final EventBusProvider eventBusProvider =
-        Provider.of<EventBusProvider>(context, listen: false);
-    final EventBus eventBus = eventBusProvider.eventBus;
-    return Query(
-      options: QueryOptions(
-          document: Queries.getUserCommunities,
+    // final EventBusProvider eventBusProvider =
+    //     Provider.of<EventBusProvider>(context, listen: false);
+    // final EventBus eventBus = eventBusProvider.eventBus;
+    return Subscription(
+      options: SubscriptionOptions(
+          document: gql(Subscriptions.subscribeUserCommunities),
           variables: {'query': '$query%'}),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -55,10 +52,10 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             print(e.toString());
           }
         });
-        eventListeners
-            .add(eventBus.on<CrudUserCommunityEvent>().listen((event) {
-          runRefetch();
-        }));
+        // eventListeners
+        //     .add(eventBus.on<CrudUserCommunityEvent>().listen((event) {
+        //   runRefetch();
+        // }));
 
         List<Community> communities = [];
         if (result.data != null && result.data?['me'].length > 0) {
