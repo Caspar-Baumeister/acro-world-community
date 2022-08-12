@@ -1,3 +1,5 @@
+import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
+import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/community_messages/community_message.dart';
 import 'package:acroworld/models/community_messages/community_messages.dart';
 import 'package:acroworld/graphql/subscriptions.dart';
@@ -14,7 +16,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
-class Chatroom extends StatelessWidget {
+class Chatroom extends StatefulWidget {
   const Chatroom(
       {required this.cId,
       required this.name,
@@ -27,97 +29,152 @@ class Chatroom extends StatelessWidget {
   final Community community;
 
   @override
+  State<Chatroom> createState() => _ChatroomState();
+}
+
+class _ChatroomState extends State<Chatroom> {
+  @override
+  void dispose() {
+    // TODO update last visited
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
     final String userId = userProvider.activeUser!.id!;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBarChatroom(cId: cId, community: community, name: name),
-      body: ViewRoot(
-        child: Column(
-          children: [
-            Expanded(
-              child: Subscription(
-                options: SubscriptionOptions(
-                    document: gql(
-                      Subscriptions.communityMessages,
-                    ),
-                    variables: {'community_id': cId}),
-                builder: (result) {
-                  if (result.hasException) {
-                    return Text(result.exception.toString());
-                  }
-                  if (result.isLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
+    return Mutation(
+        options: MutationOptions(
+          fetchPolicy: FetchPolicy.networkOnly,
+          document: Mutations.updateLastVisetedAt,
+          onError: GraphQLErrorHandler().handleError,
+          // onCompleted: (dynamic resultData) {
+          //   setState(() {
+          //     isLoading = false;
+          //   });
+          //   if (resultData != null &&
+          //       resultData['delete_jams']['affected_rows'] == 1) {
+          //     eventBus.fire(CrudJamEvent(widget.jam));
+          //     Navigator.pop(context);
+          //   }
+          // },
+        ),
+        builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
+                    {Object? optimisticResult})
+                runMutation,
+            QueryResult<dynamic>? result) {
+          return WillPopScope(
+            onWillPop: () async {
+              var response = runMutation({
+                "user_id": userProvider.activeUser!.id!,
+                "community_id": widget.cId
+              });
+              return true;
+            },
+            child: Scaffold(
+              backgroundColor: Colors.white,
+              appBar: AppBarChatroom(
+                  cId: widget.cId,
+                  community: widget.community,
+                  name: widget.name,
+                  updateLastVisitedAt: () => runMutation({
+                        "user_id": userProvider.activeUser!.id!,
+                        "community_id": widget.cId
+                      })),
+              body: ViewRoot(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: Subscription(
+                        options: SubscriptionOptions(
+                            document: gql(
+                              Subscriptions.communityMessages,
+                            ),
+                            variables: {'community_id': widget.cId}),
+                        builder: (result) {
+                          if (result.hasException) {
+                            return Text(result.exception.toString());
+                          }
+                          if (result.isLoading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
 
-                  CommunityMessages messages =
-                      CommunityMessages.fromJson(result.data!);
+                          CommunityMessages messages =
+                              CommunityMessages.fromJson(result.data!);
 
-                  int messageCount = messages.length;
-                  if (messageCount == 0) {
-                    return const Center(
-                      child: Text('No messages yet'),
-                    );
-                  } else {
-                    print(messages[0]!.content);
-                    Provider.of<UserCommunitiesProvider>(context, listen: false)
-                        .setLastMessage(messages[0]!, cId);
-                    return ListView.builder(
-                      reverse: true,
-                      itemCount: messageCount,
-                      itemBuilder: (context, index) {
-                        CommunityMessage? message = messages[index];
-                        CommunityMessage? nextMessage = messages[index + 1];
-                        CommunityMessage? previousMessage = messages[index - 1];
-                        User? fromUser = message!.fromUser;
-                        var isSameDayAsPrevious = isSameDay(
-                            message.createdAt, nextMessage?.createdAt);
-                        final isMe = userId == fromUser!.id;
+                          int messageCount = messages.length;
+                          if (messageCount == 0) {
+                            return const Center(
+                              child: Text('No messages yet'),
+                            );
+                          } else {
+                            Provider.of<UserCommunitiesProvider>(context,
+                                    listen: false)
+                                .setLastMessage(messages[0]!, widget.cId);
+                            return ListView.builder(
+                              reverse: true,
+                              itemCount: messageCount,
+                              itemBuilder: (context, index) {
+                                CommunityMessage? message = messages[index];
+                                CommunityMessage? nextMessage =
+                                    messages[index + 1];
+                                CommunityMessage? previousMessage =
+                                    messages[index - 1];
+                                User? fromUser = message!.fromUser;
+                                var isSameDayAsPrevious = isSameDay(
+                                    message.createdAt, nextMessage?.createdAt);
+                                final isMe = userId == fromUser!.id;
 
-                        final isSameAuthorThenNext = nextMessage != null &&
-                            nextMessage.fromUser!.id == message.fromUser!.id;
+                                final isSameAuthorThenNext =
+                                    nextMessage != null &&
+                                        nextMessage.fromUser!.id ==
+                                            message.fromUser!.id;
 
-                        final isSameAuthorThenPrevious =
-                            previousMessage != null &&
-                                previousMessage.fromUser!.id ==
-                                    message.fromUser!.id;
-                        if (!isSameDayAsPrevious) {
-                          return Column(
-                            children: [
-                              Center(
-                                  child: Text(DateFormat.EEEE().format(
-                                      DateTime.parse(message.createdAt!)))),
-                              MessageTile(
+                                final isSameAuthorThenPrevious =
+                                    previousMessage != null &&
+                                        previousMessage.fromUser!.id ==
+                                            message.fromUser!.id;
+                                if (!isSameDayAsPrevious) {
+                                  return Column(
+                                    children: [
+                                      Center(
+                                          child: Text(DateFormat.EEEE().format(
+                                              DateTime.parse(
+                                                  message.createdAt!)))),
+                                      MessageTile(
+                                          message: message,
+                                          isMe: isMe,
+                                          sameAuthorThenNext:
+                                              isSameAuthorThenNext,
+                                          sameAuthorThenBevor:
+                                              isSameAuthorThenPrevious)
+                                    ],
+                                  );
+                                }
+
+                                return MessageTile(
                                   message: message,
                                   isMe: isMe,
                                   sameAuthorThenNext: isSameAuthorThenNext,
-                                  sameAuthorThenBevor: isSameAuthorThenPrevious)
-                            ],
-                          );
-                        }
-
-                        return MessageTile(
-                          message: message,
-                          isMe: isMe,
-                          sameAuthorThenNext: isSameAuthorThenNext,
-                          sameAuthorThenBevor: isSameAuthorThenPrevious,
-                        );
-                      },
-                    );
-                  }
-                },
+                                  sameAuthorThenBevor: isSameAuthorThenPrevious,
+                                );
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                    MessageTextField(cId: widget.cId)
+                  ],
+                ),
               ),
             ),
-            MessageTextField(cId: cId)
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   bool isSameDay(String? t1, String? t2) {

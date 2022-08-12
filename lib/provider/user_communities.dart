@@ -12,7 +12,10 @@ class UserCommunitiesProvider extends ChangeNotifier {
   List<Community> _userCommunities = [];
 
   List<Community> get userCommunities => _userCommunities;
-  set userCommunities(List<Community> value) => _userCommunities = value;
+  set userCommunities(List<Community> value) {
+    _userCommunities = value;
+    notifyListeners();
+  }
 
   // getUserCommunityByCommunityId(String cId) {}
 
@@ -21,10 +24,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
       if (_userCommunities[i].id == cId) {
         if (_userCommunities[i].lastMessage != null &&
             _userCommunities[i].lastMessage!.createdAt != message.createdAt) {
-          print(_userCommunities[i].lastMessage!.content);
-          print("last message was overwirten");
           _userCommunities[i].lastMessage = message;
-          print(_userCommunities[i].lastMessage!.content);
           notifyListeners();
         }
       }
@@ -39,6 +39,7 @@ class UserCommunitiesProvider extends ChangeNotifier {
           userCommunities.map((com) => Community.fromJson(com)));
       return true;
     } catch (e) {
+      print(e.toString());
       _userCommunities = [];
       return false;
     }
@@ -62,34 +63,5 @@ class UserCommunitiesProvider extends ChangeNotifier {
     }
 
     notifyListeners();
-  }
-
-  // loading the data using cache
-  loadData(token) async {
-    // load data from cache
-    String fileName = "userCommunities.json";
-    var dir = await getTemporaryDirectory();
-    File file = File(dir.path + "/" + fileName);
-    Map<String, dynamic> response;
-    if (file.existsSync()) {
-      // if success and data ligit:
-
-      // set data
-      var jsonData = file.readAsStringSync();
-      response = jsonDecode(jsonData);
-      setDataFromGraphQlResponse(response);
-
-      // notify listener
-      notifyListeners();
-
-      // load data from api in background (no await)
-      loadDataFromDatabase(token);
-      // data = data
-
-    } else {
-      // else if cache load not works
-      // wait for the database loas
-      await loadDataFromDatabase(token);
-    }
   }
 }

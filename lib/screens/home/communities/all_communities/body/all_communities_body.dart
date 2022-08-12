@@ -14,8 +14,17 @@ class AllCommunitiesBody extends StatefulWidget {
 }
 
 class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
-  String query = "";
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      String token = Provider.of<UserProvider>(context, listen: false).token!;
+      Provider.of<AllOtherComs>(context, listen: false)
+          .loadDataFromDatabase(token, query);
+    });
+    super.initState();
+  }
 
+  String query = "";
   @override
   Widget build(BuildContext context) {
     AllOtherComs allOtherComs = Provider.of<AllOtherComs>(context);

@@ -19,11 +19,13 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
     required this.cId,
     required this.name,
     required this.community,
+    required this.updateLastVisitedAt,
   }) : super(key: key);
 
   final String cId;
   final String name;
   final Community community;
+  final Function updateLastVisitedAt;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,13 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
       elevation: 0.0,
       backgroundColor: Colors.white,
       title: Text(name, style: const TextStyle(color: Colors.black)),
-      leading: const BackButton(color: Colors.black),
+      leading: BackButton(
+        color: Colors.black,
+        onPressed: () {
+          updateLastVisitedAt();
+          Navigator.of(context).pop();
+        },
+      ),
       actions: [
         Padding(
           padding: const EdgeInsets.only(right: 8.0),

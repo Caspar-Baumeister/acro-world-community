@@ -75,4 +75,12 @@ class Mutations {
       }
     }
   """);
+
+  static final updateLastVisetedAt = gql("""
+  mutation updateLastVisetedAt(\$community_id: uuid, \$user_id: uuid) {
+  update_user_communities(where: {community_id: {_eq: \$community_id}, user_id: {_eq: \$user_id}}, _set: {last_visited_at: "now()"}) {
+    affected_rows
+  }
+}
+""");
 }

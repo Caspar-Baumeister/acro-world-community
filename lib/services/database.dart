@@ -139,6 +139,21 @@ class Database {
       }""");
   }
 
+//   static final updateLastVisetedAt = gql("""
+//   mutation updateLastVisetedAt(\$community_id: uuid, \$user_id: uuid, \$date: timestamptz) {
+//   update_user_communities(where: {community_id: {_eq: \$community_id}, user_id: {_eq: \$user_id}}, _set: {last_visited_at: \$date}) {
+//     affected_rows
+//   }
+// }
+// """);
+// updateLastVisetedAt()
+// {return http.post(uri,
+//           headers: {
+//             'content-type': 'application/json',
+//             'authorization': 'Bearer $token'
+//           },
+//           body: json.encode({'query': query}));}
+
   insertJam(
     String communityId,
     String name,
