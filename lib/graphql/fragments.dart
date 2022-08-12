@@ -15,25 +15,25 @@ class Fragments {
   """;
 
   static const String jamFragment = """
-    id
-    created_at
-    date
-    info
-    latitude
-    longitude
-    name
-    community_id
-    created_by_id
-    participants {
-      user {
-        $userFragment
-      }
-    }
-    community {
-      $communityFragment
-    }
-    created_by {
+  id
+  created_at
+  date
+  info
+  latitude
+  longitude
+  name
+  community_id
+  created_by_id
+  participants {
+    user {
       $userFragment
     }
+  }
+  community {
+    $communityFragment
+  }
+  created_by {
+    $userFragment
+  }
 """;
 }

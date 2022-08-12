@@ -68,6 +68,14 @@ class Mutations {
     }
   """);
 
+  static final updateFcmToken = gql("""
+    mutation UpdateFcmToken(\$fcmToken: String!) {
+      update_users(_set: {fcm_token: \$fcmToken}, where: {}) {
+        affected_rows
+      }
+    }
+  """);
+
   static final updateLastVisetedAt = gql("""
   mutation updateLastVisetedAt(\$community_id: uuid, \$user_id: uuid) {
   update_user_communities(where: {community_id: {_eq: \$community_id}, user_id: {_eq: \$user_id}}, _set: {last_visited_at: "now()"}) {

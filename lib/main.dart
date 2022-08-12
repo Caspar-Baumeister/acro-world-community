@@ -1,3 +1,4 @@
+import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/loggin_wrapper.dart';
@@ -5,6 +6,8 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -52,6 +55,9 @@ void main() async {
     ),
   );
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   await CredentialPreferences.init();
   return runApp(App(client: client));

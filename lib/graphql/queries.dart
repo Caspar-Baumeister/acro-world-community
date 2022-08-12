@@ -78,17 +78,21 @@ class Queries {
             count
           }
         }
-        
       }
+    }
   }
-}
+  """);
+
+  static final getMe = gql("""
+  query GetMe {
+    me {
+      id
+      image_url
+      fcm_token
+      bio
+      created_at
+      name
+    }
+  }
   """);
 }
-
-// community_messages(order_by: {created_at: desc}, limit: 1) {
-//           content
-//           created_at
-//           from_user {
-//             name
-//           }
-//         }
