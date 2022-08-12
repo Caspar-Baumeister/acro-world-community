@@ -67,4 +67,12 @@ class Mutations {
       }
     }
   """);
+
+  static final updateFcmToken = gql("""
+    mutation UpdateFcmToken(\$fcmToken: String!) {
+      update_users(_set: {fcm_token: \$fcmToken}, where: {}) {
+        affected_rows
+      }
+    }
+  """);
 }
