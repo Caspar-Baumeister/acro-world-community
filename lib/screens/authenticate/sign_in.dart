@@ -1,5 +1,6 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/login/login.dart';
 import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/helper_builder.dart';
@@ -165,7 +166,7 @@ class _SignInState extends State<SignIn> {
 
     // send to UserCommunities
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const UserCommunities()));
+        .push(MaterialPageRoute(builder: (context) => UpdateFcmToken()));
 
     setState(() {
       loading = false;

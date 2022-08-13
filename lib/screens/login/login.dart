@@ -27,11 +27,11 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
             return Mutation(
               options: MutationOptions(document: Mutations.updateFcmToken),
               builder: (runMutation, mutationResult) {
-                print('mutationResult: $mutationResult');
-                if (mutationResult != null) {
-                  if (mutationResult.isLoading) {
-                    return LoadingIndicator();
-                  }
+                if (mutationResult == null || mutationResult.isLoading) {
+                  return const LoadingIndicator();
+                }
+
+                if (mutationResult.data != null) {
                   // FCM Token was updated
                   return const UserCommunities();
                 } else {
@@ -44,12 +44,9 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
 
                       String? fcmToken =
                           queryResult.data?['me'][0]['fcm_token'];
-                      print('fcmToken $fcmToken');
-                      print('currentFcmToken $currentFcmToken');
                       if (fcmToken == null ||
                           fcmToken.isEmpty ||
                           fcmToken != currentFcmToken) {
-                        print('runMutation');
                         runMutation({'fcmToken': currentFcmToken});
                         return Container();
                       } else {
