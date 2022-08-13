@@ -1,6 +1,7 @@
 // import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/home/jam/jams/jam_tile.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -103,10 +104,13 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
               RangeSelectionMode.disabled, //_rangeSelectionMode,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: const CalendarStyle(
-            // Use `CalendarStyle` to customize the UI
-            outsideDaysVisible: false,
-          ),
+          calendarStyle: CalendarStyle(
+              // Use `CalendarStyle` to customize the UI
+              outsideDaysVisible: false,
+              todayDecoration: BoxDecoration(
+                  color: Colors.grey[400]!, shape: BoxShape.circle),
+              selectedDecoration: const BoxDecoration(
+                  color: PRIMARY_COLOR, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
           //onRangeSelected: _onRangeSelected,
           onFormatChanged: (format) {
