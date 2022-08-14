@@ -65,10 +65,16 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             if (userCommunity['community']["community_messages"].isNotEmpty) {
               messageJson = userCommunity['community']["community_messages"][0];
             }
+            String? date;
+            if (userCommunity?["community"]?["jams"].isNotEmpty &&
+                userCommunity?["community"]?["jams"]?[0]?["date"] != null) {
+              date = userCommunity["community"]!["jams"]![0]!["date"];
+            }
 
             return Community.fromJson(userCommunity['community'],
                 lastVisitedAt: userCommunity["last_visited_at"],
-                messageJson: messageJson);
+                messageJson: messageJson,
+                nextJamAt: date);
           })));
         }
         Future.delayed(const Duration(milliseconds: 200), () {

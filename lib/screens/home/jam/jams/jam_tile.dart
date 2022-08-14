@@ -34,7 +34,7 @@ class JamTile extends StatelessWidget {
           vertical: 4.0,
         ),
         decoration: BoxDecoration(
-          color: SECONDARY_COLOR,
+          color: paticipate ? SECONDARY_COLOR : Colors.white,
           borderRadius: const BorderRadius.all(Radius.circular(15.0)),
           border: Border.all(
             color: paticipate ? PRIMARY_COLOR : Colors.grey,
@@ -55,7 +55,6 @@ class JamTile extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       jam.participants.length.toString() + " participants",
-                      style: const TextStyle(color: Colors.grey),
                     ),
                   ],
                 )

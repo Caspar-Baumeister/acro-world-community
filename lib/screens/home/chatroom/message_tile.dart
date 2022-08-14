@@ -20,20 +20,19 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //double messageWidth = MediaQuery.of(context).size.width * 0.8;
     const radius = Radius.circular(12.0);
     const borderRadius = BorderRadius.all(radius);
+    // The row spans over the full display width and either puts the child to the left or the right
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
       children: [
-        leadingDecide(),
         Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-            // this is the padding of the message tile:
+            // Space between content and border of frame
+            padding: const EdgeInsets.symmetric(vertical: 2.0, horizontal: 8.0),
+            // space between whole messages
             margin: EdgeInsets.only(bottom: sameAuthorThenBevor ? 2.0 : 10.0),
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.7),
             decoration: BoxDecoration(
               border: Border.all(
                 color: Colors.grey[200]!,
@@ -53,39 +52,38 @@ class MessageTile extends StatelessWidget {
     );
   }
 
-  Widget leadingDecide() {
-    return Container();
-  }
-
-  Widget buildMessage(BuildContext context) => Column(
-        crossAxisAlignment:
-            isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-        children: <Widget>[
-          (isMe || sameAuthorThenNext)
-              ? const SizedBox(
-                  width: 0,
-                )
-              : Text(
-                  message.fromUser?.name ?? "",
-                  style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16),
-                  //textAlign: isMe ? TextAlign.end : TextAlign.start,
-                ),
+  Widget buildMessage(BuildContext context) => Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           Column(
-            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment:
                 isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-            children: [
-              Text(
-                message.content ?? "",
-                textWidthBasis: TextWidthBasis.longestLine,
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
+            children: <Widget>[
+              (isMe || sameAuthorThenNext)
+                  ? const SizedBox(
+                      width: 0,
+                    )
+                  : Text(
+                      message.fromUser?.name ?? "",
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.w800,
+                          fontSize: 16),
+                      //textAlign: isMe ? TextAlign.end : TextAlign.start,
+                    ),
+              Container(
+                alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.7),
+                child: Text(
+                  message.content ?? "",
+                  //textWidthBasis: TextWidthBasis.longestLine,
+                  style: const TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.start,
                 ),
-                textAlign: TextAlign.start,
               ),
               message.createdAt != null
                   ? Container(
@@ -98,7 +96,7 @@ class MessageTile extends StatelessWidget {
                       ))
                   : Container()
             ],
-          )
+          ),
         ],
       );
 }

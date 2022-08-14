@@ -46,6 +46,9 @@ class Subscriptions {
             name
           }
         }
+        jams(limit: 1, where: {date: {_gte: "now()"}}, order_by: {date: asc}) {
+          date
+        }
       }
     }
   }

@@ -8,8 +8,8 @@ import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/chatroom/app_bar_chatroom.dart';
-import 'package:acroworld/screens/home/chatroom/message_text_field.dart';
-import 'package:acroworld/screens/home/chatroom/message_tile.dart';
+import 'package:acroworld/screens/home/chatroom/widgets/chat_bubble.dart';
+import 'package:acroworld/screens/home/chatroom/widgets/message_text_field.dart';
 import 'package:acroworld/widgets/view_root.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -142,26 +142,64 @@ class _ChatroomState extends State<Chatroom> {
                                   return Column(
                                     children: [
                                       Center(
-                                          child: Text(DateFormat.EEEE().format(
-                                              DateTime.parse(
-                                                  message.createdAt!)))),
-                                      MessageTile(
-                                          message: message,
-                                          isMe: isMe,
-                                          sameAuthorThenNext:
-                                              isSameAuthorThenNext,
-                                          sameAuthorThenBevor:
-                                              isSameAuthorThenPrevious)
+                                          child: Container(
+                                        margin: const EdgeInsets.all(6),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 4),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                              color: Colors.grey[200]!,
+                                            ),
+                                            color: Colors.white,
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                                    Radius.circular(30))),
+                                        child: Text(DateFormat.EEEE().format(
+                                            DateTime.parse(
+                                                message.createdAt!))),
+                                      )),
+                                      isMe
+                                          ? OutBubble(
+                                              message: message,
+                                              sameAuthorThenBevor:
+                                                  isSameAuthorThenPrevious,
+                                            )
+                                          : InBubble(
+                                              message: message,
+                                              sameAuthorThenBevor:
+                                                  isSameAuthorThenPrevious,
+                                              sameAuthorThenNext: false,
+                                            )
+                                      // MessageTile(
+                                      //     message: message,
+                                      //     isMe: isMe,
+                                      //     sameAuthorThenNext:
+                                      //         isSameAuthorThenNext,
+                                      //     sameAuthorThenBevor:
+                                      //         isSameAuthorThenPrevious)
                                     ],
                                   );
                                 }
 
-                                return MessageTile(
-                                  message: message,
-                                  isMe: isMe,
-                                  sameAuthorThenNext: isSameAuthorThenNext,
-                                  sameAuthorThenBevor: isSameAuthorThenPrevious,
-                                );
+                                return isMe
+                                    ? OutBubble(
+                                        message: message,
+                                        sameAuthorThenBevor:
+                                            isSameAuthorThenPrevious,
+                                      )
+                                    : InBubble(
+                                        message: message,
+                                        sameAuthorThenBevor:
+                                            isSameAuthorThenPrevious,
+                                        sameAuthorThenNext:
+                                            isSameAuthorThenNext,
+                                      );
+                                // MessageTile(
+                                //   message: message,
+                                //   isMe: isMe,
+                                //   sameAuthorThenNext: isSameAuthorThenNext,
+                                //   sameAuthorThenBevor: isSameAuthorThenPrevious,
+                                // );
                               },
                             );
                           }

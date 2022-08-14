@@ -39,6 +39,10 @@ class CommunityCard extends StatelessWidget {
     bool isNew = false;
     DateTime? createdAt;
     DateTime? lastVisitedAt;
+    DateTime? nextJamAt;
+    if (community.nextJamAt != null) {
+      nextJamAt = DateTime.parse(community.nextJamAt!);
+    }
     if (community.lastMessage?.createdAt != null &&
         community.lastVisitedAt != null) {
       createdAt = DateTime.parse(community.lastMessage!.createdAt!);
@@ -86,7 +90,10 @@ class CommunityCard extends StatelessWidget {
                 : Container()
           ],
         ),
-        subtitle: Row(
+        subtitle:
+            // Column(
+            //   children: [
+            Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Flexible(
@@ -127,6 +134,14 @@ class CommunityCard extends StatelessWidget {
             //     : Container()
           ],
         ),
+        // nextJamAt != null
+        //     ? Align(
+        //         alignment: Alignment.centerLeft,
+        //         child: Text(
+        //             "upcoming event ${DateFormat.MMMMEEEEd().format(nextJamAt.toLocal())}"))
+        //     : Container()
+        //   ],
+        // ),
       ),
     );
   }
