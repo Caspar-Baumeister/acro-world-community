@@ -1,6 +1,7 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
+import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/teacher/teacher_page.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +66,24 @@ class SettingsDrawer extends StatelessWidget {
                     width: 15,
                   ),
                   Text("Teacher")
+                ],
+              )),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const EventsPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.people),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Events")
                 ],
               )),
             ),
