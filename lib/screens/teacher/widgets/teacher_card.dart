@@ -86,13 +86,17 @@ class PhotoGalery extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: List.from(photos.map((e) => SizedBox(
-              height: 140,
-              width: 140,
-              child: Image(
-                image: NetworkImage(e),
-                fit: BoxFit.cover,
-              )))),
+          children: List.from(photos.map((e) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: Image(
+                      height: 140,
+                      width: 140,
+                      image: NetworkImage(e),
+                      fit: BoxFit.cover,
+                    )),
+              ))),
         ),
       ),
     );

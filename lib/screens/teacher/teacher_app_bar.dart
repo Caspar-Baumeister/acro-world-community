@@ -15,6 +15,19 @@ class AppBarTeacher extends StatelessWidget with PreferredSizeWidget {
         "Teacher",
         style: TextStyle(color: Colors.black),
       ),
+      // actions: const [
+      //   Icon(
+      //     Icons.search,
+      //     color: Colors.black,
+      //   ),
+      //   Padding(
+      //     padding: EdgeInsets.symmetric(horizontal: 8.0),
+      //     child: Icon(
+      //       Icons.filter_list_outlined,
+      //       color: Colors.black,
+      //     ),
+      //   )
+      // ],
     );
   }
 }

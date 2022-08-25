@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UpdateFcmToken extends StatefulWidget {
-  UpdateFcmToken({Key? key}) : super(key: key);
+  const UpdateFcmToken({Key? key}) : super(key: key);
 
   @override
   State<UpdateFcmToken> createState() => _UpdateFcmTokenState();
@@ -21,7 +21,7 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
         future: FirebaseMessaging.instance.getToken(),
         builder: ((context, snapshot) {
           if (!snapshot.hasData) {
-            return LoadingIndicator();
+            return const LoadingIndicator();
           } else {
             final currentFcmToken = snapshot.data;
             return Mutation(
