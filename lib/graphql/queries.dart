@@ -95,4 +95,12 @@ class Queries {
     }
   }
   """);
+
+  static final getCommunityById = gql("""
+  query getCommunityById(\$communityId: uuid!){
+    communities(where: {id: {_eq: \$communityId}}){
+      ${Fragments.communityFragment}
+    }
+  }
+  """);
 }
