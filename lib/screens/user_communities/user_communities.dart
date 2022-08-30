@@ -10,6 +10,11 @@ class UserCommunities extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print('Listening to messages');
+
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('A new onMessageOpenedApp event was published!');
+    });
+
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print('Got a message whilst in the foreground!');
       print('Message data: ${message.data}');

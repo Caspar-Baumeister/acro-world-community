@@ -20,7 +20,9 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
     return FutureBuilder<String?>(
         future: FirebaseMessaging.instance.getToken(),
         builder: ((context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.hasError) {
+            return const UserCommunities();
+          } else if (!snapshot.hasData) {
             return const LoadingIndicator();
           } else {
             final currentFcmToken = snapshot.data;
@@ -29,6 +31,10 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
               builder: (runMutation, mutationResult) {
                 if (mutationResult == null || mutationResult.isLoading) {
                   return const LoadingIndicator();
+                }
+
+                if (mutationResult.hasException) {
+                  return const UserCommunities();
                 }
 
                 if (mutationResult.data != null) {

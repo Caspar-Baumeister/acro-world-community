@@ -51,42 +51,43 @@ class SettingsDrawer extends StatelessWidget {
                 ],
               )),
             ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const TeacherPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.person_search_sharp),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Teacher")
-                ],
-              )),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const EventsPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.people),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Events")
-                ],
-              )),
-            ),
+            // Comment in again when feature is ready
+            // GestureDetector(
+            //   onTap: () => Navigator.of(context).push(
+            //     MaterialPageRoute(
+            //       builder: (context) => const TeacherPage(),
+            //     ),
+            //   ),
+            //   child: ListTile(
+            //       leading: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: const [
+            //       Icon(Icons.person_search_sharp),
+            //       SizedBox(
+            //         width: 15,
+            //       ),
+            //       Text("Teacher")
+            //     ],
+            //   )),
+            // ),
+            // GestureDetector(
+            //   onTap: () => Navigator.of(context).push(
+            //     MaterialPageRoute(
+            //       builder: (context) => const EventsPage(),
+            //     ),
+            //   ),
+            //   child: ListTile(
+            //       leading: Row(
+            //     mainAxisSize: MainAxisSize.min,
+            //     children: const [
+            //       Icon(Icons.people),
+            //       SizedBox(
+            //         width: 15,
+            //       ),
+            //       Text("Events")
+            //     ],
+            //   )),
+            // ),
             const Divider(color: Colors.grey, height: 1),
             buildMenuItem(
                 text: "Log out",
