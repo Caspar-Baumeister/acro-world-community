@@ -1,3 +1,4 @@
+import 'package:acroworld/models/notifications/notification_type.dart';
 import 'package:acroworld/screens/home/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/screens/home/communities/settings_drawer.dart';
 import 'package:acroworld/screens/user_communities/user_communities_body.dart';
@@ -10,12 +11,9 @@ class UserCommunities extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Listening to messages');
-
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      print('A new onMessageOpenedApp event was published!');
       String type = message.data['type'];
-      if (type == 'CommunityMessage') {
+      if (type == NotificationType.communityMessage) {
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -27,12 +25,7 @@ class UserCommunities extends StatelessWidget {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
-      if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
-      }
+      if (message.notification != null) {}
     });
 
     return Scaffold(
