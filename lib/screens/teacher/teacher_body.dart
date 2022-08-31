@@ -1,5 +1,6 @@
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/teacher/widgets/teacher_card.dart';
+import 'package:acroworld/shared/widgets/comming_soon_widget.dart';
 import 'package:flutter/material.dart';
 
 class TeacherBody extends StatelessWidget {
@@ -7,18 +8,16 @@ class TeacherBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-          children: teacher.isEmpty
-              ? [
-                  const Padding(
-                    padding: EdgeInsets.only(top: 30.0),
-                    child: Center(child: Text("This is soon available")),
-                  )
-                ]
-              : List.from(teacher.map((json) =>
-                  TeacherCard(teacher: TeacherModel.fromJson(json))))),
-    );
+    return teacher.isEmpty
+        ? const CommingSoon(
+            header: "What is the teacher page",
+            content:
+                "On the teacher page you have the opportunity to discover the local teachers that suit you best. You can see their teaching style, level, and user feedback. You can also instantly join their community and participate in their classes and jams.")
+        : SingleChildScrollView(
+            child: Column(
+                children: List.from(teacher.map((json) =>
+                    TeacherCard(teacher: TeacherModel.fromJson(json))))),
+          );
   }
 }
 

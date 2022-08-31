@@ -1,6 +1,7 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
+import 'package:acroworld/screens/buddy/buddy_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/teacher/teacher_page.dart';
@@ -52,42 +53,60 @@ class SettingsDrawer extends StatelessWidget {
               )),
             ),
             // Comment in again when feature is ready
-            // GestureDetector(
-            //   onTap: () => Navigator.of(context).push(
-            //     MaterialPageRoute(
-            //       builder: (context) => const TeacherPage(),
-            //     ),
-            //   ),
-            //   child: ListTile(
-            //       leading: Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: const [
-            //       Icon(Icons.person_search_sharp),
-            //       SizedBox(
-            //         width: 15,
-            //       ),
-            //       Text("Teacher")
-            //     ],
-            //   )),
-            // ),
-            // GestureDetector(
-            //   onTap: () => Navigator.of(context).push(
-            //     MaterialPageRoute(
-            //       builder: (context) => const EventsPage(),
-            //     ),
-            //   ),
-            //   child: ListTile(
-            //       leading: Row(
-            //     mainAxisSize: MainAxisSize.min,
-            //     children: const [
-            //       Icon(Icons.people),
-            //       SizedBox(
-            //         width: 15,
-            //       ),
-            //       Text("Events")
-            //     ],
-            //   )),
-            // ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TeacherPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.person_search_sharp),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Teacher")
+                ],
+              )),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const EventsPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.people),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Events")
+                ],
+              )),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const BuddyPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.favorite),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Buddy finder")
+                ],
+              )),
+            ),
             const Divider(color: Colors.grey, height: 1),
             buildMenuItem(
                 text: "Log out",
