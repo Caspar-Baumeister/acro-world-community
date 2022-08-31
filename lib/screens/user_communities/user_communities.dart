@@ -9,24 +9,33 @@ import 'package:flutter/material.dart';
 class UserCommunities extends StatelessWidget {
   const UserCommunities({Key? key}) : super(key: key);
 
+  void handleMessage(BuildContext context, RemoteMessage message) {
+    String type = message.data['type'];
+    if (type == NotificationType.communityMessage) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FetchCommunityChatroom(
+            communityId: message.data['id'],
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-      String type = message.data['type'];
-      if (type == NotificationType.communityMessage) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => FetchCommunityChatroom(
-                    communityId: message.data['id'],
-                  )),
-        );
-      }
+      handleMessage(context, message);
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {}
     });
+
+    FirebaseMessaging.instance.getInitialMessage().then((message) => {
+          if (message != null) {handleMessage(context, message)}
+        });
 
     return Scaffold(
       backgroundColor: Colors.white,
