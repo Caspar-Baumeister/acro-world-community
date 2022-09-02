@@ -16,7 +16,7 @@ class AllCommunitiesBody extends StatefulWidget {
 class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
   @override
   void initState() {
-    WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       String token = Provider.of<UserProvider>(context, listen: false).token!;
       Provider.of<AllOtherComs>(context, listen: false)
           .loadDataFromDatabase(token, query);
@@ -39,7 +39,11 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
             child: Column(
               children: [
                 // Searchbar
-                SearchBarWidget(onChanged: (query) => search(query, token)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: SearchBarWidget(
+                      onChanged: (query) => search(query, token)),
+                ),
 
                 // Community List
                 Expanded(

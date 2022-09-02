@@ -9,6 +9,7 @@ import 'package:acroworld/services/database.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 
 class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   @override
@@ -30,9 +31,15 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      automaticallyImplyLeading: false,
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: Text(name, style: const TextStyle(color: Colors.black)),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(name, style: const TextStyle(color: Colors.black)),
+        ],
+      ),
       leading: BackButton(
         color: Colors.black,
         onPressed: () {
@@ -42,10 +49,13 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 8.0),
-          child: ElevatedButton(
-            style:
-                ElevatedButton.styleFrom(primary: Colors.white, elevation: 0),
+          padding: const EdgeInsets.all(8.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
             onPressed: () {
               Navigator.push(
                 context,
@@ -54,57 +64,45 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
                         Jams(cId: cId, community: community, name: name)),
               );
             },
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const Text(
-                  'Jams',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(width: 6.0),
-                const ImageIcon(
-                  AssetImage("assets/acro_jam_icon.png"),
-                  color: Colors.black,
-                ),
-                const SizedBox(width: 6.0),
-                PopupMenuButton(
-                  offset: const Offset(0, 45),
-                  color: Colors.white,
-                  itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-                    PopupMenuItem(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 0),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        leaveCommunity(context);
-                      },
-                      child: const ListTile(
-                        visualDensity: VisualDensity.compact,
-                        minVerticalPadding: 0,
-                        contentPadding: EdgeInsets.all(0),
-                        title: Text(
-                          'Exit community',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  ],
-                  // visualDensity: VisualDensity.compact,
-                  padding: const EdgeInsets.all(0),
-                  // onPressed: () {},
-                  icon: const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Colors.black,
-                  ),
-                )
-              ],
+            child: const Text(
+              'Jams',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
             ),
           ),
         ),
+        PopupMenuButton(
+          offset: const Offset(0, 45),
+          color: Colors.white,
+          itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+            PopupMenuItem(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 0),
+              onTap: () {
+                Navigator.of(context).pop();
+                leaveCommunity(context);
+              },
+              child: const ListTile(
+                visualDensity: VisualDensity.compact,
+                minVerticalPadding: 0,
+                contentPadding: EdgeInsets.all(0),
+                title: Text(
+                  'Exit community',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+          // visualDensity: VisualDensity.compact,
+          padding: const EdgeInsets.all(0),
+          // onPressed: () {},
+          icon: const Icon(
+            Icons.more_vert,
+            color: Colors.black,
+          ),
+        )
       ],
     );
   }

@@ -2,6 +2,7 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/buddy/buddy_page.dart';
+import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/teacher/teacher_page.dart';
@@ -44,7 +45,7 @@ class SettingsDrawer extends StatelessWidget {
                   leading: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  Icon(Icons.calendar_month_rounded),
+                  Icon(Icons.location_on_sharp),
                   SizedBox(
                     width: 15,
                   ),
@@ -74,6 +75,24 @@ class SettingsDrawer extends StatelessWidget {
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
+                  builder: (context) => const ClassesPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.calendar_month),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Classes")
+                ],
+              )),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => const EventsPage(),
                 ),
               ),
@@ -81,7 +100,7 @@ class SettingsDrawer extends StatelessWidget {
                   leading: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: const [
-                  Icon(Icons.people),
+                  Icon(Icons.festival_outlined),
                   SizedBox(
                     width: 15,
                   ),
