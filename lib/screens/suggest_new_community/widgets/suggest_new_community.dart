@@ -6,6 +6,7 @@ import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/message_modal.dart';
 import 'package:acroworld/shared/widgets/location_search/location_search.dart';
 import 'package:acroworld/widgets/headers/h2.dart';
+import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -76,20 +77,11 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
             padding:
                 const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
             width: double.infinity,
-            child: Column(
+            child: SpacedColumn(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
+                space: 8,
                 children: [
-                  // header devider
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 2.0,
-                    indent: double.infinity * 0.43,
-                    endIndent: double.infinity * 0.43,
-                  ),
-                  const SizedBox(height: 30.0),
                   const SetCommunityPicture(),
-                  const SizedBox(height: 30.0),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Name"),
@@ -102,7 +94,6 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                             })),
                   ),
                   Error(text: nameError),
-                  const SizedBox(height: 30.0),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Location"),
@@ -110,7 +101,6 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                   LocationSearch(onPlaceSet: (place) {
                     location = place.latLng;
                   }),
-                  const SizedBox(height: 30.0),
                   Error(text: locationError),
                   IgnorePointer(
                     ignoring: loading,
