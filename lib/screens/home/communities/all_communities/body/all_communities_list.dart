@@ -1,8 +1,7 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/communities/all_communities/body/new_community_card.dart';
-import 'package:acroworld/screens/home/communities/modals/create_new_community.dart';
+import 'package:acroworld/screens/suggest_new_community/suggest_new_community_screen.dart';
 import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class AllCommunitiesList extends StatelessWidget {
@@ -15,10 +14,15 @@ class AllCommunitiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> communityCards =
+        communities.map((com) => NewCommunityCard(community: com)).toList();
     return SingleChildScrollView(
       child: Column(
         children: [
-          ...communities.map((com) => NewCommunityCard(community: com)),
+          if (communities.isNotEmpty)
+            ...communityCards
+          else
+            const Text("No more communities you are not part of found"),
           const Divider(
             color: Colors.grey,
             indent: 30,
@@ -35,8 +39,15 @@ class AllCommunitiesList extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   TextButton(
-                    onPressed: () =>
-                        buildMortal(context, const CreateNewCommunityModal()),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const SuggestNewCommunityScreen(),
+                        ),
+                      );
+                    },
                     child: const Text(
                       "Suggest a new one",
                       style: TextStyle(color: PRIMARY_COLOR),

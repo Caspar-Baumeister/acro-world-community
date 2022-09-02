@@ -35,7 +35,7 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
 
     return allOtherComs.initialized
         ? Padding(
-            padding: const EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               children: [
                 // Searchbar
@@ -48,7 +48,8 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
                 // Community List
                 Expanded(
                   child: AllCommunitiesList(
-                      communities: allOtherComs.allOtherComs),
+                    communities: allOtherComs.allOtherComs,
+                  ),
                 )
               ],
             ),

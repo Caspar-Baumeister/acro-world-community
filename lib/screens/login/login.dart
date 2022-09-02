@@ -1,8 +1,7 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/user_communities/user_communities.dart';
-import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
+import 'package:acroworld/shared/loading.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -23,14 +22,14 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
           if (snapshot.hasError) {
             return const UserCommunities();
           } else if (!snapshot.hasData) {
-            return const LoadingIndicator();
+            return const Loading();
           } else {
             final currentFcmToken = snapshot.data;
             return Mutation(
               options: MutationOptions(document: Mutations.updateFcmToken),
               builder: (runMutation, mutationResult) {
                 if (mutationResult == null || mutationResult.isLoading) {
-                  return const LoadingIndicator();
+                  return const Loading();
                 }
 
                 if (mutationResult.hasException) {
@@ -45,7 +44,7 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
                     options: QueryOptions(document: Queries.getMe),
                     builder: (queryResult, {fetchMore, refetch}) {
                       if (queryResult.isLoading) {
-                        return const LoadingIndicator();
+                        return const Loading();
                       }
 
                       String? fcmToken =

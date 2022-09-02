@@ -45,6 +45,7 @@ class _LocationSearchState extends State<LocationSearch> {
             child: FloatingSearchBar(
               hint: 'Search...',
               controller: controller,
+              borderRadius: const BorderRadius.all(Radius.circular(30)),
               scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
               transitionDuration: const Duration(milliseconds: 800),
               transitionCurve: Curves.easeInOut,

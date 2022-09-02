@@ -1,6 +1,7 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
+import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -21,7 +22,7 @@ class FetchCommunityChatroom extends StatelessWidget {
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           print(result);
           if (result.isLoading) {
-            return const LoadingIndicator();
+            return const Loading();
           }
           Community community =
               Community.fromJson(result.data?['communities'][0]);
