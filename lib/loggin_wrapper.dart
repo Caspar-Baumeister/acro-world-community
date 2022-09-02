@@ -31,7 +31,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
             if (snapshot.data == false) {
               return const Authenticate();
             } else {
-              return UpdateFcmToken();
+              return const UpdateFcmToken();
             }
           }
 

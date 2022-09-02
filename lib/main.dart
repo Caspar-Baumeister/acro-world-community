@@ -92,8 +92,18 @@ class App extends StatelessWidget {
         ],
         child: GraphQLProvider(
           client: client,
-          child: const MaterialApp(
+          child: MaterialApp(
             debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              appBarTheme: const AppBarTheme(
+                backgroundColor: Colors.white,
+                iconTheme: IconThemeData(color: Colors.black),
+                actionsIconTheme: IconThemeData(color: Colors.black),
+                centerTitle: true,
+                elevation: 15,
+                titleTextStyle: TextStyle(color: Colors.black, fontSize: 18.0),
+              ),
+            ),
             // LoginWrapper checks for token?
             // Also possible: Routerdelegate with auth check and guards
             home: LogginWrapper(),
