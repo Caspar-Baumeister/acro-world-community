@@ -1,40 +1,83 @@
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/teacher/widgets/teacher_card.dart';
+import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
+import 'package:acroworld/screens/teacher/widgets/new_teacher_card.dart';
 import 'package:acroworld/shared/widgets/comming_soon_widget.dart';
 import 'package:flutter/material.dart';
 
-class TeacherBody extends StatelessWidget {
+class TeacherBody extends StatefulWidget {
   const TeacherBody({Key? key}) : super(key: key);
 
   @override
+  State<TeacherBody> createState() => _TeacherBodyState();
+}
+
+class _TeacherBodyState extends State<TeacherBody> {
+  String query = "";
+
+  List<Map<String, dynamic>> filterTeacher() {
+    if (query == "") {
+      return teacher;
+    }
+
+    return List.from(teacher.where((t) {
+      if (t["name"].toString().toLowerCase().contains(query.toLowerCase()) ||
+          t["city"].toString().toLowerCase().contains(query.toLowerCase())) {
+        return true;
+      }
+      return false;
+    }));
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return teacher.isEmpty
-        ? const CommingSoon(
-            header: "What is the teacher page",
-            content:
-                "On the teacher page you have the opportunity to discover the local teachers that suit you best. You can see their teaching style, level, and user feedback. You can also instantly join their community and participate in their classes and jams.")
-        : SingleChildScrollView(
-            child: Column(
-                children: List.from(teacher.map((json) =>
-                    TeacherCard(teacher: TeacherModel.fromJson(json))))),
-          );
+    final showTeacher = filterTeacher();
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: SearchBarWidget(
+            onChanged: (String value) {
+              setState(() {
+                query = value;
+              });
+            },
+          ),
+        ),
+        teacher.isEmpty
+            ? const CommingSoon(
+                header: "What is the teacher page",
+                content:
+                    "On the teacher page you have the opportunity to discover the local teachers that suit you best. You can see their teaching style, level, and user feedback. You can also instantly join their community and participate in their classes and jams.")
+            : SingleChildScrollView(
+                child: Column(
+                    children: List.from(showTeacher.map((json) =>
+                        NewTeacherCard(
+                            teacher: TeacherModel.fromJson(json)))))),
+      ],
+    );
   }
 }
 
-List<Map> teacher = [
+List<Map<String, dynamic>> teacher = [
   {
-    "name": "Teacher Name",
-    "id": 1,
-    "description": "Describe your teaching",
-    "level": [0, 2, 3],
+    "profilePicUrl":
+        "https://media-exp1.licdn.com/dms/image/C4D03AQGvYbZQexJcvA/profile-displayphoto-shrink_200_200/0/1571407767743?e=2147483647&v=beta&t=CqLOM_wop1LRa4Bcun4_J226omEf5g65WBiubJOS-4w",
+    "name": "Caspar Baumeister",
+    "id": 2,
+    "description":
+        "I'm still new in teaching and try to improve along the way. Mainly I'm here to show, what your teacher profile could look like",
+    "level": "Intermediate Advanced",
     "city": "Berlin",
-    "likes": 420,
+    "likes": 0,
     "pictureUrls": [
       "https://images.unsplash.com/photo-1508081685193-835a84a79091?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
       "https://images.unsplash.com/photo-1553871840-00c92ebf239f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
       "https://images.unsplash.com/photo-1541453456074-d59763a931de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
       "https://images.unsplash.com/photo-1623182965637-e2e2f32818d3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
       "https://images.unsplash.com/photo-1520534827997-83397f6aac19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+      "https://scontent-ber1-1.cdninstagram.com/v/t51.288…SuVPNpqltckXjZsHEMvDlA&oe=6318CCA4&_nc_sid=30a2ef",
+      "https://scontent-ber1-1.cdninstagram.com/v/t51.288…yi2fNDMD-bh8a_O4iGVPXg&oe=63188C27&_nc_sid=30a2ef",
+      "https://scontent-ber1-1.cdninstagram.com/v/t51.288…RBUPklILXJ4PvxFV8kV1sQ&oe=63180B29&_nc_sid=30a2ef",
     ],
   },
   // {
@@ -45,19 +88,21 @@ List<Map> teacher = [
   //   "city": "Berlin",
   //   "likes": 420,
   //   "pictureUrls": [
-  //     "https://images.unsplash.com/photo-1508081685193-835a84a79091?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-  //     "https://images.unsplash.com/photo-1553871840-00c92ebf239f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-  //     "https://images.unsplash.com/photo-1541453456074-d59763a931de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-  //     "https://images.unsplash.com/photo-1623182965637-e2e2f32818d3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-  //     "https://images.unsplash.com/photo-1520534827997-83397f6aac19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  // "https://images.unsplash.com/photo-1508081685193-835a84a79091?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  // "https://images.unsplash.com/photo-1553871840-00c92ebf239f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  // "https://images.unsplash.com/photo-1541453456074-d59763a931de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  // "https://images.unsplash.com/photo-1623182965637-e2e2f32818d3?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+  // "https://images.unsplash.com/photo-1520534827997-83397f6aac19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
   //   ],
   // },
   // {
+  //   "profilePicUrl":
+  //       "https://scontent-ber1-1.xx.fbcdn.net/v/t39.30808-6/263936984_4532660423449463_2314880072060778611_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=EXRPBPSKpYoAX8LBiiH&tn=8hbuseDTqPi0G57h&_nc_ht=scontent-ber1-1.xx&oh=00_AT827kqixSIwfSbeHYDptwWTAFPETttWfZ8KPZgmQgQ_fw&oe=63163A59",
   //   "name": "Adrian Iselin",
   //   "id": 1,
   //   "description":
   //       "Partner Acrobatics, is a loose term that describes a movement practice composed of gymnastics, dance, and yoga with a partner. In our training you can learn broad range of moves and techniques from a beginner up to an advanced level. Read the individual descriptions to find the course best suited for you.",
-  //   "level": [0, 2, 3],
+  //   "level": "Intermediate, Advanced",
   //   "city": "Berlin",
   //   "likes": 420,
   //   "pictureUrls": [

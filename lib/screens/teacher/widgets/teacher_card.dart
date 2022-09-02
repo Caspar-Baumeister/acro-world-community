@@ -36,7 +36,7 @@ class TeacherCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                 ),
               ),
-              PhotoGalery(teacher.pictureUrls),
+              PhotoGallery(teacher.pictureUrls),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -83,8 +83,8 @@ class TeacherCard extends StatelessWidget {
   }
 }
 
-class PhotoGalery extends StatelessWidget {
-  const PhotoGalery(this.photos, {Key? key}) : super(key: key);
+class PhotoGallery extends StatelessWidget {
+  const PhotoGallery(this.photos, {Key? key}) : super(key: key);
   final List<String> photos;
 
   @override

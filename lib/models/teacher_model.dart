@@ -1,13 +1,15 @@
 class TeacherModel {
+  String profilePicUrl;
   String name;
   int id;
   String description;
-  List<int> level;
+  String level;
   String city;
   int likes;
   List<String> pictureUrls;
 
   TeacherModel({
+    required this.profilePicUrl,
     required this.id,
     required this.name,
     required this.description,
@@ -15,10 +17,13 @@ class TeacherModel {
     required this.city,
     required this.likes,
     required this.pictureUrls,
+    // teaching since
+    // classes
   });
 
   factory TeacherModel.fromJson(json) {
     return TeacherModel(
+      profilePicUrl: json["profilePicUrl"],
       name: json["name"],
       id: json["id"],
       description: json["description"],
