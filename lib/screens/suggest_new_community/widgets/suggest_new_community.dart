@@ -5,6 +5,7 @@ import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/message_modal.dart';
 import 'package:acroworld/shared/widgets/location_search/location_search.dart';
+import 'package:acroworld/widgets/headers/h2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -89,6 +90,10 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                   const SizedBox(height: 30.0),
                   const SetCommunityPicture(),
                   const SizedBox(height: 30.0),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: const H2(text: "Name"),
+                  ),
                   SizedBox(
                     child: TextField(
                         decoration: buildInputDecoration(labelText: "Name"),
@@ -98,6 +103,10 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                   ),
                   Error(text: nameError),
                   const SizedBox(height: 30.0),
+                  Container(
+                    alignment: Alignment.centerLeft,
+                    child: const H2(text: "Location"),
+                  ),
                   LocationSearch(onPlaceSet: (place) {
                     location = place.latLng;
                   }),

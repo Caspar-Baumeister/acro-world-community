@@ -2,8 +2,6 @@ import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/communities/all_communities/body/new_community_card.dart';
 import 'package:acroworld/screens/suggest_new_community/suggest_new_community_screen.dart';
 import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/helper_functions.dart';
-import 'package:acroworld/widgets/aw_community_app_bar/aw_community_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class AllCommunitiesList extends StatelessWidget {

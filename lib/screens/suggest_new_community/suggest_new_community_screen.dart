@@ -1,8 +1,4 @@
-import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/suggest_new_community/widgets/suggest_new_community.dart';
-import 'package:acroworld/screens/home/jam/create_jam/create_jam.dart';
-import 'package:acroworld/screens/home/jam/jams/app_bar_jams.dart';
-import 'package:acroworld/screens/home/jam/jams/future_jams.dart';
 import 'package:acroworld/widgets/aw_community_app_bar/aw_community_app_bar.dart';
 import 'package:flutter/material.dart';
 

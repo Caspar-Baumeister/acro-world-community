@@ -1,7 +1,6 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/login/login.dart';
-import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/shared/error_page.dart';
 import 'package:acroworld/shared/loading_scaffold.dart';
 import 'package:flutter/material.dart';
