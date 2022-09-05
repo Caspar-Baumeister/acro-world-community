@@ -30,15 +30,10 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      automaticallyImplyLeading: false,
+      automaticallyImplyLeading: true,
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(name, style: const TextStyle(color: Colors.black)),
-        ],
-      ),
+      title: Text(name, style: const TextStyle(color: Colors.black)),
       leading: BackButton(
         color: Colors.black,
         onPressed: () {
