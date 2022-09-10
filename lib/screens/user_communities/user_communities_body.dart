@@ -6,6 +6,7 @@ import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/user_communities/widgets/list_coms.dart';
 import 'package:acroworld/screens/user_communities/widgets/new_button.dart';
+import 'package:acroworld/services/image_uploader.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -32,9 +33,8 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
 
   @override
   Widget build(BuildContext context) {
-    // final EventBusProvider eventBusProvider =
-    //     Provider.of<EventBusProvider>(context, listen: false);
-    // final EventBus eventBus = eventBusProvider.eventBus;
+    print('selectAndUploadProfileImage');
+    TeacherImageUploader().selectAndUploadImages();
     return Subscription(
       options: SubscriptionOptions(
           document: gql(Subscriptions.subscribeUserCommunities),
@@ -52,10 +52,6 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             print(e.toString());
           }
         });
-        // eventListeners
-        //     .add(eventBus.on<CrudUserCommunityEvent>().listen((event) {
-        //   runRefetch();
-        // }));
 
         List<Community> communities = [];
         if (result.data != null && result.data?['me'].length > 0) {
