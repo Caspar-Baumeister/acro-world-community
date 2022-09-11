@@ -33,8 +33,6 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
 
   @override
   Widget build(BuildContext context) {
-    print('selectAndUploadProfileImage');
-    TeacherImageUploader().selectAndUploadImages();
     return Subscription(
       options: SubscriptionOptions(
           document: gql(Subscriptions.subscribeUserCommunities),
