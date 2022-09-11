@@ -17,6 +17,7 @@ class AllOtherComs extends ChangeNotifier {
           allOtherComs.map((com) => Community.fromJson(com)));
       return true;
     } catch (e) {
+      print(e);
       _allOtherComs = [];
       return false;
     }
@@ -28,7 +29,6 @@ class AllOtherComs extends ChangeNotifier {
     final response =
         await database.getAllOtherCommunities(parseJwt['sub'], query);
     // load data with await from api
-
     setDataFromGraphQlResponse(response);
     initialized = true;
 
