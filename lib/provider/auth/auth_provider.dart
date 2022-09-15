@@ -18,12 +18,12 @@ class AuthProvider {
     }
   }
 
-  static Future<String> fetchToken() async {
+  static Future<String?> fetchToken() async {
     if (isTokenExpired()) {
       String? email = CredentialPreferences.getEmail();
       String? password = CredentialPreferences.getPassword();
       token = await Database().loginApi(email!, password!);
     }
-    return token!;
+    return token;
   }
 }

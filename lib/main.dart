@@ -27,7 +27,7 @@ void main() async {
       autoReconnect: true,
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
-        String token = await AuthProvider.fetchToken();
+        String? token = await AuthProvider.fetchToken();
         return {
           'headers': {'Authorization': 'Bearer $token'}
         };
@@ -37,7 +37,7 @@ void main() async {
 
   final AuthLink authLink = AuthLink(
     getToken: () async {
-      String token = await AuthProvider.fetchToken();
+      String? token = await AuthProvider.fetchToken();
       return 'Bearer $token';
     },
   );
@@ -115,7 +115,7 @@ class App extends StatelessWidget {
             ),
             // LoginWrapper checks for token?
             // Also possible: Routerdelegate with auth check and guards
-            home: LogginWrapper(),
+            home: const LogginWrapper(),
           ),
         ));
   }

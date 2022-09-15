@@ -17,95 +17,30 @@ class TeacherCard extends StatelessWidget {
           MaterialPageRoute(
               builder: (context) => SingleTeacherPage(
                     teacher: teacher,
+                    isEdit: false,
                   )),
         ),
-        child: SizedBox(
-          height: 400,
-          child: Card(
-              child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                teacher.name,
-                style: MAINTEXT,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  teacher.description,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              PhotoGallery(teacher.pictureUrls),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      children: [
-                        Text("City: ${teacher.city}"),
-                        const Text("Level: Advanced")
-                      ],
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Text("Join"),
-                        IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.add),
-                          padding: const EdgeInsets.all(0),
-                          visualDensity: VisualDensity.compact,
-                          constraints: const BoxConstraints(maxHeight: 10),
-                        ),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              Icons.thumb_up,
-                              color: PRIMARY_COLOR,
-                            )),
-                        Text(teacher.likes.toString())
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ],
-          )),
-        ),
-      ),
-    );
-  }
-}
-
-class PhotoGallery extends StatelessWidget {
-  const PhotoGallery(this.photos, {Key? key}) : super(key: key);
-  final List<String> photos;
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: List.from(photos.map((e) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: Image(
-                      height: 140,
-                      width: 140,
-                      image: NetworkImage(e),
-                      fit: BoxFit.cover,
-                    )),
-              ))),
+        child: ListTile(
+          leading: CircleAvatar(
+            radius: 32,
+            backgroundImage: NetworkImage(teacher.profilePicUrl),
+          ),
+          title: Text(
+            teacher.name,
+            style: MAINTEXT,
+          ),
+          subtitle: Text(teacher.city, style: SECONDARYTEXT),
+          trailing: Stack(alignment: AlignmentDirectional.center, children: [
+            const Icon(
+              Icons.favorite,
+              size: 42,
+              color: SECONDARY_COLOR,
+            ),
+            Text(
+              teacher.likes.toString(),
+              style: SECONDARYTEXT.copyWith(fontSize: 12, color: Colors.black),
+            )
+          ]),
         ),
       ),
     );
