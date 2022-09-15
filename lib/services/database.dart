@@ -1,8 +1,9 @@
 import 'dart:convert';
+import 'package:acroworld/environment.dart';
 import 'package:http/http.dart' as http;
 
 class Database {
-  final uri = Uri.https("bro-devs.com", "hasura/v1/graphql");
+  final uri = Uri.https(AppEnvironment.backendHost, "hasura/v1/graphql");
   String? token;
 
   Database({this.token});

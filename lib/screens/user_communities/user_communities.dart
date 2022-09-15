@@ -3,6 +3,7 @@ import 'package:acroworld/screens/home/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/screens/home/communities/settings_drawer.dart';
 import 'package:acroworld/screens/user_communities/user_communities_body.dart';
 import 'package:acroworld/screens/user_communities/widgets/app_bar.dart';
+import 'package:acroworld/services/image_uploader.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 

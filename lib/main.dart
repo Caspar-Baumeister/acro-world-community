@@ -1,3 +1,4 @@
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
@@ -17,12 +18,13 @@ void main() async {
   // so we need to initialize Hive.
   await initHiveForFlutter();
 
+
   final HttpLink httpLink = HttpLink(
-    'https://bro-devs.com/hasura/v1/graphql',
+    'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
   );
 
   final WebSocketLink websocketLink = WebSocketLink(
-    'wss://bro-devs.com/hasura/v1/graphql',
+    'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
     config: SocketClientConfig(
       autoReconnect: true,
       inactivityTimeout: const Duration(seconds: 30),
