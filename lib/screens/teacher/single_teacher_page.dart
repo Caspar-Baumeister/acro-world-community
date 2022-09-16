@@ -1,4 +1,5 @@
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/screens/home/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/screens/teacher/widgets/class_section.dart';
 import 'package:acroworld/screens/teacher/widgets/edit_button.dart';
 import 'package:acroworld/screens/teacher/widgets/gallery_section.dart';
@@ -29,7 +30,6 @@ class _SingleTeacherPageState extends State<SingleTeacherPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("isEdit: $isEdit");
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -165,7 +165,15 @@ class InfoSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(18),
               ),
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => FetchCommunityChatroom(
+                          communityId: teacher.communityID,
+                        )),
+              );
+            },
             child: Text(
               "${teacher.name.split(" ")[0]}'s Community",
               style: const TextStyle(

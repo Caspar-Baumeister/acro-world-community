@@ -1,33 +1,70 @@
+import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/teacher/single_class_page.dart';
+import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClassSection extends StatelessWidget {
   const ClassSection({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        itemCount: adrainClasses.length,
-        itemBuilder: ((context, index) {
-          ClassModel indexClass = adrainClasses[index];
-          return GestureDetector(
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                  builder: (context) => const SingleClassPage(
-                        classId: "class",
-                      )),
-            ),
-            child: ListTile(
-              // leading: const CircleAvatar(
-              //   radius: 3,
-              //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-              // ),
-              title: Text(indexClass.name),
-              subtitle: Text(indexClass.locationName),
-              //     style: const TextStyle(fontWeight: FontWeight.w300)),
-            ),
-          );
-        }));
+    return Query(
+        options: QueryOptions(
+          document: Queries.getClasses,
+          fetchPolicy: FetchPolicy.networkOnly,
+        ),
+        builder: (QueryResult result,
+            {VoidCallback? refetch, FetchMore? fetchMore}) {
+          if (result.hasException) {
+            return Text(result.exception.toString());
+          }
+
+          if (result.isLoading) {
+            return const Loading();
+          }
+
+          VoidCallback runRefetch = (() {
+            try {
+              refetch!();
+            } catch (e) {
+              print(e.toString());
+              // print(e);
+            }
+          });
+
+          List<ClassModel> classes = [];
+
+          result.data!["classes"]
+              .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
+
+          // for (Map<String, dynamic> json in result.data!["teachers"]) {
+          //   teachers.add(TeacherModel.fromJson(json));
+          // }
+
+          return ListView.builder(
+              itemCount: classes.length,
+              itemBuilder: ((context, index) {
+                ClassModel indexClass = classes[index];
+                return GestureDetector(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => SingleClassPage(
+                              teacherClass: indexClass,
+                            )),
+                  ),
+                  child: ListTile(
+                    // leading: const CircleAvatar(
+                    //   radius: 3,
+                    //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
+                    // ),
+                    title: Text(indexClass.name),
+                    subtitle: Text(indexClass.locationName),
+                    //     style: const TextStyle(fontWeight: FontWeight.w300)),
+                  ),
+                );
+              }));
+        });
   }
 }

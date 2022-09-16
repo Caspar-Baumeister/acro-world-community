@@ -83,4 +83,21 @@ class Mutations {
   }
 }
 """);
+
+  static final likeTeacher = gql("""
+  mutation likeTeacher(\$teacher_id: uuid) {
+  insert_teacher_likes(objects: {teacher_id: \$teacher_id}) {
+    affected_rows
+  }
+}
+""");
+
+  static final unlikeTeacher = gql("""
+  mutation unlikeTeacher(\$teacher_id: uuid, \$user_id: uuid) {
+  delete_teacher_likes(where: {teacher_id: {_eq: \$teacher_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}
+
+""");
 }

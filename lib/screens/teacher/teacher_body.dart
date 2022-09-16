@@ -3,9 +3,12 @@ import 'package:acroworld/screens/teacher/widgets/teacher_card.dart';
 import 'package:flutter/material.dart';
 
 class TeacherBody extends StatelessWidget {
-  const TeacherBody({Key? key, required this.teachers}) : super(key: key);
+  const TeacherBody(
+      {Key? key, required this.teachers, required this.teachersILike})
+      : super(key: key);
 
   final List<TeacherModel> teachers;
+  final List<String> teachersILike;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +33,9 @@ class TeacherBody extends StatelessWidget {
         //     ),
         SingleChildScrollView(
             child: Column(
-                children: List.from(
-                    teachers.map((teacher) => TeacherCard(teacher: teacher)))));
+                children: List.from(teachers.map((teacher) => TeacherCard(
+                    teacher: teacher,
+                    isLiked: teachersILike.contains(teacher.id))))));
     //   ],
     // );
   }

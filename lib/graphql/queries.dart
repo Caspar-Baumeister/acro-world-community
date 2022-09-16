@@ -111,6 +111,7 @@ class Queries {
     description
     id
     location_name
+    community_id
     name
     user_id
     user_likes_aggregate {
@@ -132,4 +133,40 @@ class Queries {
   }
   }
   """);
+
+  static final getTeachersILike = gql("""
+  query getTeachersILike(\$user_id: uuid) {
+  teacher_likes(where: {user_id: {_eq: \$user_id}}) {
+    teacher_id
+  }
+}
+  """);
+
+  static final getClasses = gql("""
+query getClasses {
+  classes {
+    city
+    description
+    id
+    is_reccuring
+    location_name
+    name
+    location
+  }
+}
+
+""");
+
+  static final getClassEventsByClassId = gql("""
+query getClassEventsByClassId (\$class_id: uuid) {
+  class_events(where: {class_id: {_eq: \$class_id}}) {
+    class_id
+    created_at
+    end_date
+    id
+    is_cancelled
+    start_date
+  }
+}
+""");
 }

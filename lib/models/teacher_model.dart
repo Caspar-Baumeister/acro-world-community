@@ -10,6 +10,7 @@ class TeacherModel {
   List<String> classes;
   String createdAt;
   String userID;
+  String communityID;
 
   TeacherModel({
     required this.profilePicUrl,
@@ -23,6 +24,8 @@ class TeacherModel {
     required this.teacherLevels,
     required this.userID,
     required this.createdAt,
+    required this.communityID,
+
     // teaching since
   });
 
@@ -49,18 +52,18 @@ class TeacherModel {
     }
 
     return TeacherModel(
-      profilePicUrl: profilePicUrl,
-      name: json["name"],
-      id: json["id"],
-      description: json["description"],
-      locationName: json["location_name"],
-      likes: json["user_likes_aggregate"]?["aggregate"]?["count"] ?? 0,
-      pictureUrls: pictureUrls,
-      classes: [],
-      createdAt: json["created_at"],
-      teacherLevels: teacherLevel,
-      userID: json["user_id"],
-    );
+        profilePicUrl: profilePicUrl,
+        name: json["name"],
+        id: json["id"],
+        description: json["description"],
+        locationName: json["location_name"],
+        likes: json["user_likes_aggregate"]?["aggregate"]?["count"] ?? 0,
+        pictureUrls: pictureUrls,
+        classes: [],
+        createdAt: json["created_at"],
+        teacherLevels: teacherLevel,
+        userID: json["user_id"],
+        communityID: json["community_id"]);
   }
 
   @override
