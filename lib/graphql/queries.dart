@@ -48,26 +48,26 @@ class Queries {
   }
   """);
 
-  static final getUserCommunities = gql("""
-  query GetMyCommunities(\$query: String!) {
-    me {
-      communities (where: {community: {name: {_ilike: \$query}}}) {
-        last_visited_at 
-        community_id
-        community {
-          ${Fragments.communityFragment}
-          community_messages(limit: 1, order_by: {created_at: desc}) {
-          content
-          created_at
-          from_user {
-            name
-          }
-        }
-        }
-      }
-    }
-  }
-  """);
+  // static final getUserCommunities = gql("""
+  // query GetMyCommunities(\$query: String!) {
+  //   me {
+  //     communities (where: {community: {name: {_ilike: \$query}}}) {
+  //       last_visited_at
+  //       community_id
+  //       community {
+  //         ${Fragments.communityFragment}
+  //         community_messages(limit: 1, order_by: {created_at: desc}) {
+  //         content
+  //         created_at
+  //         from_user {
+  //           name
+  //         }
+  //       }
+  //       }
+  //     }
+  //   }
+  // }
+  // """);
 
   static final getUserCommunityMessageCount = gql("""
   query GetMyCommunityPreview(\$community_id: uuid!, \$last_visited_at: timestamptz!) {
@@ -101,6 +101,35 @@ class Queries {
     communities(where: {id: {_eq: \$communityId}}){
       ${Fragments.communityFragment}
     }
+  }
+  """);
+
+  static final getAllTeacher = gql("""
+  query getAllTeacher{
+    teachers {
+    created_at
+    description
+    id
+    location_name
+    name
+    user_id
+    user_likes_aggregate {
+      aggregate {
+        count
+      }
+    }
+    teacher_levels {
+      level {
+        name
+      }
+    }
+    images {
+      image {
+        url
+      }
+      is_profile_picture
+    }
+  }
   }
   """);
 }

@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/teacher/teacher_app_bar.dart';
-import 'package:acroworld/screens/teacher/teacher_body.dart';
+import 'package:acroworld/screens/teacher/teacher_query.dart';
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatelessWidget {
@@ -9,7 +9,7 @@ class TeacherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Scaffold(
       appBar: AppBarTeacher(),
-      body: TeacherBody(),
+      body: TeacherQuery(),
     );
   }
 }

@@ -116,7 +116,10 @@ class InfoSection extends StatelessWidget {
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
               child: CircleAvatar(
                 radius: 70.0,
-                backgroundImage: NetworkImage(teacher.profilePicUrl),
+                backgroundImage: teacher.profilePicUrl != null
+                    ? NetworkImage(teacher.profilePicUrl!)
+                    : const AssetImage("assets/muscleup_drawing.png")
+                        as ImageProvider,
               ),
             ),
             InfoList(teacher: teacher, isEdit: isEdit)
@@ -150,26 +153,26 @@ class InfoSection extends StatelessWidget {
                         ),
                       )
                     : Container(),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      "${teacher.name}'s Community",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                )
               ],
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            onPressed: () {},
+            child: Text(
+              "${teacher.name.split(" ")[0]}'s Community",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
             ),
           ),
         )
@@ -194,12 +197,14 @@ class InfoList extends StatelessWidget {
           isEdit: false,
         ),
         InfoRow(
-            value: teacher.city,
+            value: teacher.locationName,
             attributeKey: "Location",
             isEdit: isEdit,
             dBKey: "location"),
         InfoRow(
-            value: teacher.level,
+            value: teacher.teacherLevels.isNotEmpty
+                ? teacher.teacherLevels[0]
+                : "",
             attributeKey: "Teaching level",
             isEdit: isEdit,
             dBKey: "level")
@@ -224,11 +229,12 @@ class InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width / 2 + 20;
-    return Padding(
+    return Container(
+      width: width,
       padding: const EdgeInsets.all(8.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.max,
         children: [
           Container(
             alignment: Alignment.centerLeft,
@@ -243,11 +249,13 @@ class InfoRow extends StatelessWidget {
                   color: Colors.grey),
             ),
           ),
+          Flexible(child: Container()),
           Row(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 alignment: Alignment.centerRight,
-                constraints: BoxConstraints(maxWidth: width / 2),
+                constraints: const BoxConstraints(maxWidth: 80),
                 child: Text(
                   value,
                   maxLines: 2,

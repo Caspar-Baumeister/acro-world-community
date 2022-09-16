@@ -1,39 +1,71 @@
 class TeacherModel {
-  String profilePicUrl;
+  String? profilePicUrl;
   String name;
-  int id;
+  String id;
   String description;
-  String level;
-  String city;
+  String locationName;
   int likes;
   List<String> pictureUrls;
+  List teacherLevels;
   List<String> classes;
+  String createdAt;
+  String userID;
 
   TeacherModel({
     required this.profilePicUrl,
     required this.id,
     required this.name,
     required this.description,
-    required this.level,
-    required this.city,
+    required this.locationName,
     required this.likes,
     required this.pictureUrls,
     required this.classes,
+    required this.teacherLevels,
+    required this.userID,
+    required this.createdAt,
     // teaching since
   });
 
-  factory TeacherModel.fromJson(json) {
+  factory TeacherModel.fromJson(Map json) {
+    String? profilePicUrl;
+    List<String> pictureUrls = [];
+    List? images = json["images"];
+    if (images != null && images.isNotEmpty) {
+      for (var element in images) {
+        if (element["is_profile_picture"] == true) {
+          profilePicUrl = element["image"]["url"];
+        } else {
+          pictureUrls.add(element["image"]["url"]);
+        }
+      }
+    }
+
+    List<String> teacherLevel = [];
+    List? levels = json["teacher_levels"];
+    if (levels != null && levels.isNotEmpty) {
+      for (var level in levels) {
+        teacherLevel.add(level["level"]["name"]);
+      }
+    }
+
     return TeacherModel(
-      profilePicUrl: json["profilePicUrl"],
+      profilePicUrl: profilePicUrl,
       name: json["name"],
       id: json["id"],
       description: json["description"],
-      city: json["city"],
-      level: json["level"],
-      likes: json["likes"],
-      pictureUrls: json["pictureUrls"],
-      classes: json["classes"],
+      locationName: json["location_name"],
+      likes: json["user_likes_aggregate"]?["aggregate"]?["count"] ?? 0,
+      pictureUrls: pictureUrls,
+      classes: [],
+      createdAt: json["created_at"],
+      teacherLevels: teacherLevel,
+      userID: json["user_id"],
     );
+  }
+
+  @override
+  String toString() {
+    return "Teacher: name: $name, location: $locationName, likes: ${likes.toString()}, level: ${teacherLevels.toString()}, description: $description)";
   }
 }
 
@@ -46,7 +78,7 @@ List<Map<String, dynamic>> teacher = [
     "description":
         "I'm still new in teaching and try to improve along the way. Mainly I'm here to show, what your teacher profile could look like",
     "level": "Intermediate Advanced",
-    "city": "Berlin",
+    "locationName": "Berlin",
     "likes": 0,
     "pictureUrls": [
       "https://images.unsplash.com/photo-1508081685193-835a84a79091?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
@@ -65,7 +97,7 @@ List<Map<String, dynamic>> teacher = [
   //   "id": 1,
   //   "description": "Describe your teaching",
   //   "level": [0, 2, 3],
-  //   "city": "Berlin",
+  //   "locationName": "Berlin",
   //   "likes": 420,
   //   "pictureUrls": [
   // "https://images.unsplash.com/photo-1508081685193-835a84a79091?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8YWNyb3lvZ2F8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
@@ -87,7 +119,7 @@ List<Map<String, dynamic>> teacher = [
         Read the individual descriptions to find the course best suited for you.
         """,
     "level": "Intermediate Advanced",
-    "city": "Berlin",
+    "locationName": "Berlin",
     "likes": 2,
     "pictureUrls": [
       "https://www.motionsberlin.de/wp-content/uploads/2017/06/DSC06304.jpeg",
@@ -105,7 +137,7 @@ List<Map<String, dynamic>> teacher = [
   //   "description":
   //       "Acroyoga combines the power of acrobatics with the mindfulness of yoga, connecting two (or more!) people in a playful way. And it’s easier than it looks! Because it uses technique instead of, say, strength, anyone can learn acroyoga — regardless of age, gender or size.",
   //   "level": [0, 1],
-  //   "city": "Berlin",
+  //   "locationName": "Berlin",
   //   "likes": 420,
   //   "pictureUrls": [
   //     "https://www.flowmotionstudio.de/wp-content/uploads/2021/01/IMG_7497_edited-edited-300x300.jpg",
@@ -116,3 +148,20 @@ List<Map<String, dynamic>> teacher = [
   //   ],
   // }
 ];
+
+
+
+// "images": [
+//           {
+//             "image": {
+//               "url": 
+//             },
+//             "is_profile_picture": true
+//           },
+//           {
+//             "image": {
+//               "url": 
+//             },
+//             "is_profile_picture": false
+//           }
+//         ]

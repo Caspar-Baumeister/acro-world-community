@@ -10,6 +10,7 @@ class TeacherCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(teacher.teacherLevels);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -23,13 +24,16 @@ class TeacherCard extends StatelessWidget {
         child: ListTile(
           leading: CircleAvatar(
             radius: 32,
-            backgroundImage: NetworkImage(teacher.profilePicUrl),
+            backgroundImage: teacher.profilePicUrl != null
+                ? NetworkImage(teacher.profilePicUrl!)
+                : const AssetImage("assets/muscleup_drawing.png")
+                    as ImageProvider,
           ),
           title: Text(
             teacher.name,
             style: MAINTEXT,
           ),
-          subtitle: Text(teacher.city, style: SECONDARYTEXT),
+          subtitle: Text(teacher.locationName, style: SECONDARYTEXT),
           trailing: Stack(alignment: AlignmentDirectional.center, children: [
             const Icon(
               Icons.favorite,

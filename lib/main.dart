@@ -7,6 +7,7 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/shared/constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +18,6 @@ void main() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
   await initHiveForFlutter();
-
 
   final HttpLink httpLink = HttpLink(
     'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
@@ -97,7 +97,19 @@ class App extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
+              dividerColor: Colors.grey,
+              dividerTheme: const DividerThemeData(color: Colors.grey),
               scaffoldBackgroundColor: Colors.white,
+              tabBarTheme: const TabBarTheme(
+                indicator: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(
+                      color: PRIMARY_COLOR,
+                      width: 2.0,
+                    ),
+                  ),
+                ),
+              ),
               textTheme: const TextTheme(
                 headline1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 headline2:
