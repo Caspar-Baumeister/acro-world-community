@@ -1,20 +1,42 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
+import 'package:acroworld/screens/teacher/single_class_body.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:intl/intl.dart';
 
 class SingleClassPage extends StatelessWidget {
-  const SingleClassPage({Key? key, required this.teacherClass})
+  const SingleClassPage(
+      {Key? key, required this.teacherClass, required this.teacherName})
       : super(key: key);
 
   final ClassModel teacherClass;
+  final String teacherName;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+            leading: const BackButton(color: Colors.black),
+            title: RichText(
+              overflow: TextOverflow.ellipsis,
+              text: TextSpan(
+                children: <TextSpan>[
+                  TextSpan(
+                      text: teacherClass.name,
+                      style:
+                          const TextStyle(color: Colors.black, fontSize: 18)),
+                  TextSpan(
+                      text: "  by $teacherName",
+                      style: const TextStyle(
+                          overflow: TextOverflow.ellipsis,
+                          fontSize: 10,
+                          color: Colors.black)),
+                ],
+              ),
+            ) //Text(teacherClass.name),
+            ),
         body: Query(
             options: QueryOptions(
                 document: Queries.getClassEventsByClassId,
@@ -48,30 +70,35 @@ class SingleClassPage extends StatelessWidget {
               //   teachers.add(TeacherModel.fromJson(json));
               // }
 
-              return ListView.builder(
-                itemCount: classEvents.length,
-                itemBuilder: ((context, index) {
-                  ClassEvent indexClass = classEvents[index];
-
-                  DateTime startDate =
-                      DateTime.parse(indexClass.startDate).toLocal();
-                  DateTime endDate =
-                      DateTime.parse(indexClass.startDate).toLocal();
-                  return ListTile(
-                    // leading: const CircleAvatar(
-                    //   radius: 3,
-                    //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-                    // ),
-                    title: Text(
-                        "${DateFormat('EEE, H:mm').format(startDate)} - ${DateFormat('Hm').format(endDate)}"),
-                    subtitle: Text(teacherClass.name),
-                    //     style: const TextStyle(fontWeight: FontWeight.w300)),
-                    trailing: indexClass.isCancelled
-                        ? const Text("is cancelled")
-                        : null,
-                  );
-                }),
+              return SingleClassBody(
+                classe: teacherClass,
+                classEvents: classEvents,
               );
+              //  ListView.builder(
+              //   itemCount: classEvents.length,
+              //   itemBuilder: ((context, index) {
+              //     ClassEvent indexClass = classEvents[index];
+
+              //     DateTime startDate =
+              //         DateTime.parse(indexClass.startDate).toLocal();
+              //     DateTime endDate =
+              //         DateTime.parse(indexClass.startDate).toLocal();
+              //     return
+              //     ListTile(
+              //       // leading: const CircleAvatar(
+              //       //   radius: 3,
+              //       //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
+              //       // ),
+              //       title: Text(
+              //           "${DateFormat('EEE, H:mm').format(startDate)} - ${DateFormat('Hm').format(endDate)}"),
+              //       subtitle: Text(teacherClass.name),
+              //       //     style: const TextStyle(fontWeight: FontWeight.w300)),
+              //       trailing: indexClass.isCancelled
+              //           ? const Text("is cancelled")
+              //           : null,
+              //     );
+              //   }),
+              // );
             }));
   }
 }

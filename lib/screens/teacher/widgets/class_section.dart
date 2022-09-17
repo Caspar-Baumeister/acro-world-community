@@ -1,12 +1,15 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/teacher/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClassSection extends StatelessWidget {
-  const ClassSection({Key? key}) : super(key: key);
+  const ClassSection({Key? key, required this.teacher}) : super(key: key);
+
+  final TeacherModel teacher;
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +55,7 @@ class ClassSection extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => SingleClassPage(
                               teacherClass: indexClass,
+                              teacherName: teacher.name,
                             )),
                   ),
                   child: ListTile(

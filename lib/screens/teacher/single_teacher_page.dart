@@ -88,7 +88,9 @@ class _SingleTeacherPageState extends State<SingleTeacherPage> {
               child: TabBarView(
                 children: [
                   GallerySection(pictureUrls: widget.teacher.pictureUrls),
-                  const ClassSection()
+                  ClassSection(
+                    teacher: widget.teacher,
+                  )
                 ],
               ),
             )
