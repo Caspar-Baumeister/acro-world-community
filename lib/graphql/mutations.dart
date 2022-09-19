@@ -100,4 +100,20 @@ class Mutations {
 }
 
 """);
+
+  static final participateToClass = gql("""
+  mutation participateToClass (\$class_event_id: uuid){
+  insert_class_events_participants_one(object: {class_event_id: \$class_event_id}) {
+    class_event_id
+  }
+}
+
+""");
+
+  static final leaveParticipateClass = gql("""
+mutation leaveParticipateClass (\$class_event_id: uuid, \$user_id: uuid){
+  delete_class_events_participants(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}""");
 }

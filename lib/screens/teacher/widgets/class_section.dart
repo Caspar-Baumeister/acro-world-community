@@ -15,9 +15,9 @@ class ClassSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Query(
         options: QueryOptions(
-          document: Queries.getClasses,
-          fetchPolicy: FetchPolicy.networkOnly,
-        ),
+            document: Queries.getClassesByTeacherId,
+            fetchPolicy: FetchPolicy.networkOnly,
+            variables: {"teacher_id": teacher.id}),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {

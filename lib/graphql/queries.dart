@@ -148,7 +148,6 @@ query getClasses {
     city
     description
     id
-    is_reccuring
     location_name
     name
     location
@@ -169,4 +168,30 @@ query getClassEventsByClassId (\$class_id: uuid) {
   }
 }
 """);
+
+  static final getClassesByTeacherId = gql("""
+query getClassesByTeacherId(\$teacher_id: uuid) {
+  classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
+    city
+    description
+    id
+    location_name
+    name
+    location
+    pricing
+    requirements
+  }
+}""");
+
+  static final getClassEventCommunity = gql("""
+query getClassEventCommunity(\$class_event_id: uuid) {
+  class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
+    user {
+      id
+      image_url
+      name
+    }
+  }
+}
+  """);
 }

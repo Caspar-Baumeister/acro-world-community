@@ -1,17 +1,19 @@
 class ClassModel {
   String city;
   String description;
-  bool isReccuring;
   String id;
   String name;
   String locationName;
+  String? pricing;
+  String? requirements;
 
   ClassModel(
       {required this.id,
       required this.description,
       required this.locationName,
-      required this.isReccuring,
       required this.city,
+      required this.pricing,
+      required this.requirements,
       required this.name});
 
   factory ClassModel.fromJson(dynamic json) {
@@ -20,8 +22,9 @@ class ClassModel {
       name: json["name"],
       description: json["description"],
       locationName: json["location_name"],
+      pricing: json["pricing"],
       city: json["city"],
-      isReccuring: json["is_reccuring"],
+      requirements: json["requirements"],
     );
   }
 }

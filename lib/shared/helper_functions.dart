@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -51,7 +52,7 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   sortedJams.sort((j1, j2) => j1.date.isBefore(j2.date) ? 1 : 0);
   LinkedHashMap<DateTime, List<Jam>> jamMap =
       LinkedHashMap<DateTime, List<Jam>>(
-    equals: isSameDay,
+    equals: isSameDayCustom,
     hashCode: getHashCode,
   );
   for (Jam jam in sortedJams) {
@@ -70,14 +71,51 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   //   });
 }
 
+Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
+  List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
+  sortedObjects.sort((j1, j2) => j1.date.isBefore(j2.date) ? 1 : 0);
+  LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
+      LinkedHashMap<DateTime, List<ClassEvent>>(
+    equals: isSameDayCustom,
+    hashCode: getHashCode,
+  );
+  for (var obj in sortedObjects) {
+    if (objectMap[obj.date] != null) {
+      objectMap[obj.date]!.add(obj);
+    } else {
+      objectMap[obj.date] = List.from([obj]);
+    }
+  }
+  return objectMap;
+
+  // jamMap..addAll({
+  //     for (var jam in jams)
+
+  //     jam.date: [jam]
+  //   });
+}
+
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
 }
 
-bool isSameDay(DateTime? a, DateTime? b) {
+bool isSameDayCustom(DateTime? a, DateTime? b) {
   if (a == null || b == null) {
     return false;
   }
 
   return a.year == b.year && a.month == b.month && a.day == b.day;
 }
+
+/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+List<DateTime> daysInRange(DateTime first, DateTime last) {
+  final dayCount = last.difference(first).inDays + 1;
+  return List.generate(
+    dayCount,
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
+  );
+}
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);

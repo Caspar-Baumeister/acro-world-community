@@ -14,13 +14,15 @@ class SpacedColumn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> widgets = [];
+    for (Widget widget in children) {
+      widgets.add(widget);
+      widgets.add(SizedBox(height: space));
+    }
+    widgets.removeLast();
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,
-        children: children
-            .map((e) => Column(
-                  children: [e, SizedBox(height: space)],
-                ))
-            .toList());
+        children: widgets);
   }
 }

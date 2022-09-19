@@ -1,10 +1,10 @@
 class ClassEvent {
   String classId;
-  String createdAt;
-  String endDate;
+  DateTime createdAt;
+  DateTime endDate;
   String id;
   bool isCancelled;
-  String startDate;
+  DateTime date;
 
   ClassEvent(
       {required this.classId,
@@ -12,16 +12,16 @@ class ClassEvent {
       required this.endDate,
       required this.id,
       required this.isCancelled,
-      required this.startDate});
+      required this.date});
 
   factory ClassEvent.fromJson(dynamic json) {
     return ClassEvent(
       classId: json['class_id'],
-      createdAt: json["created_at"],
-      endDate: json["end_date"],
+      createdAt: DateTime.parse(json["created_at"]),
+      endDate: DateTime.parse(json["end_date"]),
       id: json["id"],
       isCancelled: json["is_cancelled"],
-      startDate: json["start_date"],
+      date: DateTime.parse(json["start_date"]),
     );
   }
 }
