@@ -116,4 +116,11 @@ mutation leaveParticipateClass (\$class_event_id: uuid, \$user_id: uuid){
     affected_rows
   }
 }""");
+
+  static final deleteAccount = gql("""
+mutation deleteAccount{
+  delete_account {
+    success
+  }
+}""");
 }

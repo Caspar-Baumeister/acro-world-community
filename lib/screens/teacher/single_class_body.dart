@@ -76,7 +76,7 @@ class SingleClassBody extends StatelessWidget {
                           const SizedBox(height: 10),
                           Text(
                             classe.pricing!,
-                            textAlign: TextAlign.end,
+                            textAlign: TextAlign.start,
                           )
                         ],
                       ),

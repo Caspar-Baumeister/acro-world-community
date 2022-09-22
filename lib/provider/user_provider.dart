@@ -33,7 +33,7 @@ class UserProvider extends ChangeNotifier {
   }
 
   setUserFromToken() async {
-    if (token == "") {
+    if (token == "" || token == null) {
       _activeUser = null;
       return;
     }

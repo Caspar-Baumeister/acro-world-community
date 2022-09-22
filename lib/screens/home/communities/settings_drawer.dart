@@ -4,6 +4,7 @@ import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/buddy/buddy_page.dart';
 import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
+import 'package:acroworld/screens/home/account_settings/account_settings_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/teacher/teacher_page.dart';
 import 'package:flutter/material.dart';
@@ -127,6 +128,25 @@ class SettingsDrawer extends StatelessWidget {
                 ],
               )),
             ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AccountSettingsPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.settings),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Settings")
+                ],
+              )),
+            ),
+
             const Divider(color: Colors.grey, height: 1),
             buildMenuItem(
                 text: "Log out",
