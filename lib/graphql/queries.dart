@@ -187,9 +187,7 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
 query getClassEventCommunity(\$class_event_id: uuid) {
   class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
     user {
-      id
-      image_url
-      name
+      ${Fragments.userFragment}
     }
   }
 }
@@ -198,8 +196,7 @@ query getClassEventCommunity(\$class_event_id: uuid) {
   static final getCommunityUsers = gql("""
     query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
       users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {
-        id
-        name
+        ${Fragments.userFragment}
       }
     }
       """);

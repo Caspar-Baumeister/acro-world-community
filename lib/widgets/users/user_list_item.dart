@@ -11,8 +11,7 @@ class UserListItem extends StatelessWidget {
     return Row(
       children: <Widget>[
         CircleAvatar(
-          backgroundImage: NetworkImage(
-              'https://avatars.dicebear.com/api/jdenticon/:${user.id}.png'),
+          backgroundImage: NetworkImage(user.imageUrl ?? ''),
         ),
         const SizedBox(
           width: 10,

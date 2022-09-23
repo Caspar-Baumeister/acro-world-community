@@ -348,7 +348,7 @@ class _ClassEventTileState extends State<ClassEventTile> {
                     ),
                   ),
                   Text(
-                      "Participants: ${isParticipateState ? "You" : ""} ${widget.participants.isEmpty ? "" : ", "} ${widget.participants.map((e) => "${e.name}").toList().join(", ")}"),
+                      "Participants:${isParticipateState ? " You" : ""}${isParticipateState && widget.participants.isNotEmpty ? ", " : ""}${widget.participants.map((e) => "${e.name}").toList().join(", ")}"),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,

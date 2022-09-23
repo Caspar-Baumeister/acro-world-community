@@ -15,10 +15,22 @@ class UserList extends StatefulWidget {
 class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
-    List<Widget> userListItems =
-        widget.users.map((user) => UserListItem(user: user)).toList();
-    return SingleChildScrollView(
-      child: SpacedColumn(space: 2, children: userListItems),
-    );
+    if (widget.users.isEmpty) {
+      return const Center(
+        child: Text('No useres found 🤷'),
+      );
+    } else {
+      List<Widget> userListItems = widget.users
+          .map(
+            (user) => UserListItem(user: user),
+          )
+          .toList();
+      return SingleChildScrollView(
+        child: SpacedColumn(
+          space: 2,
+          children: userListItems,
+        ),
+      );
+    }
   }
 }

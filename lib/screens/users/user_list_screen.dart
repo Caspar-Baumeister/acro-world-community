@@ -14,9 +14,6 @@ class QueryUserListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('QueryUserListScreen');
-    print(variables);
-    print(query);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: const StandardAppBar(title: 'Users'),

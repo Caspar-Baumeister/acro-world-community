@@ -24,11 +24,17 @@ class UserListQuery extends StatelessWidget {
         print(query.definitions.first.toString());
         print(result);
         if (result.data != null) {
-          List<User> users = List<User>.from(
-            result.data!['users'].map(
-              (userJson) => User.fromJson(userJson),
-            ),
-          );
+          List<dynamic> usersResult = result.data!['users'];
+          List<User> users;
+          if (usersResult.isNotEmpty) {
+            users = List<User>.from(
+              result.data!['users'].map(
+                (userJson) => User.fromJson(userJson),
+              ),
+            );
+          } else {
+            users = [];
+          }
           return UserList(users: users);
         } else {
           return const Text('Something went wrong');
