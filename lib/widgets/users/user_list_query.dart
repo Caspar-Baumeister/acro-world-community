@@ -15,14 +15,16 @@ class UserListQuery extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Query(
-      options: QueryOptions(document: query, variables: variables),
+      options: QueryOptions(
+        document: query,
+        variables: variables,
+        fetchPolicy: FetchPolicy.cacheAndNetwork,
+      ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.isLoading) {
           return const Loading();
         }
-        print(query.definitions.first.toString());
-        print(result);
         if (result.data != null) {
           List<dynamic> usersResult = result.data!['users'];
           List<User> users;
