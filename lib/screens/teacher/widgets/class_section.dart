@@ -47,6 +47,7 @@ class ClassSection extends StatelessWidget {
           // }
 
           return ListView.builder(
+              shrinkWrap: true,
               itemCount: classes.length,
               itemBuilder: ((context, index) {
                 ClassModel indexClass = classes[index];
@@ -63,6 +64,20 @@ class ClassSection extends StatelessWidget {
                     //   radius: 3,
                     //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
                     // ),
+                    leading: indexClass.imageUrl != null
+                        ? SizedBox(
+                            height: 85.0,
+                            width: 120.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Image(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    indexClass.imageUrl!,
+                                  )),
+                            ),
+                          )
+                        : null,
                     title: Text(indexClass.name),
                     subtitle: Text(indexClass.locationName),
                     //     style: const TextStyle(fontWeight: FontWeight.w300)),

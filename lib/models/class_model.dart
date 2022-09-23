@@ -6,6 +6,12 @@ class ClassModel {
   String locationName;
   String? pricing;
   String? requirements;
+  String? imageUrl;
+  String? uscUrl;
+
+  String? classPassUrl;
+
+  String? websiteUrl;
 
   ClassModel(
       {required this.id,
@@ -14,6 +20,10 @@ class ClassModel {
       required this.city,
       required this.pricing,
       required this.requirements,
+      required this.imageUrl,
+      required this.uscUrl,
+      required this.classPassUrl,
+      required this.websiteUrl,
       required this.name});
 
   factory ClassModel.fromJson(dynamic json) {
@@ -25,6 +35,10 @@ class ClassModel {
       pricing: json["pricing"],
       city: json["city"],
       requirements: json["requirements"],
+      uscUrl: json["usc_url"],
+      classPassUrl: json["class_pass_url"],
+      websiteUrl: json["website_url"],
+      imageUrl: json["image_url"],
     );
   }
 }

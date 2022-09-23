@@ -180,6 +180,10 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
     location
     pricing
     requirements
+    usc_url
+    class_pass_url
+    website_url
+    image_url
   }
 }""");
 
