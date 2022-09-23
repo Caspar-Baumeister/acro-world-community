@@ -21,6 +21,7 @@ class UserListQuery extends StatelessWidget {
         if (result.isLoading) {
           return const Loading();
         }
+        print(query.definitions.first.toString());
         print(result);
         if (result.data != null) {
           List<User> users = List<User>.from(
