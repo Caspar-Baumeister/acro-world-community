@@ -149,11 +149,11 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                               textStyle: const TextStyle(
                                   fontSize: 30, fontWeight: FontWeight.bold)),
                           onPressed: () => buildMortal(
-                              context,
-                              ParticipantModal(
-                                  participants: widget.jam.participants
-                                      .map((e) => e.name ?? "Unknown")
-                                      .toList())),
+                            context,
+                            ParticipantModal(
+                              participants: widget.jam.participants,
+                            ),
+                          ),
                           child: Text(
                             "${widget.jam.participants.length.toString()} participant/s",
                             maxLines: 10,

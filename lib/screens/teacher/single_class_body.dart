@@ -4,6 +4,7 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/users/user_list_screen.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
@@ -347,8 +348,23 @@ class _ClassEventTileState extends State<ClassEventTile> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                      "Participants: ${isParticipateState ? "You" : ""} ${widget.participants.isEmpty ? "" : ", "} ${widget.participants.map((e) => "${e.name}").toList().join(", ")}"),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => QueryUserListScreen(
+                            query: Queries.getClassParticipants,
+                            variables: {'class_event_id': widget.classEvent.id},
+                            title: 'Participants',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      "Participants: ${isParticipateState ? "You" : ""}${isParticipateState && widget.participants.isNotEmpty ? ", " : ""}${widget.participants.map((e) => "${e.name}").toList().join(", ")}",
+                    ),
+                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,

@@ -19,7 +19,9 @@ class SpacedColumn extends StatelessWidget {
       widgets.add(widget);
       widgets.add(SizedBox(height: space));
     }
-    widgets.removeLast();
+    if (widgets.isNotEmpty) {
+      widgets.removeLast();
+    }
     return Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: crossAxisAlignment ?? CrossAxisAlignment.center,

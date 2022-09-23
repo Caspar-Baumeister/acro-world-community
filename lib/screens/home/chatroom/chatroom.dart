@@ -50,16 +50,6 @@ class _ChatroomState extends State<Chatroom> {
           fetchPolicy: FetchPolicy.networkOnly,
           document: Mutations.updateLastVisetedAt,
           onError: GraphQLErrorHandler().handleError,
-          // onCompleted: (dynamic resultData) {
-          //   setState(() {
-          //     isLoading = false;
-          //   });
-          //   if (resultData != null &&
-          //       resultData['delete_jams']['affected_rows'] == 1) {
-          //     eventBus.fire(CrudJamEvent(widget.jam));
-          //     Navigator.pop(context);
-          //   }
-          // },
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
                     {Object? optimisticResult})
