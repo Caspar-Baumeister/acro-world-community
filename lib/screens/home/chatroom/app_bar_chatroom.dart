@@ -1,10 +1,12 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/leave_community_event.dart';
+import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authenticate/authenticate.dart';
 import 'package:acroworld/screens/home/jam/jams/jams.dart';
+import 'package:acroworld/screens/users/user_list_screen.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +35,19 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
       automaticallyImplyLeading: true,
       elevation: 0.0,
       backgroundColor: Colors.white,
-      title: Text(name, style: const TextStyle(color: Colors.black)),
+      title: TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => QueryUserListScreen(
+                  query: Queries.getCommunityUsers,
+                  variables: {'community_id': community.id},
+                ),
+              ),
+            );
+          },
+          child: Text(name, style: const TextStyle(color: Colors.black))),
       leading: BackButton(
         color: Colors.black,
         onPressed: () {

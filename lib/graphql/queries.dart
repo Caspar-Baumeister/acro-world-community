@@ -194,4 +194,13 @@ query getClassEventCommunity(\$class_event_id: uuid) {
   }
 }
   """);
+
+  static final getCommunityUsers = gql("""
+    query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
+      users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {
+        id
+        name
+      }
+    }
+      """);
 }
