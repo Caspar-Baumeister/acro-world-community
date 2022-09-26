@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SingleClassBody extends StatelessWidget {
   const SingleClassBody(
@@ -26,73 +27,140 @@ class SingleClassBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
-      child: SpacedColumn(
-        space: 10,
-        children: [
-          const SizedBox(height: 20),
-          ReadMoreText(
-            classe.description,
-            trimLines: 2,
-            colorClickableText: Colors.blue,
-            trimMode: TrimMode.Line,
-            trimCollapsedText: 'Show more',
-            trimExpandedText: 'Show less',
-            moreStyle: const TextStyle(color: PRIMARY_COLOR),
-            lessStyle: const TextStyle(color: PRIMARY_COLOR),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
+      children: [
+        classe.imageUrl != null
+            ? SizedBox(
+                height: 200.0,
+                width: double.infinity,
+                child: ClipRRect(
+                  // borderRadius: BorderRadius.circular(8.0),
+                  child: Image(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(
+                        classe.imageUrl!,
+                      )),
+                ),
+              )
+            : Container(),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: SpacedColumn(
+            space: 10,
             children: [
-              classe.requirements != null
-                  ? Container(
-                      constraints: const BoxConstraints(maxWidth: 180),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            "Requirements",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+              const SizedBox(height: 20),
+              ReadMoreText(
+                classe.description,
+                trimLines: 2,
+                colorClickableText: Colors.blue,
+                trimMode: TrimMode.Line,
+                trimCollapsedText: 'Show more',
+                trimExpandedText: 'Show less',
+                moreStyle: const TextStyle(color: PRIMARY_COLOR),
+                lessStyle: const TextStyle(color: PRIMARY_COLOR),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  classe.requirements != null
+                      ? Container(
+                          constraints: const BoxConstraints(maxWidth: 180),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                "Requirements",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(classe.requirements!)
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          Text(classe.requirements!)
-                        ],
-                      ),
-                    )
-                  : Container(),
-              classe.pricing != null
-                  ? Container(
-                      constraints: const BoxConstraints(maxWidth: 150),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Text(
-                            "Prices",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                        )
+                      : Container(),
+                  classe.pricing != null
+                      ? Container(
+                          constraints: const BoxConstraints(maxWidth: 150),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Text(
+                                "Prices",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 10),
+                              Text(
+                                classe.pricing!,
+                                textAlign: TextAlign.start,
+                              )
+                            ],
                           ),
-                          const SizedBox(height: 10),
-                          Text(
-                            classe.pricing!,
-                            textAlign: TextAlign.start,
-                          )
-                        ],
-                      ),
-                    )
-                  : Container()
+                        )
+                      : Container()
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  classe.uscUrl != null
+                      ? LinkButton(text: "Urban Sport", link: classe.uscUrl!)
+                      : Container(),
+                  classe.classPassUrl != null
+                      ? LinkButton(
+                          text: "Class Pass", link: classe.classPassUrl!)
+                      : Container(),
+                  classe.websiteUrl != null
+                      ? LinkButton(text: "Website", link: classe.websiteUrl!)
+                      : Container(),
+                ],
+              ),
+              const Divider(),
+              SizedBox(
+                child:
+                    ClassEventCalendar(kEvents: classEventToHash(classEvents)),
+              ),
+              const SizedBox(height: 40)
             ],
           ),
-          const Divider(),
-          SizedBox(
-            child: ClassEventCalendar(kEvents: classEventToHash(classEvents)),
-            height: 600,
-          )
-        ],
-      ),
+        ),
+      ],
     ));
+  }
+}
+
+class LinkButton extends StatelessWidget {
+  const LinkButton({Key? key, required this.link, required this.text})
+      : super(key: key);
+
+  final String link;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return OutlinedButton(
+      style: OutlinedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(18),
+        ),
+      ),
+      onPressed: () async {
+        Uri _url = Uri.parse(link);
+        if (!await launchUrl(_url)) {
+          throw 'Could not launch $_url';
+        }
+      },
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w700,
+          color: Colors.black,
+        ),
+      ),
+    );
   }
 }
 
@@ -215,20 +283,19 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
           },
         ),
         const SizedBox(height: 8.0),
-        Expanded(
-          child: ValueListenableBuilder<List<ClassEvent>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return ClassEventParticipantQuery(
-                    classEvent: value[index],
-                  );
-                },
-              );
-            },
-          ),
+        ValueListenableBuilder<List<ClassEvent>>(
+          valueListenable: _selectedEvents,
+          builder: (context, value, _) {
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: value.length,
+              itemBuilder: (context, index) {
+                return ClassEventParticipantQuery(
+                  classEvent: value[index],
+                );
+              },
+            );
+          },
         ),
       ],
     );
