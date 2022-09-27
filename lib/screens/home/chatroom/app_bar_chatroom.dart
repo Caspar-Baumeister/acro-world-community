@@ -41,8 +41,8 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => QueryUserListScreen(
-                  query: Queries.getCommunityUsers,
-                  variables: {'community_id': community.id},
+                  query: Queries.getAllUsers,
+                  variables: {},
                 ),
               ),
             );

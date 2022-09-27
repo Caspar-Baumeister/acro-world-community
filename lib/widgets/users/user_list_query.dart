@@ -1,5 +1,6 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/widgets/users/user_list.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -19,8 +20,11 @@ class UserListQuery extends StatefulWidget {
 class _UserListQueryState extends State<UserListQuery> {
   late Map<String, dynamic> variablesState;
   List<User> users = [];
+  final ScrollController scrollController = ScrollController();
   int limit = 20;
   int offset = 0;
+  bool isLoading = false;
+
   @override
   void initState() {
     variablesState = widget.variables;
@@ -38,6 +42,21 @@ class _UserListQueryState extends State<UserListQuery> {
     );
   }
 
+  void addResultData(dynamic resultData) {
+    List<User> newUsers = parseResultData(resultData);
+    if (newUsers.isNotEmpty) {
+      bool isAlreadyIn = false;
+      for (var user in users) {
+        if (user.id == newUsers[0].id) {
+          isAlreadyIn = true;
+        }
+      }
+      if (!isAlreadyIn) {
+        users.addAll(newUsers);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -48,42 +67,44 @@ class _UserListQueryState extends State<UserListQuery> {
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        //Initial loading
-        if (result.isLoading && result.data == null) {
-          return const Loading();
-        }
-        if (result.data != null) {
-          print("addAll triggert");
-          List<User> newUsers = parseResultData(result.data!);
-          if (newUsers.isNotEmpty) {
-            bool isAlreadyIn = false;
-            for (var user in users) {
-              if (user.id == newUsers[0].id) {
-                isAlreadyIn = true;
-              }
-            }
-            if (!isAlreadyIn) {
-              users.addAll(newUsers);
-            }
-          }
-          return UserList(
-            users: users,
-            onScrollEndReached: () {
-              print('onScrollEndReached');
+        scrollController.addListener(() {
+          if (scrollController.offset ==
+              scrollController.position.maxScrollExtent) {
+            if (fetchMore != null) {
               variablesState['offset'] = variablesState['offset'] + limit;
-              print(fetchMore);
-              fetchMore!(
+              fetchMore(
                 FetchMoreOptions.partial(
                     variables: variablesState,
                     updateQuery: (Map<String, dynamic>? previousResultData,
                         Map<String, dynamic>? fetchMoreResultData) {
+                      addResultData(fetchMoreResultData!);
                       return {};
                     }),
               );
-            },
+            }
+          }
+        });
+        //Initial loading
+        if (result.isLoading && result.data == null) {
+          return const Loading();
+        }
+        print(result.isLoading);
+        if (result.data != null) {
+          addResultData(result.data!);
+          return SingleChildScrollView(
+            controller: scrollController,
+            child: Column(
+              children: [
+                UserList(
+                  users: users,
+                ),
+                result.isLoading ? const LoadingIndicator() : Container()
+              ],
+            ),
           );
         } else {
-          return const Text('Something went wrong');
+          print(result.exception);
+          return const Center(child: Text('Something went wrong'));
         }
       },
     );
