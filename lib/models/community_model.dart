@@ -26,7 +26,7 @@ class Community {
         id: json['id'],
         name: json["name"],
         confirmed: json["confirmed"],
-        latLng: LatLng(json['latitude'], json['longitude']),
+        latLng: LatLng(json['latitude'] * 1.0, json['longitude'] * 1.0),
         lastVisitedAt: lastVisitedAt,
         nextJamAt: nextJamAt,
         lastMessage: messageJson != null

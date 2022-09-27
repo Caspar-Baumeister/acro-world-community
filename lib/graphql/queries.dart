@@ -145,12 +145,7 @@ class Queries {
   static final getClasses = gql("""
 query getClasses {
   classes {
-    city
-    description
-    id
-    location_name
-    name
-    location
+    ${Fragments.classFragment}
   }
 }
 

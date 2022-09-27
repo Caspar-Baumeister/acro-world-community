@@ -14,6 +14,21 @@ class Fragments {
   longitude
   """;
 
+  static const String classFragment = """
+    city
+    description
+    id
+    location_name
+    name
+    location
+    pricing
+    requirements
+    usc_url
+    class_pass_url
+    website_url
+    image_url
+  """;
+
   static const String jamFragment = """
   id
   created_at

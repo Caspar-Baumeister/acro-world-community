@@ -5,16 +5,30 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/ast.dart';
 
-class UserListQuery extends StatelessWidget {
-  UserListQuery({Key? key, required this.query, required this.variables})
+class UserListQuery extends StatefulWidget {
+  const UserListQuery({Key? key, required this.query, required this.variables})
       : super(key: key);
 
   final DocumentNode query;
   final Map<String, dynamic> variables;
-  List<User> users = [];
 
+  @override
+  State<UserListQuery> createState() => _UserListQueryState();
+}
+
+class _UserListQueryState extends State<UserListQuery> {
+  late Map<String, dynamic> variablesState;
+  List<User> users = [];
   int limit = 20;
   int offset = 0;
+  @override
+  void initState() {
+    variablesState = widget.variables;
+    variablesState['limit'] = limit;
+    variablesState['offset'] = offset;
+
+    super.initState();
+  }
 
   List<User> parseResultData(dynamic resultData) {
     return List<User>.from(
@@ -26,12 +40,10 @@ class UserListQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    variables['limit'] = limit;
-    variables['offset'] = offset;
     return Query(
       options: QueryOptions(
-        document: query,
-        variables: variables,
+        document: widget.query,
+        variables: variablesState,
         fetchPolicy: FetchPolicy.cacheAndNetwork,
       ),
       builder: (QueryResult result,
@@ -41,19 +53,33 @@ class UserListQuery extends StatelessWidget {
           return const Loading();
         }
         if (result.data != null) {
-          users.addAll(parseResultData(result.data!));
+          print("addAll triggert");
+          List<User> newUsers = parseResultData(result.data!);
+          if (newUsers.isNotEmpty) {
+            bool isAlreadyIn = false;
+            for (var user in users) {
+              if (user.id == newUsers[0].id) {
+                isAlreadyIn = true;
+              }
+            }
+            if (!isAlreadyIn) {
+              users.addAll(newUsers);
+            }
+          }
           return UserList(
             users: users,
             onScrollEndReached: () {
               print('onScrollEndReached');
-              variables['offset'] = variables['offset'] + limit;
+              variablesState['offset'] = variablesState['offset'] + limit;
               print(fetchMore);
-              fetchMore!(FetchMoreOptions.partial(
-                  variables: variables,
-                  updateQuery: (Map<String, dynamic>? previousResultData,
-                      Map<String, dynamic>? fetchMoreResultData) {
-                    return {};
-                  }));
+              fetchMore!(
+                FetchMoreOptions.partial(
+                    variables: variablesState,
+                    updateQuery: (Map<String, dynamic>? previousResultData,
+                        Map<String, dynamic>? fetchMoreResultData) {
+                      return {};
+                    }),
+              );
             },
           );
         } else {

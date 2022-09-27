@@ -160,8 +160,8 @@ class Database {
     String name,
     String date,
     String info,
-    double latitude,
-    double longitude,
+    num latitude,
+    num longitude,
   ) {
     return authorizedApi("""
       mutation MyMutation {
