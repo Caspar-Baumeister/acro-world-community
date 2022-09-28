@@ -1,7 +1,7 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/teacher/single_teacher_page.dart';
+import 'package:acroworld/screens/teacher/single_teacher_page/single_teacher_page.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

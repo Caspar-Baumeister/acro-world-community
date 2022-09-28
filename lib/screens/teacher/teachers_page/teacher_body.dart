@@ -1,5 +1,5 @@
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/teacher/widgets/teacher_card.dart';
+import 'package:acroworld/screens/teacher/teachers_page/widgets/teacher_card.dart';
 import 'package:flutter/material.dart';
 
 class TeacherBody extends StatelessWidget {

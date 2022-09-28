@@ -1,9 +1,10 @@
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/home/chatroom/fetch_community_chatroom.dart';
-import 'package:acroworld/screens/teacher/widgets/class_section.dart';
+import 'package:acroworld/screens/teacher/single_teacher_page/widgets/class_section.dart';
 import 'package:acroworld/screens/teacher/widgets/edit_button.dart';
-import 'package:acroworld/screens/teacher/widgets/gallery_section.dart';
+import 'package:acroworld/screens/teacher/single_teacher_page/widgets/gallery_section.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 
 class SingleTeacherPage extends StatefulWidget {
@@ -124,7 +125,33 @@ class InfoSection extends StatelessWidget {
                         as ImageProvider,
               ),
             ),
-            InfoList(teacher: teacher, isEdit: isEdit)
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0, left: 6),
+                child: SpacedColumn(
+                  space: 10,
+                  children: [
+                    InfoRow(
+                      value: teacher.likes.toString(),
+                      attributeKey: "Likes",
+                      isEdit: false,
+                    ),
+                    InfoRow(
+                        value: teacher.locationName,
+                        attributeKey: "Location",
+                        isEdit: isEdit,
+                        dBKey: "location"),
+                    InfoRow(
+                        value: teacher.teacherLevels.isNotEmpty
+                            ? teacher.teacherLevels[0]
+                            : "",
+                        attributeKey: "Teaching level",
+                        isEdit: isEdit,
+                        dBKey: "level")
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
         Padding(
@@ -191,38 +218,6 @@ class InfoSection extends StatelessWidget {
   }
 }
 
-class InfoList extends StatelessWidget {
-  const InfoList({Key? key, required this.teacher, required this.isEdit})
-      : super(key: key);
-  final TeacherModel teacher;
-  final bool isEdit;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        InfoRow(
-          value: teacher.likes.toString(),
-          attributeKey: "Likes",
-          isEdit: false,
-        ),
-        InfoRow(
-            value: teacher.locationName,
-            attributeKey: "Location",
-            isEdit: isEdit,
-            dBKey: "location"),
-        InfoRow(
-            value: teacher.teacherLevels.isNotEmpty
-                ? teacher.teacherLevels[0]
-                : "",
-            attributeKey: "Teaching level",
-            isEdit: isEdit,
-            dBKey: "level")
-      ],
-    );
-  }
-}
-
 class InfoRow extends StatelessWidget {
   const InfoRow(
       {Key? key,
@@ -238,56 +233,30 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width / 2 + 20;
-    return Container(
-      width: width,
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Container(
-            alignment: Alignment.centerLeft,
-            constraints: BoxConstraints(maxWidth: width / 2 - 30),
-            child: Text(
-              attributeKey,
-              maxLines: 2,
-              textAlign: TextAlign.left,
-              style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey),
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          child: Text(
+            attributeKey,
+            maxLines: 2,
+            textAlign: TextAlign.left,
+            style: const TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w600, color: Colors.grey),
           ),
-          Flexible(child: Container()),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                alignment: Alignment.centerRight,
-                constraints: const BoxConstraints(maxWidth: 80),
-                child: Text(
-                  value,
-                  maxLines: 2,
-                  textAlign: TextAlign.right,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.grey),
-                ),
-              ),
-              isEdit
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: EditButton(
-                        header: attributeKey,
-                      ),
-                    )
-                  : Container(),
-            ],
+        ),
+        Container(
+          alignment: Alignment.centerRight,
+          child: Text(
+            value,
+            maxLines: 2,
+            textAlign: TextAlign.right,
+            style: const TextStyle(
+                fontSize: 12, fontWeight: FontWeight.w400, color: Colors.grey),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

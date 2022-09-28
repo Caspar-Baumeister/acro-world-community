@@ -53,14 +53,14 @@ PODS:
     - FirebaseCoreInternal (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
-  - FirebaseCoreDiagnostics (9.3.0):
+  - FirebaseCoreDiagnostics (9.6.0):
     - GoogleDataTransport (< 10.0.0, >= 9.1.4)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/Logger (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseCoreInternal (9.3.0):
+  - FirebaseCoreInternal (9.6.0):
     - "GoogleUtilities/NSData+zlib (~> 7.7)"
-  - FirebaseInstallations (9.3.0):
+  - FirebaseInstallations (9.6.0):
     - FirebaseCore (~> 9.0)
     - GoogleUtilities/Environment (~> 7.7)
     - GoogleUtilities/UserDefaults (~> 7.7)
@@ -93,22 +93,22 @@ PODS:
   - GoogleMaps/Base (5.2.0)
   - GoogleMaps/Maps (5.2.0):
     - GoogleMaps/Base
-  - GoogleUtilities/AppDelegateSwizzler (7.7.0):
+  - GoogleUtilities/AppDelegateSwizzler (7.8.0):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
     - GoogleUtilities/Network
-  - GoogleUtilities/Environment (7.7.0):
+  - GoogleUtilities/Environment (7.8.0):
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleUtilities/Logger (7.7.0):
+  - GoogleUtilities/Logger (7.8.0):
     - GoogleUtilities/Environment
-  - GoogleUtilities/Network (7.7.0):
+  - GoogleUtilities/Network (7.8.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
     - GoogleUtilities/Reachability
-  - "GoogleUtilities/NSData+zlib (7.7.0)"
-  - GoogleUtilities/Reachability (7.7.0):
+  - "GoogleUtilities/NSData+zlib (7.8.0)"
+  - GoogleUtilities/Reachability (7.8.0):
     - GoogleUtilities/Logger
-  - GoogleUtilities/UserDefaults (7.7.0):
+  - GoogleUtilities/UserDefaults (7.8.0):
     - GoogleUtilities/Logger
   - maps_launcher (0.0.1):
     - Flutter
@@ -121,9 +121,9 @@ PODS:
     - Flutter
   - PromisesObjC (2.1.1)
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.13.2):
-    - SDWebImage/Core (= 5.13.2)
-  - SDWebImage/Core (5.13.2)
+  - SDWebImage (5.13.4):
+    - SDWebImage/Core (= 5.13.4)
+  - SDWebImage/Core (5.13.4)
   - shared_preferences_ios (0.0.1):
     - Flutter
   - sqflite (0.0.2):
@@ -132,6 +132,8 @@ PODS:
   - SwiftyGif (5.4.3)
   - Toast (4.0.0)
   - url_launcher_ios (0.0.1):
+    - Flutter
+  - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -148,6 +150,7 @@ DEPENDENCIES:
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
+  - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
   trunk:
@@ -196,6 +199,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
+  webview_flutter_wkwebview:
+    :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 CHECKOUT OPTIONS:
   DKImagePickerController:
@@ -211,9 +216,9 @@ SPEC CHECKSUMS:
   firebase_core: 96214f90497b808a2cf2a24517084c5f6de37b53
   firebase_messaging: a2cd2c6dd7b5430bb9e4e50e9a474413ae3bce09
   FirebaseCore: c088995ece701a021a48a1348ea0174877de2a6a
-  FirebaseCoreDiagnostics: 060eb57cc56dfaf40b1b1b5874a5c17c41ce79f8
-  FirebaseCoreInternal: 635d1c9a612a6502b6377a0c92af83758076ffff
-  FirebaseInstallations: 54b40022cb06e462740c9f2b9fbe38b5e78a825a
+  FirebaseCoreDiagnostics: 99a495094b10a57eeb3ae8efa1665700ad0bdaa6
+  FirebaseCoreInternal: bca76517fe1ed381e989f5e7d8abb0da8d85bed3
+  FirebaseInstallations: 0a115432c4e223c5ab20b0dbbe4cbefa793a0e8e
   FirebaseMessaging: 2f6e38b6133059eb796ec224104f09379298a8c3
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 16fbe6039d06a763f3533670197d01fc73459037
@@ -221,18 +226,19 @@ SPEC CHECKSUMS:
   google_maps_flutter: c59fc576c0d0c7f4dc4bd63832c862d22d5a7c6d
   GoogleDataTransport: 1c8145da7117bd68bbbed00cf304edb6a24de00f
   GoogleMaps: 025272d5876d3b32604e5c080dc25eaf68764693
-  GoogleUtilities: e0913149f6b0625b553d70dae12b49fc62914fd1
+  GoogleUtilities: 1d20a6ad97ef46f67bbdec158ce00563a671ebb7
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   path_provider_ios: 14f3d2fd28c4fdb42f44e0f751d12861c43cee02
   PromisesObjC: ab77feca74fa2823e7af4249b8326368e61014cb
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 72f86271a6f3139cc7e4a89220946489d4b9a866
+  SDWebImage: e5cc87bf736e60f49592f307bdf9e157189298a3
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   url_launcher_ios: 839c58cdb4279282219f5e248c3321761ff3c4de
+  webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: f298767df335c960b320410e7aa91f6672aef895
 

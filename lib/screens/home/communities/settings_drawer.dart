@@ -6,7 +6,7 @@ import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/account_settings/account_settings_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
-import 'package:acroworld/screens/teacher/teacher_page.dart';
+import 'package:acroworld/screens/teacher/teachers_page/teacher_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

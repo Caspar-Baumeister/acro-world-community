@@ -1,5 +1,5 @@
-import 'package:acroworld/screens/teacher/teacher_app_bar.dart';
-import 'package:acroworld/screens/teacher/teacher_query.dart';
+import 'package:acroworld/screens/teacher/teachers_page/teacher_app_bar.dart';
+import 'package:acroworld/screens/teacher/teachers_page/teacher_query.dart';
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatelessWidget {

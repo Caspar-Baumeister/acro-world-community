@@ -5,7 +5,7 @@ import 'package:acroworld/events/teacher_likes/change_like_on_teacher.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/teacher/teacher_like_query.dart';
+import 'package:acroworld/screens/teacher/teachers_page/teacher_like_query.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
