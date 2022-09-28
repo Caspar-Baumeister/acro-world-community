@@ -167,18 +167,7 @@ query getClassEventsByClassId (\$class_id: uuid) {
   static final getClassesByTeacherId = gql("""
 query getClassesByTeacherId(\$teacher_id: uuid) {
   classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
-    city
-    description
-    id
-    location_name
-    name
-    location
-    pricing
-    requirements
-    usc_url
-    class_pass_url
-    website_url
-    image_url
+    ${Fragments.classFragment}
   }
 }""");
 

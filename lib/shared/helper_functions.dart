@@ -4,6 +4,7 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // builds the modal widgets
 Future<void> buildMortal(BuildContext context, Widget mordal) {
@@ -119,3 +120,13 @@ List<DateTime> daysInRange(DateTime first, DateTime last) {
 final kToday = DateTime.now();
 final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);
+
+Future<void> openMap(double latitude, double longitude) async {
+  Uri googleUrl = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
+  if (await canLaunchUrl(googleUrl)) {
+    await launchUrl(googleUrl);
+  } else {
+    throw 'Could not open the map.';
+  }
+}

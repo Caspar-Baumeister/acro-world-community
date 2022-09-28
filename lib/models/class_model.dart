@@ -8,6 +8,8 @@ class ClassModel {
   String? requirements;
   String? imageUrl;
   String? uscUrl;
+  double? latitude;
+  double? longitude;
 
   String? classPassUrl;
 
@@ -24,6 +26,8 @@ class ClassModel {
       required this.uscUrl,
       required this.classPassUrl,
       required this.websiteUrl,
+      required this.latitude,
+      required this.longitude,
       required this.name});
 
   factory ClassModel.fromJson(dynamic json) {
@@ -39,6 +43,8 @@ class ClassModel {
       classPassUrl: json["class_pass_url"],
       websiteUrl: json["website_url"],
       imageUrl: json["image_url"],
+      latitude: json["location"]?["coordinates"]?[0],
+      longitude: json["location"]?["coordinates"]?[1],
     );
   }
 }

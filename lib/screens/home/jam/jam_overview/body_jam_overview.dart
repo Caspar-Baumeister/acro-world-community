@@ -9,6 +9,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home/jam/jam_overview/participant_modal.dart';
 import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/shared/helper_functions.dart';
+import 'package:acroworld/shared/widgets/open_google_maps.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -161,9 +162,12 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                     ],
                   ),
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      OpenGoogleMaps(
+                          latitude: widget.jam.latLng.latitude,
+                          longitude: widget.jam.latLng.longitude),
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
                           backgroundColor:

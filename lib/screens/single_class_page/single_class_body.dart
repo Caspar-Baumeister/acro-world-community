@@ -4,9 +4,11 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home/map/map.dart';
 import 'package:acroworld/screens/users/user_list_screen.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
+import 'package:acroworld/shared/widgets/open_google_maps.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -15,6 +17,7 @@ import 'package:readmore/readmore.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SingleClassBody extends StatelessWidget {
   const SingleClassBody(
@@ -118,6 +121,41 @@ class SingleClassBody extends StatelessWidget {
                 ],
               ),
               const Divider(),
+              classe.latitude != null && classe.longitude != null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              "Avenue",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            OpenGoogleMaps(
+                              latitude: classe.latitude!,
+                              longitude: classe.longitude!,
+                            )
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
+                          constraints: const BoxConstraints(maxHeight: 150),
+                          child: MapWidget(
+                            zoom: 15.0,
+                            center: LatLng(classe.latitude!, classe.longitude!),
+                            markerLocation:
+                                LatLng(classe.latitude!, classe.longitude!),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+              classe.latitude != null && classe.longitude != null
+                  ? const Divider()
+                  : Container(),
               SizedBox(
                 child:
                     ClassEventCalendar(kEvents: classEventToHash(classEvents)),

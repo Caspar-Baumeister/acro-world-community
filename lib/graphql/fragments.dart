@@ -27,6 +27,7 @@ class Fragments {
     class_pass_url
     website_url
     image_url
+    location
   """;
 
   static const String jamFragment = """
