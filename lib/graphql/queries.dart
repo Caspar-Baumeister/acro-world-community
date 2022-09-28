@@ -192,6 +192,14 @@ query getClassEventCommunity(\$class_event_id: uuid) {
 }
   """);
 
+  static final getAllUsers = gql("""
+    query getAllUsers(\$limit: Int, \$offset: Int) {
+      users(limit: \$limit, offset: \$offset) {
+        ${Fragments.userFragment}
+      }
+    }
+      """);
+
   static final getCommunityUsers = gql("""
     query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
       users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {
