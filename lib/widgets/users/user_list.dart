@@ -19,7 +19,7 @@ class _UserListState extends State<UserList> {
   Widget build(BuildContext context) {
     if (widget.users.isEmpty) {
       return const Center(
-        child: Text('No useres found 🤷'),
+        child: Text('No users found 🤷'),
       );
     } else {
       List<Widget> userListItems = widget.users

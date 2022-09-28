@@ -164,17 +164,24 @@ class _RegisterBodyState extends State<RegisterBody> {
                       ],
                     ),
                     const SizedBox(height: 20.0),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.grey[400])),
-                        child: const Text(
-                          'Register',
-                          style: TextStyle(color: Colors.white),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                        onPressed: () async {
-                          onRegister();
-                        }),
+                      ),
+                      onPressed: () async {
+                        onRegister();
+                      },
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 12.0),
                     Text(
                       error,

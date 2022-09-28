@@ -39,22 +39,29 @@ class _SignInState extends State<SignIn> {
     return loading
         ? const Loading()
         : Scaffold(
-            backgroundColor: Colors.grey[100],
             appBar: AppBar(
-              backgroundColor: Colors.grey[400],
+              backgroundColor: Colors.white,
               elevation: 0.0,
               title: const Text('Login to Acro World'),
               actions: <Widget>[
-                TextButton.icon(
-                  icon: const Icon(
-                    Icons.person,
-                    color: Colors.black,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
+                    onPressed: () => widget.toggleView(),
+                    child: const Text(
+                      "Register",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
-                  label: const Text(
-                    'Register',
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  onPressed: () => widget.toggleView(),
                 ),
               ],
             ),
@@ -101,15 +108,22 @@ class _SignInState extends State<SignIn> {
                       onFieldSubmitted: (_) => onSignin(),
                     ),
                     const SizedBox(height: 20.0),
-                    ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.grey[400])),
-                        child: const Text(
-                          'Sign In',
-                          style: TextStyle(color: Colors.white),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                        onPressed: () => onSignin()),
+                      ),
+                      onPressed: () => onSignin(),
+                      child: const Text(
+                        "Sign In",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                     error != ""
                         ? Padding(
                             padding: const EdgeInsets.only(top: 12.0),
@@ -165,7 +179,7 @@ class _SignInState extends State<SignIn> {
 
     // send to UserCommunities
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => UpdateFcmToken()));
+        .push(MaterialPageRoute(builder: (context) => const UpdateFcmToken()));
 
     setState(() {
       loading = false;

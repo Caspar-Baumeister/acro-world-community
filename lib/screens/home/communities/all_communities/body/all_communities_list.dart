@@ -1,7 +1,6 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/communities/all_communities/body/new_community_card.dart';
 import 'package:acroworld/screens/suggest_new_community/suggest_new_community_screen.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
 
 class AllCommunitiesList extends StatelessWidget {
@@ -14,15 +13,22 @@ class AllCommunitiesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> communityCards =
-        communities.map((com) => NewCommunityCard(community: com)).toList();
+    List<Widget> communityCards = communities
+        .map((com) => Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: NewCommunityCard(community: com),
+            ))
+        .toList();
     return SingleChildScrollView(
       child: Column(
         children: [
           if (communities.isNotEmpty)
             ...communityCards
           else
-            const Text("No more communities you are not part of found"),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Text("No communities found 🤷"),
+            ),
           const Divider(
             color: Colors.grey,
             indent: 30,
@@ -38,7 +44,15 @@ class AllCommunitiesList extends StatelessWidget {
                     "Can't find the community your searching for?",
                     textAlign: TextAlign.center,
                   ),
-                  TextButton(
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  OutlinedButton(
+                    style: OutlinedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                    ),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -50,10 +64,13 @@ class AllCommunitiesList extends StatelessWidget {
                     },
                     child: const Text(
                       "Suggest a new one",
-                      style: TextStyle(color: PRIMARY_COLOR),
-                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
+                      ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),

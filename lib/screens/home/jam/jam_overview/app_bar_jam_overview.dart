@@ -59,6 +59,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
           leading: const BackButton(color: Colors.black),
           backgroundColor: Colors.white,
           elevation: 0.0,
+          title: Text(widget.jam.name),
           actions: isOwnJam
               ? <Widget>[
                   IconButton(

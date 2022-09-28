@@ -104,10 +104,11 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                   Error(text: locationError),
                   IgnorePointer(
                     ignoring: loading,
-                    child: ElevatedButton(
-                      child: const Text(
-                        "Suggest community",
-                        style: TextStyle(color: Colors.black),
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
                       ),
                       onPressed: () => {
                         if (checkFields())
@@ -119,12 +120,12 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                             })
                           }
                       },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(12.0),
-                        primary: Colors.grey[100],
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(30.0),
+                      child: const Text(
+                        "Suggest community",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
                         ),
                       ),
                     ),

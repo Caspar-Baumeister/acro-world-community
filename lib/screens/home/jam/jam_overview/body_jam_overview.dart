@@ -76,16 +76,12 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                 runMutation,
             QueryResult<dynamic>? result) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(12.0),
             child: SingleChildScrollView(
               child: SpacedColumn(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 space: 20,
                 children: <Widget>[
-                  Text(
-                    widget.jam.name,
-                    style: const TextStyle(fontSize: 24.0),
-                  ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -135,77 +131,57 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                       ),
                     ],
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        width: 150,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 10),
-                              textStyle: const TextStyle(
-                                  fontSize: 30, fontWeight: FontWeight.bold)),
-                          onPressed: () => buildMortal(
-                            context,
-                            ParticipantModal(
-                              participants: widget.jam.participants,
-                            ),
-                          ),
-                          child: Text(
-                            "${widget.jam.participants.length.toString()} participant/s",
-                            maxLines: 10,
-                            style: const TextStyle(
-                                fontSize: 16.0, color: Colors.black54),
+                      const Text(
+                        "Participants",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w300,
+                            fontFamily: "rubik"),
+                      ),
+                      GestureDetector(
+                        onTap: () => buildMortal(
+                          context,
+                          ParticipantModal(
+                            participants: widget.jam.participants,
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        width: 150,
-                        height: 50,
-                        child: IgnorePointer(
-                          ignoring: isLoading,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                                primary: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 10),
-                                textStyle: const TextStyle(
-                                    fontSize: 30, fontWeight: FontWeight.bold)),
-                            onPressed: () {
-                              isLoading = true;
-                              runMutation({'jamId': widget.jam.jid});
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: isLoading
-                                  ? [
-                                      const SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    ]
-                                  : [
-                                      isUserParticipating
-                                          ? const Icon(Icons.remove,
-                                              color: Colors.black54)
-                                          : const Icon(Icons.add,
-                                              color: Colors.black54),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        isUserParticipating
-                                            ? "Leave"
-                                            : "Participate",
-                                        maxLines: 10,
-                                        style: const TextStyle(
-                                            fontSize: 16.0,
-                                            color: Colors.black54),
-                                      ),
-                                    ],
-                            ),
+                        child: Text(
+                            widget.jam.participants
+                                .map((e) => "${e.name}")
+                                .toList()
+                                .join(", "),
+                            style: const TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 16.0,
+                                color: Colors.black)),
+                      )
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          backgroundColor:
+                              isUserParticipating ? Colors.grey : Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        onPressed: () {
+                          isLoading = true;
+                          runMutation({'jamId': widget.jam.jid});
+                        },
+                        child: const Text(
+                          "Participate",
+                          style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
                           ),
                         ),
                       ),

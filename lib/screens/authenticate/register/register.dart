@@ -9,22 +9,29 @@ class Register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.grey[100],
         appBar: AppBar(
-          backgroundColor: Colors.grey[400],
+          backgroundColor: Colors.white,
           elevation: 0.0,
           title: const Text('Register for Acro World'),
           actions: <Widget>[
-            TextButton.icon(
-              icon: const Icon(
-                Icons.person,
-                color: Colors.black,
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                onPressed: () => toggleView(),
+                child: const Text(
+                  "Login",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
               ),
-              label: const Text(
-                'Login',
-                style: TextStyle(color: Colors.black),
-              ),
-              onPressed: () => toggleView(),
             ),
           ],
         ),

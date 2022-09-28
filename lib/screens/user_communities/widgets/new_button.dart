@@ -9,31 +9,21 @@ class NewCommunityButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 70,
-      padding: const EdgeInsets.only(right: 8.0),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(primary: Colors.white, elevation: 0),
-        onPressed: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const AllCommunities()),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const <Widget>[
-            SizedBox(
-              height: 30,
-              child: ImageIcon(
-                AssetImage("assets/add-all.png"),
-                color: Colors.black,
-              ),
+    return Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 4),
+      child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
             ),
-            Text("Add",
-                style: TextStyle(
-                  color: Colors.black,
-                )),
-          ],
-        ),
-      ),
+          ),
+          onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (context) => const AllCommunities()),
+              ),
+          child: const Icon(
+            Icons.add,
+            color: Colors.black,
+          )),
     );
   }
 }
