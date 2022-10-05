@@ -13,7 +13,6 @@ class EditButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FramedButton(
       onPressed: () {
-        print("editbutton");
         showDialog(
             context: context,
             builder: (BuildContext context) => EditPopUp(header: header));

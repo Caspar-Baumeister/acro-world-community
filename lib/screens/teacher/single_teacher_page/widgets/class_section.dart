@@ -33,7 +33,6 @@ class ClassSection extends StatelessWidget {
               refetch!();
             } catch (e) {
               print(e.toString());
-              // print(e);
             }
           });
 
@@ -41,10 +40,6 @@ class ClassSection extends StatelessWidget {
 
           result.data!["classes"]
               .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
-
-          // for (Map<String, dynamic> json in result.data!["teachers"]) {
-          //   teachers.add(TeacherModel.fromJson(json));
-          // }
 
           return ListView.builder(
               shrinkWrap: true,

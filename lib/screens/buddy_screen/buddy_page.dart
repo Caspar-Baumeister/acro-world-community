@@ -1,5 +1,5 @@
-import 'package:acroworld/screens/buddy/buddy_body.dart';
-import 'package:acroworld/screens/buddy/buddy_app_bar.dart';
+import 'package:acroworld/screens/buddy_screen/buddy_body.dart';
+import 'package:acroworld/screens/buddy_screen/buddy_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class BuddyPage extends StatelessWidget {

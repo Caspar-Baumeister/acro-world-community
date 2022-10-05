@@ -25,7 +25,7 @@ class Community {
     return Community(
         id: json['id'],
         name: json["name"],
-        confirmed: json["confirmed"],
+        confirmed: json["confirmed"] ?? false,
         latLng: LatLng(json['latitude'] * 1.0, json['longitude'] * 1.0),
         lastVisitedAt: lastVisitedAt,
         nextJamAt: nextJamAt,

@@ -56,7 +56,6 @@ class _TeacherQueryState extends State<TeacherQuery> {
             refetch!();
           } catch (e) {
             print(e.toString());
-            // print(e);
           }
         });
 

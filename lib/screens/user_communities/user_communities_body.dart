@@ -6,7 +6,6 @@ import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/screens/user_communities/widgets/list_coms.dart';
 import 'package:acroworld/screens/user_communities/widgets/new_button.dart';
-import 'package:acroworld/services/image_uploader.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -40,6 +39,7 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
+          // TODO show exeption screen
           return Text(result.exception.toString());
         }
 
@@ -52,6 +52,7 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
         });
 
         List<Community> communities = [];
+
         if (result.data != null && result.data?['me'].length > 0) {
           communities.addAll(List<Community>.from(
               result.data?['me']?[0]?['communities'].map((userCommunity) {
@@ -59,16 +60,13 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             if (userCommunity['community']["community_messages"].isNotEmpty) {
               messageJson = userCommunity['community']["community_messages"][0];
             }
-            String? date;
-            if (userCommunity?["community"]?["jams"].isNotEmpty &&
-                userCommunity?["community"]?["jams"]?[0]?["date"] != null) {
-              date = userCommunity["community"]!["jams"]![0]!["date"];
-            }
 
-            return Community.fromJson(userCommunity['community'],
-                lastVisitedAt: userCommunity["last_visited_at"],
-                messageJson: messageJson,
-                nextJamAt: date);
+            return Community.fromJson(
+              userCommunity['community'],
+              lastVisitedAt: userCommunity["last_visited_at"],
+              messageJson: messageJson,
+              // nextJamAt: date
+            );
           })));
         }
         Future.delayed(const Duration(milliseconds: 200), () {

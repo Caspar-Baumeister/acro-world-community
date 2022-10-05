@@ -2,9 +2,8 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authenticate/authenticate.dart';
+import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/home/jam/jams/jams.dart';
 import 'package:acroworld/screens/users/user_list_screen.dart';
 import 'package:acroworld/services/database.dart';
@@ -42,7 +41,7 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               MaterialPageRoute(
                 builder: (context) => QueryUserListScreen(
                   query: Queries.getAllUsers,
-                  variables: {},
+                  variables: const {},
                 ),
               ),
             );
@@ -132,10 +131,6 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
     final database = Database(token: token);
 
     final response = await database.deleteUserCommunitiesOne(community.id);
-
-    // update the usercommunities
-    Provider.of<UserCommunitiesProvider>(context, listen: false)
-        .loadDataFromDatabase(token);
 
     eventBus.fire(CrudUserCommunityEvent());
     // Navigator.of(context).push(

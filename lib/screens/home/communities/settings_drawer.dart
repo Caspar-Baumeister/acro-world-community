@@ -1,7 +1,7 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authenticate/authenticate.dart';
-import 'package:acroworld/screens/buddy/buddy_page.dart';
+import 'package:acroworld/screens/authentication_screens/authenticate.dart';
+import 'package:acroworld/screens/buddy_screen/buddy_page.dart';
 import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/account_settings/account_settings_page.dart';

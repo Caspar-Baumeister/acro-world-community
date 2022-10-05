@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/authenticate/register/register_body.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/register_body.dart';
 import 'package:flutter/material.dart';
 
 class Register extends StatelessWidget {

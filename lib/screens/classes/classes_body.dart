@@ -30,7 +30,6 @@ class ClassesBody extends StatelessWidget {
               refetch!();
             } catch (e) {
               print(e.toString());
-              // print(e);
             }
           });
 

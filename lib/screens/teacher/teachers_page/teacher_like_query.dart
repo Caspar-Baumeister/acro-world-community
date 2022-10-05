@@ -32,7 +32,6 @@ class TeacherLikeQuery extends StatelessWidget {
               refetch!();
             } catch (e) {
               print(e.toString());
-              // print(e);
             }
           });
           if (result.hasException) {

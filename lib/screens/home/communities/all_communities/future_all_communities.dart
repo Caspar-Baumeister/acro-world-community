@@ -1,6 +1,6 @@
 // import 'package:acroworld/models/community_model.dart';
 // import 'package:acroworld/provider/user_provider.dart';
-// import 'package:acroworld/screens/authenticate/authenticate.dart';
+// import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 // import 'package:acroworld/screens/home/communities/all_communities/body/all_communities_body.dart';
 // import 'package:acroworld/services/database.dart';
 // import 'package:acroworld/shared/error_page.dart';

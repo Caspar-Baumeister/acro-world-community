@@ -1,6 +1,6 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authenticate/register/widgets/check_box.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
 import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
