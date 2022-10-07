@@ -20,31 +20,6 @@ class _ClassesBodyState extends State<ClassesBody> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
-        TextButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PlaceSearchScreen(
-                  onPlaceSet: (Place place) {
-                    print(
-                        'UserCommunitiesBody:onPlaceSet ${place.description}');
-                    Future.delayed(Duration.zero, () async {
-                      setState(() {
-                        this.place = place;
-                      });
-                      Navigator.pop(context);
-                    });
-                  },
-                ),
-              ),
-            );
-          },
-          child: place == null
-              ? const Text('Choose location')
-              : Text(place!.description),
-        ),
         Query(
             options: QueryOptions(
               document: Queries.getClasses,
