@@ -6,6 +6,7 @@ import 'package:acroworld/services/database.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/shared/widgets/acro_gender_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -130,6 +131,8 @@ class _RegisterBodyState extends State<RegisterBody> {
                         setState(() => password = val);
                       },
                     ),
+                    const SizedBox(height: 20.0),
+                    const AcroGenderWidget(),
                     const SizedBox(height: 20.0),
                     Row(
                       mainAxisSize: MainAxisSize.min,

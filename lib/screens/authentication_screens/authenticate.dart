@@ -4,15 +4,25 @@ import 'package:acroworld/screens/authentication_screens/login_screen/sign_in.da
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  const Authenticate({Key? key}) : super(key: key);
+  const Authenticate({Key? key, this.initShowSignIn}) : super(key: key);
+
+  final bool? initShowSignIn;
 
   @override
   State<Authenticate> createState() => _AuthenticateState();
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool showSignIn = true;
+  bool showSignIn = false;
   bool confirmedFriend = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initShowSignIn != null) {
+      showSignIn = widget.initShowSignIn!;
+    }
+  }
 
   void confirmFriend() {
     setState(() {

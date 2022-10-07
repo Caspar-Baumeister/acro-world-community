@@ -6,6 +6,7 @@ import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/account_settings/account_settings_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
+import 'package:acroworld/screens/recommentation_screens/recommendation_menu_screen/recommendations_page.dart';
 import 'package:acroworld/screens/teacher/teachers_page/teacher_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -131,6 +132,24 @@ class SettingsDrawer extends StatelessWidget {
             GestureDetector(
               onTap: () => Navigator.of(context).push(
                 MaterialPageRoute(
+                  builder: (context) => const RecommendationsPage(),
+                ),
+              ),
+              child: ListTile(
+                  leading: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.thumb_up),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Text("Recommendations")
+                ],
+              )),
+            ),
+            GestureDetector(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
                   builder: (context) => const AccountSettingsPage(),
                 ),
               ),
@@ -188,7 +207,10 @@ class SettingsDrawer extends StatelessWidget {
 
     // delete all and push to authentication
     Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const Authenticate()),
+        MaterialPageRoute(
+            builder: (context) => const Authenticate(
+                  initShowSignIn: true,
+                )),
         (Route<dynamic> route) => false);
   }
 }
