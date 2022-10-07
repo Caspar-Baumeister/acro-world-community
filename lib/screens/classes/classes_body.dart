@@ -20,6 +20,7 @@ class _ClassesBodyState extends State<ClassesBody> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      children: [
         Query(
             options: QueryOptions(
               document: Queries.getClasses,
