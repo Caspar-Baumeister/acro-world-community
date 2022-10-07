@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:acroworld/graphql/subscriptions.dart';
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
+import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/user_communities/widgets/list_coms.dart';
 import 'package:acroworld/screens/user_communities/widgets/new_button.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
@@ -21,6 +23,7 @@ class UserCommunitiesBody extends StatefulWidget {
 class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
   String query = "";
   List<StreamSubscription> eventListeners = [];
+  Place? place;
 
   @override
   void dispose() {

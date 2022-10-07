@@ -32,14 +32,14 @@ class _LocationSearchState extends State<LocationSearch> {
 
     return Stack(
       children: [
-        Container(
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-          constraints: const BoxConstraints(maxHeight: 350),
-          child: PlaceMap(
-            placeId: placeId,
-            onLoaded: widget.onPlaceSet,
-          ),
-        ),
+        // Container(
+        //   decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+        //   constraints: const BoxConstraints(maxHeight: 350),
+        //   child: PlaceMap(
+        //     placeId: placeId,
+        //     onLoaded: widget.onPlaceSet,
+        //   ),
+        // ),
         Container(
             height: 350,
             child: FloatingSearchBar(
