@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class GallerySection extends StatelessWidget {
@@ -15,13 +16,20 @@ class GallerySection extends StatelessWidget {
       ),
       itemCount: pictureUrls.length,
       itemBuilder: (context, index) {
-        return Container(
-            decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            image: NetworkImage(pictureUrls[index]),
+        return CachedNetworkImage(
+          fit: BoxFit.cover,
+          placeholder: (context, url) => Container(
+            color: Colors.black12,
           ),
-        ));
+          errorWidget: (context, url, error) => Container(
+            color: Colors.black12,
+            child: const Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
+          imageUrl: pictureUrls[index],
+        );
         // Item rendering
       },
     );

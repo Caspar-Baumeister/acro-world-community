@@ -1,9 +1,9 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -69,11 +69,22 @@ class _ClassesBodyState extends State<ClassesBody> {
                                 width: 120.0,
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8.0),
-                                  child: Image(
-                                      fit: BoxFit.cover,
-                                      image: NetworkImage(
-                                        indexClass.imageUrl!,
-                                      )),
+                                  child: CachedNetworkImage(
+                                    fit: BoxFit.cover,
+                                    height: 52.0,
+                                    placeholder: (context, url) => Container(
+                                      color: Colors.black12,
+                                    ),
+                                    errorWidget: (context, url, error) =>
+                                        Container(
+                                      color: Colors.black12,
+                                      child: const Icon(
+                                        Icons.error,
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                    imageUrl: indexClass.imageUrl!,
+                                  ),
                                 ),
                               )
                             : null,

@@ -3,6 +3,7 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher/single_teacher_page/single_teacher_page.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -44,12 +45,38 @@ class _TeacherCardState extends State<TeacherCard> {
                   )),
         ),
         child: ListTile(
-            leading: CircleAvatar(
-              radius: 32,
-              backgroundImage: widget.teacher.profilePicUrl != null
-                  ? NetworkImage(widget.teacher.profilePicUrl!)
-                  : const AssetImage("assets/muscleup_drawing.png")
-                      as ImageProvider,
+            leading: CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: widget.teacher.profilePicUrl!,
+              imageBuilder: (context, imageProvider) => Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+              placeholder: (context, url) => Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: const BoxDecoration(
+                  color: Colors.black12,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              errorWidget: (context, url, error) => Container(
+                width: 64.0,
+                height: 64.0,
+                decoration: const BoxDecoration(
+                  color: Colors.black12,
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.error,
+                  color: Colors.red,
+                ),
+              ),
             ),
             title: Text(
               widget.teacher.name,

@@ -10,6 +10,7 @@ import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/widgets/open_google_maps.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -38,11 +39,21 @@ class SingleClassBody extends StatelessWidget {
                 width: double.infinity,
                 child: ClipRRect(
                   // borderRadius: BorderRadius.circular(8.0),
-                  child: Image(
-                      fit: BoxFit.cover,
-                      image: NetworkImage(
-                        classe.imageUrl!,
-                      )),
+                  child: CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    height: 52.0,
+                    placeholder: (context, url) => Container(
+                      color: Colors.black12,
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.black12,
+                      child: const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                    ),
+                    imageUrl: classe.imageUrl!,
+                  ),
                 ),
               )
             : Container(),

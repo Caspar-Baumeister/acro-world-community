@@ -5,6 +5,7 @@ import 'package:acroworld/screens/teacher/widgets/edit_button.dart';
 import 'package:acroworld/screens/teacher/single_teacher_page/widgets/gallery_section.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class SingleTeacherPage extends StatefulWidget {
@@ -117,14 +118,41 @@ class InfoSection extends StatelessWidget {
             Padding(
               padding:
                   const EdgeInsets.symmetric(vertical: 16.0, horizontal: 6),
-              child: CircleAvatar(
-                radius: 70.0,
-                backgroundImage: teacher.profilePicUrl != null
-                    ? NetworkImage(teacher.profilePicUrl!)
-                    : const AssetImage("assets/muscleup_drawing.png")
-                        as ImageProvider,
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: teacher.profilePicUrl!,
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 120.0,
+                  height: 120.0,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
+                ),
+                placeholder: (context, url) => Container(
+                  width: 120.0,
+                  height: 120.0,
+                  decoration: const BoxDecoration(
+                    color: Colors.black12,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: 120.0,
+                  height: 120.0,
+                  decoration: const BoxDecoration(
+                    color: Colors.black12,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                ),
               ),
             ),
+
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.only(right: 8.0, left: 6),
