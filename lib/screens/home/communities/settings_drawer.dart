@@ -218,7 +218,7 @@ class SettingsDrawer extends StatelessWidget {
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
                             Share.share(
-                                "Hey I'm using the new all in one acro-app called AcroWorld!\nCome and join me https://apps.apple.com/au/app/acroworld/id1633240146\n\nJoin with the friendcode 'AcroWorldCommunity'");
+                                "Hey I'm using the new all in one acro-app called AcroWorld!\nCome and join me\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl\n\nJoin with the friendcode 'AcroWorldCommunity'");
                           }),
                   ],
                 ),
