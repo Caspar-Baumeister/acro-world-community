@@ -1,7 +1,10 @@
 // main.dart
 import 'package:acroworld/models/community_messages/community_message.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:math' as math;
 import 'package:intl/intl.dart';
 
@@ -54,7 +57,7 @@ class InBubble extends StatelessWidget {
                         ? const SizedBox(
                             width: 0,
                           )
-                        : Text(
+                        : SelectableText(
                             message.fromUser?.name ?? "",
                             style: const TextStyle(
                                 color: Colors.black,
@@ -64,6 +67,19 @@ class InBubble extends StatelessWidget {
                           ),
                     RichText(
                       text: TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Clipboard.setData(
+                                ClipboardData(text: message.content));
+                            Fluttertoast.showToast(
+                                msg: "Text copied",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.TOP,
+                                timeInSecForIosWeb: 1,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          },
                         text: message.content,
                         style:
                             const TextStyle(color: Colors.black, fontSize: 15),
@@ -133,6 +149,19 @@ class OutBubble extends StatelessWidget {
                   ),
                   child: RichText(
                     text: TextSpan(
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Clipboard.setData(
+                              ClipboardData(text: message.content));
+                          Fluttertoast.showToast(
+                              msg: "Text copied",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.TOP,
+                              timeInSecForIosWeb: 1,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                        },
                       text: message.content,
                       style: const TextStyle(color: Colors.white, fontSize: 15),
                       children: const <TextSpan>[
