@@ -10,25 +10,26 @@ class ClassModel {
   String? uscUrl;
   double? latitude;
   double? longitude;
-
   String? classPassUrl;
-
   String? websiteUrl;
+  double? distance;
 
-  ClassModel(
-      {required this.id,
-      required this.description,
-      required this.locationName,
-      required this.city,
-      required this.pricing,
-      required this.requirements,
-      required this.imageUrl,
-      required this.uscUrl,
-      required this.classPassUrl,
-      required this.websiteUrl,
-      required this.latitude,
-      required this.longitude,
-      required this.name});
+  ClassModel({
+    required this.id,
+    required this.description,
+    required this.locationName,
+    required this.city,
+    required this.pricing,
+    required this.requirements,
+    required this.imageUrl,
+    required this.uscUrl,
+    required this.classPassUrl,
+    required this.websiteUrl,
+    required this.latitude,
+    required this.longitude,
+    required this.name,
+    required this.distance,
+  });
 
   factory ClassModel.fromJson(dynamic json) {
     return ClassModel(
@@ -45,6 +46,7 @@ class ClassModel {
       imageUrl: json["image_url"],
       latitude: json["location"]?["coordinates"]?[0],
       longitude: json["location"]?["coordinates"]?[1],
+      distance: json["distance"],
     );
   }
 }

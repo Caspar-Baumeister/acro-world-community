@@ -1,6 +1,7 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -16,16 +17,74 @@ class ClassesBody extends StatefulWidget {
 
 class _ClassesBodyState extends State<ClassesBody> {
   Place? place;
+  late QueryOptions queryOptions;
+  late String selector;
 
   @override
   Widget build(BuildContext context) {
+    if (place == null) {
+      queryOptions = QueryOptions(
+        document: Queries.getClasses,
+        fetchPolicy: FetchPolicy.networkOnly,
+      );
+      selector = 'classes';
+    } else {
+      queryOptions = QueryOptions(
+        document: Queries.getClassesByLocation,
+        variables: {
+          'latitude': place!.latLng.latitude,
+          'longitude': place!.latLng.longitude
+        },
+        fetchPolicy: FetchPolicy.networkOnly,
+      );
+      selector = 'classes_by_location';
+    }
     return Column(
       children: [
-        Query(
-            options: QueryOptions(
-              document: Queries.getClasses,
-              fetchPolicy: FetchPolicy.networkOnly,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
             ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PlaceSearchScreen(
+                          onPlaceSet: (Place place) {
+                            Future.delayed(
+                              Duration.zero,
+                              () => setState(
+                                () {
+                                  this.place = place;
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            );
+                          },
+                        )),
+              );
+            },
+            child: Row(
+              children: [
+                const Icon(Icons.location_city),
+                Text(
+                  place?.description ?? 'No location set',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Query(
+            options: queryOptions,
             builder: (QueryResult result,
                 {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
@@ -46,7 +105,7 @@ class _ClassesBodyState extends State<ClassesBody> {
 
               List<ClassModel> classes = [];
 
-              result.data!["classes"]
+              result.data![selector]
                   .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
 
               return ListView.builder(
@@ -89,8 +148,10 @@ class _ClassesBodyState extends State<ClassesBody> {
                               )
                             : null,
                         title: Text(indexClass.name),
-                        subtitle: Text(indexClass.locationName),
-                        //     style: const TextStyle(fontWeight: FontWeight.w300)),
+                        subtitle: Text(indexClass.locationName +
+                            (indexClass.distance != null
+                                ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
+                                : "")),
                       ),
                     );
                   }));
