@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({Key? key}) : super(key: key);
@@ -203,8 +204,22 @@ class SettingsDrawer extends StatelessWidget {
                           }),
                     const TextSpan(
                         text:
-                            " if you find any bugs, have questions or suggestions.",
+                            " if you find any bugs, have questions or suggestions.\n\n",
                         style: TextStyle(color: Colors.black)),
+                    const TextSpan(
+                        text:
+                            "You can also help us by spreading the world direct or trough sending an ",
+                        style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: "invitation",
+                        style: const TextStyle(
+                            color: SECONDARY_COLOR,
+                            fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Share.share(
+                                "Hey I'm using the new all in one acro-app called AcroWorld!\nCome and join me https://apps.apple.com/au/app/acroworld/id1633240146\n\nJoin with the friendcode 'AcroWorldCommunity'");
+                          }),
                   ],
                 ),
               ),

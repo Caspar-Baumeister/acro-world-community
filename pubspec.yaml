@@ -57,6 +57,9 @@ dependencies:
   toggle_switch: ^2.0.1
   # image_picker: ^0.8.5+3
 
+  # share via social media and co
+  share_plus: ^4.5.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
