@@ -70,7 +70,7 @@ class _ClassesBodyState extends State<ClassesBody> {
             },
             child: Row(
               children: [
-                const Icon(Icons.location_city),
+                const Icon(Icons.location_on),
                 Text(
                   place?.description ?? 'No location set',
                   style: const TextStyle(
@@ -116,10 +116,11 @@ class _ClassesBodyState extends State<ClassesBody> {
                     return GestureDetector(
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => SingleClassPage(
-                                  teacherClass: indexClass,
-                                  teacherName: "",
-                                )),
+                          builder: (context) => SingleClassPage(
+                            teacherClass: indexClass,
+                            teacherName: "",
+                          ),
+                        ),
                       ),
                       child: ListTile(
                         leading: indexClass.imageUrl != null
