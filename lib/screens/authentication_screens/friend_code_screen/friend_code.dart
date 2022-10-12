@@ -58,11 +58,25 @@ class FriendCode extends StatelessWidget {
                       ),
                       const SizedBox(height: 15),
                       const Text(
-                        "The worlds first and largest acroyoga and acrobatics community app.\nHere you can:",
+                        "The one and only all acro app.Here you can:",
                         style: TextStyle(fontSize: 12),
                         maxLines: 5,
                       ),
                       const SizedBox(height: 15),
+                      const TextWIthLeadingIcon(
+                        icon: ImageIcon(
+                          AssetImage("assets/check.png"),
+                          color: Colors.green,
+                        ),
+                        text: Padding(
+                          padding: EdgeInsets.only(top: 3.0),
+                          child: Text(
+                            "Stay in touch with the community with the best from Whatsapp and Facebook groups tailored to acro",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                       const TextWIthLeadingIcon(
                         icon: ImageIcon(
                           AssetImage("assets/check.png"),
@@ -108,7 +122,7 @@ class FriendCode extends StatelessWidget {
                       const Divider(color: PRIMARY_COLOR),
                       const SizedBox(height: 15),
                       const Text(
-                        "To protect the acroyoga community, we only allow community members into the app. For this reason you need a friend code to enter the app.",
+                        "To protect the community, we only allow community members into the app. For this reason you need a friend code to enter the app.",
                         style: TextStyle(fontSize: 12),
                       ),
                       const SizedBox(height: 30),
@@ -129,7 +143,7 @@ class FriendCode extends StatelessWidget {
                             TextSpan(
                                 text: "info@acroworld.com",
                                 style: const TextStyle(
-                                    color: Colors.blue,
+                                    color: SECONDARY_COLOR,
                                     fontWeight: FontWeight.bold),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
@@ -152,9 +166,23 @@ class FriendCode extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 15),
-                      const Text(
-                        "You already have an account? click on the Login button",
-                        style: TextStyle(fontSize: 12),
+                      RichText(
+                        textAlign: TextAlign.left,
+                        text: TextSpan(
+                          children: <TextSpan>[
+                            const TextSpan(
+                                text:
+                                    "You already have an account? Please click ",
+                                style: TextStyle(color: Colors.black)),
+                            TextSpan(
+                                text: "here",
+                                style: const TextStyle(
+                                    color: SECONDARY_COLOR,
+                                    fontWeight: FontWeight.bold),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () => toggleView()),
+                          ],
+                        ),
                       ),
                     ],
                   )),

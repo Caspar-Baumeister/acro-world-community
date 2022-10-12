@@ -8,7 +8,11 @@ import 'package:acroworld/screens/home/account_settings/account_settings_page.da
 import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/recommentation_screens/recommendation_menu_screen/recommendations_page.dart';
 import 'package:acroworld/screens/teacher/teachers_page/teacher_page.dart';
+import 'package:acroworld/shared/constants.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -19,8 +23,9 @@ class SettingsDrawer extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       child: Material(
-        child: ListView(
+        child: Column(
           children: <Widget>[
+            const SizedBox(height: 20),
             GestureDetector(
               // onTap: () => Navigator.of(context).push(
               //   MaterialPageRoute(
@@ -29,7 +34,7 @@ class SettingsDrawer extends StatelessWidget {
               // ),
               child: ListTile(
                 leading: Text(
-                  userProvider.activeUser!.name ?? "Unknown",
+                  "You are logged in as ${userProvider.activeUser!.name ?? "Unknown"}",
                 ),
                 // trailing: CircleAvatar(
                 //   backgroundImage: NetworkImage(
@@ -167,6 +172,43 @@ class SettingsDrawer extends StatelessWidget {
             ),
 
             const Divider(color: Colors.grey, height: 1),
+            Expanded(
+                child: Container(
+              padding: const EdgeInsets.all(18),
+              child: RichText(
+                textAlign: TextAlign.left,
+                text: TextSpan(
+                  children: <TextSpan>[
+                    const TextSpan(
+                        text:
+                            "This is an open BETA. Please write us an email to ",
+                        style: TextStyle(color: Colors.black)),
+                    TextSpan(
+                        text: "info@acroworld.com",
+                        style: const TextStyle(
+                            color: SECONDARY_COLOR,
+                            fontWeight: FontWeight.bold),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Clipboard.setData(const ClipboardData(
+                                text: "info@acroworld.com"));
+                            Fluttertoast.showToast(
+                                msg: "Email copied",
+                                toastLength: Toast.LENGTH_SHORT,
+                                gravity: ToastGravity.TOP,
+                                timeInSecForIosWeb: 2,
+                                backgroundColor: Colors.green,
+                                textColor: Colors.white,
+                                fontSize: 16.0);
+                          }),
+                    const TextSpan(
+                        text:
+                            " if you find any bugs, have questions or suggestions.",
+                        style: TextStyle(color: Colors.black)),
+                  ],
+                ),
+              ),
+            )),
             buildMenuItem(
                 text: "Log out",
                 icon: Icons.logout,

@@ -92,6 +92,11 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
+        Container(
+          padding: const EdgeInsets.all(18).copyWith(bottom: 0),
+          child: const Text(
+              "Here you can find all the jams that take place in all your joined communities"),
+        ),
         TableCalendar<Jam>(
           firstDay: kFirstDay,
           lastDay: kLastDay,

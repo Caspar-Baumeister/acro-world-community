@@ -13,6 +13,15 @@ class JamsBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map<DateTime, List<Jam>> kEvents = jamListToHash(jams);
-    return TableEventsCommunity(kEvents: kEvents, cid: cId);
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(18),
+          child: const Text(
+              "Here you can find all the jams that take place in your favorite communities"),
+        ),
+        TableEventsCommunity(kEvents: kEvents, cid: cId),
+      ],
+    );
   }
 }

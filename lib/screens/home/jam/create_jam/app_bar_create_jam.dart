@@ -21,16 +21,24 @@ class AppBarJam extends StatelessWidget with PreferredSizeWidget {
       title: Text(title, style: const TextStyle(color: Colors.black)),
       leading: const BackButton(color: Colors.black),
       actions: <Widget>[
-        TextButton.icon(
-          icon: const Icon(
-            Icons.add_circle_outline,
-            color: Colors.black,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: OutlinedButton(
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+            ),
+            onPressed: () => onSubmit(),
+            child: const Text(
+              'Submit',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Colors.black,
+              ),
+            ),
           ),
-          label: const Text(
-            "Submit",
-            style: TextStyle(color: Colors.black),
-          ),
-          onPressed: () => onSubmit(),
         ),
       ],
     );

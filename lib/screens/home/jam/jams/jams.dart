@@ -32,33 +32,23 @@ class _JamsState extends State<Jams> {
         body: FutureJams(cId: widget.cId));
   }
 
-  GestureDetector floatingActionButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () => handleCreateJam(context),
-      child: Container(
-        width: 86,
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-            color: Colors.grey,
-            border: Border.all(
-              width: 1,
-              color: Colors.grey,
-            ),
-            borderRadius: const BorderRadius.all(Radius.circular(30))),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            SizedBox(width: 6),
-            Text(
-              "New",
-              style: TextStyle(color: Colors.black),
-            ),
-            SizedBox(width: 6),
-            ImageIcon(
-              AssetImage("assets/muscleup_drawing.png"),
-              color: Colors.black,
-            ),
-          ],
+  Widget floatingActionButton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        onPressed: () => handleCreateJam(context),
+        child: const Text(
+          "Plan a jam",
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
         ),
       ),
     );
