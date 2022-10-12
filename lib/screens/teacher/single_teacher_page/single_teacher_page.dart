@@ -125,7 +125,6 @@ class InfoSection extends StatelessWidget {
                   width: 120.0,
                   height: 120.0,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
                     image: DecorationImage(
                         image: imageProvider, fit: BoxFit.cover),
                   ),
@@ -135,7 +134,6 @@ class InfoSection extends StatelessWidget {
                   height: 120.0,
                   decoration: const BoxDecoration(
                     color: Colors.black12,
-                    shape: BoxShape.circle,
                   ),
                 ),
                 errorWidget: (context, url, error) => Container(
@@ -143,7 +141,6 @@ class InfoSection extends StatelessWidget {
                   height: 120.0,
                   decoration: const BoxDecoration(
                     color: Colors.black12,
-                    shape: BoxShape.circle,
                   ),
                   child: const Icon(
                     Icons.error,

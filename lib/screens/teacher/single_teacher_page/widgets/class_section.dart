@@ -25,7 +25,7 @@ class ClassSection extends StatelessWidget {
             return Text(result.exception.toString());
           }
 
-          if (result.isLoading) {
+          if (result.isLoading || result.data == null) {
             return const Loading();
           }
 
@@ -61,39 +61,41 @@ class ClassSection extends StatelessWidget {
                     //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
                     // ),
                     leading: indexClass.imageUrl != null
-                        ? CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: indexClass.imageUrl!,
-                            imageBuilder: (context, imageProvider) => Container(
-                              height: 85.0,
-                              width: 120.0,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
+                        ? SizedBox(
+                            height: 85.0,
+                            width: 120.0,
+                            child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: indexClass.imageUrl!,
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                height: 85.0,
+                                width: 120.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
                               ),
-                            ),
-                            placeholder: (context, url) => Container(
-                              height: 85.0,
-                              width: 120.0,
-                              decoration: BoxDecoration(
-                                color: Colors.black12,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8.0),
+                              placeholder: (context, url) => Container(
+                                height: 85.0,
+                                width: 120.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
                               ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              height: 85.0,
-                              width: 120.0,
-                              decoration: BoxDecoration(
-                                color: Colors.black12,
-                                shape: BoxShape.circle,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: const Icon(
-                                Icons.error,
-                                color: Colors.red,
+                              errorWidget: (context, url, error) => Container(
+                                height: 85.0,
+                                width: 120.0,
+                                decoration: BoxDecoration(
+                                  color: Colors.black12,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
                               ),
                             ),
                           )

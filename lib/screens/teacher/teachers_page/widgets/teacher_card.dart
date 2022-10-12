@@ -52,7 +52,6 @@ class _TeacherCardState extends State<TeacherCard> {
                 width: 64.0,
                 height: 64.0,
                 decoration: BoxDecoration(
-                  shape: BoxShape.circle,
                   image:
                       DecorationImage(image: imageProvider, fit: BoxFit.cover),
                 ),
@@ -62,7 +61,6 @@ class _TeacherCardState extends State<TeacherCard> {
                 height: 64.0,
                 decoration: const BoxDecoration(
                   color: Colors.black12,
-                  shape: BoxShape.circle,
                 ),
               ),
               errorWidget: (context, url, error) => Container(
@@ -70,7 +68,6 @@ class _TeacherCardState extends State<TeacherCard> {
                 height: 64.0,
                 decoration: const BoxDecoration(
                   color: Colors.black12,
-                  shape: BoxShape.circle,
                 ),
                 child: const Icon(
                   Icons.error,
