@@ -2,6 +2,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
+import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -21,7 +22,6 @@ class PlaceQuery extends StatelessWidget {
           variables: {'id': placeId}),
       builder: (QueryResult placeResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        print('placeId $placeId');
         if (placeResult.hasException || !placeResult.isConcrete) {
           return Container();
         } else if (placeResult.isLoading) {
@@ -53,7 +53,7 @@ class PlacesQuery extends StatelessWidget {
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.isLoading) {
-          return const LoadingIndicator();
+          return LoadingIndicator();
         }
         if (result.hasException) {
           return const Text('Exception occured');
@@ -65,11 +65,13 @@ class PlacesQuery extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: List<Widget>.from(
                 result.data?['places'].map((place) {
-                  return TextButton(
+                  return StandardIconButton(
+                    withBorder: false,
+                    text: place['description'],
+                    icon: Icons.location_on,
                     onPressed: () {
                       onPlaceIdSet(place['id']);
                     },
-                    child: Text(place['description']),
                   );
                 }),
               ),
@@ -100,7 +102,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 18),
+      padding: EdgeInsets.symmetric(horizontal: 8),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
@@ -118,7 +120,6 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                     ? PlaceQuery(
                         placeId: placeId,
                         onPlaceSet: (Place place) {
-                          print('onPlaceSet');
                           widget.onPlaceSet(place);
                         },
                       )
@@ -126,7 +127,6 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         query: query,
                         onPlaceIdSet: (String placeId) {
                           setState(() {
-                            print(placeId);
                             this.placeId = placeId;
                           });
                         },

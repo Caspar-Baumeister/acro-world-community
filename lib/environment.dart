@@ -1,4 +1,5 @@
-const bool isProduction = bool.fromEnvironment('dart.vm.product');
+// const bool isProduction = bool.fromEnvironment('dart.vm.product');
+const bool isProduction = true;
 
 class AppEnvironment {
   static const String backendHost =

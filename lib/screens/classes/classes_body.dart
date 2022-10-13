@@ -1,9 +1,11 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -22,6 +24,7 @@ class _ClassesBodyState extends State<ClassesBody> {
 
   @override
   Widget build(BuildContext context) {
+    place = PlacePreferences.getSavedPlace();
     if (place == null) {
       queryOptions = QueryOptions(
         document: Queries.getClasses,
@@ -41,47 +44,30 @@ class _ClassesBodyState extends State<ClassesBody> {
     }
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-            ),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => PlaceSearchScreen(
-                          onPlaceSet: (Place place) {
-                            Future.delayed(
-                              Duration.zero,
-                              () => setState(
-                                () {
-                                  this.place = place;
-                                  Navigator.pop(context);
-                                },
-                              ),
-                            );
-                          },
-                        )),
-              );
-            },
-            child: Row(
-              children: [
-                const Icon(Icons.location_on),
-                Text(
-                  place?.description ?? 'No location set',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
+        StandardIconButton(
+          text: place?.description ?? 'No location set',
+          icon: Icons.location_on,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PlaceSearchScreen(
+                  onPlaceSet: (Place place) {
+                    Future.delayed(
+                      Duration.zero,
+                      () => setState(
+                        () {
+                          this.place = place;
+                          PlacePreferences.setSavedPlace(place);
+                          Navigator.pop(context);
+                        },
+                      ),
+                    );
+                  },
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         ),
         Query(
             options: queryOptions,

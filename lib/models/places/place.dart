@@ -8,6 +8,15 @@ class Place {
 
   Place({required this.id, required this.description, required this.latLng});
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'description': description,
+      'latitude': latLng.latitude,
+      'longitude': latLng.longitude
+    };
+  }
+
   Place.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     description = json['description'];
