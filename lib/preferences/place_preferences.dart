@@ -19,10 +19,8 @@ class PlacePreferences {
 
   static Place? getSavedPlace() {
     String? savedPlaceAsString = _preferences!.getString(_keySavedLocation);
-    print('savedPlaceAsString ${savedPlaceAsString}');
 
     if (savedPlaceAsString != null) {
-      print('savedPlaceAsString ${jsonDecode(savedPlaceAsString)}');
       return Place.fromJson(jsonDecode(savedPlaceAsString));
     } else {
       return null;
