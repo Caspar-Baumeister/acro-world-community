@@ -53,7 +53,9 @@ class PlacesQuery extends StatelessWidget {
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.isLoading) {
-          return LoadingIndicator();
+          return SizedBox(
+              height: MediaQuery.of(context).size.height / 2,
+              child: const LoadingIndicator());
         }
         if (result.hasException) {
           return const Text('Exception occured');

@@ -5,6 +5,7 @@ import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/widgets/place_button/place_button.dart';
 import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -44,27 +45,15 @@ class _ClassesBodyState extends State<ClassesBody> {
     }
     return Column(
       children: [
-        StandardIconButton(
-          text: place?.description ?? 'No location set',
-          icon: Icons.location_on,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => PlaceSearchScreen(
-                  onPlaceSet: (Place place) {
-                    Future.delayed(
-                      Duration.zero,
-                      () => setState(
-                        () {
-                          this.place = place;
-                          PlacePreferences.setSavedPlace(place);
-                          Navigator.pop(context);
-                        },
-                      ),
-                    );
-                  },
-                ),
+        PlaceButton(
+          onPlaceSet: (Place place) {
+            Future.delayed(
+              Duration.zero,
+              () => setState(
+                () {
+                  this.place = place;
+                  PlacePreferences.setSavedPlace(place);
+                },
               ),
             );
           },
@@ -135,10 +124,17 @@ class _ClassesBodyState extends State<ClassesBody> {
                               )
                             : null,
                         title: Text(indexClass.name),
-                        subtitle: Text(indexClass.locationName +
-                            (indexClass.distance != null
-                                ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
-                                : "")),
+                        subtitle: Row(
+                          children: [
+                            Text(indexClass.locationName),
+                            Text(
+                              (indexClass.distance != null
+                                  ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
+                                  : ""),
+                              style: const TextStyle(fontSize: 10),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }));
