@@ -28,19 +28,10 @@ class SettingsDrawer extends StatelessWidget {
           children: <Widget>[
             const SizedBox(height: 20),
             GestureDetector(
-              // onTap: () => Navigator.of(context).push(
-              //   MaterialPageRoute(
-              //     builder: (context) => const SettingsPage(),
-              //   ),
-              // ),
               child: ListTile(
                 leading: Text(
                   "You are logged in as ${userProvider.activeUser!.name ?? "Unknown"}",
                 ),
-                // trailing: CircleAvatar(
-                //   backgroundImage: NetworkImage(
-                //       userProvider.activeUser!.imgUrl ?? MORTY_IMG_URL),
-                // )
               ),
             ),
             GestureDetector(

@@ -1,4 +1,5 @@
 import 'package:acroworld/graphql/mutations.dart';
+import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/helper_functions.dart';
@@ -6,6 +7,7 @@ import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/message_modal.dart';
 import 'package:acroworld/shared/widgets/location_search/location_search.dart';
 import 'package:acroworld/widgets/headers/h2.dart';
+import 'package:acroworld/widgets/place_button/place_button.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -43,7 +45,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
   String nameError = "";
   String name = "";
   String locationError = "";
-  LatLng? location;
+  Place? place;
 
   bool loading = false;
   @override
@@ -55,6 +57,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     {Object? optimisticResult})
                 runMutation,
             QueryResult<dynamic>? result) {
+          print(result);
           if (result != null) {
             if (result.isLoading) {
               return const Loading();
@@ -98,8 +101,10 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Location"),
                   ),
-                  LocationSearch(onPlaceSet: (place) {
-                    location = place.latLng;
+                  PlaceButton(onPlaceSet: (place) {
+                    setState(() {
+                      this.place = place;
+                    });
                   }),
                   Error(text: locationError),
                   IgnorePointer(
@@ -115,8 +120,8 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                           {
                             runMutation({
                               'name': name,
-                              'latitude': location!.latitude,
-                              'longitude': location!.longitude
+                              'latitude': place!.latLng.latitude,
+                              'longitude': place!.latLng.longitude
                             })
                           }
                       },
@@ -145,7 +150,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
       return false;
     }
 
-    if (location == null) {
+    if (place == null) {
       setState(() {
         locationError = "Please choose a location";
       });

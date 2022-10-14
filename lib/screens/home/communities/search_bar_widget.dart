@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
-  const SearchBarWidget({required this.onChanged, Key? key}) : super(key: key);
+  const SearchBarWidget(
+      {required this.onChanged, Key? key, this.autofocus = false})
+      : super(key: key);
 
   final ValueChanged<String> onChanged;
+  final bool autofocus;
 
   @override
   _SearchBarWidgetState createState() => _SearchBarWidgetState();
@@ -32,6 +35,7 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TextField(
+        autofocus: widget.autofocus,
         textInputAction: TextInputAction.search,
         controller: controller,
         decoration: InputDecoration(

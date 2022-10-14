@@ -1,5 +1,6 @@
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/firebase_options.dart';
+import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/loggin_wrapper.dart';
@@ -76,6 +77,7 @@ void main() async {
   print('User granted permission: ${settings.authorizationStatus}');
 
   await CredentialPreferences.init();
+  await PlacePreferences.init();
   return runApp(App(client: client));
 }
 

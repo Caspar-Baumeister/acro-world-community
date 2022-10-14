@@ -143,13 +143,21 @@ class Queries {
   """);
 
   static final getClasses = gql("""
-query getClasses {
-  classes {
-    ${Fragments.classFragment}
+  query getClasses {
+    classes {
+      ${Fragments.classFragment}
+    }
   }
-}
+  """);
 
-""");
+  static final getClassesByLocation = gql("""
+  query GetClassesByLocation(\$latitude: numeric, \$longitude: numeric) {
+    classes_by_location(args: {latitude: \$latitude, longitude: \$longitude}, order_by: {distance: asc}) {
+        ${Fragments.classFragment}
+        distance
+      }
+  }
+  """);
 
   static final getClassEventsByClassId = gql("""
 query getClassEventsByClassId (\$class_id: uuid) {

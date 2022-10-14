@@ -1,8 +1,12 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/preferences/place_preferences.dart';
+import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/widgets/place_button/place_button.dart';
+import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -16,16 +20,46 @@ class ClassesBody extends StatefulWidget {
 
 class _ClassesBodyState extends State<ClassesBody> {
   Place? place;
+  late QueryOptions queryOptions;
+  late String selector;
 
   @override
   Widget build(BuildContext context) {
+    place = PlacePreferences.getSavedPlace();
+    if (place == null) {
+      queryOptions = QueryOptions(
+        document: Queries.getClasses,
+        fetchPolicy: FetchPolicy.networkOnly,
+      );
+      selector = 'classes';
+    } else {
+      queryOptions = QueryOptions(
+        document: Queries.getClassesByLocation,
+        variables: {
+          'latitude': place!.latLng.latitude,
+          'longitude': place!.latLng.longitude
+        },
+        fetchPolicy: FetchPolicy.networkOnly,
+      );
+      selector = 'classes_by_location';
+    }
     return Column(
       children: [
+        PlaceButton(
+          onPlaceSet: (Place place) {
+            Future.delayed(
+              Duration.zero,
+              () => setState(
+                () {
+                  this.place = place;
+                  PlacePreferences.setSavedPlace(place);
+                },
+              ),
+            );
+          },
+        ),
         Query(
-            options: QueryOptions(
-              document: Queries.getClasses,
-              fetchPolicy: FetchPolicy.networkOnly,
-            ),
+            options: queryOptions,
             builder: (QueryResult result,
                 {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
@@ -46,7 +80,7 @@ class _ClassesBodyState extends State<ClassesBody> {
 
               List<ClassModel> classes = [];
 
-              result.data!["classes"]
+              result.data![selector]
                   .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
 
               return ListView.builder(
@@ -57,10 +91,11 @@ class _ClassesBodyState extends State<ClassesBody> {
                     return GestureDetector(
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                            builder: (context) => SingleClassPage(
-                                  teacherClass: indexClass,
-                                  teacherName: "",
-                                )),
+                          builder: (context) => SingleClassPage(
+                            teacherClass: indexClass,
+                            teacherName: "",
+                          ),
+                        ),
                       ),
                       child: ListTile(
                         leading: indexClass.imageUrl != null
@@ -89,8 +124,17 @@ class _ClassesBodyState extends State<ClassesBody> {
                               )
                             : null,
                         title: Text(indexClass.name),
-                        subtitle: Text(indexClass.locationName),
-                        //     style: const TextStyle(fontWeight: FontWeight.w300)),
+                        subtitle: Row(
+                          children: [
+                            Text(indexClass.locationName),
+                            Text(
+                              (indexClass.distance != null
+                                  ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
+                                  : ""),
+                              style: const TextStyle(fontSize: 10),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   }));
