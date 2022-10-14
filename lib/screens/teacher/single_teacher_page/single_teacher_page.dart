@@ -125,6 +125,7 @@ class InfoSection extends StatelessWidget {
                   width: 120.0,
                   height: 120.0,
                   decoration: BoxDecoration(
+                    shape: BoxShape.circle,
                     image: DecorationImage(
                         image: imageProvider, fit: BoxFit.cover),
                   ),
