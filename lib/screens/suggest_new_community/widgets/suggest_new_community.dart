@@ -1,16 +1,13 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/home/communities/modals/set_community_picture.dart';
 import 'package:acroworld/shared/helper_builder.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/shared/message_modal.dart';
-import 'package:acroworld/shared/widgets/location_search/location_search.dart';
 import 'package:acroworld/widgets/headers/h2.dart';
 import 'package:acroworld/widgets/place_button/place_button.dart';
 import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Error extends StatelessWidget {
@@ -78,20 +75,21 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
 
           return Container(
             padding:
-                const EdgeInsets.symmetric(horizontal: 8.0, vertical: 16.0),
+                const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
             width: double.infinity,
             child: SpacedColumn(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 space: 8,
                 children: [
-                  const SetCommunityPicture(),
+                  // const SetCommunityPicture(),
                   Container(
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Name"),
                   ),
                   SizedBox(
                     child: TextField(
-                        decoration: buildInputDecoration(labelText: "Name"),
+                        decoration: buildInputDecoration(
+                            labelText: "Name of your community"),
                         onChanged: (val) => setState(() {
                               name = val;
                             })),

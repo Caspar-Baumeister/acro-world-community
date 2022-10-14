@@ -29,12 +29,16 @@ class StandardIconButton extends StatelessWidget {
         onPressed: onPressed,
         child: Row(
           children: [
-            Icon(icon),
+            Icon(
+              icon,
+              color: Colors.black,
+            ),
+            const SizedBox(width: 6),
             Text(
               text,
               style: const TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w400,
                 color: Colors.black,
               ),
             ),

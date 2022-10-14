@@ -2,11 +2,9 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/widgets/place_button/place_button.dart';
-import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -124,16 +122,24 @@ class _ClassesBodyState extends State<ClassesBody> {
                               )
                             : null,
                         title: Text(indexClass.name),
-                        subtitle: Row(
-                          children: [
-                            Text(indexClass.locationName),
-                            Text(
-                              (indexClass.distance != null
-                                  ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
-                                  : ""),
-                              style: const TextStyle(fontSize: 10),
-                            )
-                          ],
+                        subtitle: RichText(
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 2,
+                          textAlign: TextAlign.left,
+                          text: TextSpan(
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text: indexClass.locationName,
+                                  style: const TextStyle(color: Colors.black)),
+                              TextSpan(
+                                text: indexClass.distance != null
+                                    ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
+                                    : "",
+                                style: const TextStyle(
+                                    color: Colors.black, fontSize: 10),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

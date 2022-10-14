@@ -13,19 +13,19 @@ InputDecoration buildInputDecoration({
       fillColor: Colors.white,
       filled: true,
       errorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 2.0),
+        borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 1.0),
         borderRadius: BorderRadius.circular(20),
       ),
       focusedErrorBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 2.0),
+        borderSide: const BorderSide(color: Color(0xFFad3b3b), width: 1.0),
         borderRadius: BorderRadius.circular(20),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.grey, width: 2.0),
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
         borderRadius: BorderRadius.circular(20),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey[700]!, width: 2.0),
+        borderSide: BorderSide(color: Colors.grey[700]!, width: 1.0),
         borderRadius: BorderRadius.circular(20),
       ),
       alignLabelWithHint: true,
