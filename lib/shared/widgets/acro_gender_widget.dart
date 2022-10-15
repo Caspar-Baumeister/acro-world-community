@@ -12,7 +12,6 @@ class AcroGenderWidget extends StatelessWidget {
       totalSwitches: 3,
       activeBgColor: const [PRIMARY_COLOR],
       inactiveBgColor: Colors.grey[200],
-      // inactiveFgColor: Colors.grey[50],
       labels: const ['Flyer', 'Neutral', 'Base'],
       onToggle: (index) {
         print('switched to: $index');

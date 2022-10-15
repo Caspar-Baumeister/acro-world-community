@@ -132,8 +132,6 @@ class _RegisterBodyState extends State<RegisterBody> {
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    const AcroGenderWidget(),
-                    const SizedBox(height: 20.0),
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

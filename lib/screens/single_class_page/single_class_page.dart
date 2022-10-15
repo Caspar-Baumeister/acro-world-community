@@ -27,16 +27,9 @@ class SingleClassPage extends StatelessWidget {
                       text: teacherClass.name,
                       style:
                           const TextStyle(color: Colors.black, fontSize: 18)),
-                  TextSpan(
-                      text: "  by $teacherName",
-                      style: const TextStyle(
-                          overflow: TextOverflow.ellipsis,
-                          fontSize: 10,
-                          color: Colors.black)),
                 ],
               ),
-            ) //Text(teacherClass.name),
-            ),
+            )),
         body: Query(
             options: QueryOptions(
                 document: Queries.getClassEventsByClassId,
@@ -65,39 +58,10 @@ class SingleClassPage extends StatelessWidget {
               result.data!["class_events"].forEach(
                   (cEvent) => classEvents.add(ClassEvent.fromJson(cEvent)));
 
-              // for (Map<String, dynamic> json in result.data!["teachers"]) {
-              //   teachers.add(TeacherModel.fromJson(json));
-              // }
-
               return SingleClassBody(
                 classe: teacherClass,
                 classEvents: classEvents,
               );
-              //  ListView.builder(
-              //   itemCount: classEvents.length,
-              //   itemBuilder: ((context, index) {
-              //     ClassEvent indexClass = classEvents[index];
-
-              //     DateTime startDate =
-              //         DateTime.parse(indexClass.startDate).toLocal();
-              //     DateTime endDate =
-              //         DateTime.parse(indexClass.startDate).toLocal();
-              //     return
-              //     ListTile(
-              //       // leading: const CircleAvatar(
-              //       //   radius: 3,
-              //       //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-              //       // ),
-              //       title: Text(
-              //           "${DateFormat('EEE, H:mm').format(startDate)} - ${DateFormat('Hm').format(endDate)}"),
-              //       subtitle: Text(teacherClass.name),
-              //       //     style: const TextStyle(fontWeight: FontWeight.w300)),
-              //       trailing: indexClass.isCancelled
-              //           ? const Text("is cancelled")
-              //           : null,
-              //     );
-              //   }),
-              // );
             }));
   }
 }
