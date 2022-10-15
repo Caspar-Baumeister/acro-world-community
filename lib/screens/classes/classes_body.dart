@@ -40,7 +40,7 @@ class _ClassesBodyState extends State<ClassesBody> {
         },
         fetchPolicy: FetchPolicy.networkOnly,
       );
-      selector = 'classes_by_location';
+      selector = 'classes_by_location_v1';
     }
     return Column(
       children: [
