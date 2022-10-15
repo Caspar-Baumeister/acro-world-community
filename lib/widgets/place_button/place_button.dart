@@ -4,9 +4,11 @@ import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart
 import 'package:flutter/material.dart';
 
 class PlaceButton extends StatefulWidget {
-  PlaceButton({Key? key, required this.onPlaceSet}) : super(key: key);
+  const PlaceButton({Key? key, required this.onPlaceSet, this.initialPlace})
+      : super(key: key);
 
   final Function(Place place) onPlaceSet;
+  final Place? initialPlace;
 
   @override
   State<PlaceButton> createState() => _PlaceButtonState();
@@ -14,6 +16,12 @@ class PlaceButton extends StatefulWidget {
 
 class _PlaceButtonState extends State<PlaceButton> {
   Place? place;
+
+  @override
+  void initState() {
+    place = widget.initialPlace;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

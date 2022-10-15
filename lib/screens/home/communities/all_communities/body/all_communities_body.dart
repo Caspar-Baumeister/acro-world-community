@@ -79,6 +79,7 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
               }),
             ),
             PlaceButton(
+              initialPlace: place,
               onPlaceSet: (Place place) {
                 Future.delayed(
                   Duration.zero,
