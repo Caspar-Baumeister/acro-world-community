@@ -9,6 +9,7 @@ import 'package:acroworld/screens/home/calender/calender.dart';
 import 'package:acroworld/screens/recommentation_screens/recommendation_menu_screen/recommendations_page.dart';
 import 'package:acroworld/screens/teacher/teachers_page/teacher_page.dart';
 import 'package:acroworld/shared/constants.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -26,12 +27,43 @@ class SettingsDrawer extends StatelessWidget {
       child: Material(
         child: Column(
           children: <Widget>[
-            const SizedBox(height: 20),
-            GestureDetector(
-              child: ListTile(
-                leading: Text(
-                  "You are logged in as ${userProvider.activeUser!.name ?? "Unknown"}",
+            const SizedBox(height: 25),
+            ListTile(
+              leading: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: userProvider.activeUser!.imageUrl ?? '',
+                imageBuilder: (context, imageProvider) => Container(
+                  width: 50,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    image: DecorationImage(
+                        image: imageProvider, fit: BoxFit.cover),
+                  ),
                 ),
+                placeholder: (context, url) => Container(
+                  width: 50,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Colors.black12,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                errorWidget: (context, url, error) => Container(
+                  width: 50,
+                  height: 50,
+                  decoration: const BoxDecoration(
+                    color: Colors.black12,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              title: Text(
+                userProvider.activeUser!.name ?? "Unknown",
               ),
             ),
             GestureDetector(

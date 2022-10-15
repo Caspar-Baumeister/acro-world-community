@@ -1,4 +1,5 @@
 import 'package:acroworld/models/user_model.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class UserListItem extends StatelessWidget {
@@ -10,8 +11,37 @@ class UserListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        CircleAvatar(
-          backgroundImage: NetworkImage(user.imageUrl ?? ''),
+        CachedNetworkImage(
+          fit: BoxFit.cover,
+          imageUrl: user.imageUrl ?? '',
+          imageBuilder: (context, imageProvider) => Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            ),
+          ),
+          placeholder: (context, url) => Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              color: Colors.black12,
+              shape: BoxShape.circle,
+            ),
+          ),
+          errorWidget: (context, url, error) => Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              color: Colors.black12,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
         ),
         const SizedBox(
           width: 10,
