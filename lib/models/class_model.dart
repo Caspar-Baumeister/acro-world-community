@@ -44,8 +44,8 @@ class ClassModel {
       classPassUrl: json["class_pass_url"],
       websiteUrl: json["website_url"],
       imageUrl: json["image_url"],
-      latitude: json["location"]?["coordinates"]?[0],
-      longitude: json["location"]?["coordinates"]?[1],
+      longitude: json["location"]?["coordinates"]?[0],
+      latitude: json["location"]?["coordinates"]?[1],
       distance: json["distance"],
     );
   }

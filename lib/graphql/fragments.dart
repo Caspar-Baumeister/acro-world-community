@@ -28,6 +28,16 @@ class Fragments {
     website_url
     image_url
     location
+    class_events {
+      end_date
+      start_date
+      is_cancelled
+      participants_aggregate {
+        aggregate {
+          count
+        }
+      }
+    }
   """;
 
   static const String jamFragment = """

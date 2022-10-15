@@ -116,11 +116,18 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                       onPressed: () => {
                         if (checkFields())
                           {
-                            runMutation({
-                              'name': name,
-                              'latitude': place!.latLng.latitude,
-                              'longitude': place!.latLng.longitude
-                            })
+                            runMutation(
+                              {
+                                'name': name,
+                                'location': {
+                                  "type": "Point",
+                                  "coordinates": [
+                                    place!.latLng.longitude,
+                                    place!.latLng.latitude
+                                  ]
+                                },
+                              },
+                            )
                           }
                       },
                       child: const Text(

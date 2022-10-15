@@ -61,8 +61,8 @@ class Mutations {
   """);
 
   static final insertCommunity = gql("""
-    mutation InsertCommunity(\$latitude: float8, \$longitude: float8, \$name: String) {
-      insert_communities_one(object: {latitude: \$latitude, longitude: \$longitude, name: \$name}) {
+    mutation InsertCommunity(\$name: String, \$location: geography) {
+      insert_communities_one(object: {location: \$location, latitude: 1, longitude: 1, name: \$name}) {
         id
       }
     }

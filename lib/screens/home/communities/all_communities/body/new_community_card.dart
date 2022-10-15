@@ -3,10 +3,8 @@ import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/home/chatroom/chatroom.dart';
 import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/constants.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,28 +19,42 @@ class NewCommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => Chatroom(
-                  cId: community.id,
-                  community: community,
-                  name: community.name,
-                )),
-      ),
-      child: ListTile(
-        leading: const CircleAvatar(
-          radius: 32,
-          backgroundImage: AssetImage("assets/logo/play_store_512.png"),
+    return ListTile(
+      // leading: const CircleAvatar(
+      //   radius: 32,
+      //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
+      // ),
+      title: Text(community.name),
+      // subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
+      //     style: const TextStyle(fontWeight: FontWeight.w300)),
+      subtitle: RichText(
+        overflow: TextOverflow.ellipsis,
+        maxLines: 2,
+        textAlign: TextAlign.left,
+        text: TextSpan(
+          children: <TextSpan>[
+            TextSpan(
+              text: community.distance != null
+                  ? " (${community.distance!.toStringAsFixed(2)} km distance)"
+                  : "",
+              style: const TextStyle(color: Colors.black, fontSize: 10),
+            ),
+          ],
         ),
-        title: Text(community.name),
-        // subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
-        //     style: const TextStyle(fontWeight: FontWeight.w300)),
-        trailing: GestureDetector(
-          onTap: () => addCommunity(context),
-          child: const Icon(
-            Icons.add_circle_outline_rounded,
-            color: PRIMARY_COLOR,
+      ),
+      trailing: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
+        ),
+        onPressed: () => addCommunity(context),
+        child: const Text(
+          "Join",
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
           ),
         ),
       ),

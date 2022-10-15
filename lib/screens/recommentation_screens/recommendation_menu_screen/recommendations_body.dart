@@ -24,7 +24,7 @@ class _RecommendationsBodyState extends State<RecommendationsBody> {
     return const CommingSoon(
       header: "Get the best deals for everything related to acro",
       content:
-          "This will be the place where you can shop for books, courses and equipment best suited for acro yogis. We will try to gather the best deals from and for the community",
+          "This will be the place where you can shop for books, courses and equipment best suited for acrobats. We will aim to gather all the best deals from and for the community",
     );
   }
 }

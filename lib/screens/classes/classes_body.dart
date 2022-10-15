@@ -24,6 +24,7 @@ class _ClassesBodyState extends State<ClassesBody> {
   @override
   Widget build(BuildContext context) {
     place = PlacePreferences.getSavedPlace();
+
     if (place == null) {
       queryOptions = QueryOptions(
         document: Queries.getClasses,

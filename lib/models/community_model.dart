@@ -9,6 +9,7 @@ class Community {
   CommunityMessage? lastMessage;
   String? lastVisitedAt;
   String? nextJamAt;
+  dynamic distance;
 
   Community({
     required this.id,
@@ -18,6 +19,7 @@ class Community {
     this.lastMessage,
     this.lastVisitedAt,
     this.nextJamAt,
+    this.distance,
   });
 
   factory Community.fromJson(dynamic json,
@@ -29,6 +31,7 @@ class Community {
         latLng: LatLng(json['latitude'] * 1.0, json['longitude'] * 1.0),
         lastVisitedAt: lastVisitedAt,
         nextJamAt: nextJamAt,
+        distance: json["distance"],
         lastMessage: messageJson != null
             ? CommunityMessage.fromJson(messageJson)
             : null);

@@ -159,6 +159,32 @@ class Queries {
   }
   """);
 
+  static final getOtherCommunities = gql("""
+  query GetOtherCommunities(\$user_id: uuid, \$query: String) {
+  communities(where: {_not: {users: {user_id: {_eq: \$user_id}}}, name: {_ilike: \$query}}, limit: 15) {
+    id
+    name
+    confirmed
+    latitude
+    longitude
+  }
+}
+  """);
+
+  static final getOtherCommunitiesByLocation = gql("""
+query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \$user_id: uuid, \$query: String) {
+  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {name: {_ilike: \$query}}]}, limit: 15) {
+    id
+    name
+    confirmed
+    latitude
+    longitude
+    location
+    distance
+  }
+}
+  """);
+
   static final getClassEventsByClassId = gql("""
 query getClassEventsByClassId (\$class_id: uuid) {
   class_events(where: {class_id: {_eq: \$class_id}}) {

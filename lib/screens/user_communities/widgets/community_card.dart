@@ -1,8 +1,8 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/home/chatroom/chatroom.dart';
+import 'package:acroworld/screens/home/chatroom/widgets/time_bubble.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class CommunityCard extends StatelessWidget {
   const CommunityCard({
@@ -73,11 +73,11 @@ class CommunityCard extends StatelessWidget {
               community.name,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            createdAt != null
+            community.lastMessage?.createdAt != null
                 ? Container(
                     constraints: const BoxConstraints(maxWidth: 60),
                     child: Text(
-                      DateFormat.EEEE().format(createdAt.toLocal()),
+                      readableTimeString(community.lastMessage!.createdAt!),
                       style: TextStyle(
                           fontSize: isNew ? 13 : 12,
                           overflow: TextOverflow.fade,
