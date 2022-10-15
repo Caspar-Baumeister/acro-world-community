@@ -41,7 +41,8 @@ class UserProvider extends ChangeNotifier {
     // TODO fill in rest of data
     final response = await Database(token: _token).authorizedApi(Querys.me);
     Map user = response["data"]["me"][0];
-    _activeUser = User(id: user["id"], name: user["name"]);
+    _activeUser =
+        User(id: user["id"], name: user["name"], imageUrl: user["image_url"]);
   }
 
   bool isTokenExpired() {
