@@ -45,6 +45,7 @@ class _ClassesBodyState extends State<ClassesBody> {
     return Column(
       children: [
         PlaceButton(
+          initialPlace: place,
           onPlaceSet: (Place place) {
             Future.delayed(
               Duration.zero,
