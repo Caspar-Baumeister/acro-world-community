@@ -80,9 +80,11 @@ class _ClassesBodyState extends State<ClassesBody> {
 
               List<ClassModel> classes = [];
 
-              result.data![selector]
-                  .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
-
+              if (result.data!.keys.contains(selector) &&
+                  result.data![selector] != null) {
+                result.data![selector]
+                    .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
+              }
               return ListView.builder(
                   shrinkWrap: true,
                   itemCount: classes.length,

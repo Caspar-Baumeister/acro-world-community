@@ -37,8 +37,8 @@ class _PlaceButtonState extends State<PlaceButton> {
                 Future.delayed(Duration.zero, () {
                   setState(
                     () {
-                      this.place = place;
                       Navigator.pop(context);
+                      this.place = place;
                     },
                   );
                   widget.onPlaceSet(place);

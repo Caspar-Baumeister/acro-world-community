@@ -100,7 +100,8 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
 
               List<Community> communities = [];
 
-              if (result.data!.keys.contains(selector)) {
+              if (result.data!.keys.contains(selector) &&
+                  result.data![selector] != null) {
                 result.data![selector]
                     .forEach((com) => communities.add(Community.fromJson(com)));
 
