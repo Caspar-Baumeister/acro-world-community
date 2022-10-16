@@ -23,25 +23,11 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
   late QueryOptions queryOptions;
   late String selector;
 
-  // @override
-  // void initState() {
-  //   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-  //     String token = Provider.of<UserProvider>(context, listen: false).token!;
-  //     Provider.of<AllOtherComs>(context, listen: false)
-  //         .loadDataFromDatabase(token, query);
-  //   });
-  //   super.initState();
-  // }
-
   String query = "";
   @override
   Widget build(BuildContext context) {
-    // AllOtherComs allOtherComs = Provider.of<AllOtherComs>(context);
     String userId =
         Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-    // if (allOtherComs.initialized == false) {
-    //   allOtherComs.loadDataFromDatabase(token, query);
-    // }
 
     place = PlacePreferences.getSavedPlace();
     if (place == null) {
@@ -66,56 +52,55 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
     }
 
     return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            // Searchbar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-              child: SearchBarWidget(onChanged: (newQuery) {
-                setState(() {
-                  query = newQuery;
-                });
-              }),
-            ),
-            PlaceButton(
-              initialPlace: place,
-              onPlaceSet: (Place place) {
-                Future.delayed(
-                  Duration.zero,
-                  () => setState(
-                    () {
-                      this.place = place;
-                      PlacePreferences.setSavedPlace(place);
-                    },
-                  ),
-                );
-              },
-            ),
-            Query(
-              options: queryOptions,
-              builder: (QueryResult result,
-                  {VoidCallback? refetch, FetchMore? fetchMore}) {
-                if (result.hasException) {
-                  return Text(result.exception.toString());
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          // Searchbar
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: SearchBarWidget(onChanged: (newQuery) {
+              setState(() {
+                query = newQuery;
+              });
+            }),
+          ),
+          PlaceButton(
+            initialPlace: place,
+            onPlaceSet: (Place place) {
+              Future.delayed(
+                Duration.zero,
+                () => setState(
+                  () {
+                    this.place = place;
+                    PlacePreferences.setSavedPlace(place);
+                  },
+                ),
+              );
+            },
+          ),
+          Query(
+            options: queryOptions,
+            builder: (QueryResult result,
+                {VoidCallback? refetch, FetchMore? fetchMore}) {
+              if (result.hasException) {
+                return Text(result.exception.toString());
+              }
+
+              if (result.isLoading) {
+                return const Loading();
+              }
+
+              VoidCallback runRefetch = (() {
+                try {
+                  refetch!();
+                } catch (e) {
+                  print(e.toString());
                 }
+              });
 
-                if (result.isLoading) {
-                  return const Loading();
-                }
+              List<Community> communities = [];
 
-                VoidCallback runRefetch = (() {
-                  try {
-                    refetch!();
-                  } catch (e) {
-                    print(e.toString());
-                  }
-                });
-
-                List<Community> communities = [];
-
-                print(result.data);
-
+              if (result.data!.keys.contains(selector)) {
                 result.data![selector]
                     .forEach((com) => communities.add(Community.fromJson(com)));
 
@@ -124,17 +109,13 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
                     communities: communities,
                   ),
                 );
-              },
-            ),
-          ],
-        ));
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
-
-  // void search(String newQuery, String token) async {
-  //   setState(() {
-  //     query = newQuery;
-  //   });
-  //   Provider.of<AllOtherComs>(context, listen: false)
-  //       .loadDataFromDatabase(token, query);
-  // }
 }
