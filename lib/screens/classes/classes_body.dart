@@ -1,11 +1,12 @@
 import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/single_class_page/single_class_page.dart';
+import 'package:acroworld/screens/classes/widgets/classes_calendar.dart';
+import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/loading.dart';
 import 'package:acroworld/widgets/place_button/place_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -20,6 +21,7 @@ class _ClassesBodyState extends State<ClassesBody> {
   Place? place;
   late QueryOptions queryOptions;
   late String selector;
+  DateTime selctedDate = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -42,114 +44,93 @@ class _ClassesBodyState extends State<ClassesBody> {
       );
       selector = 'classes_by_location_v1';
     }
-    return Column(
-      children: [
-        PlaceButton(
-          initialPlace: place,
-          onPlaceSet: (Place place) {
-            Future.delayed(
-              Duration.zero,
-              () => setState(
-                () {
-                  this.place = place;
-                  PlacePreferences.setSavedPlace(place);
-                },
-              ),
-            );
-          },
-        ),
-        Query(
-            options: queryOptions,
-            builder: (QueryResult result,
-                {VoidCallback? refetch, FetchMore? fetchMore}) {
-              if (result.hasException) {
-                return Text(result.exception.toString());
-              }
-
-              if (result.isLoading) {
-                return const Loading();
-              }
-
-              VoidCallback runRefetch = (() {
-                try {
-                  refetch!();
-                } catch (e) {
-                  print(e.toString());
-                }
-              });
-
-              List<ClassModel> classes = [];
-
-              if (result.data!.keys.contains(selector) &&
-                  result.data![selector] != null) {
-                result.data![selector]
-                    .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
-              }
-              return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: classes.length,
-                  itemBuilder: ((context, index) {
-                    ClassModel indexClass = classes[index];
-                    return GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => SingleClassPage(
-                            teacherClass: indexClass,
-                            teacherName: "",
-                          ),
-                        ),
-                      ),
-                      child: ListTile(
-                        leading: indexClass.imageUrl != null
-                            ? SizedBox(
-                                height: 85.0,
-                                width: 120.0,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: CachedNetworkImage(
-                                    fit: BoxFit.cover,
-                                    height: 52.0,
-                                    placeholder: (context, url) => Container(
-                                      color: Colors.black12,
-                                    ),
-                                    errorWidget: (context, url, error) =>
-                                        Container(
-                                      color: Colors.black12,
-                                      child: const Icon(
-                                        Icons.error,
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                    imageUrl: indexClass.imageUrl!,
-                                  ),
-                                ),
-                              )
-                            : null,
-                        title: Text(indexClass.name),
-                        subtitle: RichText(
-                          overflow: TextOverflow.ellipsis,
-                          maxLines: 2,
-                          textAlign: TextAlign.left,
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: indexClass.locationName,
-                                  style: const TextStyle(color: Colors.black)),
-                              TextSpan(
-                                text: indexClass.distance != null
-                                    ? " (${indexClass.distance!.toStringAsFixed(2)} km from city centre)"
-                                    : "",
-                                style: const TextStyle(
-                                    color: Colors.black, fontSize: 10),
-                              ),
-                            ],
-                          ),
-                        ),
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.7,
+                child: PlaceButton(
+                  initialPlace: place,
+                  onPlaceSet: (Place place) {
+                    Future.delayed(
+                      Duration.zero,
+                      () => setState(
+                        () {
+                          this.place = place;
+                          PlacePreferences.setSavedPlace(place);
+                        },
                       ),
                     );
-                  }));
-            }),
-      ],
+                  },
+                ),
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * 0.15,
+                height: 32,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18.0),
+                  color: Colors.white,
+                  border: Border.all(color: Colors.black26),
+                ),
+                alignment: Alignment.center,
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: const TextField(
+                  keyboardType: TextInputType.number,
+                  textInputAction: TextInputAction.search,
+                  decoration: InputDecoration(
+                    hintText: "radius",
+                    hintStyle: TextStyle(fontSize: 12),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Query(
+              options: queryOptions,
+              builder: (QueryResult result,
+                  {VoidCallback? refetch, FetchMore? fetchMore}) {
+                if (result.hasException) {
+                  return Text(result.exception.toString());
+                }
+
+                if (result.isLoading) {
+                  return const Loading();
+                }
+
+                VoidCallback runRefetch = (() {
+                  try {
+                    refetch!();
+                  } catch (e) {
+                    print(e.toString());
+                  }
+                });
+
+                List<ClassModel> classes = [];
+                List<ClassEvent> classEvents = [];
+
+                if (result.data!.keys.contains(selector) &&
+                    result.data![selector] != null) {
+                  result.data![selector].forEach((clas) {
+                    classes.add(ClassModel.fromJson(clas));
+                    if (clas["class_events"] != null &&
+                        clas["class_events"].isNotEmpty) {
+                      clas["class_events"].forEach((element) {
+                        classEvents.add(ClassEvent.fromJson(element,
+                            classModel: ClassModel.fromJson(clas)));
+                      });
+                    }
+                  });
+                }
+                return ClassesEventCalendar(
+                    kEvents: classEventToHash(classEvents));
+              }),
+        ],
+      ),
     );
   }
 }

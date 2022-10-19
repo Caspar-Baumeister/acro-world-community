@@ -17,7 +17,7 @@ class StandardIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
           // Supply null for displaying default border
@@ -36,6 +36,7 @@ class StandardIconButton extends StatelessWidget {
             const SizedBox(width: 6),
             Text(
               text,
+              overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w400,

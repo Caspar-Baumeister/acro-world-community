@@ -13,6 +13,7 @@ class ClassModel {
   String? classPassUrl;
   String? websiteUrl;
   double? distance;
+  List<String> classLevel;
 
   ClassModel({
     required this.id,
@@ -29,9 +30,17 @@ class ClassModel {
     required this.longitude,
     required this.name,
     required this.distance,
+    required this.classLevel,
   });
 
   factory ClassModel.fromJson(dynamic json) {
+    List<String> classLevel = [];
+    List? levels = json["class_levels"];
+    if (levels != null && levels.isNotEmpty) {
+      for (var level in levels) {
+        classLevel.add(level["level"]["name"]);
+      }
+    }
     return ClassModel(
       id: json['id'],
       name: json["name"],
@@ -47,6 +56,7 @@ class ClassModel {
       longitude: json["location"]?["coordinates"]?[0],
       latitude: json["location"]?["coordinates"]?[1],
       distance: json["distance"],
+      classLevel: classLevel,
     );
   }
 }

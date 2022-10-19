@@ -28,10 +28,18 @@ class Fragments {
     website_url
     image_url
     location
+    class_levels {
+      level {
+        name
+      }
+    }
     class_events {
+      class_id
+      created_at
       end_date
-      start_date
+      id
       is_cancelled
+      start_date
       participants_aggregate {
         aggregate {
           count

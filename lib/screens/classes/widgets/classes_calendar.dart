@@ -1,20 +1,21 @@
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/single_class_page/widgets/class_event_participant_query.dart';
+import 'package:acroworld/screens/classes/widgets/class_event_expanded_tile.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class ClassEventCalendar extends StatefulWidget {
-  const ClassEventCalendar({required this.kEvents, Key? key}) : super(key: key);
+class ClassesEventCalendar extends StatefulWidget {
+  const ClassesEventCalendar({required this.kEvents, Key? key})
+      : super(key: key);
 
   final Map<DateTime, List<ClassEvent>> kEvents;
 
   @override
-  _ClassEventCalendarState createState() => _ClassEventCalendarState();
+  _ClassesEventCalendarState createState() => _ClassesEventCalendarState();
 }
 
-class _ClassEventCalendarState extends State<ClassEventCalendar> {
+class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
   late ValueNotifier<List<ClassEvent>> _selectedEvents;
   final CalendarFormat _calendarFormat = CalendarFormat.week;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -114,33 +115,29 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
               selectedDecoration: const BoxDecoration(
                   color: PRIMARY_COLOR, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
-          //onRangeSelected: _onRangeSelected,
-          // onFormatChanged: (format) {
-          //   if (_calendarFormat != format) {
-          //     setState(() {
-          //       _calendarFormat = format;
-          //     });
-          //   }
-          // },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
           },
         ),
-        const SizedBox(height: 8.0),
+        const SizedBox(height: 6),
         ValueListenableBuilder<List<ClassEvent>>(
           valueListenable: _selectedEvents,
           builder: (context, value, _) {
             return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: value.length,
               itemBuilder: (context, index) {
-                return ClassEventParticipantQuery(
-                  classEvent: value[index],
-                );
+                print(value[index].toString());
+                return ClassEventExpandedTile(classEvent: value[index]);
+
+                // ClassEventParticipantQuery(
+                //   classEvent: value[index],
+                // );
               },
             );
           },
-        ),
+        )
       ],
     );
   }
