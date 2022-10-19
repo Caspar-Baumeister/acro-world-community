@@ -48,47 +48,21 @@ class _ClassesBodyState extends State<ClassesBody> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.7,
-                child: PlaceButton(
-                  initialPlace: place,
-                  onPlaceSet: (Place place) {
-                    Future.delayed(
-                      Duration.zero,
-                      () => setState(
-                        () {
-                          this.place = place;
-                          PlacePreferences.setSavedPlace(place);
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.15,
-                height: 32,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18.0),
-                  color: Colors.white,
-                  border: Border.all(color: Colors.black26),
-                ),
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: const TextField(
-                  keyboardType: TextInputType.number,
-                  textInputAction: TextInputAction.search,
-                  decoration: InputDecoration(
-                    hintText: "radius",
-                    hintStyle: TextStyle(fontSize: 12),
-                    border: InputBorder.none,
+          SizedBox(
+            child: PlaceButton(
+              initialPlace: place,
+              onPlaceSet: (Place place) {
+                Future.delayed(
+                  Duration.zero,
+                  () => setState(
+                    () {
+                      this.place = place;
+                      PlacePreferences.setSavedPlace(place);
+                    },
                   ),
-                ),
-              ),
-            ],
+                );
+              },
+            ),
           ),
           Query(
               options: queryOptions,

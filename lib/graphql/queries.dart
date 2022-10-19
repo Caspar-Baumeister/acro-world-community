@@ -152,7 +152,7 @@ class Queries {
 
   static final getClassesByLocation = gql("""
   query GetClassesByLocation(\$latitude: numeric, \$longitude: numeric) {
-    classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}) {
+    classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {distance: {_lte: "20"}}) {
         ${Fragments.classFragment}
         distance
       }
@@ -173,7 +173,7 @@ class Queries {
 
   static final getOtherCommunitiesByLocation = gql("""
 query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \$user_id: uuid, \$query: String) {
-  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {name: {_ilike: \$query}}]}, limit: 15) {
+  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {distance: {_lte: "100"}}, {name: {_ilike: \$query}}]}, limit: 15) {
     id
     name
     confirmed
@@ -238,4 +238,25 @@ query getClassEventCommunity(\$class_event_id: uuid) {
       }
     }
       """);
+
+  static final getUserCommunities = gql("""
+  query getUserCommunities() {
+  me {
+    communities(order_by: {community: {community_messages_aggregate: {max: {created_at: desc_nulls_last}}}}) {
+      last_visited_at
+      community_id
+      community {
+        ${Fragments.communityFragment}
+          community_messages(limit: 1, order_by: {created_at: desc}) {
+          content
+          created_at
+          from_user {
+            name
+          }
+        }
+      }
+    }
+  }
+}
+  """);
 }

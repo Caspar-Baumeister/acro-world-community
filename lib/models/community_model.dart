@@ -4,8 +4,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Community {
   String name;
   String id;
-  bool confirmed;
-  LatLng latLng;
+  bool? confirmed;
+  LatLng? latLng;
   CommunityMessage? lastMessage;
   String? lastVisitedAt;
   String? nextJamAt;
