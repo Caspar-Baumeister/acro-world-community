@@ -122,6 +122,9 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                     ? PlaceQuery(
                         placeId: placeId,
                         onPlaceSet: (Place place) {
+                          Future.delayed(Duration.zero, () {
+                            Navigator.pop(context);
+                          });
                           widget.onPlaceSet(place);
                         },
                       )
