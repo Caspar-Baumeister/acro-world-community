@@ -104,7 +104,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
