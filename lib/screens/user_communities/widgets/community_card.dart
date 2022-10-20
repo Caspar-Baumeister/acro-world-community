@@ -14,28 +14,6 @@ class CommunityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Query(
-    //     options: QueryOptions(
-    //         document: Queries.getUserCommunityMessageCount,
-    //         variables: {
-    //           'community_id': community.id,
-    //           'last_visited_at': community.lastVisitedAt
-    //         }),
-    //     builder: (QueryResult result,
-    //         {VoidCallback? refetch, FetchMore? fetchMore}) {
-    //       if (result.hasException) {
-    //         return Text(result.exception.toString());
-    //       }
-    //       if (result.isLoading) {
-    //         return const CircularProgressIndicator();
-    //       }
-    //       int? count;
-    //       if (result.data!["user_communities"].isNotEmpty) {
-    //         // get the number of messages
-    //         count = result.data!["user_communities"][0]["community"]
-    //             ["community_messages_aggregate"]["aggregate"]["count"];
-    //       }
-
     bool isNew = false;
     DateTime? createdAt;
     DateTime? lastVisitedAt;
@@ -61,67 +39,148 @@ class CommunityCard extends StatelessWidget {
                   name: community.name,
                 )),
       ),
-      child: ListTile(
-        leading: const CircleAvatar(
-          radius: 32,
-          backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              community.name,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+      child: Row(
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(6.0),
+            child: CircleAvatar(
+              radius: 32,
+              backgroundImage: AssetImage("assets/logo/play_store_512.png"),
             ),
-            community.lastMessage?.createdAt != null
-                ? Container(
-                    constraints: const BoxConstraints(maxWidth: 60),
-                    child: Text(
-                      readableTimeString(community.lastMessage!.createdAt!),
-                      style: TextStyle(
-                          fontSize: isNew ? 13 : 12,
-                          overflow: TextOverflow.fade,
-                          color: isNew ? PRIMARY_COLOR : Colors.black,
-                          fontWeight:
-                              isNew ? FontWeight.bold : FontWeight.w300),
-                      maxLines: 1,
-                      textAlign: TextAlign.right,
-                    ))
-                : Container()
-          ],
-        ),
-        subtitle:
-            // Column(
-            //   children: [
-            Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              child: Container(
-                child: community.lastMessage?.fromUser?.name != null &&
-                        community.lastMessage?.content != null
-                    ? RichText(
-                        overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                          style: DefaultTextStyle.of(context)
-                              .style
-                              .copyWith(overflow: TextOverflow.ellipsis),
-                          children: <TextSpan>[
-                            TextSpan(
-                                text:
-                                    "${community.lastMessage!.fromUser!.name}: ",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            TextSpan(
-                                text: community.lastMessage!.content,
-                                style: const TextStyle(
-                                    overflow: TextOverflow.ellipsis)),
-                          ],
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          community.name,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
-                      )
-                    : null,
+                      ),
+                      community.lastMessage?.createdAt != null
+                          ? Container(
+                              constraints: const BoxConstraints(maxWidth: 65),
+                              child: Text(
+                                readableTimeString(
+                                    community.lastMessage!.createdAt!),
+                                style: TextStyle(
+                                    fontSize: isNew ? 13 : 12,
+                                    overflow: TextOverflow.fade,
+                                    color: isNew ? PRIMARY_COLOR : Colors.black,
+                                    fontWeight: isNew
+                                        ? FontWeight.bold
+                                        : FontWeight.w300),
+                                maxLines: 1,
+                                textAlign: TextAlign.right,
+                              ))
+                          : Container()
+                    ],
+                  ),
+                  community.lastMessage?.fromUser?.name != null &&
+                          community.lastMessage?.content != null
+                      ? RichText(
+                          overflow: TextOverflow.ellipsis,
+                          text: TextSpan(
+                            style: DefaultTextStyle.of(context)
+                                .style
+                                .copyWith(overflow: TextOverflow.ellipsis),
+                            children: <TextSpan>[
+                              TextSpan(
+                                  text:
+                                      "${community.lastMessage!.fromUser!.name}: ",
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold)),
+                              TextSpan(
+                                  text: community.lastMessage!.content,
+                                  style: const TextStyle(
+                                      overflow: TextOverflow.ellipsis)),
+                            ],
+                          ),
+                        )
+                      : Container(),
+                ],
               ),
             ),
+          )
+        ],
+      ),
+    );
+  }
+}
+      
+      
+      
+      // ListTile(
+      //   leading: const CircleAvatar(
+      //     radius: 32,
+      //     backgroundImage: AssetImage("assets/logo/play_store_512.png"),
+      //   ),
+      //   title: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Text(
+      //         community.name,
+      //         style: const TextStyle(fontWeight: FontWeight.bold),
+      //       ),
+      //       community.lastMessage?.createdAt != null
+      //           ? Container(
+      //               constraints: const BoxConstraints(maxWidth: 60),
+      //               child: Text(
+      //                 readableTimeString(community.lastMessage!.createdAt!),
+      //                 style: TextStyle(
+      //                     fontSize: isNew ? 13 : 12,
+      //                     overflow: TextOverflow.fade,
+      //                     color: isNew ? PRIMARY_COLOR : Colors.black,
+      //                     fontWeight:
+      //                         isNew ? FontWeight.bold : FontWeight.w300),
+      //                 maxLines: 1,
+      //                 textAlign: TextAlign.right,
+      //               ))
+      //           : Container()
+      //     ],
+      //   ),
+      //   subtitle:
+      //       // Column(
+      //       //   children: [
+      //       Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       Flexible(
+      //         child: Container(
+      //           child: community.lastMessage?.fromUser?.name != null &&
+      //                   community.lastMessage?.content != null
+      //               ? RichText(
+      //                   overflow: TextOverflow.ellipsis,
+      //                   text: TextSpan(
+      //                     style: DefaultTextStyle.of(context)
+      //                         .style
+      //                         .copyWith(overflow: TextOverflow.ellipsis),
+      //                     children: <TextSpan>[
+      //                       TextSpan(
+      //                           text:
+      //                               "${community.lastMessage!.fromUser!.name}: ",
+      //                           style: const TextStyle(
+      //                               fontWeight: FontWeight.bold)),
+      //                       TextSpan(
+      //                           text: community.lastMessage!.content,
+      //                           style: const TextStyle(
+      //                               overflow: TextOverflow.ellipsis)),
+      //                     ],
+      //                   ),
+      //                 )
+      //               : null,
+      //         ),
+      //       ),
             // count != null && count > 0
             //     ? Container(
             //         height: 28,
@@ -132,8 +191,8 @@ class CommunityCard extends StatelessWidget {
             //                 BorderRadius.all(Radius.circular(20))),
             //         child: Text(count.toString()))
             //     : Container()
-          ],
-        ),
+        //   ],
+        // ),
         // nextJamAt != null
         //     ? Align(
         //         alignment: Alignment.centerLeft,
@@ -142,7 +201,7 @@ class CommunityCard extends StatelessWidget {
         //     : Container()
         //   ],
         // ),
-      ),
-    );
-  }
-}
+    //   ),
+    // );
+  // }
+// }

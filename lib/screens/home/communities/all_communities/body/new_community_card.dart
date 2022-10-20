@@ -3,13 +3,12 @@ import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/user_communities/user_communities.dart';
 import 'package:acroworld/services/database.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class NewCommunityCard extends StatelessWidget {
+class NewCommunityCard extends StatefulWidget {
   const NewCommunityCard({
     Key? key,
     required this.community,
@@ -18,13 +17,19 @@ class NewCommunityCard extends StatelessWidget {
   final Community community;
 
   @override
+  State<NewCommunityCard> createState() => _NewCommunityCardState();
+}
+
+class _NewCommunityCardState extends State<NewCommunityCard> {
+  bool isLoading = false;
+  @override
   Widget build(BuildContext context) {
     return ListTile(
       // leading: const CircleAvatar(
       //   radius: 32,
       //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
       // ),
-      title: Text(community.name),
+      title: Text(widget.community.name),
       // subtitle: Text(timeago.format(community.nextJam, allowFromNow: true),
       //     style: const TextStyle(fontWeight: FontWeight.w300)),
       subtitle: RichText(
@@ -34,27 +39,30 @@ class NewCommunityCard extends StatelessWidget {
         text: TextSpan(
           children: <TextSpan>[
             TextSpan(
-              text: community.distance != null
-                  ? " (${community.distance!.toStringAsFixed(2)} km distance)"
+              text: widget.community.distance != null
+                  ? " (${widget.community.distance!.toStringAsFixed(2)} km distance)"
                   : "",
               style: const TextStyle(color: Colors.black, fontSize: 10),
             ),
           ],
         ),
       ),
-      trailing: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+      trailing: IgnorePointer(
+        ignoring: isLoading,
+        child: OutlinedButton(
+          style: OutlinedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
           ),
-        ),
-        onPressed: () => addCommunity(context),
-        child: const Text(
-          "Join",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
+          onPressed: () => addCommunity(context),
+          child: const Text(
+            "Join",
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Colors.black,
+            ),
           ),
         ),
       ),
@@ -62,6 +70,9 @@ class NewCommunityCard extends StatelessWidget {
   }
 
   void addCommunity(BuildContext context) async {
+    setState(() {
+      isLoading = true;
+    });
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context, listen: false);
     final EventBus eventBus = eventBusProvider.eventBus;
@@ -79,11 +90,16 @@ class NewCommunityCard extends StatelessWidget {
 
     String uid = Provider.of<UserProvider>(context, listen: false).getId();
 
-    final response = await database.insertUserCommunitiesOne(community.id, uid);
+    final response =
+        await database.insertUserCommunitiesOne(widget.community.id, uid);
 
     eventBus.fire(CrudUserCommunityEvent());
+    setState(() {
+      isLoading = false;
+    });
+    Navigator.pop(context);
 
-    Navigator.of(context).push(
-        MaterialPageRoute(builder: ((context) => const UserCommunities())));
+    // Navigator.of(context).push(
+    //     MaterialPageRoute(builder: ((context) => const UserCommunities())));
   }
 }

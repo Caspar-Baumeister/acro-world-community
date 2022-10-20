@@ -46,7 +46,12 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
               ),
             );
           },
-          child: Text(name, style: const TextStyle(color: Colors.black))),
+          child: Text(
+            name,
+            style: const TextStyle(color: Colors.black),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          )),
       leading: BackButton(
         color: Colors.black,
         onPressed: () {

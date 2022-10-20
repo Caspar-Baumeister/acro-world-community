@@ -98,36 +98,40 @@ class ClassEventExpandedTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.black,
-                              size: 16,
-                            ),
-                            Container(
-                              constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.3),
-                              child: Text(
-                                classEvent.classModel!.locationName,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
+                        Container(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.black,
+                                size: 16,
+                              ),
+                              Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.25),
+                                child: Text(
+                                  classEvent.classModel!.locationName,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         Container(
                             alignment: Alignment.center,
                             width: MediaQuery.of(context).size.width * 0.3,
                             child: const Text(
-                              "Participants:", //"(${classEvent.classModel!.city})",
+                              "Participants:",
+                              style: TextStyle(fontSize: 12),
                               maxLines: 1,
                             ))
                       ],

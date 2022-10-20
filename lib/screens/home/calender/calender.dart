@@ -131,8 +131,13 @@ class _ChooseCommunityModalState extends State<ChooseCommunityModal> {
       communitiesDropdown.add(DropdownMenuItem<String>(
           key: Key(community.id),
           value: community.id,
-          child: Text(
-            community.name,
+          child: Container(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.6),
+            child: Text(
+              community.name,
+              maxLines: 2,
+            ),
           )));
     }
     return Container(
