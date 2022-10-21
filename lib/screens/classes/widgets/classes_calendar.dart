@@ -126,6 +126,7 @@ class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
             return ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
+              reverse: true,
               itemCount: value.length,
               itemBuilder: (context, index) {
                 print(value[index].toString());

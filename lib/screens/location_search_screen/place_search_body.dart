@@ -6,7 +6,7 @@ import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class PlaceQuery extends StatelessWidget {
+class PlaceQuery extends StatefulWidget {
   const PlaceQuery({Key? key, required this.placeId, required this.onPlaceSet})
       : super(key: key);
 
@@ -14,12 +14,17 @@ class PlaceQuery extends StatelessWidget {
   final Function(Place place) onPlaceSet;
 
   @override
+  State<PlaceQuery> createState() => _PlaceQueryState();
+}
+
+class _PlaceQueryState extends State<PlaceQuery> {
+  @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
           document: Queries.getPlace,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'id': placeId}),
+          variables: {'id': widget.placeId}),
       builder: (QueryResult placeResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (placeResult.hasException || !placeResult.isConcrete) {
@@ -28,7 +33,8 @@ class PlaceQuery extends StatelessWidget {
           return const LoadingIndicator();
         } else {
           Place place = Place.fromJson(placeResult.data!['place']);
-          onPlaceSet(place);
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => widget.onPlaceSet(place));
           return Container();
         }
       },
@@ -122,10 +128,9 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                     ? PlaceQuery(
                         placeId: placeId,
                         onPlaceSet: (Place place) {
-                          Future.delayed(Duration.zero, () {
-                            Navigator.pop(context);
-                          });
                           widget.onPlaceSet(place);
+
+                          Navigator.pop(context);
                         },
                       )
                     : PlacesQuery(

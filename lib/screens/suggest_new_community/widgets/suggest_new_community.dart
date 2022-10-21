@@ -99,9 +99,9 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Location"),
                   ),
-                  PlaceButton(onPlaceSet: (place) {
+                  PlaceButton(onPlaceSet: (_place) {
                     setState(() {
-                      this.place = place;
+                      place = _place;
                     });
                   }),
                   Error(text: locationError),

@@ -33,15 +33,13 @@ class _PlaceButtonState extends State<PlaceButton> {
           context,
           MaterialPageRoute(
             builder: (context) => PlaceSearchScreen(
-              onPlaceSet: (place) {
-                Future.delayed(Duration.zero, () {
-                  setState(
-                    () {
-                      this.place = place;
-                    },
-                  );
-                  widget.onPlaceSet(place);
-                });
+              onPlaceSet: (_place) {
+                setState(
+                  () {
+                    place = _place;
+                  },
+                );
+                widget.onPlaceSet(_place);
               },
             ),
           ),

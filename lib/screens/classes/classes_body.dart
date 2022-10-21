@@ -51,15 +51,12 @@ class _ClassesBodyState extends State<ClassesBody> {
           SizedBox(
             child: PlaceButton(
               initialPlace: place,
-              onPlaceSet: (Place place) {
-                Future.delayed(
-                  Duration.zero,
-                  () => setState(
-                    () {
-                      this.place = place;
-                      PlacePreferences.setSavedPlace(place);
-                    },
-                  ),
+              onPlaceSet: (Place _place) async {
+                await PlacePreferences.setSavedPlace(_place);
+                setState(
+                  () {
+                    place = _place;
+                  },
                 );
               },
             ),
