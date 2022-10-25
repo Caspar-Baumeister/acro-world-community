@@ -19,8 +19,8 @@ class _PlaceButtonState extends State<PlaceButton> {
 
   @override
   void initState() {
-    place = widget.initialPlace;
     super.initState();
+    place = widget.initialPlace;
   }
 
   @override

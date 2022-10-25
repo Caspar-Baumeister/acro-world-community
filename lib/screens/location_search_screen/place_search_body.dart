@@ -6,7 +6,7 @@ import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-class PlaceQuery extends StatefulWidget {
+class PlaceQuery extends StatelessWidget {
   const PlaceQuery({Key? key, required this.placeId, required this.onPlaceSet})
       : super(key: key);
 
@@ -14,28 +14,28 @@ class PlaceQuery extends StatefulWidget {
   final Function(Place place) onPlaceSet;
 
   @override
-  State<PlaceQuery> createState() => _PlaceQueryState();
-}
-
-class _PlaceQueryState extends State<PlaceQuery> {
-  @override
   Widget build(BuildContext context) {
     return Query(
       options: QueryOptions(
           document: Queries.getPlace,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'id': widget.placeId}),
+          variables: {'id': placeId}),
       builder: (QueryResult placeResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (placeResult.hasException || !placeResult.isConcrete) {
-          return Container();
-        } else if (placeResult.isLoading) {
-          return const LoadingIndicator();
-        } else {
+        if (placeResult.data != null) {
           Place place = Place.fromJson(placeResult.data!['place']);
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => widget.onPlaceSet(place));
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            onPlaceSet(place);
+            Future.delayed(const Duration(milliseconds: 5), (() {
+              Navigator.of(context).pop();
+            }));
+          });
+
           return Container();
+        } else if (placeResult.hasException || !placeResult.isConcrete) {
+          return Container();
+        } else {
+          return const LoadingIndicator();
         }
       },
     );
@@ -129,8 +129,6 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         placeId: placeId,
                         onPlaceSet: (Place place) {
                           widget.onPlaceSet(place);
-
-                          Navigator.pop(context);
                         },
                       )
                     : PlacesQuery(
