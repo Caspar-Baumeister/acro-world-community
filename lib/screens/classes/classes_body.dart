@@ -18,15 +18,19 @@ class ClassesBody extends StatefulWidget {
 }
 
 class _ClassesBodyState extends State<ClassesBody> {
-  Place? place;
+  late Place? place;
   late QueryOptions queryOptions;
   late String selector;
   DateTime selctedDate = DateTime.now();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
     place = PlacePreferences.getSavedPlace();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     if (place == null) {
       queryOptions = QueryOptions(
         document: Queries.getClasses,
@@ -52,7 +56,7 @@ class _ClassesBodyState extends State<ClassesBody> {
             child: PlaceButton(
               initialPlace: place,
               onPlaceSet: (Place _place) async {
-                await PlacePreferences.setSavedPlace(_place);
+                PlacePreferences.setSavedPlace(_place);
                 setState(
                   () {
                     place = _place;

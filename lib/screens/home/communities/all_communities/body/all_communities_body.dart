@@ -72,6 +72,7 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
           PlaceButton(
             initialPlace: place,
             onPlaceSet: (Place _place) {
+              PlacePreferences.setSavedPlace(_place);
               setState(
                 () {
                   place = _place;
