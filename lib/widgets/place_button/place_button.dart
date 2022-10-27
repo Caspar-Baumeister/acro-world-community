@@ -15,7 +15,7 @@ class PlaceButton extends StatefulWidget {
 }
 
 class _PlaceButtonState extends State<PlaceButton> {
-  Place? place;
+  late Place? place;
 
   @override
   void initState() {

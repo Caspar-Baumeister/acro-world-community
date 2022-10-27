@@ -19,9 +19,15 @@ class AllCommunitiesBody extends StatefulWidget {
 }
 
 class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
-  Place? place;
+  late Place? place;
   late QueryOptions queryOptions;
   late String selector;
+
+  @override
+  void initState() {
+    super.initState();
+    place = PlacePreferences.getSavedPlace();
+  }
 
   String query = "";
   @override
@@ -29,7 +35,6 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
     String userId =
         Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
 
-    place = PlacePreferences.getSavedPlace();
     if (place == null) {
       queryOptions = QueryOptions(
         document: Queries.getOtherCommunities,
@@ -66,8 +71,7 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
           ),
           PlaceButton(
             initialPlace: place,
-            onPlaceSet: (Place _place) async {
-              await PlacePreferences.setSavedPlace(_place);
+            onPlaceSet: (Place _place) {
               setState(
                 () {
                   place = _place;
