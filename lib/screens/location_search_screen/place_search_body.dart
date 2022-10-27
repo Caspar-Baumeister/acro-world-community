@@ -1,5 +1,6 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
 import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
@@ -26,9 +27,9 @@ class PlaceQuery extends StatelessWidget {
           Place place = Place.fromJson(placeResult.data!['place']);
           WidgetsBinding.instance.addPostFrameCallback((_) {
             onPlaceSet(place);
-            Future.delayed(const Duration(milliseconds: 5), (() {
-              Navigator.of(context).pop();
-            }));
+
+            Navigator.of(context).pop();
+            PlacePreferences.setSavedPlace(place);
           });
 
           return Container();
