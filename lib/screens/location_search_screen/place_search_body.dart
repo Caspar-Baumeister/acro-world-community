@@ -103,6 +103,7 @@ class PlaceSearchBody extends StatefulWidget {
 class _PlaceSearchBodyState extends State<PlaceSearchBody> {
   String query = '';
   String placeId = '';
+  bool isNavigatedBack = false;
 
   @override
   Widget build(BuildContext context) {
@@ -126,6 +127,12 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         placeId: placeId,
                         onPlaceSet: (Place place) {
                           widget.onPlaceSet(place);
+                          if (!isNavigatedBack) {
+                            Navigator.of(context).pop();
+                            setState(() {
+                              isNavigatedBack = true;
+                            });
+                          }
                         },
                       )
                     : PlacesQuery(
