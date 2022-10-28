@@ -21,12 +21,11 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    return SafeArea(
-      child: Drawer(
+    return Drawer(
+      child: SafeArea(
         child: Material(
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 25),
               ListTile(
                 leading: CachedNetworkImage(
                   fit: BoxFit.cover,
