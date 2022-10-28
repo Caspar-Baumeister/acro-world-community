@@ -12,8 +12,6 @@ import 'package:acroworld/shared/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -23,238 +21,216 @@ class SettingsDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    return Drawer(
-      child: Material(
-        child: Column(
-          children: <Widget>[
-            const SizedBox(height: 25),
-            ListTile(
-              leading: CachedNetworkImage(
-                fit: BoxFit.cover,
-                imageUrl: userProvider.activeUser!.imageUrl ?? '',
-                imageBuilder: (context, imageProvider) => Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
+    return SafeArea(
+      child: Drawer(
+        child: Material(
+          child: Column(
+            children: <Widget>[
+              const SizedBox(height: 25),
+              ListTile(
+                leading: CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  imageUrl: userProvider.activeUser!.imageUrl ?? '',
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                  ),
+                  placeholder: (context, url) => Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Colors.black12,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 50,
+                    height: 50,
+                    decoration: const BoxDecoration(
+                      color: Colors.black12,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
                   ),
                 ),
-                placeholder: (context, url) => Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Colors.black12,
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  width: 50,
-                  height: 50,
-                  decoration: const BoxDecoration(
-                    color: Colors.black12,
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-              title: Text(
-                userProvider.activeUser!.name ?? "Unknown",
-              ),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const Calender(),
+                title: Text(
+                  userProvider.activeUser!.name ?? "Unknown",
                 ),
               ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.location_on_sharp),
-                  SizedBox(
-                    width: 15,
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const Calender(),
                   ),
-                  Text("Jams")
-                ],
-              )),
-            ),
-            // Comment in again when feature is ready
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const TeacherPage(),
                 ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.person_search_sharp),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Teacher")
-                ],
-              )),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const ClassesPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.calendar_month),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Classes")
-                ],
-              )),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const EventsPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.festival_outlined),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Events")
-                ],
-              )),
-            ),
-
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const BuddyPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.favorite),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Buddy finder")
-                ],
-              )),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const RecommendationsPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.thumb_up),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Recommendations")
-                ],
-              )),
-            ),
-            GestureDetector(
-              onTap: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const AccountSettingsPage(),
-                ),
-              ),
-              child: ListTile(
-                  leading: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.settings),
-                  SizedBox(
-                    width: 15,
-                  ),
-                  Text("Settings")
-                ],
-              )),
-            ),
-
-            const Divider(color: Colors.grey, height: 1),
-            Expanded(
-                child: Container(
-              padding: const EdgeInsets.all(18),
-              child: RichText(
-                textAlign: TextAlign.left,
-                text: TextSpan(
-                  children: <TextSpan>[
-                    const TextSpan(
-                        text:
-                            "This is an open BETA. Please write us an email to ",
-                        style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                        text: "info@acroworld.com",
-                        style: const TextStyle(
-                            color: SECONDARY_COLOR,
-                            fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Clipboard.setData(const ClipboardData(
-                                text: "info@acroworld.com"));
-                            Fluttertoast.showToast(
-                                msg: "Email copied",
-                                toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.TOP,
-                                timeInSecForIosWeb: 2,
-                                backgroundColor: Colors.green,
-                                textColor: Colors.white,
-                                fontSize: 16.0);
-                          }),
-                    const TextSpan(
-                        text:
-                            " if you find any bugs, have questions or suggestions.\n\n",
-                        style: TextStyle(color: Colors.black)),
-                    const TextSpan(
-                        text:
-                            "You can also help us by spreading the world direct or trough sending an ",
-                        style: TextStyle(color: Colors.black)),
-                    TextSpan(
-                        text: "invitation",
-                        style: const TextStyle(
-                            color: SECONDARY_COLOR,
-                            fontWeight: FontWeight.bold),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            Share.share(
-                                "Hey I'm using the new all in one acro-app called AcroWorld!\nCome and join me\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl\n\nJoin with the friendcode 'AcroWorldCommunity'");
-                          }),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.location_on_sharp),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Jams")
                   ],
-                ),
+                )),
               ),
-            )),
-            buildMenuItem(
-                text: "Log out",
-                icon: Icons.logout,
-                onPressed: () async {
-                  await logOut(context);
-                } //=> await AuthService().signOut(),
-                )
-          ],
+              // Comment in again when feature is ready
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const TeacherPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.person_search_sharp),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Teacher")
+                  ],
+                )),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const ClassesPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.calendar_month),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Classes")
+                  ],
+                )),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const EventsPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.festival_outlined),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Events")
+                  ],
+                )),
+              ),
+
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const BuddyPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.favorite),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Buddy finder")
+                  ],
+                )),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const RecommendationsPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.thumb_up),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Recommendations")
+                  ],
+                )),
+              ),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AccountSettingsPage(),
+                  ),
+                ),
+                child: ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(Icons.settings),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text("Settings")
+                  ],
+                )),
+              ),
+
+              const Divider(color: Colors.grey, height: 1),
+              Expanded(
+                  child: Container(
+                padding: const EdgeInsets.all(18),
+                child: RichText(
+                  textAlign: TextAlign.left,
+                  text: TextSpan(
+                    children: <TextSpan>[
+                      const TextSpan(
+                          text: "Help us spread the word by sending an ",
+                          style: TextStyle(color: Colors.black)),
+                      TextSpan(
+                          text: "invitation",
+                          style: const TextStyle(
+                              color: SECONDARY_COLOR,
+                              fontWeight: FontWeight.bold),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Share.share(
+                                  "Download AcroWorld!\nIt's the new acro community app\n\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl\n\nUse the friendcode 'AcroWorldCommunity' to create an account");
+                            }),
+                      const TextSpan(
+                          text: " to your community!",
+                          style: TextStyle(color: Colors.black)),
+                    ],
+                  ),
+                ),
+              )),
+              buildMenuItem(
+                  text: "Log out",
+                  icon: Icons.logout,
+                  onPressed: () async {
+                    await logOut(context);
+                  } //=> await AuthService().signOut(),
+                  )
+            ],
+          ),
         ),
       ),
     );
