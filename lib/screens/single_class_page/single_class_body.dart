@@ -6,7 +6,6 @@ import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:acroworld/shared/helper_functions.dart';
 import 'package:acroworld/shared/widgets/open_google_maps.dart';
-import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
@@ -51,8 +50,7 @@ class SingleClassBody extends StatelessWidget {
             : Container(),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: SpacedColumn(
-            space: 10,
+          child: Column(
             children: [
               const SizedBox(height: 20),
               ReadMoreText(
@@ -65,6 +63,7 @@ class SingleClassBody extends StatelessWidget {
                 moreStyle: const TextStyle(color: PRIMARY_COLOR),
                 lessStyle: const TextStyle(color: PRIMARY_COLOR),
               ),
+              const SizedBox(height: 10),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -108,22 +107,41 @@ class SingleClassBody extends StatelessWidget {
                       : Container()
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  classe.uscUrl != null
-                      ? LinkButton(text: "Urban Sport", link: classe.uscUrl!)
-                      : Container(),
-                  classe.classPassUrl != null
-                      ? LinkButton(
-                          text: "Class Pass", link: classe.classPassUrl!)
-                      : Container(),
-                  classe.websiteUrl != null
-                      ? LinkButton(text: "Website", link: classe.websiteUrl!)
-                      : Container(),
-                ],
+              const SizedBox(height: 10),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  "Links",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
               ),
+              const SizedBox(height: 2),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      classe.uscUrl != null
+                          ? LinkButton(
+                              text: "Urban Sport", link: classe.uscUrl!)
+                          : Container(),
+                      classe.classPassUrl != null
+                          ? LinkButton(
+                              text: "Class Pass", link: classe.classPassUrl!)
+                          : Container(),
+                      classe.websiteUrl != null
+                          ? LinkButton(
+                              text: "Website", link: classe.websiteUrl!)
+                          : Container(),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
               const Divider(),
+              const SizedBox(height: 6),
               classe.latitude != null && classe.longitude != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +175,10 @@ class SingleClassBody extends StatelessWidget {
                     )
                   : Container(),
               classe.latitude != null && classe.longitude != null
-                  ? const Divider()
+                  ? const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 6.0),
+                      child: Divider(),
+                    )
                   : Container(),
               SizedBox(
                 child:

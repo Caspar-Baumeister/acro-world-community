@@ -10,24 +10,27 @@ class LinkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
-      style: OutlinedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(18),
+    return Padding(
+      padding: const EdgeInsets.only(right: 5.0),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18),
+          ),
         ),
-      ),
-      onPressed: () async {
-        Uri _url = Uri.parse(link);
-        if (!await launchUrl(_url)) {
-          throw 'Could not launch $_url';
-        }
-      },
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w700,
-          color: Colors.black,
+        onPressed: () async {
+          Uri _url = Uri.parse(link);
+          if (!await launchUrl(_url)) {
+            throw 'Could not launch $_url';
+          }
+        },
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w700,
+            color: Colors.black,
+          ),
         ),
       ),
     );

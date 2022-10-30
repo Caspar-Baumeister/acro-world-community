@@ -38,31 +38,6 @@ class _SingleTeacherPageState extends State<SingleTeacherPage> {
         appBar: AppBar(
           leading: const BackButton(color: Colors.black),
           title: Text(widget.teacher.name),
-          // actions: [
-          //   Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: OutlinedButton(
-          //       style: OutlinedButton.styleFrom(
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(18),
-          //         ),
-          //       ),
-          //       onPressed: () {
-          //         setState(() {
-          //           isEdit = !isEdit;
-          //         });
-          //       },
-          //       child: Text(
-          //         isEdit ? 'done' : "edit",
-          //         style: const TextStyle(
-          //           fontSize: 16,
-          //           fontWeight: FontWeight.w700,
-          //           color: Colors.black,
-          //         ),
-          //       ),
-          //     ),
-          //   )
-          // ],
         ),
         body: Column(
           mainAxisSize: MainAxisSize.min,
