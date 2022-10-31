@@ -24,7 +24,7 @@ class PlaceQuery extends StatelessWidget {
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (placeResult.data != null) {
           Place place = Place.fromJson(placeResult.data!['place']);
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance?.addPostFrameCallback((_) {
             onPlaceSet(place);
           });
 
