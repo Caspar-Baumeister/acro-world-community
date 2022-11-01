@@ -74,7 +74,8 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
 
 Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
   List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
-  sortedObjects.sort((j1, j2) => j1.date.isBefore(j2.date) ? 1 : 0);
+  sortedObjects.sort((classEvent1, classEvent2) =>
+      classEvent2.date.compareTo(classEvent1.date));
   LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
       LinkedHashMap<DateTime, List<ClassEvent>>(
     equals: isSameDayCustom,
@@ -88,12 +89,6 @@ Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
     }
   }
   return objectMap;
-
-  // jamMap..addAll({
-  //     for (var jam in jams)
-
-  //     jam.date: [jam]
-  //   });
 }
 
 int getHashCode(DateTime key) {
