@@ -1,12 +1,10 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/buddy_screen/buddy_page.dart';
 import 'package:acroworld/screens/classes/classes_page.dart';
 import 'package:acroworld/screens/events/event_page.dart';
 import 'package:acroworld/screens/home/account_settings/account_settings_page.dart';
 import 'package:acroworld/screens/home/calender/calender.dart';
-import 'package:acroworld/screens/recommentation_screens/recommendation_menu_screen/recommendations_page.dart';
 import 'package:acroworld/screens/teacher/teachers_page/teacher_page.dart';
 import 'package:acroworld/shared/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -138,42 +136,42 @@ class SettingsDrawer extends StatelessWidget {
                 )),
               ),
 
-              GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const BuddyPage(),
-                  ),
-                ),
-                child: ListTile(
-                    leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.favorite),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text("Buddy finder")
-                  ],
-                )),
-              ),
-              GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const RecommendationsPage(),
-                  ),
-                ),
-                child: ListTile(
-                    leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.thumb_up),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Text("Recommendations")
-                  ],
-                )),
-              ),
+              // GestureDetector(
+              //   onTap: () => Navigator.of(context).push(
+              //     MaterialPageRoute(
+              //       builder: (context) => const BuddyPage(),
+              //     ),
+              //   ),
+              //   child: ListTile(
+              //       leading: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: const [
+              //       Icon(Icons.favorite),
+              //       SizedBox(
+              //         width: 15,
+              //       ),
+              //       Text("Buddy finder")
+              //     ],
+              //   )),
+              // ),
+              // GestureDetector(
+              //   onTap: () => Navigator.of(context).push(
+              //     MaterialPageRoute(
+              //       builder: (context) => const RecommendationsPage(),
+              //     ),
+              //   ),
+              //   child: ListTile(
+              //       leading: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: const [
+              //       Icon(Icons.thumb_up),
+              //       SizedBox(
+              //         width: 15,
+              //       ),
+              //       Text("Recommendations")
+              //     ],
+              //   )),
+              // ),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
