@@ -7,7 +7,7 @@ class PlaceButton extends StatefulWidget {
   const PlaceButton({Key? key, required this.onPlaceSet, this.initialPlace})
       : super(key: key);
 
-  final Function(Place place) onPlaceSet;
+  final Function(Place? place) onPlaceSet;
   final Place? initialPlace;
 
   @override
@@ -25,26 +25,47 @@ class _PlaceButtonState extends State<PlaceButton> {
 
   @override
   Widget build(BuildContext context) {
-    return StandardIconButton(
-      text: place?.description ?? 'No location set',
-      icon: Icons.location_on,
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => PlaceSearchScreen(
-              onPlaceSet: (_place) {
-                setState(
-                  () {
-                    place = _place;
+    return Stack(
+      children: [
+        StandardIconButton(
+          text: place?.description ?? 'No location set',
+          icon: Icons.location_on,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => PlaceSearchScreen(
+                  onPlaceSet: (_place) {
+                    setState(
+                      () {
+                        place = _place;
+                      },
+                    );
+                    widget.onPlaceSet(_place);
                   },
-                );
-                widget.onPlaceSet(_place);
-              },
-            ),
-          ),
-        );
-      },
+                ),
+              ),
+            );
+          },
+        ),
+        place != null
+            ? Positioned(
+                right: 10,
+                top: 0,
+                bottom: 0,
+                child: GestureDetector(
+                    onTap: () {
+                      setState(
+                        () {
+                          place = null;
+                        },
+                      );
+                      widget.onPlaceSet(null);
+                    },
+                    child: const Icon(Icons.close)),
+              )
+            : Container()
+      ],
     );
   }
 }

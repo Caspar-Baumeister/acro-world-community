@@ -55,7 +55,7 @@ class _ClassesBodyState extends State<ClassesBody> {
           SizedBox(
             child: PlaceButton(
               initialPlace: place,
-              onPlaceSet: (Place _place) async {
+              onPlaceSet: (Place? _place) async {
                 PlacePreferences.setSavedPlace(_place);
                 setState(
                   () {

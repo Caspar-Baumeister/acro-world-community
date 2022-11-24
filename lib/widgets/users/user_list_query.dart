@@ -88,7 +88,6 @@ class _UserListQueryState extends State<UserListQuery> {
         if (result.isLoading && result.data == null) {
           return const Loading();
         }
-        print(result.isLoading);
         if (result.data != null) {
           addResultData(result.data!);
           return SingleChildScrollView(

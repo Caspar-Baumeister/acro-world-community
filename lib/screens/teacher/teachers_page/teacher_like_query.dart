@@ -49,9 +49,6 @@ class TeacherLikeQuery extends StatelessWidget {
 
           result.data!["teacher_likes"]
               .forEach((teacher) => teachersILike.add(teacher["teacher_id"]));
-
-          print(teachersILike);
-
           return TeacherBody(teachers: teachers, teachersILike: teachersILike);
         });
   }

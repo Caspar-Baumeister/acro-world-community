@@ -38,7 +38,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
                   textColor: Colors.white,
                   fontSize: 16.0);
             } else {
-              print(result.data.toString());
               Fluttertoast.showToast(
                   msg: "something went wrong",
                   toastLength: Toast.LENGTH_SHORT,
@@ -70,7 +69,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 // if authentication is not neccesary, return onPressed
                 : () => showDeleteDialog(context, () => runMutation({})),
             style: ElevatedButton.styleFrom(
-              primary: Colors.white,
+              backgroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 side: const BorderSide(color: Colors.red),
                 borderRadius: BorderRadius.circular(30.0),

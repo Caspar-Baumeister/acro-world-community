@@ -11,7 +11,7 @@ class PlacePreferences {
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
 
-  static Future setSavedPlace(Place place) async {
+  static Future setSavedPlace(Place? place) async {
     if (_preferences != null) {
       await _preferences!.setString(_keySavedLocation, jsonEncode(place));
     }
@@ -20,7 +20,13 @@ class PlacePreferences {
   static Place? getSavedPlace() {
     String? savedPlaceAsString = _preferences!.getString(_keySavedLocation);
 
-    if (savedPlaceAsString != null) {
+    if (savedPlaceAsString != null &&
+        savedPlaceAsString.runtimeType != Null &&
+        savedPlaceAsString.isNotEmpty &&
+        jsonDecode(savedPlaceAsString).runtimeType != Null) {
+      print("savedPlaceAsString");
+      print(savedPlaceAsString);
+      print(savedPlaceAsString.runtimeType);
       return Place.fromJson(jsonDecode(savedPlaceAsString));
     } else {
       return null;

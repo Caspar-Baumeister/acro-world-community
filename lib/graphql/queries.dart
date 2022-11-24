@@ -48,27 +48,6 @@ class Queries {
   }
   """);
 
-  // static final getUserCommunities = gql("""
-  // query GetMyCommunities(\$query: String!) {
-  //   me {
-  //     communities (where: {community: {name: {_ilike: \$query}}}) {
-  //       last_visited_at
-  //       community_id
-  //       community {
-  //         ${Fragments.communityFragment}
-  //         community_messages(limit: 1, order_by: {created_at: desc}) {
-  //         content
-  //         created_at
-  //         from_user {
-  //           name
-  //         }
-  //       }
-  //       }
-  //     }
-  //   }
-  // }
-  // """);
-
   static final getUserCommunityMessageCount = gql("""
   query GetMyCommunityPreview(\$community_id: uuid!, \$last_visited_at: timestamptz!) {
   user_communities(where: {community_id: {_eq: \$community_id}}) {

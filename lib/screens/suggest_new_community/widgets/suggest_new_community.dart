@@ -54,7 +54,6 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     {Object? optimisticResult})
                 runMutation,
             QueryResult<dynamic>? result) {
-          print(result);
           if (result != null) {
             if (result.isLoading) {
               return const Loading();

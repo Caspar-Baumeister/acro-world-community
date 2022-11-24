@@ -68,8 +68,6 @@ class _TeacherQueryState extends State<TeacherQuery> {
         result.data!["teachers"]
             .forEach((teacher) => teachers.add(TeacherModel.fromJson(teacher)));
 
-        print(teachers[0].toString());
-
         // for (Map<String, dynamic> json in result.data!["teachers"]) {
         //   teachers.add(TeacherModel.fromJson(json));
         // }

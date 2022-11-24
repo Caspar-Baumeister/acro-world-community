@@ -21,7 +21,6 @@ class ClassEvent {
       required this.date});
 
   factory ClassEvent.fromJson(dynamic json, {ClassModel? classModel}) {
-    print(json["participants_aggregate"]);
     return ClassEvent(
       classId: json['class_id'],
       createdAt: DateTime.parse(json["created_at"]),

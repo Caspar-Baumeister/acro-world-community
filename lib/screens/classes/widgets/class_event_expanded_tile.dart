@@ -18,7 +18,6 @@ class ClassEventExpandedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("works");
     return GestureDetector(
       onTap: () => classEvent.classModel != null
           ? Navigator.of(context).push(
@@ -98,33 +97,30 @@ class ClassEventExpandedTile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const Icon(
-                                Icons.location_on,
-                                color: Colors.black,
-                                size: 16,
-                              ),
-                              Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.25),
-                                child: Text(
-                                  classEvent.classModel!.locationName,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.black,
+                              size: 16,
+                            ),
+                            Container(
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.25),
+                              child: Text(
+                                classEvent.classModel!.locationName,
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         Container(
                             alignment: Alignment.center,

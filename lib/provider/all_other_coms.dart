@@ -15,7 +15,7 @@ class AllOtherComs extends ChangeNotifier {
           allOtherComs.map((com) => Community.fromJson(com)));
       return true;
     } catch (e) {
-      print(e);
+      print(e.toString());
       _allOtherComs = [];
       return false;
     }
