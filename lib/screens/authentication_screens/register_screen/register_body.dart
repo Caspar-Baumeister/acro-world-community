@@ -1,12 +1,11 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
-import 'package:acroworld/screens/user_communities/user_communities.dart';
-import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/helper_builder.dart';
-import 'package:acroworld/shared/loading.dart';
-import 'package:acroworld/shared/widgets/acro_gender_widget.dart';
+import 'package:acroworld/screens/home_screens/user_communities/user_communities.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_builder.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -40,7 +39,7 @@ class _RegisterBodyState extends State<RegisterBody> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingWidget()
         : Padding(
             padding:
                 const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),

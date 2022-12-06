@@ -1,5 +1,5 @@
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/widgets/standard_app_bar/standard_app_bar.dart';
+import 'package:acroworld/components/standard_app_bar/standard_app_bar.dart';
 import 'package:flutter/material.dart';
 
 import 'place_search_body.dart';

@@ -1,5 +1,5 @@
-import 'package:acroworld/widgets/standard_app_bar/standard_app_bar.dart';
-import 'package:acroworld/widgets/users/user_list_query.dart';
+import 'package:acroworld/components/standard_app_bar/standard_app_bar.dart';
+import 'package:acroworld/components/users/user_list_query.dart';
 import 'package:flutter/material.dart';
 import 'package:gql/ast.dart';
 

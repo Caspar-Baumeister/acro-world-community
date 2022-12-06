@@ -1,5 +1,5 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
-import 'package:acroworld/services/database.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class AuthProvider {

@@ -1,6 +1,6 @@
-import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/helper_builder.dart';
-import 'package:acroworld/shared/widgets/text_wIth_leading_icon.dart';
+import 'package:acroworld/components/text_wIth_leading_icon.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

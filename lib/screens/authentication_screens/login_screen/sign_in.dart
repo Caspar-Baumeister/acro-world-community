@@ -1,10 +1,9 @@
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
-import 'package:acroworld/screens/login/login.dart';
-import 'package:acroworld/services/database.dart';
-import 'package:acroworld/shared/helper_builder.dart';
-import 'package:acroworld/shared/loading.dart';
+import 'package:acroworld/screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/utils/helper_functions/helper_builder.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +37,7 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const Loading()
+        ? const LoadingWidget()
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,

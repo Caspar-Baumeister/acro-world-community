@@ -11,7 +11,7 @@ class Queries {
   """);
 
   static final getAllJamsFromMyCommunities = gql("""
-  query GetMyCommunities {
+  query GetMyCommunities { 
     me {
       communities {
         community {

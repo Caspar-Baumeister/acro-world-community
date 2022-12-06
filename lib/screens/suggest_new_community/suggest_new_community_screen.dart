@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/suggest_new_community/widgets/suggest_new_community.dart';
-import 'package:acroworld/widgets/standard_app_bar/standard_app_bar.dart';
+import 'package:acroworld/components/standard_app_bar/standard_app_bar.dart';
 import 'package:flutter/material.dart';
 
 class SuggestNewCommunityScreen extends StatefulWidget {

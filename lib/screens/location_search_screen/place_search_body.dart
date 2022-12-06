@@ -1,8 +1,8 @@
+import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/home/communities/search_bar_widget.dart';
-import 'package:acroworld/shared/widgets/loading_indicator/loading_indicator.dart';
-import 'package:acroworld/widgets/standard_icon_button/standard_icon_button.dart';
+import 'package:acroworld/screens/home_folder/communities/search_bar_widget.dart';
+import 'package:acroworld/components/standard_icon_button/standard_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -24,7 +24,7 @@ class PlaceQuery extends StatelessWidget {
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (placeResult.data != null) {
           Place place = Place.fromJson(placeResult.data!['place']);
-          WidgetsBinding.instance?.addPostFrameCallback((_) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
             onPlaceSet(place);
           });
 

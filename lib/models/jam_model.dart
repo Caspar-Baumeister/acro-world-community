@@ -3,26 +3,24 @@ import 'package:acroworld/models/user_model.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Jam {
-  String cid;
-  String jid;
-  String name;
+  String? cid;
+  String? jid;
+  String? name;
   String? imgUrl;
-  User createdBy;
-  Object createdById;
-  DateTime createdAt;
-  DateTime date;
-  List<User> participants;
-  String info;
-  LatLng latLng;
-  Community community;
-  String communityId;
-  String communityName;
+  User? createdBy;
+  // Object createdById;
+  DateTime? createdAt;
+  DateTime? date;
+  List<User>? participants;
+  String? info;
+  LatLng? latLng;
+  Community? community;
 
   Jam({
     required this.jid,
     required this.cid,
     required this.createdAt,
-    required this.createdById,
+    // required this.createdById,
     required this.participants,
     required this.date,
     required this.name,
@@ -30,29 +28,27 @@ class Jam {
     this.imgUrl,
     required this.info,
     required this.community,
-    required this.communityId,
-    required this.communityName,
     required this.latLng,
   });
 
-  factory Jam.fromJson(dynamic json) {
-    List participants = json["participants"];
-    return Jam(
-      cid: json["community_id"],
-      jid: json['id'],
-      participants: List<User>.from(
-          participants.map((particpant) => User.fromJson(particpant['user']))),
-      date: DateTime.parse(json["date"]),
-      name: json["name"],
-      imgUrl: json["imgUrl"],
-      createdById: json["created_by_id"],
-      createdAt: DateTime.parse(json["created_at"]),
-      info: json["info"],
-      latLng: LatLng(json["latitude"], json["longitude"]),
-      community: Community.fromJson(json['community']),
-      communityName: json["community"]["name"],
-      communityId: json["community"]["id"],
-      createdBy: User.fromJson(json["created_by"]),
-    );
+  Jam.fromJson(Map<String, dynamic> json) {
+    cid = json['community_id'];
+    createdAt = DateTime.parse(json["created_at"]);
+    createdBy =
+        json['created_by'] != null ? User.fromJson(json['created_by']) : null;
+    date = DateTime.parse(json["date"]);
+    jid = json['id'];
+    info = json['info'];
+    latLng = LatLng(json["latitude"], json["longitude"]);
+    name = json['name'];
+    if (json['participants'] != null) {
+      participants = <User>[];
+      json['participants'].forEach((participant) {
+        participants!.add(User.fromJson(participant["user"]));
+      });
+    }
+    community = json['community'] != null
+        ? Community.fromJson(json['community'])
+        : null;
   }
 }

@@ -1,12 +1,12 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/shared/helper_builder.dart';
-import 'package:acroworld/shared/helper_functions.dart';
-import 'package:acroworld/shared/loading.dart';
-import 'package:acroworld/shared/message_modal.dart';
-import 'package:acroworld/widgets/headers/h2.dart';
-import 'package:acroworld/widgets/place_button/place_button.dart';
-import 'package:acroworld/widgets/spaced_column/spaced_column.dart';
+import 'package:acroworld/utils/helper_functions/helper_builder.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/components/message_modal.dart';
+import 'package:acroworld/components/headers/h2.dart';
+import 'package:acroworld/components/place_button/place_button.dart';
+import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -56,7 +56,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
             QueryResult<dynamic>? result) {
           if (result != null) {
             if (result.isLoading) {
-              return const Loading();
+              return const LoadingWidget();
             }
             if (result.data?['insert_communities_one'] != null) {
               {

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/services/database.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -50,7 +50,7 @@ class CommunityJamsProvider extends ChangeNotifier {
     try {
       List jamsJson = response["data"]["jams"];
 
-      return List<Jam>.from(jamsJson.map((jam) => Jam.fromJson(json)));
+      return List<Jam>.from(jamsJson.map((jam) => Jam.fromJson(jam)));
     } catch (e) {
       return [];
     }

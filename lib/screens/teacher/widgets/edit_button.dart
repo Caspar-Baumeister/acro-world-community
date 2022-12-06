@@ -1,5 +1,5 @@
+import 'package:acroworld/components/framed_button.dart';
 import 'package:acroworld/screens/teacher/widgets/edit_pop_up.dart';
-import 'package:acroworld/shared/widgets/framed_button.dart';
 import 'package:flutter/material.dart';
 
 class EditButton extends StatelessWidget {

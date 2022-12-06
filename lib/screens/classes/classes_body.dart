@@ -4,9 +4,9 @@ import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/screens/classes/widgets/classes_calendar.dart';
-import 'package:acroworld/shared/helper_functions.dart';
-import 'package:acroworld/shared/loading.dart';
-import 'package:acroworld/widgets/place_button/place_button.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/components/place_button/place_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -74,7 +74,7 @@ class _ClassesBodyState extends State<ClassesBody> {
                 }
 
                 if (result.isLoading) {
-                  return const Loading();
+                  return const LoadingWidget();
                 }
 
                 VoidCallback runRefetch = (() {

@@ -1,11 +1,11 @@
+import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
-import 'package:acroworld/screens/home/map/map.dart';
+import 'package:acroworld/screens/home_folder/map/map.dart';
 import 'package:acroworld/screens/single_class_page/widgets/class_event_calendar.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/shared/constants.dart';
-import 'package:acroworld/shared/helper_functions.dart';
-import 'package:acroworld/shared/widgets/open_google_maps.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';

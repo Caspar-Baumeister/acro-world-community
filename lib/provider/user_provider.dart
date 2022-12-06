@@ -1,7 +1,6 @@
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
-import 'package:acroworld/services/database.dart';
-import 'package:acroworld/services/querys.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -39,7 +38,8 @@ class UserProvider extends ChangeNotifier {
     }
 
     // TODO fill in rest of data
-    final response = await Database(token: _token).authorizedApi(Querys.me);
+    final response = await Database(token: _token).authorizedApi(
+        "query MyQuery {me { bio id image_url last_proposed_community_at name}}");
     Map user = response["data"]["me"][0];
     _activeUser =
         User(id: user["id"], name: user["name"], imageUrl: user["image_url"]);
