@@ -49,25 +49,25 @@ class _SingleTeacherPageState extends State<SingleTeacherPage> {
               tabs: [
                 Padding(
                   padding: EdgeInsets.only(bottom: 12.0),
+                  child: Text("Classes", style: TextStyle(color: Colors.black)),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(bottom: 12.0),
                   child: Text(
                     "Gallery",
                     style: TextStyle(color: Colors.black),
                   ),
                 ),
-                Padding(
-                  padding: EdgeInsets.only(bottom: 12.0),
-                  child: Text("Classes", style: TextStyle(color: Colors.black)),
-                )
               ],
             ),
             const SizedBox(height: 6),
             Flexible(
               child: TabBarView(
                 children: [
-                  GallerySection(pictureUrls: widget.teacher.pictureUrls),
                   ClassSection(
                     teacher: widget.teacher,
-                  )
+                  ),
+                  GallerySection(pictureUrls: widget.teacher.pictureUrls),
                 ],
               ),
             )

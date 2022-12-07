@@ -1,4 +1,3 @@
-import 'package:acroworld/screens/authentication_screens/friend_code_screen/friend_code.dart';
 import 'package:acroworld/screens/authentication_screens/register_screen/register.dart';
 import 'package:acroworld/screens/authentication_screens/login_screen/sign_in.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ class Authenticate extends StatefulWidget {
 
 class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = false;
-  bool confirmedFriend = false;
+  // bool confirmedFriend = false;
 
   @override
   void initState() {
@@ -24,11 +23,11 @@ class _AuthenticateState extends State<Authenticate> {
     }
   }
 
-  void confirmFriend() {
-    setState(() {
-      confirmedFriend = true;
-    });
-  }
+  // void confirmFriend() {
+  //   setState(() {
+  //     confirmedFriend = true;
+  //   });
+  // }
 
   void toggleView() {
     setState(() => showSignIn = !showSignIn);
@@ -39,11 +38,11 @@ class _AuthenticateState extends State<Authenticate> {
     if (showSignIn) {
       return SignIn(toggleView: toggleView);
     } else {
-      if (confirmedFriend) {
-        return Register(toggleView: toggleView);
-      } else {
-        return FriendCode(confirmFriend: confirmFriend, toggleView: toggleView);
-      }
+      // if (confirmedFriend) {
+      return Register(toggleView: toggleView);
+      // } else {
+      //   return FriendCode(confirmFriend: confirmFriend, toggleView: toggleView);
+      // }
     }
   }
 }

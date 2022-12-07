@@ -1,3 +1,5 @@
+import 'package:acroworld/components/custom_button.dart';
+import 'package:acroworld/components/text_wIth_leading_icon.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
@@ -39,157 +41,240 @@ class _RegisterBodyState extends State<RegisterBody> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingWidget()
-        : Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
-            child: Form(
-              key: _formKey,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(labelText: 'name'),
-                      validator: (val) => (val == null || val.isEmpty)
-                          ? 'Name cannot be empty'
-                          : null,
-                      onChanged: (val) {
-                        setState(() => name = val);
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(labelText: 'email'),
-                      validator: (val) => (val == null || val.isEmpty)
-                          ? 'Enter an email'
-                          : null,
-                      onChanged: (val) {
-                        setState(() => email = val);
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(
-                        labelText: 'password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Based on passwordVisible state choose the icon
-                            passwordObscure
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.black,
+        ? Column(
+            mainAxisSize: MainAxisSize.max,
+            children: const [
+              Center(child: LoadingWidget()),
+            ],
+          )
+        : SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: Form(
+                    key: _formKey,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          TextFormField(
+                            keyboardType: TextInputType.name,
+                            textInputAction: TextInputAction.next,
+                            decoration: buildInputDecoration(labelText: 'name'),
+                            validator: (val) => (val == null || val.isEmpty)
+                                ? 'Name cannot be empty'
+                                : null,
+                            onChanged: (val) {
+                              setState(() => name = val);
+                            },
                           ),
-                          onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              passwordObscure = !passwordObscure;
-                            });
-                          },
-                        ),
-                      ),
-                      obscureText: passwordObscure,
-                      validator: (val) => (val == null || val.length < 6)
-                          ? 'Enter a password 6+ chars long'
-                          : null,
-                      onChanged: (val) {
-                        setState(() => password = val);
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    TextFormField(
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(
-                        labelText: 'password confirm',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            // Based on passwordVisible state choose the icon
-                            passwordConfirmObscure
-                                ? Icons.visibility
-                                : Icons.visibility_off,
-                            color: Colors.black,
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.next,
+                            decoration:
+                                buildInputDecoration(labelText: 'email'),
+                            validator: (val) => (val == null || val.isEmpty)
+                                ? 'Enter an email'
+                                : null,
+                            onChanged: (val) {
+                              setState(() => email = val);
+                            },
                           ),
-                          onPressed: () {
-                            // Update the state i.e. toogle the state of passwordVisible variable
-                            setState(() {
-                              passwordConfirmObscure = !passwordConfirmObscure;
-                            });
-                          },
-                        ),
-                      ),
-                      obscureText: passwordConfirmObscure,
-                      validator: (val) => (val != password)
-                          ? 'Passwords are not the same'
-                          : null,
-                      onChanged: (val) {
-                        setState(() => password = val);
-                      },
-                    ),
-                    const SizedBox(height: 20.0),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CheckBox(
-                            onTap: () => setState(() {
-                                  isAgbs = !isAgbs;
-                                }),
-                            isChecked: isAgbs),
-                        const SizedBox(width: 8),
-                        RichText(
-                          textAlign: TextAlign.left,
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              const TextSpan(
-                                  text: "I agree with the ",
-                                  style: TextStyle(color: Colors.black)),
-                              TextSpan(
-                                  text: "agbs.",
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      if (!await launchUrl(AGB_URL)) {
-                                        throw 'Could not launch';
-                                      }
-                                    }),
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            decoration: buildInputDecoration(
+                              labelText: 'password',
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  passwordObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  setState(() {
+                                    passwordObscure = !passwordObscure;
+                                  });
+                                },
+                              ),
+                            ),
+                            obscureText: passwordObscure,
+                            validator: (val) => (val == null || val.length < 6)
+                                ? 'Enter a password 6+ chars long'
+                                : null,
+                            onChanged: (val) {
+                              setState(() => password = val);
+                            },
+                          ),
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            decoration: buildInputDecoration(
+                              labelText: 'password confirm',
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  // Based on passwordVisible state choose the icon
+                                  passwordConfirmObscure
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  // Update the state i.e. toogle the state of passwordVisible variable
+                                  setState(() {
+                                    passwordConfirmObscure =
+                                        !passwordConfirmObscure;
+                                  });
+                                },
+                              ),
+                            ),
+                            obscureText: passwordConfirmObscure,
+                            validator: (val) => (val != password)
+                                ? 'Passwords are not the same'
+                                : null,
+                            onChanged: (val) {
+                              setState(() => password = val);
+                            },
+                          ),
+                          const SizedBox(height: 20.0),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              CheckBox(
+                                  onTap: () => setState(() {
+                                        isAgbs = !isAgbs;
+                                      }),
+                                  isChecked: isAgbs),
+                              const SizedBox(width: 8),
+                              RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(
+                                  children: <TextSpan>[
+                                    const TextSpan(
+                                        text: "I agree with the ",
+                                        style: TextStyle(color: Colors.black)),
+                                    TextSpan(
+                                        text: "agbs.",
+                                        style: const TextStyle(
+                                            color: Colors.blue,
+                                            fontWeight: FontWeight.bold),
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () async {
+                                            if (!await launchUrl(AGB_URL)) {
+                                              throw 'Could not launch';
+                                            }
+                                          }),
+                                  ],
+                                ),
+                              ),
                             ],
                           ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20.0),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
-                      onPressed: () async {
-                        onRegister();
-                      },
-                      child: const Text(
-                        "Register",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
+                          const SizedBox(height: 20.0),
+                          Center(
+                              child: CustomButton(
+                                  "Register", () async => onRegister())),
+                          const SizedBox(height: 12.0),
+                          Text(
+                            error,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          )
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 12.0),
-                    Text(
-                      error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
-                    )
+                  ),
+                ),
+                const Divider(color: PRIMARY_COLOR),
+                const SizedBox(height: 15),
+                Column(
+                  children: [
+                    Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 40),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: const [
+                            Text(
+                              "Why AcroWorld",
+                              style: TextStyle(fontSize: 22),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(height: 15),
+                            Text(
+                              "The one and only Acroyoga app you need.",
+                              style: TextStyle(fontSize: 12),
+                              maxLines: 5,
+                            ),
+                            SizedBox(height: 15),
+                            TextWIthLeadingIcon(
+                              icon: ImageIcon(
+                                AssetImage("assets/check.png"),
+                                color: Colors.green,
+                              ),
+                              text: Padding(
+                                padding: EdgeInsets.only(top: 3.0),
+                                child: Text(
+                                  "With one click you will always know where and when classes and jams are taking place in your area.",
+                                  // "Stay in touch with the community with the best from Whatsapp and Facebook groups tailored to acro",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextWIthLeadingIcon(
+                              icon: ImageIcon(
+                                AssetImage("assets/check.png"),
+                                color: Colors.green,
+                              ),
+                              text: Padding(
+                                padding: EdgeInsets.only(top: 3.0),
+                                child: Text(
+                                  "Find out not only who the best teachers in your area are, but also exactly what they offer",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextWIthLeadingIcon(
+                              icon: ImageIcon(
+                                AssetImage("assets/check.png"),
+                                color: Colors.green,
+                              ),
+                              text: Padding(
+                                padding: EdgeInsets.only(top: 3.0),
+                                child: Text(
+                                  "Find out what acroyoga related events are taking place around the world",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ),
+                            SizedBox(height: 10),
+                            TextWIthLeadingIcon(
+                              icon: ImageIcon(
+                                AssetImage("assets/check.png"),
+                                color: Colors.green,
+                              ),
+                              text: Padding(
+                                padding: EdgeInsets.only(top: 3.0),
+                                child: Text(
+                                  "Keep in touch with your Acroyoga community. Find out who is participating where and when and discover the local communities when you are away from home.",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )),
                   ],
                 ),
-              ),
+              ],
             ),
           );
   }

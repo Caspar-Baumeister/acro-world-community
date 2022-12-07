@@ -4,6 +4,7 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/classes/widgets/class_event_expanded_tile.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -58,7 +59,8 @@ class ClassesView extends StatelessWidget {
 
           List<ClassModel> classes = [];
           List<ClassEvent> classEvents = [];
-
+          print("choosenday");
+          print(day);
           if (result.data!.keys.contains(selector) &&
               result.data![selector] != null) {
             result.data![selector].forEach((clas) {
@@ -68,7 +70,9 @@ class ClassesView extends StatelessWidget {
                 clas["class_events"].forEach((element) {
                   ClassEvent classEvent = ClassEvent.fromJson(element,
                       classModel: ClassModel.fromJson(clas));
-                  if (classEvent.date.day == day.day) {
+
+                  if (isSameDate(classEvent.date, day)) {
+                    print(classEvent.date);
                     classEvents.add(classEvent);
                   }
                 });
@@ -76,7 +80,7 @@ class ClassesView extends StatelessWidget {
             });
           }
 
-          classEvents.sort((a, b) => a.date.isBefore(b.date) ? 1 : 0);
+          classEvents.sort((a, b) => b.date.isBefore(a.date) ? 1 : 0);
           return RefreshIndicator(
             onRefresh: () => runRefetch(),
             child: ListView.builder(

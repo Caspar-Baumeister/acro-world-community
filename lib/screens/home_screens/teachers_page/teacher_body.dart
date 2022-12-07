@@ -34,12 +34,12 @@ class TeacherBody extends StatelessWidget {
               children: <TextSpan>[
                 const TextSpan(
                     text:
-                        "You want to become a teacher in our app? Let us know by sending an email to ",
+                        "You are an acro teacher and want to show your profile? Tell us about you in a brief email to ",
                     style: TextStyle(color: Colors.black)),
                 TextSpan(
                     text: "info@acroworld.com",
                     style: const TextStyle(
-                        color: SECONDARY_COLOR, fontWeight: FontWeight.bold),
+                        color: PRIMARY_COLOR, fontWeight: FontWeight.bold),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         Clipboard.setData(

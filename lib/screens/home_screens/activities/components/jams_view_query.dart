@@ -9,6 +9,7 @@ import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/error_page.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/screens/home_folder/jam/jams/jam_tile.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -82,7 +83,7 @@ class _JamsViewQueryState extends State<JamsViewQuery> {
             if (com["community"]?["jams"] != null) {
               for (Map<String, dynamic> jamObject in com["community"]["jams"]) {
                 Jam jam = Jam.fromJson(jamObject);
-                if (jam.date!.day == widget.day.day) {
+                if (isSameDate(jam.date!, widget.day)) {
                   jams.add(jam);
                 }
               }
@@ -90,7 +91,7 @@ class _JamsViewQueryState extends State<JamsViewQuery> {
           }
         }
 
-        jams.sort((a, b) => a.date!.isBefore(b.date!) ? 1 : 0);
+        jams.sort((a, b) => b.date!.isBefore(a.date!) ? 1 : 0);
 
         return RefreshIndicator(
           onRefresh: () => runRefetch(),

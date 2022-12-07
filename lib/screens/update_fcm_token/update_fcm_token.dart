@@ -3,7 +3,6 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/screens/error_page.dart';
 import 'package:acroworld/screens/home_screens/home_scaffold.dart';
 import 'package:acroworld/screens/loading_page.dart';
-import 'package:acroworld/components/loading_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -34,7 +33,7 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
               options: MutationOptions(document: Mutations.updateFcmToken),
               builder: (runMutation, mutationResult) {
                 if (mutationResult == null || mutationResult.isLoading) {
-                  return const LoadingWidget();
+                  return const LoadingPage();
                 }
 
                 if (mutationResult.hasException) {

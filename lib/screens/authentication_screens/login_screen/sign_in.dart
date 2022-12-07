@@ -1,9 +1,10 @@
+import 'package:acroworld/components/custom_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/loading_page.dart';
 import 'package:acroworld/screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
-import 'package:acroworld/components/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,15 +38,17 @@ class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? const LoadingWidget()
+        ? const LoadingPage()
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Colors.white,
               elevation: 0.0,
-              title: const Text('Login to Acro World'),
+              centerTitle: false,
+              titleSpacing: 20.0,
+              title: const Text('Login to AcroWorld'),
               actions: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0).copyWith(right: 20),
                   child: OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -108,22 +111,24 @@ class _SignInState extends State<SignIn> {
                       onFieldSubmitted: (_) => onSignin(),
                     ),
                     const SizedBox(height: 20.0),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
-                      onPressed: () => onSignin(),
-                      child: const Text(
-                        "Sign In",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
+                    CustomButton("Login", () => onSignin())
+                    // OutlinedButton(
+                    //   style: OutlinedButton.styleFrom(
+                    //     shape: RoundedRectangleBorder(
+                    //       borderRadius: BorderRadius.circular(18),
+                    //     ),
+                    //   ),
+                    //   onPressed: () => onSignin(),
+                    //   child: const Text(
+                    //     "Sign In",
+                    //     style: TextStyle(
+                    //       fontSize: 14,
+                    //       fontWeight: FontWeight.w700,
+                    //       color: Colors.black,
+                    //     ),
+                    //   ),
+                    // ),
+                    ,
                     error != ""
                         ? Padding(
                             padding: const EdgeInsets.only(top: 12.0),

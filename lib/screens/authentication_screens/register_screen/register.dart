@@ -11,11 +11,13 @@ class Register extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
+          centerTitle: false,
+          titleSpacing: 20.0,
           elevation: 0.0,
-          title: const Text('Register for Acro World'),
+          title: const Text('Register to AcroWorld'),
           actions: <Widget>[
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8.0).copyWith(right: 20),
               child: OutlinedButton(
                 style: OutlinedButton.styleFrom(
                   shape: RoundedRectangleBorder(

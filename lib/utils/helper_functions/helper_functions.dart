@@ -48,6 +48,10 @@ String dateToText(DateTime date) {
   return "";
 }
 
+bool isSameDate(DateTime a, DateTime b) {
+  return a.day == b.day && a.month == b.month && a.year == b.year;
+}
+
 Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   List<Jam> sortedJams = List<Jam>.from(jams);
   sortedJams.sort((j1, j2) => j1.date!.isBefore(j2.date!) ? 1 : 0);
