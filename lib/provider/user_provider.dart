@@ -7,12 +7,10 @@ import 'package:jwt_decode/jwt_decode.dart';
 class UserProvider extends ChangeNotifier {
   User? _activeUser;
   String? _token;
-  Map<String, dynamic>? _parsedJwt;
 
   // getter
   User? get activeUser => _activeUser;
   String? get token => _token;
-  Map<String, dynamic>? get parsedJwt => _parsedJwt;
 
   set token(String? token) => _token = token;
 
@@ -62,6 +60,7 @@ class UserProvider extends ChangeNotifier {
 
     // get the token trough the credentials
     // (invalid credentials) return false
+
     if (isTokenExpired()) {
       String? _newToken = await Database().loginApi(_email, _password);
       if (_newToken == null) {

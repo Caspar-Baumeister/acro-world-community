@@ -18,10 +18,34 @@ class LogginWrapper extends StatefulWidget {
 }
 
 class _LogginWrapperState extends State<LogginWrapper> {
+  bool? credentials;
+  Future<void>? initCredentials;
+
+  @override
+  void initState() {
+    super.initState();
+    initCredentials = _initCredentials();
+  }
+
+  Future<void> _initCredentials() async {
+    final _credentials = await checkCredentials();
+    credentials = _credentials;
+    return;
+  }
+
+  Future<void> _refreshCredentials() async {
+    print("clicked");
+    final _credentials = await checkCredentials();
+    setState(() {
+      credentials = _credentials;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-        future: checkCredentials(),
+    print("inside logginwrapper");
+    return FutureBuilder(
+        future: initCredentials,
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
             return ErrorScreenWidget(error: snapshot.error.toString());
@@ -32,16 +56,22 @@ class _LogginWrapperState extends State<LogginWrapper> {
             } else {
               return const UpdateFcmToken();
             }
+          } else if (snapshot.connectionState == ConnectionState.waiting) {
+            return LoadingPage(onRefresh: _refreshCredentials);
+          } else {
+            return ErrorScreenWidget(
+                error:
+                    "connectionState: ${snapshot.connectionState.toString()}");
           }
-
-          return const LoadingPage();
         }));
   }
 
   Future<bool> checkCredentials() async {
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).refreshToken();
+    print("isValidToken");
 
+    print(isValidToken);
     if (!isValidToken) {
       return false;
     }
