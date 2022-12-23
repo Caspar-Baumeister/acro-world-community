@@ -25,8 +25,6 @@ void main() async {
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
         String? token = await AuthProvider.fetchToken();
-        print("initial fetch for token results in:");
-        print(token);
         return {
           'headers': {'Authorization': 'Bearer $token'}
         };
@@ -75,6 +73,5 @@ void main() async {
   await CredentialPreferences.init();
   await PlacePreferences.init();
 
-  print("preferences init");
   return runApp(App(client: client));
 }

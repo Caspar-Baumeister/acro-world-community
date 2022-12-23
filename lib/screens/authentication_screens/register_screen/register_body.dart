@@ -280,6 +280,7 @@ class _RegisterBodyState extends State<RegisterBody> {
   }
 
   onRegister() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       error = '';
     });

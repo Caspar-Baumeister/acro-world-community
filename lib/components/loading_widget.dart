@@ -5,12 +5,19 @@ class LoadingWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Image(
-        image: AssetImage("assets/muscleup_drawing.png"),
-        height: 200,
-        fit: BoxFit.contain,
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Center(
+          child: CircularProgressIndicator(),
+          // child: Image(
+          //   image: AssetImage("assets/muscleup_drawing.png"),
+          //   height: 200,
+          //   fit: BoxFit.contain,
+          // ),
+        ),
+      ],
     );
   }
 }

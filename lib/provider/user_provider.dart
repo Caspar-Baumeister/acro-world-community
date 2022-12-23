@@ -29,7 +29,7 @@ class UserProvider extends ChangeNotifier {
     return await refreshToken();
   }
 
-  setUserFromToken() async {
+  Future setUserFromToken() async {
     if (token == "" || token == null) {
       _activeUser = null;
       return;
@@ -54,20 +54,20 @@ class UserProvider extends ChangeNotifier {
     String? _email = CredentialPreferences.getEmail();
     String? _password = CredentialPreferences.getPassword();
 
+    print("inside refreshToken with $_email");
     if (_email == null || _password == null) {
       return false;
     }
 
     // get the token trough the credentials
     // (invalid credentials) return false
-
     if (isTokenExpired()) {
       String? _newToken = await Database().loginApi(_email, _password);
       if (_newToken == null) {
         return false;
       }
       _token = _newToken;
-      setUserFromToken();
+      await setUserFromToken();
     }
 
     // safe the user to provider

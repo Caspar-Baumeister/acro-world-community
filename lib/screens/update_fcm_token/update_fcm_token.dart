@@ -58,10 +58,8 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
             token: token!,
           );
         } else {
-          return RefreshIndicator(
-            key: _refreshIndicatorKey,
+          return LoadingPage(
             onRefresh: _refreshToken,
-            child: const LoadingPage(),
           );
         }
       }),
@@ -99,8 +97,18 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
           return Query(
             options: QueryOptions(document: Queries.getMe),
             builder: (queryResult, {fetchMore, refetch}) {
+              Future<void> runRefetch() async {
+                try {
+                  refetch!();
+                } catch (e) {
+                  print(e.toString());
+                }
+              }
+
               if (queryResult.isLoading) {
-                return const LoadingPage();
+                return LoadingPage(
+                  onRefresh: runRefetch,
+                );
               }
 
               String? fcmToken = queryResult.data?['me'][0]['fcm_token'];
@@ -108,7 +116,10 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
                   fcmToken.isEmpty ||
                   fcmToken != widget.token) {
                 runMutation({'fcmToken': widget.token});
-                return const LoadingPage();
+                return LoadingPage(
+                  onRefresh: () async =>
+                      runMutation({'fcmToken': widget.token}),
+                );
               } else {
                 return HomeScaffold();
               }

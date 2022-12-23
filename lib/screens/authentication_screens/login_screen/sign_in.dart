@@ -148,6 +148,7 @@ class _SignInState extends State<SignIn> {
 
   // triggert when login is pressed
   void onSignin() async {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       error = '';
     });

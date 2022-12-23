@@ -1,8 +1,8 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/screens/error_page.dart';
 import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/update_fcm_token/update_fcm_token.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,7 +34,6 @@ class _LogginWrapperState extends State<LogginWrapper> {
   }
 
   Future<void> _refreshCredentials() async {
-    print("clicked");
     final _credentials = await checkCredentials();
     setState(() {
       credentials = _credentials;
@@ -48,10 +47,12 @@ class _LogginWrapperState extends State<LogginWrapper> {
         future: initCredentials,
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
-            return ErrorScreenWidget(error: snapshot.error.toString());
+            return ErrorPage(
+                error: "loggin_wrapper error: " + snapshot.error.toString());
           }
-          if (snapshot.hasData) {
-            if (snapshot.data == false) {
+          if (snapshot.connectionState == ConnectionState.done &&
+              credentials != null) {
+            if (credentials == false) {
               return const Authenticate();
             } else {
               return const UpdateFcmToken();
@@ -59,7 +60,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
           } else if (snapshot.connectionState == ConnectionState.waiting) {
             return LoadingPage(onRefresh: _refreshCredentials);
           } else {
-            return ErrorScreenWidget(
+            return ErrorPage(
                 error:
                     "connectionState: ${snapshot.connectionState.toString()}");
           }
