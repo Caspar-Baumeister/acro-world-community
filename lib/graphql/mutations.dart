@@ -2,6 +2,14 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final login = gql("""
+mutation login(\$email:String!, \$password:String!) {
+  login(input: {email: \$email, password: \$password}) {
+    token
+  }
+}
+""");
+
   static final insertCommunityMessage = gql("""
     mutation InsertCommunityMessage(\$content: String, \$communityId: uuid) {
       insert_community_messages(objects: {content: \$content, community_id: \$communityId}) {

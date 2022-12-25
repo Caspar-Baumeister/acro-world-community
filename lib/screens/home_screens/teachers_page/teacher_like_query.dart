@@ -42,7 +42,14 @@ class TeacherLikeQuery extends StatelessWidget {
           }
 
           if (result.isLoading) {
-            return const LoadingWidget();
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                LoadingWidget(
+                  onRefresh: () async => runRefetch(),
+                ),
+              ],
+            );
           }
 
           List<String> teachersILike = [];

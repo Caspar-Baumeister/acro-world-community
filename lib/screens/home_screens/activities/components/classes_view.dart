@@ -59,8 +59,7 @@ class ClassesView extends StatelessWidget {
 
           List<ClassModel> classes = [];
           List<ClassEvent> classEvents = [];
-          print("choosenday");
-          print(day);
+
           if (result.data!.keys.contains(selector) &&
               result.data![selector] != null) {
             result.data![selector].forEach((clas) {
@@ -72,7 +71,6 @@ class ClassesView extends StatelessWidget {
                       classModel: ClassModel.fromJson(clas));
 
                   if (isSameDate(classEvent.date, day)) {
-                    print(classEvent.date);
                     classEvents.add(classEvent);
                   }
                 });

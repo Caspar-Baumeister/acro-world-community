@@ -118,7 +118,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                 query = value;
               });
             },
-            autofocus: true,
+            autofocus: false,
           ),
           SingleChildScrollView(
             child: query.isNotEmpty

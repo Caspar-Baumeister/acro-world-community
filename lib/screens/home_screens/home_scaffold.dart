@@ -6,7 +6,6 @@ import 'package:acroworld/screens/home_screens/user_communities/user_communities
 import 'package:flutter/material.dart';
 
 class HomeScaffold extends StatefulWidget {
-  static String routeName = "/";
   @override
   State<HomeScaffold> createState() => _HomeScaffoldState();
 }
@@ -29,10 +28,13 @@ class _HomeScaffoldState extends State<HomeScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: screens[activeIdx],
-      bottomNavigationBar:
-          CustomBottomNavBar(activeIdx: activeIdx, changeIdx: changeIdx),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        body: screens[activeIdx],
+        bottomNavigationBar:
+            CustomBottomNavBar(activeIdx: activeIdx, changeIdx: changeIdx),
+      ),
     );
   }
 }

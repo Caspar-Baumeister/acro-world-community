@@ -1,12 +1,11 @@
 import 'dart:async';
 
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/teacher_likes/change_like_on_teacher.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/teachers_page/teacher_like_query.dart';
-import 'package:acroworld/components/loading_widget.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -35,7 +34,7 @@ class _TeacherQueryState extends State<TeacherQuery> {
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context, listen: false);
     final EventBus eventBus = eventBusProvider.eventBus;
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Query(
       options: QueryOptions(
         document: Queries.getAllTeacher,
@@ -46,11 +45,6 @@ class _TeacherQueryState extends State<TeacherQuery> {
         if (result.hasException) {
           return Text(result.exception.toString());
         }
-
-        if (result.isLoading) {
-          return const LoadingWidget();
-        }
-
         VoidCallback runRefetch = (() {
           try {
             refetch!();
@@ -58,6 +52,16 @@ class _TeacherQueryState extends State<TeacherQuery> {
             print(e.toString());
           }
         });
+        if (result.isLoading) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              LoadingWidget(
+                onRefresh: () async => runRefetch(),
+              ),
+            ],
+          );
+        }
 
         eventListeners.add(eventBus.on<ChangeLikeEvent>().listen((event) {
           runRefetch();

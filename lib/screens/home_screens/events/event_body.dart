@@ -11,6 +11,7 @@ class EventsBody extends StatefulWidget {
 }
 
 class _EventsBodyState extends State<EventsBody> {
+  bool isLoading = true;
   @override
   void initState() {
     super.initState();
@@ -20,10 +21,24 @@ class _EventsBodyState extends State<EventsBody> {
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: WebView(
-        javascriptMode: JavascriptMode.unrestricted,
-        initialUrl: 'https://kalender.digital/9290ecc26f6f5a51ddc5',
+    return Scaffold(
+      body: Stack(
+        children: [
+          WebView(
+            javascriptMode: JavascriptMode.unrestricted,
+            onPageFinished: (finish) {
+              setState(() {
+                isLoading = false;
+              });
+            },
+            initialUrl: 'https://kalender.digital/9290ecc26f6f5a51ddc5',
+          ),
+          isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Stack(),
+        ],
       ),
     );
   }

@@ -7,12 +7,10 @@ import 'package:jwt_decode/jwt_decode.dart';
 class UserProvider extends ChangeNotifier {
   User? _activeUser;
   String? _token;
-  Map<String, dynamic>? _parsedJwt;
 
   // getter
   User? get activeUser => _activeUser;
   String? get token => _token;
-  Map<String, dynamic>? get parsedJwt => _parsedJwt;
 
   set token(String? token) => _token = token;
 
@@ -31,7 +29,7 @@ class UserProvider extends ChangeNotifier {
     return await refreshToken();
   }
 
-  setUserFromToken() async {
+  Future setUserFromToken() async {
     if (token == "" || token == null) {
       _activeUser = null;
       return;
@@ -56,6 +54,7 @@ class UserProvider extends ChangeNotifier {
     String? _email = CredentialPreferences.getEmail();
     String? _password = CredentialPreferences.getPassword();
 
+    print("inside refreshToken with $_email");
     if (_email == null || _password == null) {
       return false;
     }
@@ -63,12 +62,14 @@ class UserProvider extends ChangeNotifier {
     // get the token trough the credentials
     // (invalid credentials) return false
     if (isTokenExpired()) {
-      String? _newToken = await Database().loginApi(_email, _password);
+      final response = await Database().loginApi(_email, _password);
+
+      String? _newToken = response?["data"]?["login"]?["token"];
       if (_newToken == null) {
         return false;
       }
       _token = _newToken;
-      setUserFromToken();
+      await setUserFromToken();
     }
 
     // safe the user to provider

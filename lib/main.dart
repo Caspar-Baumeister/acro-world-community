@@ -72,5 +72,6 @@ void main() async {
 
   await CredentialPreferences.init();
   await PlacePreferences.init();
+
   return runApp(App(client: client));
 }

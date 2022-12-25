@@ -123,15 +123,15 @@ class SingleClassBody extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      classe.uscUrl != null
+                      classe.uscUrl != null && classe.uscUrl != ""
                           ? LinkButton(
                               text: "Urban Sport", link: classe.uscUrl!)
                           : Container(),
-                      classe.classPassUrl != null
+                      classe.classPassUrl != null && classe.classPassUrl != ""
                           ? LinkButton(
                               text: "Class Pass", link: classe.classPassUrl!)
                           : Container(),
-                      classe.websiteUrl != null
+                      classe.websiteUrl != null && classe.websiteUrl != ""
                           ? LinkButton(
                               text: "Website", link: classe.websiteUrl!)
                           : Container(),

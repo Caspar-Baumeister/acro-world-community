@@ -16,6 +16,7 @@ class AppBarUserCommunities extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.white,
       title: const Text("Communities", style: TextStyle(color: Colors.black)),
       leading: null,
+      automaticallyImplyLeading: false,
     );
   }
 }
