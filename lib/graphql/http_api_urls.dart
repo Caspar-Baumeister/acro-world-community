@@ -51,7 +51,7 @@ class Database {
     }
   }
 
-  Future<String?> loginApi(String email, String password) async {
+  Future loginApi(String email, String password) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -62,7 +62,7 @@ class Database {
                 "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
           }));
 
-      return jsonDecode(response.body.toString())["data"]?["login"]?["token"];
+      return jsonDecode(response.body.toString());
     } catch (e) {
       print(e.toString());
     }

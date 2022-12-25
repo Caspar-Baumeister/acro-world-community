@@ -22,7 +22,11 @@ class AuthProvider {
     if (isTokenExpired()) {
       String? email = CredentialPreferences.getEmail();
       String? password = CredentialPreferences.getPassword();
-      token = await Database().loginApi(email!, password!);
+      dynamic response = await Database().loginApi(email ?? "", password ?? "");
+
+      if (response?["data"]?["login"]?["token"] != null) {
+        token = response["data"]["login"]["token"];
+      }
     }
     return token;
   }

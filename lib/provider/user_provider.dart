@@ -62,7 +62,9 @@ class UserProvider extends ChangeNotifier {
     // get the token trough the credentials
     // (invalid credentials) return false
     if (isTokenExpired()) {
-      String? _newToken = await Database().loginApi(_email, _password);
+      final response = await Database().loginApi(_email, _password);
+
+      String? _newToken = response?["data"]?["login"]?["token"];
       if (_newToken == null) {
         return false;
       }

@@ -53,8 +53,7 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
             ),
           );
         } else if (snapshot.hasData && snapshot.data == true && token != null) {
-          print("fetched token succesfully: $token");
-          return SaveTokenMutationWidget(
+          return GetMeQuery(
             token: token!,
           );
         } else {
@@ -132,28 +131,14 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
 }
 
 class GetMeQuery extends StatefulWidget {
-  const GetMeQuery({Key? key}) : super(key: key);
+  const GetMeQuery({Key? key, required this.token}) : super(key: key);
+  final String token;
 
   @override
   State<GetMeQuery> createState() => _GetMeQueryState();
 }
 
 class _GetMeQueryState extends State<GetMeQuery> {
-//   final addStarMutation = useMutation(
-//   MutationOptions(
-//     document: gql(addStar), // this is the mutation string you just created
-//     // you can update the cache based on results
-//     update: (GraphQLDataProxy cache, QueryResult result) {
-//       return cache;
-//     },
-//     // or do something with the result.data on completion
-//     onCompleted: (dynamic resultData) {
-//       print(resultData);
-//     },
-//   ),
-// );
-
-// runMutation({'fcmToken': widget.token});
   @override
   Widget build(BuildContext context) {
     return Query(
@@ -173,18 +158,32 @@ class _GetMeQueryState extends State<GetMeQuery> {
               child: ErrorPage(error: queryResult.exception.toString()));
         } else if (queryResult.data != null && !queryResult.hasException) {
           String? fcmToken = queryResult.data?['me']?[0]?['fcm_token'];
-          if (fcmToken == null || fcmToken.isEmpty) {
-            return RefreshIndicator(
-              onRefresh: () => runRefetch(),
-              child: const LoadingPage(),
+          if (fcmToken == null ||
+              fcmToken.isEmpty ||
+              fcmToken != widget.token) {
+            final updateFcmTokenMutation = useMutation(
+              MutationOptions(
+                document: Mutations.updateFcmToken,
+                // or do something with the result.data on completion
+                onCompleted: (dynamic resultData) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => HomeScaffold(),
+                  ));
+                },
+              ),
+            );
+
+            updateFcmTokenMutation.runMutation({'fcmToken': widget.token});
+            return LoadingPage(
+              onRefresh: () async => updateFcmTokenMutation
+                  .runMutation({'fcmToken': widget.token}),
             );
           } else {
             return HomeScaffold();
           }
         } else {
-          return RefreshIndicator(
-            onRefresh: () => runRefetch(),
-            child: const LoadingPage(),
+          return LoadingPage(
+            onRefresh: runRefetch,
           );
         }
       },

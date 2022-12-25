@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/subscriptions.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/places/place.dart';
@@ -40,11 +40,6 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
           variables: {'query': '$query%'}),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (result.hasException) {
-          // TODO show exeption screen
-          return Text(result.exception.toString());
-        }
-
         VoidCallback runRefetch = (() {
           try {
             refetch!();
@@ -52,6 +47,12 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             print(e.toString());
           }
         });
+        if (result.hasException) {
+          // TODO show exeption screen
+          return RefreshIndicator(
+              onRefresh: () async => runRefetch(),
+              child: Text(result.exception.toString()));
+        }
 
         List<Community> communities = [];
 
@@ -71,48 +72,52 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
             );
           })));
         }
-        Future.delayed(const Duration(milliseconds: 200), () {
+        Future.delayed(const Duration(milliseconds: 100), () {
           Provider.of<UserCommunitiesProvider>(context, listen: false)
               .userCommunities = communities;
         });
 
         return RefreshIndicator(
           onRefresh: () async => {runRefetch()},
-          child: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+          child: result.isLoading
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Searchbar
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Expanded(
-                          child: SearchBarWidget(
-                            onChanged: (String value) {
-                              setState(() {
-                                query = value;
-                              });
-                            },
-                          ),
-                        ),
-                        const NewCommunityButton(),
-                      ],
-                    ),
-                    const SizedBox(height: 12),
-                    Expanded(
-                      child: result.isLoading
-                          ? const LoadingIndicator()
-                          : const UserCommunitiesList(),
+                    LoadingWidget(
+                      onRefresh: () async => runRefetch(),
                     ),
                   ],
+                )
+              : Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      // Searchbar
+                      Container(
+                        constraints: const BoxConstraints(maxHeight: 42),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: SearchBarWidget(
+                                onChanged: (String value) {
+                                  setState(() {
+                                    query = value;
+                                  });
+                                },
+                              ),
+                            ),
+                            const NewCommunityButton(),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      const Expanded(
+                        child: UserCommunitiesList(),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ),
-          ),
         );
       },
     );
