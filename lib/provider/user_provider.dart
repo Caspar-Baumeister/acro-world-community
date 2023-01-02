@@ -29,18 +29,28 @@ class UserProvider extends ChangeNotifier {
     return await refreshToken();
   }
 
-  Future setUserFromToken() async {
+  Future<bool> setUserFromToken() async {
     if (token == "" || token == null) {
       _activeUser = null;
-      return;
+      return false;
     }
 
     // TODO fill in rest of data
     final response = await Database(token: _token).authorizedApi(
         "query MyQuery {me { bio id image_url last_proposed_community_at name}}");
+
+    if (response["data"]?["me"]?[0] == null) {
+      return false;
+    }
     Map user = response["data"]["me"][0];
+    if (user["id"] == null || user["name"] == null) {
+      return false;
+    }
     _activeUser =
         User(id: user["id"], name: user["name"], imageUrl: user["image_url"]);
+
+    notifyListeners();
+    return true;
   }
 
   bool isTokenExpired() {

@@ -2,15 +2,12 @@ import 'package:acroworld/components/custom_button.dart';
 import 'package:acroworld/components/text_wIth_leading_icon.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class RegisterBody extends StatefulWidget {
   const RegisterBody({Key? key}) : super(key: key);
@@ -20,19 +17,10 @@ class RegisterBody extends StatefulWidget {
 }
 
 class _RegisterBodyState extends State<RegisterBody> {
-  // final AuthService _auth = AuthService();
-
   bool loading = false;
 
   final _formKey = GlobalKey<FormState>();
   String error = '';
-
-  // text field state
-  // String name = '';
-  // String email = '';
-  // String password = '';
-  // String passwordConfirm = '';
-  bool isAgbs = false;
 
   bool passwordObscure = true;
   bool passwordConfirmObscure = true;
@@ -143,38 +131,6 @@ class _RegisterBodyState extends State<RegisterBody> {
                           : null,
                     ),
                     const SizedBox(height: 20.0),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CheckBox(
-                            onTap: () => setState(() {
-                                  isAgbs = !isAgbs;
-                                }),
-                            isChecked: isAgbs),
-                        const SizedBox(width: 8),
-                        RichText(
-                          textAlign: TextAlign.left,
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              const TextSpan(
-                                  text: "I agree with the ",
-                                  style: TextStyle(color: Colors.black)),
-                              TextSpan(
-                                  text: "agbs.",
-                                  style: const TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.bold),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () async {
-                                      if (!await launchUrl(AGB_URL)) {
-                                        throw 'Could not launch';
-                                      }
-                                    }),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 20.0),
                     Center(
                         child: CustomButton(
@@ -269,6 +225,7 @@ class _RegisterBodyState extends State<RegisterBody> {
                           ),
                         ),
                       ),
+                      SizedBox(height: 10),
                     ],
                   )),
             ],
@@ -287,13 +244,6 @@ class _RegisterBodyState extends State<RegisterBody> {
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       return;
     }
-
-    if (!isAgbs) {
-      setState(() {
-        error = 'you have to agree with the agbs';
-      });
-      return;
-    }
     setState(() {
       loading = true;
     });
@@ -303,7 +253,8 @@ class _RegisterBodyState extends State<RegisterBody> {
         passwordController?.text ?? "", nameController?.text ?? "");
 
     // error handling
-    String errorResponse = "try it again later";
+    String errorResponse =
+        "We're sorry there are some problems. Please try again later";
     if (response["errors"] != null) {
       if (response["errors"][0] != null &&
           response["errors"][0]["message"] != null) {
@@ -332,7 +283,17 @@ class _RegisterBodyState extends State<RegisterBody> {
     Provider.of<UserProvider>(context, listen: false).token = _token;
 
     // safe the user to provider
-    Provider.of<UserProvider>(context, listen: false).setUserFromToken();
+    bool setUserFromTokeResponse =
+        await Provider.of<UserProvider>(context, listen: false)
+            .setUserFromToken();
+    if (!setUserFromTokeResponse) {
+      errorResponse = "We are not able to create an user";
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
+      return;
+    }
 
     // safe the credentials to shared preferences
     CredentialPreferences.setEmail(emailController?.text ?? "");
