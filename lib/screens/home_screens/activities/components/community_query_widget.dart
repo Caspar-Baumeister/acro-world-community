@@ -2,7 +2,7 @@ import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/home_screens/activities/components/choose_community_modal.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/choose_community_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

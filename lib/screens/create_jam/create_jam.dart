@@ -6,7 +6,7 @@ import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/screens/create_jam/app_bar_create_jam.dart';
 import 'package:acroworld/screens/create_jam/date_time_chooser.dart';
-import 'package:acroworld/screens/home_folder/map/map.dart';
+import 'package:acroworld/screens/map/map.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/screens/loading_page.dart';
 import 'package:acroworld/components/view_root.dart';

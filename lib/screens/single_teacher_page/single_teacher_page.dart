@@ -2,7 +2,7 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/single_teacher_page/widgets/class_section.dart';
 import 'package:acroworld/screens/single_teacher_page/widgets/gallery_section.dart';
 import 'package:acroworld/screens/single_teacher_page/widgets/info_section.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class SingleTeacherPage extends StatefulWidget {

@@ -1,7 +1,7 @@
 import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/home_folder/map/map.dart';
+import 'package:acroworld/screens/map/map.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

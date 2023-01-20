@@ -5,7 +5,7 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home_screens/teachers_page/teacher_body.dart';
+import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_body.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

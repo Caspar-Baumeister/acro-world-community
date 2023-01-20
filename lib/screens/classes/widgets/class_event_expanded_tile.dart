@@ -4,7 +4,7 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
-import 'package:acroworld/screens/users/user_list_screen.dart';
+import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

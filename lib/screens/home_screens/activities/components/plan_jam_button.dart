@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/home_screens/activities/components/community_query_widget.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/community_query_widget.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 

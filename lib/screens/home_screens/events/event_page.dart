@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/home_screens/events/event_body.dart';
+import 'package:acroworld/screens/HOME_SCREENS/events/event_body.dart';
 import 'package:flutter/material.dart';
 
 class EventsPage extends StatelessWidget {

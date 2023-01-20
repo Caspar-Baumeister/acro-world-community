@@ -1,7 +1,7 @@
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/home_folder/chatroom/fetch_community_chatroom.dart';
+import 'package:acroworld/screens/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/screens/single_teacher_page/widgets/info_row.dart';
-import 'package:acroworld/screens/teacher/widgets/edit_button.dart';
+import 'package:acroworld/screens/single_teacher_page/widgets/edit_button.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

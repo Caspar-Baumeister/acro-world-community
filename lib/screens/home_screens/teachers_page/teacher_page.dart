@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/home_screens/teachers_page/teacher_query.dart';
+import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_query.dart';
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatelessWidget {
@@ -8,7 +8,6 @@ class TeacherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SafeArea(
       child: Scaffold(
-        // appBar: AppBarTeacher(),
         body: TeacherQuery(),
       ),
     );

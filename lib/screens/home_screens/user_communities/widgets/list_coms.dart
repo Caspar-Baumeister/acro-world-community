@@ -1,5 +1,5 @@
 import 'package:acroworld/provider/user_communities.dart';
-import 'package:acroworld/screens/home_screens/user_communities/widgets/community_card.dart';
+import 'package:acroworld/screens/HOME_SCREENS/user_communities/widgets/community_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

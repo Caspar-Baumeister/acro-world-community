@@ -5,7 +5,8 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/teacher_likes/change_like_on_teacher.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/home_screens/teachers_page/teacher_like_query.dart';
+import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_like_query.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -72,11 +73,8 @@ class _TeacherQueryState extends State<TeacherQuery> {
         result.data!["teachers"]
             .forEach((teacher) => teachers.add(TeacherModel.fromJson(teacher)));
 
-        // for (Map<String, dynamic> json in result.data!["teachers"]) {
-        //   teachers.add(TeacherModel.fromJson(json));
-        // }
-
         return RefreshIndicator(
+          color: PRIMARY_COLOR,
           onRefresh: (() async => runRefetch()),
           child: TeacherLikeQuery(
             teachers: teachers,

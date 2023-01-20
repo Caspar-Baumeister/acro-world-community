@@ -1,8 +1,8 @@
-import 'package:acroworld/screens/home_screens/events/event_page.dart';
-import 'package:acroworld/screens/home_screens/activities/activities.dart';
-import 'package:acroworld/screens/home_screens/components/custom_bottom_nav_bar.dart';
-import 'package:acroworld/screens/home_screens/teachers_page/teacher_page.dart';
-import 'package:acroworld/screens/home_screens/user_communities/user_communities.dart';
+import 'package:acroworld/screens/HOME_SCREENS/events/event_page.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/activities.dart';
+import 'package:acroworld/screens/HOME_SCREENS/components/custom_bottom_nav_bar.dart';
+import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_page.dart';
+import 'package:acroworld/screens/HOME_SCREENS/user_communities/user_communities.dart';
 import 'package:flutter/material.dart';
 
 class HomeScaffold extends StatefulWidget {

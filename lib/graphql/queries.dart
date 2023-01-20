@@ -101,6 +101,7 @@ class Queries {
     teacher_levels {
       level {
         name
+        id
       }
     }
     images {

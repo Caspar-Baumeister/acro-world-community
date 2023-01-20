@@ -1,7 +1,7 @@
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/screens/home_folder/chatroom/chatroom.dart';
-import 'package:acroworld/screens/home_folder/chatroom/widgets/time_bubble.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/screens/chatroom/chatroom.dart';
+import 'package:acroworld/screens/chatroom/widgets/time_bubble.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CommunityCard extends StatelessWidget {

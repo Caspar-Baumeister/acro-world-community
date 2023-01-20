@@ -1,6 +1,7 @@
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/home_screens/teachers_page/widgets/teacher_card.dart';
+import 'package:acroworld/screens/HOME_SCREENS/teachers_page/widgets/teacher_card.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/home_folder/communities/all_communities/all_communities.dart';
+import 'package:acroworld/screens/add_communities/all_communities/all_communities.dart';
 
 import 'package:flutter/material.dart';
 

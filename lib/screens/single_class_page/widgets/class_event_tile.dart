@@ -3,7 +3,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/users/user_list_screen.dart';
+import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

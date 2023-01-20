@@ -1,9 +1,9 @@
 import 'package:acroworld/components/place_button/place_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/home_screens/activities/components/classes_view.dart';
-import 'package:acroworld/screens/home_screens/activities/components/jams_view.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/classes_view.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/jams_view.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';

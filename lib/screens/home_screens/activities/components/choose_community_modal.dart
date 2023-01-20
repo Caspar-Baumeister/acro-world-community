@@ -1,6 +1,6 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/create_jam/create_jam.dart';
-import 'package:acroworld/screens/home_folder/chatroom/widgets/time_bubble.dart';
+import 'package:acroworld/screens/chatroom/widgets/time_bubble.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter/material.dart';
 

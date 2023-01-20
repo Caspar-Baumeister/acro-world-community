@@ -1,6 +1,7 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/screens/classes/widgets/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';

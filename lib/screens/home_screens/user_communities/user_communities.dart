@@ -1,8 +1,8 @@
 import 'package:acroworld/models/notifications/notification_type.dart';
-import 'package:acroworld/screens/home_folder/chatroom/fetch_community_chatroom.dart';
-import 'package:acroworld/screens/home_folder/communities/settings_drawer.dart';
-import 'package:acroworld/screens/home_screens/user_communities/user_communities_body.dart';
-import 'package:acroworld/screens/home_screens/user_communities/widgets/app_bar.dart';
+import 'package:acroworld/screens/chatroom/fetch_community_chatroom.dart';
+import 'package:acroworld/screens/add_communities/settings_drawer.dart';
+import 'package:acroworld/screens/HOME_SCREENS/user_communities/user_communities_body.dart';
+import 'package:acroworld/screens/HOME_SCREENS/user_communities/widgets/app_bar.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 

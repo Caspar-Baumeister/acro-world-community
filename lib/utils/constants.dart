@@ -16,6 +16,3 @@ const String COMMUNITY_IMG_URL =
 const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
 
 Uri AGB_URL = Uri.parse('https://acroworld.de');
-
-const Color PRIMARY_COLOR = Color.fromARGB(255, 0, 95, 172);
-const Color SECONDARY_COLOR = Color.fromARGB(255, 150, 208, 255);

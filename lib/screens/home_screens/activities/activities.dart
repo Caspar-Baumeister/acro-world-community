@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/home_screens/activities/activities_body.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/activities_body.dart';
 import 'package:flutter/material.dart';
 
 class ActivitiesPage extends StatelessWidget {

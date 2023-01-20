@@ -1,7 +1,7 @@
 import 'package:acroworld/components/custom_button.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/home_screens/activities/components/community_query_widget.dart';
-import 'package:acroworld/screens/home_screens/activities/components/jams_view_query.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/community_query_widget.dart';
+import 'package:acroworld/screens/HOME_SCREENS/activities/components/jams_view_query.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 
