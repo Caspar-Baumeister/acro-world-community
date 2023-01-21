@@ -1,5 +1,6 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/screens/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -156,7 +157,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
             const SizedBox(
               height: 20,
             ),
-            actions(context),
+            actions(context, widget.teacher.communityID, null),
             const SizedBox(
               height: 20,
             ),
@@ -167,20 +168,28 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
   }
 }
 
-Widget actions(BuildContext context) {
+Widget actions(BuildContext context, String communityId, String? webUrl) {
   return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Flexible(
-          child: StandartButton(
-        text: "Website",
-        onPressed: () {},
-      )),
-      const SizedBox(width: 15),
+      webUrl != null
+          ? Flexible(
+              child: StandartButton(
+              text: "Website",
+              onPressed: () {},
+            ))
+          : Container(),
+      webUrl != null ? const SizedBox(width: 15) : Container(),
       Flexible(
           child: StandartButton(
         text: "Community",
-        onPressed: () {},
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => FetchCommunityChatroom(
+                    communityId: communityId,
+                  )),
+        ),
         // () => Navigator.of(context).push(
         //   MaterialPageRoute(
         //       builder: (context) => COmmun(
