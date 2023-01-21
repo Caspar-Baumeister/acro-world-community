@@ -26,7 +26,12 @@ class ClassSection extends StatelessWidget {
           }
 
           if (result.isLoading || result.data == null) {
-            return const LoadingWidget();
+            return const Padding(
+              padding: EdgeInsets.only(top: 20.0),
+              child: Center(
+                child: LoadingWidget(),
+              ),
+            );
           }
 
           VoidCallback runRefetch = (() {
@@ -43,6 +48,7 @@ class ClassSection extends StatelessWidget {
               .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
 
           return ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount: classes.length,
               itemBuilder: ((context, index) {

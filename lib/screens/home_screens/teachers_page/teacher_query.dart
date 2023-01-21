@@ -1,16 +1,12 @@
 import 'dart:async';
 
 import 'package:acroworld/components/loading_widget.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/events/teacher_likes/change_like_on_teacher.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_like_query.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
 class TeacherQuery extends StatefulWidget {
   const TeacherQuery({Key? key}) : super(key: key);
@@ -32,9 +28,9 @@ class _TeacherQueryState extends State<TeacherQuery> {
 
   @override
   Widget build(BuildContext context) {
-    final EventBusProvider eventBusProvider =
-        Provider.of<EventBusProvider>(context, listen: false);
-    final EventBus eventBus = eventBusProvider.eventBus;
+    // final EventBusProvider eventBusProvider =
+    //     Provider.of<EventBusProvider>(context, listen: false);
+    // final EventBus eventBus = eventBusProvider.eventBus;
 
     return Query(
       options: QueryOptions(
@@ -64,9 +60,9 @@ class _TeacherQueryState extends State<TeacherQuery> {
           );
         }
 
-        eventListeners.add(eventBus.on<ChangeLikeEvent>().listen((event) {
-          runRefetch();
-        }));
+        // eventListeners.add(eventBus.on<ChangeLikeEvent>().listen((event) {
+        //   runRefetch();
+        // }));
 
         List<TeacherModel> teachers = [];
 

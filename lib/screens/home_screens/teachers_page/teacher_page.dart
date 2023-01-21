@@ -8,6 +8,7 @@ class TeacherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const SafeArea(
       child: Scaffold(
+        // add column with search and give the promt as input to query
         body: TeacherQuery(),
       ),
     );
