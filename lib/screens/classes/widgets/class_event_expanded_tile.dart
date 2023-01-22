@@ -4,6 +4,7 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
+import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -136,9 +137,10 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        classEvent.classModel != null
+                        classEvent.classModel != null &&
+                                classEvent.classModel!.classLevel.isNotEmpty
                             ? DifficultyWidget(
-                                classLevel: classEvent.classModel!.classLevel,
+                                classEvent.classModel!.classLevel,
                               )
                             : const SizedBox(
                                 width: 100,
@@ -335,51 +337,51 @@ class _ParticipatentsButtonState extends State<ParticipatentsButton> {
   }
 }
 
-class DifficultyWidget extends StatelessWidget {
-  const DifficultyWidget({Key? key, required this.classLevel})
-      : super(key: key);
+// class DifficultyWidget extends StatelessWidget {
+//   const DifficultyWidget({Key? key, required this.classLevel})
+//       : super(key: key);
 
-  final List<String> classLevel;
+//   final List<String> classLevel;
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        const Text(
-          "Level:",
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-          ),
-        ),
-        const SizedBox(width: 4),
-        Container(
-          width: 15,
-          height: 15,
-          decoration: BoxDecoration(
-            color: Colors.green[100],
-            border: classLevel.contains("Beginner") ? Border.all() : null,
-          ),
-        ),
-        Container(
-          width: 15,
-          height: 15,
-          decoration: BoxDecoration(
-            color: Colors.yellow[100],
-            border: classLevel.contains("Intermediate") ? Border.all() : null,
-          ),
-        ),
-        Container(
-          width: 15,
-          height: 15,
-          decoration: BoxDecoration(
-            color: Colors.red[100],
-            border: classLevel.contains("Advanced") ? Border.all() : null,
-          ),
-        )
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Row(
+//       mainAxisSize: MainAxisSize.min,
+//       children: [
+//         const Text(
+//           "Level:",
+//           style: TextStyle(
+//             fontSize: 12,
+//             fontWeight: FontWeight.w700,
+//             color: Colors.black,
+//           ),
+//         ),
+//         const SizedBox(width: 4),
+//         Container(
+//           width: 15,
+//           height: 15,
+//           decoration: BoxDecoration(
+//             color: Colors.green[100],
+//             border: classLevel.contains("Beginner") ? Border.all() : null,
+//           ),
+//         ),
+//         Container(
+//           width: 15,
+//           height: 15,
+//           decoration: BoxDecoration(
+//             color: Colors.yellow[100],
+//             border: classLevel.contains("Intermediate") ? Border.all() : null,
+//           ),
+//         ),
+//         Container(
+//           width: 15,
+//           height: 15,
+//           decoration: BoxDecoration(
+//             color: Colors.red[100],
+//             border: classLevel.contains("Advanced") ? Border.all() : null,
+//           ),
+//         )
+//       ],
+//     );
+//   }
+// }

@@ -85,7 +85,7 @@ class Queries {
 
   static final getAllTeacher = gql("""
   query getAllTeacher{
-    teachers {
+    teachers(order_by: {user_likes_aggregate: {count: desc}}) {
     created_at
     description
     id

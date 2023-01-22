@@ -52,6 +52,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                     width: 200.0,
                     height: 200.0,
                     decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                       color: Colors.black12,
                     ),
                   ),
@@ -59,6 +60,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                     width: 200.0,
                     height: 200.0,
                     decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
                       color: Colors.black12,
                     ),
                     child: const Icon(
@@ -112,11 +114,22 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
-                                      widget.teacher.locationName,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.w700,
+                                    Container(
+                                      alignment: Alignment.center,
+                                      constraints: BoxConstraints(
+                                          maxWidth: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              3),
+                                      child: Text(
+                                        widget.teacher.locationName,
+                                        textAlign: TextAlign.center,
+                                        overflow: TextOverflow.clip,
+                                        maxLines: 2,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
                                     ),
                                   ],
