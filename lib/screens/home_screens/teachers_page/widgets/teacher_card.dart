@@ -1,7 +1,7 @@
 import 'package:acroworld/components/like_teacher_mutation_widget.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/teacher_profile/screens/profile_base_screen.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

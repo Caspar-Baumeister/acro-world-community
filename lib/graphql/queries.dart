@@ -126,6 +126,17 @@ class Queries {
   query getClasses {
     classes {
       ${Fragments.classFragment}
+      class_teachers {
+      teacher {
+        id
+        name
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+        }
+      }
+    }
     }
   }
   """);
@@ -134,6 +145,17 @@ class Queries {
   query getClasses {
     classes {
       ${Fragments.classFragment}
+      class_teachers {
+      teacher {
+        id
+        name
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+        }
+      }
+    }
     }
   }
   """);

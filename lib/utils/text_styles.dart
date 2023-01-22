@@ -13,3 +13,8 @@ const TextStyle STANDART_DESCRIPTION =
 
 const TextStyle STANDART_BUTTON_TEXT =
     TextStyle(fontSize: 18, fontWeight: FontWeight.w600);
+
+const TextStyle MAINTEXT = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
+const TextStyle SECONDARYTEXT =
+    TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
+const TextStyle SMALLTEXT = TextStyle(fontSize: 8, fontWeight: FontWeight.w300);

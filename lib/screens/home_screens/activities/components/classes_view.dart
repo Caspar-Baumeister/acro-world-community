@@ -57,18 +57,19 @@ class ClassesView extends StatelessWidget {
 
           // TODO the query fetches for all dates. Implement an where(date equal to day)
 
-          List<ClassModel> classes = [];
+          // List<ClassModel> classes = [];
           List<ClassEvent> classEvents = [];
 
           if (result.data!.keys.contains(selector) &&
               result.data![selector] != null) {
             result.data![selector].forEach((clas) {
-              classes.add(ClassModel.fromJson(clas));
+              // classes.add(ClassModel.fromJson(clas));
               if (clas["class_events"] != null &&
                   clas["class_events"].isNotEmpty) {
                 clas["class_events"].forEach((element) {
                   ClassEvent classEvent = ClassEvent.fromJson(element,
-                      classModel: ClassModel.fromJson(clas));
+                      classModel: ClassModel.fromJson(clas),
+                      teacherList: clas["class_teachers"]);
 
                   if (isSameDate(classEvent.date, day)) {
                     classEvents.add(classEvent);
@@ -81,12 +82,21 @@ class ClassesView extends StatelessWidget {
           classEvents.sort((a, b) => b.date.isBefore(a.date) ? 1 : 0);
           return RefreshIndicator(
             onRefresh: () => runRefetch(),
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: classEvents.length,
-              itemBuilder: (context, index) {
-                return ClassEventExpandedTile(classEvent: classEvents[index]);
-              },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: classEvents.length,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8),
+                    child: ClassEventExpandedTile(
+                      classEvent: classEvents[index],
+                    ),
+                  );
+                },
+              ),
             ),
           );
         });

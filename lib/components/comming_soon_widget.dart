@@ -1,4 +1,4 @@
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CommingSoon extends StatelessWidget {
