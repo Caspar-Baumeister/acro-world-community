@@ -31,7 +31,7 @@ class PlaceQuery extends StatelessWidget {
 
           return const LoadingWidget();
         } else if (placeResult.hasException || !placeResult.isConcrete) {
-          return ErrorWidget(placeResult.exception ?? "");
+          return Container();
         } else {
           return const LoadingWidget();
         }
