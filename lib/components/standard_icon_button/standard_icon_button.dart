@@ -35,13 +35,17 @@ class StandardIconButton extends StatelessWidget {
               color: Colors.black,
             ),
             const SizedBox(width: 6),
-            Text(
-              text,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                color: Colors.black,
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.75,
+              child: Text(
+                text,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black,
+                ),
               ),
             ),
           ],

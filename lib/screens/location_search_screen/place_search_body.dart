@@ -1,4 +1,5 @@
 import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/add_communities/search_bar_widget.dart';
@@ -28,11 +29,11 @@ class PlaceQuery extends StatelessWidget {
             onPlaceSet(place);
           });
 
-          return Container();
+          return const LoadingWidget();
         } else if (placeResult.hasException || !placeResult.isConcrete) {
-          return Container();
+          return ErrorWidget(placeResult.exception ?? "");
         } else {
-          return const LoadingIndicator();
+          return const LoadingWidget();
         }
       },
     );
