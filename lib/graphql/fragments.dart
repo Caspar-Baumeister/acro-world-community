@@ -46,6 +46,7 @@ class Fragments {
         }
       }
     }
+    
   """;
 
   static const String jamFragment = """

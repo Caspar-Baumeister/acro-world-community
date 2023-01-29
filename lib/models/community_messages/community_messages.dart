@@ -17,13 +17,4 @@ class CommunityMessages {
       });
     }
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (communityMessages != null) {
-      data['community_messages'] =
-          communityMessages!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
 }

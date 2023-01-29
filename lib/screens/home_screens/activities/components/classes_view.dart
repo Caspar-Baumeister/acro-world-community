@@ -67,9 +67,17 @@ class ClassesView extends StatelessWidget {
               if (clas["class_events"] != null &&
                   clas["class_events"].isNotEmpty) {
                 clas["class_events"].forEach((element) {
+                  List? teacherList;
+                  if (clas["class_teachers"] != null &&
+                      clas["class_teachers"].isNotEmpty) {
+                    teacherList = clas["class_teachers"];
+                  }
+                  if (clas["teacher"] != null && clas["teacher"].isNotEmpty) {
+                    teacherList = clas["teacher"];
+                  }
                   ClassEvent classEvent = ClassEvent.fromJson(element,
                       classModel: ClassModel.fromJson(clas),
-                      teacherList: clas["class_teachers"]);
+                      teacherList: teacherList);
 
                   if (isSameDate(classEvent.date, day)) {
                     classEvents.add(classEvent);

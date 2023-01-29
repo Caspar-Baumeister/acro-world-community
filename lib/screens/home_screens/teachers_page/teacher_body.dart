@@ -1,11 +1,9 @@
+import 'package:acroworld/components/teacher_button_link_widget.dart';
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/widgets/teacher_card.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
 class TeacherBody extends StatelessWidget {
   const TeacherBody(
@@ -25,38 +23,13 @@ class TeacherBody extends StatelessWidget {
         ),
       ),
     );
+    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return SingleChildScrollView(
       child: Column(children: [
-        Padding(
-          padding: const EdgeInsets.all(18),
-          child: RichText(
-            textAlign: TextAlign.left,
-            text: TextSpan(
-              children: <TextSpan>[
-                const TextSpan(
-                    text:
-                        "You are an acro teacher and want to show your profile? Tell us about you in a brief email to ",
-                    style: TextStyle(color: Colors.black)),
-                TextSpan(
-                    text: "info@acroworld.com",
-                    style: const TextStyle(
-                        color: PRIMARY_COLOR, fontWeight: FontWeight.bold),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () {
-                        Clipboard.setData(
-                            const ClipboardData(text: "info@acroworld.com"));
-                        Fluttertoast.showToast(
-                            msg: "Email copied",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.TOP,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                      }),
-              ],
-            ),
-          ),
+        const Padding(
+          padding: EdgeInsets.all(18.0),
+          child: TeacherButtonLinkWidget(),
         ),
         ...teacherList
       ]),

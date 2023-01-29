@@ -165,8 +165,19 @@ class Queries {
     classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {distance: {_lte: "20"}}) {
         ${Fragments.classFragment}
         distance
+        teacher {
+          teacher {
+            id
+            name
+            images(where: {is_profile_picture: {_eq: true}}) {
+              image {
+                url
+              }
+            }
+          }
+        }
       }
-  }
+    }
   """);
 
   static final getOtherCommunities = gql("""

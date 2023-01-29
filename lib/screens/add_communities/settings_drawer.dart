@@ -1,3 +1,4 @@
+import 'package:acroworld/components/teacher_button_link_widget.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
@@ -251,6 +252,10 @@ class SettingsDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    const Divider(color: Colors.grey, height: 1),
+                    const SizedBox(height: 10),
+                    const TeacherButtonLinkWidget(),
                   ],
                 ),
               )),
