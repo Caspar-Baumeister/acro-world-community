@@ -1,4 +1,5 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ class StandartButton extends StatelessWidget {
   const StandartButton(
       {required this.text,
       required this.onPressed,
-      this.width = 300,
+      this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
       this.isFilled = false});
@@ -38,10 +39,12 @@ class StandartButton extends StatelessWidget {
           child: Center(
             child: loading
                 ? Container(
-                    height: 40,
-                    width: width,
+                    height: 30,
+                    width: 30,
                     padding: const EdgeInsets.all(5),
-                    child: const CircularProgressIndicator())
+                    child: CircularProgressIndicator(
+                      color: isFilled == true ? Colors.white : PRIMARY_COLOR,
+                    ))
                 : Text(
                     text,
                     style: STANDART_BUTTON_TEXT.copyWith(

@@ -1,12 +1,12 @@
-import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/classes/widgets/participants_button.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
+import 'package:acroworld/screens/teacher_profile/teacher_profile_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
-import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +160,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                                 return SizedBox(
                                   height: PARTICIPANT_BUTTON_HEIGHT,
                                   child: IgnorePointer(
-                                    child: ParticipatentsButton(
+                                    child: ParticipantsButton(
                                         classEventId: classEvent.id,
                                         countParticipants: null,
                                         isParticipate: false,
@@ -187,7 +187,7 @@ class ClassEventExpandedTile extends StatelessWidget {
 
                               return SizedBox(
                                 height: PARTICIPANT_BUTTON_HEIGHT,
-                                child: ParticipatentsButton(
+                                child: ParticipantsButton(
                                     classEventId: classEvent.id,
                                     countParticipants: participants.length,
                                     isParticipate: isParticipate,
@@ -223,40 +223,50 @@ class ClassTeacherChips extends StatelessWidget {
               ...teacher
                   .map((t) => Padding(
                         padding: const EdgeInsets.only(right: 5.0),
-                        child: Chip(
-                          padding: const EdgeInsets.all(0),
-                          backgroundColor: Colors.white,
-                          label: Text(t.name),
-                          avatar: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            imageUrl: t.profileImageUrl!,
-                            imageBuilder: (context, imageProvider) => Container(
-                              width: 64.0,
-                              height: 64.0,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                image: DecorationImage(
-                                    image: imageProvider, fit: BoxFit.cover),
-                              ),
+                        child: GestureDetector(
+                          // Hier muss auf ein teacher query geschickte werden, der sich den teacher holt und dann auf teacher screen leitet
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TeacherProfileQueryWrapper(teacherId: t.id),
                             ),
-                            placeholder: (context, url) => Container(
-                              width: 64.0,
-                              height: 64.0,
-                              decoration: const BoxDecoration(
-                                color: Colors.black12,
-                                shape: BoxShape.circle,
+                          ),
+                          child: Chip(
+                            padding: const EdgeInsets.all(0),
+                            backgroundColor: Colors.white,
+                            label: Text(t.name),
+                            avatar: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: t.profileImageUrl ?? "",
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
                               ),
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              width: 64.0,
-                              height: 64.0,
-                              decoration: const BoxDecoration(
-                                color: Colors.black12,
-                                shape: BoxShape.circle,
+                              placeholder: (context, url) => Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  shape: BoxShape.circle,
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.error,
-                                color: Colors.red,
+                              errorWidget: (context, url, error) => Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
                               ),
                             ),
                           ),
@@ -266,125 +276,5 @@ class ClassTeacherChips extends StatelessWidget {
             ],
           )),
     );
-  }
-}
-
-class ParticipatentsButton extends StatefulWidget {
-  const ParticipatentsButton(
-      {Key? key,
-      this.countParticipants,
-      required this.classEventId,
-      required this.isParticipate,
-      required this.runRefetch})
-      : super(key: key);
-
-  final int? countParticipants;
-  final String classEventId;
-  final bool isParticipate;
-  final VoidCallback runRefetch;
-
-  @override
-  State<ParticipatentsButton> createState() => _ParticipatentsButtonState();
-}
-
-class _ParticipatentsButtonState extends State<ParticipatentsButton> {
-  late bool isParticipateState;
-
-  @override
-  void initState() {
-    super.initState();
-    isParticipateState = widget.isParticipate;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    return Mutation(
-        options: MutationOptions(
-            document: isParticipateState
-                ? Mutations.leaveParticipateClass
-                : Mutations.participateToClass),
-        builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
-                    {Object? optimisticResult})
-                runMutation,
-            QueryResult<dynamic>? result) {
-          if (result != null && result.hasException) {
-            print(result.exception);
-          }
-
-          return Stack(
-            children: [
-              SizedBox(
-                width: PARTICIPANT_BUTTON_WIDTH,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QueryUserListScreen(
-                          query: Queries.getClassParticipants,
-                          variables: {'class_event_id': widget.classEventId},
-                          title: 'Participants',
-                        ),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    widget.countParticipants != null
-                        ? "${widget.countParticipants.toString()}       "
-                        : "",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                child: SizedBox(
-                  height: PARTICIPANT_BUTTON_HEIGHT,
-                  width: PARTICIPANT_BUTTON_HEIGHT,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    onPressed: () {
-                      isParticipateState
-                          ? runMutation({
-                              'class_event_id': widget.classEventId,
-                              'user_id': userProvider.activeUser!.id!
-                            })
-                          : runMutation({
-                              'class_event_id': widget.classEventId,
-                            });
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        widget.runRefetch();
-                      });
-                    },
-                    child: Center(
-                      child: Icon(
-                        isParticipateState ? Icons.remove : Icons.add,
-                        size: 14,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          );
-        });
   }
 }

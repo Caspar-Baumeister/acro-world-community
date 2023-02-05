@@ -8,11 +8,11 @@ class TeacherLinkModel {
     required this.name,
     this.profileImageUrl,
   });
-  factory TeacherLinkModel.fromJson(Map json) {
+  factory TeacherLinkModel.fromJson(Map? json) {
     return TeacherLinkModel(
-        name: json["name"],
-        id: json["id"],
-        profileImageUrl: json["images"]?[0]?["image"]?["url"]);
+        name: json?["name"] ?? "",
+        id: json?["id"] ?? "",
+        profileImageUrl: json?["images"]?[0]?["image"]?["url"]);
   }
 }
 

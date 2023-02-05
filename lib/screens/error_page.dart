@@ -8,7 +8,12 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: Text("An unexpected error occured with: $error")),
+      body: Center(
+        child: Text(
+          "An unexpected error occured. Consider updating your current app version. Error: $error",
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
@@ -20,6 +25,11 @@ class ErrorScreenWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("An unexpected error occured with: $error"));
+    return Center(
+      child: Text(
+        "An unexpected error occured. Consider updating your current app version. Error: $error",
+        textAlign: TextAlign.center,
+      ),
+    );
   }
 }

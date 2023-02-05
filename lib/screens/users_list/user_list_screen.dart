@@ -5,12 +5,17 @@ import 'package:gql/ast.dart';
 
 class QueryUserListScreen extends StatelessWidget {
   const QueryUserListScreen(
-      {Key? key, required this.query, required this.variables, this.title})
+      {Key? key,
+      required this.query,
+      required this.variables,
+      this.title,
+      this.classEventId})
       : super(key: key);
 
   final DocumentNode query;
   final Map<String, dynamic> variables;
   final String? title;
+  final String? classEventId;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,11 @@ class QueryUserListScreen extends StatelessWidget {
       appBar: StandardAppBar(title: title ?? 'Users'),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: UserListQuery(query: query, variables: variables),
+        child: UserListQuery(
+          query: query,
+          variables: variables,
+          classEventId: classEventId,
+        ),
       ),
     );
   }
