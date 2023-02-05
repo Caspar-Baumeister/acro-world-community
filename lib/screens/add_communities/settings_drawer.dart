@@ -1,9 +1,11 @@
+import 'package:acroworld/components/teacher_button_link_widget.dart';
+import 'package:acroworld/components/your_gender_button_widget.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -59,118 +61,13 @@ class SettingsDrawer extends StatelessWidget {
                 ),
                 title: Text(
                   userProvider.activeUser!.name ?? "Unknown",
+                  style: SUB_TITLE,
                 ),
               ),
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const Calender(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.location_on_sharp),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Jams")
-              //     ],
-              //   )),
-              // ),
-              // // Comment in again when feature is ready
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const TeacherPage(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.person_search_sharp),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Teacher")
-              //     ],
-              //   )),
-              // ),
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const ClassesPage(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.calendar_month),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Classes")
-              //     ],
-              //   )),
-              // ),
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const EventsPage(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.festival_outlined),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Events")
-              //     ],
-              //   )),
-              // ),
-
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const BuddyPage(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.favorite),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Buddy finder")
-              //     ],
-              //   )),
-              // ),
-              // GestureDetector(
-              //   onTap: () => Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) => const RecommendationsPage(),
-              //     ),
-              //   ),
-              //   child: ListTile(
-              //       leading: Row(
-              //     mainAxisSize: MainAxisSize.min,
-              //     children: const [
-              //       Icon(Icons.thumb_up),
-              //       SizedBox(
-              //         width: 15,
-              //       ),
-              //       Text("Recommendations")
-              //     ],
-              //   )),
-              // ),
+              const Padding(
+                padding: EdgeInsets.only(left: 20.0, top: 10, right: 15),
+                child: YourGenderButtonWidget(),
+              ),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
@@ -185,11 +82,13 @@ class SettingsDrawer extends StatelessWidget {
                     SizedBox(
                       width: 15,
                     ),
-                    Text("Settings")
+                    Text(
+                      "Settings",
+                      style: STANDART_DESCRIPTION,
+                    )
                   ],
                 )),
               ),
-
               const Divider(color: Colors.grey, height: 1),
               Expanded(
                   child: Container(
@@ -251,6 +150,10 @@ class SettingsDrawer extends StatelessWidget {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 10),
+                    const Divider(color: Colors.grey, height: 1),
+                    const SizedBox(height: 10),
+                    const TeacherButtonLinkWidget(),
                   ],
                 ),
               )),

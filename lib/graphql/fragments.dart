@@ -1,9 +1,41 @@
 class Fragments {
+  static const teacherFragment = """
+  created_at
+  description
+  id
+  location_name
+  community_id
+  name
+  user_id
+  user_likes_aggregate {
+    aggregate {
+      count
+    }
+  }
+  teacher_levels {
+    level {
+      name
+      id
+    }
+  }
+  images {
+    image {
+      url
+    }
+    is_profile_picture
+  }
+  """;
+
   static const userFragment = """
   id
   name
   image_url
   bio
+  acro_role 
+    {
+      name
+      id
+    }
   """;
 
   static const String communityFragment = """
@@ -46,6 +78,7 @@ class Fragments {
         }
       }
     }
+    
   """;
 
   static const String jamFragment = """

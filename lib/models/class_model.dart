@@ -55,7 +55,7 @@ class ClassModel {
       imageUrl: json["image_url"],
       longitude: json["location"]?["coordinates"]?[0],
       latitude: json["location"]?["coordinates"]?[1],
-      distance: json["distance"],
+      distance: json["distance"] != null ? json["distance"] * 1.0 : null,
       classLevel: classLevel,
     );
   }

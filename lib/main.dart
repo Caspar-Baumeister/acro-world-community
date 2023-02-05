@@ -14,6 +14,9 @@ void main() async {
   // so we need to initialize Hive.
   await initHiveForFlutter();
 
+  await CredentialPreferences.init();
+  await PlacePreferences.init();
+
   final HttpLink httpLink = HttpLink(
     'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
   );
@@ -35,6 +38,7 @@ void main() async {
   final AuthLink authLink = AuthLink(
     getToken: () async {
       String? token = await AuthProvider.fetchToken();
+
       return 'Bearer $token';
     },
   );
@@ -69,9 +73,6 @@ void main() async {
   );
 
   print('User granted permission: ${settings.authorizationStatus}');
-
-  await CredentialPreferences.init();
-  await PlacePreferences.init();
 
   return runApp(App(client: client));
 }

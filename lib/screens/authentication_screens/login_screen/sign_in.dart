@@ -1,8 +1,9 @@
-import 'package:acroworld/components/custom_button.dart';
+import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -128,7 +129,12 @@ class _SignInState extends State<SignIn> {
                     )
                   : Container(),
               const SizedBox(height: 20.0),
-              CustomButton("Login", () => onSignin(), loading: loading)
+              StandartButton(
+                text: "Login",
+                onPressed: () => onSignin(),
+                loading: loading,
+                isFilled: true,
+              )
               // OutlinedButton(
               //   style: OutlinedButton.styleFrom(
               //     shape: RoundedRectangleBorder(
@@ -234,8 +240,9 @@ class _SignInState extends State<SignIn> {
     Provider.of<UserProvider>(context, listen: false).setUserFromToken();
 
     // send to UserCommunities
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const UpdateFcmToken()));
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const UpdateFcmToken()),
+    );
 
     setState(() {
       loading = false;

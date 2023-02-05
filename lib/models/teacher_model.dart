@@ -1,3 +1,21 @@
+class TeacherLinkModel {
+  String name;
+  String id;
+  String? profileImageUrl;
+
+  TeacherLinkModel({
+    required this.id,
+    required this.name,
+    this.profileImageUrl,
+  });
+  factory TeacherLinkModel.fromJson(Map? json) {
+    return TeacherLinkModel(
+        name: json?["name"] ?? "",
+        id: json?["id"] ?? "",
+        profileImageUrl: json?["images"]?[0]?["image"]?["url"]);
+  }
+}
+
 class TeacherModel {
   String? profilePicUrl;
   String name;

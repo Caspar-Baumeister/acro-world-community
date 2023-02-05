@@ -33,24 +33,6 @@ class _LoadingPageState extends State<LoadingPage> {
                     fit: BoxFit.contain,
                   ),
                 )
-                // const SizedBox(
-                //   height: 10,
-                // ),
-                // widget.onRefresh != null
-                //     ? CustomButton(
-                //         "reload",
-                //         () async {
-                //           setState(() {
-                //             loading = true;
-                //           });
-                //           await widget.onRefresh!();
-                //           setState(() {
-                //             loading = false;
-                //           });
-                //         },
-                //         loading: loading,
-                //       )
-                //     : Container()
               ],
             ),
           ),

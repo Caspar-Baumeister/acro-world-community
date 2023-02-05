@@ -15,15 +15,4 @@ class CommunityMessage {
     fromUser =
         json['from_user'] != null ? User.fromJson(json['from_user']) : null;
   }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['content'] = content;
-    data['created_at'] = createdAt;
-    if (fromUser != null) {
-      data['from_user'] = fromUser!.toJson();
-    }
-    return data;
-  }
 }

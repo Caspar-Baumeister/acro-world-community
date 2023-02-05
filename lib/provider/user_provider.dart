@@ -15,7 +15,7 @@ class UserProvider extends ChangeNotifier {
   set token(String? token) => _token = token;
 
   getId() {
-    Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
+    Map<String, dynamic> parseJwt = Jwt.parseJwt(_token!);
     return parseJwt["user_id"];
   }
 
@@ -36,18 +36,30 @@ class UserProvider extends ChangeNotifier {
     }
 
     // TODO fill in rest of data
-    final response = await Database(token: _token).authorizedApi(
-        "query MyQuery {me { bio id image_url last_proposed_community_at name}}");
+    final response = await Database(token: _token).authorizedApi("""query {
+            me { 
+              bio 
+              id 
+              image_url 
+              last_proposed_community_at 
+              name
+              user_roles {
+                role {
+                  id
+                  name
+                }
+              }
+            }
+          }""");
 
     if (response["data"]?["me"]?[0] == null) {
       return false;
     }
-    Map user = response["data"]["me"][0];
+    Map<String, dynamic> user = response["data"]["me"][0];
     if (user["id"] == null || user["name"] == null) {
       return false;
     }
-    _activeUser =
-        User(id: user["id"], name: user["name"], imageUrl: user["image_url"]);
+    _activeUser = User.fromJson(user);
 
     notifyListeners();
     return true;

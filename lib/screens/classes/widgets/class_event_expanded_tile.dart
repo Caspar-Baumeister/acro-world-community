@@ -1,11 +1,13 @@
-import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/classes/widgets/participants_button.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
+import 'package:acroworld/screens/teacher_profile/teacher_profile_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
-import 'package:acroworld/screens/users_list/user_list_screen.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -19,7 +21,9 @@ class ClassEventExpandedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () => classEvent.classModel != null
           ? Navigator.of(context).push(
               MaterialPageRoute(
@@ -28,89 +32,74 @@ class ClassEventExpandedTile extends StatelessWidget {
                       teacherName: "" //classEvent.classModel!.,
                       )),
             )
-          : print("isnull"),
-      child: Container(
+          : null,
+      child: SizedBox(
+        height: CLASS_CARD_HEIGHT,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              flex: 1,
+            // Card Image
+            SizedBox(
+              width: screenWidth * 0.3,
               child: classEvent.classModel?.imageUrl != null
-                  ? Padding(
-                      padding: const EdgeInsets.all(12.0).copyWith(right: 0),
-                      child: SizedBox(
-                        height: 100.0,
-                        width: 100.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.cover,
-                            height: 52.0,
-                            placeholder: (context, url) => Container(
-                              color: Colors.black12,
-                            ),
-                            errorWidget: (context, url, error) => Container(
-                              color: Colors.black12,
-                              child: const Icon(
-                                Icons.error,
-                                color: Colors.red,
-                              ),
-                            ),
-                            imageUrl: classEvent.classModel!.imageUrl!,
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Container(
+                          color: Colors.black12,
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          color: Colors.black12,
+                          child: const Icon(
+                            Icons.error,
+                            color: Colors.red,
                           ),
                         ),
+                        imageUrl: classEvent.classModel!.imageUrl!,
                       ),
                     )
                   : Container(
-                      height: 100.0,
-                      width: 100.0,
                       decoration: BoxDecoration(
                           color: Colors.black12,
                           borderRadius: BorderRadius.circular(8.0)),
                     ),
             ),
             Expanded(
-              flex: 2,
-              child: Container(
-                padding: const EdgeInsets.all(12),
+              child: Padding(
+                padding:
+                    const EdgeInsets.only(top: 8, bottom: 8, left: 8, right: 8),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       classEvent.classModel?.name ?? "",
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      "${DateFormat('H:mm').format(classEvent.date)} - ${DateFormat('Hm').format(classEvent.endDate)}",
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                     const SizedBox(height: 6),
                     Row(
-                      mainAxisSize: MainAxisSize.max,
-                      crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        Text(
+                          "${DateFormat('H:mm').format(classEvent.date)} - ${DateFormat('Hm').format(classEvent.endDate)}",
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                          ),
+                        ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.black,
-                              size: 16,
-                            ),
                             Container(
                               constraints: BoxConstraints(
                                   maxWidth:
-                                      MediaQuery.of(context).size.width * 0.25),
+                                      MediaQuery.of(context).size.width * 0.35),
                               child: Text(
                                 classEvent.classModel!.locationName,
                                 maxLines: 1,
@@ -121,20 +110,24 @@ class ClassEventExpandedTile extends StatelessWidget {
                                 ),
                               ),
                             ),
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.black,
+                              size: 16,
+                            ),
                           ],
                         ),
-                        Container(
-                            alignment: Alignment.center,
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            child: const Text(
-                              "Participants:",
-                              style: TextStyle(fontSize: 12),
-                              maxLines: 1,
-                            ))
                       ],
                     ),
-                    const SizedBox(height: 6),
+                    classEvent.teacher != null && classEvent.teacher!.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child:
+                                ClassTeacherChips(teacher: classEvent.teacher!),
+                          )
+                        : Container(),
                     Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         classEvent.classModel != null &&
@@ -143,8 +136,8 @@ class ClassEventExpandedTile extends StatelessWidget {
                                 classEvent.classModel!.classLevel,
                               )
                             : const SizedBox(
-                                width: 100,
-                                height: 15,
+                                width: DIFFICULTY_LEVEL_WIDTH,
+                                height: DIFFICULTY_LEVEL_HEIGHT,
                               ),
                         Query(
                             options: QueryOptions(
@@ -165,9 +158,9 @@ class ClassEventExpandedTile extends StatelessWidget {
 
                               if (result.isLoading) {
                                 return SizedBox(
-                                  height: 48,
+                                  height: PARTICIPANT_BUTTON_HEIGHT,
                                   child: IgnorePointer(
-                                    child: ParticipatentsButton(
+                                    child: ParticipantsButton(
                                         classEventId: classEvent.id,
                                         countParticipants: null,
                                         isParticipate: false,
@@ -193,8 +186,8 @@ class ClassEventExpandedTile extends StatelessWidget {
                               }));
 
                               return SizedBox(
-                                height: 48,
-                                child: ParticipatentsButton(
+                                height: PARTICIPANT_BUTTON_HEIGHT,
+                                child: ParticipantsButton(
                                     classEventId: classEvent.id,
                                     countParticipants: participants.length,
                                     isParticipate: isParticipate,
@@ -214,174 +207,74 @@ class ClassEventExpandedTile extends StatelessWidget {
   }
 }
 
-class ParticipatentsButton extends StatefulWidget {
-  const ParticipatentsButton(
-      {Key? key,
-      this.countParticipants,
-      required this.classEventId,
-      required this.isParticipate,
-      required this.runRefetch})
-      : super(key: key);
+class ClassTeacherChips extends StatelessWidget {
+  const ClassTeacherChips({Key? key, required this.teacher}) : super(key: key);
 
-  final int? countParticipants;
-  final String classEventId;
-  final bool isParticipate;
-  final VoidCallback runRefetch;
-
-  @override
-  State<ParticipatentsButton> createState() => _ParticipatentsButtonState();
-}
-
-class _ParticipatentsButtonState extends State<ParticipatentsButton> {
-  late bool isParticipateState;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    isParticipateState = widget.isParticipate;
-  }
+  final List<TeacherLinkModel> teacher;
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    return Mutation(
-        options: MutationOptions(
-            document: isParticipateState
-                ? Mutations.leaveParticipateClass
-                : Mutations.participateToClass),
-        builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
-                    {Object? optimisticResult})
-                runMutation,
-            QueryResult<dynamic>? result) {
-          if (result != null && result.hasException) {
-            print(result.exception);
-          }
-
-          return Stack(
+    return SizedBox(
+      height: CLASS_CARD_TEACHER_HEIGHT,
+      child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
             children: [
-              SizedBox(
-                width: 100,
-                child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
-                    ),
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => QueryUserListScreen(
-                          query: Queries.getClassParticipants,
-                          variables: {'class_event_id': widget.classEventId},
-                          title: 'Participants',
+              ...teacher
+                  .map((t) => Padding(
+                        padding: const EdgeInsets.only(right: 5.0),
+                        child: GestureDetector(
+                          // Hier muss auf ein teacher query geschickte werden, der sich den teacher holt und dann auf teacher screen leitet
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  TeacherProfileQueryWrapper(teacherId: t.id),
+                            ),
+                          ),
+                          child: Chip(
+                            padding: const EdgeInsets.all(0),
+                            backgroundColor: Colors.white,
+                            label: Text(t.name),
+                            avatar: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: t.profileImageUrl ?? "",
+                              imageBuilder: (context, imageProvider) =>
+                                  Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  image: DecorationImage(
+                                      image: imageProvider, fit: BoxFit.cover),
+                                ),
+                              ),
+                              placeholder: (context, url) => Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                width: 64.0,
+                                height: 64.0,
+                                decoration: const BoxDecoration(
+                                  color: Colors.black12,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  },
-                  child: Text(
-                    widget.countParticipants != null
-                        ? "${widget.countParticipants.toString()}       "
-                        : "",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 0,
-                child: SizedBox(
-                  width: 32,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.all(0),
-                      backgroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    onPressed: () {
-                      isParticipateState
-                          ? runMutation({
-                              'class_event_id': widget.classEventId,
-                              'user_id': userProvider.activeUser!.id!
-                            })
-                          : runMutation({
-                              'class_event_id': widget.classEventId,
-                            });
-                      Future.delayed(const Duration(milliseconds: 300), () {
-                        // setState(() {
-                        //   isParticipateState = !isParticipateState;
-                        // });
-                        widget.runRefetch();
-                      });
-                    },
-                    child: Center(
-                      child: Icon(
-                        isParticipateState ? Icons.remove : Icons.add,
-                        size: 14,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                      ))
+                  .toList()
             ],
-          );
-        });
+          )),
+    );
   }
 }
-
-// class DifficultyWidget extends StatelessWidget {
-//   const DifficultyWidget({Key? key, required this.classLevel})
-//       : super(key: key);
-
-//   final List<String> classLevel;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         const Text(
-//           "Level:",
-//           style: TextStyle(
-//             fontSize: 12,
-//             fontWeight: FontWeight.w700,
-//             color: Colors.black,
-//           ),
-//         ),
-//         const SizedBox(width: 4),
-//         Container(
-//           width: 15,
-//           height: 15,
-//           decoration: BoxDecoration(
-//             color: Colors.green[100],
-//             border: classLevel.contains("Beginner") ? Border.all() : null,
-//           ),
-//         ),
-//         Container(
-//           width: 15,
-//           height: 15,
-//           decoration: BoxDecoration(
-//             color: Colors.yellow[100],
-//             border: classLevel.contains("Intermediate") ? Border.all() : null,
-//           ),
-//         ),
-//         Container(
-//           width: 15,
-//           height: 15,
-//           decoration: BoxDecoration(
-//             color: Colors.red[100],
-//             border: classLevel.contains("Advanced") ? Border.all() : null,
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }

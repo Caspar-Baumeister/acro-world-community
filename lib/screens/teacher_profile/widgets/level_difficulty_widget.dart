@@ -1,3 +1,4 @@
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 // class DifficultyWidget extends StatelessWidget {
@@ -41,7 +42,9 @@ import 'package:flutter/material.dart';
 
 class DifficultyWidget extends StatelessWidget {
   const DifficultyWidget(this.classLevel,
-      {Key? key, this.height = 22, this.totalWidth = 66})
+      {Key? key,
+      this.height = DIFFICULTY_LEVEL_HEIGHT,
+      this.totalWidth = DIFFICULTY_LEVEL_WIDTH})
       : super(key: key);
 
   final List<String> classLevel;
@@ -56,19 +59,20 @@ class DifficultyWidget extends StatelessWidget {
       decoration: classLevel.contains("Open")
           ? const BoxDecoration(
               gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Color.fromARGB(255, 194, 246, 195),
-                Color.fromARGB(255, 251, 243, 172),
-                Color.fromARGB(255, 252, 181, 188),
-              ],
-              stops: [
-                0.33,
-                0.66,
-                0.99,
-              ],
-            ))
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  Color.fromARGB(255, 194, 246, 195),
+                  Color.fromARGB(255, 251, 243, 172),
+                  Color.fromARGB(255, 252, 181, 188),
+                ],
+                stops: [
+                  0.33,
+                  0.66,
+                  0.99,
+                ],
+              ),
+            )
           : null,
       child: !classLevel.contains("Open")
           ? Stack(

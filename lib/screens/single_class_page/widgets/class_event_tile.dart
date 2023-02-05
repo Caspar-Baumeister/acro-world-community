@@ -1,3 +1,4 @@
+import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
@@ -28,11 +29,13 @@ class ClassEventTile extends StatefulWidget {
 
 class _ClassEventTileState extends State<ClassEventTile> {
   late bool isParticipateState;
+  late String? classEventId;
 
   @override
   void initState() {
     super.initState();
     isParticipateState = widget.isParticipate;
+    classEventId = widget.classEvent.id;
   }
 
   @override
@@ -41,6 +44,11 @@ class _ClassEventTileState extends State<ClassEventTile> {
 
     return Mutation(
         options: MutationOptions(
+            onCompleted: (data) {
+              setState(() {
+                isParticipateState = !isParticipateState;
+              });
+            },
             document: isParticipateState
                 ? Mutations.leaveParticipateClass
                 : Mutations.participateToClass),
@@ -65,23 +73,31 @@ class _ClassEventTileState extends State<ClassEventTile> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => QueryUserListScreen(
-                            query: Queries.getClassParticipants,
-                            variables: {'class_event_id': widget.classEvent.id},
-                            title: 'Participants',
-                          ),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Participants: ${isParticipateState ? "You" : ""}${isParticipateState && widget.participants.isNotEmpty ? ", " : ""}${widget.participants.map((e) => "${e.name}").toList().join(", ")}",
-                    ),
-                  ),
+                  classEventId != null
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QueryUserListScreen(
+                                  query: Queries.getClassParticipants,
+                                  variables: {
+                                    'class_event_id': widget.classEvent.id
+                                  },
+                                  title: 'Participants',
+                                  classEventId: widget.classEvent.id,
+                                ),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            height: 100,
+                            child: GenderDistributionPieFromClassEventId(
+                              classEventId: classEventId!,
+                              key: UniqueKey(),
+                            ),
+                          ))
+                      : Container(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -103,11 +119,6 @@ class _ClassEventTileState extends State<ClassEventTile> {
                               : runMutation({
                                   'class_event_id': widget.classEvent.id,
                                 });
-                          Future.delayed(const Duration(milliseconds: 200), () {
-                            setState(() {
-                              isParticipateState = !isParticipateState;
-                            });
-                          });
                         },
                         child: const Text(
                           "Participate",

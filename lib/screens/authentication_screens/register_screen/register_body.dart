@@ -1,9 +1,9 @@
-import 'package:acroworld/components/custom_button.dart';
-import 'package:acroworld/components/text_wIth_leading_icon.dart';
+import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
-import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/widgets/register_info.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
@@ -133,10 +133,11 @@ class _RegisterBodyState extends State<RegisterBody> {
                     const SizedBox(height: 20.0),
                     const SizedBox(height: 20.0),
                     Center(
-                        child: CustomButton(
-                      "Register",
-                      () async => onRegister(),
+                        child: StandartButton(
+                      text: "Register",
+                      onPressed: () async => onRegister(),
                       loading: loading,
+                      isFilled: true,
                     )),
                     const SizedBox(height: 12.0),
                     Text(
@@ -150,86 +151,7 @@ class _RegisterBodyState extends State<RegisterBody> {
           ),
           const Divider(color: PRIMARY_COLOR),
           const SizedBox(height: 15),
-          Column(
-            children: [
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Why AcroWorld",
-                        style: TextStyle(fontSize: 22),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 15),
-                      Text(
-                        "The one and only Acroyoga app you need.",
-                        style: TextStyle(fontSize: 12),
-                        maxLines: 5,
-                      ),
-                      SizedBox(height: 15),
-                      TextWIthLeadingIcon(
-                        icon: ImageIcon(
-                          AssetImage("assets/check.png"),
-                          color: Colors.green,
-                        ),
-                        text: Padding(
-                          padding: EdgeInsets.only(top: 3.0),
-                          child: Text(
-                            "With one click you will always know where and when classes and jams are taking place in your area.",
-                            // "Stay in touch with the community with the best from Whatsapp and Facebook groups tailored to acro",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextWIthLeadingIcon(
-                        icon: ImageIcon(
-                          AssetImage("assets/check.png"),
-                          color: Colors.green,
-                        ),
-                        text: Padding(
-                          padding: EdgeInsets.only(top: 3.0),
-                          child: Text(
-                            "Find out not only who the best teachers in your area are, but also exactly what they offer",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextWIthLeadingIcon(
-                        icon: ImageIcon(
-                          AssetImage("assets/check.png"),
-                          color: Colors.green,
-                        ),
-                        text: Padding(
-                          padding: EdgeInsets.only(top: 3.0),
-                          child: Text(
-                            "Find out what acroyoga related events are taking place around the world",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextWIthLeadingIcon(
-                        icon: ImageIcon(
-                          AssetImage("assets/check.png"),
-                          color: Colors.green,
-                        ),
-                        text: Padding(
-                          padding: EdgeInsets.only(top: 3.0),
-                          child: Text(
-                            "Keep in touch with your Acroyoga community. Find out who is participating where and when and discover the local communities when you are away from home.",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                    ],
-                  )),
-            ],
-          ),
+          const RegisterInfo()
         ],
       ),
     );
@@ -300,8 +222,12 @@ class _RegisterBodyState extends State<RegisterBody> {
     CredentialPreferences.setPassword(passwordController?.text ?? "");
 
     // send to UserCommunities
-    Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => const UpdateFcmToken()));
+    // send to UserCommunities
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const ChooseGender()
+          //UpdateFcmToken()
+          ),
+    );
 
     setState(() {
       loading = false;

@@ -45,7 +45,7 @@ class _GetMeQueryState extends State<GetMeQuery> {
               MutationOptions(
                 document: Mutations.updateFcmToken,
                 onCompleted: (dynamic resultData) {
-                  print("resultsdata");
+                  print("resultsdata updatefcmdata");
                   print(resultData);
 
                   print("completed");
@@ -53,6 +53,10 @@ class _GetMeQueryState extends State<GetMeQuery> {
                     builder: (context) => HomeScaffold(),
                   ));
                   return;
+                },
+                onError: (error) {
+                  print("error in updateFCMtoken");
+                  print(error);
                 },
               ),
             );
