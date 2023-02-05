@@ -1,6 +1,7 @@
 import 'package:acroworld/components/teacher_button_link_widget.dart';
 import 'package:acroworld/components/your_gender_button_widget.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
@@ -190,8 +191,11 @@ class SettingsDrawer extends StatelessWidget {
     CredentialPreferences.removePassword();
 
     // deletes the token and user from user provider
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     userProvider.token = null;
+
+    AuthProvider.token = null;
 
     // safe the user to provider
     userProvider.setUserFromToken();
