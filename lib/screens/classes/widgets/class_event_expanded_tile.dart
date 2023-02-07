@@ -42,22 +42,49 @@ class ClassEventExpandedTile extends StatelessWidget {
             SizedBox(
               width: screenWidth * 0.3,
               child: classEvent.classModel?.imageUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: CachedNetworkImage(
-                        fit: BoxFit.cover,
-                        placeholder: (context, url) => Container(
-                          color: Colors.black12,
-                        ),
-                        errorWidget: (context, url, error) => Container(
-                          color: Colors.black12,
-                          child: const Icon(
-                            Icons.error,
-                            color: Colors.red,
+                  ? Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: [
+                        Container(
+                          foregroundDecoration: classEvent.isCancelled
+                              ? const BoxDecoration(
+                                  color: Colors.grey,
+                                  backgroundBlendMode: BlendMode.saturation,
+                                )
+                              : null,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: CachedNetworkImage(
+                              width: screenWidth * 0.3,
+                              height: CLASS_CARD_HEIGHT,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Container(
+                                color: Colors.black12,
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors.black12,
+                                child: const Icon(
+                                  Icons.error,
+                                  color: Colors.red,
+                                ),
+                              ),
+                              imageUrl: classEvent.classModel!.imageUrl!,
+                            ),
                           ),
                         ),
-                        imageUrl: classEvent.classModel!.imageUrl!,
-                      ),
+                        classEvent.isCancelled
+                            ? const RotationTransition(
+                                turns: AlwaysStoppedAnimation(345 / 360),
+                                child: Text(
+                                  "Cancelled",
+                                  style: TextStyle(
+                                      color: Colors.red,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.w900),
+                                ),
+                              )
+                            : Container()
+                      ],
                     )
                   : Container(
                       decoration: BoxDecoration(

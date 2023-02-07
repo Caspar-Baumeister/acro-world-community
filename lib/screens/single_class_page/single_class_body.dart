@@ -154,8 +154,8 @@ class SingleClassBody extends StatelessWidget {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             OpenGoogleMaps(
-                              latitude: classe.latitude!,
-                              longitude: classe.longitude!,
+                              latitude: classe.latitude! * 1.0,
+                              longitude: classe.longitude! * 1.0,
                             )
                           ],
                         ),
@@ -166,9 +166,10 @@ class SingleClassBody extends StatelessWidget {
                           constraints: const BoxConstraints(maxHeight: 150),
                           child: MapWidget(
                             zoom: 15.0,
-                            center: LatLng(classe.latitude!, classe.longitude!),
-                            markerLocation:
-                                LatLng(classe.latitude!, classe.longitude!),
+                            center: LatLng(classe.latitude! * 1.0,
+                                classe.longitude! * 1.0),
+                            markerLocation: LatLng(classe.latitude! * 1.0,
+                                classe.longitude! * 1.0),
                           ),
                         ),
                       ],

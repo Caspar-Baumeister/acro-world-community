@@ -8,11 +8,11 @@ class ClassModel {
   String? requirements;
   String? imageUrl;
   String? uscUrl;
-  double? latitude;
-  double? longitude;
+  num? latitude;
+  num? longitude;
   String? classPassUrl;
   String? websiteUrl;
-  double? distance;
+  num? distance;
   List<String> classLevel;
 
   ClassModel({
