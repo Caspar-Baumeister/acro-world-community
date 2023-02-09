@@ -76,7 +76,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                             ? const RotationTransition(
                                 turns: AlwaysStoppedAnimation(345 / 360),
                                 child: Text(
-                                  "Cancelled",
+                                  "Canceled",
                                   style: TextStyle(
                                       color: Colors.red,
                                       fontSize: 20,

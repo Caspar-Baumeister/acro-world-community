@@ -26,6 +26,8 @@ class App extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
+            // TODO version and internet check wrapper (pulls min version, compares, if no result
+            // TODO no wifi screen. Otherwise either old version screen or continue)
             // LoginWrapper checks for token?
             // Also possible: Routerdelegate with auth check and guards
             home: const LogginWrapper(),
