@@ -53,6 +53,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                 style: STANDART_DESCRIPTION,
               ),
             ),
+            const SizedBox(height: 10),
             Expanded(
                 child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -149,6 +150,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                 ),
               ],
             )),
+            const SizedBox(height: 10),
             Mutation(
                 options: MutationOptions(
                   document: Mutations.setGender,
