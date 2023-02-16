@@ -69,8 +69,8 @@ mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
   """);
 
   static final insertCommunity = gql("""
-    mutation InsertCommunity(\$name: String, \$location: geography) {
-      insert_communities_one(object: {location: \$location, latitude: 1, longitude: 1, name: \$name}) {
+    mutation InsertCommunity(\$name: String, \$location: geography, \$longitude: float8, \$latitude: float8) {
+      insert_communities_one(object: {location: \$location, latitude: \$latitude, longitude: \$longitude, name: \$name}) {
         id
       }
     }

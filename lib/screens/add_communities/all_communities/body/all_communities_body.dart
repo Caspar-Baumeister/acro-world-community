@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/places/place.dart';
@@ -85,6 +87,7 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
             builder: (QueryResult result,
                 {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
+                debugPrint(result.exception.toString(), wrapWidth: 9999);
                 return Text(result.exception.toString());
               }
 
