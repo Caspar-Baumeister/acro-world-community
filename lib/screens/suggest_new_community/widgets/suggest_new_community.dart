@@ -54,6 +54,9 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     {Object? optimisticResult})
                 runMutation,
             QueryResult<dynamic>? result) {
+          if (result != null && result.hasException) {
+            print(result.exception);
+          }
           if (result != null) {
             if (result.isLoading) {
               return const LoadingWidget();
@@ -99,6 +102,9 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     child: const H2(text: "Location"),
                   ),
                   PlaceButton(onPlaceSet: (_place) {
+                    print('onPlaceSet');
+                    print(_place!.latLng.longitude);
+                    print(_place!.latLng.latitude);
                     setState(() {
                       place = _place;
                     });
@@ -118,6 +124,8 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                             runMutation(
                               {
                                 'name': name,
+                                'longitude': place!.latLng.longitude,
+                                'latitude': place!.latLng.latitude,
                                 'location': {
                                   "type": "Point",
                                   "coordinates": [
