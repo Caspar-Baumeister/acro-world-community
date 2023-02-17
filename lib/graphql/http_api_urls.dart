@@ -69,6 +69,24 @@ class Database {
     return null;
   }
 
+  Future forgotPassword(String email) async {
+    try {
+      final response = await http.post(uri,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: json.encode({
+            'query':
+                "mutation MyMutation {reset_password(input: {email: \"$email\"}) { success  } }"
+          }));
+
+      return jsonDecode(response.body.toString());
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+
   Future registerApi(String email, String password, String name) async {
     try {
       final response = await http.post(uri,

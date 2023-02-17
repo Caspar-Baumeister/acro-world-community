@@ -16,6 +16,9 @@ const Color COLOR7 = Color(0xFF0f4c5c);
 // const Color PRIMARY_COLOR = Color.fromARGB(255, 0, 95, 172);
 // const Color SECONDARY_COLOR = Color.fromARGB(255, 150, 208, 255);
 
+const Color LINK_COLOR = PRIMARY_COLOR;
+const Color WARNING_COLOR = Color.fromARGB(255, 152, 0, 0);
+
 const Color PRIMARY_COLOR = COLOR2; //Color(0xFF772f1a);
 const Color APPBAR_COLOR = PRIMARY_COLOR;
 const Color SECONDARY_COLOR = Color(0xFFe4e2e3);

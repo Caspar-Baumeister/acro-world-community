@@ -1,9 +1,10 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -162,6 +163,20 @@ class _SignInState extends State<SignIn> {
                       ),
                     )
                   : Container(),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) => const ForgotPassword()),
+                      );
+                    },
+                    child: const Text(
+                      "forgot password",
+                      style: TextStyle(color: LINK_COLOR),
+                    )),
+              )
             ],
           ),
         ),
@@ -209,9 +224,9 @@ class _SignInState extends State<SignIn> {
       return;
     }
 
-    String? _token = response?["data"]?["login"]?["token"];
+    String? token = response?["data"]?["login"]?["token"];
 
-    if (_token == null) {
+    if (token == null) {
       if (response?["errors"]?[0]["extensions"]?["exception"]?["thrownValue"]
               ?["message"] !=
           null) {
@@ -234,7 +249,7 @@ class _SignInState extends State<SignIn> {
     CredentialPreferences.setEmail(emailController?.text ?? "");
     CredentialPreferences.setPassword(passwordController?.text ?? "");
 
-    Provider.of<UserProvider>(context, listen: false).token = _token;
+    Provider.of<UserProvider>(context, listen: false).token = token;
 
     // safe the user to provider
     Provider.of<UserProvider>(context, listen: false).setUserFromToken();

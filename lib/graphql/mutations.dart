@@ -2,6 +2,14 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final resetPassword = gql("""
+  mutation resetPassword(\$email: String) {
+  reset_password(input: {email: \$email}) {
+    success
+  }
+}
+""");
+
   static final setGender = gql("""
 mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
   update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
