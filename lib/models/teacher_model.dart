@@ -18,17 +18,17 @@ class TeacherLinkModel {
 
 class TeacherModel {
   String? profilePicUrl;
-  String name;
-  String id;
-  String description;
-  String locationName;
-  int likes;
+  String? name;
+  String? id;
+  String? description;
+  String? locationName;
+  int? likes;
   List<String> pictureUrls;
   List<String> teacherLevels;
-  List<String> classes;
-  String createdAt;
-  String userID;
-  String communityID;
+  String? createdAt;
+  String? userID;
+  String? communityID;
+  bool isLikedByMe;
 
   TeacherModel({
     required this.profilePicUrl,
@@ -38,11 +38,11 @@ class TeacherModel {
     required this.locationName,
     required this.likes,
     required this.pictureUrls,
-    required this.classes,
     required this.teacherLevels,
     required this.userID,
     required this.createdAt,
     required this.communityID,
+    required this.isLikedByMe,
 
     // teaching since
   });
@@ -77,11 +77,12 @@ class TeacherModel {
         locationName: json["location_name"],
         likes: json["user_likes_aggregate"]?["aggregate"]?["count"] ?? 0,
         pictureUrls: pictureUrls,
-        classes: [],
         createdAt: json["created_at"],
         teacherLevels: teacherLevel,
         userID: json["user_id"],
-        communityID: json["community_id"]);
+        communityID: json["community_id"],
+        isLikedByMe:
+            json["user_likes"] != null && json["user_likes"].isNotEmpty);
   }
 
   @override

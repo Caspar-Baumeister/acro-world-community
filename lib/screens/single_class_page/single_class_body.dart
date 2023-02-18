@@ -1,14 +1,13 @@
 import 'package:acroworld/components/open_google_maps.dart';
+import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/map/map.dart';
 import 'package:acroworld/screens/single_class_page/widgets/class_event_calendar.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:readmore/readmore.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SingleClassBody extends StatelessWidget {
@@ -53,69 +52,116 @@ class SingleClassBody extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              ReadMoreText(
-                classe.description,
-                trimLines: 2,
-                colorClickableText: Colors.blue,
-                trimMode: TrimMode.Line,
-                trimCollapsedText: 'Show more',
-                trimExpandedText: 'Show less',
-                moreStyle: const TextStyle(color: PRIMARY_COLOR),
-                lessStyle: const TextStyle(color: PRIMARY_COLOR),
-              ),
+              DescriptionTextWidget(text: classe.description),
               const SizedBox(height: 10),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  classe.requirements != null
-                      ? Container(
-                          constraints: const BoxConstraints(maxWidth: 180),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                "Requirements",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(classe.requirements!)
-                            ],
-                          ),
-                        )
-                      : Container(),
-                  classe.pricing != null
-                      ? Container(
-                          constraints: const BoxConstraints(maxWidth: 150),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const Text(
-                                "Prices",
-                                style: TextStyle(fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                classe.pricing!,
-                                textAlign: TextAlign.end,
+              classe.requirements != null &&
+                      classe.requirements != "" &&
+                      classe.pricing != null &&
+                      classe.pricing != ""
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        classe.requirements != null && classe.requirements != ""
+                            ? Container(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 180),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "Requirements",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(classe.requirements!)
+                                  ],
+                                ),
                               )
-                            ],
-                          ),
-                        )
-                      : Container()
-                ],
-              ),
+                            : Container(),
+                        classe.pricing != null && classe.pricing != ""
+                            ? Container(
+                                constraints:
+                                    const BoxConstraints(maxWidth: 150),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Text(
+                                      "Prices",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      classe.pricing!,
+                                      textAlign: TextAlign.end,
+                                    )
+                                  ],
+                                ),
+                              )
+                            : Container()
+                      ],
+                    )
+                  : Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        classe.requirements != null && classe.requirements != ""
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Requirements",
+                                    textAlign: TextAlign.start,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    classe.requirements!,
+                                    textAlign: TextAlign.start,
+                                  )
+                                ],
+                              )
+                            : Container(),
+                        classe.pricing != null && classe.pricing != ""
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    "Prices",
+                                    textAlign: TextAlign.start,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    classe.pricing!,
+                                    textAlign: TextAlign.start,
+                                  )
+                                ],
+                              )
+                            : Container()
+                      ],
+                    ),
               const SizedBox(height: 10),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: const Text(
-                  "Links",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-              const SizedBox(height: 2),
+              (classe.uscUrl != null && classe.uscUrl != "") ||
+                      (classe.classPassUrl != null &&
+                          classe.classPassUrl != "") ||
+                      (classe.websiteUrl != null && classe.websiteUrl != "")
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 2.0),
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        child: const Text(
+                          "Links",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    )
+                  : Container(),
               Container(
                 alignment: Alignment.centerLeft,
                 child: SingleChildScrollView(

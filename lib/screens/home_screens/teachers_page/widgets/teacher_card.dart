@@ -23,7 +23,7 @@ class _TeacherCardState extends State<TeacherCard> {
   @override
   void initState() {
     isLikedState = widget.isLiked;
-    teacherLikes = widget.teacher.likes;
+    teacherLikes = widget.teacher.likes ?? 0;
     super.initState();
   }
 
@@ -71,12 +71,13 @@ class _TeacherCardState extends State<TeacherCard> {
             ),
           ),
           title: Text(
-            widget.teacher.name,
+            widget.teacher.name ?? "No name",
             style: MAINTEXT,
           ),
-          subtitle: Text(widget.teacher.locationName, style: SECONDARYTEXT),
+          subtitle: Text(widget.teacher.locationName ?? "no location provided",
+              style: SECONDARYTEXT),
           trailing: HeartMutationWidget(
-            teacherId: widget.teacher.id,
+            teacherId: widget.teacher.id!,
             isLiked: isLikedState,
             setIsLiked: (liked) => setState(() {
               isLikedState = liked;

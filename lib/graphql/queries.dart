@@ -94,6 +94,30 @@ class Queries {
   }
   """);
 
+  static final getTeacherForList = gql("""
+    query getTeacherForList(\$user_id: uuid) {
+      teachers(order_by: {user_likes_aggregate: {count: desc}}) {
+        id
+        location_name
+        name
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+          is_profile_picture
+        }
+        is_organization
+        user_likes(where: {user_id: {_eq: \$user_id}}) {
+          user_id
+        }
+        user_likes_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }""");
+
   static final getAllTeacher = gql("""
   query getAllTeacher{
     teachers(order_by: {user_likes_aggregate: {count: desc}}) {

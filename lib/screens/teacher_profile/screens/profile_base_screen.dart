@@ -23,7 +23,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
   @override
   void initState() {
     super.initState();
-    teacherLikes = widget.teacher.likes;
+    teacherLikes = widget.teacher.likes ?? 0;
     isLikedState = widget.isLiked;
   }
 
@@ -43,7 +43,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
           child: AppBar(
             backgroundColor: Colors.white,
             title: Text(
-              widget.teacher.name,
+              widget.teacher.name ?? "Unknown",
               style: const TextStyle(
                   color: Colors.black, fontWeight: FontWeight.w600),
             ),
@@ -61,7 +61,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                     setTeacherLikes: (likes) => setState(() {
                           teacherLikes = likes;
                         }),
-                    teacherId: widget.teacher.id),
+                    teacherId: widget.teacher.id!),
               ),
             ],
           ),
