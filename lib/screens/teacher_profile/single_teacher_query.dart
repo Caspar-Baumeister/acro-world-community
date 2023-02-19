@@ -22,7 +22,7 @@ class SingleTeacherQuery extends StatelessWidget {
           fetchPolicy: FetchPolicy.networkOnly,
           variables: {
             'teacher_id': teacherId,
-            "userId": userProvider.activeUser!.id
+            "user_id": userProvider.activeUser!.id
           }),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
