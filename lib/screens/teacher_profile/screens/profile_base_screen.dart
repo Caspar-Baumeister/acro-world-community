@@ -212,7 +212,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
     } else {
       await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
       Fluttertoast.showToast(
-          msg: "You joint the community of ${widget.teacher.name}",
+          msg: "You joined the community of ${widget.teacher.name}",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 2,

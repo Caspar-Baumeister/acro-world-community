@@ -1,7 +1,6 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -30,6 +29,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    double imageHeight = MediaQuery.of(context).size.height * 0.22;
     return SafeArea(
       child: Center(
         child: Column(
@@ -67,11 +67,11 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: SizedBox(
-                          height: 200.0 +
+                          height: imageHeight +
                               (gender == "83a6536f-53ba-44d2-80d9-9842375ebe8b"
                                   ? 20
                                   : 0),
-                          width: STANDART_BUTTON_WIDTH +
+                          width: imageHeight * 1.5 +
                               (gender == "83a6536f-53ba-44d2-80d9-9842375ebe8b"
                                   ? 40
                                   : 0),
@@ -113,11 +113,11 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(20),
                         child: SizedBox(
-                          height: 200.0 +
+                          height: imageHeight +
                               (gender == "dc321f52-fce9-4b00-bef6-e59fb05f4624"
                                   ? 20
                                   : 0),
-                          width: STANDART_BUTTON_WIDTH +
+                          width: imageHeight * 1.5 +
                               (gender == "dc321f52-fce9-4b00-bef6-e59fb05f4624"
                                   ? 40
                                   : 0),

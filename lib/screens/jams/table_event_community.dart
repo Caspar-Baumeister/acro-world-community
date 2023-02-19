@@ -1,22 +1,22 @@
 // import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/jam/jams/jam_tile.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/screens/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class TableEventsParticipates extends StatefulWidget {
-  const TableEventsParticipates({required this.kEvents, Key? key})
+class TableEventsCommunity extends StatefulWidget {
+  const TableEventsCommunity(
+      {required this.kEvents, Key? key, required this.cid})
       : super(key: key);
 
   final Map<DateTime, List<Jam>> kEvents;
+  final String cid;
 
   @override
-  _TableEventsParticipatesState createState() =>
-      _TableEventsParticipatesState();
+  _TableEventsCommunityState createState() => _TableEventsCommunityState();
 }
 
-class _TableEventsParticipatesState extends State<TableEventsParticipates> {
+class _TableEventsCommunityState extends State<TableEventsCommunity> {
   late ValueNotifier<List<Jam>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -89,14 +89,10 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
   Widget build(BuildContext context) {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(18).copyWith(bottom: 0),
-          child: const Text(
-              "Here you can find all the jams that take place in all your joined communities"),
-        ),
         TableCalendar<Jam>(
           firstDay: kFirstDay,
           lastDay: kLastDay,
@@ -109,13 +105,12 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
               RangeSelectionMode.disabled, //_rangeSelectionMode,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
-          calendarStyle: CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: false,
-              todayDecoration: BoxDecoration(
-                  color: Colors.grey[400]!, shape: BoxShape.circle),
-              selectedDecoration: const BoxDecoration(
-                  color: PRIMARY_COLOR, shape: BoxShape.circle)),
+          calendarStyle: const CalendarStyle(
+            canMarkersOverflow: false,
+            markersMaxCount: 100,
+            // Use `CalendarStyle` to customize the UI
+            outsideDaysVisible: false,
+          ),
           onDaySelected: _onDaySelected,
           //onRangeSelected: _onRangeSelected,
           onFormatChanged: (format) {
@@ -131,20 +126,24 @@ class _TableEventsParticipatesState extends State<TableEventsParticipates> {
         ),
         const SizedBox(height: 8.0),
         Expanded(
-          child: ValueListenableBuilder<List<Jam>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return JamTile(
-                    jam: value[index],
-                    cid: value[index].cid!,
-                    communityName: value[index].community?.name,
-                  );
-                },
-              );
-            },
+          child: SingleChildScrollView(
+            child: ValueListenableBuilder<List<Jam>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  reverse: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: value.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return const SizedBox(height: 55);
+                    }
+                    return JamTile(jam: value[index - 1], cid: widget.cid);
+                  },
+                );
+              },
+            ),
           ),
         ),
       ],

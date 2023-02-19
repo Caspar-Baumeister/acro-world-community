@@ -8,7 +8,7 @@ import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/error_page.dart';
 import 'package:acroworld/components/loading_widget.dart';
-import 'package:acroworld/screens/jam/jams/jam_tile.dart';
+import 'package:acroworld/screens/jams/jam_tile.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';

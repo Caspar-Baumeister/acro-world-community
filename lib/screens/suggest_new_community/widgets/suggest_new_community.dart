@@ -101,12 +101,9 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Location"),
                   ),
-                  PlaceButton(onPlaceSet: (_place) {
-                    print('onPlaceSet');
-                    print(_place!.latLng.longitude);
-                    print(_place!.latLng.latitude);
+                  PlaceButton(onPlaceSet: (place) {
                     setState(() {
-                      place = _place;
+                      place = place;
                     });
                   }),
                   Error(text: locationError),
