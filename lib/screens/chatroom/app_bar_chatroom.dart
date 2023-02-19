@@ -4,7 +4,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/jam/jams/jams.dart';
+import 'package:acroworld/screens/jams/jams.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:event_bus/event_bus.dart';

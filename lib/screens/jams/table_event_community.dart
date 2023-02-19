@@ -1,26 +1,26 @@
-import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/classes/widgets/class_event_expanded_tile.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+// import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/models/jam_model.dart';
+import 'package:acroworld/screens/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class ClassesEventCalendar extends StatefulWidget {
-  const ClassesEventCalendar({required this.kEvents, Key? key})
+class TableEventsCommunity extends StatefulWidget {
+  const TableEventsCommunity(
+      {required this.kEvents, Key? key, required this.cid})
       : super(key: key);
 
-  final Map<DateTime, List<ClassEvent>> kEvents;
+  final Map<DateTime, List<Jam>> kEvents;
+  final String cid;
 
   @override
-  _ClassesEventCalendarState createState() => _ClassesEventCalendarState();
+  _TableEventsCommunityState createState() => _TableEventsCommunityState();
 }
 
-class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
-  late ValueNotifier<List<ClassEvent>> _selectedEvents;
-  final CalendarFormat _calendarFormat = CalendarFormat.week;
+class _TableEventsCommunityState extends State<TableEventsCommunity> {
+  late ValueNotifier<List<Jam>> _selectedEvents;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .disabled; // Can be toggled on/off by longpressing a date
+      .toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   DateTime? _rangeStart;
@@ -37,13 +37,13 @@ class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
     super.dispose();
   }
 
-  List<ClassEvent> _getEventsForDay(DateTime day) {
+  List<Jam> _getEventsForDay(DateTime day) {
     // Implementation
 
     return widget.kEvents[day] ?? [];
   }
 
-  List<ClassEvent> _getEventsForRange(DateTime start, DateTime end) {
+  List<Jam> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation
     final days = daysInRange(start, end);
 
@@ -89,12 +89,11 @@ class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
   Widget build(BuildContext context) {
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TableCalendar<ClassEvent>(
-          availableGestures: AvailableGestures.horizontalSwipe,
-
+        TableCalendar<Jam>(
           firstDay: kFirstDay,
           lastDay: kLastDay,
           focusedDay: _focusedDay,
@@ -106,41 +105,61 @@ class _ClassesEventCalendarState extends State<ClassesEventCalendar> {
               RangeSelectionMode.disabled, //_rangeSelectionMode,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
-
-          availableCalendarFormats: const {CalendarFormat.week: 'week'},
-          calendarStyle: CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: false,
-              todayDecoration: BoxDecoration(
-                  color: Colors.grey[400]!, shape: BoxShape.circle),
-              selectedDecoration: const BoxDecoration(
-                  color: PRIMARY_COLOR, shape: BoxShape.circle)),
+          calendarStyle: const CalendarStyle(
+            canMarkersOverflow: false,
+            markersMaxCount: 100,
+            // Use `CalendarStyle` to customize the UI
+            outsideDaysVisible: false,
+          ),
           onDaySelected: _onDaySelected,
+          //onRangeSelected: _onRangeSelected,
+          onFormatChanged: (format) {
+            if (_calendarFormat != format) {
+              setState(() {
+                _calendarFormat = format;
+              });
+            }
+          },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
           },
         ),
-        const SizedBox(height: 6),
-        ValueListenableBuilder<List<ClassEvent>>(
-          valueListenable: _selectedEvents,
-          builder: (context, value, _) {
-            return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              reverse: true,
-              itemCount: value.length,
-              itemBuilder: (context, index) {
-                print(value[index].toString());
-                return ClassEventExpandedTile(classEvent: value[index]);
-
-                // ClassEventParticipantQuery(
-                //   classEvent: value[index],
-                // );
+        const SizedBox(height: 8.0),
+        Expanded(
+          child: SingleChildScrollView(
+            child: ValueListenableBuilder<List<Jam>>(
+              valueListenable: _selectedEvents,
+              builder: (context, value, _) {
+                return ListView.builder(
+                  reverse: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: value.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == 0) {
+                      return const SizedBox(height: 55);
+                    }
+                    return JamTile(jam: value[index - 1], cid: widget.cid);
+                  },
+                );
               },
-            );
-          },
-        )
+            ),
+          ),
+        ),
       ],
     );
   }
 }
+
+/// Returns a list of [DateTime] objects from [first] to [last], inclusive.
+List<DateTime> daysInRange(DateTime first, DateTime last) {
+  final dayCount = last.difference(first).inDays + 1;
+  return List.generate(
+    dayCount,
+    (index) => DateTime.utc(first.year, first.month, first.day + index),
+  );
+}
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year, kToday.month + 3, kToday.day);

@@ -1,7 +1,6 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/chatroom/fetch_community_chatroom.dart';
-import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -73,27 +72,27 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      widget.teacher.teacherLevels.isNotEmpty
-                          ? Column(
-                              children: [
-                                const Text(
-                                  "Level",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    letterSpacing: 0.4,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    DifficultyWidget(
-                                        widget.teacher.teacherLevels),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : Container(),
+                      // widget.teacher.teacherLevels.isNotEmpty
+                      //     ? Column(
+                      //         children: [
+                      //           const Text(
+                      //             "Level",
+                      //             style: TextStyle(
+                      //               fontSize: 15,
+                      //               letterSpacing: 0.4,
+                      //             ),
+                      //           ),
+                      //           const SizedBox(height: 4),
+                      //           Row(
+                      //             mainAxisAlignment: MainAxisAlignment.center,
+                      //             children: [
+                      //               DifficultyWidget(
+                      //                   widget.teacher.teacherLevels),
+                      //             ],
+                      //           ),
+                      //         ],
+                      //       )
+                      //     : Container(),
                       widget.teacher.locationName != "" &&
                               widget.teacher.teacherLevels.isNotEmpty
                           ? const SizedBox(
@@ -122,7 +121,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                                                   .width /
                                               3),
                                       child: Text(
-                                        widget.teacher.locationName,
+                                        widget.teacher.locationName ?? "",
                                         textAlign: TextAlign.center,
                                         overflow: TextOverflow.clip,
                                         maxLines: 2,
@@ -146,7 +145,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
               height: 8,
             ),
             Text(
-              widget.teacher.name,
+              widget.teacher.name ?? "No name",
               style: const TextStyle(
                 color: Colors.black87,
                 fontWeight: FontWeight.w600,
@@ -154,23 +153,21 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                 letterSpacing: 0.4,
               ),
             ),
-            widget.teacher.description != ""
-                ? Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 4,
-                      ),
-                      DescriptionTextWidget(
-                        text: widget.teacher.description,
-                      ),
-                    ],
+            widget.teacher.description != "" &&
+                    widget.teacher.description != null
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 4.0),
+                    child: DescriptionTextWidget(
+                      text: widget.teacher.description!,
+                    ),
                   )
                 : Container(),
             const SizedBox(
               height: 20,
             ),
-            actions(context, widget.teacher.communityID, null),
+            widget.teacher.communityID != null
+                ? actions(context, widget.teacher.communityID!, null)
+                : Container(),
             const SizedBox(
               height: 20,
             ),

@@ -1,11 +1,10 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/classes/widgets/participants_button.dart';
+import 'package:acroworld/screens/home_screens/activities/components/class_teacher_chips.dart';
+import 'package:acroworld/screens/home_screens/activities/components/participants_button.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
-import 'package:acroworld/screens/teacher_profile/teacher_profile_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -230,78 +229,6 @@ class ClassEventExpandedTile extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class ClassTeacherChips extends StatelessWidget {
-  const ClassTeacherChips({Key? key, required this.teacher}) : super(key: key);
-
-  final List<TeacherLinkModel> teacher;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: CLASS_CARD_TEACHER_HEIGHT,
-      child: SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              ...teacher
-                  .map((t) => Padding(
-                        padding: const EdgeInsets.only(right: 5.0),
-                        child: GestureDetector(
-                          // Hier muss auf ein teacher query geschickte werden, der sich den teacher holt und dann auf teacher screen leitet
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  TeacherProfileQueryWrapper(teacherId: t.id),
-                            ),
-                          ),
-                          child: Chip(
-                            padding: const EdgeInsets.all(0),
-                            backgroundColor: Colors.white,
-                            label: Text(t.name),
-                            avatar: CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageUrl: t.profileImageUrl ?? "",
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                width: 64.0,
-                                height: 64.0,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover),
-                                ),
-                              ),
-                              placeholder: (context, url) => Container(
-                                width: 64.0,
-                                height: 64.0,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black12,
-                                  shape: BoxShape.circle,
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                width: 64.0,
-                                height: 64.0,
-                                decoration: const BoxDecoration(
-                                  color: Colors.black12,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ))
-                  .toList()
-            ],
-          )),
     );
   }
 }

@@ -132,6 +132,7 @@ class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
 
     if (response?["data"]["reset_password"]?["success"] == true) {
       resetTimer();
+      startTimer();
     } else {
       setState(() {
         error = "Something went wrong. Try again later";

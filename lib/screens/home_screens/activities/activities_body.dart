@@ -1,8 +1,8 @@
 import 'package:acroworld/components/place_button/place_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/HOME_SCREENS/activities/components/classes_view.dart';
-import 'package:acroworld/screens/HOME_SCREENS/activities/components/jams_view.dart';
+import 'package:acroworld/screens/home_screens/activities/components/classes_view.dart';
+import 'package:acroworld/screens/home_screens/activities/components/jam_view.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +20,11 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
   DateTime selectedDay = DateTime.now();
   DateTime focusedDay = DateTime.now();
 
-  void _onDaySelected(DateTime _selectedDay, DateTime _focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
+  void _onDaySelected(DateTime newSelectedDay, DateTime newFocusedDay) {
+    if (!isSameDay(newSelectedDay, selectedDay)) {
       setState(() {
-        selectedDay = _selectedDay;
-        focusedDay = _focusedDay;
+        selectedDay = newSelectedDay;
+        focusedDay = newFocusedDay;
       });
     }
   }
@@ -42,11 +42,11 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
           SizedBox(
             child: PlaceButton(
               initialPlace: place,
-              onPlaceSet: (Place? _place) async {
-                PlacePreferences.setSavedPlace(_place);
+              onPlaceSet: (Place? place) async {
+                PlacePreferences.setSavedPlace(place);
                 setState(
                   () {
-                    place = _place;
+                    place = place;
                   },
                 );
               },
@@ -79,9 +79,9 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
                 selectedDecoration: const BoxDecoration(
                     color: PRIMARY_COLOR, shape: BoxShape.circle)),
             onDaySelected: _onDaySelected,
-            onPageChanged: (_focusedDay) {
+            onPageChanged: (newFocusedDay) {
               setState(() {
-                focusedDay = _focusedDay;
+                focusedDay = newFocusedDay;
               });
             },
           ),

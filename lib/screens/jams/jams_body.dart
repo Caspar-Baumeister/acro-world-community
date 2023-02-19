@@ -1,5 +1,5 @@
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/jam/jams/table_event_community.dart';
+import 'package:acroworld/screens/jams/table_event_community.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 

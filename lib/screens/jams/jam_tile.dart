@@ -1,6 +1,6 @@
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/jam_overview/jam_overview.dart';
+import 'package:acroworld/screens/single_jam_overview/jam_overview.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';

@@ -3,10 +3,11 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/screens/classes/widgets/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
+import 'package:acroworld/screens/home_screens/activities/components/class_event_expanded_tile.dart';
 
 class ClassesView extends StatelessWidget {
   const ClassesView({Key? key, required this.place, required this.day})

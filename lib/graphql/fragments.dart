@@ -7,6 +7,8 @@ class Fragments {
   community_id
   name
   user_id
+  is_organization
+  
   user_likes_aggregate {
     aggregate {
       count

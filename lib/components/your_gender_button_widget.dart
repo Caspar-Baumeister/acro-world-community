@@ -36,14 +36,20 @@ class YourGenderButtonWidget extends StatelessWidget {
 
           if (gender.id == null || gender.name == null) {
             return StandartButton(
-                text: "Choose a role",
-                onPressed: () => buildMortal(
-                    context,
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.85,
-                      child: ChooseGenderBody(
-                          onContinue: () => Navigator.of(context).pop()),
-                    )));
+              text: "Choose a role",
+              onPressed: () => buildMortal(
+                context,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.92,
+                  child: ChooseGenderBody(
+                    onContinue: () {
+                      refetch!();
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ),
+              ),
+            );
           }
           return Column(
             mainAxisSize: MainAxisSize.min,
@@ -60,18 +66,20 @@ class YourGenderButtonWidget extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               StandartButton(
-                  text: "Change role",
-                  onPressed: () => buildMortal(
-                      context,
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.85,
-                        child: ChooseGenderBody(
-                            genderId: gender.id,
-                            onContinue: () {
-                              refetch!();
-                              Navigator.of(context).pop();
-                            }),
-                      )))
+                text: "Change role",
+                onPressed: () => buildMortal(
+                  context,
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.92,
+                    child: ChooseGenderBody(
+                        genderId: gender.id,
+                        onContinue: () {
+                          refetch!();
+                          Navigator.of(context).pop();
+                        }),
+                  ),
+                ),
+              )
             ],
           );
         }
