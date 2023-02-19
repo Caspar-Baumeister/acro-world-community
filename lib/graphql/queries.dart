@@ -100,6 +100,7 @@ class Queries {
         id
         location_name
         name
+        community_id
         images(where: {is_profile_picture: {_eq: true}}) {
           image {
             url
@@ -118,29 +119,32 @@ class Queries {
       }
     }""");
 
-  static final getAllTeacher = gql("""
-  query getAllTeacher{
-    teachers(order_by: {user_likes_aggregate: {count: desc}}) {
-      ${Fragments.teacherFragment}
-    }
-  }
-  """);
+  // static final getAllTeacher = gql("""
+  // query getAllTeacher{
+  //   teachers(order_by: {user_likes_aggregate: {count: desc}}) {
+  //     ${Fragments.teacherFragment}
+  //   }
+  // }
+  // """);
 
   static final getTeacherById = gql("""
-  query getTeacherById(\$teacher_id: uuid!) {
+  query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
     teachers_by_pk(id: \$teacher_id) {
+      user_likes(where: {user_id: {_eq: \$user_id}}) {
+        user_id
+      }
       ${Fragments.teacherFragment}
     }
   }
   """);
 
-  static final getTeachersILike = gql("""
-  query getTeachersILike(\$user_id: uuid) {
-    teacher_likes(where: {user_id: {_eq: \$user_id}}) {
-      teacher_id
-    }
-  }
-  """);
+  // static final getTeachersILike = gql("""
+  // query getTeachersILike(\$user_id: uuid) {
+  //   teacher_likes(where: {user_id: {_eq: \$user_id}}) {
+  //     teacher_id
+  //   }
+  // }
+  // """);
 
   static final getClasses = gql("""
   query getClasses {

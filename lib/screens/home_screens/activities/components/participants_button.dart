@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../graphql/mutations.dart';
+import '../../../../graphql/mutations.dart';
 
 class ParticipantsButton extends StatefulWidget {
   const ParticipantsButton(

@@ -29,6 +29,7 @@ class TeacherModel {
   String? userID;
   String? communityID;
   bool isLikedByMe;
+  bool isOrganization;
 
   TeacherModel({
     required this.profilePicUrl,
@@ -43,6 +44,7 @@ class TeacherModel {
     required this.createdAt,
     required this.communityID,
     required this.isLikedByMe,
+    required this.isOrganization,
 
     // teaching since
   });
@@ -70,6 +72,7 @@ class TeacherModel {
     }
 
     return TeacherModel(
+        isOrganization: json["is_organization"],
         profilePicUrl: profilePicUrl,
         name: json["name"],
         id: json["id"],

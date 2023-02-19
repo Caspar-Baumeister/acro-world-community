@@ -6,12 +6,9 @@ import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.
 import 'package:flutter/material.dart';
 
 class ProfileBaseScreen extends StatefulWidget {
-  const ProfileBaseScreen(
-      {Key? key, required this.teacher, required this.isLiked})
-      : super(key: key);
+  const ProfileBaseScreen({Key? key, required this.teacher}) : super(key: key);
 
   final TeacherModel teacher;
-  final bool isLiked;
   @override
   _ProfileBaseScreenState createState() => _ProfileBaseScreenState();
 }
@@ -24,7 +21,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
   void initState() {
     super.initState();
     teacherLikes = widget.teacher.likes ?? 0;
-    isLikedState = widget.isLiked;
+    isLikedState = widget.teacher.isLikedByMe;
   }
 
   @override
@@ -77,7 +74,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   [
                     ProfileHeaderWidget(
                       teacher: widget.teacher,
-                      isLiked: widget.isLiked,
+                      isLiked: isLikedState,
                     ),
                   ],
                 ),

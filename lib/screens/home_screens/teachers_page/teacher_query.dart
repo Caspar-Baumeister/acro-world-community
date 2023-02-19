@@ -67,9 +67,6 @@ class _TeacherQueryState extends State<TeacherQuery> {
         result.data!["teachers"]
             .forEach((teacher) => teachers.add(TeacherModel.fromJson(teacher)));
 
-        print(teachers);
-        print(teachers[0].isLikedByMe);
-
         return RefreshIndicator(
           color: PRIMARY_COLOR,
           onRefresh: (() async => runRefetch()),
