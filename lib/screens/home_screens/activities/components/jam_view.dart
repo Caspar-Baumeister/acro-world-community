@@ -1,4 +1,4 @@
-import 'package:acroworld/components/custom_button.dart';
+import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/screens/HOME_SCREENS/activities/components/community_query_widget.dart';
 import 'package:acroworld/screens/home_screens/activities/components/jam_view_query.dart';
@@ -15,15 +15,15 @@ class JamsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CustomButton(
-          "Plan a jam",
-          () => buildMortal(
+        StandartButton(
+          text: "Plan a jam",
+          onPressed: () => buildMortal(
               context,
               UserCommunityQuery(
                 day: day,
               )),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: 10),
         Flexible(
             child: JamsViewQuery(
           day: day,

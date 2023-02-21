@@ -2,6 +2,7 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/leave_community_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/jams/jams.dart';
@@ -120,10 +121,10 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
   }
 
   void leaveCommunity(BuildContext context) async {
+    String? token = AuthProvider.token;
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context, listen: false);
     final EventBus eventBus = eventBusProvider.eventBus;
-    // TODO later get token from shared pref
     // TODO filter out the communities that the user is part of
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).validToken();
@@ -132,27 +133,11 @@ class AppBarChatroom extends StatelessWidget with PreferredSizeWidget {
           MaterialPageRoute(builder: ((context) => const Authenticate())));
       return null;
     }
-    String token = Provider.of<UserProvider>(context, listen: false).token!;
+
     final database = Database(token: token);
 
-    final response = await database.deleteUserCommunitiesOne(community.id);
+    await database.deleteUserCommunitiesOne(community.id);
 
     eventBus.fire(CrudUserCommunityEvent());
-    // Navigator.of(context).push(
-    //     MaterialPageRoute(builder: ((context) => const UserCommunities())));
-
-    // UserCommunitiesProvider userCommunitiesProvider =
-    //     Provider.of<UserCommunitiesProvider>(context, listen: false);
-    // String userId = UserIdPreferences.getToken();
-
-    // Provider.of<UserProvider>(context, listen: false)
-    //     .addUserCommunities(community.id);
-
-    // // reloads the user informations
-    // Provider.of<RefreshUserInfoProvider>(context, listen: false)
-    //     .notifyFunction();
-
-    //userCommunitiesProvider.addCommunityAndUpdate(community);
-    // DataBaseService(uid: userId).addCommunityToUser(communityId: community.id);
   }
 }

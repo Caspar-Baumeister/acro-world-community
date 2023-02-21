@@ -1,14 +1,12 @@
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/helper_following.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -38,7 +36,7 @@ class _TeacherCardState extends State<TeacherCard> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-
+    String uid = userProvider.getId();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -101,7 +99,8 @@ class _TeacherCardState extends State<TeacherCard> {
                       setState(() {
                         loading = true;
                       });
-                      await followButtonClicked();
+                      await followButtonClicked(isLikedState, uid,
+                          widget.teacher.communityID!, widget.teacher.name);
                       isLikedState
                           ? runMutation({
                               'teacher_id': widget.teacher.id,
@@ -154,32 +153,32 @@ class _TeacherCardState extends State<TeacherCard> {
     );
   }
 
-  // This controlls the joining and exiting from a community when following a teacher
-  followButtonClicked() async {
-    String? token = AuthProvider.token;
-    final database = Database(token: token);
-    String uid = Provider.of<UserProvider>(context, listen: false).getId();
+  // // This controlls the joining and exiting from a community when following a teacher
+  // followButtonClicked() async {
+  //   String? token = AuthProvider.token;
+  //   final database = Database(token: token);
+  //   String uid = Provider.of<UserProvider>(context, listen: false).getId();
 
-    if (isLikedState) {
-      await database.deleteUserCommunitiesOne(widget.teacher.communityID!);
-      Fluttertoast.showToast(
-          msg: "You left the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else {
-      await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
-      Fluttertoast.showToast(
-          msg: "You joined the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
-  }
+  //   if (isLikedState) {
+  //     await database.deleteUserCommunitiesOne(widget.teacher.communityID!);
+  //     Fluttertoast.showToast(
+  //         msg: "You left the community of ${widget.teacher.name}",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.TOP,
+  //         timeInSecForIosWeb: 2,
+  //         backgroundColor: Colors.red,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0);
+  //   } else {
+  //     await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
+  //     Fluttertoast.showToast(
+  //         msg: "You joined the community of ${widget.teacher.name}",
+  //         toastLength: Toast.LENGTH_SHORT,
+  //         gravity: ToastGravity.TOP,
+  //         timeInSecForIosWeb: 2,
+  //         backgroundColor: Colors.green,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0);
+  //   }
+  // }
 }

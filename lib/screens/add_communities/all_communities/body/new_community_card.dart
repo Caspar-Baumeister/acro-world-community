@@ -91,8 +91,7 @@ class _NewCommunityCardState extends State<NewCommunityCard> {
 
     final database = Database(token: token);
 
-    final response =
-        await database.insertUserCommunitiesOne(widget.community.id, uid);
+    await database.insertUserCommunitiesOne(widget.community.id, uid);
 
     eventBus.fire(CrudUserCommunityEvent());
     setState(() {

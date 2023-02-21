@@ -1,15 +1,13 @@
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/screens/class_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/helper_following.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -34,6 +32,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    String uid = userProvider.getId();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
@@ -72,7 +71,11 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                             setState(() {
                               loading = true;
                             });
-                            await followButtonClicked();
+                            await followButtonClicked(
+                                isLikedState,
+                                uid,
+                                widget.teacher.communityID!,
+                                widget.teacher.name);
                             isLikedState
                                 ? runMutation({
                                     'teacher_id': widget.teacher.id,
@@ -192,33 +195,5 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
         ),
       ),
     );
-  }
-
-  followButtonClicked() async {
-    String? token = AuthProvider.token;
-    final database = Database(token: token);
-    String uid = Provider.of<UserProvider>(context, listen: false).getId();
-
-    if (isLikedState) {
-      await database.deleteUserCommunitiesOne(widget.teacher.communityID!);
-      Fluttertoast.showToast(
-          msg: "You left the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else {
-      await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
-      Fluttertoast.showToast(
-          msg: "You joined the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
   }
 }

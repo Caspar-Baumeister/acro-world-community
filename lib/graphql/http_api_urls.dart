@@ -21,6 +21,16 @@ class Database {
     }""");
   }
 
+  isUserInCommunity(String communityId) async {
+    return authorizedApi("""query MyQuery {
+      me {
+        communities(where: {community_id: {_eq: "$communityId"}}) {
+          community_id
+        }
+      }
+    }""");
+  }
+
   Future getCommunityJams(String cId) {
     return authorizedApi(""" query MyQuery {
       jams(where: {community_id: {_eq: "$cId"}}) {
