@@ -1,7 +1,6 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/community_model.dart';
-import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/preferences/place_preferences.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/add_communities/all_communities/body/all_communities_list.dart';
 import 'package:acroworld/screens/add_communities/search_bar_widget.dart';
@@ -19,23 +18,18 @@ class AllCommunitiesBody extends StatefulWidget {
 }
 
 class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
-  late Place? place;
   late QueryOptions queryOptions;
   late String selector;
-
-  @override
-  void initState() {
-    super.initState();
-    place = PlacePreferences.getSavedPlace();
-  }
 
   String query = "";
   @override
   Widget build(BuildContext context) {
+    PlaceProvider placeProvider = Provider.of<PlaceProvider>(context);
+
     String userId =
         Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
 
-    if (place == null) {
+    if (placeProvider.place == null) {
       queryOptions = QueryOptions(
         document: Queries.getOtherCommunities,
         variables: {'query': "%$query%", 'user_id': userId},
@@ -46,8 +40,8 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
       queryOptions = QueryOptions(
         document: Queries.getOtherCommunitiesByLocation,
         variables: {
-          'latitude': place!.latLng.latitude,
-          'longitude': place!.latLng.longitude,
+          'latitude': placeProvider.place!.latLng.latitude,
+          'longitude': placeProvider.place!.latLng.longitude,
           'query': "%$query%",
           'user_id': userId
         },
@@ -62,29 +56,21 @@ class _AllCommunitiesBodyState extends State<AllCommunitiesBody> {
         children: [
           // Searchbar
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 10.0)
+                .copyWith(bottom: 10),
             child: SearchBarWidget(onChanged: (newQuery) {
               setState(() {
                 query = newQuery;
               });
             }),
           ),
-          PlaceButton(
-            initialPlace: place,
-            onPlaceSet: (Place? _place) {
-              PlacePreferences.setSavedPlace(_place);
-              setState(
-                () {
-                  place = _place;
-                },
-              );
-            },
-          ),
+          const PlaceButton(),
           Query(
             options: queryOptions,
             builder: (QueryResult result,
                 {VoidCallback? refetch, FetchMore? fetchMore}) {
               if (result.hasException) {
+                debugPrint(result.exception.toString(), wrapWidth: 9999);
                 return Text(result.exception.toString());
               }
 

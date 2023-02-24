@@ -1,15 +1,18 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandartButton extends StatelessWidget {
   const StandartButton(
-      {required this.text,
+      {Key? key,
+      required this.text,
       required this.onPressed,
-      this.width = 300,
+      this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
-      this.isFilled = false});
+      this.isFilled = false})
+      : super(key: key);
 
   final String text;
   final VoidCallback onPressed;
@@ -31,17 +34,19 @@ class StandartButton extends StatelessWidget {
           decoration: BoxDecoration(
             color: isFilled ? BUTTON_FILL_COLOR : Colors.white,
             border: Border.all(color: BUTTON_FILL_COLOR),
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
           ),
           width: width,
           height: 40,
           child: Center(
             child: loading
                 ? Container(
-                    height: 40,
-                    width: width,
+                    height: 30,
+                    width: 30,
                     padding: const EdgeInsets.all(5),
-                    child: const CircularProgressIndicator())
+                    child: CircularProgressIndicator(
+                      color: isFilled == true ? Colors.white : PRIMARY_COLOR,
+                    ))
                 : Text(
                     text,
                     style: STANDART_BUTTON_TEXT.copyWith(

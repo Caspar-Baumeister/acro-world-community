@@ -5,7 +5,7 @@ import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/jam/jams/jams_body.dart';
+import 'package:acroworld/screens/jams/jams_body.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

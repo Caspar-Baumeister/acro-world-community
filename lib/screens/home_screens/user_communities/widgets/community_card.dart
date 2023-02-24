@@ -1,7 +1,9 @@
+import 'package:acroworld/components/map.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/chatroom/chatroom.dart';
 import 'package:acroworld/screens/chatroom/widgets/time_bubble.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CommunityCard extends StatelessWidget {
@@ -29,6 +31,7 @@ class CommunityCard extends StatelessWidget {
         isNew = true;
       }
     }
+    double screenWidth = MediaQuery.of(context).size.width;
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
@@ -41,16 +44,28 @@ class CommunityCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Padding(
-            padding: EdgeInsets.all(6.0),
-            child: CircleAvatar(
-              radius: 32,
-              backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-            ),
+          Container(
+            padding: const EdgeInsets.all(6),
+            width: screenWidth * 0.2,
+            height: screenWidth * 0.2,
+            child: community.latLng != null
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: MapWidget(
+                      zoom: 6.0,
+                      center: community.latLng,
+                    ),
+                  )
+                : Container(
+                    decoration: BoxDecoration(
+                        color: Colors.black12,
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
           ),
           Expanded(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
+            child: Container(
+              height: screenWidth * 0.2,
+              padding: const EdgeInsets.only(right: 10, left: 4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -61,14 +76,14 @@ class CommunityCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           community.name,
-                          maxLines: 2,
+                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          style: SUB_TITLE,
                         ),
                       ),
                       community.lastMessage?.createdAt != null
                           ? Container(
+                              padding: const EdgeInsets.only(left: 6),
                               constraints: const BoxConstraints(maxWidth: 65),
                               child: Text(
                                 readableTimeString(
@@ -88,23 +103,27 @@ class CommunityCard extends StatelessWidget {
                   ),
                   community.lastMessage?.fromUser?.name != null &&
                           community.lastMessage?.content != null
-                      ? RichText(
-                          overflow: TextOverflow.ellipsis,
-                          text: TextSpan(
-                            style: DefaultTextStyle.of(context)
-                                .style
-                                .copyWith(overflow: TextOverflow.ellipsis),
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text:
-                                      "${community.lastMessage!.fromUser!.name}: ",
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              TextSpan(
-                                  text: community.lastMessage!.content,
-                                  style: const TextStyle(
-                                      overflow: TextOverflow.ellipsis)),
-                            ],
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                            text: TextSpan(
+                              style: DefaultTextStyle.of(context)
+                                  .style
+                                  .copyWith(overflow: TextOverflow.ellipsis),
+                              children: <TextSpan>[
+                                TextSpan(
+                                    text:
+                                        "${community.lastMessage!.fromUser!.name}: ",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold)),
+                                TextSpan(
+                                    text: community.lastMessage!.content,
+                                    style: const TextStyle(
+                                        overflow: TextOverflow.ellipsis)),
+                              ],
+                            ),
                           ),
                         )
                       : Container(),

@@ -1,5 +1,5 @@
 import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/components/loading_widget.dart';
@@ -9,6 +9,7 @@ import 'package:acroworld/components/place_button/place_button.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 class Error extends StatelessWidget {
   const Error({Key? key, required this.text}) : super(key: key);
@@ -42,11 +43,12 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
   String nameError = "";
   String name = "";
   String locationError = "";
-  Place? place;
 
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    PlaceProvider placeProvider = Provider.of<PlaceProvider>(context);
+
     return SingleChildScrollView(
       child: Mutation(
         options: MutationOptions(document: Mutations.insertCommunity),
@@ -54,6 +56,9 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     {Object? optimisticResult})
                 runMutation,
             QueryResult<dynamic>? result) {
+          if (result != null && result.hasException) {
+            print(result.exception);
+          }
           if (result != null) {
             if (result.isLoading) {
               return const LoadingWidget();
@@ -75,7 +80,6 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
           return Container(
             padding:
                 const EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
-            width: double.infinity,
             child: SpacedColumn(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 space: 8,
@@ -98,11 +102,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                     alignment: Alignment.centerLeft,
                     child: const H2(text: "Location"),
                   ),
-                  PlaceButton(onPlaceSet: (_place) {
-                    setState(() {
-                      place = _place;
-                    });
-                  }),
+                  const PlaceButton(),
                   Error(text: locationError),
                   IgnorePointer(
                     ignoring: loading,
@@ -113,16 +113,20 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
                         ),
                       ),
                       onPressed: () => {
-                        if (checkFields())
+                        if (checkFields(placeProvider))
                           {
                             runMutation(
                               {
                                 'name': name,
+                                'longitude':
+                                    placeProvider.place!.latLng.longitude,
+                                'latitude':
+                                    placeProvider.place!.latLng.latitude,
                                 'location': {
                                   "type": "Point",
                                   "coordinates": [
-                                    place!.latLng.longitude,
-                                    place!.latLng.latitude
+                                    placeProvider.place!.latLng.longitude,
+                                    placeProvider.place!.latLng.latitude
                                   ]
                                 },
                               },
@@ -146,7 +150,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
     );
   }
 
-  bool checkFields() {
+  bool checkFields(PlaceProvider placeProvider) {
     if (name == "") {
       setState(() {
         nameError = "Provide a valid name";
@@ -154,7 +158,7 @@ class _SuggestNewCommunityState extends State<SuggestNewCommunity> {
       return false;
     }
 
-    if (place == null) {
+    if (placeProvider.place == null) {
       setState(() {
         locationError = "Please choose a location";
       });

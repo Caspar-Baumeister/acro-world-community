@@ -2,6 +2,17 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final meGender = gql("""
+  query {
+  me {
+    acro_role {
+      id
+      name
+    }
+  }
+}
+  """);
+
   static final jamsByCommunityId = gql("""
   query JamsByCommunityId(\$communityId: uuid) {
     jams(where: {community_id: {_eq: \$communityId}}) {
@@ -83,44 +94,57 @@ class Queries {
   }
   """);
 
-  static final getAllTeacher = gql("""
-  query getAllTeacher{
-    teachers(order_by: {user_likes_aggregate: {count: desc}}) {
-    created_at
-    description
-    id
-    location_name
-    community_id
-    name
-    user_id
-    user_likes_aggregate {
-      aggregate {
-        count
-      }
-    }
-    teacher_levels {
-      level {
-        name
+  static final getTeacherForList = gql("""
+    query getTeacherForList(\$user_id: uuid) {
+      teachers(order_by: {user_likes_aggregate: {count: desc}}) {
         id
+        location_name
+        name
+        community_id
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+          is_profile_picture
+        }
+        is_organization
+        user_likes(where: {user_id: {_eq: \$user_id}}) {
+          user_id
+        }
+        user_likes_aggregate {
+          aggregate {
+            count
+          }
+        }
       }
-    }
-    images {
-      image {
-        url
+    }""");
+
+  // static final getAllTeacher = gql("""
+  // query getAllTeacher{
+  //   teachers(order_by: {user_likes_aggregate: {count: desc}}) {
+  //     ${Fragments.teacherFragment}
+  //   }
+  // }
+  // """);
+
+  static final getTeacherById = gql("""
+  query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
+    teachers_by_pk(id: \$teacher_id) {
+      user_likes(where: {user_id: {_eq: \$user_id}}) {
+        user_id
       }
-      is_profile_picture
+      ${Fragments.teacherFragment}
     }
-  }
   }
   """);
 
-  static final getTeachersILike = gql("""
-  query getTeachersILike(\$user_id: uuid) {
-  teacher_likes(where: {user_id: {_eq: \$user_id}}) {
-    teacher_id
-  }
-}
-  """);
+  // static final getTeachersILike = gql("""
+  // query getTeachersILike(\$user_id: uuid) {
+  //   teacher_likes(where: {user_id: {_eq: \$user_id}}) {
+  //     teacher_id
+  //   }
+  // }
+  // """);
 
   static final getClasses = gql("""
   query getClasses {
@@ -244,6 +268,25 @@ query getClassEventCommunity(\$class_event_id: uuid) {
     }
       """);
 
+  static final getAcroRoleAggregatesFromClassEvent =
+      gql("""query GetAcroRoleAggregates(\$class_event_id: uuid!) {
+  total_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
+    aggregate {
+      count
+    }
+  }
+  base_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
+    aggregate {
+      count
+    }
+  }
+  flyer_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
+    aggregate {
+      count
+    }
+  }
+}""");
+
   static final getCommunityUsers = gql("""
     query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
       users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {
@@ -254,7 +297,11 @@ query getClassEventCommunity(\$class_event_id: uuid) {
 
   static final getClassParticipants = gql("""
     query getCommunityUsers(\$class_event_id: uuid!, \$limit: Int, \$offset: Int) {
-      users(where: {class_event_participations: {class_event_id: {_eq: \$class_event_id}}}, limit: \$limit, offset: \$offset) {
+      users(where: {
+        class_event_participations: {
+          class_event_id: {_eq: \$class_event_id}}}, 
+          limit: \$limit, 
+          offset: \$offset) {
         ${Fragments.userFragment}
       }
     }

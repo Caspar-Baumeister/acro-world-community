@@ -7,11 +7,16 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:gql/ast.dart';
 
 class UserListQuery extends StatefulWidget {
-  const UserListQuery({Key? key, required this.query, required this.variables})
+  const UserListQuery(
+      {Key? key,
+      required this.query,
+      required this.variables,
+      this.classEventId})
       : super(key: key);
 
   final DocumentNode query;
   final Map<String, dynamic> variables;
+  final String? classEventId;
 
   @override
   State<UserListQuery> createState() => _UserListQueryState();
@@ -96,6 +101,7 @@ class _UserListQueryState extends State<UserListQuery> {
               children: [
                 UserList(
                   users: users,
+                  classEventId: widget.classEventId,
                 ),
                 result.isLoading ? const LoadingIndicator() : Container()
               ],

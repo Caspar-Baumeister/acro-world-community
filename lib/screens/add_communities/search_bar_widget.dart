@@ -1,3 +1,5 @@
+import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
@@ -29,9 +31,9 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     return Container(
       height: 42,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
         color: Colors.white,
-        border: Border.all(color: Colors.black26),
+        border: Border.all(color: STANDART_BORDER_COLOR),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TextField(

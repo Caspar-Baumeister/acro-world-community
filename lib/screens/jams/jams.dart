@@ -1,7 +1,7 @@
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/create_jam/create_jam.dart';
-import 'package:acroworld/screens/jam/jams/app_bar_jams.dart';
-import 'package:acroworld/screens/jam/jams/future_jams.dart';
+import 'package:acroworld/screens/jams/app_bar_jams.dart';
+import 'package:acroworld/screens/jams/future_jams.dart';
 import 'package:flutter/material.dart';
 
 class Jams extends StatefulWidget {

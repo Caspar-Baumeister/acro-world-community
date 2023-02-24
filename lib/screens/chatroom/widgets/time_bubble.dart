@@ -35,13 +35,21 @@ String readableTimeString(String createdAt) {
   return displayTime;
 }
 
+String readableDateTimeStringWithTime(DateTime date) {
+  String displayTime = "upcoming ${DateFormat('EEEE, kk:mm:ss').format(date)}";
+  if (DateTime.now().day == date.day) {
+    displayTime = "Today${DateFormat(', kk:mm:ss').format(date)}";
+  } else if (DateTime.now().difference(date).inDays.abs() > 6) {
+    displayTime = DateFormat('EEE d MMM, kk:mm:ss').format(date);
+  }
+  return displayTime;
+}
+
 String readableTimeDateTime(DateTime date) {
-  print("difference");
-  print(DateTime.now().difference(date).inDays);
-  String displayTime = "this " + DateFormat.EEEE().format(date);
+  String displayTime = "upcoming ${DateFormat.EEEE().format(date)}";
   if (DateTime.now().day == date.day) {
     displayTime = "Today";
-  } else if (DateTime.now().difference(date).inDays.abs() > 7) {
+  } else if (DateTime.now().difference(date).inDays.abs() > 6) {
     displayTime = DateFormat.MMMEd().format(date);
   }
   return displayTime;

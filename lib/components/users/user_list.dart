@@ -1,35 +1,47 @@
+import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:acroworld/components/users/user_list_item.dart';
 import 'package:flutter/material.dart';
 
-class UserList extends StatefulWidget {
-  UserList({Key? key, required this.users, this.onScrollEndReached})
+class UserList extends StatelessWidget {
+  const UserList(
+      {Key? key,
+      required this.users,
+      this.onScrollEndReached,
+      this.classEventId})
       : super(key: key);
 
   final List<User> users;
-  VoidCallback? onScrollEndReached;
+  final VoidCallback? onScrollEndReached;
+  final String? classEventId;
 
-  @override
-  State<UserList> createState() => _UserListState();
-}
-
-class _UserListState extends State<UserList> {
   @override
   Widget build(BuildContext context) {
-    if (widget.users.isEmpty) {
+    if (users.isEmpty) {
       return const Center(
         child: Text('No users found 🤷'),
       );
     } else {
-      List<Widget> userListItems = widget.users
+      List<Widget> userListItems = users
           .map(
             (user) => UserListItem(user: user),
           )
           .toList();
-      return SpacedColumn(
-        space: 2,
-        children: userListItems,
+      return Column(
+        children: [
+          SpacedColumn(
+            space: 2,
+            children: userListItems,
+          ),
+          classEventId != null
+              ? Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: GenderDistributionPieFromClassEventId(
+                      classEventId: classEventId!),
+                )
+              : Container()
+        ],
       );
     }
   }

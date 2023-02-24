@@ -73,117 +73,120 @@ class _ChatroomState extends State<Chatroom> {
                         "user_id": userProvider.activeUser!.id!,
                         "community_id": widget.cId
                       })),
-              body: ViewRoot(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: Subscription(
-                        options: SubscriptionOptions(
-                            document: gql(
-                              Subscriptions.communityMessages,
-                            ),
-                            variables: {'community_id': widget.cId}),
-                        builder: (result) {
-                          if (result.hasException) {
-                            return Text(result.exception.toString());
-                          }
-                          if (result.isLoading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
+              body: SafeArea(
+                child: ViewRoot(
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Subscription(
+                          options: SubscriptionOptions(
+                              document: gql(
+                                Subscriptions.communityMessages,
+                              ),
+                              variables: {'community_id': widget.cId}),
+                          builder: (result) {
+                            if (result.hasException) {
+                              return Text(result.exception.toString());
+                            }
+                            if (result.isLoading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
 
-                          CommunityMessages messages =
-                              CommunityMessages.fromJson(result.data!);
+                            CommunityMessages messages =
+                                CommunityMessages.fromJson(result.data!);
 
-                          int messageCount = messages.length;
-                          if (messageCount == 0) {
-                            return const Center(
-                              child: Text('No messages yet'),
-                            );
-                          } else {
-                            Provider.of<UserCommunitiesProvider>(context,
-                                    listen: false)
-                                .setLastMessage(messages[0]!, widget.cId);
-                            return ListView.builder(
-                              reverse: true,
-                              itemCount: messageCount,
-                              itemBuilder: (context, index) {
-                                CommunityMessage? message = messages[index];
-                                CommunityMessage? nextMessage =
-                                    messages[index + 1];
-                                CommunityMessage? previousMessage =
-                                    messages[index - 1];
-                                User? fromUser = message!.fromUser;
-                                var isSameDayAsPrevious = isSameDay(
-                                    message.createdAt, nextMessage?.createdAt);
-                                final isMe = userId == fromUser!.id;
+                            int messageCount = messages.length;
+                            if (messageCount == 0) {
+                              return const Center(
+                                child: Text('No messages yet'),
+                              );
+                            } else {
+                              Provider.of<UserCommunitiesProvider>(context,
+                                      listen: false)
+                                  .setLastMessage(messages[0]!, widget.cId);
+                              return ListView.builder(
+                                reverse: true,
+                                itemCount: messageCount,
+                                itemBuilder: (context, index) {
+                                  CommunityMessage? message = messages[index];
+                                  CommunityMessage? nextMessage =
+                                      messages[index + 1];
+                                  CommunityMessage? previousMessage =
+                                      messages[index - 1];
+                                  User? fromUser = message!.fromUser;
+                                  var isSameDayAsPrevious = isSameDay(
+                                      message.createdAt,
+                                      nextMessage?.createdAt);
+                                  final isMe = userId == fromUser!.id;
 
-                                final isSameAuthorThenNext =
-                                    nextMessage != null &&
-                                        nextMessage.fromUser!.id ==
-                                            message.fromUser!.id;
+                                  final isSameAuthorThenNext =
+                                      nextMessage != null &&
+                                          nextMessage.fromUser!.id ==
+                                              message.fromUser!.id;
 
-                                final isSameAuthorThenPrevious =
-                                    previousMessage != null &&
-                                        previousMessage.fromUser!.id ==
-                                            message.fromUser!.id;
-                                if (!isSameDayAsPrevious) {
-                                  return Column(
-                                    children: [
-                                      Center(
-                                          child: TimeBubble(
-                                              createdAt: message.createdAt!)),
-                                      isMe
-                                          ? OutBubble(
-                                              message: message,
-                                              sameAuthorThenBevor:
-                                                  isSameAuthorThenPrevious,
-                                            )
-                                          : InBubble(
-                                              message: message,
-                                              sameAuthorThenBevor:
-                                                  isSameAuthorThenPrevious,
-                                              sameAuthorThenNext: false,
-                                            )
-                                      // MessageTile(
-                                      //     message: message,
-                                      //     isMe: isMe,
-                                      //     sameAuthorThenNext:
-                                      //         isSameAuthorThenNext,
-                                      //     sameAuthorThenBevor:
-                                      //         isSameAuthorThenPrevious)
-                                    ],
-                                  );
-                                }
+                                  final isSameAuthorThenPrevious =
+                                      previousMessage != null &&
+                                          previousMessage.fromUser!.id ==
+                                              message.fromUser!.id;
+                                  if (!isSameDayAsPrevious) {
+                                    return Column(
+                                      children: [
+                                        Center(
+                                            child: TimeBubble(
+                                                createdAt: message.createdAt!)),
+                                        isMe
+                                            ? OutBubble(
+                                                message: message,
+                                                sameAuthorThenBevor:
+                                                    isSameAuthorThenPrevious,
+                                              )
+                                            : InBubble(
+                                                message: message,
+                                                sameAuthorThenBevor:
+                                                    isSameAuthorThenPrevious,
+                                                sameAuthorThenNext: false,
+                                              )
+                                        // MessageTile(
+                                        //     message: message,
+                                        //     isMe: isMe,
+                                        //     sameAuthorThenNext:
+                                        //         isSameAuthorThenNext,
+                                        //     sameAuthorThenBevor:
+                                        //         isSameAuthorThenPrevious)
+                                      ],
+                                    );
+                                  }
 
-                                return isMe
-                                    ? OutBubble(
-                                        message: message,
-                                        sameAuthorThenBevor:
-                                            isSameAuthorThenPrevious,
-                                      )
-                                    : InBubble(
-                                        message: message,
-                                        sameAuthorThenBevor:
-                                            isSameAuthorThenPrevious,
-                                        sameAuthorThenNext:
-                                            isSameAuthorThenNext,
-                                      );
-                                // MessageTile(
-                                //   message: message,
-                                //   isMe: isMe,
-                                //   sameAuthorThenNext: isSameAuthorThenNext,
-                                //   sameAuthorThenBevor: isSameAuthorThenPrevious,
-                                // );
-                              },
-                            );
-                          }
-                        },
+                                  return isMe
+                                      ? OutBubble(
+                                          message: message,
+                                          sameAuthorThenBevor:
+                                              isSameAuthorThenPrevious,
+                                        )
+                                      : InBubble(
+                                          message: message,
+                                          sameAuthorThenBevor:
+                                              isSameAuthorThenPrevious,
+                                          sameAuthorThenNext:
+                                              isSameAuthorThenNext,
+                                        );
+                                  // MessageTile(
+                                  //   message: message,
+                                  //   isMe: isMe,
+                                  //   sameAuthorThenNext: isSameAuthorThenNext,
+                                  //   sameAuthorThenBevor: isSameAuthorThenPrevious,
+                                  // );
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                    MessageTextField(cId: widget.cId)
-                  ],
+                      MessageTextField(cId: widget.cId)
+                    ],
+                  ),
                 ),
               ),
             ),

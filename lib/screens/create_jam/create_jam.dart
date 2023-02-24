@@ -1,16 +1,17 @@
+import 'package:acroworld/components/map.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/models/jam_model.dart';
+import 'package:acroworld/screens/chatroom/widgets/time_bubble.dart';
 import 'package:acroworld/screens/create_jam/app_bar_create_jam.dart';
-import 'package:acroworld/screens/create_jam/date_time_chooser.dart';
-import 'package:acroworld/screens/map/map.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/screens/loading_page.dart';
 import 'package:acroworld/components/view_root.dart';
 import 'package:event_bus/event_bus.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -64,12 +65,6 @@ class _CreateJamState extends State<CreateJam> {
     }
   }
 
-  setDateTime(newDateTime) {
-    setState(() {
-      _chosenDateTime = newDateTime;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final EventBusProvider eventBusProvider =
@@ -113,6 +108,7 @@ class _CreateJamState extends State<CreateJam> {
                         setState(() {
                           isLoading = true;
                         });
+
                         if (isEdit) {
                           runMutation({
                             "jamId": widget.jam!.jid,
@@ -158,10 +154,26 @@ class _CreateJamState extends State<CreateJam> {
                               },
                             ),
                             const SizedBox(height: 20.0),
-                            DateTimeChooser(
-                              chosenDateTime: _chosenDateTime,
-                              setDateTime: setDateTime,
-                            ),
+                            GestureDetector(
+                                onTap: () => _showDatePicker(context),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12.0),
+                                  decoration: BoxDecoration(
+                                      border: Border.all(
+                                        width: 1,
+                                        color: Colors.black,
+                                      ),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(10))),
+                                  // constraints: const BoxConstraints(maxWidth: 250),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    readableDateTimeStringWithTime(
+                                        _chosenDateTime),
+                                    style: const TextStyle(
+                                        color: Colors.black, fontSize: 16.0),
+                                  ),
+                                )),
                             const SizedBox(height: 20.0),
                             TextFormField(
                                 initialValue: info,
@@ -176,6 +188,7 @@ class _CreateJamState extends State<CreateJam> {
                                 onChanged: (val) {
                                   setState(() => info = val);
                                 },
+                                minLines: 3,
                                 validator: (val) {
                                   if (val == null || val.isEmpty || val == "") {
                                     return 'Provide a short description of the jam';
@@ -209,6 +222,44 @@ class _CreateJamState extends State<CreateJam> {
               );
             },
           );
+  }
+
+  void _showDatePicker(ctx) {
+    final date = DateTime.now();
+    var val = date;
+    // showCupertinoModalPopup is a built-in function of the cupertino library
+    showCupertinoModalPopup(
+        context: ctx,
+        builder: (_) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(Radius.circular(70)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    height: 400,
+                    child: CupertinoDatePicker(
+                        //use24hFormat: true,
+                        minimumDate: date,
+                        maximumDate:
+                            DateTime(date.year, date.month + 1, date.day),
+                        initialDateTime: DateTime.now(),
+                        onDateTimeChanged: (DateTime val) => setState(() {
+                              _chosenDateTime = val;
+                            })),
+                  ),
+                ],
+              ),
+            ));
   }
 
   bool checkForm() {

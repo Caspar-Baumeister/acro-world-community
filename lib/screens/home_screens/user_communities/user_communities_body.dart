@@ -95,6 +95,7 @@ class _UserCommunitiesBodyState extends State<UserCommunitiesBody> {
                       // Searchbar
                       Container(
                         constraints: const BoxConstraints(maxHeight: 42),
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

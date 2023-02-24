@@ -1,3 +1,4 @@
+import 'package:acroworld/components/standart_button.dart';
 import 'package:flutter/material.dart';
 
 class AppBarJam extends StatelessWidget with PreferredSizeWidget {
@@ -23,21 +24,11 @@ class AppBarJam extends StatelessWidget with PreferredSizeWidget {
       actions: <Widget>[
         Padding(
           padding: const EdgeInsets.all(8.0),
-          child: OutlinedButton(
-            style: OutlinedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-            ),
+          child: StandartButton(
             onPressed: () => onSubmit(),
-            child: const Text(
-              'Submit',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-              ),
-            ),
+            text: 'Submit',
+            isFilled: true,
+            width: 100,
           ),
         ),
       ],

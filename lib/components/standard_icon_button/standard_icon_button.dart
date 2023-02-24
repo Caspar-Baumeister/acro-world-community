@@ -1,3 +1,5 @@
+import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class StandardIconButton extends StatelessWidget {
@@ -7,39 +9,40 @@ class StandardIconButton extends StatelessWidget {
     required this.text,
     this.onPressed,
     this.withBorder = true,
+    this.width,
   }) : super(key: key);
 
   final IconData icon;
   final String text;
   final VoidCallback? onPressed;
   final bool withBorder;
+  final double? width;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 46,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          // Supply null for displaying default border
-          side: withBorder ? null : BorderSide.none,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: onPressed,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: withBorder ? Border.all(color: BUTTON_FILL_COLOR) : null,
+          borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
         ),
-        onPressed: onPressed,
+        height: 40,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(
               icon,
               color: Colors.black,
             ),
             const SizedBox(width: 6),
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.75,
+            Expanded(
               child: Text(
                 text,
-                maxLines: 2,
+                maxLines: withBorder ? 1 : 2,
                 overflow: TextOverflow.ellipsis,
                 style: const TextStyle(
                   fontSize: 16,
@@ -48,6 +51,7 @@ class StandardIconButton extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(width: 40)
           ],
         ),
       ),

@@ -44,9 +44,7 @@ class AllCommunitiesList extends StatelessWidget {
                     "Can't find the community your searching for?",
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(
-                    height: 4,
-                  ),
+                  const SizedBox(height: 4),
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -63,7 +61,7 @@ class AllCommunitiesList extends StatelessWidget {
                       );
                     },
                     child: const Text(
-                      "Suggest a new one",
+                      "Suggest a new community",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -71,6 +69,7 @@ class AllCommunitiesList extends StatelessWidget {
                       ),
                     ),
                   ),
+                  const SizedBox(height: 15),
                 ],
               ),
             ),

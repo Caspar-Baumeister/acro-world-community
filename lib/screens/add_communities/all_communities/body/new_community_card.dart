@@ -70,6 +70,9 @@ class _NewCommunityCardState extends State<NewCommunityCard> {
   }
 
   void addCommunity(BuildContext context) async {
+    String uid = Provider.of<UserProvider>(context, listen: false).getId();
+
+    String token = Provider.of<UserProvider>(context, listen: false).token!;
     setState(() {
       isLoading = true;
     });
@@ -85,13 +88,10 @@ class _NewCommunityCardState extends State<NewCommunityCard> {
           MaterialPageRoute(builder: ((context) => const Authenticate())));
       return null;
     }
-    String token = Provider.of<UserProvider>(context, listen: false).token!;
+
     final database = Database(token: token);
 
-    String uid = Provider.of<UserProvider>(context, listen: false).getId();
-
-    final response =
-        await database.insertUserCommunitiesOne(widget.community.id, uid);
+    await database.insertUserCommunitiesOne(widget.community.id, uid);
 
     eventBus.fire(CrudUserCommunityEvent());
     setState(() {

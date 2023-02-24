@@ -1,5 +1,5 @@
-import 'package:acroworld/screens/authentication_screens/register_screen/register.dart';
 import 'package:acroworld/screens/authentication_screens/login_screen/sign_in.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/register.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {

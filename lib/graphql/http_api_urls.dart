@@ -21,6 +21,16 @@ class Database {
     }""");
   }
 
+  isUserInCommunity(String communityId) async {
+    return authorizedApi("""query MyQuery {
+      me {
+        communities(where: {community_id: {_eq: "$communityId"}}) {
+          community_id
+        }
+      }
+    }""");
+  }
+
   Future getCommunityJams(String cId) {
     return authorizedApi(""" query MyQuery {
       jams(where: {community_id: {_eq: "$cId"}}) {
@@ -60,6 +70,24 @@ class Database {
           body: json.encode({
             'query':
                 "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token}}"
+          }));
+
+      return jsonDecode(response.body.toString());
+    } catch (e) {
+      print(e.toString());
+    }
+    return null;
+  }
+
+  Future forgotPassword(String email) async {
+    try {
+      final response = await http.post(uri,
+          headers: {
+            'content-type': 'application/json',
+          },
+          body: json.encode({
+            'query':
+                "mutation MyMutation {reset_password(input: {email: \"$email\"}) { success  } }"
           }));
 
       return jsonDecode(response.body.toString());

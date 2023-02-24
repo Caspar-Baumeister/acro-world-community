@@ -2,10 +2,12 @@ import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/add_communities/search_bar_widget.dart';
 import 'package:acroworld/components/standard_icon_button/standard_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 class PlaceQuery extends StatelessWidget {
   const PlaceQuery({Key? key, required this.placeId, required this.onPlaceSet})
@@ -62,7 +64,7 @@ class PlacesQuery extends StatelessWidget {
               child: const LoadingIndicator());
         }
         if (result.hasException) {
-          return const Text('Exception occured');
+          return ErrorWidget(result.exception.toString());
         }
         if (result.data != null) {
           Map<String, dynamic> data = result.data!;
@@ -71,19 +73,24 @@ class PlacesQuery extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: List<Widget>.from(
                 result.data?['places'].map((place) {
-                  return StandardIconButton(
-                    withBorder: false,
-                    text: place['description'],
-                    icon: Icons.location_on,
-                    onPressed: () {
-                      onPlaceIdSet(place['id']);
-                    },
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10.0)
+                        .copyWith(bottom: 8),
+                    child: StandardIconButton(
+                      withBorder: false,
+                      text: place['description'],
+                      icon: Icons.location_on,
+                      onPressed: () {
+                        onPlaceIdSet(place['id']);
+                      },
+                    ),
                   );
                 }),
               ),
             );
           } else {
-            return const Text('No data found');
+            return ErrorWidget(
+                "Something unexpected went wrong, restart or update your app");
           }
         }
         return Container();
@@ -93,9 +100,7 @@ class PlacesQuery extends StatelessWidget {
 }
 
 class PlaceSearchBody extends StatefulWidget {
-  const PlaceSearchBody({Key? key, required this.onPlaceSet}) : super(key: key);
-
-  final Function(Place place) onPlaceSet;
+  const PlaceSearchBody({Key? key}) : super(key: key);
 
   @override
   State<PlaceSearchBody> createState() => _PlaceSearchBodyState();
@@ -108,9 +113,9 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
 
   @override
   Widget build(BuildContext context) {
+    PlaceProvider placeProvider = Provider.of<PlaceProvider>(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      height: MediaQuery.of(context).size.height,
       child: Column(
         children: [
           SearchBarWidget(
@@ -119,15 +124,16 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                 query = value;
               });
             },
-            autofocus: false,
+            autofocus: true,
           ),
+          const SizedBox(height: 20),
           SingleChildScrollView(
             child: query.isNotEmpty
                 ? placeId.isNotEmpty
                     ? PlaceQuery(
                         placeId: placeId,
                         onPlaceSet: (Place place) {
-                          widget.onPlaceSet(place);
+                          placeProvider.updatePlace(place);
                           if (!isNavigatedBack) {
                             Navigator.of(context).pop();
                             setState(() {

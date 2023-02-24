@@ -2,10 +2,18 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
-  static final login = gql("""
-mutation login(\$email:String!, \$password:String!) {
-  login(input: {email: \$email, password: \$password}) {
-    token
+  static final resetPassword = gql("""
+  mutation resetPassword(\$email: String) {
+  reset_password(input: {email: \$email}) {
+    success
+  }
+}
+""");
+
+  static final setGender = gql("""
+mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
+  update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
+    id
   }
 }
 """);
@@ -69,8 +77,8 @@ mutation login(\$email:String!, \$password:String!) {
   """);
 
   static final insertCommunity = gql("""
-    mutation InsertCommunity(\$name: String, \$location: geography) {
-      insert_communities_one(object: {location: \$location, latitude: 1, longitude: 1, name: \$name}) {
+    mutation InsertCommunity(\$name: String, \$location: geography, \$longitude: float8, \$latitude: float8) {
+      insert_communities_one(object: {location: \$location, latitude: \$latitude, longitude: \$longitude, name: \$name}) {
         id
       }
     }

@@ -6,12 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TeacherBody extends StatelessWidget {
-  const TeacherBody(
-      {Key? key, required this.teachers, required this.teachersILike})
-      : super(key: key);
+  const TeacherBody({Key? key, required this.teachers}) : super(key: key);
 
   final List<TeacherModel> teachers;
-  final List<String> teachersILike;
 
   @override
   Widget build(BuildContext context) {
@@ -19,11 +16,11 @@ class TeacherBody extends StatelessWidget {
       teachers.map(
         (teacher) => TeacherCard(
           teacher: teacher,
-          isLiked: teachersILike.contains(teacher.id),
+          isLiked: teacher.isLikedByMe,
         ),
       ),
     );
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    Provider.of<UserProvider>(context);
 
     return SingleChildScrollView(
       child: Column(children: [
@@ -34,7 +31,5 @@ class TeacherBody extends StatelessWidget {
         ...teacherList
       ]),
     );
-    //   ],
-    // );
   }
 }

@@ -5,6 +5,8 @@ const double DIFFICULTY_LEVEL_HEIGHT = 22;
 const double DIFFICULTY_LEVEL_WIDTH = 66;
 const double PARTICIPANT_BUTTON_HEIGHT = 34;
 const double PARTICIPANT_BUTTON_WIDTH = 100;
+const double STANDART_ROUNDNESS_STRONG = 20;
+const double STANDART_ROUNDNESS_LIGHT = 15;
 
 const String MORTY_IMG_URL =
     "https://store.playstation.com/store/api/chihiro/00_09_000/container/AR/es/99/UP0151-CUSA09971_00-AV00000000000004/0/image?_version=00_09_000&platform=chihiro&bg_color=000000&opacity=100&w=720&h=720";
@@ -15,3 +17,5 @@ const String COMMUNITY_IMG_URL =
 const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
 
 Uri AGB_URL = Uri.parse('https://acroworld.de');
+
+const double STANDART_BUTTON_WIDTH = 300;
