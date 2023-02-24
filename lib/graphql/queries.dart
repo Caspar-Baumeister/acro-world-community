@@ -287,6 +287,25 @@ query getClassEventCommunity(\$class_event_id: uuid) {
   }
 }""");
 
+  static final getAcroRoleAggregatesFromJam =
+      gql("""query getAcroRoleAggregatesFromJam(\$jam_id: uuid!) {
+  total_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}}) {
+    aggregate {
+      count
+    }
+  }
+  base_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
+    aggregate {
+      count
+    }
+  }
+  flyer_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
+    aggregate {
+      count
+    }
+  }
+}""");
+
   static final getCommunityUsers = gql("""
     query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
       users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {

@@ -151,6 +151,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                           context,
                           ParticipantModal(
                             participants: widget.jam.participants ?? [],
+                            jamId: widget.jam.jid!,
                           ),
                         ),
                         child: Text(

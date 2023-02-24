@@ -38,9 +38,9 @@ String readableTimeString(String createdAt) {
 String readableDateTimeStringWithTime(DateTime date) {
   String displayTime = "upcoming ${DateFormat('EEEE, kk:mm:ss').format(date)}";
   if (DateTime.now().day == date.day) {
-    displayTime = "Today${DateFormat(', kk:mm:ss').format(date)}";
+    displayTime = "Today${DateFormat(', kk:mm').format(date)}";
   } else if (DateTime.now().difference(date).inDays.abs() > 6) {
-    displayTime = DateFormat('EEE d MMM, kk:mm:ss').format(date);
+    displayTime = DateFormat('EEE d MMM, kk:mm').format(date);
   }
   return displayTime;
 }

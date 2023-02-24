@@ -84,6 +84,7 @@ class _JamParticipantsButtonState extends State<JamParticipantsButton> {
                       context,
                       ParticipantModal(
                         participants: realParticipants,
+                        jamId: widget.jamId,
                       ),
                     );
                     // Show user list
