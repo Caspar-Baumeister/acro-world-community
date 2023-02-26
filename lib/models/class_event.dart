@@ -25,12 +25,20 @@ class ClassEvent {
 
   factory ClassEvent.fromJson(dynamic json,
       {ClassModel? classModel, List? teacherList}) {
-    List<TeacherLinkModel> _teacher = [];
+    List<TeacherLinkModel> teacher = [];
+
     if (teacherList != null && teacherList.isNotEmpty) {
       for (var t in teacherList) {
-        _teacher.add(TeacherLinkModel.fromJson(t["teacher"]));
+        teacher.add(TeacherLinkModel.fromJson(t["teacher"]));
+      }
+    } else if (json["class"] != null &&
+        json["class"]["class_teachers"] != null &&
+        json["class"]["class_teachers"].isNotEmpty) {
+      for (var t in json["class"]["class_teachers"]) {
+        teacher.add(TeacherLinkModel.fromJson(t["teacher"]));
       }
     }
+
     return ClassEvent(
         classId: json['class_id'],
         createdAt: DateTime.parse(json["created_at"]),
@@ -41,6 +49,6 @@ class ClassEvent {
         isCancelled: json["is_cancelled"],
         classModel: classModel,
         date: DateTime.parse(json["start_date"]),
-        teacher: _teacher);
+        teacher: teacher);
   }
 }

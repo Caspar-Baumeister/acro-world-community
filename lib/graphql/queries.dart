@@ -96,7 +96,7 @@ class Queries {
 
   static final getTeacherForList = gql("""
     query getTeacherForList(\$user_id: uuid) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}) {
+      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}}) {
         id
         location_name
         name
@@ -206,7 +206,7 @@ class Queries {
 
   static final getOtherCommunities = gql("""
   query GetOtherCommunities(\$user_id: uuid, \$query: String) {
-  communities(where: {_not: {users: {user_id: {_eq: \$user_id}}}, name: {_ilike: \$query}}, limit: 15) {
+  communities(where: {_not: {users: {user_id: {_eq: \$user_id}}}, name: {_ilike: \$query}}, _and: {confirmation_status: {_eq: Confirmed}}}, limit: 15) {
     id
     name
     confirmed
@@ -218,7 +218,7 @@ class Queries {
 
   static final getOtherCommunitiesByLocation = gql("""
 query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \$user_id: uuid, \$query: String) {
-  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {distance: {_lte: "100"}}, {name: {_ilike: \$query}}]}, limit: 15) {
+  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {distance: {_lte: "100"}}, {name: {_ilike: \$query}}], confirmation_status: {_eq: "Confirmed"}}, limit: 15) {
     id
     name
     confirmed
@@ -239,6 +239,20 @@ query getClassEventsByClassId (\$class_id: uuid) {
     id
     is_cancelled
     start_date
+    class { 
+      class_teachers {
+        teacher {
+          id
+          images {
+            is_profile_picture
+            image {
+              url
+            }
+          }
+          name
+        }
+      }
+    }
   }
 }
 """);

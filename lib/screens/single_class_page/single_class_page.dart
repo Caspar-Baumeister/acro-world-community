@@ -7,12 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class SingleClassPage extends StatelessWidget {
-  const SingleClassPage(
-      {Key? key, required this.teacherClass, required this.teacherName})
+  const SingleClassPage({Key? key, required this.teacherClass})
       : super(key: key);
 
   final ClassModel teacherClass;
-  final String teacherName;
 
   @override
   Widget build(BuildContext context) {

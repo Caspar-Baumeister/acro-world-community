@@ -34,7 +34,7 @@ class Subscriptions {
   static const subscribeUserCommunities = """
   subscription subscribeUserCommunities(\$query: String!) {
   me {
-    communities(where: {community: {name: {_ilike: \$query}}}, limit: 50, order_by: {community: {community_messages_aggregate: {max: {created_at: desc_nulls_last}}}}) {
+    communities(where: {community: {name: {_ilike: \$query}}, _and: {community: {confirmation_status: {_eq: Confirmed}}}}, limit: 50, order_by: {community: {community_messages_aggregate: {max: {created_at: desc_nulls_last}}}}) {
       last_visited_at
       community_id
       community {

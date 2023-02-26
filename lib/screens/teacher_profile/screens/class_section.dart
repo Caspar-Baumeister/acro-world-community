@@ -58,7 +58,6 @@ class ClassSection extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => SingleClassPage(
                               teacherClass: indexClass,
-                              teacherName: teacher.name ?? "no name",
                             )),
                   ),
                   child: ListTile(

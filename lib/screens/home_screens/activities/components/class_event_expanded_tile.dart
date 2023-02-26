@@ -26,10 +26,10 @@ class ClassEventExpandedTile extends StatelessWidget {
       onTap: () => classEvent.classModel != null
           ? Navigator.of(context).push(
               MaterialPageRoute(
-                  builder: (context) => SingleClassPage(
-                      teacherClass: classEvent.classModel!,
-                      teacherName: "" //classEvent.classModel!.,
-                      )),
+                builder: (context) => SingleClassPage(
+                  teacherClass: classEvent.classModel!,
+                ),
+              ),
             )
           : null,
       child: SizedBox(

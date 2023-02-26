@@ -10,11 +10,13 @@ class Community {
   String? lastVisitedAt;
   String? nextJamAt;
   dynamic distance;
+  String? confirmationStatus;
 
   Community({
     required this.id,
     required this.name,
     required this.confirmed,
+    required this.confirmationStatus,
     required this.latLng,
     this.lastMessage,
     this.lastVisitedAt,
@@ -27,6 +29,7 @@ class Community {
     return Community(
         id: json['id'],
         name: json["name"],
+        confirmationStatus: json["confirmation_status"],
         confirmed: json["confirmed"] ?? false,
         latLng: LatLng(json['latitude'] * 1.0, json['longitude'] * 1.0),
         lastVisitedAt: lastVisitedAt,

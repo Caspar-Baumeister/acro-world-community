@@ -30,12 +30,14 @@ class TeacherModel {
   String? communityID;
   bool isLikedByMe;
   bool isOrganization;
+  String? confirmationStatus;
 
   TeacherModel({
     required this.profilePicUrl,
     required this.id,
     required this.name,
     required this.description,
+    required this.confirmationStatus,
     required this.locationName,
     required this.likes,
     required this.pictureUrls,
@@ -72,6 +74,7 @@ class TeacherModel {
     }
 
     return TeacherModel(
+        confirmationStatus: json["confirmation_status"],
         isOrganization: json["is_organization"],
         profilePicUrl: profilePicUrl,
         name: json["name"],
