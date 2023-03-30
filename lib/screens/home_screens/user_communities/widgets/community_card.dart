@@ -78,7 +78,7 @@ class CommunityCard extends StatelessWidget {
                           community.name,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: SUB_TITLE,
+                          style: BIG_TEXT_STYLE,
                         ),
                       ),
                       community.lastMessage?.createdAt != null

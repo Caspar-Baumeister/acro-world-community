@@ -83,7 +83,7 @@ class _TeacherCardState extends State<TeacherCard> {
             style: MAINTEXT,
           ),
           subtitle: Text(widget.teacher.locationName ?? "no location provided",
-              style: SECONDARYTEXT),
+              style: SMALL_TEXT_STYLE),
           trailing: Mutation(
               options: MutationOptions(
                   document: isLikedState
@@ -139,7 +139,7 @@ class _TeacherCardState extends State<TeacherCard> {
                                   ))
                               : Text(
                                   isLikedState ? "Following" : "Follow",
-                                  style: SECONDARYTEXT.copyWith(
+                                  style: SMALL_TEXT_STYLE.copyWith(
                                     color: !isLikedState
                                         ? BUTTON_FILL_COLOR
                                         : Colors.white,

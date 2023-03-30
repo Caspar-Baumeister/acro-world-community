@@ -6,6 +6,8 @@ import 'package:acroworld/screens/HOME_SCREENS/user_communities/user_communities
 import 'package:flutter/material.dart';
 
 class HomeScaffold extends StatefulWidget {
+  const HomeScaffold({Key? key}) : super(key: key);
+
   @override
   State<HomeScaffold> createState() => _HomeScaffoldState();
 }

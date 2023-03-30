@@ -62,7 +62,7 @@ class _ChooseCommunityModalState extends State<ChooseCommunityModal> {
                 Center(
                   child: Text(
                     "Creating a new jam for ${readableTimeDateTime(widget.day!)}",
-                    style: SUB_TITLE,
+                    style: BIG_TEXT_STYLE,
                     textAlign: TextAlign.center,
                   ),
                 ),

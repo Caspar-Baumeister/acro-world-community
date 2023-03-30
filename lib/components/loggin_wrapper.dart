@@ -1,9 +1,11 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/error_page.dart';
+import 'package:acroworld/screens/home_screens/no_wifi_page.dart';
 import 'package:acroworld/screens/loading_page.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 
 class LogginWrapper extends StatefulWidget {
@@ -20,6 +22,7 @@ class LogginWrapper extends StatefulWidget {
 class _LogginWrapperState extends State<LogginWrapper> {
   bool? credentials;
   Future<void>? initCredentials;
+  bool isConnection = false;
 
   @override
   void initState() {
@@ -28,27 +31,30 @@ class _LogginWrapperState extends State<LogginWrapper> {
   }
 
   Future<void> _initCredentials() async {
-    final _credentials = await checkCredentials();
-    credentials = _credentials;
+    final newCredentials = await checkCredentials();
+    credentials = newCredentials;
     return;
   }
 
   Future<void> _refreshCredentials() async {
-    final _credentials = await checkCredentials();
+    final newCredentials = await checkCredentials();
     setState(() {
-      credentials = _credentials;
+      credentials = newCredentials;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     print("inside logginwrapper");
+    print(credentials);
     return FutureBuilder(
         future: initCredentials,
         builder: ((context, snapshot) {
           if (snapshot.hasError) {
-            return ErrorPage(
-                error: "loggin_wrapper error: " + snapshot.error.toString());
+            return ErrorPage(error: "loggin_wrapper error: ${snapshot.error}");
+          }
+          if (!isConnection) {
+            return const NoWifePage();
           }
           if (snapshot.connectionState == ConnectionState.done &&
               credentials != null) {
@@ -68,11 +74,19 @@ class _LogginWrapperState extends State<LogginWrapper> {
   }
 
   Future<bool> checkCredentials() async {
+    bool result = await InternetConnectionChecker().hasConnection;
+    if (result == true) {
+      setState(() {
+        isConnection = true;
+      });
+    } else {
+      setState(() {
+        isConnection = false;
+      });
+    }
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).refreshToken();
-    print("isValidToken");
 
-    print(isValidToken);
     if (!isValidToken) {
       return false;
     }

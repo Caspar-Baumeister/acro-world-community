@@ -20,7 +20,7 @@ class CommingSoon extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             content,
-            style: SECONDARYTEXT,
+            style: SMALL_TEXT_STYLE,
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 10),
@@ -30,7 +30,7 @@ class CommingSoon extends StatelessWidget {
               """
               This feature will soon be available 
               """,
-              style: SMALLTEXT,
+              style: MINI_TEXT_STYLE,
               textAlign: TextAlign.end,
             ),
           ),

@@ -1,0 +1,159 @@
+import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/screens/single_event/single_event_page.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/text_styles.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class SliderCard extends StatelessWidget {
+  const SliderCard({required this.event, Key? key}) : super(key: key);
+  final EventModel event;
+
+  @override
+  Widget build(BuildContext context) {
+    String endTimeString = "";
+    if (event.endDate != null && event.startDate != null) {
+      DateTime endDateTime = DateTime.parse(event.endDate!);
+      DateTime startDateTime = DateTime.parse(event.startDate!);
+      endTimeString = endDateTime.day.toString();
+      if (endDateTime.month != startDateTime.month) {
+        endTimeString =
+            "${endDateTime.day} ${DateFormat.MMM().format(endDateTime)}";
+      }
+    }
+    return GestureDetector(
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SingleEventPage(
+            event: event,
+          ),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Container(
+            clipBehavior: Clip.antiAlias,
+            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+            height: EVENT_DASHBOARD_SLIDER_HEIGHT,
+            width: EVENT_DASHBOARD_SLIDER_WIDTH,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Color(0x90E8E8E8),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  // clipBehavior: Clip.antiAlias,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: event.imgUrl ??
+                        "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.black12,
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.black12,
+                      child: const Icon(
+                        Icons.error,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  padding:
+                      const EdgeInsets.all(8.0).copyWith(top: 20, bottom: 4),
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(event.name ?? "",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: HEADER_1_TEXT_STYLE),
+                      Expanded(
+                        child: event.location != null
+                            ? Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on_outlined,
+                                      color: Colors.black,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: Text(event.location!,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.clip,
+                                          style: STANDART_TEXT_STYLE),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          event.startDate != null
+              ? Positioned(
+                  top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  left: 20,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromARGB(255, 211, 211, 211),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            DateFormat.MMM()
+                                .format(DateTime.parse(event.startDate!)),
+                            style: BIG_TEXT_STYLE,
+                          ),
+                          Text(
+                            "${DateTime.parse(event.startDate!).day} - $endTimeString",
+                            style: STANDART_DESCRIPTION,
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Container()
+        ],
+      ),
+    );
+  }
+}

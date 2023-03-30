@@ -98,7 +98,7 @@ class HeartWidget extends StatelessWidget {
         Center(
           child: Text(
             likes.toString(),
-            style: SECONDARYTEXT.copyWith(
+            style: SMALL_TEXT_STYLE.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
                 color: isLiked ? Colors.white : PRIMARY_COLOR),

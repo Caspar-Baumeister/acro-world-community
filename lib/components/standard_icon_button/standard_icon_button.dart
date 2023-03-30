@@ -10,6 +10,8 @@ class StandardIconButton extends StatelessWidget {
     this.onPressed,
     this.withBorder = true,
     this.width,
+    this.showClose = false,
+    this.onClose,
   }) : super(key: key);
 
   final IconData icon;
@@ -17,6 +19,8 @@ class StandardIconButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool withBorder;
   final double? width;
+  final bool showClose;
+  final Function? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +55,17 @@ class StandardIconButton extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: 40)
+            const SizedBox(width: 20),
+            showClose
+                ? GestureDetector(
+                    onTap: () => onClose!(),
+                    child: const Icon(
+                      Icons.close,
+                      color: Colors.black,
+                    ),
+                  )
+                : Container(),
+            const SizedBox(width: 5),
           ],
         ),
       ),

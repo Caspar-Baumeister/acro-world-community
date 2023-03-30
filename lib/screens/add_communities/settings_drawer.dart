@@ -62,7 +62,7 @@ class SettingsDrawer extends StatelessWidget {
                 ),
                 title: Text(
                   userProvider.activeUser!.name ?? "Unknown",
-                  style: SUB_TITLE,
+                  style: BIG_TEXT_STYLE,
                 ),
               ),
               const Padding(

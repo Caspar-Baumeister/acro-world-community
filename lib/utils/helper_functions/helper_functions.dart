@@ -20,6 +20,11 @@ Future<void> buildMortal(BuildContext context, Widget mordal) {
           child: mordal));
 }
 
+DateTime parseDateStr(String inputString) {
+  DateFormat format = DateFormat.yMMMMd();
+  return format.parse(inputString);
+}
+
 String dateToText(DateTime date) {
   int hours = date.difference(DateTime.now()).inHours;
   int days = date.difference(DateTime.now()).inDays;

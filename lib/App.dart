@@ -1,6 +1,7 @@
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/components/loggin_wrapper.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
+import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -21,6 +22,7 @@ class App extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => UserCommunitiesProvider()),
           ChangeNotifierProvider(create: (_) => AllOtherComs()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
+          ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
         ],
         child: GraphQLProvider(

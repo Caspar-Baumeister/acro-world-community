@@ -61,7 +61,7 @@ class YourGenderButtonWidget extends StatelessWidget {
                     style: STANDART_DESCRIPTION,
                   ),
                   const SizedBox(width: 5),
-                  Text(gender.name!, style: SUB_TITLE)
+                  Text(gender.name!, style: BIG_TEXT_STYLE)
                 ],
               ),
               const SizedBox(height: 10),

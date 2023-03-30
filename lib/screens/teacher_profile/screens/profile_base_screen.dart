@@ -115,7 +115,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                                         ))
                                     : Text(
                                         isLikedState ? "Following" : "Follow",
-                                        style: SECONDARYTEXT.copyWith(
+                                        style: SMALL_TEXT_STYLE.copyWith(
                                           color: !isLikedState
                                               ? BUTTON_FILL_COLOR
                                               : Colors.white,

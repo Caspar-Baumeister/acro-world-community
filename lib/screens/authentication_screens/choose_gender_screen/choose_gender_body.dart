@@ -41,7 +41,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
               child: Text(
                 "Which applies more to you?",
                 textAlign: TextAlign.center,
-                style: MAIN_TITLE,
+                style: GIGANTIC_TEXT_STYLE,
               ),
             ),
             const SizedBox(height: 10),
@@ -98,7 +98,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                       right: 20,
                       child: Text(
                         "Flyer",
-                        style: MAIN_TITLE,
+                        style: GIGANTIC_TEXT_STYLE,
                       ),
                     )
                   ],
@@ -144,7 +144,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                         left: 20,
                         child: Text(
                           "Base",
-                          style: MAIN_TITLE,
+                          style: GIGANTIC_TEXT_STYLE,
                         ))
                   ],
                 ),
