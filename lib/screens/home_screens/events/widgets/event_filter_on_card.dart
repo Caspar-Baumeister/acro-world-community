@@ -105,7 +105,14 @@ class EventFilterOnCard extends StatelessWidget {
                                 width: 5,
                               ),
                               Flexible(
-                                child: Text(event.locationName!,
+                                child: Text(
+                                    event.locationCountry != null &&
+                                            event.locationCountry != "" &&
+                                            event.locationCity != null &&
+                                            event.locationCity != ""
+                                        ? ("${event.locationCountry!}, ${event.locationCity!}")
+                                        : event.locationCountry.toString() +
+                                            event.locationCity.toString(),
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
                                     style: STANDART_TEXT_STYLE),
