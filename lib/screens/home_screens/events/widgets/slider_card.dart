@@ -56,7 +56,7 @@ class SliderCard extends StatelessWidget {
                   height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: event.imgUrl ??
+                    imageUrl: event.mainImageUrl ??
                         "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
@@ -100,7 +100,15 @@ class SliderCard extends StatelessWidget {
                                     ),
                                     Flexible(
                                       fit: FlexFit.tight,
-                                      child: Text(event.location!,
+                                      child: Text(
+                                          event.locationCountry != null &&
+                                                  event.locationCountry != "" &&
+                                                  event.locationCity != null &&
+                                                  event.locationCity != ""
+                                              ? ("${event.locationCountry!}, ${event.locationCity!}")
+                                              : event.locationCountry
+                                                      .toString() +
+                                                  event.locationCity.toString(),
                                           maxLines: 2,
                                           overflow: TextOverflow.clip,
                                           style: STANDART_TEXT_STYLE),

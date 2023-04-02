@@ -15,22 +15,18 @@ class EventDashboardBody extends StatelessWidget {
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
 
-    List<EventModel> highlights = testEvents
-        .map((item) => EventModel.fromJson(item))
-        .where((element) => element.isHighlight == true)
+    List<EventModel> highlights = eventFilterProvider.activeEvents
+        .where((element) => element.isHighlighted == true)
         .toList();
 
-    List<EventModel> festivalsAndCons = testEvents
-        .map((item) => EventModel.fromJson(item))
-        .where((element) => element.eventType == "Festivals und Cons")
+    List<EventModel> festivalsAndCons = eventFilterProvider.activeEvents
+        .where((element) => element.eventType == "FestivalsAndCons")
         .toList();
 
-    List<EventModel> trainings = testEvents
-        .map((item) => EventModel.fromJson(item))
-        .where((element) => element.eventType == "Training")
+    List<EventModel> trainings = eventFilterProvider.activeEvents
+        .where((element) => element.eventType == "Trainings")
         .toList();
-    List<EventModel> retreats = testEvents
-        .map((item) => EventModel.fromJson(item))
+    List<EventModel> retreats = eventFilterProvider.activeEvents
         .where((element) => element.eventType == "Retreats")
         .toList();
 

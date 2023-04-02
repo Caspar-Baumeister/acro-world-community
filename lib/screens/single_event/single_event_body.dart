@@ -17,7 +17,7 @@ class SingleEventBody extends StatelessWidget {
     return SingleChildScrollView(
         child: Column(
       children: [
-        event.imgUrl != null
+        event.mainImageUrl != null
             ? SizedBox(
                 height: 200.0,
                 width: double.infinity,
@@ -36,7 +36,7 @@ class SingleEventBody extends StatelessWidget {
                         color: Colors.red,
                       ),
                     ),
-                    imageUrl: event.imgUrl!,
+                    imageUrl: event.mainImageUrl!,
                   ),
                 ),
               )
@@ -50,15 +50,17 @@ class SingleEventBody extends StatelessWidget {
               DescriptionTextWidget(text: event.description ?? ""),
               // TODO: SHOW THE TEACHER THAT PATICIPATE TO THE EVENT
               const SizedBox(height: 4),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...event.links.map((e) => Padding(
-                        padding: const EdgeInsets.only(bottom: 4.0),
-                        child: LinkButton(text: e, link: e),
-                      ))
-                ],
-              ),
+              event.links != null
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ...event.links!.map((e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: LinkButton(text: e, link: e),
+                            ))
+                      ],
+                    )
+                  : Container(),
 
               // const Divider(),
               // const SizedBox(height: 10),

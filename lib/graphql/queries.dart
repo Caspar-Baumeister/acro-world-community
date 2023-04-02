@@ -2,6 +2,43 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final events = gql("""
+query Events {
+  events {
+    created_at
+    created_by_id
+    description
+    end_date
+    event_source
+    event_type
+    id
+    is_highlighted
+    links
+    location
+    location_city
+    location_country
+    location_name
+    main_image_url
+    name
+    origin_creator_name
+    pricing
+    start_date
+    updated_at
+    url
+    user_participants {
+      event_id
+      id
+      user_id
+    }
+    teachers {
+      event_id
+      id
+      teacher_id
+    }
+  }
+}
+ """);
+
   static final meGender = gql("""
   query {
   me {

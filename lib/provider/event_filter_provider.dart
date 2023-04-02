@@ -21,17 +21,21 @@ class EventFilterProvider extends ChangeNotifier {
   // the inital filter parameters are set after loading the data
   // and everytime the provider is restarted
   EventFilterProvider() {
-    getInitialData();
+    // getInitialData();
   }
 
-  getInitialData() {
+  setInitialData(List events) {
     // get the events
-    initialEvents =
-        testEvents.map((item) => EventModel.fromJson(item)).toList();
+
+    print("eventJson");
+    print(events[0]);
+    initialEvents = events.map((event) => EventModel.fromJson(event)).toList();
 
     initialCategories = [];
     initialDates = [];
     activeEvents = initialEvents;
+
+    print(activeEvents.length);
 
     // set the initialFilter and possible Filter
     for (EventModel event in initialEvents) {
@@ -48,7 +52,9 @@ class EventFilterProvider extends ChangeNotifier {
             initialDates.add(month);
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        print(e.toString());
+      }
     }
 
     initialized = true;

@@ -47,7 +47,7 @@ class EventFilterOnCard extends StatelessWidget {
                         color: Colors.red,
                       ),
                     ),
-                    imageUrl: event.imgUrl ??
+                    imageUrl: event.mainImageUrl ??
                         "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
                   ),
                 )),
@@ -105,7 +105,7 @@ class EventFilterOnCard extends StatelessWidget {
                                 width: 5,
                               ),
                               Flexible(
-                                child: Text(event.location!,
+                                child: Text(event.locationName!,
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
                                     style: STANDART_TEXT_STYLE),
