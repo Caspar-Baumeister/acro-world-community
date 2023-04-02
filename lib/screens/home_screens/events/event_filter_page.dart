@@ -199,7 +199,6 @@ class DateFilterCards extends StatelessWidget {
         Provider.of<EventFilterProvider>(context);
 
     List<int> allMonth = eventFilterProvider.initialDates;
-    allMonth.sort();
     return Wrap(
       spacing: 4.0, // gap between adjacent chips
       runSpacing: 0.0, // gap between lines
