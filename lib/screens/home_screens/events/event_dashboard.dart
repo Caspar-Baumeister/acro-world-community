@@ -46,7 +46,7 @@ class EventDashboardBody extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SliderRowEventDashboard(
                     onViewAll: () => eventFilterProvider
-                        .setActiveCategory(["Festivals und Cons"]),
+                        .setActiveCategory(["FestivalsAndCons"]),
                     header: "Highlights",
                     events: highlights,
                   ),
@@ -57,8 +57,8 @@ class EventDashboardBody extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SliderRowEventDashboard(
                     onViewAll: () => eventFilterProvider
-                        .setActiveCategory(["Festivals und Cons"]),
-                    header: "Festivals und Cons",
+                        .setActiveCategory(["FestivalsAndCons"]),
+                    header: "Festivals and Cons",
                     events: festivalsAndCons,
                   ),
                 )
@@ -68,7 +68,7 @@ class EventDashboardBody extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SliderRowEventDashboard(
                     onViewAll: () =>
-                        eventFilterProvider.setActiveCategory(["Training"]),
+                        eventFilterProvider.setActiveCategory(["Trainings"]),
                     header: "Teacher Trainings",
                     events: trainings,
                   ),

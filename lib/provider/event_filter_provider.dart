@@ -9,9 +9,11 @@ class EventFilterProvider extends ChangeNotifier {
   List<EventModel> activeEvents = [];
 
   List<String> initialCategories = [];
+  List<String> initialCountries = [];
   List<int> initialDates = [];
 
   List<String> activeCategories = [];
+  List<String> activeCountries = [];
   List<int> activeDates = [];
 
   bool initialized = false;
@@ -26,36 +28,42 @@ class EventFilterProvider extends ChangeNotifier {
 
   setInitialData(List events) {
     // get the events
-
-    print("eventJson");
-    print(events[0]);
     initialEvents = events.map((event) => EventModel.fromJson(event)).toList();
 
     initialCategories = [];
+    initialCountries = [];
     initialDates = [];
     activeEvents = initialEvents;
 
-    print(activeEvents.length);
-
-    // set the initialFilter and possible Filter
+    // set the initialFilter
     for (EventModel event in initialEvents) {
       if (event.eventType != null &&
           !initialCategories.contains(event.eventType)) {
         initialCategories.add(event.eventType!);
       }
 
+      if (event.locationCountry != null &&
+          !initialCountries.contains(event.locationCountry)) {
+        initialCountries.add(event.locationCountry!);
+      }
+
       try {
         if (event.startDate != null) {
           final month = DateTime.parse(event.startDate!).month;
+          print(month);
 
           if (!initialDates.contains(month)) {
             initialDates.add(month);
           }
         }
       } catch (e) {
+        print("parsing date in init of filter went wrng");
         print(e.toString());
       }
     }
+
+    // TODO INCLUDE YEAR FOR DATES
+    initialDates.sort();
 
     initialized = true;
     notifyListeners();
@@ -89,8 +97,18 @@ class EventFilterProvider extends ChangeNotifier {
     resetActiveEventsFromFilter();
   }
 
+  changeActiveCountry(String changeCountry) {
+    if (activeCountries.contains(changeCountry)) {
+      activeCountries.remove(changeCountry);
+    } else {
+      activeCountries.add(changeCountry);
+    }
+    resetActiveEventsFromFilter();
+  }
+
   bool resetFilter() {
     activeCategories = [];
+    activeCountries = [];
     activeDates = [];
     activeEvents = initialEvents;
     notifyListeners();
@@ -100,39 +118,63 @@ class EventFilterProvider extends ChangeNotifier {
   String filterString() {
     String fString = "";
 
+    // Case 1: no filter active
     if (activeCategories.isEmpty && activeDates.isEmpty) {
       fString = "Set filters";
       return fString;
     }
+
+    // Trainings ...
     if (activeCategories.length == 1) {
       fString += activeCategories[0].toString();
     } else if (activeCategories.length > 1) {
       fString += "${activeCategories[0]} + ${activeCategories.length - 1}";
     }
 
+    // ... , ...
     if (activeCategories.isNotEmpty && activeDates.isNotEmpty) {
       fString += ", ";
     }
 
+    // ... Jul ...
     if (activeDates.length == 1) {
       fString += DateFormat.MMM().format(DateTime(0, activeDates[0]));
     } else if (activeDates.length > 1) {
       fString +=
           "${DateFormat.MMM().format(DateTime(0, activeDates[0]))} + ${activeDates.length - 1}";
     }
+
+    // ... , ...
+    if (activeCountries.isNotEmpty && activeDates.isNotEmpty ||
+        activeCountries.isNotEmpty && activeCategories.isNotEmpty) {
+      fString += ", ";
+    }
+
+    // ... Germany
+    if (activeCountries.length == 1) {
+      fString += activeCountries[0].toString();
+    } else if (activeCountries.length > 1) {
+      fString += "${activeCountries[0]} + ${activeCountries.length - 1}";
+    }
+
     return fString;
   }
 
   bool isFilterActive() {
-    return activeCategories.isNotEmpty || activeDates.isNotEmpty;
+    return activeCategories.isNotEmpty ||
+        activeDates.isNotEmpty ||
+        activeCountries.isNotEmpty;
   }
 
   resetActiveEventsFromFilter() {
-    if (activeCategories.isEmpty && activeDates.isEmpty) {
-      return initialEvents;
-    }
-
     List<EventModel> returnEvents = initialEvents;
+
+    if (activeCountries.isNotEmpty) {
+      returnEvents = returnEvents
+          .where((EventModel event) =>
+              activeCountries.contains(event.locationCountry))
+          .toList();
+    }
 
     if (activeCategories.isNotEmpty) {
       returnEvents = returnEvents

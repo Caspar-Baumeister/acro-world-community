@@ -58,6 +58,23 @@ class EventFilterPage extends StatelessWidget {
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 20, top: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Countries",
+                      style: BIG_TEXT_STYLE,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    CountryFilterCards()
+                  ],
+                ),
+              ),
               const Spacer(),
               Padding(
                 padding: const EdgeInsets.all(18.0),
@@ -97,6 +114,41 @@ class EventFilterPage extends StatelessWidget {
             ],
           ),
         ));
+  }
+}
+
+class CountryFilterCards extends StatelessWidget {
+  const CountryFilterCards({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    EventFilterProvider eventFilterProvider =
+        Provider.of<EventFilterProvider>(context);
+    return Wrap(
+      spacing: 8.0, // gap between adjacent chips
+      runSpacing: 4.0, // gap between lines
+      children: <Widget>[
+        ...eventFilterProvider.initialCountries.map((String country) {
+          bool isSelected =
+              eventFilterProvider.activeCountries.contains(country);
+          return GestureDetector(
+            onTap: () => eventFilterProvider.changeActiveCountry(country),
+            child: Chip(
+              label: Text(
+                country,
+                style: SMALL_TEXT_STYLE.copyWith(
+                    color: isSelected ? Colors.white : PRIMARY_COLOR),
+              ),
+              labelPadding: const EdgeInsets.all(2.0),
+              backgroundColor: isSelected ? ACTIVE_COLOR : Colors.white,
+              elevation: 6.0,
+              shadowColor: Colors.grey[60],
+              padding: const EdgeInsets.all(8.0),
+            ),
+          );
+        })
+      ],
+    );
   }
 }
 
@@ -146,14 +198,14 @@ class DateFilterCards extends StatelessWidget {
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
 
-    int nowMonth = DateTime.now().month;
     List<int> allMonth = eventFilterProvider.initialDates;
+    allMonth.sort();
     return Wrap(
       spacing: 4.0, // gap between adjacent chips
       runSpacing: 0.0, // gap between lines
       children: <Widget>[
         ...allMonth.map((number) {
-          int month = number + nowMonth;
+          int month = number;
           bool isSelected = eventFilterProvider.activeDates.contains(month);
           return GestureDetector(
             onTap: () => eventFilterProvider.changeActiveEventMonths(month),
