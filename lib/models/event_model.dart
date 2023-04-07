@@ -1,9 +1,12 @@
+import 'package:acroworld/models/teacher_model.dart';
+
 class EventModel {
   String? createdAt;
   String? createdById;
   String? endDate;
   String? eventSource;
   String? eventType;
+  String? originLocationName;
   String? id;
   bool? isHighlighted;
   List<String>? links;
@@ -19,7 +22,7 @@ class EventModel {
   String? updatedAt;
   String? url;
   String? description;
-  List<dynamic>? teachers;
+  List<TeacherLinkModel>? teachers;
   List<dynamic>? userParticipants;
 
   EventModel(
@@ -35,6 +38,7 @@ class EventModel {
       this.locationCity,
       this.locationCountry,
       this.locationName,
+      this.originLocationName,
       this.mainImageUrl,
       this.originCreatorName,
       this.name,
@@ -60,6 +64,7 @@ class EventModel {
     locationCity = json['location_city'];
     locationCountry = json['location_country'];
     locationName = json['location_name'];
+    originLocationName = json['origin_location_name'];
     mainImageUrl = json['main_image_url'];
     originCreatorName = json['origin_creator_name'];
     name = json['name'];
@@ -69,9 +74,9 @@ class EventModel {
     url = json['url'];
     description = json['description'];
     if (json['teachers'] != null) {
-      teachers = <Null>[];
+      teachers = <TeacherLinkModel>[];
       json['teachers'].forEach((v) {
-        teachers!.add(v);
+        teachers!.add(TeacherLinkModel.fromJson(v));
       });
     }
     if (json['user_participants'] != null) {
@@ -106,9 +111,7 @@ class EventModel {
     data['updated_at'] = updatedAt;
     data['url'] = url;
     data['description'] = description;
-    if (teachers != null) {
-      data['teachers'] = teachers!.map((v) => v.toJson()).toList();
-    }
+
     if (userParticipants != null) {
       data['user_participants'] =
           userParticipants!.map((v) => v.toJson()).toList();
@@ -179,10 +182,6 @@ class Properties {
     return data;
   }
 }
-
-
-
-
 
 
 

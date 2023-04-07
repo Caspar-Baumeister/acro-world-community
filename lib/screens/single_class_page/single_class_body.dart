@@ -163,7 +163,7 @@ class SingleClassBody extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Avenue",
+                              "Venue",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             OpenGoogleMaps(

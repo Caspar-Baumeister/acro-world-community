@@ -1,3 +1,4 @@
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,19 +20,14 @@ class LinkButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          Uri _url = Uri.parse(link);
-          if (!await launchUrl(_url)) {
-            throw 'Could not launch $_url';
+          Uri url = Uri.parse(link);
+          if (!await launchUrl(url)) {
+            throw 'Could not launch $url';
           }
         },
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w700,
-            color: Colors.black,
-          ),
-        ),
+        child: Text(text,
+            maxLines: 1,
+            style: MEDIUM_TEXT_STYLE.copyWith(color: Colors.black)),
       ),
     );
   }

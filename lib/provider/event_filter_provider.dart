@@ -1,4 +1,5 @@
 import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,11 +11,11 @@ class EventFilterProvider extends ChangeNotifier {
 
   List<String> initialCategories = [];
   List<String> initialCountries = [];
-  List<int> initialDates = [];
+  List<DateTime> initialDates = [];
 
   List<String> activeCategories = [];
   List<String> activeCountries = [];
-  List<int> activeDates = [];
+  List<DateTime> activeDates = [];
 
   bool initialized = false;
 
@@ -28,7 +29,14 @@ class EventFilterProvider extends ChangeNotifier {
 
   setInitialData(List events) {
     // get the events
-    initialEvents = events.map((event) => EventModel.fromJson(event)).toList();
+    initialEvents = events
+        .map((event) => EventModel.fromJson(event))
+        .where((element) =>
+            DateTime.parse(element.startDate!)
+                .difference(DateTime.now())
+                .inDays >
+            0)
+        .toList();
 
     initialCategories = [];
     initialCountries = [];
@@ -49,22 +57,21 @@ class EventFilterProvider extends ChangeNotifier {
 
       try {
         if (event.startDate != null) {
-          final month = DateTime.parse(event.startDate!).month;
-          print(month);
-
-          if (!initialDates.contains(month)) {
-            initialDates.add(month);
+          final newDate = DateTime.parse(event.startDate!);
+          bool isInInitialDates =
+              isDateMonthAndYearInList(initialDates, newDate);
+          if (!isInInitialDates) {
+            initialDates.add(newDate);
           }
         }
       } catch (e) {
-        print("parsing date in init of filter went wrng");
+        print("parsing date in init of filter went wrong");
         print(e.toString());
       }
     }
+    initialEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     // TODO INCLUDE YEAR FOR DATES
-    initialDates.sort();
-
     initialized = true;
     notifyListeners();
   }
@@ -79,11 +86,19 @@ class EventFilterProvider extends ChangeNotifier {
     resetActiveEventsFromFilter();
   }
 
-  changeActiveEventMonths(int changeMonth) {
-    if (activeDates.contains(changeMonth)) {
-      activeDates.remove(changeMonth);
+  changeActiveEventDates(DateTime changeDate) {
+    if (isDateMonthAndYearInList(activeDates, changeDate)) {
+      activeDates.removeWhere((date) =>
+          date.month == changeDate.month && date.year == changeDate.year);
     } else {
-      activeDates.add(changeMonth);
+      activeDates.add(changeDate);
+    }
+    resetActiveEventsFromFilter();
+  }
+
+  tryAddingActiveEventDates(DateTime addDate) {
+    if (!isDateMonthAndYearInList(activeDates, addDate)) {
+      activeDates.add(addDate);
     }
     resetActiveEventsFromFilter();
   }
@@ -138,10 +153,10 @@ class EventFilterProvider extends ChangeNotifier {
 
     // ... Jul ...
     if (activeDates.length == 1) {
-      fString += DateFormat.MMM().format(DateTime(0, activeDates[0]));
+      fString += DateFormat.MMM().format(activeDates[0]);
     } else if (activeDates.length > 1) {
       fString +=
-          "${DateFormat.MMM().format(DateTime(0, activeDates[0]))} + ${activeDates.length - 1}";
+          "${DateFormat.MMM().format(activeDates[0])} + ${activeDates.length - 1}";
     }
 
     // ... , ...
@@ -185,8 +200,12 @@ class EventFilterProvider extends ChangeNotifier {
     if (activeDates.isNotEmpty) {
       returnEvents = returnEvents
           .where((EventModel event) =>
-              activeDates.contains(DateTime.parse(event.startDate!).month) ||
-              activeDates.contains(DateTime.parse(event.endDate!).month))
+              isDateMonthAndYearInList(
+                  activeDates, DateTime.parse(event.startDate!)) ||
+              isDateMonthAndYearInList(
+                  activeDates, DateTime.parse(event.endDate!)))
+          // activeDates.contains(event.startDate!).month) ||
+          // activeDates.contains(DateTime.parse(event.endDate!).month))
           .toList();
     }
 

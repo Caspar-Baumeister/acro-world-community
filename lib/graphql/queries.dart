@@ -25,6 +25,7 @@ query Events {
     start_date
     updated_at
     url
+    origin_location_name
     user_participants {
       event_id
       id

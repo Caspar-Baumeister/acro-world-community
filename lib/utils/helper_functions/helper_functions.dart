@@ -25,6 +25,34 @@ DateTime parseDateStr(String inputString) {
   return format.parse(inputString);
 }
 
+String capitalizeWords(String input) {
+  if (input.isEmpty) {
+    return input;
+  }
+
+  List<String> words = input.toLowerCase().split(' ');
+
+  for (int i = 0; i < words.length; i++) {
+    String word = words[i];
+    if (word == "and") {
+      words[i] = word;
+    } else if (word.isNotEmpty) {
+      words[i] = '${word[0].toUpperCase()}${word.substring(1)}';
+    }
+  }
+
+  return words.join(' ');
+}
+
+bool isDateMonthAndYearInList(List<DateTime> dates, DateTime newDate) {
+  for (DateTime date in dates) {
+    if (date.month == newDate.month && date.year == newDate.year) {
+      return true;
+    }
+  }
+  return false;
+}
+
 String dateToText(DateTime date) {
   int hours = date.difference(DateTime.now()).inHours;
   int days = date.difference(DateTime.now()).inDays;

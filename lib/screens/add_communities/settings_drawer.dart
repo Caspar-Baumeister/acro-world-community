@@ -131,14 +131,14 @@ class SettingsDrawer extends StatelessWidget {
                               text: "For any problems, contact the support at ",
                               style: TextStyle(color: Colors.black)),
                           TextSpan(
-                              text: "info@acroworld.com",
+                              text: "info@acroworld.de",
                               style: const TextStyle(
                                   color: PRIMARY_COLOR,
                                   fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
                                   Clipboard.setData(const ClipboardData(
-                                      text: "info@acroworld.com"));
+                                      text: "info@acroworld.de"));
                                   Fluttertoast.showToast(
                                       msg: "Email copied",
                                       toastLength: Toast.LENGTH_SHORT,

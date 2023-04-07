@@ -26,8 +26,17 @@ class EventDashboardBody extends StatelessWidget {
     List<EventModel> trainings = eventFilterProvider.activeEvents
         .where((element) => element.eventType == "Trainings")
         .toList();
+
     List<EventModel> retreats = eventFilterProvider.activeEvents
         .where((element) => element.eventType == "Retreats")
+        .toList();
+
+    List<EventModel> upcoming = eventFilterProvider.activeEvents
+        .where((element) =>
+            DateTime.parse(element.startDate!)
+                .difference(DateTime.now())
+                .inDays <
+            90)
         .toList();
 
     return SingleChildScrollView(
@@ -41,14 +50,30 @@ class EventDashboardBody extends StatelessWidget {
                 sliders: eventFilterProvider.eventPoster,
                 isDots: false,
               )),
-          highlights.isNotEmpty
+          // highlights.isNotEmpty
+          //     ? Padding(
+          //         padding: const EdgeInsets.only(bottom: 10),
+          //         child: SliderRowEventDashboard(
+          //           onViewAll: () => eventFilterProvider
+          //               .setActiveCategory(["FestivalsAndCons"]),
+          //           header: "Highlights",
+          //           events: highlights,
+          //         ),
+          //       )
+          //     : Container(),
+          upcoming.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 10),
                   child: SliderRowEventDashboard(
-                    onViewAll: () => eventFilterProvider
-                        .setActiveCategory(["FestivalsAndCons"]),
-                    header: "Highlights",
-                    events: highlights,
+                    onViewAll: () {
+                      eventFilterProvider.resetFilter();
+                      for (EventModel date in upcoming) {
+                        eventFilterProvider.tryAddingActiveEventDates(
+                            DateTime.parse(date.startDate!));
+                      }
+                    },
+                    header: "Upcoming",
+                    events: upcoming,
                   ),
                 )
               : Container(),

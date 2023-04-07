@@ -141,14 +141,14 @@ class FriendCode extends StatelessWidget {
                                     "If you are part of the community but don't know anyone who has a friend code, feel free to write us a message at ",
                                 style: TextStyle(color: Colors.black)),
                             TextSpan(
-                                text: "info@acroworld.com",
+                                text: "info@acroworld.de",
                                 style: const TextStyle(
                                     color: SECONDARY_COLOR,
                                     fontWeight: FontWeight.bold),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () {
                                     Clipboard.setData(const ClipboardData(
-                                        text: "info@acroworld.com"));
+                                        text: "info@acroworld.de"));
                                     Fluttertoast.showToast(
                                         msg: "Email copied",
                                         toastLength: Toast.LENGTH_SHORT,

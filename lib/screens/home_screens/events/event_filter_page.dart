@@ -1,6 +1,7 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -159,6 +160,8 @@ class CategorieFilterCards extends StatelessWidget {
   Widget build(BuildContext context) {
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
+    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
+
     return Wrap(
       spacing: 8.0, // gap between adjacent chips
       runSpacing: 4.0, // gap between lines
@@ -166,11 +169,14 @@ class CategorieFilterCards extends StatelessWidget {
         ...eventFilterProvider.initialCategories.map((String category) {
           bool isSelected =
               eventFilterProvider.activeCategories.contains(category);
+
           return GestureDetector(
             onTap: () => eventFilterProvider.changeActiveCategory(category),
             child: Chip(
               label: Text(
-                category,
+                capitalizeWords(category
+                    .replaceAllMapped(exp, (Match m) => (' ${m.group(0)}'))
+                    .toLowerCase()),
                 style: SMALL_TEXT_STYLE.copyWith(
                     color: isSelected ? Colors.white : PRIMARY_COLOR),
               ),
@@ -198,21 +204,33 @@ class DateFilterCards extends StatelessWidget {
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
 
-    List<int> allMonth = eventFilterProvider.initialDates;
+    List<DateTime> allMonth = eventFilterProvider.initialDates;
+    allMonth.sort();
     return Wrap(
       spacing: 4.0, // gap between adjacent chips
       runSpacing: 0.0, // gap between lines
       children: <Widget>[
-        ...allMonth.map((number) {
-          int month = number;
-          bool isSelected = eventFilterProvider.activeDates.contains(month);
+        ...allMonth.map((date) {
+          bool isSelected =
+              isDateMonthAndYearInList(eventFilterProvider.activeDates, date);
           return GestureDetector(
-            onTap: () => eventFilterProvider.changeActiveEventMonths(month),
+            onTap: () => eventFilterProvider.changeActiveEventDates(date),
             child: Chip(
-              label: Text(
-                DateFormat.MMMM().format(DateTime(0, month)),
-                style: SMALL_TEXT_STYLE.copyWith(
-                    color: isSelected ? Colors.white : PRIMARY_COLOR),
+              label: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    DateFormat.MMMM().format(date),
+                    style: SMALL_TEXT_STYLE.copyWith(
+                        color: isSelected ? Colors.white : PRIMARY_COLOR),
+                  ),
+                  Text(
+                    DateFormat.y().format(date),
+                    style: MINI_TEXT_STYLE.copyWith(
+                        color: isSelected ? Colors.white : PRIMARY_COLOR),
+                  )
+                ],
               ),
               labelPadding: const EdgeInsets.all(2.0),
               backgroundColor: isSelected ? ACTIVE_COLOR : Colors.white,

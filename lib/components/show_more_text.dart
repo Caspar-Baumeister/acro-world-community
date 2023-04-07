@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   final String text;
+  final bool isHeader;
 
-  const DescriptionTextWidget({Key? key, required this.text}) : super(key: key);
+  const DescriptionTextWidget(
+      {Key? key, required this.text, this.isHeader = false})
+      : super(key: key);
 
   @override
   _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
@@ -31,29 +34,44 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return secondHalf.isEmpty
-        ? Container(alignment: Alignment.centerLeft, child: Text(firstHalf))
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(flag ? ("$firstHalf...") : (firstHalf + secondHalf)),
-              InkWell(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      flag ? "show more" : "show less",
-                      style: const TextStyle(color: LINK_COLOR),
-                    ),
-                  ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.isHeader
+            ? const Padding(
+                padding: EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  "Description",
+                  textAlign: TextAlign.start,
+                  style: TextStyle(fontWeight: FontWeight.bold),
                 ),
-                onTap: () {
-                  setState(() {
-                    flag = !flag;
-                  });
-                },
+              )
+            : Container(),
+        secondHalf.isEmpty
+            ? Container(alignment: Alignment.centerLeft, child: Text(firstHalf))
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(flag ? ("$firstHalf...") : (firstHalf + secondHalf)),
+                  InkWell(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          flag ? "show more" : "show less",
+                          style: const TextStyle(color: LINK_COLOR),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      setState(() {
+                        flag = !flag;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
-          );
+      ],
+    );
   }
 }

@@ -52,13 +52,13 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
                         "You are an acro teacher and want to show your profile? Tell us about you in a brief email to ",
                     style: TextStyle(color: Colors.black)),
                 TextSpan(
-                    text: "info@acroworld.com",
+                    text: "info@acroworld.de",
                     style: const TextStyle(
                         color: PRIMARY_COLOR, fontWeight: FontWeight.bold),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () {
                         Clipboard.setData(
-                            const ClipboardData(text: "info@acroworld.com"));
+                            const ClipboardData(text: "info@acroworld.de"));
                         Fluttertoast.showToast(
                             msg: "Email copied",
                             toastLength: Toast.LENGTH_SHORT,

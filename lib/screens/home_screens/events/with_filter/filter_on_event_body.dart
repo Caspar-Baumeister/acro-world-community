@@ -15,6 +15,7 @@ class FilterOnEventBody extends StatelessWidget {
         Provider.of<EventFilterProvider>(context);
 
     List<EventModel> activeEvents = eventFilterProvider.activeEvents;
+    activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     return ListView.builder(
       itemCount: activeEvents.length,
