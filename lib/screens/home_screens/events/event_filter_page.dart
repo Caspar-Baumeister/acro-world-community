@@ -22,97 +22,119 @@ class EventFilterPage extends StatelessWidget {
           automaticallyImplyLeading: true,
         ),
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 20, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Categories",
-                      style: BIG_TEXT_STYLE,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    CategorieFilterCards()
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 20, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Months",
-                      style: BIG_TEXT_STYLE,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    DateFilterCards()
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 20, top: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
-                    Text(
-                      "Countries",
-                      style: BIG_TEXT_STYLE,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    CountryFilterCards()
-                  ],
-                ),
-              ),
-              const Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(18.0),
-                child: Center(
-                  child: Text(
-                    "${eventFilterProvider.activeEvents.length.toString()} results",
-                    style: STANDART_TEXT_STYLE,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Categories",
+                        style: BIG_TEXT_STYLE,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      CategorieFilterCards()
+                    ],
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30)
-                    .copyWith(bottom: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    StandartButton(
-                      text: "Reset",
-                      onPressed: () {
-                        eventFilterProvider.resetFilter();
-
-                        Navigator.of(context).pop();
-                      },
-                      width: buttonWidth,
-                    ),
-                    StandartButton(
-                      text: "Apply",
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      isFilled: true,
-                      width: buttonWidth,
-                    ),
-                  ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Months",
+                        style: BIG_TEXT_STYLE,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      DateFilterCards()
+                    ],
+                  ),
                 ),
-              )
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Countries",
+                        style: BIG_TEXT_STYLE,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      CountryFilterCards()
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                      left: 20, right: 20, bottom: 10, top: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Quick filter",
+                        style: BIG_TEXT_STYLE,
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      QuickFilterCards()
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(18.0),
+                  child: Center(
+                    child: Text(
+                      "${eventFilterProvider.activeEvents.length.toString()} results",
+                      style: STANDART_TEXT_STYLE,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30)
+                      .copyWith(bottom: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      StandartButton(
+                        text: "Reset",
+                        onPressed: () {
+                          eventFilterProvider.resetFilter();
+
+                          Navigator.of(context).pop();
+                        },
+                        width: buttonWidth,
+                      ),
+                      StandartButton(
+                        text: "Apply",
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        isFilled: true,
+                        width: buttonWidth,
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ));
   }
@@ -126,8 +148,8 @@ class CountryFilterCards extends StatelessWidget {
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
     return Wrap(
-      spacing: 8.0, // gap between adjacent chips
-      runSpacing: 4.0, // gap between lines
+      spacing: 6.0, // gap between adjacent chips
+      runSpacing: 0, // gap between lines
       children: <Widget>[
         ...eventFilterProvider.initialCountries.map((String country) {
           bool isSelected =
@@ -144,10 +166,46 @@ class CountryFilterCards extends StatelessWidget {
               backgroundColor: isSelected ? ACTIVE_COLOR : Colors.white,
               elevation: 6.0,
               shadowColor: Colors.grey[60],
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
             ),
           );
         })
+      ],
+    );
+  }
+}
+
+class QuickFilterCards extends StatelessWidget {
+  const QuickFilterCards({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    EventFilterProvider eventFilterProvider =
+        Provider.of<EventFilterProvider>(context);
+    return Wrap(
+      spacing: 6.0, // gap between adjacent chips
+      runSpacing: 0, // gap between lines
+      children: <Widget>[
+        GestureDetector(
+          onTap: () => eventFilterProvider.changeHighlighted(),
+          child: Chip(
+            label: Text(
+              "highlights",
+              style: SMALL_TEXT_STYLE.copyWith(
+                  color: eventFilterProvider.onlyHighlighted
+                      ? Colors.white
+                      : PRIMARY_COLOR),
+            ),
+            labelPadding: const EdgeInsets.all(2.0),
+            backgroundColor: eventFilterProvider.onlyHighlighted
+                ? ACTIVE_COLOR
+                : Colors.white,
+            elevation: 6.0,
+            shadowColor: Colors.grey[60],
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
+          ),
+        )
       ],
     );
   }
@@ -163,8 +221,8 @@ class CategorieFilterCards extends StatelessWidget {
     RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
 
     return Wrap(
-      spacing: 8.0, // gap between adjacent chips
-      runSpacing: 4.0, // gap between lines
+      spacing: 6.0, // gap between adjacent chips
+      runSpacing: 0.0, // gap between lines
       children: <Widget>[
         ...eventFilterProvider.initialCategories.map((String category) {
           bool isSelected =
@@ -184,7 +242,8 @@ class CategorieFilterCards extends StatelessWidget {
               backgroundColor: isSelected ? ACTIVE_COLOR : Colors.white,
               elevation: 6.0,
               shadowColor: Colors.grey[60],
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
             ),
           );
         })
@@ -207,7 +266,7 @@ class DateFilterCards extends StatelessWidget {
     List<DateTime> allMonth = eventFilterProvider.initialDates;
     allMonth.sort();
     return Wrap(
-      spacing: 4.0, // gap between adjacent chips
+      spacing: 6.0, // gap between adjacent chips
       runSpacing: 0.0, // gap between lines
       children: <Widget>[
         ...allMonth.map((date) {
@@ -216,27 +275,31 @@ class DateFilterCards extends StatelessWidget {
           return GestureDetector(
             onTap: () => eventFilterProvider.changeActiveEventDates(date),
             child: Chip(
-              label: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    DateFormat.MMMM().format(date),
-                    style: SMALL_TEXT_STYLE.copyWith(
-                        color: isSelected ? Colors.white : PRIMARY_COLOR),
-                  ),
-                  Text(
-                    DateFormat.y().format(date),
-                    style: MINI_TEXT_STYLE.copyWith(
-                        color: isSelected ? Colors.white : PRIMARY_COLOR),
-                  )
-                ],
+              label: Container(
+                constraints: const BoxConstraints(minWidth: 40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      DateFormat.MMMM().format(date),
+                      style: SMALL_TEXT_STYLE.copyWith(
+                          color: isSelected ? Colors.white : PRIMARY_COLOR),
+                    ),
+                    Text(
+                      DateFormat.y().format(date),
+                      style: MINI_TEXT_STYLE.copyWith(
+                          color: isSelected ? Colors.white : PRIMARY_COLOR),
+                    )
+                  ],
+                ),
               ),
-              labelPadding: const EdgeInsets.all(2.0),
+              labelPadding: const EdgeInsets.all(0.0),
               backgroundColor: isSelected ? ACTIVE_COLOR : Colors.white,
               elevation: 6.0,
               shadowColor: Colors.grey[60],
-              padding: const EdgeInsets.all(8.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
             ),
           );
         })

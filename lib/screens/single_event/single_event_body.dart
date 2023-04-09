@@ -21,11 +21,46 @@ class SingleEventBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? countryLocationString;
+    if ((event.locationCountry != null && event.locationCountry != "") ||
+        (event.locationCity != null && event.locationCity != "")) {
+      countryLocationString = "";
+
+      if (event.locationCountry != null && event.locationCountry != "") {
+        countryLocationString += event.locationCountry.toString();
+      }
+      if ((event.locationCountry != null && event.locationCountry != "") &&
+          (event.locationCity != null && event.locationCity != "")) {
+        countryLocationString += ", ";
+      }
+      if (event.locationCity != null && event.locationCity != "") {
+        countryLocationString += event.locationCity.toString();
+      }
+    } else if (event.originLocationName != null &&
+        event.originLocationName != "") {
+      countryLocationString = event.originLocationName.toString();
+    }
+
+    String? dateString;
+    if (event.startDate != null && event.endDate != null) {
+      final start = DateTime.parse(event.startDate!);
+      final end = DateTime.parse(event.endDate!);
+      if (start.day == end.day &&
+          start.month == end.month &&
+          start.year == end.year) {
+        dateString =
+            DateFormat.MMMMd().format(DateTime.parse(event.startDate!));
+      } else {
+        dateString =
+            "${DateFormat.MMMMd().format(DateTime.parse(event.startDate!))} - ${DateFormat.MMMMd().format(DateTime.parse(event.endDate!))}";
+      }
+    }
     return SingleChildScrollView(
         child: Column(
       children: [
         event.mainImageUrl != null
             ? CrawledWarningWidget(
+                showWarning: event.eventSource == "Crawled",
                 child: SizedBox(
                   height: 200.0,
                   width: double.infinity,
@@ -56,7 +91,7 @@ class SingleEventBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              event.startDate != null && event.endDate != null
+              dateString != null
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 20.0),
                       child: Row(
@@ -74,8 +109,7 @@ class SingleEventBody extends StatelessWidget {
                             width: 5,
                           ),
                           Flexible(
-                            child: Text(
-                                "${DateFormat.MMMMd().format(DateTime.parse(event.startDate!))} - ${DateFormat.MMMMd().format(DateTime.parse(event.endDate!))}",
+                            child: Text(dateString,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
                                 style: HEADER_2_TEXT_STYLE),
@@ -113,29 +147,29 @@ class SingleEventBody extends StatelessWidget {
                       ],
                     )
                   : Container(),
+              event.pricing != null && event.pricing != ""
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Pricing",
+                            textAlign: TextAlign.start,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 10),
+                          Text(
+                            event.pricing!,
+                            textAlign: TextAlign.start,
+                          )
+                        ],
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),
-        event.pricing != null && event.pricing != ""
-            ? Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Prices",
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      event.pricing!,
-                      textAlign: TextAlign.start,
-                    )
-                  ],
-                ),
-              )
-            : Container(),
         (event.location?.coordinates?[0] != null &&
                     event.location?.coordinates?[1] != null) ||
                 (event.locationCountry != null &&
@@ -170,12 +204,7 @@ class SingleEventBody extends StatelessWidget {
                             ),
                           )
                         : Container(),
-                    (event.locationCountry != null &&
-                                event.locationCountry != "") ||
-                            (event.locationCity != null &&
-                                event.locationCity != "") ||
-                            (event.originLocationName != null &&
-                                event.originLocationName != "")
+                    countryLocationString != null
                         ? Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: Row(
@@ -193,16 +222,9 @@ class SingleEventBody extends StatelessWidget {
                                   width: 5,
                                 ),
                                 Flexible(
-                                  child: Text(
-                                      (event.locationCountry != null &&
-                                                  event.locationCountry !=
-                                                      "") ||
-                                              (event.locationCity != null &&
-                                                  event.locationCity != "")
-                                          ? "${event.locationCountry != null ? event.locationCountry! : ""} ${event.locationCountry != null && event.locationCity != null ? ", " : ""} ${event.locationCity != null ? event.locationCity! : ""}"
-                                          : event.originLocationName.toString(),
+                                  child: Text(countryLocationString,
                                       maxLines: 2,
-                                      overflow: TextOverflow.clip,
+                                      overflow: TextOverflow.ellipsis,
                                       style: STANDART_TEXT_STYLE),
                                 ),
                               ],
@@ -255,10 +277,4 @@ class SingleEventBody extends StatelessWidget {
       ],
     ));
   }
-
-  // Future<Address> getCordinats(String? query) async {
-  //   List<Address> addresses =
-  //       await Geocoder.local.findAddressesFromQuery(query);
-  //   return addresses.first;
-  // }
 }

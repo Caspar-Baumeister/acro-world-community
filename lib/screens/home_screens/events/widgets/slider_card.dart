@@ -1,7 +1,9 @@
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/crawled_warning_widget.dart';
 import 'package:acroworld/screens/single_event/single_event_page.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class SliderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String endTimeString = "";
+    String? dateString;
     if (event.endDate != null && event.startDate != null) {
       DateTime endDateTime = DateTime.parse(event.endDate!);
       DateTime startDateTime = DateTime.parse(event.startDate!);
@@ -22,7 +25,33 @@ class SliderCard extends StatelessWidget {
         endTimeString =
             "${endDateTime.day} ${DateFormat.MMM().format(endDateTime)}";
       }
+      if (startDateTime.day == endDateTime.day &&
+          startDateTime.month == endDateTime.month &&
+          startDateTime.year == endDateTime.year) {
+        dateString = startDateTime.day.toString();
+      }
     }
+
+    String? countryLocationString;
+    if ((event.locationCountry != null && event.locationCountry != "") ||
+        (event.locationCity != null && event.locationCity != "")) {
+      countryLocationString = "";
+
+      if (event.locationCountry != null && event.locationCountry != "") {
+        countryLocationString += event.locationCountry.toString();
+      }
+      if ((event.locationCountry != null && event.locationCountry != "") &&
+          (event.locationCity != null && event.locationCity != "")) {
+        countryLocationString += ", ";
+      }
+      if (event.locationCity != null && event.locationCity != "") {
+        countryLocationString += event.locationCity.toString();
+      }
+    } else if (event.originLocationName != null &&
+        event.originLocationName != "") {
+      countryLocationString = event.originLocationName.toString();
+    }
+    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
@@ -34,6 +63,7 @@ class SliderCard extends StatelessWidget {
       child: Stack(
         children: [
           CrawledWarningWidget(
+            showWarning: event.eventSource == "Crawled",
             right: 15,
             top: 15,
             child: Container(
@@ -41,10 +71,12 @@ class SliderCard extends StatelessWidget {
               margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
               height: EVENT_DASHBOARD_SLIDER_HEIGHT,
               width: EVENT_DASHBOARD_SLIDER_WIDTH,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                boxShadow: [
+              decoration: BoxDecoration(
+                color: event.isHighlighted == true
+                    ? HIGHLIGHT_COLOR
+                    : Colors.white,
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                boxShadow: const [
                   BoxShadow(
                     color: Color(0x90E8E8E8),
                     spreadRadius: 5,
@@ -88,12 +120,7 @@ class SliderCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: HEADER_1_TEXT_STYLE),
                         Expanded(
-                          child: (event.locationCountry != null &&
-                                      event.locationCountry != "") ||
-                                  (event.locationCity != null &&
-                                      event.locationCity != "") ||
-                                  (event.originLocationName != null &&
-                                      event.originLocationName != "")
+                          child: countryLocationString != null
                               ? Container(
                                   alignment: Alignment.centerLeft,
                                   child: Row(
@@ -110,17 +137,7 @@ class SliderCard extends StatelessWidget {
                                       ),
                                       Flexible(
                                         fit: FlexFit.tight,
-                                        child: Text(
-                                            (event.locationCountry != null &&
-                                                        event.locationCountry !=
-                                                            "") ||
-                                                    (event.locationCity !=
-                                                            null &&
-                                                        event.locationCity !=
-                                                            "")
-                                                ? "${event.locationCountry != null ? event.locationCountry! : ""} ${event.locationCountry != null && event.locationCity != null ? ", " : ""} ${event.locationCity != null ? event.locationCity! : ""}"
-                                                : event.originLocationName
-                                                    .toString(),
+                                        child: Text(countryLocationString,
                                             maxLines: 2,
                                             overflow: TextOverflow.clip,
                                             style: STANDART_TEXT_STYLE),
@@ -137,6 +154,30 @@ class SliderCard extends StatelessWidget {
               ),
             ),
           ),
+          event.eventType != null
+              ? Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4),
+                        child: Text(
+                          capitalizeWords(event.eventType!
+                              .replaceAllMapped(
+                                  exp, (Match m) => (' ${m.group(0)}'))
+                              .toLowerCase()),
+                          style: HEADER_1_TEXT_STYLE,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
           event.startDate != null
               ? Positioned(
                   top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
@@ -164,7 +205,8 @@ class SliderCard extends StatelessWidget {
                             style: BIG_TEXT_STYLE,
                           ),
                           Text(
-                            "${DateTime.parse(event.startDate!).day} - $endTimeString",
+                            dateString ??
+                                "${DateTime.parse(event.startDate!).day} - $endTimeString",
                             style: STANDART_DESCRIPTION,
                           )
                         ],

@@ -50,17 +50,16 @@ class EventDashboardBody extends StatelessWidget {
                 sliders: eventFilterProvider.eventPoster,
                 isDots: false,
               )),
-          // highlights.isNotEmpty
-          //     ? Padding(
-          //         padding: const EdgeInsets.only(bottom: 10),
-          //         child: SliderRowEventDashboard(
-          //           onViewAll: () => eventFilterProvider
-          //               .setActiveCategory(["FestivalsAndCons"]),
-          //           header: "Highlights",
-          //           events: highlights,
-          //         ),
-          //       )
-          //     : Container(),
+          highlights.isNotEmpty
+              ? Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: SliderRowEventDashboard(
+                    onViewAll: () => eventFilterProvider.changeHighlighted(),
+                    header: "Highlights",
+                    events: highlights,
+                  ),
+                )
+              : Container(),
           upcoming.isNotEmpty
               ? Padding(
                   padding: const EdgeInsets.only(bottom: 10),

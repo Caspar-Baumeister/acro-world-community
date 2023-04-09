@@ -7,31 +7,38 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class CrawledWarningWidget extends StatelessWidget {
   const CrawledWarningWidget(
-      {Key? key, required this.child, this.right = 10, this.top = 6})
+      {Key? key,
+      required this.child,
+      this.right = 10,
+      this.top = 6,
+      required this.showWarning})
       : super(key: key);
 
   final Widget child;
   final double? right;
   final double? top;
+  final bool showWarning;
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        child,
-        Positioned(
-          right: right,
-          top: top,
-          child: GestureDetector(
-            onTap: () => showMyDialog(context),
-            child: const Icon(
-              Icons.error,
-              color: WARNING_COLOR,
-            ),
-          ),
-        ),
-      ],
-    );
+    return showWarning
+        ? Stack(
+            children: [
+              child,
+              Positioned(
+                right: right,
+                top: top,
+                child: GestureDetector(
+                  onTap: () => showMyDialog(context),
+                  child: const Icon(
+                    Icons.error,
+                    color: WARNING_COLOR,
+                  ),
+                ),
+              ),
+            ],
+          )
+        : child;
   }
 
   Future<void> showMyDialog(BuildContext context) async {

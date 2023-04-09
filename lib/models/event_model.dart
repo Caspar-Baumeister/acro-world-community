@@ -58,13 +58,23 @@ class EventModel {
     eventType = json['event_type'];
     id = json['id'];
     isHighlighted = json['is_highlighted'];
-    links = json['links'].cast<String>();
+    links = json['links'] != null && json['links']!.isNotEmpty
+        ? json['links'].cast<String>()
+        : null;
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;
-    locationCity = json['location_city'];
-    locationCountry = json['location_country'];
+    locationCity = json['location_city'] != null
+        ? json['location_city'].toString().replaceAll(RegExp(r'\s+$'), '')
+        : null;
+    locationCountry = json['location_country'] != null
+        ? json['location_country'].toString().replaceAll(RegExp(r'\s+$'), '')
+        : null;
     locationName = json['location_name'];
-    originLocationName = json['origin_location_name'];
+    originLocationName = json['origin_location_name'] != null
+        ? json['origin_location_name']
+            .toString()
+            .replaceAll(RegExp(r'\s+'), ' ')
+        : json['origin_location_name'];
     mainImageUrl = json['main_image_url'];
     originCreatorName = json['origin_creator_name'];
     name = json['name'];
@@ -85,38 +95,6 @@ class EventModel {
         userParticipants!.add(v);
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['created_at'] = createdAt;
-    data['created_by_id'] = createdById;
-    data['end_date'] = endDate;
-    data['event_source'] = eventSource;
-    data['event_type'] = eventType;
-    data['id'] = id;
-    data['is_highlighted'] = isHighlighted;
-    data['links'] = links;
-    if (location != null) {
-      data['location'] = location!.toJson();
-    }
-    data['location_city'] = locationCity;
-    data['location_country'] = locationCountry;
-    data['location_name'] = locationName;
-    data['main_image_url'] = mainImageUrl;
-    data['origin_creator_name'] = originCreatorName;
-    data['name'] = name;
-    data['pricing'] = pricing;
-    data['start_date'] = startDate;
-    data['updated_at'] = updatedAt;
-    data['url'] = url;
-    data['description'] = description;
-
-    if (userParticipants != null) {
-      data['user_participants'] =
-          userParticipants!.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
 

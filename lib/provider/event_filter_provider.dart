@@ -17,6 +17,8 @@ class EventFilterProvider extends ChangeNotifier {
   List<String> activeCountries = [];
   List<DateTime> activeDates = [];
 
+  bool onlyHighlighted = false;
+
   bool initialized = false;
 
   // there are allInitalFilter, activeFilter and possibleFilters
@@ -121,11 +123,17 @@ class EventFilterProvider extends ChangeNotifier {
     resetActiveEventsFromFilter();
   }
 
+  changeHighlighted() {
+    onlyHighlighted = !onlyHighlighted;
+    resetActiveEventsFromFilter();
+  }
+
   bool resetFilter() {
     activeCategories = [];
     activeCountries = [];
     activeDates = [];
     activeEvents = initialEvents;
+    onlyHighlighted = false;
     notifyListeners();
     return true;
   }
@@ -134,55 +142,63 @@ class EventFilterProvider extends ChangeNotifier {
     String fString = "";
 
     // Case 1: no filter active
-    if (activeCategories.isEmpty && activeDates.isEmpty) {
+    if (activeCategories.isEmpty &&
+        activeDates.isEmpty &&
+        activeCountries.isEmpty &&
+        !onlyHighlighted) {
       fString = "Set filters";
       return fString;
     }
 
     // Trainings ...
     if (activeCategories.length == 1) {
-      fString += activeCategories[0].toString();
+      fString += " ${activeCategories[0]},";
     } else if (activeCategories.length > 1) {
-      fString += "${activeCategories[0]} + ${activeCategories.length - 1}";
-    }
-
-    // ... , ...
-    if (activeCategories.isNotEmpty && activeDates.isNotEmpty) {
-      fString += ", ";
+      fString += " ${activeCategories[0]} + ${activeCategories.length - 1},";
     }
 
     // ... Jul ...
     if (activeDates.length == 1) {
-      fString += DateFormat.MMM().format(activeDates[0]);
+      fString += " ${DateFormat.MMM().format(activeDates[0])},";
     } else if (activeDates.length > 1) {
       fString +=
-          "${DateFormat.MMM().format(activeDates[0])} + ${activeDates.length - 1}";
-    }
-
-    // ... , ...
-    if (activeCountries.isNotEmpty && activeDates.isNotEmpty ||
-        activeCountries.isNotEmpty && activeCategories.isNotEmpty) {
-      fString += ", ";
+          " ${DateFormat.MMM().format(activeDates[0])} + ${activeDates.length - 1},";
     }
 
     // ... Germany
     if (activeCountries.length == 1) {
-      fString += activeCountries[0].toString();
+      fString += " ${activeCountries[0]},";
     } else if (activeCountries.length > 1) {
-      fString += "${activeCountries[0]} + ${activeCountries.length - 1}";
+      fString += " ${activeCountries[0]} + ${activeCountries.length - 1},";
     }
 
-    return fString;
+    // ... highlights
+    if (onlyHighlighted) {
+      fString += " highlights,";
+    }
+
+    if (fString.isNotEmpty) {
+      fString.trim();
+    }
+
+    return fString.substring(0, fString.length - 1);
   }
 
   bool isFilterActive() {
     return activeCategories.isNotEmpty ||
         activeDates.isNotEmpty ||
-        activeCountries.isNotEmpty;
+        activeCountries.isNotEmpty ||
+        onlyHighlighted;
   }
 
   resetActiveEventsFromFilter() {
     List<EventModel> returnEvents = initialEvents;
+
+    if (onlyHighlighted) {
+      returnEvents = returnEvents
+          .where((EventModel event) => event.isHighlighted == true)
+          .toList();
+    }
 
     if (activeCountries.isNotEmpty) {
       returnEvents = returnEvents
