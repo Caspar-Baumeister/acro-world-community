@@ -36,7 +36,7 @@ class FilterOnEventBody extends StatelessWidget {
                   height: 10,
                 ),
                 StandartButton(
-                  text: "Reset",
+                  text: "Reset Filter",
                   onPressed: () {
                     eventFilterProvider.resetFilter();
                   },

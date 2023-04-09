@@ -191,7 +191,7 @@ class QuickFilterCards extends StatelessWidget {
           onTap: () => eventFilterProvider.changeHighlighted(),
           child: Chip(
             label: Text(
-              "highlights",
+              "Highlights",
               style: SMALL_TEXT_STYLE.copyWith(
                   color: eventFilterProvider.onlyHighlighted
                       ? Colors.white
