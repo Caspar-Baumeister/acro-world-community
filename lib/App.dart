@@ -1,5 +1,5 @@
+import 'package:acroworld/components/wrapper/connection_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/components/loggin_wrapper.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
@@ -34,7 +34,7 @@ class App extends StatelessWidget {
             // TODO no wifi screen. Otherwise either old version screen or continue)
             // LoginWrapper checks for token?
             // Also possible: Routerdelegate with auth check and guards
-            home: const LogginWrapper(),
+            home: const ConnectionWrapper(),
           ),
         ));
   }

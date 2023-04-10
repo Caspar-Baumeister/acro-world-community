@@ -2,9 +2,16 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final config = gql("""
+query Config {
+  config {
+    min_version
+  }
+}
+""");
   static final events = gql("""
 query Events {
-  events {
+  events (where: {confirmation_status: {_eq: Confirmed}}){
     created_at
     created_by_id
     description
@@ -157,14 +164,6 @@ query Events {
       }
     }""");
 
-  // static final getAllTeacher = gql("""
-  // query getAllTeacher{
-  //   teachers(order_by: {user_likes_aggregate: {count: desc}}) {
-  //     ${Fragments.teacherFragment}
-  //   }
-  // }
-  // """);
-
   static final getTeacherById = gql("""
   query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
     teachers_by_pk(id: \$teacher_id) {
@@ -176,38 +175,11 @@ query Events {
   }
   """);
 
-  // static final getTeachersILike = gql("""
-  // query getTeachersILike(\$user_id: uuid) {
-  //   teacher_likes(where: {user_id: {_eq: \$user_id}}) {
-  //     teacher_id
-  //   }
-  // }
-  // """);
-
   static final getClasses = gql("""
   query getClasses {
     classes {
       ${Fragments.classFragment}
-      class_teachers {
-      teacher {
-        id
-        name
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-        }
-      }
-    }
-    }
-  }
-  """);
-
-  static final getClassesDay = gql("""
-  query getClasses {
-    classes {
-      ${Fragments.classFragment}
-      class_teachers {
+      class_teachers (where: {teacher: {confirmation_status: {_eq: Confirmed}}}) {
       teacher {
         id
         name
@@ -224,10 +196,10 @@ query Events {
 
   static final getClassesByLocation = gql("""
   query GetClassesByLocation(\$latitude: numeric, \$longitude: numeric) {
-    classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {distance: {_lte: "20"}}) {
+    classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {distance: {_lte: "20"}, teacher: {teacher: {confirmation_status: {_eq: Confirmed}}}}) {
         ${Fragments.classFragment}
         distance
-        teacher {
+        teacher (where: {teacher: {confirmation_status: {_eq: Confirmed}}}){
           teacher {
             id
             name
@@ -244,12 +216,13 @@ query Events {
 
   static final getOtherCommunities = gql("""
   query GetOtherCommunities(\$user_id: uuid, \$query: String) {
-  communities(where: {_not: {users: {user_id: {_eq: \$user_id}}}, name: {_ilike: \$query}}, _and: {confirmation_status: {_eq: Confirmed}}}, limit: 15) {
+  communities(where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {name: {_ilike: \$query}}], confirmation_status: {_eq: Confirmed}}, limit: 15) {
     id
     name
-    confirmed
     latitude
     longitude
+    location
+    confirmation_status
   }
 }
   """);
@@ -259,7 +232,6 @@ query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \
   communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {distance: {_lte: "100"}}, {name: {_ilike: \$query}}], confirmation_status: {_eq: "Confirmed"}}, limit: 15) {
     id
     name
-    confirmed
     latitude
     longitude
     location
@@ -278,8 +250,8 @@ query getClassEventsByClassId (\$class_id: uuid) {
     is_cancelled
     start_date
     class { 
-      class_teachers {
-        teacher {
+      class_teachers (where: {teacher: {confirmation_status: {_eq: Confirmed}}})  {
+        teacher{
           id
           images {
             is_profile_picture

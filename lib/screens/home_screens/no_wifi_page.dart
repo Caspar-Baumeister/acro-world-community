@@ -1,4 +1,4 @@
-import 'package:acroworld/components/loggin_wrapper.dart';
+import 'package:acroworld/components/wrapper/loggin_wrapper.dart';
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';

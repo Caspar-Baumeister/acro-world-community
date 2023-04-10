@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 ######### VERSION ##########
-version: 1.0.27+03
+version: 1.0.29+00
 ############################
 
 environment:
@@ -36,6 +36,7 @@ dependencies:
   pie_chart: ^5.3.2
   carousel_slider: ^4.2.1
   internet_connection_checker: ^1.0.0+1
+  package_info_plus: ^3.1.0
 
 dev_dependencies:
   flutter_test:

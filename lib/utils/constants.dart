@@ -21,3 +21,9 @@ const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
 Uri AGB_URL = Uri.parse('https://acroworld.de');
 
 const double STANDART_BUTTON_WIDTH = 300;
+
+const String PLAY_STORE_LINK =
+    "https://play.google.com/store/apps/details?id=com.community.acroworld";
+
+const String IOS_STORE_LINK =
+    "https://apps.apple.com/us/app/acroworld/id1633240146";

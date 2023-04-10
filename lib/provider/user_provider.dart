@@ -73,24 +73,31 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<bool> refreshToken() async {
-    String? _email = CredentialPreferences.getEmail();
-    String? _password = CredentialPreferences.getPassword();
+    String? email = CredentialPreferences.getEmail();
+    String? password = CredentialPreferences.getPassword();
 
-    print("inside refreshToken with $_email");
-    if (_email == null || _password == null) {
+    print("inside refreshToken with $email");
+    print("inside refreshToken with $password");
+    if (email == null || password == null) {
       return false;
     }
+
+    print("token");
+    print(token);
 
     // get the token trough the credentials
     // (invalid credentials) return false
     if (isTokenExpired()) {
-      final response = await Database().loginApi(_email, _password);
+      final response = await Database().loginApi(email, password);
 
-      String? _newToken = response?["data"]?["login"]?["token"];
-      if (_newToken == null) {
+      String? newToken = response?["data"]?["login"]?["token"];
+
+      if (newToken == null) {
+        print("response");
+        print(response);
         return false;
       }
-      _token = _newToken;
+      _token = newToken;
       await setUserFromToken();
     }
 

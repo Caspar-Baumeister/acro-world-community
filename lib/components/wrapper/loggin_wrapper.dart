@@ -1,11 +1,9 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/home_screens/no_wifi_page.dart';
 import 'package:acroworld/screens/loading_page.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 
 class LogginWrapper extends StatefulWidget {
@@ -22,7 +20,6 @@ class LogginWrapper extends StatefulWidget {
 class _LogginWrapperState extends State<LogginWrapper> {
   bool? credentials;
   Future<void>? initCredentials;
-  bool isConnection = false;
 
   @override
   void initState() {
@@ -53,9 +50,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
           if (snapshot.hasError) {
             return ErrorPage(error: "loggin_wrapper error: ${snapshot.error}");
           }
-          if (!isConnection) {
-            return const NoWifePage();
-          }
+
           if (snapshot.connectionState == ConnectionState.done &&
               credentials != null) {
             if (credentials == false) {
@@ -74,16 +69,6 @@ class _LogginWrapperState extends State<LogginWrapper> {
   }
 
   Future<bool> checkCredentials() async {
-    bool result = await InternetConnectionChecker().hasConnection;
-    if (result == true) {
-      setState(() {
-        isConnection = true;
-      });
-    } else {
-      setState(() {
-        isConnection = false;
-      });
-    }
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).refreshToken();
 

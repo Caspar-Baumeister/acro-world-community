@@ -43,7 +43,6 @@ class Fragments {
   static const String communityFragment = """
   id
   name
-  confirmed
   latitude
   longitude
   """;

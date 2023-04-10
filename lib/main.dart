@@ -29,7 +29,9 @@ void main() async {
       initialPayload: () async {
         String? token = await AuthProvider.fetchToken();
         return {
-          'headers': {'Authorization': 'Bearer $token'}
+          'headers': token == null || token == ""
+              ? {}
+              : {'Authorization': 'Bearer $token'}
         };
       },
     ),
@@ -39,7 +41,7 @@ void main() async {
     getToken: () async {
       String? token = await AuthProvider.fetchToken();
 
-      return 'Bearer $token';
+      return token != null ? 'Bearer $token' : null;
     },
   );
 

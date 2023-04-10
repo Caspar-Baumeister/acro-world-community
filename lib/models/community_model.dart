@@ -4,7 +4,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class Community {
   String name;
   String id;
-  bool? confirmed;
   LatLng? latLng;
   CommunityMessage? lastMessage;
   String? lastVisitedAt;
@@ -15,7 +14,6 @@ class Community {
   Community({
     required this.id,
     required this.name,
-    required this.confirmed,
     required this.confirmationStatus,
     required this.latLng,
     this.lastMessage,
@@ -30,7 +28,6 @@ class Community {
         id: json['id'],
         name: json["name"],
         confirmationStatus: json["confirmation_status"],
-        confirmed: json["confirmed"] ?? false,
         latLng: LatLng(json['latitude'] * 1.0, json['longitude'] * 1.0),
         lastVisitedAt: lastVisitedAt,
         nextJamAt: nextJamAt,
