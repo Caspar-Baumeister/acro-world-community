@@ -12,7 +12,6 @@
 //       inactiveBgColor: Colors.grey[200],
 //       labels: const ['Flyer', 'Neutral', 'Base'],
 //       onToggle: (index) {
-//         print('switched to: $index');
 //       },
 //     );
 //   }

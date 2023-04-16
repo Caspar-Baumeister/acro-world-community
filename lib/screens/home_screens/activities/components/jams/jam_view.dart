@@ -39,7 +39,6 @@ class JamsView extends StatelessWidget {
             child: ListView.builder(
           itemCount: jams.length,
           itemBuilder: (context, index) {
-            print(jams[index].participants);
             return NewJamTile(jam: jams[index]);
           },
         ))

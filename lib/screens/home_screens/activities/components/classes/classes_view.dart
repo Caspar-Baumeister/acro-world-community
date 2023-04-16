@@ -21,8 +21,6 @@ class ClassesView extends StatelessWidget {
     } catch (e) {
       print(e.toString());
     }
-    print("inside classes view");
-    print(classEvents);
     return Padding(
       padding: const EdgeInsets.only(top: 4.0),
       child: ListView.builder(

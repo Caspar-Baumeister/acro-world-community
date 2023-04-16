@@ -209,14 +209,12 @@ class Properties {
 //       try {
 //         sDateTime = DateFormat('d.M.y').parse(json["startDate"]!);
 //       } catch (e) {
-//         print("wrong startdatetime for ${json['title'] ?? 'N/A'}");
 //       }
 //     }
 //     if (json["endDate"] != null) {
 //       try {
 //         eDateTime = DateFormat('d.M.y').parse(json["endDate"]!);
 //       } catch (e) {
-//         print("wrong enddatetime for ${json['title'] ?? 'N/A'}");
 //       }
 //     }
 

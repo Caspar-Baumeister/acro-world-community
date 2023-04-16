@@ -24,7 +24,6 @@ class _ChooseCommunityModalState extends State<ChooseCommunityModal> {
 
   @override
   void initState() {
-    print(widget.day.toString());
     if (widget.communities.isNotEmpty) {
       choosenCommunity = widget.communities[0];
       dropdownValue = widget.communities[0].id;
@@ -35,10 +34,7 @@ class _ChooseCommunityModalState extends State<ChooseCommunityModal> {
   @override
   Widget build(BuildContext context) {
     List<DropdownMenuItem<String>> communitiesDropdown = [];
-    print("comminities with keys");
     for (var community in widget.communities) {
-      print(community.id);
-
       communitiesDropdown.add(DropdownMenuItem<String>(
           key: Key(community.id),
           value: community.id,

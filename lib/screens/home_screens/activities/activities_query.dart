@@ -7,8 +7,10 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/activity_calender_widget.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -28,6 +30,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
   String from = DateTime.now().toIso8601String();
   late String to;
   DateTime focusedDay = DateTime.now();
+  DateTime initialSelectedDate = DateTime.now();
   List<StreamSubscription> eventListeners = [];
 
   @override
@@ -90,7 +93,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             "to": to,
             'latitude': place.latLng.latitude,
             'longitude': place.latLng.longitude,
-            'distance': 20
+            'distance': 100
           },
         );
         selector = 'jams_by_location_v1';
@@ -111,7 +114,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             'longitude': place.latLng.longitude,
             "from": from,
             "to": to,
-            'distance': 20
+            'distance': 100
           },
           fetchPolicy: FetchPolicy.networkOnly,
         );
@@ -122,6 +125,9 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context, listen: false);
     final EventBus eventBus = eventBusProvider.eventBus;
+    ActivityProvider activityProvider =
+        Provider.of<ActivityProvider>(context, listen: false);
+
     return Query(
         options: queryOptions,
         builder: (QueryResult result,
@@ -136,15 +142,19 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
               child: Stack(
                 children: [
                   ActivityCalenderWidget(
-                    activiyType: widget.activityType,
-                    onPageChanged: onPageChanged,
-                    classWeekEvents: const [],
-                    jamWeekEvents: const [],
-                    focusedDay: focusedDay,
-                    setFocusedDay: (newFocusedDay) => setState(() {
-                      focusedDay = newFocusedDay;
-                    }),
-                  ),
+                      activiyType: widget.activityType,
+                      onPageChanged: onPageChanged,
+                      classWeekEvents: const [],
+                      jamWeekEvents: const [],
+                      focusedDay: focusedDay,
+                      setFocusedDay: (newFocusedDay) => setState(() {
+                            focusedDay = newFocusedDay;
+                          }),
+                      setInitialSelectedDate: (newInitialSelectedDate) =>
+                          setState(() {
+                            initialSelectedDate = newInitialSelectedDate;
+                          }),
+                      initialSelectedDate: initialSelectedDate),
                   const Positioned.fill(
                       child: Center(child: CircularProgressIndicator()))
                 ],
@@ -178,24 +188,25 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             try {
               jamWeekEvents = List<Jam>.from(
                   result.data![selector].map((json) => Jam.fromJson(json)));
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                activityProvider.setActiveJams(jamWeekEvents
+                    .where((jam) => isSameDate(jam.dateAsDateTime!, focusedDay))
+                    .toList());
+              });
             } catch (e) {
               print(e.toString());
             }
-            return ActivityCalenderWidget(
-              activiyType: widget.activityType,
-              onPageChanged: onPageChanged,
-              jamWeekEvents: jamWeekEvents,
-              classWeekEvents: classWeekEvents,
-              focusedDay: focusedDay,
-              setFocusedDay: (newFocusedDay) => setState(() {
-                focusedDay = newFocusedDay;
-              }),
-            );
           } else {
             try {
               classWeekEvents = List<NewClassEventsModel>.from(result
                   .data![selector]
                   .map((json) => NewClassEventsModel.fromJson(json)));
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                activityProvider.setActiveClasses(classWeekEvents
+                    .where((NewClassEventsModel classEvent) =>
+                        isSameDate(classEvent.date!, focusedDay))
+                    .toList());
+              });
             } catch (e) {
               print(e.toString());
             }
@@ -208,18 +219,20 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             } catch (e) {
               print(e.toString());
             }
-
-            return ActivityCalenderWidget(
+          }
+          return ActivityCalenderWidget(
               activiyType: widget.activityType,
               onPageChanged: onPageChanged,
-              classWeekEvents: classWeekEvents,
               jamWeekEvents: jamWeekEvents,
+              classWeekEvents: classWeekEvents,
               focusedDay: focusedDay,
+              setInitialSelectedDate: (newInitialSelectedDate) => setState(() {
+                    initialSelectedDate = newInitialSelectedDate;
+                  }),
               setFocusedDay: (newFocusedDay) => setState(() {
-                focusedDay = newFocusedDay;
-              }),
-            );
-          }
+                    focusedDay = newFocusedDay;
+                  }),
+              initialSelectedDate: initialSelectedDate);
         });
   }
 }

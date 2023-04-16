@@ -45,7 +45,6 @@ class EventsInitializerQuery extends StatelessWidget {
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
-          print("error in Queries.events");
           print(result.exception);
           return ErrorPage(error: result.exception.toString());
         } else if (result.isLoading) {

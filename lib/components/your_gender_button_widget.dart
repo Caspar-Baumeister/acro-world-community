@@ -24,10 +24,14 @@ class YourGenderButtonWidget extends StatelessWidget {
       ),
       builder: (QueryResult meGenderResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (meGenderResult.hasException || !meGenderResult.isConcrete) {
-          return ErrorWidget(meGenderResult.exception.toString());
-        } else if (meGenderResult.isLoading) {
-          return const LoadingIndicator();
+        if (meGenderResult.hasException) {
+          print(meGenderResult.exception.toString());
+          return Container();
+        } else if (meGenderResult.isLoading || !meGenderResult.isConcrete) {
+          return const SizedBox(
+            height: 50,
+            child: Center(child: CircularProgressIndicator()),
+          );
         } else {
           GenderModel gender = GenderModel.fromJson(
               meGenderResult.data!["me"]?[0]?['acro_role']);

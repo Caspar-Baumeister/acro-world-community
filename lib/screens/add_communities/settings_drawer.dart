@@ -25,6 +25,7 @@ class SettingsDrawer extends StatelessWidget {
       child: SafeArea(
         child: Material(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               ListTile(
                 leading: CachedNetworkImage(

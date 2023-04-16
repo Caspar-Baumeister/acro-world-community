@@ -94,6 +94,10 @@ String dateToText(DateTime date) {
   return "";
 }
 
+DateTime laterDay(DateTime a, DateTime b) {
+  return a.isBefore(b) ? b : a;
+}
+
 bool isSameDate(DateTime a, DateTime b) {
   return a.day == b.day && a.month == b.month && a.year == b.year;
 }

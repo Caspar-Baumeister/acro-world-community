@@ -7,4 +7,14 @@ class ActivityProvider extends ChangeNotifier {
   List<Jam> activeJams = [];
   List<NewClassEventsModel> activeClasseEvents = [];
   DateTime activeDay = DateTime.now();
+
+  setActiveJams(List<Jam> jams) {
+    activeJams = jams;
+    notifyListeners();
+  }
+
+  setActiveClasses(List<NewClassEventsModel> classes) {
+    activeClasseEvents = classes;
+    notifyListeners();
+  }
 }

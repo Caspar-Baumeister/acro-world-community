@@ -76,14 +76,9 @@ class UserProvider extends ChangeNotifier {
     String? email = CredentialPreferences.getEmail();
     String? password = CredentialPreferences.getPassword();
 
-    print("inside refreshToken with $email");
-    print("inside refreshToken with $password");
     if (email == null || password == null) {
       return false;
     }
-
-    print("token");
-    print(token);
 
     // get the token trough the credentials
     // (invalid credentials) return false
@@ -93,8 +88,6 @@ class UserProvider extends ChangeNotifier {
       String? newToken = response?["data"]?["login"]?["token"];
 
       if (newToken == null) {
-        print("response");
-        print(response);
         return false;
       }
       _token = newToken;

@@ -17,15 +17,18 @@ class ActivityCalenderWidget extends StatefulWidget {
     required this.setFocusedDay,
     required this.jamWeekEvents,
     required this.activiyType,
+    required this.initialSelectedDate,
+    required this.setInitialSelectedDate,
   }) : super(key: key);
 
   final Function(DateTime focusDay) onPageChanged;
   final Function(DateTime newFocusedDay) setFocusedDay;
+  final Function(DateTime newFocusedDay) setInitialSelectedDate;
 
   final List<NewClassEventsModel> classWeekEvents;
   final List<Jam> jamWeekEvents;
   final String activiyType;
-
+  final DateTime initialSelectedDate;
   final DateTime focusedDay;
 
   @override
@@ -33,14 +36,32 @@ class ActivityCalenderWidget extends StatefulWidget {
 }
 
 class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
-  DateTime selectedDay = DateTime.now();
+  late DateTime selectedDay;
 
-  void _onDaySelected(DateTime newSelectedDay, DateTime newFocusedDay) {
-    if (!isSameDay(newSelectedDay, selectedDay)) {
+  @override
+  void initState() {
+    selectedDay = widget.initialSelectedDate;
+    super.initState();
+  }
+
+  void _onDaySelected(DateTime newSelectedDay, DateTime _) {
+    ActivityProvider activityProvider =
+        Provider.of<ActivityProvider>(context, listen: false);
+    if (!isSameDate(newSelectedDay, selectedDay)) {
       setState(() {
         selectedDay = newSelectedDay;
       });
-      widget.setFocusedDay(newFocusedDay);
+      widget.setFocusedDay(laterDay(newSelectedDay, DateTime.now()));
+
+      if (widget.activiyType == "classes") {
+        activityProvider.setActiveClasses(widget.classWeekEvents
+            .where((classEvent) => isSameDate(classEvent.date, newSelectedDay))
+            .toList());
+      } else {
+        activityProvider.setActiveJams(widget.jamWeekEvents
+            .where((jam) => isSameDate(jam.dateAsDateTime!, newSelectedDay))
+            .toList());
+      }
     }
   }
 
@@ -65,7 +86,7 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       availableCalendarFormats: const {CalendarFormat.week: 'week'},
       calendarStyle: CalendarStyle(
           canMarkersOverflow: false,
-          markersMaxCount: 100,
+          markersMaxCount: 5,
           outsideDaysVisible: false,
           todayDecoration:
               BoxDecoration(color: Colors.grey[400]!, shape: BoxShape.circle),
@@ -73,29 +94,15 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
               color: PRIMARY_COLOR, shape: BoxShape.circle)),
       onDaySelected: (DateTime newSelectedDay, DateTime newFocusedDay) {
         _onDaySelected(newSelectedDay, newFocusedDay);
-        // Provider.of<ActivityProvider>(context, listen: false).setWeekEvents()
-        if (widget.activiyType == "classes") {
-          Provider.of<ActivityProvider>(context, listen: false)
-                  .activeClasseEvents =
-              widget.classWeekEvents
-                  .where((classEvent) =>
-                      isSameDate(classEvent.date, newSelectedDay))
-                  .toList();
-          Provider.of<ActivityProvider>(context, listen: false)
-              .notifyListeners();
-        } else {
-          Provider.of<ActivityProvider>(context, listen: false).activeJams =
-              widget.jamWeekEvents
-                  .where(
-                      (jam) => isSameDate(jam.dateAsDateTime!, newSelectedDay))
-                  .toList();
-          Provider.of<ActivityProvider>(context, listen: false)
-              .notifyListeners();
-        }
       },
       onPageChanged: (newFocusedDay) {
         widget.onPageChanged(newFocusedDay);
         widget.setFocusedDay(newFocusedDay);
+
+        DateTime monday = DateTime(newFocusedDay.year, newFocusedDay.month,
+            newFocusedDay.day - newFocusedDay.weekday + 1);
+        _onDaySelected(monday, newFocusedDay);
+        widget.setInitialSelectedDate(monday);
       },
     );
   }
