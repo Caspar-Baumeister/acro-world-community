@@ -2,6 +2,128 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getClassEventsFromToLocationWithClass = gql("""
+query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
+    distance
+    class_id
+    created_at
+    end_date
+    id
+    is_cancelled
+    start_date
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user {
+        id
+        name
+        acro_role_id
+      }
+    }
+    class {
+      city
+      class_pass_url
+      description
+      id
+      image_url
+      location
+      location_name
+      name
+      pricing
+      requirements
+      usc_url
+      website_url
+      class_teachers {
+        teacher {
+          id
+          name
+          confirmation_status
+          is_organization
+          images {
+            id
+            image {
+              id
+              url
+            }
+            is_profile_picture
+          }
+        }
+      }
+      class_levels {
+        level {
+          name
+          id
+        }
+      }
+    }
+  }
+}
+""");
+  static final getClassEventsFromToWithClass = gql("""
+query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
+  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
+    class_id
+    created_at
+    end_date
+    id
+    is_cancelled
+    start_date
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user {
+        id
+        name
+        acro_role_id
+      }
+    }
+    class {
+      city
+      class_pass_url
+      description
+      id
+      image_url
+      location
+      location_name
+      name
+      pricing
+      requirements
+      usc_url
+      website_url
+      class_teachers {
+        teacher {
+          id
+          name
+          confirmation_status
+          is_organization
+          images {
+            id
+            image {
+              id
+              url
+            }
+            is_profile_picture
+          }
+        }
+      }
+      class_levels {
+        level {
+          name
+          id
+        }
+      }
+    }
+  }
+}
+""");
+
   static final config = gql("""
 query Config {
   config {
@@ -58,6 +180,83 @@ query Events {
 }
   """);
 
+  static final jamsFromToWithDistance = gql("""
+query jamsFromToWithDistance(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8) {
+ jams_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {date: {_gte: \$from}, _and: {date: {_lte: \$to}, distance: {_lte: \$distance}}}) {
+    distance
+    created_at
+    created_by_id
+    community {
+      confirmation_status
+      id
+      location
+      name
+      longitude
+      latitude
+    }
+    created_by {
+      name
+    }
+    date
+    id
+    info
+    latitude
+    longitude
+    name
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user_id
+      user {
+        acro_role_id
+        name
+      }
+    }
+  }
+}
+""");
+
+  static final jamsFromTo = gql("""
+query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
+  jams(order_by: {date: asc}, where: {date: {_gte: \$from}, _and: {date: {_lte: \$to}}}) {
+    created_at
+    created_by_id
+    community {
+      confirmation_status
+      id
+      location
+      name
+      longitude
+      latitude
+    }
+    created_by {
+      name
+    }
+    date
+    id
+    info
+    latitude
+    longitude
+    name
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user_id
+      user {
+        acro_role_id
+        name
+      }
+    }
+  }
+}
+""");
+
   static final jamsByCommunityId = gql("""
   query JamsByCommunityId(\$communityId: uuid) {
     jams(where: {community_id: {_eq: \$communityId}}) {
@@ -100,20 +299,6 @@ query Events {
       id
       latitude
       longitude
-    }
-  }
-  """);
-
-  static final getUserCommunityMessageCount = gql("""
-  query GetMyCommunityPreview(\$community_id: uuid!, \$last_visited_at: timestamptz!) {
-  user_communities(where: {community_id: {_eq: \$community_id}}) {
-    community {
-        community_messages_aggregate(where: {created_at: {_gte: \$last_visited_at}}) {
-          aggregate {
-            count
-          }
-        }
-      }
     }
   }
   """);

@@ -21,9 +21,7 @@ class GenderDistributionPieFromClassEventId extends StatelessWidget {
       builder: (QueryResult genderAggregates,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (genderAggregates.hasException) {
-          print("error in getAcroRoleAggregatesFromClassEvent query");
-          print(genderAggregates.exception);
-          return Container();
+          return ErrorWidget(genderAggregates.exception.toString());
         } else if (genderAggregates.isLoading) {
           return const LoadingIndicator();
         } else if (genderAggregates.data != null &&

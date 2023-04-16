@@ -19,17 +19,9 @@ class TableEventsCommunity extends StatefulWidget {
 class _TableEventsCommunityState extends State<TableEventsCommunity> {
   late ValueNotifier<List<Jam>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff; // Can be toggled on/off by longpressing a date
+
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -38,18 +30,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
   }
 
   List<Jam> _getEventsForDay(DateTime day) {
-    // Implementation
-
     return widget.kEvents[day] ?? [];
-  }
-
-  List<Jam> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -57,31 +38,9 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
-        _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
-    }
-  }
-
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
     }
   }
 
@@ -98,11 +57,8 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
           lastDay: kLastDay,
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          rangeStartDay: _rangeStart,
-          rangeEndDay: _rangeEnd,
           calendarFormat: _calendarFormat,
-          rangeSelectionMode:
-              RangeSelectionMode.disabled, //_rangeSelectionMode,
+          rangeSelectionMode: RangeSelectionMode.disabled,
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
           calendarStyle: const CalendarStyle(
@@ -139,7 +95,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                     if (index == 0) {
                       return const SizedBox(height: 55);
                     }
-                    return NewJamTile(jam: value[index - 1], cid: widget.cid);
+                    return NewJamTile(jam: value[index - 1]);
                   },
                 );
               },

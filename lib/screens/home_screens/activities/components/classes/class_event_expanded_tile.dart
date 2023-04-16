@@ -1,8 +1,9 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home_screens/activities/components/class_teacher_chips.dart';
+import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/home_screens/activities/components/participants_button.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
@@ -16,7 +17,7 @@ import 'package:provider/provider.dart';
 class ClassEventExpandedTile extends StatelessWidget {
   const ClassEventExpandedTile({Key? key, required this.classEvent})
       : super(key: key);
-  final ClassEvent classEvent;
+  final NewClassEventsModel classEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                       alignment: AlignmentDirectional.center,
                       children: [
                         Container(
-                          foregroundDecoration: classEvent.isCancelled
+                          foregroundDecoration: classEvent.isCancelled == true
                               ? const BoxDecoration(
                                   color: Colors.grey,
                                   backgroundBlendMode: BlendMode.saturation,
@@ -71,7 +72,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                             ),
                           ),
                         ),
-                        classEvent.isCancelled
+                        classEvent.isCancelled == true
                             ? const RotationTransition(
                                 turns: AlwaysStoppedAnimation(345 / 360),
                                 child: Text(
@@ -111,13 +112,16 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          "${DateFormat('H:mm').format(classEvent.date)} - ${DateFormat('Hm').format(classEvent.endDate)}",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                          ),
-                        ),
+                        classEvent.startDate != null &&
+                                classEvent.endDate != null
+                            ? Text(
+                                "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              )
+                            : const Text("time not given"),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -127,7 +131,8 @@ class ClassEventExpandedTile extends StatelessWidget {
                                   maxWidth:
                                       MediaQuery.of(context).size.width * 0.35),
                               child: Text(
-                                classEvent.classModel!.locationName,
+                                classEvent.classModel?.locationName ??
+                                    "no location name",
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
                                 style: const TextStyle(
@@ -145,21 +150,25 @@ class ClassEventExpandedTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    classEvent.teacher != null && classEvent.teacher!.isNotEmpty
+                    classEvent.classModel?.classTeachers != null &&
+                            classEvent.classModel!.classTeachers!.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(top: 6.0),
-                            child:
-                                ClassTeacherChips(teacher: classEvent.teacher!),
+                            child: ClassTeacherChips(
+                                classTeacherList: List<TeacherModel>.from(
+                                    classEvent.classModel!.classTeachers!
+                                        .map((e) => e.teacher)
+                                        .where((element) => element != null))),
                           )
                         : Container(),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        classEvent.classModel != null &&
-                                classEvent.classModel!.classLevel.isNotEmpty
+                        classEvent.classModel?.classLevels != null &&
+                                classEvent.classModel!.classLevels!.isNotEmpty
                             ? DifficultyWidget(
-                                classEvent.classModel!.classLevel,
+                                classEvent.classModel!.classLevels!,
                               )
                             : const SizedBox(
                                 width: DIFFICULTY_LEVEL_WIDTH,
@@ -187,7 +196,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                                   height: PARTICIPANT_BUTTON_HEIGHT,
                                   child: IgnorePointer(
                                     child: ParticipantsButton(
-                                        classEventId: classEvent.id,
+                                        classEventId: classEvent.id!,
                                         countParticipants: null,
                                         isParticipate: false,
                                         runRefetch: () {}),
@@ -214,7 +223,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                               return SizedBox(
                                 height: PARTICIPANT_BUTTON_HEIGHT,
                                 child: ParticipantsButton(
-                                    classEventId: classEvent.id,
+                                    classEventId: classEvent.id!,
                                     countParticipants: participants.length,
                                     isParticipate: isParticipate,
                                     runRefetch: runRefetch),

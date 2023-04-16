@@ -1,98 +1,185 @@
-class TeacherLinkModel {
-  String name;
-  String id;
-  String? profileImageUrl;
+class TeacherModel {
+  String? id;
+  String? name;
+  String? confirmationStatus;
+  bool? isOrganization;
+  String? communityId;
+  String? createdAt;
+  String? description;
+  String? instagramName;
+  String? locationName;
+  List<Images>? images;
+  List<TeacherLevels>? teacherLevels;
+  String? userId;
+  List<UserLikes>? userLikes;
+  String? get profilImgUrl => images
+      ?.firstWhere((Images image) => image.isProfilePicture == true)
+      .image
+      ?.url;
 
-  TeacherLinkModel({
-    required this.id,
-    required this.name,
-    this.profileImageUrl,
-  });
-  factory TeacherLinkModel.fromJson(Map? json) {
-    return TeacherLinkModel(
-        name: json?["name"] ?? "",
-        id: json?["id"] ?? "",
-        profileImageUrl: json?["images"]?[0]?["image"]?["url"]);
+  TeacherModel(
+      {this.id,
+      this.name,
+      this.confirmationStatus,
+      this.isOrganization,
+      this.communityId,
+      this.createdAt,
+      this.description,
+      this.instagramName,
+      this.locationName,
+      this.images,
+      this.teacherLevels,
+      this.userId,
+      this.userLikes});
+
+  TeacherModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    confirmationStatus = json['confirmation_status'];
+    isOrganization = json['is_organization'];
+    communityId = json['community_id'];
+    createdAt = json['created_at'];
+    description = json['description'];
+    instagramName = json['instagram_name'];
+    locationName = json['location_name'];
+    if (json['images'] != null) {
+      images = <Images>[];
+      json['images'].forEach((v) {
+        images!.add(Images.fromJson(v));
+      });
+    }
+    if (json['teacher_levels'] != null) {
+      teacherLevels = <TeacherLevels>[];
+      json['teacher_levels'].forEach((v) {
+        teacherLevels!.add(TeacherLevels.fromJson(v));
+      });
+    }
+    userId = json['user_id'];
+    if (json['user_likes'] != null) {
+      userLikes = <UserLikes>[];
+      json['user_likes'].forEach((v) {
+        userLikes!.add(UserLikes.fromJson(v));
+      });
+    }
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['confirmation_status'] = confirmationStatus;
+    data['is_organization'] = isOrganization;
+    data['community_id'] = communityId;
+    data['created_at'] = createdAt;
+    data['description'] = description;
+    data['instagram_name'] = instagramName;
+    data['location_name'] = locationName;
+    if (images != null) {
+      data['images'] = images!.map((v) => v.toJson()).toList();
+    }
+    if (teacherLevels != null) {
+      data['teacher_levels'] = teacherLevels!.map((v) => v.toJson()).toList();
+    }
+    data['user_id'] = userId;
+    if (userLikes != null) {
+      data['user_likes'] = userLikes!.map((v) => v.toJson()).toList();
+    }
+    return data;
   }
 }
 
-class TeacherModel {
-  String? profilePicUrl;
-  String? name;
+class Images {
   String? id;
-  String? description;
-  String? locationName;
-  int? likes;
-  List<String> pictureUrls;
-  List<String> teacherLevels;
-  String? createdAt;
-  String? userID;
-  String? communityID;
-  bool isLikedByMe;
-  bool isOrganization;
-  String? confirmationStatus;
+  Image? image;
+  bool? isProfilePicture;
 
-  TeacherModel({
-    required this.profilePicUrl,
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.confirmationStatus,
-    required this.locationName,
-    required this.likes,
-    required this.pictureUrls,
-    required this.teacherLevels,
-    required this.userID,
-    required this.createdAt,
-    required this.communityID,
-    required this.isLikedByMe,
-    required this.isOrganization,
+  Images({this.id, this.image, this.isProfilePicture});
 
-    // teaching since
-  });
-
-  factory TeacherModel.fromJson(Map json) {
-    String? profilePicUrl;
-    List<String> pictureUrls = [];
-    List? images = json["images"];
-    if (images != null && images.isNotEmpty) {
-      for (var element in images) {
-        if (element["is_profile_picture"] == true) {
-          profilePicUrl = element["image"]["url"];
-        } else {
-          pictureUrls.add(element["image"]["url"]);
-        }
-      }
-    }
-
-    List<String> teacherLevel = [];
-    List? levels = json["teacher_levels"];
-    if (levels != null && levels.isNotEmpty) {
-      for (var level in levels) {
-        teacherLevel.add(level["level"]["name"]);
-      }
-    }
-
-    return TeacherModel(
-        confirmationStatus: json["confirmation_status"],
-        isOrganization: json["is_organization"],
-        profilePicUrl: profilePicUrl,
-        name: json["name"],
-        id: json["id"],
-        description: json["description"],
-        locationName: json["location_name"],
-        likes: json["user_likes_aggregate"]?["aggregate"]?["count"] ?? 0,
-        pictureUrls: pictureUrls,
-        createdAt: json["created_at"],
-        teacherLevels: teacherLevel,
-        userID: json["user_id"],
-        communityID: json["community_id"],
-        isLikedByMe:
-            json["user_likes"] != null && json["user_likes"].isNotEmpty);
+  Images.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    image = json['image'] != null ? Image.fromJson(json['image']) : null;
+    isProfilePicture = json['is_profile_picture'];
   }
 
-  @override
-  String toString() {
-    return "Teacher: name: $name, location: $locationName, likes: ${likes.toString()}, level: ${teacherLevels.toString()}, description: $description)";
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    if (image != null) {
+      data['image'] = image!.toJson();
+    }
+    data['is_profile_picture'] = isProfilePicture;
+    return data;
+  }
+}
+
+class Image {
+  String? id;
+  String? url;
+
+  Image({this.id, this.url});
+
+  Image.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    url = json['url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['url'] = url;
+    return data;
+  }
+}
+
+class TeacherLevels {
+  Level? level;
+
+  TeacherLevels({this.level});
+
+  TeacherLevels.fromJson(Map<String, dynamic> json) {
+    level = json['level'] != null ? Level.fromJson(json['level']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (level != null) {
+      data['level'] = level!.toJson();
+    }
+    return data;
+  }
+}
+
+class Level {
+  String? id;
+  String? name;
+
+  Level({this.id, this.name});
+
+  Level.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    return data;
+  }
+}
+
+class UserLikes {
+  String? userId;
+
+  UserLikes({this.userId});
+
+  UserLikes.fromJson(Map<String, dynamic> json) {
+    userId = json['user_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['user_id'] = userId;
+    return data;
   }
 }

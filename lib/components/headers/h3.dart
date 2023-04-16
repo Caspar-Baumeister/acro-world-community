@@ -10,7 +10,7 @@ class H3 extends StatelessWidget {
   Widget build(BuildContext context) {
     return H(
       text,
-      style: Theme.of(context).textTheme.headline3,
+      style: Theme.of(context).textTheme.displaySmall,
     );
   }
 }

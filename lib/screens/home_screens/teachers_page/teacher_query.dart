@@ -9,6 +9,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:acroworld/screens/no_wifi_page.dart';
 
 class TeacherQuery extends StatefulWidget {
   const TeacherQuery({Key? key}) : super(key: key);
@@ -39,7 +40,9 @@ class _TeacherQueryState extends State<TeacherQuery> {
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
-          return Text(result.exception.toString());
+          return const NoWifePage(
+            followUpWidget: TeacherQuery(),
+          );
         }
         VoidCallback runRefetch = (() {
           try {

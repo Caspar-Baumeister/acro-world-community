@@ -2,9 +2,22 @@ import 'dart:collection';
 
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/jam_model.dart';
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+bool isTeacherFollowedByUser(List<UserLikes>? followerList, String userId) {
+  if (followerList == null) {
+    return false;
+  }
+  for (UserLikes userLike in followerList) {
+    if (userLike.userId == userId) {
+      return true;
+    }
+  }
+  return false;
+}
 
 // builds the modal widgets
 Future<void> buildMortal(BuildContext context, Widget mordal) {
@@ -87,7 +100,8 @@ bool isSameDate(DateTime a, DateTime b) {
 
 Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   List<Jam> sortedJams = List<Jam>.from(jams);
-  sortedJams.sort((j1, j2) => j1.date!.isBefore(j2.date!) ? 1 : 0);
+  sortedJams.sort(
+      (j1, j2) => j1.dateAsDateTime!.isBefore(j2.dateAsDateTime!) ? 1 : 0);
   LinkedHashMap<DateTime, List<Jam>> jamMap =
       LinkedHashMap<DateTime, List<Jam>>(
     equals: isSameDayCustom,
@@ -97,7 +111,7 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
     if (jamMap[jam.date] != null) {
       jamMap[jam.date]!.add(jam);
     } else {
-      jamMap[jam.date!] = List.from([jam]);
+      jamMap[jam.dateAsDateTime!] = List.from([jam]);
     }
   }
   return jamMap;
@@ -109,12 +123,13 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   //   });
 }
 
-Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
-  List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
+Map<DateTime, List<NewClassEventsModel>> classEventToHash(List objects) {
+  List<NewClassEventsModel> sortedObjects =
+      List<NewClassEventsModel>.from(objects);
   sortedObjects.sort((classEvent1, classEvent2) =>
       classEvent2.date.compareTo(classEvent1.date));
-  LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
-      LinkedHashMap<DateTime, List<ClassEvent>>(
+  LinkedHashMap<DateTime, List<NewClassEventsModel>> objectMap =
+      LinkedHashMap<DateTime, List<NewClassEventsModel>>(
     equals: isSameDayCustom,
     hashCode: getHashCode,
   );

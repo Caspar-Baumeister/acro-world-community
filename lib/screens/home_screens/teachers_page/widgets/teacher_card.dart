@@ -29,7 +29,7 @@ class _TeacherCardState extends State<TeacherCard> {
   @override
   void initState() {
     isLikedState = widget.isLiked;
-    teacherLikes = widget.teacher.likes ?? 0;
+    teacherLikes = widget.teacher.userLikes?.length ?? 0;
     super.initState();
   }
 
@@ -48,7 +48,7 @@ class _TeacherCardState extends State<TeacherCard> {
         child: ListTile(
           leading: CachedNetworkImage(
             fit: BoxFit.cover,
-            imageUrl: widget.teacher.profilePicUrl ?? "",
+            imageUrl: widget.teacher.profilImgUrl ?? "",
             imageBuilder: (context, imageProvider) => Container(
               width: 64.0,
               height: 64.0,
@@ -100,7 +100,7 @@ class _TeacherCardState extends State<TeacherCard> {
                         loading = true;
                       });
                       await followButtonClicked(isLikedState, uid,
-                          widget.teacher.communityID!, widget.teacher.name);
+                          widget.teacher.communityId!, widget.teacher.name);
                       isLikedState
                           ? runMutation({
                               'teacher_id': widget.teacher.id,

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:flutter/material.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path_provider/path_provider.dart';
 
 // saves a map of jams associated with a community id locally (also in offline mode accesible)
@@ -60,8 +61,7 @@ class CommunityJamsProvider extends ChangeNotifier {
 // load data from cache
     String fileName = "communityJams.json";
     var dir = await getTemporaryDirectory();
-    File file = File(dir.path + "/" + fileName);
-    Map<String, dynamic> response;
+    File file = File("${dir.path}/$fileName");
     if (file.existsSync()) {
       // if success and data ligit:
 
@@ -76,7 +76,7 @@ class CommunityJamsProvider extends ChangeNotifier {
   Future writeDataToFile(json) async {
     String fileName = "communityJams.json";
     var dir = await getTemporaryDirectory();
-    File file = File(dir.path + "/" + fileName);
+    File file = File("${dir.path}/$fileName");
     file.writeAsStringSync(jsonEncode(json), flush: true, mode: FileMode.write);
   }
 }

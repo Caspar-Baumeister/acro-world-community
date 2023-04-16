@@ -33,9 +33,9 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
               setState(() {
                 loading = true;
               });
-              Uri _url = Uri.parse("https://teacher.acroworld.de");
-              if (!await launchUrl(_url)) {
-                throw 'Could not launch $_url';
+              Uri url = Uri.parse("https://teacher.acroworld.de");
+              if (!await launchUrl(url)) {
+                throw 'Could not launch $url';
               }
               setState(() {
                 loading = false;

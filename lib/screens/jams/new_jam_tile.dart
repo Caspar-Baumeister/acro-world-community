@@ -1,7 +1,7 @@
 import 'package:acroworld/components/map.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home_screens/activities/components/jam_participants_button.dart';
+import 'package:acroworld/screens/home_screens/activities/components/jams/jam_participants_button.dart';
 import 'package:acroworld/screens/single_jam_overview/jam_overview.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +9,9 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class NewJamTile extends StatelessWidget {
-  const NewJamTile(
-      {Key? key, required this.jam, required this.cid, this.communityName})
-      : super(key: key);
+  const NewJamTile({Key? key, required this.jam}) : super(key: key);
 
   final Jam jam;
-  final String cid;
-  final String? communityName;
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +19,16 @@ class NewJamTile extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => JamOverview(
-            jam: jam,
-            cid: cid,
-          ),
-        ),
-      ),
+      onTap: () => jam.communityId != null
+          ? Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => JamOverview(
+                  jam: jam,
+                  cid: jam.communityId!,
+                ),
+              ),
+            )
+          : null,
       child: SizedBox(
         height: CLASS_CARD_HEIGHT,
         child: Row(
@@ -80,7 +78,7 @@ class NewJamTile extends StatelessWidget {
                     const SizedBox(height: 6),
                     Text(
                       jam.date != null
-                          ? "${DateFormat('H:mm').format(jam.date!)} "
+                          ? "${DateFormat('H:mm').format(jam.dateAsDateTime!)} "
                           : "",
                       style: const TextStyle(
                         fontSize: 12,
@@ -89,7 +87,7 @@ class NewJamTile extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
                     Text(
-                      communityName ?? jam.community!.name,
+                      jam.community?.name ?? "",
                       maxLines: 2,
                       overflow: TextOverflow.clip,
                       style: const TextStyle(
@@ -105,7 +103,7 @@ class NewJamTile extends StatelessWidget {
                         SizedBox(
                           height: PARTICIPANT_BUTTON_HEIGHT,
                           child: JamParticipantsButton(
-                              jamId: jam.jid!,
+                              jamId: jam.id!,
                               participants: jam.participants ?? [],
                               uid: userProvider.activeUser!.id!),
                         ),

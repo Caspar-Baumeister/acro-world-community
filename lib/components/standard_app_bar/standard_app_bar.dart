@@ -10,10 +10,10 @@ class StandardAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
 
   @override
-  _StandardAppBarState createState() => _StandardAppBarState();
+  StandardAppBarState createState() => StandardAppBarState();
 }
 
-class _StandardAppBarState extends State<StandardAppBar> {
+class StandardAppBarState extends State<StandardAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(title: Text(widget.title));

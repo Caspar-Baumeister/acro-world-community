@@ -6,7 +6,9 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class NoWifePage extends StatefulWidget {
-  const NoWifePage({Key? key}) : super(key: key);
+  const NoWifePage({Key? key, this.followUpWidget}) : super(key: key);
+
+  final Widget? followUpWidget;
 
   @override
   State<NoWifePage> createState() => _NoWifePageState();
@@ -52,7 +54,9 @@ class _NoWifePageState extends State<NoWifePage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const LogginWrapper(),
+            builder: (context) => widget.followUpWidget == null
+                ? const LogginWrapper()
+                : widget.followUpWidget!,
           ),
         );
       });

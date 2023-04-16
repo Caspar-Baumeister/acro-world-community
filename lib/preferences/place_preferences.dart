@@ -24,9 +24,6 @@ class PlacePreferences {
         savedPlaceAsString.runtimeType != Null &&
         savedPlaceAsString.isNotEmpty &&
         jsonDecode(savedPlaceAsString).runtimeType != Null) {
-      print("savedPlaceAsString");
-      print(savedPlaceAsString);
-      print(savedPlaceAsString.runtimeType);
       return Place.fromJson(jsonDecode(savedPlaceAsString));
     } else {
       return null;

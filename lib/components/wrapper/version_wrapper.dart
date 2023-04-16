@@ -87,8 +87,6 @@ class _VersionWrapperState extends State<VersionWrapper> {
 
   bool verifyVersionString(
       {required String currentVersion, required String minVersion}) {
-    print(currentVersion);
-    print(minVersion);
     List<int> currentVersionNumbers =
         currentVersion.split(".").map((version) => int.parse(version)).toList();
     List<int> minVersionNumbers =

@@ -40,18 +40,18 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
 
     if (widget.jam.participants != null) {
       isUserParticipating = widget.jam.participants!
-          .any((participant) => participant.id == user.id);
+          .any((participant) => participant.user?.id == user.id);
     } else {
       isUserParticipating = false;
     }
 
     // String timeString = timeago.format(widget.jam.date);
-    String dateString =
-        DateFormat('EEEE – kk:mm – dd-MM-yyyy').format(widget.jam.date!);
+    String dateString = DateFormat('EEEE – kk:mm – dd-MM-yyyy')
+        .format(widget.jam.dateAsDateTime!);
 
     eventBus.on<CrudJamEvent>().listen((CrudJamEvent crudJamEvent) {
       Jam crudJam = crudJamEvent.jam;
-      if (crudJam.jid == widget.jam.jid) {
+      if (crudJam.id == widget.jam.id) {
         setState(() {
           widget.jam = crudJam;
         });
@@ -150,14 +150,17 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                         onTap: () => buildMortal(
                           context,
                           ParticipantModal(
-                            participants: widget.jam.participants ?? [],
-                            jamId: widget.jam.jid!,
+                            participants: widget.jam.participants
+                                    ?.map((e) => e.user!)
+                                    .toList() ??
+                                [],
+                            jamId: widget.jam.id!,
                           ),
                         ),
                         child: Text(
                             widget.jam.participants != null
                                 ? widget.jam.participants!
-                                    .map((e) => "${e.name}")
+                                    .map((e) => "${e.user!.name}")
                                     .toList()
                                     .join(", ")
                                 : "",
@@ -185,7 +188,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
                         ),
                         onPressed: () {
                           isLoading = true;
-                          runMutation({'jamId': widget.jam.jid});
+                          runMutation({'jamId': widget.jam.id});
                         },
                         child: const Text(
                           "Participate",

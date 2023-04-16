@@ -37,7 +37,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
               children: [
                 CachedNetworkImage(
                   fit: BoxFit.cover,
-                  imageUrl: widget.teacher.profilePicUrl ?? "",
+                  imageUrl: widget.teacher.profilImgUrl ?? "",
                   imageBuilder: (context, imageProvider) => Container(
                     width: 200.0,
                     height: 200.0,
@@ -72,20 +72,17 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      widget.teacher.locationName != "" &&
-                              widget.teacher.teacherLevels.isNotEmpty
-                          ? const SizedBox(
-                              height: 30,
-                            )
-                          : Container(),
                       widget.teacher.locationName != ""
                           ? Column(
                               children: [
-                                const Text(
-                                  "Location",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    letterSpacing: 0.4,
+                                const Padding(
+                                  padding: EdgeInsets.only(top: 15.0),
+                                  child: Text(
+                                    "Location",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      letterSpacing: 0.4,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 4),
@@ -144,8 +141,8 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
             const SizedBox(
               height: 20,
             ),
-            widget.teacher.communityID != null
-                ? actions(context, widget.teacher.communityID!, null)
+            widget.teacher.communityId != null
+                ? actions(context, widget.teacher.communityId!, null)
                 : Container(),
             const SizedBox(
               height: 20,

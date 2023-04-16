@@ -1,4 +1,5 @@
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/models/user_model.dart';
 
 class EventModel {
   String? createdAt;
@@ -22,8 +23,8 @@ class EventModel {
   String? updatedAt;
   String? url;
   String? description;
-  List<TeacherLinkModel>? teachers;
-  List<dynamic>? userParticipants;
+  List<TeacherModel>? teachers;
+  List<User>? userParticipants;
 
   EventModel(
       {this.createdAt,
@@ -63,12 +64,11 @@ class EventModel {
         : null;
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;
-    locationCity = json['location_city'] != null
-        ? json['location_city'].toString().replaceAll(RegExp(r'\s+$'), '')
-        : null;
-    locationCountry = json['location_country'] != null
-        ? json['location_country'].toString().replaceAll(RegExp(r'\s+$'), '')
-        : null;
+    locationCity =
+        json['location_city']?.toString().replaceAll(RegExp(r'\s+$'), '');
+    locationCountry =
+        json['location_country']?.toString().replaceAll(RegExp(r'\s+$'), '');
+
     locationName = json['location_name'];
     originLocationName = json['origin_location_name'] != null
         ? json['origin_location_name']
@@ -84,13 +84,13 @@ class EventModel {
     url = json['url'];
     description = json['description'];
     if (json['teachers'] != null) {
-      teachers = <TeacherLinkModel>[];
+      teachers = <TeacherModel>[];
       json['teachers'].forEach((v) {
-        teachers!.add(TeacherLinkModel.fromJson(v));
+        teachers!.add(TeacherModel.fromJson(v));
       });
     }
     if (json['user_participants'] != null) {
-      userParticipants = <Null>[];
+      userParticipants = <User>[];
       json['user_participants'].forEach((v) {
         userParticipants!.add(v);
       });

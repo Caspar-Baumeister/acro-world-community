@@ -4,7 +4,6 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GraphQLErrorHandler {
   void handleError(OperationException? errorData) {
-    print(errorData);
     String errorMessage = "";
     if (errorData != null) {
       if (errorData.graphqlErrors.isNotEmpty) {

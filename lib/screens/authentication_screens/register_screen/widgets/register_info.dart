@@ -1,4 +1,4 @@
-import 'package:acroworld/components/text_wIth_leading_icon.dart';
+import 'package:acroworld/components/text_with_leading_icon.dart';
 import 'package:flutter/material.dart';
 
 class RegisterInfo extends StatelessWidget {
@@ -25,7 +25,7 @@ class RegisterInfo extends StatelessWidget {
                   maxLines: 5,
                 ),
                 SizedBox(height: 15),
-                TextWIthLeadingIcon(
+                TextWithLeadingIcon(
                   icon: ImageIcon(
                     AssetImage("assets/check.png"),
                     color: Colors.green,
@@ -40,7 +40,7 @@ class RegisterInfo extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                TextWIthLeadingIcon(
+                TextWithLeadingIcon(
                   icon: ImageIcon(
                     AssetImage("assets/check.png"),
                     color: Colors.green,
@@ -54,7 +54,7 @@ class RegisterInfo extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                TextWIthLeadingIcon(
+                TextWithLeadingIcon(
                   icon: ImageIcon(
                     AssetImage("assets/check.png"),
                     color: Colors.green,
@@ -68,7 +68,7 @@ class RegisterInfo extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                TextWIthLeadingIcon(
+                TextWithLeadingIcon(
                   icon: ImageIcon(
                     AssetImage("assets/check.png"),
                     color: Colors.green,

@@ -1,3 +1,5 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/components/loading_widget.dart';
@@ -108,8 +110,7 @@ class _UserListQueryState extends State<UserListQuery> {
             ),
           );
         } else {
-          print(result.exception);
-          return const Center(child: Text('Something went wrong'));
+          return ErrorWidget(result.exception.toString());
         }
       },
     );

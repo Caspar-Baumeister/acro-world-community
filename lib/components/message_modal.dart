@@ -39,10 +39,6 @@ class MessageModal extends StatelessWidget {
             ),
             const SizedBox(height: 30.0),
             ElevatedButton(
-              child: const Text(
-                "Close",
-                style: TextStyle(color: Colors.black),
-              ),
               onPressed: () => Navigator.of(context).pop(),
               style: ElevatedButton.styleFrom(
                 padding:
@@ -52,6 +48,10 @@ class MessageModal extends StatelessWidget {
                   side: const BorderSide(color: Colors.grey),
                   borderRadius: BorderRadius.circular(30.0),
                 ),
+              ),
+              child: const Text(
+                "Close",
+                style: TextStyle(color: Colors.black),
               ),
             ),
             const SizedBox(height: 30.0),

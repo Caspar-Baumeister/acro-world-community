@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class ClassEventParticipantQuery extends StatelessWidget {
   const ClassEventParticipantQuery({Key? key, required this.classEvent})
       : super(key: key);
-  final ClassEvent classEvent;
+  final NewClassEventsModel classEvent;
 
   @override
   Widget build(BuildContext context) {

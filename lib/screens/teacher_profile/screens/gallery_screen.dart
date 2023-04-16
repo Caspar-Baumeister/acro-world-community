@@ -1,9 +1,10 @@
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Gallery extends StatefulWidget {
-  const Gallery({Key? key, required this.pictureUrls}) : super(key: key);
-  final List<String> pictureUrls;
+  const Gallery({Key? key, required this.images}) : super(key: key);
+  final List<Images>? images;
 
   @override
   _GalleryState createState() => _GalleryState();
@@ -15,19 +16,21 @@ class _GalleryState extends State<Gallery> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GridView.count(
-        crossAxisCount: 3,
-        childAspectRatio: 1.0,
-        children: widget.pictureUrls.map(_createGridTileWidget).toList(),
-      ),
+      body: widget.images == null
+          ? Container()
+          : GridView.count(
+              crossAxisCount: 3,
+              childAspectRatio: 1.0,
+              children: widget.images!.map(_createGridTileWidget).toList(),
+            ),
     );
   }
 
-  Widget _createGridTileWidget(String url) => Builder(
+  Widget _createGridTileWidget(Images image) => Builder(
         builder: (context) => GestureDetector(
           onLongPress: () {
-            _popupDialog = _createPopupDialog(url);
-            Overlay.of(context)?.insert(_popupDialog!);
+            _popupDialog = _createPopupDialog(image.image!.url!);
+            Overlay.of(context).insert(_popupDialog!);
           },
           onLongPressEnd: (details) => _popupDialog?.remove(),
           child: CachedNetworkImage(
@@ -42,7 +45,7 @@ class _GalleryState extends State<Gallery> {
                 color: Colors.red,
               ),
             ),
-            imageUrl: url,
+            imageUrl: image.image!.url!,
           ),
         ),
       );

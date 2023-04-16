@@ -1,3 +1,4 @@
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -47,16 +48,18 @@ class DifficultyWidget extends StatelessWidget {
       this.totalWidth = DIFFICULTY_LEVEL_WIDTH})
       : super(key: key);
 
-  final List<String> classLevel;
+  final List<ClassLevels>? classLevel;
   final double height;
   final double totalWidth;
 
   @override
   Widget build(BuildContext context) {
+    List<String> levels = classLevel?.map((e) => e.level!.name!).toList() ??
+        List<String>.from([]);
     return Container(
       height: height,
       width: totalWidth,
-      decoration: classLevel.contains("Open")
+      decoration: levels.contains("Open")
           ? const BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.centerLeft,
@@ -74,13 +77,13 @@ class DifficultyWidget extends StatelessWidget {
               ),
             )
           : null,
-      child: !classLevel.contains("Open")
+      child: !levels.contains("Open")
           ? Stack(
               alignment: Alignment.center,
               children: [
                 Row(
                   children: [
-                    classLevel.contains("Beginner")
+                    levels.contains("Beginner")
                         ? Flexible(
                             child: Container(
                               constraints: const BoxConstraints.expand(),
@@ -91,7 +94,7 @@ class DifficultyWidget extends StatelessWidget {
                             ),
                           )
                         : Container(),
-                    classLevel.contains("Intermediate")
+                    levels.contains("Intermediate")
                         ? Flexible(
                             child: Container(
                               constraints: const BoxConstraints.expand(),
@@ -101,7 +104,7 @@ class DifficultyWidget extends StatelessWidget {
                             ),
                           )
                         : Container(),
-                    classLevel.contains("Advanced")
+                    levels.contains("Advanced")
                         ? Flexible(
                             child: Container(
                               constraints: const BoxConstraints.expand(),
@@ -114,9 +117,9 @@ class DifficultyWidget extends StatelessWidget {
                         : Container(),
                   ],
                 ),
-                classLevel.length == 1
+                levels.length == 1
                     ? Text(
-                        classLevel[0],
+                        levels[0],
                         style: const TextStyle(fontSize: 10),
                       )
                     : Container()

@@ -8,8 +8,8 @@ class ViewRoot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      child: child,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: child,
     );
   }
 }

@@ -1,7 +1,9 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 
-class TextWIthLeadingIcon extends StatelessWidget {
-  const TextWIthLeadingIcon(
+class TextWithLeadingIcon extends StatelessWidget {
+  const TextWithLeadingIcon(
       {Key? key, required this.icon, required this.text, this.gap = 6})
       : super(key: key);
 

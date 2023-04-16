@@ -5,9 +5,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ClassTeacherChips extends StatelessWidget {
-  const ClassTeacherChips({Key? key, required this.teacher}) : super(key: key);
+  const ClassTeacherChips({Key? key, required this.classTeacherList})
+      : super(key: key);
 
-  final List<TeacherLinkModel> teacher;
+  final List<TeacherModel> classTeacherList;
 
   @override
   Widget build(BuildContext context) {
@@ -17,24 +18,26 @@ class ClassTeacherChips extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              ...teacher
-                  .map((t) => Padding(
+              ...classTeacherList
+                  .map((teacher) => Padding(
                         padding: const EdgeInsets.only(right: 5.0),
                         child: GestureDetector(
                           // Hier muss auf ein teacher query geschickte werden, der sich den teacher holt und dann auf teacher screen leitet
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  SingleTeacherQuery(teacherId: t.id),
-                            ),
-                          ),
+                          onTap: () => teacher.id != null
+                              ? Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => SingleTeacherQuery(
+                                        teacherId: teacher.id!),
+                                  ),
+                                )
+                              : null,
                           child: Chip(
                             padding: const EdgeInsets.all(0),
                             backgroundColor: Colors.white,
-                            label: Text(t.name),
+                            label: Text(teacher.name ?? ""),
                             avatar: CachedNetworkImage(
                               fit: BoxFit.cover,
-                              imageUrl: t.profileImageUrl ?? "",
+                              imageUrl: teacher.profilImgUrl ?? "",
                               imageBuilder: (context, imageProvider) =>
                                   Container(
                                 width: 64.0,

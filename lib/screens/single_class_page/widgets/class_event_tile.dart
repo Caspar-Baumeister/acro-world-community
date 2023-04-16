@@ -19,7 +19,7 @@ class ClassEventTile extends StatefulWidget {
       required this.participants})
       : super(key: key);
 
-  final ClassEvent classEvent;
+  final NewClassEventsModel classEvent;
   final bool isParticipate;
   final List<User> participants;
 
@@ -67,7 +67,7 @@ class _ClassEventTileState extends State<ClassEventTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "${DateFormat('EEE, H:mm').format(widget.classEvent.date)} - ${DateFormat('Hm').format(widget.classEvent.endDate)}",
+                    "${DateFormat('EEE, H:mm').format(widget.classEvent.date)} - ${DateFormat('Hm').format(DateTime.parse(widget.classEvent.endDate!))}",
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

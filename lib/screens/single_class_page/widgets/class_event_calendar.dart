@@ -8,14 +8,14 @@ import 'package:table_calendar/table_calendar.dart';
 class ClassEventCalendar extends StatefulWidget {
   const ClassEventCalendar({required this.kEvents, Key? key}) : super(key: key);
 
-  final Map<DateTime, List<ClassEvent>> kEvents;
+  final Map<DateTime, List<NewClassEventsModel>> kEvents;
 
   @override
   _ClassEventCalendarState createState() => _ClassEventCalendarState();
 }
 
 class _ClassEventCalendarState extends State<ClassEventCalendar> {
-  late ValueNotifier<List<ClassEvent>> _selectedEvents;
+  late ValueNotifier<List<NewClassEventsModel>> _selectedEvents;
   final CalendarFormat _calendarFormat = CalendarFormat.week;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .disabled; // Can be toggled on/off by longpressing a date
@@ -35,13 +35,13 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
     super.dispose();
   }
 
-  List<ClassEvent> _getEventsForDay(DateTime day) {
+  List<NewClassEventsModel> _getEventsForDay(DateTime day) {
     // Implementation
 
     return widget.kEvents[day] ?? [];
   }
 
-  List<ClassEvent> _getEventsForRange(DateTime start, DateTime end) {
+  List<NewClassEventsModel> _getEventsForRange(DateTime start, DateTime end) {
     // Implementation
     final days = daysInRange(start, end);
 
@@ -90,7 +90,7 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TableCalendar<ClassEvent>(
+        TableCalendar<NewClassEventsModel>(
           availableGestures: AvailableGestures.horizontalSwipe,
 
           firstDay: kFirstDay,
@@ -127,7 +127,7 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
           },
         ),
         const SizedBox(height: 8.0),
-        ValueListenableBuilder<List<ClassEvent>>(
+        ValueListenableBuilder<List<NewClassEventsModel>>(
           valueListenable: _selectedEvents,
           builder: (context, value, _) {
             return ListView.builder(

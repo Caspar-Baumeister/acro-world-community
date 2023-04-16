@@ -57,6 +57,7 @@ class Database {
           body: json.encode({'query': query}));
       return jsonDecode(response.body.toString());
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
     }
   }
@@ -74,6 +75,7 @@ class Database {
 
       return jsonDecode(response.body.toString());
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
     }
     return null;
@@ -92,6 +94,7 @@ class Database {
 
       return jsonDecode(response.body.toString());
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
     }
     return null;
@@ -109,6 +112,7 @@ class Database {
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {
+      // ignore: avoid_print
       print(e.toString());
     }
     return null;

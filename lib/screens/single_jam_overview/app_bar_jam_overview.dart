@@ -33,7 +33,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
     User user = Provider.of<UserProvider>(context).activeUser!;
     final bool isOwnJam = widget.jam.createdBy?.id == user.id;
     final String jamName = widget.jam.name ?? "";
-    final String jamId = widget.jam.jid ?? "";
+    final String jamId = widget.jam.id ?? "";
 
     return Mutation(
       options: MutationOptions(
@@ -111,7 +111,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    runMutation({"jamId": widget.jam.jid});
+                                    runMutation({"jamId": widget.jam.id});
                                     Navigator.pop(context, 'OK');
                                   },
                                   child: const Text('Yes, Delete'),

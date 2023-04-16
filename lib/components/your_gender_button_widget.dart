@@ -25,9 +25,7 @@ class YourGenderButtonWidget extends StatelessWidget {
       builder: (QueryResult meGenderResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (meGenderResult.hasException || !meGenderResult.isConcrete) {
-          print("error in meGender query");
-          print(meGenderResult.exception);
-          return Container();
+          return ErrorWidget(meGenderResult.exception.toString());
         } else if (meGenderResult.isLoading) {
           return const LoadingIndicator();
         } else {

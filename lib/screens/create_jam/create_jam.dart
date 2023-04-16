@@ -57,7 +57,7 @@ class _CreateJamState extends State<CreateJam> {
       Jam jam = widget.jam!;
       isEdit = true;
       setState(() {
-        _chosenDateTime = jam.date!;
+        _chosenDateTime = jam.dateAsDateTime!;
         name = jam.name ?? "";
         info = jam.info ?? "";
         latlng = jam.latLng;
@@ -111,7 +111,7 @@ class _CreateJamState extends State<CreateJam> {
 
                         if (isEdit) {
                           runMutation({
-                            "jamId": widget.jam!.jid,
+                            "jamId": widget.jam!.id,
                             "name": name,
                             "date": _chosenDateTime.toIso8601String(),
                             "info": info,

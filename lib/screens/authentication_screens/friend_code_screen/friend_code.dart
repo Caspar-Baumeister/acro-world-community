@@ -1,4 +1,4 @@
-import 'package:acroworld/components/text_wIth_leading_icon.dart';
+import 'package:acroworld/components/text_with_leading_icon.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/gestures.dart';
@@ -63,7 +63,7 @@ class FriendCode extends StatelessWidget {
                         maxLines: 5,
                       ),
                       const SizedBox(height: 15),
-                      const TextWIthLeadingIcon(
+                      const TextWithLeadingIcon(
                         icon: ImageIcon(
                           AssetImage("assets/check.png"),
                           color: Colors.green,
@@ -77,7 +77,7 @@ class FriendCode extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextWIthLeadingIcon(
+                      const TextWithLeadingIcon(
                         icon: ImageIcon(
                           AssetImage("assets/check.png"),
                           color: Colors.green,
@@ -91,7 +91,7 @@ class FriendCode extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextWIthLeadingIcon(
+                      const TextWithLeadingIcon(
                         icon: ImageIcon(
                           AssetImage("assets/check.png"),
                           color: Colors.green,
@@ -105,7 +105,7 @@ class FriendCode extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const TextWIthLeadingIcon(
+                      const TextWithLeadingIcon(
                         icon: ImageIcon(
                           AssetImage("assets/check.png"),
                           color: Colors.green,

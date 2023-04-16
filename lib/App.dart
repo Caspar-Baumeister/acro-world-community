@@ -1,5 +1,8 @@
+// ignore_for_file: file_names
+
 import 'package:acroworld/components/wrapper/connection_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
@@ -24,16 +27,13 @@ class App extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
+          ChangeNotifierProvider(create: (_) => ActivityProvider()),
         ],
         child: GraphQLProvider(
           client: client,
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
-            // TODO version and internet check wrapper (pulls min version, compares, if no result
-            // TODO no wifi screen. Otherwise either old version screen or continue)
-            // LoginWrapper checks for token?
-            // Also possible: Routerdelegate with auth check and guards
             home: const ConnectionWrapper(),
           ),
         ));

@@ -30,6 +30,8 @@ class SingleTeacherQuery extends StatelessWidget {
           print("error in TeacherProfileQueryWrapper query");
           print(result.exception);
           return ErrorPage(error: result.exception.toString());
+        } else if (userProvider.activeUser?.id == null) {
+          return const ErrorPage(error: "no active user");
         } else if (result.isLoading) {
           return const LoadingPage();
         } else if (result.data != null &&
@@ -37,7 +39,10 @@ class SingleTeacherQuery extends StatelessWidget {
           TeacherModel teacher =
               TeacherModel.fromJson(result.data?["teachers_by_pk"]);
 
-          return ProfileBaseScreen(teacher: teacher);
+          return ProfileBaseScreen(
+            teacher: teacher,
+            userId: userProvider.activeUser!.id!,
+          );
         } else {
           return const LoadingPage();
         }

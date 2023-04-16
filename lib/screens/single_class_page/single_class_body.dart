@@ -1,9 +1,9 @@
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/components/map.dart';
-import 'package:acroworld/screens/home_screens/activities/components/class_teacher_chips.dart';
+import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/class_event_calendar.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -16,7 +16,7 @@ class SingleClassBody extends StatelessWidget {
       {Key? key, required this.classEvents, required this.classe})
       : super(key: key);
 
-  final List<ClassEvent> classEvents;
+  final List<NewClassEventsModel> classEvents;
   final ClassModel classe;
 
   @override
@@ -54,10 +54,10 @@ class SingleClassBody extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 20),
-              DescriptionTextWidget(text: classe.description),
+              DescriptionTextWidget(text: classe.description ?? ""),
               const SizedBox(height: 10),
-              classEvents[0].teacher != null &&
-                      classEvents[0].teacher!.isNotEmpty
+              classEvents[0].classModel?.classTeachers != null &&
+                      classEvents[0].classModel!.classTeachers!.isNotEmpty
                   ? Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -69,7 +69,12 @@ class SingleClassBody extends StatelessWidget {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(width: 10),
-                          ClassTeacherChips(teacher: classEvents[0].teacher!),
+                          ClassTeacherChips(
+                              classTeacherList: List<TeacherModel>.from(
+                                  classEvents[0]
+                                      .classModel!
+                                      .classTeachers!
+                                      .map((e) => e.teacher))),
                         ],
                       ),
                     )
@@ -155,7 +160,8 @@ class SingleClassBody extends StatelessWidget {
               const SizedBox(height: 6),
               const Divider(),
               const SizedBox(height: 6),
-              classe.latitude != null && classe.longitude != null
+              classe.location?.coordinates?[1] != null &&
+                      classe.location?.coordinates?[0] != null
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -167,8 +173,8 @@ class SingleClassBody extends StatelessWidget {
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             OpenGoogleMaps(
-                              latitude: classe.latitude! * 1.0,
-                              longitude: classe.longitude! * 1.0,
+                              latitude: classe.location!.coordinates![1] * 1.0,
+                              longitude: classe.location!.coordinates![0] * 1.0,
                             )
                           ],
                         ),
@@ -179,19 +185,19 @@ class SingleClassBody extends StatelessWidget {
                           constraints: const BoxConstraints(maxHeight: 150),
                           child: MapWidget(
                             zoom: 15.0,
-                            center: LatLng(classe.latitude! * 1.0,
-                                classe.longitude! * 1.0),
-                            markerLocation: LatLng(classe.latitude! * 1.0,
-                                classe.longitude! * 1.0),
+                            center: LatLng(
+                                classe.location!.coordinates![1] * 1.0,
+                                classe.location!.coordinates![0] * 1.0),
+                            markerLocation: LatLng(
+                                classe.location!.coordinates![1] * 1.0,
+                                classe.location!.coordinates![0] * 1.0),
                           ),
                         ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 6.0),
+                          child: Divider(),
+                        )
                       ],
-                    )
-                  : Container(),
-              classe.latitude != null && classe.longitude != null
-                  ? const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 6.0),
-                      child: Divider(),
                     )
                   : Container(),
               SizedBox(

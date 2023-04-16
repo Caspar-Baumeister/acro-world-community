@@ -6,15 +6,19 @@ import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_following.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ProfileBaseScreen extends StatefulWidget {
-  const ProfileBaseScreen({Key? key, required this.teacher}) : super(key: key);
+  const ProfileBaseScreen(
+      {Key? key, required this.teacher, required this.userId})
+      : super(key: key);
 
   final TeacherModel teacher;
+  final String userId;
   @override
   _ProfileBaseScreenState createState() => _ProfileBaseScreenState();
 }
@@ -26,7 +30,8 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
   @override
   void initState() {
     super.initState();
-    isLikedState = widget.teacher.isLikedByMe;
+    isLikedState =
+        isTeacherFollowedByUser(widget.teacher.userLikes, widget.userId);
   }
 
   @override
@@ -74,7 +79,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                             await followButtonClicked(
                                 isLikedState,
                                 uid,
-                                widget.teacher.communityID!,
+                                widget.teacher.communityId!,
                                 widget.teacher.name);
                             isLikedState
                                 ? runMutation({
@@ -186,7 +191,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                 child: TabBarView(
                   children: [
                     ClassSection(teacher: widget.teacher),
-                    Gallery(pictureUrls: widget.teacher.pictureUrls),
+                    Gallery(images: widget.teacher.images),
                   ],
                 ),
               ),

@@ -1,4 +1,5 @@
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
+import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/single_jam_overview/participant_modal.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../graphql/mutations.dart';
+import '../../../../../graphql/mutations.dart';
 
 class JamParticipantsButton extends StatefulWidget {
   const JamParticipantsButton({
@@ -18,7 +19,7 @@ class JamParticipantsButton extends StatefulWidget {
     required this.uid,
   }) : super(key: key);
 
-  final List<User> participants;
+  final List<Participants> participants;
   final String uid;
   final String jamId;
 
@@ -35,10 +36,10 @@ class _JamParticipantsButtonState extends State<JamParticipantsButton> {
   void initState() {
     super.initState();
     isParticipateState = widget.participants
-        .map((user) => user.id)
+        .map((paicipant) => paicipant.user!.id)
         .toList()
         .contains(widget.uid);
-    realParticipants = widget.participants;
+    realParticipants = widget.participants.map((e) => e.user!).toList();
   }
 
   @override

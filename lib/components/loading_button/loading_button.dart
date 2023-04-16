@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class LoadingButton extends StatelessWidget {
-  LoadingButton(
+  const LoadingButton(
       {Key? key,
       required this.isLoading,
       required this.onPressed,
       required this.buttonContent})
       : super(key: key);
 
-  bool isLoading;
-  void Function() onPressed;
-  Widget buttonContent;
+  final bool isLoading;
+  final void Function() onPressed;
+  final Widget buttonContent;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class LoadingButton extends StatelessWidget {
       ignoring: isLoading,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              primary: Colors.white,
+              backgroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               textStyle:
                   const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),

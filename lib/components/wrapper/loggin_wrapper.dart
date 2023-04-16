@@ -42,8 +42,6 @@ class _LogginWrapperState extends State<LogginWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    print("inside logginwrapper");
-    print(credentials);
     return FutureBuilder(
         future: initCredentials,
         builder: ((context, snapshot) {
@@ -75,8 +73,11 @@ class _LogginWrapperState extends State<LogginWrapper> {
     if (!isValidToken) {
       return false;
     }
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<UserProvider>(context, listen: false)
+          .setUserFromToken();
+    });
 
-    await Provider.of<UserProvider>(context, listen: false).setUserFromToken();
     return true;
   }
 }

@@ -10,7 +10,7 @@ class H2 extends StatelessWidget {
   Widget build(BuildContext context) {
     return H(
       text,
-      style: Theme.of(context).textTheme.headline2,
+      style: Theme.of(context).textTheme.displayMedium,
     );
   }
 }

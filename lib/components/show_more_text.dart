@@ -2,18 +2,17 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
-  final String text;
-  final bool isHeader;
-
   const DescriptionTextWidget(
       {Key? key, required this.text, this.isHeader = false})
       : super(key: key);
+  final String text;
+  final bool isHeader;
 
   @override
-  _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
+  DescriptionTextWidgetState createState() => DescriptionTextWidgetState();
 }
 
-class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
+class DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   late String firstHalf;
   late String secondHalf;
 

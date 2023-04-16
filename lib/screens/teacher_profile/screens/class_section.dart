@@ -1,5 +1,5 @@
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/class_model.dart';
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/components/loading_widget.dart';
@@ -105,8 +105,8 @@ class ClassSection extends StatelessWidget {
                             ),
                           )
                         : null,
-                    title: Text(indexClass.name),
-                    subtitle: Text(indexClass.locationName),
+                    title: Text(indexClass.name ?? ""),
+                    subtitle: Text(indexClass.locationName ?? ""),
                     //     style: const TextStyle(fontWeight: FontWeight.w300)),
                   ),
                 );
