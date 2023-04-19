@@ -191,7 +191,7 @@ class SingleEventBody extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 const Text(
-                                  "Venue",
+                                  "Location",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 OpenGoogleMaps(
@@ -258,19 +258,22 @@ class SingleEventBody extends StatelessWidget {
               )
             : Container(),
         event.teachers != null && event.teachers!.isNotEmpty
-            ? Container(
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Teacher:",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 10),
-                    ClassTeacherChips(classTeacherList: event.teachers!),
-                  ],
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "Teacher:",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(width: 10),
+                      ClassTeacherChips(classTeacherList: event.teachers!),
+                    ],
+                  ),
                 ),
               )
             : Container(),

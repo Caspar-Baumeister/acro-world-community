@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 class ClassEventParticipantQuery extends StatelessWidget {
   const ClassEventParticipantQuery({Key? key, required this.classEvent})
       : super(key: key);
-  final NewClassEventsModel classEvent;
+  final ClassEvent classEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class ClassEventParticipantQuery extends StatelessWidget {
     return Query(
       options: QueryOptions(
         fetchPolicy: FetchPolicy.networkOnly,
-        document: Queries.getClassEventCommunity,
+        document: Queries.getClassEventParticipants,
         variables: {
           'class_event_id': classEvent.id,
         },

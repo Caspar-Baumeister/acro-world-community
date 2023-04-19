@@ -52,7 +52,7 @@ class UserProvider extends ChangeNotifier {
             }
           }""");
 
-    if (response["data"]?["me"]?[0] == null) {
+    if (response?["data"]?["me"]?[0] == null) {
       return false;
     }
     Map<String, dynamic> user = response["data"]["me"][0];

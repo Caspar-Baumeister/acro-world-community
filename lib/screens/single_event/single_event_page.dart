@@ -13,15 +13,9 @@ class SingleEventPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(color: Colors.black),
-        title: RichText(
-          overflow: TextOverflow.ellipsis,
-          text: TextSpan(
-            children: <TextSpan>[
-              TextSpan(
-                  text: event.name,
-                  style: HEADER_1_TEXT_STYLE.copyWith(color: Colors.black)),
-            ],
-          ),
+        title: Text(
+          event.name ?? "",
+          style: HEADER_1_TEXT_STYLE.copyWith(color: Colors.black),
         ),
       ),
       body: SingleEventBody(

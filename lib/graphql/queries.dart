@@ -131,40 +131,19 @@ query Config {
   }
 }
 """);
+
+  static final getEventsByTeacherId = gql("""
+query getEventsByTeacherId(\$teacher_id: uuid) {
+  events(where: {confirmation_status: {_eq: Confirmed}, _and: {teachers: {teacher_id: {_eq: \$teacher_id}}}}) {
+    ${Fragments.eventFragment}
+  }
+}
+""");
+
   static final events = gql("""
 query Events {
   events (where: {confirmation_status: {_eq: Confirmed}}){
-    created_at
-    created_by_id
-    description
-    end_date
-    event_source
-    event_type
-    id
-    is_highlighted
-    links
-    location
-    location_city
-    location_country
-    location_name
-    main_image_url
-    name
-    origin_creator_name
-    pricing
-    start_date
-    updated_at
-    url
-    origin_location_name
-    user_participants {
-      event_id
-      id
-      user_id
-    }
-    teachers {
-      event_id
-      id
-      teacher_id
-    }
+     ${Fragments.eventFragment}
   }
 }
  """);
@@ -195,6 +174,7 @@ query jamsFromToWithDistance(\$from: timestamptz!, \$to: timestamptz!, \$latitud
       latitude
     }
     created_by {
+      id
       name
     }
     date
@@ -211,6 +191,7 @@ query jamsFromToWithDistance(\$from: timestamptz!, \$to: timestamptz!, \$latitud
     participants {
       user_id
       user {
+        id
         acro_role_id
         name
       }
@@ -233,6 +214,7 @@ query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
       latitude
     }
     created_by {
+      id
       name
     }
     date
@@ -249,6 +231,7 @@ query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
     participants {
       user_id
       user {
+        id
         acro_role_id
         name
       }
@@ -459,8 +442,8 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   }
 }""");
 
-  static final getClassEventCommunity = gql("""
-query getClassEventCommunity(\$class_event_id: uuid) {
+  static final getClassEventParticipants = gql("""
+query getClassEventParticipants(\$class_event_id: uuid) {
   class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
     user {
       ${Fragments.userFragment}

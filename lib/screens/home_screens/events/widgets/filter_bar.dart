@@ -13,19 +13,33 @@ class FilterBar extends StatelessWidget with PreferredSizeWidget {
         Provider.of<EventFilterProvider>(context);
     return AppBar(
       automaticallyImplyLeading: false,
-      title: StandardIconButton(
-        text: eventFilterProvider.filterString(),
-        icon: Icons.filter_list,
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const EventFilterPage(),
+      title: Row(
+        children: [
+          eventFilterProvider.isFilterActive()
+              ? Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: GestureDetector(
+                      onTap: () => eventFilterProvider.resetFilter(),
+                      child: const Icon(Icons.arrow_back_ios_new_rounded)),
+                )
+              : Container(),
+          Flexible(
+            child: StandardIconButton(
+              text: eventFilterProvider.filterString(),
+              icon: Icons.filter_list,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EventFilterPage(),
+                  ),
+                );
+              },
+              showClose: eventFilterProvider.isFilterActive(),
+              onClose: () => eventFilterProvider.resetFilter(),
             ),
-          );
-        },
-        showClose: eventFilterProvider.isFilterActive(),
-        onClose: () => eventFilterProvider.resetFilter(),
+          ),
+        ],
       ),
     );
   }

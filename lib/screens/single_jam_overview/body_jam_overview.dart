@@ -18,9 +18,9 @@ import 'package:provider/provider.dart';
 import 'package:event_bus/event_bus.dart';
 
 class JamOverviewBody extends StatefulWidget {
-  JamOverviewBody({required this.jam, required this.cid, Key? key})
+  const JamOverviewBody({required this.jam, required this.cid, Key? key})
       : super(key: key);
-  Jam jam;
+  final Jam jam;
   final String cid;
 
   @override
@@ -30,9 +30,18 @@ class JamOverviewBody extends StatefulWidget {
 class _JamOverviewBodyState extends State<JamOverviewBody> {
   bool isLoading = false;
   bool isUserParticipating = false;
+  late Jam jam;
+
+  @override
+  void initState() {
+    super.initState();
+    jam = widget.jam;
+  }
 
   @override
   Widget build(BuildContext context) {
+    print("widget.jam.id");
+    print(widget.jam.id);
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context);
     final EventBus eventBus = eventBusProvider.eventBus;
@@ -53,7 +62,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
       Jam crudJam = crudJamEvent.jam;
       if (crudJam.id == widget.jam.id) {
         setState(() {
-          widget.jam = crudJam;
+          jam = crudJam;
         });
       }
     });
@@ -72,7 +81,7 @@ class _JamOverviewBodyState extends State<JamOverviewBody> {
             eventBus.fire(ParticipateToJamEvent(widget.jam));
             dynamic returnObject = resultData['insert_jam_participants'] ??
                 resultData['delete_jam_participants'];
-            widget.jam = Jam.fromJson(returnObject['returning'][0]['jam']);
+            jam = Jam.fromJson(returnObject['returning'][0]['jam']);
           },
           onError: GraphQLErrorHandler().handleError,
         ),

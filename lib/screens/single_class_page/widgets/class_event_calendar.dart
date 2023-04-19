@@ -8,16 +8,16 @@ import 'package:table_calendar/table_calendar.dart';
 class ClassEventCalendar extends StatefulWidget {
   const ClassEventCalendar({required this.kEvents, Key? key}) : super(key: key);
 
-  final Map<DateTime, List<NewClassEventsModel>> kEvents;
+  final Map<DateTime, List<ClassEvent>> kEvents;
 
   @override
-  _ClassEventCalendarState createState() => _ClassEventCalendarState();
+  ClassEventCalendarState createState() => ClassEventCalendarState();
 }
 
-class _ClassEventCalendarState extends State<ClassEventCalendar> {
-  late ValueNotifier<List<NewClassEventsModel>> _selectedEvents;
+class ClassEventCalendarState extends State<ClassEventCalendar> {
+  late ValueNotifier<List<ClassEvent>> _selectedEvents;
   final CalendarFormat _calendarFormat = CalendarFormat.week;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+  RangeSelectionMode rangeSelectionMode = RangeSelectionMode
       .disabled; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -35,19 +35,10 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
     super.dispose();
   }
 
-  List<NewClassEventsModel> _getEventsForDay(DateTime day) {
+  List<ClassEvent> _getEventsForDay(DateTime day) {
     // Implementation
 
     return widget.kEvents[day] ?? [];
-  }
-
-  List<NewClassEventsModel> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
@@ -57,29 +48,10 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
         _focusedDay = focusedDay;
         _rangeStart = null; // Important to clean those
         _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+        rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
-    }
-  }
-
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
     }
   }
 
@@ -90,7 +62,7 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TableCalendar<NewClassEventsModel>(
+        TableCalendar<ClassEvent>(
           availableGestures: AvailableGestures.horizontalSwipe,
 
           firstDay: kFirstDay,
@@ -114,20 +86,12 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
               selectedDecoration: const BoxDecoration(
                   color: PRIMARY_COLOR, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
-          //onRangeSelected: _onRangeSelected,
-          // onFormatChanged: (format) {
-          //   if (_calendarFormat != format) {
-          //     setState(() {
-          //       _calendarFormat = format;
-          //     });
-          //   }
-          // },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
           },
         ),
         const SizedBox(height: 8.0),
-        ValueListenableBuilder<List<NewClassEventsModel>>(
+        ValueListenableBuilder<List<ClassEvent>>(
           valueListenable: _selectedEvents,
           builder: (context, value, _) {
             return ListView.builder(

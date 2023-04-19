@@ -1,22 +1,18 @@
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
-import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/components/map.dart';
+import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/screens/single_class_page/widgets/class_event_calendar.dart';
+import 'package:acroworld/screens/single_class_page/widgets/class_event_calender_query.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class SingleClassBody extends StatelessWidget {
-  const SingleClassBody(
-      {Key? key, required this.classEvents, required this.classe})
-      : super(key: key);
+  const SingleClassBody({Key? key, required this.classe}) : super(key: key);
 
-  final List<NewClassEventsModel> classEvents;
   final ClassModel classe;
 
   @override
@@ -56,8 +52,7 @@ class SingleClassBody extends StatelessWidget {
               const SizedBox(height: 20),
               DescriptionTextWidget(text: classe.description ?? ""),
               const SizedBox(height: 10),
-              classEvents[0].classModel?.classTeachers != null &&
-                      classEvents[0].classModel!.classTeachers!.isNotEmpty
+              classe.classTeachers != null && classe.classTeachers!.isNotEmpty
                   ? Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -71,10 +66,7 @@ class SingleClassBody extends StatelessWidget {
                           const SizedBox(width: 10),
                           ClassTeacherChips(
                               classTeacherList: List<TeacherModel>.from(
-                                  classEvents[0]
-                                      .classModel!
-                                      .classTeachers!
-                                      .map((e) => e.teacher))),
+                                  classe.classTeachers!.map((e) => e.teacher))),
                         ],
                       ),
                     )
@@ -169,7 +161,7 @@ class SingleClassBody extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             const Text(
-                              "Venue",
+                              "Location",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
                             OpenGoogleMaps(
@@ -200,10 +192,7 @@ class SingleClassBody extends StatelessWidget {
                       ],
                     )
                   : Container(),
-              SizedBox(
-                child:
-                    ClassEventCalendar(kEvents: classEventToHash(classEvents)),
-              ),
+              ClassEventCalenderQuery(classId: classe.id!),
               const SizedBox(height: 40)
             ],
           ),

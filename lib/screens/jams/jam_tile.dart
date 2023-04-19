@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-class NewJamTile extends StatelessWidget {
-  const NewJamTile({Key? key, required this.jam}) : super(key: key);
+class JamTile extends StatelessWidget {
+  const JamTile({Key? key, required this.jam}) : super(key: key);
 
   final Jam jam;
 
@@ -17,14 +17,16 @@ class NewJamTile extends StatelessWidget {
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    print(" jam.community?.id ");
+    print(jam.community?.id);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => jam.communityId != null
+      onTap: () => jam.community?.id != null
           ? Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => JamOverview(
                   jam: jam,
-                  cid: jam.communityId!,
+                  cid: jam.community!.id,
                 ),
               ),
             )

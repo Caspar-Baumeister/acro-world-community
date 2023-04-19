@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class ClassEventExpandedTile extends StatelessWidget {
   const ClassEventExpandedTile({Key? key, required this.classEvent})
       : super(key: key);
-  final NewClassEventsModel classEvent;
+  final ClassEvent classEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class ClassEventExpandedTile extends StatelessWidget {
           ? Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => SingleClassPage(
-                  teacherClass: classEvent.classModel!,
+                  clas: classEvent.classModel!,
                 ),
               ),
             )
@@ -177,7 +177,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                         Query(
                             options: QueryOptions(
                               fetchPolicy: FetchPolicy.networkOnly,
-                              document: Queries.getClassEventCommunity,
+                              document: Queries.getClassEventParticipants,
                               variables: {
                                 'class_event_id': classEvent.id,
                               },

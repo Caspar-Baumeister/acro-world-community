@@ -127,13 +127,12 @@ Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
   //   });
 }
 
-Map<DateTime, List<NewClassEventsModel>> classEventToHash(List objects) {
-  List<NewClassEventsModel> sortedObjects =
-      List<NewClassEventsModel>.from(objects);
+Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
+  List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
   sortedObjects.sort((classEvent1, classEvent2) =>
       classEvent2.date.compareTo(classEvent1.date));
-  LinkedHashMap<DateTime, List<NewClassEventsModel>> objectMap =
-      LinkedHashMap<DateTime, List<NewClassEventsModel>>(
+  LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
+      LinkedHashMap<DateTime, List<ClassEvent>>(
     equals: isSameDayCustom,
     hashCode: getHashCode,
   );

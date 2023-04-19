@@ -19,7 +19,7 @@ class ClassEventTile extends StatefulWidget {
       required this.participants})
       : super(key: key);
 
-  final NewClassEventsModel classEvent;
+  final ClassEvent classEvent;
   final bool isParticipate;
   final List<User> participants;
 

@@ -139,26 +139,20 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
           if (result.isLoading) {
             return IgnorePointer(
               ignoring: true,
-              child: Stack(
-                children: [
-                  ActivityCalenderWidget(
-                      activiyType: widget.activityType,
-                      onPageChanged: onPageChanged,
-                      classWeekEvents: const [],
-                      jamWeekEvents: const [],
-                      focusedDay: focusedDay,
-                      setFocusedDay: (newFocusedDay) => setState(() {
-                            focusedDay = newFocusedDay;
-                          }),
-                      setInitialSelectedDate: (newInitialSelectedDate) =>
-                          setState(() {
-                            initialSelectedDate = newInitialSelectedDate;
-                          }),
-                      initialSelectedDate: initialSelectedDate),
-                  const Positioned.fill(
-                      child: Center(child: CircularProgressIndicator()))
-                ],
-              ),
+              child: ActivityCalenderWidget(
+                  activiyType: widget.activityType,
+                  onPageChanged: onPageChanged,
+                  classWeekEvents: const [],
+                  jamWeekEvents: const [],
+                  focusedDay: focusedDay,
+                  setFocusedDay: (newFocusedDay) => setState(() {
+                        focusedDay = newFocusedDay;
+                      }),
+                  setInitialSelectedDate: (newInitialSelectedDate) =>
+                      setState(() {
+                        initialSelectedDate = newInitialSelectedDate;
+                      }),
+                  initialSelectedDate: initialSelectedDate),
             );
           }
           Future<void> runRefetch() async {
@@ -181,7 +175,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             }));
           }
 
-          List<NewClassEventsModel> classWeekEvents = [];
+          List<ClassEvent> classWeekEvents = [];
           List<Jam> jamWeekEvents = [];
 
           if (widget.activityType == "jams") {
@@ -198,12 +192,11 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             }
           } else {
             try {
-              classWeekEvents = List<NewClassEventsModel>.from(result
-                  .data![selector]
-                  .map((json) => NewClassEventsModel.fromJson(json)));
+              classWeekEvents = List<ClassEvent>.from(result.data![selector]
+                  .map((json) => ClassEvent.fromJson(json)));
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 activityProvider.setActiveClasses(classWeekEvents
-                    .where((NewClassEventsModel classEvent) =>
+                    .where((ClassEvent classEvent) =>
                         isSameDate(classEvent.date!, focusedDay))
                     .toList());
               });

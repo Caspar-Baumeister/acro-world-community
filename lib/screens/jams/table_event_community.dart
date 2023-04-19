@@ -1,6 +1,6 @@
 // import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/jam_model.dart';
-import 'package:acroworld/screens/jams/new_jam_tile.dart';
+import 'package:acroworld/screens/jams/jam_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -95,7 +95,7 @@ class _TableEventsCommunityState extends State<TableEventsCommunity> {
                     if (index == 0) {
                       return const SizedBox(height: 55);
                     }
-                    return NewJamTile(jam: value[index - 1]);
+                    return JamTile(jam: value[index - 1]);
                   },
                 );
               },

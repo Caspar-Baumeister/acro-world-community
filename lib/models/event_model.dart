@@ -86,7 +86,7 @@ class EventModel {
     if (json['teachers'] != null) {
       teachers = <TeacherModel>[];
       json['teachers'].forEach((v) {
-        teachers!.add(TeacherModel.fromJson(v));
+        teachers!.add(TeacherModel.fromJson(v["teacher"]));
       });
     }
     if (json['user_participants'] != null) {

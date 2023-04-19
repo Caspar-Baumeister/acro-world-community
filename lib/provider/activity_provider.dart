@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 class ActivityProvider extends ChangeNotifier {
   // keeps track of the active jams and classes in the activity view
   List<Jam> activeJams = [];
-  List<NewClassEventsModel> activeClasseEvents = [];
+  bool loading = true;
+  List<ClassEvent> activeClasseEvents = [];
   DateTime activeDay = DateTime.now();
 
   setActiveJams(List<Jam> jams) {
@@ -13,8 +14,13 @@ class ActivityProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setActiveClasses(List<NewClassEventsModel> classes) {
+  setActiveClasses(List<ClassEvent> classes) {
     activeClasseEvents = classes;
+    notifyListeners();
+  }
+
+  setLoading(bool newLoading) {
+    loading = newLoading;
     notifyListeners();
   }
 }

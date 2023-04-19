@@ -1,3 +1,5 @@
+import 'package:acroworld/models/class_event.dart';
+
 class TeacherModel {
   String? id;
   String? name;
@@ -145,25 +147,6 @@ class TeacherLevels {
     if (level != null) {
       data['level'] = level!.toJson();
     }
-    return data;
-  }
-}
-
-class Level {
-  String? id;
-  String? name;
-
-  Level({this.id, this.name});
-
-  Level.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
     return data;
   }
 }

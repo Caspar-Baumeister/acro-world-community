@@ -25,7 +25,7 @@ class ActivityCalenderWidget extends StatefulWidget {
   final Function(DateTime newFocusedDay) setFocusedDay;
   final Function(DateTime newFocusedDay) setInitialSelectedDate;
 
-  final List<NewClassEventsModel> classWeekEvents;
+  final List<ClassEvent> classWeekEvents;
   final List<Jam> jamWeekEvents;
   final String activiyType;
   final DateTime initialSelectedDate;

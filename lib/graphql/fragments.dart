@@ -1,4 +1,47 @@
 class Fragments {
+  static const eventFragment = """created_at
+    created_by_id
+    description
+    end_date
+    event_source
+    event_type
+    id
+    is_highlighted
+    links
+    location
+    location_city
+    location_country
+    location_name
+    main_image_url
+    name
+    origin_creator_name
+    pricing
+    start_date
+    updated_at
+    url
+    origin_location_name
+    user_participants {
+      event_id
+      id
+      user_id
+    }
+    teachers {
+      teacher {
+        id
+        name
+        confirmation_status
+        is_organization
+        images {
+          id
+          image {
+            id
+            url
+          }
+          is_profile_picture
+        }
+      }
+    }""";
+
   static const teacherFragment = """
   created_at
   description

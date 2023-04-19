@@ -61,13 +61,13 @@ class _FutureJamsState extends State<FutureJams> {
         });
 
         eventListeners.add(eventBus.on<ParticipateToJamEvent>().listen((event) {
-          if (event.jam.communityId == widget.cId) {
+          if (event.jam.community?.id == widget.cId) {
             runRefetch();
           }
         }));
 
         eventListeners.add(eventBus.on<CrudJamEvent>().listen((event) {
-          if (event.jam.communityId == widget.cId) {
+          if (event.jam.community?.id == widget.cId) {
             runRefetch();
           }
         }));

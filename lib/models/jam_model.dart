@@ -66,7 +66,6 @@ class Jam {
   String? name;
   ParticipantsAggregate? participantsAggregate;
   List<Participants>? participants;
-  String? communityId;
   Community? community;
 
   DateTime? get dateAsDateTime => date != null ? DateTime.parse(date!) : null;
@@ -86,7 +85,6 @@ class Jam {
       this.name,
       this.participantsAggregate,
       this.participants,
-      this.communityId,
       this.community});
 
   Jam.fromJson(Map<String, dynamic> json) {
@@ -109,7 +107,6 @@ class Jam {
         participants!.add(Participants.fromJson(v));
       });
     }
-    communityId = json['community_id'];
     community = json['community'] != null
         ? Community.fromJson(json['community'])
         : null;

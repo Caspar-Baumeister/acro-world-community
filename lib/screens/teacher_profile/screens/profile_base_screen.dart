@@ -2,6 +2,7 @@ import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/screens/class_section.dart';
+import 'package:acroworld/screens/teacher_profile/screens/event_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -129,24 +130,13 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                                       ),
                               )));
                     }),
-
-                // HeartMutationWidget(
-                //     isLiked: isLikedState,
-                //     teacherLikes: teacherLikes,
-                //     setIsLiked: (liked) => setState(() {
-                //           isLikedState = liked;
-                //         }),
-                //     setTeacherLikes: (likes) => setState(() {
-                //           teacherLikes = likes;
-                //         }),
-                //     teacherId: widget.teacher.id!),
               ),
             ],
           ),
         ),
       ),
       body: DefaultTabController(
-        length: 2,
+        length: 3,
         child: NestedScrollView(
           headerSliverBuilder: (context, _) {
             return [
@@ -180,6 +170,12 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                     ),
                     Tab(
                       icon: Icon(
+                        Icons.festival_outlined,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Tab(
+                      icon: Icon(
                         Icons.grid_on_sharp,
                         color: Colors.black,
                       ),
@@ -190,7 +186,8 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    ClassSection(teacher: widget.teacher),
+                    ClassSection(teacherId: widget.teacher.id!),
+                    EventSection(teacherId: widget.teacher.id!),
                     Gallery(images: widget.teacher.images),
                   ],
                 ),

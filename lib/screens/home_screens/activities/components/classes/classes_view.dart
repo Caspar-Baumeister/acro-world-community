@@ -12,7 +12,7 @@ class ClassesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     ActivityProvider activityProvider = Provider.of<ActivityProvider>(context);
-    List<NewClassEventsModel> classEvents = activityProvider.activeClasseEvents;
+    List<ClassEvent> classEvents = activityProvider.activeClasseEvents;
     try {
       classEvents.sort((a, b) =>
           DateTime.parse(b.startDate!).isBefore(DateTime.parse(a.startDate!))
@@ -21,20 +21,30 @@ class ClassesView extends StatelessWidget {
     } catch (e) {
       print(e.toString());
     }
-    return Padding(
-      padding: const EdgeInsets.only(top: 4.0),
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: classEvents.length,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
-            child: ClassEventExpandedTile(
-              classEvent: classEvents[index],
+    return classEvents.isEmpty
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              Center(
+                child: Text("no classes found"),
+              )
+            ],
+          )
+        : Padding(
+            padding: const EdgeInsets.only(top: 4.0),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: classEvents.length,
+              itemBuilder: (context, index) {
+                return Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
+                  child: ClassEventExpandedTile(
+                    classEvent: classEvents[index],
+                  ),
+                );
+              },
             ),
           );
-        },
-      ),
-    );
   }
 }

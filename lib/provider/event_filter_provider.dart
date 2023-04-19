@@ -140,6 +140,8 @@ class EventFilterProvider extends ChangeNotifier {
   }
 
   String filterString() {
+    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
+
     String fString = "";
 
     // Case 1: no filter active
@@ -153,9 +155,11 @@ class EventFilterProvider extends ChangeNotifier {
 
     // Trainings ...
     if (activeCategories.length == 1) {
-      fString += " ${activeCategories[0]},";
+      fString +=
+          " ${capitalizeWords(activeCategories[0].replaceAllMapped(exp, (Match m) => (' ${m.group(0)}')).toLowerCase())},";
     } else if (activeCategories.length > 1) {
-      fString += " ${activeCategories[0]} + ${activeCategories.length - 1},";
+      fString +=
+          " ${capitalizeWords(activeCategories[0].replaceAllMapped(exp, (Match m) => (' ${m.group(0)}')).toLowerCase())} + ${activeCategories.length - 1},";
     }
 
     // ... Jul ...
@@ -175,11 +179,11 @@ class EventFilterProvider extends ChangeNotifier {
 
     // ... highlights
     if (onlyHighlighted) {
-      fString += " highlights,";
+      fString += " Highlights,";
     }
 
     if (fString.isNotEmpty) {
-      fString.trim();
+      fString = fString.trim();
     }
 
     return fString.substring(0, fString.length - 1);
