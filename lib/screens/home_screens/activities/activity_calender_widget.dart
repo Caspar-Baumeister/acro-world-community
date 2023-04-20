@@ -17,18 +17,14 @@ class ActivityCalenderWidget extends StatefulWidget {
     required this.setFocusedDay,
     required this.jamWeekEvents,
     required this.activiyType,
-    required this.initialSelectedDate,
-    required this.setInitialSelectedDate,
   }) : super(key: key);
 
   final Function(DateTime focusDay) onPageChanged;
   final Function(DateTime newFocusedDay) setFocusedDay;
-  final Function(DateTime newFocusedDay) setInitialSelectedDate;
 
   final List<ClassEvent> classWeekEvents;
   final List<Jam> jamWeekEvents;
   final String activiyType;
-  final DateTime initialSelectedDate;
   final DateTime focusedDay;
 
   @override
@@ -36,21 +32,12 @@ class ActivityCalenderWidget extends StatefulWidget {
 }
 
 class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
-  late DateTime selectedDay;
-
-  @override
-  void initState() {
-    selectedDay = widget.initialSelectedDate;
-    super.initState();
-  }
-
-  void _onDaySelected(DateTime newSelectedDay, DateTime _) {
+  void _onDaySelected(DateTime newSelectedDay) {
     ActivityProvider activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
-    if (!isSameDate(newSelectedDay, selectedDay)) {
-      setState(() {
-        selectedDay = newSelectedDay;
-      });
+    // if another day thaen the current focus day is selected
+    if (!isSameDate(newSelectedDay, widget.focusedDay)) {
+      setState(() {});
       widget.setFocusedDay(laterDay(newSelectedDay, DateTime.now()));
 
       if (widget.activiyType == "classes") {
@@ -72,7 +59,7 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       firstDay: kFirstDay,
       lastDay: kLastDay,
       focusedDay: widget.focusedDay,
-      selectedDayPredicate: (day) => isSameDay(selectedDay, day),
+      selectedDayPredicate: (day) => isSameDay(widget.focusedDay, day),
       calendarFormat: CalendarFormat.week,
       rangeSelectionMode: RangeSelectionMode.disabled,
       eventLoader: (day) => widget.activiyType == "jams"
@@ -92,17 +79,16 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
               BoxDecoration(color: Colors.grey[400]!, shape: BoxShape.circle),
           selectedDecoration: const BoxDecoration(
               color: PRIMARY_COLOR, shape: BoxShape.circle)),
-      onDaySelected: (DateTime newSelectedDay, DateTime newFocusedDay) {
-        _onDaySelected(newSelectedDay, newFocusedDay);
+      onDaySelected: (DateTime newSelectedDay, DateTime _) {
+        _onDaySelected(newSelectedDay);
       },
       onPageChanged: (newFocusedDay) {
-        widget.onPageChanged(newFocusedDay);
-        widget.setFocusedDay(newFocusedDay);
-
         DateTime monday = DateTime(newFocusedDay.year, newFocusedDay.month,
             newFocusedDay.day - newFocusedDay.weekday + 1);
-        _onDaySelected(monday, newFocusedDay);
-        widget.setInitialSelectedDate(monday);
+        DateTime firstValidDayOfWeek = laterDay(monday, DateTime.now());
+        _onDaySelected(firstValidDayOfWeek);
+        widget.onPageChanged(firstValidDayOfWeek);
+        widget.setFocusedDay(firstValidDayOfWeek);
       },
     );
   }

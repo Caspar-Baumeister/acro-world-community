@@ -9,7 +9,7 @@ import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/screens/home_screens/activities/components/activity_calender_widget.dart';
+import 'package:acroworld/screens/home_screens/activities/activity_calender_widget.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +49,17 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     super.initState();
   }
 
+  onPageChanged(focusDay) {
+    setState(() {
+      from = DateTime(
+              focusDay.year, focusDay.month, focusDay.day - focusDay.weekday)
+          .toIso8601String();
+      to = DateTime(focusDay.year, focusDay.month,
+              focusDay.day + (7 - focusDay.weekday))
+          .toIso8601String();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     PlaceProvider placeProvider = Provider.of<PlaceProvider>(context);
@@ -58,17 +69,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     Place? place = placeProvider.place;
     QueryOptions queryOptions;
     String selector;
-
-    onPageChanged(focusDay) {
-      setState(() {
-        from = DateTime(
-                focusDay.year, focusDay.month, focusDay.day - focusDay.weekday)
-            .toIso8601String();
-        to = DateTime(focusDay.year, focusDay.month,
-                focusDay.day + (7 - focusDay.weekday))
-            .toIso8601String();
-      });
-    }
 
     // 4 cases
     // 1. jams without place
@@ -140,19 +140,13 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             return IgnorePointer(
               ignoring: true,
               child: ActivityCalenderWidget(
-                  activiyType: widget.activityType,
-                  onPageChanged: onPageChanged,
-                  classWeekEvents: const [],
-                  jamWeekEvents: const [],
-                  focusedDay: focusedDay,
-                  setFocusedDay: (newFocusedDay) => setState(() {
-                        focusedDay = newFocusedDay;
-                      }),
-                  setInitialSelectedDate: (newInitialSelectedDate) =>
-                      setState(() {
-                        initialSelectedDate = newInitialSelectedDate;
-                      }),
-                  initialSelectedDate: initialSelectedDate),
+                activiyType: widget.activityType,
+                onPageChanged: (_) => {},
+                classWeekEvents: const [],
+                jamWeekEvents: const [],
+                focusedDay: focusedDay,
+                setFocusedDay: (_) => {},
+              ),
             );
           }
           Future<void> runRefetch() async {
@@ -180,26 +174,31 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
 
           if (widget.activityType == "jams") {
             try {
-              jamWeekEvents = List<Jam>.from(
-                  result.data![selector].map((json) => Jam.fromJson(json)));
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                activityProvider.setActiveJams(jamWeekEvents
-                    .where((jam) => isSameDate(jam.dateAsDateTime!, focusedDay))
-                    .toList());
-              });
+              if (result.data![selector] != null) {
+                jamWeekEvents = List<Jam>.from(
+                    result.data![selector].map((json) => Jam.fromJson(json)));
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  activityProvider.setActiveJams(jamWeekEvents
+                      .where(
+                          (jam) => isSameDate(jam.dateAsDateTime!, focusedDay))
+                      .toList());
+                });
+              }
             } catch (e) {
               print(e.toString());
             }
           } else {
             try {
-              classWeekEvents = List<ClassEvent>.from(result.data![selector]
-                  .map((json) => ClassEvent.fromJson(json)));
-              WidgetsBinding.instance.addPostFrameCallback((_) async {
-                activityProvider.setActiveClasses(classWeekEvents
-                    .where((ClassEvent classEvent) =>
-                        isSameDate(classEvent.date!, focusedDay))
-                    .toList());
-              });
+              if (result.data![selector] != null) {
+                classWeekEvents = List<ClassEvent>.from(result.data![selector]
+                    .map((json) => ClassEvent.fromJson(json)));
+                WidgetsBinding.instance.addPostFrameCallback((_) async {
+                  activityProvider.setActiveClasses(classWeekEvents
+                      .where((ClassEvent classEvent) =>
+                          isSameDate(classEvent.date!, focusedDay))
+                      .toList());
+                });
+              }
             } catch (e) {
               print(e.toString());
             }
@@ -214,18 +213,15 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             }
           }
           return ActivityCalenderWidget(
-              activiyType: widget.activityType,
-              onPageChanged: onPageChanged,
-              jamWeekEvents: jamWeekEvents,
-              classWeekEvents: classWeekEvents,
-              focusedDay: focusedDay,
-              setInitialSelectedDate: (newInitialSelectedDate) => setState(() {
-                    initialSelectedDate = newInitialSelectedDate;
-                  }),
-              setFocusedDay: (newFocusedDay) => setState(() {
-                    focusedDay = newFocusedDay;
-                  }),
-              initialSelectedDate: initialSelectedDate);
+            activiyType: widget.activityType,
+            onPageChanged: onPageChanged,
+            jamWeekEvents: jamWeekEvents,
+            classWeekEvents: classWeekEvents,
+            focusedDay: focusedDay,
+            setFocusedDay: (newFocusedDay) => setState(() {
+              focusedDay = newFocusedDay;
+            }),
+          );
         });
   }
 }
