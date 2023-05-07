@@ -3,6 +3,7 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/screens/authentication_screens/register_screen/widgets/register_info.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
@@ -13,14 +14,16 @@ class RegisterBody extends StatefulWidget {
   const RegisterBody({Key? key}) : super(key: key);
 
   @override
-  _RegisterBodyState createState() => _RegisterBodyState();
+  RegisterBodyState createState() => RegisterBodyState();
 }
 
-class _RegisterBodyState extends State<RegisterBody> {
+class RegisterBodyState extends State<RegisterBody> {
   bool loading = false;
 
   final _formKey = GlobalKey<FormState>();
   String error = '';
+
+  bool isAgb = false;
 
   bool passwordObscure = true;
   bool passwordConfirmObscure = true;
@@ -131,6 +134,13 @@ class _RegisterBodyState extends State<RegisterBody> {
                           : null,
                     ),
                     const SizedBox(height: 20.0),
+                    AGBCheckbox(
+                        isAgb: isAgb,
+                        setAgb: (b) => setState(
+                              () {
+                                isAgb = b;
+                              },
+                            )),
                     const SizedBox(height: 20.0),
                     Center(
                         child: StandartButton(
@@ -164,6 +174,13 @@ class _RegisterBodyState extends State<RegisterBody> {
     });
 
     if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (!isAgb) {
+      setState(() {
+        error = 'You need to accept the agbs';
+      });
       return;
     }
     setState(() {
@@ -200,9 +217,9 @@ class _RegisterBodyState extends State<RegisterBody> {
     // error to null
 
     // no error and token exist
-    String _token = response["data"]["register"]["token"];
+    String token = response["data"]["register"]["token"];
 
-    Provider.of<UserProvider>(context, listen: false).token = _token;
+    Provider.of<UserProvider>(context, listen: false).token = token;
 
     // safe the user to provider
     bool setUserFromTokeResponse =

@@ -1,5 +1,6 @@
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
+import 'package:acroworld/screens/home_screens/events/get_my_teacher_query_wrapper.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/carousel_slider_widget.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/slider_card.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -52,7 +53,7 @@ class EventDashboardBody extends StatelessWidget {
               )),
           highlights.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: SliderRowEventDashboard(
                     onViewAll: () => eventFilterProvider.changeHighlighted(),
                     header: "Highlights",
@@ -60,9 +61,10 @@ class EventDashboardBody extends StatelessWidget {
                   ),
                 )
               : Container(),
+          const GetMyTeacherQueryWrapper(),
           upcoming.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: SliderRowEventDashboard(
                     onViewAll: () {
                       eventFilterProvider.resetFilter();
@@ -78,7 +80,7 @@ class EventDashboardBody extends StatelessWidget {
               : Container(),
           festivalsAndCons.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: SliderRowEventDashboard(
                     onViewAll: () => eventFilterProvider
                         .setActiveCategory(["FestivalsAndCons"]),
@@ -89,18 +91,18 @@ class EventDashboardBody extends StatelessWidget {
               : Container(),
           trainings.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: SliderRowEventDashboard(
                     onViewAll: () =>
                         eventFilterProvider.setActiveCategory(["Trainings"]),
-                    header: "Teacher Trainings",
+                    header: "Trainings",
                     events: trainings,
                   ),
                 )
               : Container(),
           retreats.isNotEmpty
               ? Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 20),
                   child: SliderRowEventDashboard(
                     onViewAll: () =>
                         eventFilterProvider.setActiveCategory(["Retreats"]),

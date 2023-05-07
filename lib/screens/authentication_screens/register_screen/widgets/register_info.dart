@@ -68,20 +68,6 @@ class RegisterInfo extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 10),
-                TextWithLeadingIcon(
-                  icon: ImageIcon(
-                    AssetImage("assets/check.png"),
-                    color: Colors.green,
-                  ),
-                  text: Padding(
-                    padding: EdgeInsets.only(top: 3.0),
-                    child: Text(
-                      "Keep in touch with your Acroyoga community. Find out who is participating where and when and discover the local communities when you are away from home.",
-                      style: TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
               ],
             )),
       ],

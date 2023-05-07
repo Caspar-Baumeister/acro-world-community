@@ -479,6 +479,14 @@ query getClassEventParticipants(\$class_event_id: uuid) {
   }
 }""");
 
+  static final getFollowedTeachers = gql("""
+query getFollowedTeachers(\$user_id: uuid!) {
+  teachers(where: {user_likes: {user_id: {_eq: \$user_id}, _and: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
+     ${Fragments.teacherFragment}
+  }
+}
+""");
+
   static final getAcroRoleAggregatesFromJam =
       gql("""query getAcroRoleAggregatesFromJam(\$jam_id: uuid!) {
   total_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}}) {

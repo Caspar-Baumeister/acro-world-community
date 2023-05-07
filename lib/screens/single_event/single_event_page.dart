@@ -15,6 +15,7 @@ class SingleEventPage extends StatelessWidget {
         leading: const BackButton(color: Colors.black),
         title: Text(
           event.name ?? "",
+          maxLines: 3,
           style: HEADER_1_TEXT_STYLE.copyWith(color: Colors.black),
         ),
       ),

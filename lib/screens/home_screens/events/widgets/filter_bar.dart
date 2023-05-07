@@ -39,6 +39,18 @@ class FilterBar extends StatelessWidget with PreferredSizeWidget {
               onClose: () => eventFilterProvider.resetFilter(),
             ),
           ),
+          // GestureDetector(
+          //   onTap: () => Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //       builder: (context) => const SearchPageEvents(),
+          //     ),
+          //   ),
+          //   child: const Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 8.0),
+          //     child: Icon(Icons.search),
+          //   ),
+          // )
         ],
       ),
     );

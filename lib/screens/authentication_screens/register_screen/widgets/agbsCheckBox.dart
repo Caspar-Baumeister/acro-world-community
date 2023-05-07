@@ -5,24 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AGBCheckbox extends StatefulWidget {
-  const AGBCheckbox({Key? key}) : super(key: key);
+  const AGBCheckbox({Key? key, required this.isAgb, required this.setAgb})
+      : super(key: key);
+
+  final bool isAgb;
+
+  final Function(bool b) setAgb;
 
   @override
   State<AGBCheckbox> createState() => _AGBCheckboxState();
 }
 
 class _AGBCheckboxState extends State<AGBCheckbox> {
-  bool isAgbs = false;
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         CheckBox(
-            onTap: () => setState(() {
-                  isAgbs = !isAgbs;
-                }),
-            isChecked: isAgbs),
+            onTap: () => widget.setAgb(!widget.isAgb), isChecked: widget.isAgb),
         const SizedBox(width: 8),
         RichText(
           textAlign: TextAlign.left,

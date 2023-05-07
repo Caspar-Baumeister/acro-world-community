@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
+// HIER RUM EINE QUERY DIE MIR MEINE TEACHER GIBT (oder besser eine funktion die die einfach zeiht (http))
 class EventsPage extends StatelessWidget {
   const EventsPage({Key? key}) : super(key: key);
 

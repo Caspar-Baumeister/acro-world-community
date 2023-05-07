@@ -127,26 +127,7 @@ class SingleEventBody extends StatelessWidget {
                       ),
                     )
                   : Container(),
-              const SizedBox(height: 4),
-              event.links != null && event.links!.isNotEmpty
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Links",
-                          textAlign: TextAlign.start,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 10),
-                        ...event.links!.map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: LinkButton(text: e, link: e),
-                          ),
-                        ),
-                      ],
-                    )
-                  : Container(),
+              const SizedBox(height: 10),
               event.pricing != null && event.pricing != ""
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -159,17 +140,56 @@ class SingleEventBody extends StatelessWidget {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 10),
-                          Text(
-                            event.pricing!,
-                            textAlign: TextAlign.start,
-                          )
+                          DescriptionTextWidget(
+                            text: event.pricing!,
+                            isHeader: false,
+                          ),
                         ],
                       ),
+                    )
+                  : Container(),
+              const SizedBox(height: 4),
+              event.url != null && event.url != ""
+                  ? Column(
+                      children: [
+                        Center(
+                          child: LinkButton(
+                              text: "Further information and booking",
+                              link: event.url!),
+                        ),
+                        const Divider(),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                      ],
                     )
                   : Container(),
             ],
           ),
         ),
+        event.teachers != null && event.teachers!.isNotEmpty
+            ? Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Teacher:",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 10),
+                        ClassTeacherChips(classTeacherList: event.teachers!),
+                      ],
+                    ),
+                  ),
+                ),
+              )
+            : Container(),
         (event.location?.coordinates?[0] != null &&
                     event.location?.coordinates?[1] != null) ||
                 (event.locationCountry != null &&
@@ -257,26 +277,7 @@ class SingleEventBody extends StatelessWidget {
                 ),
               )
             : Container(),
-        event.teachers != null && event.teachers!.isNotEmpty
-            ? Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "Teacher:",
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(width: 10),
-                      ClassTeacherChips(classTeacherList: event.teachers!),
-                    ],
-                  ),
-                ),
-              )
-            : Container(),
+        const SizedBox(height: 40)
       ],
     ));
   }
