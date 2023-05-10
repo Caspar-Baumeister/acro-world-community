@@ -44,8 +44,9 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
   @override
   void initState() {
     DateTime now = DateTime.now();
-    to = DateTime(now.year, now.month, now.day + (7 - now.weekday))
+    to = DateTime(now.year, now.month, now.day + (7 - now.weekday), 23)
         .toIso8601String();
+
     super.initState();
   }
 
@@ -55,7 +56,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
               focusDay.year, focusDay.month, focusDay.day - focusDay.weekday)
           .toIso8601String();
       to = DateTime(focusDay.year, focusDay.month,
-              focusDay.day + (7 - focusDay.weekday))
+              focusDay.day + (7 - focusDay.weekday), 23)
           .toIso8601String();
     });
   }
