@@ -5,7 +5,6 @@ import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
@@ -71,57 +70,33 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     QueryOptions queryOptions;
     String selector;
 
-    // 4 cases
-    // 1. jams without place
-    // 2. jams with place
-    // 3. classevents without place
-    // 4. classevents with place
-
-    if (widget.activityType == "jams") {
-      if (place == null) {
-        queryOptions = QueryOptions(
-          document: Queries.jamsFromTo,
-          fetchPolicy: FetchPolicy.networkOnly,
-          variables: {"from": from, "to": to},
-        );
-        selector = 'jams';
-      } else {
-        queryOptions = QueryOptions(
-          document: Queries.jamsFromToWithDistance,
-          fetchPolicy: FetchPolicy.networkOnly,
-          variables: {
-            "from": from,
-            "to": to,
-            'latitude': place.latLng.latitude,
-            'longitude': place.latLng.longitude,
-            'distance': 100
-          },
-        );
-        selector = 'jams_by_location_v1';
-      }
+    if (place == null) {
+      queryOptions = QueryOptions(
+        document: Queries.getClassEventsFromToWithClass,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: {
+          "from": from,
+          "to": to,
+          "is_classe": widget.activityType != "jams"
+        },
+      );
+      selector = 'class_events';
     } else {
-      if (place == null) {
-        queryOptions = QueryOptions(
-          document: Queries.getClassEventsFromToWithClass,
-          fetchPolicy: FetchPolicy.networkOnly,
-          variables: {"from": from, "to": to},
-        );
-        selector = 'class_events';
-      } else {
-        queryOptions = QueryOptions(
-          document: Queries.getClassEventsFromToLocationWithClass,
-          variables: {
-            'latitude': place.latLng.latitude,
-            'longitude': place.latLng.longitude,
-            "from": from,
-            "to": to,
-            'distance': 100
-          },
-          fetchPolicy: FetchPolicy.networkOnly,
-        );
-        selector = 'class_events_by_location_v1';
-      }
+      queryOptions = QueryOptions(
+        document: Queries.getClassEventsFromToLocationWithClass,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: {
+          "from": from,
+          "to": to,
+          'latitude': place.latLng.latitude,
+          'longitude': place.latLng.longitude,
+          'distance': 100,
+          "is_classe": widget.activityType != "jams"
+        },
+      );
+      selector = 'class_events_by_location_v1';
     }
+
     // choose queryoption based on activityType
     final EventBusProvider eventBusProvider =
         Provider.of<EventBusProvider>(context, listen: false);
@@ -144,7 +119,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
                 activiyType: widget.activityType,
                 onPageChanged: (_) => {},
                 classWeekEvents: const [],
-                jamWeekEvents: const [],
                 focusedDay: focusedDay,
                 setFocusedDay: (_) => {},
               ),
@@ -171,52 +145,34 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
           }
 
           List<ClassEvent> classWeekEvents = [];
-          List<Jam> jamWeekEvents = [];
 
-          if (widget.activityType == "jams") {
-            try {
-              if (result.data![selector] != null) {
-                jamWeekEvents = List<Jam>.from(
-                    result.data![selector].map((json) => Jam.fromJson(json)));
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  activityProvider.setActiveJams(jamWeekEvents
-                      .where(
-                          (jam) => isSameDate(jam.dateAsDateTime!, focusedDay))
-                      .toList());
-                });
-              }
-            } catch (e) {
-              print(e.toString());
+          try {
+            if (result.data![selector] != null) {
+              classWeekEvents = List<ClassEvent>.from(result.data![selector]
+                  .map((json) => ClassEvent.fromJson(json)));
+              WidgetsBinding.instance.addPostFrameCallback((_) async {
+                activityProvider.setActiveClasses(classWeekEvents
+                    .where((ClassEvent classEvent) =>
+                        isSameDate(classEvent.date!, focusedDay))
+                    .toList());
+              });
             }
-          } else {
-            try {
-              if (result.data![selector] != null) {
-                classWeekEvents = List<ClassEvent>.from(result.data![selector]
-                    .map((json) => ClassEvent.fromJson(json)));
-                WidgetsBinding.instance.addPostFrameCallback((_) async {
-                  activityProvider.setActiveClasses(classWeekEvents
-                      .where((ClassEvent classEvent) =>
-                          isSameDate(classEvent.date!, focusedDay))
-                      .toList());
-                });
-              }
-            } catch (e) {
-              print(e.toString());
-            }
-
-            try {
-              classWeekEvents.sort((a, b) => DateTime.parse(b.startDate!)
-                      .isBefore(DateTime.parse(a.startDate!))
-                  ? 1
-                  : 0);
-            } catch (e) {
-              print(e.toString());
-            }
+          } catch (e) {
+            print(e.toString());
           }
+
+          try {
+            classWeekEvents.sort((a, b) => DateTime.parse(b.startDate!)
+                    .isBefore(DateTime.parse(a.startDate!))
+                ? 1
+                : 0);
+          } catch (e) {
+            print(e.toString());
+          }
+
           return ActivityCalenderWidget(
             activiyType: widget.activityType,
             onPageChanged: onPageChanged,
-            jamWeekEvents: jamWeekEvents,
             classWeekEvents: classWeekEvents,
             focusedDay: focusedDay,
             setFocusedDay: (newFocusedDay) => setState(() {

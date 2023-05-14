@@ -33,7 +33,7 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
 
         if (mutationResult != null && mutationResult.data != null) {
           // FCM Token was updated
-          return HomeScaffold();
+          return const HomeScaffold();
         } else {
           return Query(
             options: QueryOptions(document: Queries.getMe),
@@ -67,7 +67,7 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
                       runMutation({'fcmToken': widget.token}),
                 );
               } else {
-                return HomeScaffold();
+                return const HomeScaffold();
               }
             },
           );

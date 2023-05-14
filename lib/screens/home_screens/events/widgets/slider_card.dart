@@ -1,5 +1,4 @@
 import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/home_screens/events/widgets/crawled_warning_widget.dart';
 import 'package:acroworld/screens/single_event/single_event_page.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -62,96 +61,89 @@ class SliderCard extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          CrawledWarningWidget(
-            showWarning: event.eventSource == "Crawled",
-            right: 15,
-            top: 15,
-            child: Container(
-              clipBehavior: Clip.antiAlias,
-              margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
-              height: EVENT_DASHBOARD_SLIDER_HEIGHT,
-              width: EVENT_DASHBOARD_SLIDER_WIDTH,
-              decoration: BoxDecoration(
-                color: event.isHighlighted == true
-                    ? HIGHLIGHT_COLOR
-                    : Colors.white,
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                boxShadow: const [
-                  BoxShadow(
-                    color: Color(0x90E8E8E8),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    // clipBehavior: Clip.antiAlias,
-                    height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
-                    width: double.infinity,
-                    child: CachedNetworkImage(
-                      imageUrl: event.mainImageUrl ??
-                          "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
-                      fit: BoxFit.cover,
-                      placeholder: (context, url) => Container(
-                        color: Colors.black12,
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.black12,
-                        child: const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        ),
+          Container(
+            clipBehavior: Clip.antiAlias,
+            margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+            height: EVENT_DASHBOARD_SLIDER_HEIGHT,
+            width: EVENT_DASHBOARD_SLIDER_WIDTH,
+            decoration: BoxDecoration(
+              color:
+                  event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(20)),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x90E8E8E8),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Column(
+              children: [
+                SizedBox(
+                  // clipBehavior: Clip.antiAlias,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
+                  width: double.infinity,
+                  child: CachedNetworkImage(
+                    imageUrl: event.mainImageUrl ??
+                        "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.black12,
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.black12,
+                      child: const Icon(
+                        Icons.error,
+                        color: Colors.red,
                       ),
                     ),
                   ),
-                  Container(
-                    height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
-                    padding:
-                        const EdgeInsets.all(8.0).copyWith(top: 20, bottom: 4),
-                    alignment: Alignment.centerLeft,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(event.name ?? "",
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: HEADER_1_TEXT_STYLE),
-                        Expanded(
-                          child: countryLocationString != null
-                              ? Container(
-                                  alignment: Alignment.centerLeft,
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      const Icon(
-                                        Icons.location_on_outlined,
-                                        color: Colors.black,
-                                        size: 16,
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                      Flexible(
-                                        fit: FlexFit.tight,
-                                        child: Text(countryLocationString,
-                                            maxLines: 2,
-                                            overflow: TextOverflow.clip,
-                                            style: STANDART_TEXT_STYLE),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                        ),
-                      ],
-                    ),
+                ),
+                Container(
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  padding:
+                      const EdgeInsets.all(8.0).copyWith(top: 20, bottom: 4),
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(event.name ?? "",
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: HEADER_1_TEXT_STYLE),
+                      Expanded(
+                        child: countryLocationString != null
+                            ? Container(
+                                alignment: Alignment.centerLeft,
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    const Icon(
+                                      Icons.location_on_outlined,
+                                      color: Colors.black,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Flexible(
+                                      fit: FlexFit.tight,
+                                      child: Text(countryLocationString,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.clip,
+                                          style: STANDART_TEXT_STYLE),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           event.eventType != null

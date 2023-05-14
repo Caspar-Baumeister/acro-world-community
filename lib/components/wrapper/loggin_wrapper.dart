@@ -67,6 +67,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
   }
 
   Future<bool> checkCredentials() async {
+    // gets the current token and if therer is none, tries to login with shared preference safed credentials
     bool isValidToken =
         await Provider.of<UserProvider>(context, listen: false).refreshToken();
 

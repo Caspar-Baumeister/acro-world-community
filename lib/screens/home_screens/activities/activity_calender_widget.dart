@@ -1,5 +1,4 @@
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -15,7 +14,6 @@ class ActivityCalenderWidget extends StatefulWidget {
     required this.classWeekEvents,
     required this.focusedDay,
     required this.setFocusedDay,
-    required this.jamWeekEvents,
     required this.activiyType,
   }) : super(key: key);
 
@@ -23,7 +21,6 @@ class ActivityCalenderWidget extends StatefulWidget {
   final Function(DateTime newFocusedDay) setFocusedDay;
 
   final List<ClassEvent> classWeekEvents;
-  final List<Jam> jamWeekEvents;
   final String activiyType;
   final DateTime focusedDay;
 
@@ -40,15 +37,9 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       setState(() {});
       widget.setFocusedDay(laterDay(newSelectedDay, DateTime.now()));
 
-      if (widget.activiyType == "classes") {
-        activityProvider.setActiveClasses(widget.classWeekEvents
-            .where((classEvent) => isSameDate(classEvent.date, newSelectedDay))
-            .toList());
-      } else {
-        activityProvider.setActiveJams(widget.jamWeekEvents
-            .where((jam) => isSameDate(jam.dateAsDateTime!, newSelectedDay))
-            .toList());
-      }
+      activityProvider.setActiveClasses(widget.classWeekEvents
+          .where((classEvent) => isSameDate(classEvent.date, newSelectedDay))
+          .toList());
     }
   }
 
@@ -62,13 +53,9 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       selectedDayPredicate: (day) => isSameDay(widget.focusedDay, day),
       calendarFormat: CalendarFormat.week,
       rangeSelectionMode: RangeSelectionMode.disabled,
-      eventLoader: (day) => widget.activiyType == "jams"
-          ? widget.jamWeekEvents
-              .where((jam) => isSameDate(jam.dateAsDateTime!, day))
-              .toList()
-          : widget.classWeekEvents
-              .where((classEvent) => isSameDate(classEvent.date, day))
-              .toList(),
+      eventLoader: (day) => widget.classWeekEvents
+          .where((classEvent) => isSameDate(classEvent.date, day))
+          .toList(),
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableCalendarFormats: const {CalendarFormat.week: 'week'},
       calendarStyle: CalendarStyle(
