@@ -1,6 +1,5 @@
 import 'package:acroworld/components/standart_button.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/chatroom/fetch_community_chatroom.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -166,23 +165,23 @@ Widget actions(BuildContext context, String communityId, String? webUrl) {
             ))
           : Container(),
       webUrl != null ? const SizedBox(width: 15) : Container(),
-      Flexible(
-          child: StandartButton(
-        text: "Community",
-        onPressed: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => FetchCommunityChatroom(
-                    communityId: communityId,
-                  )),
-        ),
-        // () => Navigator.of(context).push(
-        //   MaterialPageRoute(
-        //       builder: (context) => COmmun(
-        //           teacher: widget.teacher, isLiked: isLikedState)),
-        // ),,
-        isFilled: true,
-      )),
+      // Flexible(
+      //     child: StandartButton(
+      //   text: "Community",
+      //   onPressed: () => Navigator.push(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => FetchCommunityChatroom(
+      //               communityId: communityId,
+      //             )),
+      //   ),
+      //   // () => Navigator.of(context).push(
+      //   //   MaterialPageRoute(
+      //   //       builder: (context) => COmmun(
+      //   //           teacher: widget.teacher, isLiked: isLikedState)),
+      //   // ),,
+      //   isFilled: true,
+      // )),
     ],
   );
 }

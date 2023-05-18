@@ -21,6 +21,9 @@ class SingleEventBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double? latitude = event.location?.coordinates?[1];
+    double? longitude = event.location?.coordinates?[0];
+
     String? countryLocationString;
     if ((event.locationCountry != null && event.locationCountry != "") ||
         (event.locationCity != null && event.locationCity != "")) {
@@ -36,9 +39,6 @@ class SingleEventBody extends StatelessWidget {
       if (event.locationCity != null && event.locationCity != "") {
         countryLocationString += event.locationCity.toString();
       }
-    } else if (event.originLocationName != null &&
-        event.originLocationName != "") {
-      countryLocationString = event.originLocationName.toString();
     }
 
     String? dateString;
@@ -190,8 +190,7 @@ class SingleEventBody extends StatelessWidget {
                 ),
               )
             : Container(),
-        (event.location?.coordinates?[0] != null &&
-                    event.location?.coordinates?[1] != null) ||
+        (longitude != null && latitude != null) ||
                 (event.locationCountry != null &&
                     event.locationCountry != "") ||
                 (event.locationCity != null && event.locationCity != "") ||
@@ -203,8 +202,7 @@ class SingleEventBody extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Divider(),
-                    event.location?.coordinates?[0] != null &&
-                            event.location?.coordinates?[1] != null
+                    longitude != null && latitude != null
                         ? Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: Row(
@@ -215,10 +213,8 @@ class SingleEventBody extends StatelessWidget {
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 OpenGoogleMaps(
-                                  latitude:
-                                      event.location!.coordinates![1] * 1.0,
-                                  longitude:
-                                      event.location!.coordinates![0] * 1.0,
+                                  latitude: latitude * 1.0,
+                                  longitude: longitude * 1.0,
                                 )
                               ],
                             ),
@@ -251,33 +247,25 @@ class SingleEventBody extends StatelessWidget {
                             ),
                           )
                         : Container(),
-                    event.location?.coordinates?[0] != null &&
-                            event.location?.coordinates?[1] != null
+                    longitude != null && latitude != null
                         ? Container(
                             padding: const EdgeInsets.only(top: 10),
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20)),
                             constraints: const BoxConstraints(maxHeight: 150),
                             child: MapWidget(
-                              zoom: event.eventSource == "Crawled" ? 5 : 15.0,
-                              center: LatLng(
-                                  event.location!.coordinates![1] * 1.0,
-                                  event.location!.coordinates![0] * 1.0),
-                              markerLocation: event.eventSource == "Crawled"
-                                  ? null
-                                  : LatLng(
-                                      event.location!.coordinates![1] * 1.0,
-                                      event.location!.coordinates![0] * 1.0),
+                              zoom: 15.0,
+                              center: LatLng(latitude * 1.0, longitude * 1.0),
+                              markerLocation:
+                                  LatLng(latitude * 1.0, longitude * 1.0),
                             ),
                           )
                         : Container(),
-                    const SizedBox(height: 10),
-                    const Divider(),
                   ],
                 ),
               )
             : Container(),
-        const SizedBox(height: 40)
+        const SizedBox(height: 50)
       ],
     ));
   }

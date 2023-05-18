@@ -6,7 +6,6 @@ import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/provider/user_communities.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/theme.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +21,6 @@ class App extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => UserCommunitiesProvider()),
           ChangeNotifierProvider(create: (_) => AllOtherComs()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),

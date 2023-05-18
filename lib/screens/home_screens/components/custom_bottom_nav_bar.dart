@@ -33,19 +33,14 @@ class CustomBottomNavBar extends StatelessWidget {
             label: "Activities"),
         BottomNavigationBarItem(
             icon: Icon(
-              Icons.school,
-            ),
-            label: "Teacher"),
-        BottomNavigationBarItem(
-            icon: Icon(
               Icons.festival_outlined,
             ),
             label: "Events"),
         BottomNavigationBarItem(
             icon: Icon(
-              Icons.groups,
+              Icons.school,
             ),
-            label: "Community"),
+            label: "Teacher & more"),
       ],
     );
   }

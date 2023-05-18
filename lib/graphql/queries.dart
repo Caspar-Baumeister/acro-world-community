@@ -3,8 +3,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
   static final getClassEventsFromToLocationWithClass = gql("""
-query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
-  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
+query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8, \$is_classe: Boolean){
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}, class: {is_classe: {_eq: \$is_classe}}}) {
     distance
     class_id
     created_at
@@ -64,8 +64,8 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
 }
 """);
   static final getClassEventsFromToWithClass = gql("""
-query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
-  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
+query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!, \$is_classe: Boolean) {
+  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}, _and: {class: {is_classe: {_eq: \$is_classe}}}}) {
     class_id
     created_at
     end_date

@@ -1,12 +1,8 @@
 import 'package:acroworld/components/place_button/place_button.dart';
-import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/activities_query.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/classes_view.dart';
-import 'package:acroworld/screens/home_screens/activities/components/jams/jam_view.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
-
-import 'package:provider/provider.dart';
 
 class ActivitiesBody extends StatefulWidget {
   const ActivitiesBody({Key? key}) : super(key: key);
@@ -51,7 +47,7 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
               Padding(
                 padding: EdgeInsets.only(bottom: 12.0),
                 child: Text(
-                  "Jams",
+                  "Trainings & Jams",
                   style: TextStyle(color: Colors.black),
                 ),
               )
@@ -61,9 +57,10 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
           // flexible TabBarView that shows either the results of classes or jams
           const Flexible(
             child: TabBarView(
+              physics: NeverScrollableScrollPhysics(),
               children: [
                 ClassesView(),
-                JamsView(),
+                ClassesView(),
               ],
             ),
           )

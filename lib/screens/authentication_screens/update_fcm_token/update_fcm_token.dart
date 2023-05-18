@@ -4,7 +4,7 @@ import 'package:acroworld/screens/authentication_screens/update_fcm_token/save_t
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
-// This widget is always run when the user loggs in or registered
+// This widget is always run when the user loggs in or registered or restarts the app (automatically relogin)
 // The widget has a futerbuilder, where it fetches the token and as
 // soon as this is finished, gives the token to the next widget
 // where it will be compared against the current fcm token of the user
@@ -29,17 +29,15 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
   }
 
   Future<bool> _initToken() async {
-    final _token = await FirebaseMessaging.instance.getToken();
-    print("_token in inittoken");
-    print(_token);
-    token = _token;
-    return _token != null ? true : false;
+    final newToken = await FirebaseMessaging.instance.getToken();
+    token = newToken;
+    return newToken != null ? true : false;
   }
 
   Future<void> _refreshToken() async {
-    final _token = await FirebaseMessaging.instance.getToken();
+    final newToken = await FirebaseMessaging.instance.getToken();
     setState(() {
-      token = _token;
+      token = newToken;
     });
   }
 
