@@ -1,7 +1,9 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -76,15 +78,10 @@ class _ParticipantsButtonState extends State<ParticipantsButton> {
                     );
                   },
                   child: Text(
-                    widget.countParticipants != null
-                        ? "${widget.countParticipants.toString()}       "
-                        : "",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
+                      widget.countParticipants != null
+                          ? "${widget.countParticipants.toString()} ${widget.countParticipants != 1 ? "participants" : "participant"}       "
+                          : "",
+                      style: SMALL_TEXT_STYLE.copyWith(color: PRIMARY_COLOR)),
                 ),
               ),
               Positioned(
@@ -98,6 +95,7 @@ class _ParticipantsButtonState extends State<ParticipantsButton> {
                       backgroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18),
+                        side: const BorderSide(width: 1, color: PRIMARY_COLOR),
                       ),
                     ),
                     onPressed: () {

@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/screens/HOME_SCREENS/activities/components/community_query_widget.dart';

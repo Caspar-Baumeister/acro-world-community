@@ -2,6 +2,20 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getAllBookingsOfClassEvent = gql("""
+query classEventBooking(\$class_event_id: uuid) {
+  class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
+    user_id
+    booking_option {
+      discount
+      price
+      title
+      commission
+    }
+  }
+}
+""");
+
   static final getClassEventsFromToLocationWithClass = gql("""
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8, \$is_classe: Boolean){
   class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}, class: {is_classe: {_eq: \$is_classe}}}) {
@@ -25,6 +39,18 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
       }
     }
     class {
+      booking_email
+      max_booking_slots
+      class_booking_options {
+        booking_option {
+          commission
+          discount
+          id
+          price
+          subtitle
+          title
+        }
+      }
       city
       class_pass_url
       description
@@ -85,6 +111,18 @@ query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!, \$
       }
     }
     class {
+      booking_email
+      max_booking_slots
+      class_booking_options {
+        booking_option {
+          commission
+          discount
+          id
+          price
+          subtitle
+          title
+        }
+      }
       city
       class_pass_url
       description

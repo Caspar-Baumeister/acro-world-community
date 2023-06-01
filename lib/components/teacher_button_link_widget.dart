@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';

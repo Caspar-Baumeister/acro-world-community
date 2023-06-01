@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';

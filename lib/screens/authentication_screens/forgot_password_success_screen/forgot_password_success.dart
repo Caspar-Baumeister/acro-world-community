@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';

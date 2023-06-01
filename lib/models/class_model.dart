@@ -1,3 +1,4 @@
+import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/event_model.dart';
 
@@ -17,9 +18,15 @@ class ClassModel {
   List<ClassTeachers>? classTeachers;
   List<ClassLevels>? classLevels;
   num? distance;
+  String? bookingEmail;
+  int? maxBookingSlots;
+  List<ClassBookingOptions>? classBookingOptions;
 
   ClassModel(
       {this.city,
+      this.bookingEmail,
+      this.maxBookingSlots,
+      this.classBookingOptions,
       this.classPassUrl,
       this.description,
       this.id,
@@ -50,6 +57,14 @@ class ClassModel {
     requirements = json['requirements'];
     uscUrl = json['usc_url'];
     websiteUrl = json['website_url'];
+    bookingEmail = json['booking_email'];
+    maxBookingSlots = json['max_booking_slots'];
+    if (json['class_booking_options'] != null) {
+      classBookingOptions = <ClassBookingOptions>[];
+      json['class_booking_options'].forEach((v) {
+        classBookingOptions!.add(ClassBookingOptions.fromJson(v));
+      });
+    }
     if (json['class_teachers'] != null) {
       classTeachers = <ClassTeachers>[];
       json['class_teachers'].forEach((v) {

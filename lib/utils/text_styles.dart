@@ -28,6 +28,12 @@ const TextStyle HEADER_2_TEXT_STYLE = TextStyle(
   fontFamily: "rubik",
 );
 
+const TextStyle MEDIUM_BOLD_TEXT_STYLE = TextStyle(
+  fontSize: 14,
+  fontWeight: FontWeight.w700,
+  fontFamily: "rubik",
+);
+
 const TextStyle MEDIUM_TEXT_STYLE = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w500,

@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/community_model.dart';
 import 'package:acroworld/screens/create_jam/create_jam.dart';
 import 'package:acroworld/screens/chatroom/widgets/time_bubble.dart';

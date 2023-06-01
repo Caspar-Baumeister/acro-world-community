@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:flutter/material.dart';
 
 class AppBarJam extends StatelessWidget with PreferredSizeWidget {

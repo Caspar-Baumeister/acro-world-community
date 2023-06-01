@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';

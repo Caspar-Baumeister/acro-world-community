@@ -7,6 +7,16 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+String getCurrecySymbol(String currency) {
+  try {
+    var format = NumberFormat.simpleCurrency(name: currency);
+    return format.currencySymbol;
+  } catch (e) {
+    print(e.toString());
+    return "";
+  }
+}
+
 bool isTeacherFollowedByUser(List<UserLikes>? followerList, String userId) {
   if (followerList == null) {
     return false;

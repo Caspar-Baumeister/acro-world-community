@@ -1,5 +1,5 @@
 import 'package:acroworld/components/wrapper/loggin_wrapper.dart';
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';

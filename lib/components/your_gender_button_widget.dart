@@ -1,5 +1,4 @@
-import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/gender_model.dart';
 import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender_body.dart';
