@@ -1,4 +1,5 @@
 import 'package:acroworld/components/buttons/standart_icon_button.dart';
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
@@ -14,11 +15,15 @@ import 'package:provider/provider.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
-      {Key? key, required this.classEvent, required this.placesLeft})
+      {Key? key,
+      required this.classEvent,
+      required this.placesLeft,
+      required this.refetch})
       : super(key: key);
 
   final ClassEvent classEvent;
   final num placesLeft;
+  final void Function()? refetch;
 
   @override
   State<BookingModal> createState() => _BookingModalState();
@@ -95,23 +100,26 @@ class _BookingModalState extends State<BookingModal> {
                   loading = true;
                 });
                 print(
-                    "http://192.168.2.102:3000/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}");
+                    "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}");
                 await Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => BookClassWebView(
-                      initialUrl:
-                          "http://192.168.2.102:3000/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}",
-                      onFinish: () => Fluttertoast.showToast(
-                          msg:
-                              "Order completed, we have send an email with your name to the astablishment",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.TOP,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0),
-                    ),
+                        initialUrl:
+                            "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}",
+                        onFinish: () {
+                          Fluttertoast.showToast(
+                              msg:
+                                  "Order completed, we have send an email with your name to the astablishment",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.TOP,
+                              timeInSecForIosWeb: 2,
+                              backgroundColor: Colors.green,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
+                          widget.refetch!();
+                          Navigator.of(context).pop();
+                        }),
                   ),
                 );
                 setState(() {

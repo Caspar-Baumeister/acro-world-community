@@ -122,9 +122,9 @@ class BookNowButton extends StatelessWidget {
                   onPressed: () => buildMortal(
                       context,
                       BookingModal(
-                        classEvent: classEvent,
-                        placesLeft: bookingsLeft,
-                      )),
+                          classEvent: classEvent,
+                          placesLeft: bookingsLeft,
+                          refetch: refetch)),
                   child: const Text(
                     "Book now",
                     style: TextStyle(
