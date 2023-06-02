@@ -4,6 +4,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_button.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:flutter/material.dart';
@@ -100,7 +101,7 @@ class _ClassEventTileState extends State<ClassEventTile> {
                       : Container(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       OutlinedButton(
                         style: OutlinedButton.styleFrom(
@@ -129,6 +130,17 @@ class _ClassEventTileState extends State<ClassEventTile> {
                           ),
                         ),
                       ),
+                      widget.classEvent.classModel
+                                      ?.classBookingOptions !=
+                                  null &&
+                              widget.classEvent.classModel!.classBookingOptions!
+                                  .isNotEmpty &&
+                              widget.classEvent.classModel?.maxBookingSlots !=
+                                  null
+                          ? BookNowButton(
+                              classEvent: widget.classEvent,
+                            )
+                          : Container()
                     ],
                   ),
                 ],

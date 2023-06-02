@@ -1,4 +1,73 @@
 class Fragments {
+  static const classEventFragment = """
+  class_id
+    created_at
+    end_date
+    id
+    is_cancelled
+    start_date
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user {
+        id
+        name
+        acro_role_id
+      }
+    }
+    class {
+      booking_email
+      max_booking_slots
+      class_booking_options {
+        booking_option {
+          commission
+          discount
+          id
+          price
+          subtitle
+          title
+        }
+      }
+      city
+      class_pass_url
+      description
+      id
+      image_url
+      location
+      location_name
+      name
+      pricing
+      requirements
+      usc_url
+      website_url
+      class_teachers {
+        teacher {
+          id
+          name
+          confirmation_status
+          is_organization
+          images {
+            id
+            image {
+              id
+              url
+            }
+            is_profile_picture
+          }
+        }
+      }
+      class_levels {
+        level {
+          name
+          id
+        }
+      }
+    }
+""";
+
   static const eventFragment = """created_at
     created_by_id
     description

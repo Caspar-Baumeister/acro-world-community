@@ -52,6 +52,7 @@ class _BookingModalState extends State<BookingModal> {
           .firstWhere((e) => e.bookingOption?.id == currentOption)
           .bookingOption!;
     }
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 24.0),
       child: SafeArea(
@@ -89,7 +90,7 @@ class _BookingModalState extends State<BookingModal> {
             ]),
             const SizedBox(height: 20),
             Text(
-              "A non-refundable deposit ${currentOptionObject != null ? ("of ${currentOptionObject.deposit().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be required to confirm your reservation. The remaining balance will be charged upon your arrival or as determined by the establishment. Please note that the deposit amount cannot be refunded in case of cancellation.",
+              "A non-refundable deposit ${currentOptionObject != null ? ("of ${currentOptionObject.deposit().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be required to confirm your reservation. The remaining balance ${currentOptionObject != null ? ("of ${currentOptionObject.toPayOnArrival().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be charged upon your arrival or as determined by the establishment. Please note that the deposit amount cannot be refunded in case of cancellation.",
               style: SMALL_TEXT_STYLE,
             ),
             const SizedBox(height: 20),

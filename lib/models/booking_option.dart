@@ -24,7 +24,11 @@ class BookingOption {
   }
 
   double deposit() {
-    return ((commission! - discount!) * 0.01) * price!;
+    return ((commission!) * 0.01) * price!;
+  }
+
+  double toPayOnArrival() {
+    return realPrice() - deposit();
   }
 
   BookingOption(

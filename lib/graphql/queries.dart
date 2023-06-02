@@ -20,144 +20,14 @@ query classEventBooking(\$class_event_id: uuid) {
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8, \$is_classe: Boolean){
   class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}, class: {is_classe: {_eq: \$is_classe}}}) {
     distance
-    class_id
-    created_at
-    end_date
-    id
-    is_cancelled
-    start_date
-    participants_aggregate {
-      aggregate {
-        count
-      }
-    }
-    participants {
-      user {
-        id
-        name
-        acro_role_id
-      }
-    }
-    class {
-      booking_email
-      max_booking_slots
-      class_booking_options {
-        booking_option {
-          commission
-          discount
-          id
-          price
-          subtitle
-          title
-        }
-      }
-      city
-      class_pass_url
-      description
-      id
-      image_url
-      location
-      location_name
-      name
-      pricing
-      requirements
-      usc_url
-      website_url
-      class_teachers {
-        teacher {
-          id
-          name
-          confirmation_status
-          is_organization
-          images {
-            id
-            image {
-              id
-              url
-            }
-            is_profile_picture
-          }
-        }
-      }
-      class_levels {
-        level {
-          name
-          id
-        }
-      }
-    }
+    ${Fragments.classEventFragment}
   }
 }
 """);
   static final getClassEventsFromToWithClass = gql("""
 query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!, \$is_classe: Boolean) {
   class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}, _and: {class: {is_classe: {_eq: \$is_classe}}}}) {
-    class_id
-    created_at
-    end_date
-    id
-    is_cancelled
-    start_date
-    participants_aggregate {
-      aggregate {
-        count
-      }
-    }
-    participants {
-      user {
-        id
-        name
-        acro_role_id
-      }
-    }
-    class {
-      booking_email
-      max_booking_slots
-      class_booking_options {
-        booking_option {
-          commission
-          discount
-          id
-          price
-          subtitle
-          title
-        }
-      }
-      city
-      class_pass_url
-      description
-      id
-      image_url
-      location
-      location_name
-      name
-      pricing
-      requirements
-      usc_url
-      website_url
-      class_teachers {
-        teacher {
-          id
-          name
-          confirmation_status
-          is_organization
-          images {
-            id
-            image {
-              id
-              url
-            }
-            is_profile_picture
-          }
-        }
-      }
-      class_levels {
-        level {
-          name
-          id
-        }
-      }
-    }
+    ${Fragments.classEventFragment}
   }
 }
 """);
@@ -449,26 +319,7 @@ query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \
   static final getClassEventsByClassId = gql("""
 query getClassEventsByClassId (\$class_id: uuid) {
   class_events(where: {class_id: {_eq: \$class_id}}) {
-    class_id
-    created_at
-    end_date
-    id
-    is_cancelled
-    start_date
-    class { 
-      class_teachers (where: {teacher: {confirmation_status: {_eq: Confirmed}}})  {
-        teacher{
-          id
-          images {
-            is_profile_picture
-            image {
-              url
-            }
-          }
-          name
-        }
-      }
-    }
+   ${Fragments.classEventFragment}
   }
 }
 """);
