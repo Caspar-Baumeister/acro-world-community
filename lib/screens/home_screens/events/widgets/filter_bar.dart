@@ -2,9 +2,11 @@ import 'package:acroworld/components/standard_icon_button/standard_icon_button.d
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/event_filter_page.dart';
+import 'package:acroworld/screens/home_screens/events/widgets/create_event_modal.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_event_body.dart';
 import 'package:acroworld/screens/single_event/single_event_page.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -44,9 +46,14 @@ class FilterBar extends StatelessWidget with PreferredSizeWidget {
             ),
           ),
           IconButton(
-              onPressed: () =>
-                  showSearch(context: context, delegate: EventSearchDelegate()),
-              icon: const Icon(Icons.search))
+            onPressed: () => buildMortal(context, const CreateEventModal()),
+            icon: const Icon(Icons.add),
+          ),
+          IconButton(
+            onPressed: () =>
+                showSearch(context: context, delegate: EventSearchDelegate()),
+            icon: const Icon(Icons.search),
+          )
           // GestureDetector(
           //   onTap: () => Navigator.push(
           //     context,

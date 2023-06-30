@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
 import 'package:acroworld/utils/text_styles.dart';
@@ -10,9 +11,13 @@ class SingleEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("event.endDate");
+    print(event.endDate);
+    print("event.startDate");
+    print(event.startDate);
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
+        leading: const BackButtonWidget(),
         title: Text(
           event.name ?? "",
           maxLines: 3,

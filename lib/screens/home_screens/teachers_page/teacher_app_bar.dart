@@ -1,4 +1,4 @@
-import 'package:acroworld/components/teacher_button_link_widget.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class AppBarTeacher extends StatelessWidget with PreferredSizeWidget {
@@ -9,10 +9,14 @@ class AppBarTeacher extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-        automaticallyImplyLeading: false,
-        centerTitle: false,
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        title: const TeacherButtonLinkWidget());
+      automaticallyImplyLeading: false,
+      centerTitle: false,
+      backgroundColor: Colors.white,
+      elevation: 0.0,
+      title: const Text(
+        "Teacher and organiser",
+        style: GIGANTIC_TEXT_STYLE,
+      ),
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/single_class_page/single_class_body.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class SingleClassPage extends StatelessWidget {
     print(clas.id);
     return Scaffold(
         appBar: AppBar(
-            leading: const BackButton(color: Colors.black),
+            leading: const BackButtonWidget(),
             title: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(

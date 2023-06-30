@@ -16,6 +16,7 @@ class SliderCard extends StatelessWidget {
   Widget build(BuildContext context) {
     String endTimeString = "";
     String? dateString;
+
     if (event.endDate != null && event.startDate != null) {
       DateTime endDateTime = DateTime.parse(event.endDate!);
       DateTime startDateTime = DateTime.parse(event.startDate!);

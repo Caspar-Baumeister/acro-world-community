@@ -101,14 +101,14 @@ class EventModel {
 class Location {
   String? type;
   Crs? crs;
-  List<double>? coordinates;
+  List<num>? coordinates;
 
   Location({this.type, this.crs, this.coordinates});
 
   Location.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     crs = json['crs'] != null ? Crs.fromJson(json['crs']) : null;
-    coordinates = json['coordinates'].cast<double>();
+    coordinates = json['coordinates'].cast<num>();
   }
 
   Map<String, dynamic> toJson() {

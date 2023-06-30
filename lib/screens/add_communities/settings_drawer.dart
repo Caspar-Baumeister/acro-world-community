@@ -1,4 +1,4 @@
-import 'package:acroworld/components/teacher_button_link_widget.dart';
+import 'package:acroworld/components/acronyc/acronyc_widget.dart';
 import 'package:acroworld/components/your_gender_button_widget.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
@@ -13,7 +13,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({Key? key}) : super(key: key);
@@ -98,32 +97,36 @@ class SettingsDrawer extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    RichText(
-                      textAlign: TextAlign.left,
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          const TextSpan(
-                              text: "Help us spread the word by sending an ",
-                              style: TextStyle(color: Colors.black)),
-                          TextSpan(
-                              text: "invitation",
-                              style: const TextStyle(
-                                  color: PRIMARY_COLOR,
-                                  fontWeight: FontWeight.bold),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Share.share(
-                                      "Download AcroWorld!\nIt's the new acro community app\n\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl\n\nUse the friendcode 'AcroWorldCommunity' to create an account");
-                                }),
-                          const TextSpan(
-                              text: " to your community!",
-                              style: TextStyle(color: Colors.black)),
-                        ],
-                      ),
-                    ),
+                    const AcronycWidget(),
                     const SizedBox(height: 10),
                     const Divider(color: Colors.grey, height: 1),
                     const SizedBox(height: 10),
+                    // RichText(
+                    //   textAlign: TextAlign.left,
+                    //   text: TextSpan(
+                    //     children: <TextSpan>[
+                    //       const TextSpan(
+                    //           text: "Help us spread the word by sending an ",
+                    //           style: TextStyle(color: Colors.black)),
+                    //       TextSpan(
+                    //           text: "invitation",
+                    //           style: const TextStyle(
+                    //               color: PRIMARY_COLOR,
+                    //               fontWeight: FontWeight.bold),
+                    //           recognizer: TapGestureRecognizer()
+                    //             ..onTap = () {
+                    //               Share.share(
+                    //                   "Download AcroWorld!\n...and find all classes and events around acroyoga\n\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl");
+                    //             }),
+                    //       const TextSpan(
+                    //           text: " to your friends!",
+                    //           style: TextStyle(color: Colors.black)),
+                    //     ],
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 10),
+                    // const Divider(color: Colors.grey, height: 1),
+                    // const SizedBox(height: 10),
                     RichText(
                       textAlign: TextAlign.left,
                       text: TextSpan(
@@ -155,7 +158,17 @@ class SettingsDrawer extends StatelessWidget {
                     const SizedBox(height: 10),
                     const Divider(color: Colors.grey, height: 1),
                     const SizedBox(height: 10),
-                    const TeacherButtonLinkWidget(),
+                    // const TeacherButtonLinkWidget(),
+                    // StandartButton(
+                    //   isFilled: true,
+                    //   text: "Creator profile",
+                    //   onPressed: () => Navigator.push(
+                    //     context,
+                    //     MaterialPageRoute(
+                    //       builder: (context) => const CreateCreatorProfile(),
+                    //     ),
+                    //   ),
+                    // )
                   ],
                 ),
               )),

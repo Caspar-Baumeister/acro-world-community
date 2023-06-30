@@ -53,7 +53,7 @@ class _BookClassWebViewState extends State<BookClassWebView> {
                 initialUrl: widget.initialUrl,
                 javascriptMode: JavascriptMode.unrestricted,
                 navigationDelegate: (NavigationRequest request) {
-                  print("equest.url");
+                  print("request.url");
                   print(request.url);
                   if (request.url.contains(returnURL)) {
                     widget.onFinish!();

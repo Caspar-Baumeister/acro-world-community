@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:acroworld/screens/account_settings/delete_account.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class AccountSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const BackButton(color: Colors.black),
+        leading: const BackButtonWidget(),
         backgroundColor: Colors.white,
         elevation: 0.0,
         title: const Text(

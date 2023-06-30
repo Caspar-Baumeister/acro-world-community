@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class PlaceButton extends StatelessWidget {
-  const PlaceButton({Key? key}) : super(key: key);
+  const PlaceButton({Key? key, this.rightPadding = true}) : super(key: key);
+
+  final bool rightPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,8 @@ class PlaceButton extends StatelessWidget {
     return Stack(
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0)
+              .copyWith(right: rightPadding ? 10 : 0),
           child: StandardIconButton(
             text: placeProvider.place?.description ?? 'No location set',
             icon: Icons.location_on,

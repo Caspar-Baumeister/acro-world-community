@@ -21,8 +21,8 @@ class SingleEventBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double? latitude = event.location?.coordinates?[1];
-    double? longitude = event.location?.coordinates?[0];
+    double? latitude = event.location?.coordinates?[1].toDouble();
+    double? longitude = event.location?.coordinates?[0].toDouble();
 
     String? countryLocationString;
     if ((event.locationCountry != null && event.locationCountry != "") ||

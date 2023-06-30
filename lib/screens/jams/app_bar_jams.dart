@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:flutter/material.dart';
 
 class AppBarJams extends StatelessWidget with PreferredSizeWidget {
@@ -16,7 +17,7 @@ class AppBarJams extends StatelessWidget with PreferredSizeWidget {
       elevation: 0.0,
       backgroundColor: Colors.white,
       title: Text("Jams in $name", style: const TextStyle(color: Colors.black)),
-      leading: const BackButton(color: Colors.black),
+      leading: const BackButtonWidget(),
     );
   }
 }

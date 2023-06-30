@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/events/jams/create_jam_event.dart';
 import 'package:acroworld/graphql/errors/graphql_error_handler.dart';
@@ -56,7 +57,7 @@ class _AppBarJamOverviewState extends State<AppBarJamOverview> {
               runMutation,
           QueryResult<dynamic>? result) {
         return AppBar(
-          leading: const BackButton(color: Colors.black),
+          leading: const BackButtonWidget(),
           backgroundColor: Colors.white,
           elevation: 0.0,
           title: Text(widget.jam.name ?? ""),

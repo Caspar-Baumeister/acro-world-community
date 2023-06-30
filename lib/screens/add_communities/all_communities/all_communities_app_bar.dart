@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/back_button.dart';
 import 'package:flutter/material.dart';
 
 class AllCommunitiesAppBar extends StatelessWidget with PreferredSizeWidget {
@@ -11,11 +12,10 @@ class AllCommunitiesAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      elevation: 0.0,
-      backgroundColor: Colors.white,
-      title: const Text("Join a new community",
-          style: TextStyle(color: Colors.black)),
-      leading: const BackButton(color: Colors.black),
-    );
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        title: const Text("Join a new community",
+            style: TextStyle(color: Colors.black)),
+        leading: const BackButtonWidget());
   }
 }

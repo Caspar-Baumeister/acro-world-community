@@ -37,7 +37,6 @@ class StandartButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
           ),
           width: width,
-          height: 40,
           child: Center(
             child: loading
                 ? Container(
@@ -47,12 +46,15 @@ class StandartButton extends StatelessWidget {
                     child: CircularProgressIndicator(
                       color: isFilled == true ? Colors.white : PRIMARY_COLOR,
                     ))
-                : Text(
-                    text,
-                    style: STANDART_BUTTON_TEXT.copyWith(
-                      color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
+                : Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Text(
+                      text,
+                      style: STANDART_BUTTON_TEXT.copyWith(
+                        color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
           )),
     );
