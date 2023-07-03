@@ -11,10 +11,10 @@ class SearchBarWidget extends StatefulWidget {
   final bool autofocus;
 
   @override
-  _SearchBarWidgetState createState() => _SearchBarWidgetState();
+  SearchBarWidgetState createState() => SearchBarWidgetState();
 }
 
-class _SearchBarWidgetState extends State<SearchBarWidget> {
+class SearchBarWidgetState extends State<SearchBarWidget> {
   late TextEditingController controller;
 
   @override

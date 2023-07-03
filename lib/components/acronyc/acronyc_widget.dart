@@ -35,7 +35,7 @@ class AcronycWidget extends StatelessWidget {
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     const link = "https://acronyc.de/";
-                    if (await launchUrl(Uri.parse(link)) == null) {
+                    if (await launchUrl(Uri.parse(link)) == false) {
                       throw 'Could not launch $link';
                     }
                   },

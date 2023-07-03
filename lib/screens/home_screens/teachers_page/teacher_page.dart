@@ -1,5 +1,5 @@
+import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_query.dart';
-import 'package:acroworld/screens/add_communities/settings_drawer.dart';
 import 'package:acroworld/screens/home_screens/teachers_page/teacher_app_bar.dart';
 import 'package:flutter/material.dart';
 

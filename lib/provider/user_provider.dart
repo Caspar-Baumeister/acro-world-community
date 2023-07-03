@@ -5,22 +5,16 @@ import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class UserProvider extends ChangeNotifier {
-  User? _activeUser;
-  String? _token;
-
-  // getter
-  User? get activeUser => _activeUser;
-  String? get token => _token;
-
-  set token(String? token) => _token = token;
+  User? activeUser;
+  String? token;
 
   getId() {
-    Map<String, dynamic> parseJwt = Jwt.parseJwt(_token!);
+    Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
     return parseJwt["user_id"];
   }
 
   Future<bool> validToken() async {
-    if (_token == null) {
+    if (token == null) {
       return false;
     }
     if (!isTokenExpired()) {
@@ -31,17 +25,17 @@ class UserProvider extends ChangeNotifier {
 
   Future<bool> setUserFromToken() async {
     if (token == "" || token == null) {
-      _activeUser = null;
+      activeUser = null;
       return false;
     }
 
     // TODO fill in rest of data
-    final response = await Database(token: _token).authorizedApi("""query {
+    final response = await Database(token: token).authorizedApi("""query {
             me { 
               bio 
               id 
               image_url 
-              last_proposed_community_at 
+              last_proposed_communityat 
               name
               user_roles {
                 role {
@@ -59,7 +53,7 @@ class UserProvider extends ChangeNotifier {
     if (user["id"] == null || user["name"] == null) {
       return false;
     }
-    _activeUser = User.fromJson(user);
+    activeUser = User.fromJson(user);
 
     notifyListeners();
     return true;
@@ -90,7 +84,7 @@ class UserProvider extends ChangeNotifier {
       if (newToken == null) {
         return false;
       }
-      _token = newToken;
+      token = newToken;
       await setUserFromToken();
     }
 

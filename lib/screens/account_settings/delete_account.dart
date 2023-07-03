@@ -53,17 +53,6 @@ class _DeleteAccountState extends State<DeleteAccount> {
         return SizedBox(
           height: 40,
           child: ElevatedButton(
-            child: loading
-                ? Center(
-                    child: Container(
-                        height: 20,
-                        width: 20,
-                        padding: const EdgeInsets.all(5),
-                        child: const CircularProgressIndicator()))
-                : const Text("delete account",
-                    style: TextStyle(fontSize: 14, color: Colors.red)),
-
-            // if disapled or loading, return null
             onPressed: loading
                 ? null
                 // if authentication is not neccesary, return onPressed
@@ -75,6 +64,15 @@ class _DeleteAccountState extends State<DeleteAccount> {
                 borderRadius: BorderRadius.circular(30.0),
               ),
             ),
+            child: loading
+                ? Center(
+                    child: Container(
+                        height: 20,
+                        width: 20,
+                        padding: const EdgeInsets.all(5),
+                        child: const CircularProgressIndicator()))
+                : const Text("delete account",
+                    style: TextStyle(fontSize: 14, color: Colors.red)),
           ),
         );
       },
@@ -92,70 +90,62 @@ class _DeleteAccountState extends State<DeleteAccount> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            content: Container(
-              // height: 500,
-              // width: 400,
-              //width: MediaQuery.of(context).size.width * 0.7,
-              // height: MediaQuery.of(context).size.height * 0.4,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  const Text("Are you sure, you want to delete your profile?"),
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        SizedBox(
-                          width: 100,
-                          height: 40,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                const Text("Are you sure, you want to delete your profile?"),
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
                             ),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text(
-                              "Cancel",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black,
-                              ),
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text(
+                            "Cancel",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 100,
-                          height: 40,
-                          child: OutlinedButton(
-                            style: OutlinedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18),
-                              ),
+                      ),
+                      SizedBox(
+                        width: 100,
+                        height: 40,
+                        child: OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18),
                             ),
-                            onPressed: () {
-                              return deleteAccount(runMutation);
-                            },
-                            child: const Text(
-                              "Confirm",
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black,
-                              ),
+                          ),
+                          onPressed: () => deleteAccount(runMutation),
+                          child: const Text(
+                            "Confirm",
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black,
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
           );
         });

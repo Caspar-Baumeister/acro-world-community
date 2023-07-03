@@ -109,6 +109,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
+            // ignore: avoid_print
             print(result.exception.toString());
             return Text(result.exception.toString());
           }
