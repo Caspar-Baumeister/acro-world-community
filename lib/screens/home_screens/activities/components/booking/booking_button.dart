@@ -120,11 +120,12 @@ class BookNowButton extends StatelessWidget {
                       side: const BorderSide(width: 1, color: PRIMARY_COLOR),
                       padding: const EdgeInsets.all(2)),
                   onPressed: () => buildMortal(
-                      context,
-                      BookingModal(
-                          classEvent: classEvent,
-                          placesLeft: bookingsLeft,
-                          refetch: refetch)),
+                    context,
+                    BookingModal(
+                        classEvent: classEvent,
+                        placesLeft: bookingsLeft,
+                        refetch: refetch),
+                  ),
                   child: const Text(
                     "Book now",
                     style: TextStyle(

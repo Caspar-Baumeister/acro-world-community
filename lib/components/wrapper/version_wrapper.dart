@@ -1,8 +1,8 @@
 import 'package:acroworld/components/wrapper/loggin_wrapper.dart';
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/loading_page.dart';
-import 'package:acroworld/screens/version_to_old_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
+import 'package:acroworld/screens/system_pages/version_to_old_page.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -33,6 +33,8 @@ class _VersionWrapperState extends State<VersionWrapper> {
         } else if (queryResult.data != null) {
           String? minVersion = queryResult.data!["config"]?[0]?["min_version"];
           if (minVersion != null) {
+            print("minVersion");
+            print(minVersion);
             return FutureBuilder<PackageInfo>(
                 future: PackageInfo.fromPlatform(),
                 builder: ((context, snapshot) {

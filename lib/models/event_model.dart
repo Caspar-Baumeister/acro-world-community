@@ -25,6 +25,7 @@ class EventModel {
   String? description;
   List<TeacherModel>? teachers;
   List<User>? userParticipants;
+  String? pretixName;
 
   EventModel(
       {this.createdAt,
@@ -49,15 +50,17 @@ class EventModel {
       this.url,
       this.description,
       this.teachers,
+      this.pretixName,
       this.userParticipants});
 
   EventModel.fromJson(Map<String, dynamic> json) {
     createdAt = json['created_at'];
     createdById = json['created_by_id'];
-    endDate = json['end_date'];
+    endDate = json['end_date_tz'] ?? json['end_date'];
     eventSource = json['event_source'];
     eventType = json['event_type'];
     id = json['id'];
+    pretixName = json['pretix_name'];
     isHighlighted = json['is_highlighted'];
     links = json['links'] != null && json['links']!.isNotEmpty
         ? json['links'].cast<String>()
@@ -79,7 +82,7 @@ class EventModel {
     originCreatorName = json['origin_creator_name'];
     name = json['name'];
     pricing = json['pricing'];
-    startDate = json['start_date'];
+    startDate = json['start_date_tz'] ?? json['start_date'];
     updatedAt = json['updated_at'];
     url = json['url'];
     description = json['description'];

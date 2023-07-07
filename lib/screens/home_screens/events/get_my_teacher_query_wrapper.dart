@@ -4,7 +4,7 @@ import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home_screens/events/event_dashboard.dart';
+import 'package:acroworld/screens/home_screens/events/widgets/slider_row_event_dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,6 @@ class GetMyTeacherQueryWrapper extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
-
     return Query(
       options: QueryOptions(
           document: Queries.getFollowedTeachers,

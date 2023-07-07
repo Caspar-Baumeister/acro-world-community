@@ -162,32 +162,59 @@ class EventFilterOnCard extends StatelessWidget {
                             ],
                           )
                         : Container(),
-                    const SizedBox(height: 10),
                     // there is either a origin name or a city or a country named
                     countryLocationString != null
-                        ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              const Center(
-                                child: Icon(
-                                  Icons.location_on_outlined,
-                                  color: Colors.black,
-                                  size: 16,
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 7.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                const Center(
+                                  child: Icon(
+                                    Icons.location_on_outlined,
+                                    color: Colors.black,
+                                    size: 16,
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Flexible(
-                                child: Text(countryLocationString,
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Flexible(
+                                  child: Text(countryLocationString,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.clip,
+                                      style: STANDART_TEXT_STYLE),
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
+                    event.pretixName != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 7),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: const [
+                                Center(
+                                  child: Icon(
+                                    Icons.check,
+                                    color: SUCCESS_COLOR,
+                                    size: 16,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text("book with AcroWorld",
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
                                     style: STANDART_TEXT_STYLE),
-                              ),
-                            ],
+                              ],
+                            ),
                           )
-                        : Container(),
+                        : Container()
                   ],
                 ),
               ),

@@ -154,8 +154,7 @@ class SingleEventBody extends StatelessWidget {
                       children: [
                         Center(
                           child: LinkButton(
-                              text: "Further information and booking",
-                              link: event.url!),
+                              text: "Official website", link: event.url!),
                         ),
                         const Divider(),
                         const SizedBox(

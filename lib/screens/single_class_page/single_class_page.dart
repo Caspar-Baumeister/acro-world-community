@@ -14,18 +14,11 @@ class SingleClassPage extends StatelessWidget {
     print(clas.id);
     return Scaffold(
         appBar: AppBar(
-            leading: const BackButtonWidget(),
-            title: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                      text: clas.name,
-                      style:
-                          const TextStyle(color: Colors.black, fontSize: 18)),
-                ],
-              ),
-            )),
+          leading: const BackButtonWidget(),
+          title: Text(clas.name ?? "",
+              maxLines: 3,
+              style: const TextStyle(color: Colors.black, fontSize: 18)),
+        ),
         body: SingleClassBody(classe: clas));
   }
 }

@@ -35,7 +35,6 @@ class UserProvider extends ChangeNotifier {
               bio 
               id 
               image_url 
-              last_proposed_communityat 
               name
               user_roles {
                 role {
@@ -49,7 +48,9 @@ class UserProvider extends ChangeNotifier {
     if (response?["data"]?["me"]?[0] == null) {
       return false;
     }
+
     Map<String, dynamic> user = response["data"]["me"][0];
+
     if (user["id"] == null || user["name"] == null) {
       return false;
     }

@@ -1,8 +1,8 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/screens/error_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/HOME_SCREENS/home_scaffold.dart';
-import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

@@ -72,6 +72,7 @@ class Fragments {
     created_by_id
     description
     end_date
+    end_date_tz
     event_source
     event_type
     id
@@ -86,8 +87,10 @@ class Fragments {
     origin_creator_name
     pricing
     start_date
+    start_date_tz
     updated_at
     url
+    pretix_name
     origin_location_name
     user_participants {
       event_id

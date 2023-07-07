@@ -1,7 +1,7 @@
 import 'package:acroworld/components/wrapper/version_wrapper.dart';
-import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/no_wifi_page.dart';
-import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/no_wifi_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 

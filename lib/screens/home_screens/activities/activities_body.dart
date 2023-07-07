@@ -1,12 +1,10 @@
 import 'package:acroworld/components/place_button/place_button.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/activities_query.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/classes_view.dart';
 import 'package:acroworld/screens/home_screens/activities/components/create_class_modal.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class ActivitiesBody extends StatefulWidget {
   const ActivitiesBody({Key? key}) : super(key: key);
@@ -20,7 +18,6 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     // Wrap everything by DefaultTabController length 2
     return DefaultTabController(
       length: 2,
@@ -40,20 +37,7 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
                 ),
               ),
               IconButton(
-                onPressed: () =>
-                    // userProvider.activeUser?.userRoles != null &&
-                    //         userProvider.activeUser!.userRoles!
-                    //             .where((UserRole role) =>
-                    //                 role.id ==
-                    //                 "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
-                    //             .isNotEmpty
-                    //     ? Navigator.of(context).push(
-                    //         MaterialPageRoute(
-                    //           builder: (context) => Container(),
-                    //         ),
-                    //       )
-                    //     :
-                    buildMortal(context, const CreateClassModal()),
+                onPressed: () => buildMortal(context, const CreateClassModal()),
                 icon: const Icon(Icons.add),
               ),
             ],

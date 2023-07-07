@@ -1,8 +1,9 @@
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/loading_page.dart';
+
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -74,10 +75,6 @@ class _LogginWrapperState extends State<LogginWrapper> {
     if (!isValidToken) {
       return false;
     }
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await Provider.of<UserProvider>(context, listen: false)
-          .setUserFromToken();
-    });
 
     return true;
   }

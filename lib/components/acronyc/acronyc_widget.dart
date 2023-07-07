@@ -31,7 +31,7 @@ class AcronycWidget extends StatelessWidget {
               TextSpan(
                 text: " here.",
                 style: const TextStyle(
-                    color: PRIMARY_COLOR, fontWeight: FontWeight.bold),
+                    color: LINK_COLOR, fontWeight: FontWeight.bold),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     const link = "https://acronyc.de/";

@@ -1,10 +1,10 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
-import 'package:acroworld/screens/error_page.dart';
 import 'package:acroworld/screens/home_screens/events/event_dashboard.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/filter_bar.dart';
 import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_event_body.dart';
-import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';

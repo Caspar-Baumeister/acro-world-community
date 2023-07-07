@@ -1,8 +1,8 @@
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:acroworld/screens/teacher_profile/screens/profile_base_screen.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

@@ -1,5 +1,5 @@
-import 'package:acroworld/screens/error_page.dart';
-import 'package:acroworld/screens/loading_page.dart';
+import 'package:acroworld/screens/system_pages/error_page.dart';
+import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/save_token_mutation_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
