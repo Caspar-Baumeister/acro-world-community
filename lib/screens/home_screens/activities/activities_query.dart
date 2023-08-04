@@ -150,8 +150,16 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
 
           try {
             if (result.data![selector] != null) {
-              classWeekEvents = List<ClassEvent>.from(result.data![selector]
-                  .map((json) => ClassEvent.fromJson(json)));
+              print(result.data![selector].length);
+              classWeekEvents =
+                  List<ClassEvent>.from(result.data![selector].map((json) {
+                if (widget.activityType == "jams") {
+                  print("json");
+                  print(json["class"]["name"]);
+                }
+
+                return ClassEvent.fromJson(json);
+              }));
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 activityProvider.setActiveClasses(classWeekEvents
                     .where((ClassEvent classEvent) =>

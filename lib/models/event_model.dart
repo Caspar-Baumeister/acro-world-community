@@ -26,6 +26,8 @@ class EventModel {
   List<TeacherModel>? teachers;
   List<User>? userParticipants;
   String? pretixName;
+  bool? isFoodIncluded;
+  bool? isAcomodationIncluded;
 
   EventModel(
       {this.createdAt,
