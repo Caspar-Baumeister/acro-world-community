@@ -46,28 +46,7 @@ class _SignInState extends State<SignIn> {
         elevation: 0.0,
         centerTitle: false,
         titleSpacing: 20.0,
-        title: const Text('Login to AcroWorld'),
-        actions: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(8.0).copyWith(right: 20),
-            child: OutlinedButton(
-              style: OutlinedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              onPressed: () => widget.toggleView(),
-              child: const Text(
-                "Register",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ),
-        ],
+        title: const Text(''),
       ),
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
@@ -75,7 +54,12 @@ class _SignInState extends State<SignIn> {
           key: _formKey,
           child: Column(
             children: <Widget>[
-              const SizedBox(height: 20.0),
+              const Spacer(),
+              const Image(
+                image: AssetImage('assets/logo/yoga2 transp.png'),
+                height: 100,
+              ),
+              const Spacer(),
               TextFormField(
                 controller: emailController,
                 autofocus: true,
@@ -135,24 +119,8 @@ class _SignInState extends State<SignIn> {
                 onPressed: () => onSignin(),
                 loading: loading,
                 isFilled: true,
-              )
-              // OutlinedButton(
-              //   style: OutlinedButton.styleFrom(
-              //     shape: RoundedRectangleBorder(
-              //       borderRadius: BorderRadius.circular(18),
-              //     ),
-              //   ),
-              //   onPressed: () => onSignin(),
-              //   child: const Text(
-              //     "Sign In",
-              //     style: TextStyle(
-              //       fontSize: 14,
-              //       fontWeight: FontWeight.w700,
-              //       color: Colors.black,
-              //     ),
-              //   ),
-              // ),
-              ,
+                buttonFillColor: Colors.lightBlueAccent,
+              ),
               error != ""
                   ? Padding(
                       padding: const EdgeInsets.only(top: 12.0, left: 10),
@@ -176,7 +144,24 @@ class _SignInState extends State<SignIn> {
                       "forgot password",
                       style: TextStyle(color: LINK_COLOR),
                     )),
-              )
+              ),
+              OutlinedButton(
+                style: OutlinedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                ),
+                onPressed: () => widget.toggleView(),
+                child: const Text(
+                  "Register",
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20.0),
             ],
           ),
         ),

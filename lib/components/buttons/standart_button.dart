@@ -8,6 +8,7 @@ class StandartButton extends StatelessWidget {
       {Key? key,
       required this.text,
       required this.onPressed,
+      this.buttonFillColor = BUTTON_FILL_COLOR,
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
@@ -16,6 +17,7 @@ class StandartButton extends StatelessWidget {
 
   final String text;
   final VoidCallback onPressed;
+  final Color buttonFillColor;
   final double width;
   final bool disabled;
   final bool loading;
@@ -32,8 +34,8 @@ class StandartButton extends StatelessWidget {
           : onPressed,
       child: Container(
           decoration: BoxDecoration(
-            color: isFilled ? BUTTON_FILL_COLOR : Colors.white,
-            border: Border.all(color: BUTTON_FILL_COLOR),
+            color: isFilled ? buttonFillColor : Colors.white,
+            border: Border.all(color: buttonFillColor),
             borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
           ),
           width: width,
@@ -44,7 +46,7 @@ class StandartButton extends StatelessWidget {
                     width: 30,
                     padding: const EdgeInsets.all(5),
                     child: CircularProgressIndicator(
-                      color: isFilled == true ? Colors.white : PRIMARY_COLOR,
+                      color: isFilled ? Colors.white : PRIMARY_COLOR,
                     ))
                 : Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
