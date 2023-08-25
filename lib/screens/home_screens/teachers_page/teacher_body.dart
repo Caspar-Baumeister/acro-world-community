@@ -15,12 +15,12 @@ class TeacherBody extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
 
     List<Widget> teacherList = List.from(
-      teachers.map(
-        (teacher) => TeacherCard(
-            teacher: teacher,
-            isLiked: isTeacherFollowedByUser(
-                teacher.userLikes, userProvider.activeUser!.id!)),
-      ),
+      teachers.where((TeacherModel teacher) => teacher.type != "Anonymous").map(
+            (teacher) => TeacherCard(
+                teacher: teacher,
+                isLiked: isTeacherFollowedByUser(
+                    teacher.userLikes, userProvider.activeUser!.id!)),
+          ),
     );
     Provider.of<UserProvider>(context);
 

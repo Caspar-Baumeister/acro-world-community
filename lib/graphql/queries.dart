@@ -67,109 +67,6 @@ query Events {
 }
   """);
 
-  static final jamsFromToWithDistance = gql("""
-query jamsFromToWithDistance(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8) {
- jams_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {date: {_gte: \$from}, _and: {date: {_lte: \$to}, distance: {_lte: \$distance}}}) {
-    distance
-    created_at
-    created_by_id
-    community {
-      confirmation_status
-      id
-      location
-      name
-      longitude
-      latitude
-    }
-    created_by {
-      id
-      name
-    }
-    date
-    id
-    info
-    latitude
-    longitude
-    name
-    participants_aggregate {
-      aggregate {
-        count
-      }
-    }
-    participants {
-      user_id
-      user {
-        id
-        acro_role_id
-        name
-      }
-    }
-  }
-}
-""");
-
-  static final jamsFromTo = gql("""
-query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
-  jams(order_by: {date: asc}, where: {date: {_gte: \$from}, _and: {date: {_lte: \$to}}}) {
-    created_at
-    created_by_id
-    community {
-      confirmation_status
-      id
-      location
-      name
-      longitude
-      latitude
-    }
-    created_by {
-      id
-      name
-    }
-    date
-    id
-    info
-    latitude
-    longitude
-    name
-    participants_aggregate {
-      aggregate {
-        count
-      }
-    }
-    participants {
-      user_id
-      user {
-        id
-        acro_role_id
-        name
-      }
-    }
-  }
-}
-""");
-
-  static final jamsByCommunityId = gql("""
-  query JamsByCommunityId(\$communityId: uuid) {
-    jams(where: {community_id: {_eq: \$communityId}}) {
-      ${Fragments.jamFragment}
-    }
-  }
-  """);
-
-  static final getAllJamsFromMyCommunities = gql("""
-  query GetMyCommunities { 
-    me {
-      communities {
-        community {
-          jams {
-            ${Fragments.jamFragment}
-          }
-        }
-      }
-    }
-  }
-  """);
-
   static final getPlaces = gql("""
   query GetPlaces(\$query: String!) {
     places(searchQuery: \$query) {
@@ -207,20 +104,13 @@ query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
   }
   """);
 
-  static final getCommunityById = gql("""
-  query getCommunityById(\$communityId: uuid!){
-    communities(where: {id: {_eq: \$communityId}}){
-      ${Fragments.communityFragment}
-    }
-  }
-  """);
-
   static final getTeacherForList = gql("""
     query getTeacherForList(\$user_id: uuid) {
       teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}}) {
         id
         location_name
         name
+        type
         community_id
         images(where: {is_profile_picture: {_eq: true}}) {
           image {
@@ -288,32 +178,6 @@ query jamsFromTo(\$from: timestamptz!, \$to: timestamptz!) {
         }
       }
     }
-  """);
-
-  static final getOtherCommunities = gql("""
-  query GetOtherCommunities(\$user_id: uuid, \$query: String) {
-  communities(where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {name: {_ilike: \$query}}], confirmation_status: {_eq: Confirmed}}, limit: 15) {
-    id
-    name
-    latitude
-    longitude
-    location
-    confirmation_status
-  }
-}
-  """);
-
-  static final getOtherCommunitiesByLocation = gql("""
-query GetOtherCommunitiesByLocation(\$latitude: numeric, \$longitude: numeric, \$user_id: uuid, \$query: String) {
-  communities_by_location_v1(args: { lng: \$longitude, lat: \$latitude}, order_by: {distance: asc}, where: {_and: [{_not: {users: {user_id: {_eq: \$user_id}}}}, {distance: {_lte: "100"}}, {name: {_ilike: \$query}}], confirmation_status: {_eq: "Confirmed"}}, limit: 15) {
-    id
-    name
-    latitude
-    longitude
-    location
-    distance
-  }
-}
   """);
 
   static final getClassEventsByClassId = gql("""
@@ -395,14 +259,6 @@ query getFollowedTeachers(\$user_id: uuid!) {
   }
 }""");
 
-  static final getCommunityUsers = gql("""
-    query getCommunityUsers(\$community_id: uuid!, \$limit: Int, \$offset: Int) {
-      users(where: {user_communities: {community_id: {_eq: \$community_id}}}, limit: \$limit, offset: \$offset) {
-        ${Fragments.userFragment}
-      }
-    }
-      """);
-
   static final getClassParticipants = gql("""
     query getCommunityUsers(\$class_event_id: uuid!, \$limit: Int, \$offset: Int) {
       users(where: {
@@ -414,25 +270,4 @@ query getFollowedTeachers(\$user_id: uuid!) {
       }
     }
       """);
-
-  static final getUserCommunities = gql("""
-  query getUserCommunities() {
-  me {
-    communities(order_by: {community: {community_messages_aggregate: {max: {created_at: desc_nulls_last}}}}) {
-      last_visited_at
-      community_id
-      community {
-        ${Fragments.communityFragment}
-          community_messages(limit: 1, order_by: {created_at: desc}) {
-          content
-          created_at
-          from_user {
-            name
-          }
-        }
-      }
-    }
-  }
-}
-  """);
 }

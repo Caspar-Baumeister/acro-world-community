@@ -18,6 +18,16 @@ class ClassEventExpandedTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
+
+    List<ClassTeachers> classTeachers = [];
+
+    if (classEvent.classModel?.classTeachers != null) {
+      classTeachers = classEvent.classModel!.classTeachers!
+          .where((ClassTeachers classTeacher) =>
+              classTeacher.teacher?.type != "Anonymous")
+          .toList();
+    }
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: () => classEvent.classModel != null
@@ -84,13 +94,12 @@ class ClassEventExpandedTile extends StatelessWidget {
                         ),
                       ],
                     ),
-                    classEvent.classModel?.classTeachers != null &&
-                            classEvent.classModel!.classTeachers!.isNotEmpty
+                    classTeachers.isNotEmpty
                         ? Padding(
                             padding: const EdgeInsets.only(top: 6.0),
                             child: ClassTeacherChips(
                               classTeacherList: List<TeacherModel>.from(
-                                classEvent.classModel!.classTeachers!
+                                classTeachers
                                     .map((e) => e.teacher)
                                     .where((element) => element != null),
                               ),
