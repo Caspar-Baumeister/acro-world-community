@@ -10,6 +10,7 @@ class TeacherModel {
   String? description;
   String? instagramName;
   String? locationName;
+  String? type;
   List<Images>? images;
   List<TeacherLevels>? teacherLevels;
   String? userId;
@@ -28,6 +29,7 @@ class TeacherModel {
       this.createdAt,
       this.description,
       this.instagramName,
+      this.type,
       this.locationName,
       this.images,
       this.teacherLevels,
@@ -36,6 +38,7 @@ class TeacherModel {
 
   TeacherModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
+    type = json['type'];
     name = json['name'];
     confirmationStatus = json['confirmation_status'];
     isOrganization = json['is_organization'];

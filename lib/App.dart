@@ -3,7 +3,6 @@
 import 'package:acroworld/components/wrapper/connection_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/provider/activity_provider.dart';
-import 'package:acroworld/provider/all_other_coms.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -21,7 +20,6 @@ class App extends StatelessWidget {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => AllOtherComs()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),

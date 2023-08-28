@@ -1,7 +1,6 @@
 import 'dart:collection';
 
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/jam_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -110,31 +109,6 @@ DateTime laterDay(DateTime a, DateTime b) {
 
 bool isSameDate(DateTime a, DateTime b) {
   return a.day == b.day && a.month == b.month && a.year == b.year;
-}
-
-Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
-  List<Jam> sortedJams = List<Jam>.from(jams);
-  sortedJams.sort(
-      (j1, j2) => j1.dateAsDateTime!.isBefore(j2.dateAsDateTime!) ? 1 : 0);
-  LinkedHashMap<DateTime, List<Jam>> jamMap =
-      LinkedHashMap<DateTime, List<Jam>>(
-    equals: isSameDayCustom,
-    hashCode: getHashCode,
-  );
-  for (Jam jam in sortedJams) {
-    if (jamMap[jam.date] != null) {
-      jamMap[jam.date]!.add(jam);
-    } else {
-      jamMap[jam.dateAsDateTime!] = List.from([jam]);
-    }
-  }
-  return jamMap;
-
-  // jamMap..addAll({
-  //     for (var jam in jams)
-
-  //     jam.date: [jam]
-  //   });
 }
 
 Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {

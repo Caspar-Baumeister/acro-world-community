@@ -1,6 +1,7 @@
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/components/map.dart';
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
@@ -17,6 +18,14 @@ class SingleClassBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<ClassTeachers> classTeachers = [];
+
+    if (classe.classTeachers != null) {
+      classTeachers = classe.classTeachers!
+          .where((ClassTeachers classTeacher) =>
+              classTeacher.teacher?.type != "Anonymous")
+          .toList();
+    }
     return SingleChildScrollView(
         child: Column(
       children: [
@@ -52,7 +61,7 @@ class SingleClassBody extends StatelessWidget {
               const SizedBox(height: 20),
               DescriptionTextWidget(text: classe.description ?? ""),
               const SizedBox(height: 10),
-              classe.classTeachers != null && classe.classTeachers!.isNotEmpty
+              classTeachers.isNotEmpty
                   ? Container(
                       alignment: Alignment.centerLeft,
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -66,7 +75,7 @@ class SingleClassBody extends StatelessWidget {
                           const SizedBox(width: 10),
                           ClassTeacherChips(
                               classTeacherList: List<TeacherModel>.from(
-                                  classe.classTeachers!.map((e) => e.teacher))),
+                                  classTeachers.map((e) => e.teacher))),
                         ],
                       ),
                     )

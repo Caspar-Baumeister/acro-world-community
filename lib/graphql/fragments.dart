@@ -47,6 +47,7 @@ class Fragments {
         teacher {
           id
           name
+          type
           confirmation_status
           is_organization
           images {
@@ -117,6 +118,7 @@ class Fragments {
   static const teacherFragment = """
   created_at
   description
+  type
   id
   location_name
   community_id
