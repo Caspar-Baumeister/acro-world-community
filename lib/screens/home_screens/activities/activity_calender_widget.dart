@@ -60,7 +60,7 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       availableCalendarFormats: const {CalendarFormat.week: 'week'},
       calendarStyle: CalendarStyle(
           canMarkersOverflow: false,
-          markersMaxCount: 5,
+          markersMaxCount: 1,
           outsideDaysVisible: false,
           todayDecoration:
               BoxDecoration(color: Colors.grey[400]!, shape: BoxShape.circle),

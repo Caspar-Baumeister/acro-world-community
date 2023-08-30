@@ -1,4 +1,4 @@
-import 'package:acroworld/components/standard_icon_button/standard_icon_button.dart';
+import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/event_filter_page.dart';

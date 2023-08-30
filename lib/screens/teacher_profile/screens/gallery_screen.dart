@@ -1,3 +1,4 @@
+import 'package:acroworld/components/full_screen_view.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -28,26 +29,53 @@ class _GalleryState extends State<Gallery> {
 
   Widget _createGridTileWidget(Images image) => Builder(
         builder: (context) => GestureDetector(
-          onLongPress: () {
-            _popupDialog = _createPopupDialog(image.image!.url!);
-            Overlay.of(context).insert(_popupDialog!);
-          },
-          onLongPressEnd: (details) => _popupDialog?.remove(),
-          child: CachedNetworkImage(
-            fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
-              color: Colors.black12,
-            ),
-            errorWidget: (context, url, error) => Container(
-              color: Colors.black12,
-              child: const Icon(
-                Icons.error,
-                color: Colors.red,
+            onTap: () => Navigator.of(context).push(
+                  PageRouteBuilder(
+                    pageBuilder: (context, animation, secondaryAnimation) =>
+                        FullScreenImageView(
+                            url: image.image!.url!, tag: image.image!.url!),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      const begin = 0.0;
+                      const end = 1.0;
+                      const Curve curve = Curves.easeInOut;
+                      var scale = Tween<double>(
+                        begin: begin,
+                        end: end,
+                      ).animate(
+                        CurvedAnimation(parent: animation, curve: curve),
+                      );
+
+                      return ScaleTransition(
+                        scale: scale,
+                        child: child,
+                      );
+                    },
+                  ),
+                ),
+
+            // onLongPress: () {
+            //   _popupDialog = _createPopupDialog(image.image!.url!);
+            //   Overlay.of(context).insert(_popupDialog!);
+            // },
+            // onLongPressEnd: (details) => _popupDialog?.remove(),
+            child: Hero(
+              tag: image.image!.url!,
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                placeholder: (context, url) => Container(
+                  color: Colors.black12,
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.black12,
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                ),
+                imageUrl: image.image!.url!,
               ),
-            ),
-            imageUrl: image.image!.url!,
-          ),
-        ),
+            )),
       );
 
   OverlayEntry _createPopupDialog(String url) {

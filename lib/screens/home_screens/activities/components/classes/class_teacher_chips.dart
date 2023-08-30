@@ -40,8 +40,8 @@ class ClassTeacherChips extends StatelessWidget {
                               imageUrl: teacher.profilImgUrl ?? "",
                               imageBuilder: (context, imageProvider) =>
                                   Container(
-                                width: 64.0,
-                                height: 64.0,
+                                width: 60.0,
+                                height: 60.0,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   image: DecorationImage(
@@ -49,16 +49,16 @@ class ClassTeacherChips extends StatelessWidget {
                                 ),
                               ),
                               placeholder: (context, url) => Container(
-                                width: 64.0,
-                                height: 64.0,
+                                width: 60.0,
+                                height: 60.0,
                                 decoration: const BoxDecoration(
                                   color: Colors.black12,
                                   shape: BoxShape.circle,
                                 ),
                               ),
                               errorWidget: (context, url, error) => Container(
-                                width: 64.0,
-                                height: 64.0,
+                                width: 60.0,
+                                height: 60.0,
                                 decoration: const BoxDecoration(
                                   color: Colors.black12,
                                   shape: BoxShape.circle,
