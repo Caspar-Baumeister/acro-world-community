@@ -1,6 +1,6 @@
 class Fragments {
   static const classEventFragment = """
-  class_id
+    class_id
     created_at
     end_date
     id
