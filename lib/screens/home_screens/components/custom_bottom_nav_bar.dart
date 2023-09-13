@@ -40,7 +40,12 @@ class CustomBottomNavBar extends StatelessWidget {
             icon: Icon(
               Icons.school,
             ),
-            label: "Teacher & more"),
+            label: "Teacher"),
+        BottomNavigationBarItem(
+            icon: Icon(
+              Icons.person,
+            ),
+            label: "Profile"),
       ],
     );
   }

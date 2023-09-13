@@ -20,11 +20,6 @@ class LoadingWidget extends StatelessWidget {
             children: const [
               Center(
                 child: CircularProgressIndicator(),
-                // child: Image(
-                //   image: AssetImage("assets/muscleup_drawing.png"),
-                //   height: 200,
-                //   fit: BoxFit.contain,
-                // ),
               ),
             ],
           ),

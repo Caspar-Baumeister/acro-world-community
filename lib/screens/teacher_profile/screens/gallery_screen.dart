@@ -1,5 +1,5 @@
-import 'package:acroworld/components/full_screen_view.dart';
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/screens/teacher_profile/screens/full_screen_view.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

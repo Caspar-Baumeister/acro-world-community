@@ -1,5 +1,5 @@
 import 'package:acroworld/components/acronyc/acronyc_widget.dart';
-import 'package:acroworld/components/buttons/your_gender_button_widget.dart';
+import 'package:acroworld/components/acro_role/your_gender_button_widget.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';

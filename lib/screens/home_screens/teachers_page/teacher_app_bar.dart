@@ -14,7 +14,7 @@ class AppBarTeacher extends StatelessWidget with PreferredSizeWidget {
       backgroundColor: Colors.white,
       elevation: 0.0,
       title: const Text(
-        "Teacher and organiser",
+        "Teacher",
         style: GIGANTIC_TEXT_STYLE,
       ),
     );

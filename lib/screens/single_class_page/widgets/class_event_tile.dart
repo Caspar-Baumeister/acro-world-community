@@ -1,4 +1,4 @@
-import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
+import 'package:acroworld/components/acro_role/gender_distribution_pie_from_class_event_id.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';

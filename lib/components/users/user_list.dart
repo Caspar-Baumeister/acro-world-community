@@ -1,4 +1,4 @@
-import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
+import 'package:acroworld/components/acro_role/gender_distribution_pie_from_class_event_id.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:acroworld/components/users/user_list_item.dart';
