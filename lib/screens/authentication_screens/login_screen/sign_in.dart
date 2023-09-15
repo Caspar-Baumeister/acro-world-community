@@ -45,11 +45,11 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: false,
-        titleSpacing: 20.0,
+        titleSpacing: 0.0,
         title: const Text(''),
       ),
       body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
+        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 50.0),
         child: Form(
           key: _formKey,
           child: Column(
@@ -119,7 +119,7 @@ class _SignInState extends State<SignIn> {
                 onPressed: () => onSignin(),
                 loading: loading,
                 isFilled: true,
-                buttonFillColor: Colors.lightBlueAccent,
+                buttonFillColor: COLOR7,
               ),
               error != ""
                   ? Padding(
@@ -161,7 +161,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const Spacer(),
             ],
           ),
         ),
