@@ -39,6 +39,7 @@ dependencies:
   package_info_plus: ^3.1.0
   http_auth: ^1.0.1
   photo_view: ^0.14.0
+  mixpanel_flutter: ^2.0.0
 
 dev_dependencies:
   flutter_test:
