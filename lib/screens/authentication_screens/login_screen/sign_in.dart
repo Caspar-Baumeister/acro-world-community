@@ -8,6 +8,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({required this.toggleView, Key? key}) : super(key: key);
@@ -18,6 +19,8 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
+  late Mixpanel mixpanel;
+
   final _formKey = GlobalKey<FormState>();
   String error = '';
   String errorEmail = "";
@@ -33,9 +36,16 @@ class _SignInState extends State<SignIn> {
   @override
   void initState() {
     super.initState();
+    initMixpanel();
 
     emailController = TextEditingController();
     passwordController = TextEditingController();
+  }
+
+  Future<void> initMixpanel() async {
+    // Replace with your Project Token
+    // Once you've called this method once, you can access `mixpanel` throughout the rest of your application.
+    mixpanel = await Mixpanel.init("84b426c43adf817a7afae6dbb9d46f12", trackAutomaticEvents: true);
   }
 
   @override
