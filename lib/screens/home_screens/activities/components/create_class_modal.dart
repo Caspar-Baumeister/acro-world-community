@@ -1,4 +1,4 @@
-import 'package:acroworld/components/teacher_button_link_widget.dart';
+import 'package:acroworld/components/buttons/teacher_button_link_widget.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';

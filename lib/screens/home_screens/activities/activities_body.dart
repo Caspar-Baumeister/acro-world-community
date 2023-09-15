@@ -1,4 +1,4 @@
-import 'package:acroworld/components/place_button/place_button.dart';
+import 'package:acroworld/components/buttons/place_button/place_button.dart';
 import 'package:acroworld/screens/home_screens/activities/activities_query.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/classes_view.dart';
 import 'package:acroworld/screens/home_screens/activities/components/create_class_modal.dart';

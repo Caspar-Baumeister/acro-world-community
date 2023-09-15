@@ -7,6 +7,8 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_button.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
+import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -67,12 +69,15 @@ class _ClassEventTileState extends State<ClassEventTile> {
                 space: 10,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "${DateFormat('EEE, H:mm').format(widget.classEvent.date)} - ${DateFormat('Hm').format(DateTime.parse(widget.classEvent.endDate!))}",
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(formatDateTime(
+                          DateTime.parse(widget.classEvent.startDate!))),
+                      Text(
+                          "${DateFormat('H:mm').format(DateTime.parse(widget.classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(widget.classEvent.endDate!))}",
+                          style: SMALL_TEXT_STYLE)
+                    ],
                   ),
                   classEventId != null
                       ? GestureDetector(

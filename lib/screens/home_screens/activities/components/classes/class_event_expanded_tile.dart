@@ -35,6 +35,7 @@ class ClassEventExpandedTile extends StatelessWidget {
               MaterialPageRoute(
                 builder: (context) => SingleClassPage(
                   clas: classEvent.classModel!,
+                  classEvent: classEvent,
                 ),
               ),
             )
@@ -96,7 +97,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                     ),
                     classTeachers.isNotEmpty
                         ? Padding(
-                            padding: const EdgeInsets.only(top: 6.0),
+                            padding: const EdgeInsets.only(top: 3.0, bottom: 3),
                             child: ClassTeacherChips(
                               classTeacherList: List<TeacherModel>.from(
                                 classTeachers

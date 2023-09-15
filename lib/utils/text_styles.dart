@@ -16,6 +16,18 @@ const TextStyle BIG_TEXT_STYLE =
 const TextStyle STANDART_DESCRIPTION =
     TextStyle(fontSize: 18, fontWeight: FontWeight.w400);
 
+const TextStyle H20W5 = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w500,
+  fontFamily: "rubik",
+);
+
+const TextStyle H20W3 = TextStyle(
+  fontSize: 20,
+  fontWeight: FontWeight.w300,
+  fontFamily: "rubik",
+);
+
 const TextStyle HEADER_1_TEXT_STYLE = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w700,

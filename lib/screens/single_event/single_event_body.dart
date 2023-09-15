@@ -1,12 +1,11 @@
+import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/map.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/screens/home_screens/events/widgets/crawled_warning_widget.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/text_styles.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
@@ -57,108 +56,81 @@ class SingleEventBody extends StatelessWidget {
     }
     return SingleChildScrollView(
         child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        event.mainImageUrl != null
-            ? CrawledWarningWidget(
-                showWarning: event.eventSource == "Crawled",
-                child: SizedBox(
-                  height: 200.0,
-                  width: double.infinity,
-                  child: ClipRRect(
-                    // borderRadius: BorderRadius.circular(8.0),
-                    child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      height: 52.0,
-                      placeholder: (context, url) => Container(
-                        color: Colors.black12,
-                      ),
-                      errorWidget: (context, url, error) => Container(
-                        color: Colors.black12,
-                        child: const Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        ),
-                      ),
-                      imageUrl: event.mainImageUrl!,
-                    ),
-                  ),
-                ),
-              )
-            : Container(),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 20).copyWith(top: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Text(event.name ?? "", maxLines: 3, style: H20W5),
               const SizedBox(height: 20),
               dateString != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Center(
-                            child: Icon(
-                              Icons.access_time_outlined,
-                              color: Colors.black,
-                              size: 16,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            const Center(
+                              child: Icon(
+                                Icons.access_time_outlined,
+                                color: Colors.black,
+                                size: 20,
+                              ),
                             ),
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Flexible(
-                            child: Text(dateString,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: HEADER_2_TEXT_STYLE),
-                          )
-                        ],
-                      ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Flexible(
+                              child: Text(dateString,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: SMALL_TEXT_STYLE),
+                            )
+                          ],
+                        ),
+                        const CustomDivider()
+                      ],
                     )
                   : Container(),
               event.description != null && event.description != ""
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: DescriptionTextWidget(
-                        text: event.description!,
-                        isHeader: true,
-                      ),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DescriptionTextWidget(
+                          text: event.description!,
+                          isHeader: true,
+                        ),
+                        const CustomDivider()
+                      ],
                     )
                   : Container(),
-              const SizedBox(height: 10),
               event.pricing != null && event.pricing != ""
-                  ? Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Pricing",
-                            textAlign: TextAlign.start,
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 10),
-                          DescriptionTextWidget(
-                            text: event.pricing!,
-                            isHeader: false,
-                          ),
-                        ],
-                      ),
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Pricing",
+                          textAlign: TextAlign.start,
+                          style: H20W3,
+                        ),
+                        const SizedBox(height: 10),
+                        DescriptionTextWidget(
+                          text: event.pricing!,
+                          isHeader: false,
+                        ),
+                        const CustomDivider()
+                      ],
                     )
                   : Container(),
-              const SizedBox(height: 4),
               event.url != null && event.url != ""
                   ? Column(
                       children: [
                         Center(
                           child: LinkButton(
                               text: "Official website", link: event.url!),
-                        ),
-                        const Divider(),
-                        const SizedBox(
-                          height: 10,
                         ),
                       ],
                     )
@@ -179,7 +151,7 @@ class SingleEventBody extends StatelessWidget {
                       children: [
                         const Text(
                           "Teacher:",
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                          style: H20W3,
                         ),
                         const SizedBox(width: 10),
                         ClassTeacherChips(classTeacherList: event.teachers!),
@@ -209,7 +181,7 @@ class SingleEventBody extends StatelessWidget {
                               children: [
                                 const Text(
                                   "Location",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  style: H20W3,
                                 ),
                                 OpenGoogleMaps(
                                   latitude: latitude * 1.0,

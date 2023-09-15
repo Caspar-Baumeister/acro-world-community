@@ -4,7 +4,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/components/search_bar_widget.dart';
-import 'package:acroworld/components/standard_icon_button/standard_icon_button.dart';
+import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';

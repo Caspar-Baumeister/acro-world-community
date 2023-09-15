@@ -127,7 +127,7 @@ class DifficultyWidget extends StatelessWidget {
             )
           : const Center(
               child: Text(
-              "Open",
+              "Open level",
               style: TextStyle(fontSize: 10),
             )),
     );
