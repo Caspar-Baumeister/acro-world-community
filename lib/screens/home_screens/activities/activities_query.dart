@@ -1,9 +1,5 @@
 import 'dart:async';
 
-import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/events/jams/create_jam_event.dart';
-import 'package:acroworld/events/jams/participate_to_jam_event.dart';
-
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/places/place.dart';
@@ -11,7 +7,6 @@ import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/activity_calender_widget.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:event_bus/event_bus.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -31,15 +26,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
   late String to;
   DateTime focusedDay = DateTime.now();
   DateTime initialSelectedDate = DateTime.now();
-  List<StreamSubscription> eventListeners = [];
-
-  @override
-  void dispose() {
-    super.dispose();
-    for (final eventListener in eventListeners) {
-      eventListener.cancel();
-    }
-  }
 
   @override
   void initState() {
@@ -99,9 +85,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     }
 
     // choose queryoption based on activityType
-    final EventBusProvider eventBusProvider =
-        Provider.of<EventBusProvider>(context, listen: false);
-    final EventBus eventBus = eventBusProvider.eventBus;
+
     ActivityProvider activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
 
@@ -133,18 +117,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             } catch (e) {
               print(e.toString());
             }
-          }
-
-          // if jams are viewed, refetch when participate to jam and created jam
-          if (widget.activityType == "jams") {
-            eventListeners
-                .add(eventBus.on<ParticipateToJamEvent>().listen((event) {
-              runRefetch();
-            }));
-
-            eventListeners.add(eventBus.on<CrudJamEvent>().listen((event) {
-              runRefetch();
-            }));
           }
 
           List<ClassEvent> classWeekEvents = [];

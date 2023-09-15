@@ -1,4 +1,28 @@
 class Fragments {
+  static const eventInstanceWithEventTemplate = """
+    event_template {
+      description
+      name
+      created_at
+      id
+      location
+      location_name
+      updated_at
+    }
+    description
+    name
+    created_at
+    early_bird_end_date
+    early_bird_start_date
+    end_date
+    event_template_id
+    id
+    is_cancelled
+    start_date
+    updated_at
+
+""";
+
   static const classEventFragment = """
     class_id
     created_at

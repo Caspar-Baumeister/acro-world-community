@@ -1,0 +1,143 @@
+import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/models/event/event_instance.dart';
+import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/text_styles.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class EventTile extends StatelessWidget {
+  const EventTile({Key? key, required this.event}) : super(key: key);
+  final EventInstance event;
+
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    List<ClassTeachers> classTeachers = [];
+
+    // if (classEvent.classModel?.classTeachers != null) {
+    //   classTeachers = classEvent.classModel!.classTeachers!
+    //       .where((ClassTeachers classTeacher) =>
+    //           classTeacher.teacher?.type != "Anonymous")
+    //       .toList();
+    // }
+
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      // onTap: () => classEvent.classModel != null
+      //     ? Navigator.of(context).push(
+      //         MaterialPageRoute(
+      //           builder: (context) => SingleClassPage(
+      //             clas: classEvent.classModel!,
+      //             classEvent: classEvent,
+      //           ),
+      //         ),
+      //       )
+      //     : null,
+      child: SizedBox(
+        height: CLASS_CARD_HEIGHT + 12,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Card Image
+            // ClassEventTileImage(
+            //   width: screenWidth * 0.3,
+            //   isCancelled: classEvent.isCancelled,
+            //   imgUrl: classEvent.classModel?.imageUrl,
+            // ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(event.eventTemplate?.name ?? "",
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: MEDIUM_BOLD_TEXT_STYLE),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        event.startDate != null && event.endDate != null
+                            ? Text(
+                                "${DateFormat('H:mm').format(DateTime.parse(event.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(event.endDate!))}",
+                                style: SMALL_TEXT_STYLE)
+                            : const Text("time not given"),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Container(
+                              constraints: BoxConstraints(
+                                  maxWidth:
+                                      MediaQuery.of(context).size.width * 0.35),
+                              child: Text(
+                                  event.eventTemplate?.locationName ??
+                                      "no location name",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style: SMALL_TEXT_STYLE),
+                            ),
+                            const Icon(
+                              Icons.location_on,
+                              color: Colors.black,
+                              size: 16,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    classTeachers.isNotEmpty
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 3.0, bottom: 3),
+                            child: ClassTeacherChips(
+                              classTeacherList: List<TeacherModel>.from(
+                                classTeachers
+                                    .map((e) => e.teacher)
+                                    .where((element) => element != null),
+                              ),
+                            ),
+                          )
+                        : Container(
+                            height: 10,
+                          ),
+                    // Row(
+                    //   crossAxisAlignment: CrossAxisAlignment.center,
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     classEvent.classModel?.classLevels != null &&
+                    //             classEvent.classModel!.classLevels!.isNotEmpty
+                    //         ? Padding(
+                    //             padding: const EdgeInsets.only(
+                    //                 top: 12.0, bottom: 12),
+                    //             child: DifficultyWidget(
+                    //               classEvent.classModel!.classLevels!,
+                    //             ),
+                    //           )
+                    //         : const SizedBox(
+                    //             width: DIFFICULTY_LEVEL_WIDTH,
+                    //             height: DIFFICULTY_LEVEL_HEIGHT,
+                    //           ),
+                    //     classEvent.classModel?.classBookingOptions != null &&
+                    //             classEvent.classModel!.classBookingOptions!
+                    //                 .isNotEmpty &&
+                    //             classEvent.classModel?.maxBookingSlots != null
+                    //         ? BookNowButton(
+                    //             classEvent: classEvent,
+                    //           )
+                    //         : Container()
+                    //   ],
+                    // ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

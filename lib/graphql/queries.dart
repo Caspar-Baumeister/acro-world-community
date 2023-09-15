@@ -2,6 +2,14 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getEventsFromTo = gql("""
+query getEventsFromTo(\$from: timestamptz!, \$to: timestamptz!, \$is_classe: Boolean) {
+  event_instance(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}}) {
+    ${Fragments.eventInstanceWithEventTemplate}
+  }
+}
+""");
+
   static final getAllBookingsOfClassEvent = gql("""
 query classEventBooking(\$class_event_id: uuid) {
   class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {

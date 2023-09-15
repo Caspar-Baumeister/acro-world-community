@@ -1,7 +1,7 @@
 import 'package:acroworld/screens/HOME_SCREENS/events/event_page.dart';
-import 'package:acroworld/screens/HOME_SCREENS/activities/activities.dart';
 import 'package:acroworld/screens/HOME_SCREENS/components/custom_bottom_nav_bar.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_page.dart';
+import 'package:acroworld/screens/home_screens/event_calendar/event_calendar.dart';
 import 'package:acroworld/screens/home_screens/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +22,7 @@ class _HomeScaffoldState extends State<HomeScaffold> {
   }
 
   List<Widget> screens = [
-    const ActivitiesPage(),
+    const EventCalendarPage(),
     const EventsPage(),
     const TeacherPage(),
     const ProfilePage()
