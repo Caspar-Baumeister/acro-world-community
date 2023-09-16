@@ -1,8 +1,6 @@
 import 'dart:async';
 
 import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/events/jams/create_jam_event.dart';
-import 'package:acroworld/events/jams/participate_to_jam_event.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/places/place.dart';
@@ -132,18 +130,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
             } catch (e) {
               print(e.toString());
             }
-          }
-
-          // if jams are viewed, refetch when participate to jam and created jam
-          if (widget.activityType == "jams") {
-            eventListeners
-                .add(eventBus.on<ParticipateToJamEvent>().listen((event) {
-              runRefetch();
-            }));
-
-            eventListeners.add(eventBus.on<CrudJamEvent>().listen((event) {
-              runRefetch();
-            }));
           }
 
           List<ClassEvent> classWeekEvents = [];
