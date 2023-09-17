@@ -17,16 +17,16 @@ query classEventBooking(\$class_event_id: uuid) {
 """);
 
   static final getClassEventsFromToLocationWithClass = gql("""
-query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8, \$is_classe: Boolean){
-  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}, class: {is_classe: {_eq: \$is_classe}}}) {
+query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
     distance
     ${Fragments.classEventFragment}
   }
 }
 """);
   static final getClassEventsFromToWithClass = gql("""
-query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!, \$is_classe: Boolean) {
-  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}, _and: {class: {is_classe: {_eq: \$is_classe}}}}) {
+query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
+  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
     ${Fragments.classEventFragment}
   }
 }

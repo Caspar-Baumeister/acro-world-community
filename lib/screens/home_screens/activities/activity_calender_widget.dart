@@ -14,14 +14,12 @@ class ActivityCalenderWidget extends StatefulWidget {
     required this.classWeekEvents,
     required this.focusedDay,
     required this.setFocusedDay,
-    required this.activiyType,
   }) : super(key: key);
 
   final Function(DateTime focusDay) onPageChanged;
   final Function(DateTime newFocusedDay) setFocusedDay;
 
   final List<ClassEvent> classWeekEvents;
-  final String activiyType;
   final DateTime focusedDay;
 
   @override
