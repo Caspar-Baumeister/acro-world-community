@@ -72,12 +72,37 @@ class _SingleClassPageState extends State<SingleClassPage> {
                   valueListenable: _percentageCollapsed,
                   builder: (context, percentage, child) {
                     if (percentage > 0.5) {
-                      return Text(widget.clas.name ?? "",
-                          maxLines: 3, style: H20W5);
+                      return Text(
+                        widget.clas.name ?? "",
+                        maxLines: 1,
+                        style: H20W5,
+                        overflow: TextOverflow.fade,
+                      );
                     }
                     return Container(); // Empty container when expanded
                   },
                 ),
+                actions: widget.classEvent != null
+                    ? [
+                        // ValueListenableBuilder<double>(
+                        //   valueListenable: _percentageCollapsed,
+                        //   builder: (context, percentage, child) {
+                        //     return IconButton(
+                        //       icon: const Icon(Icons.calendar_month_outlined),
+                        //       color: percentage > 0.5
+                        //           ? Colors.black
+                        //           : Colors.white,
+                        //       onPressed: () => add2CalendarFunction(
+                        //           widget.clas.name!,
+                        //           widget.clas.description!,
+                        //           widget.clas.locationName ?? "unknown",
+                        //           DateTime.parse(widget.classEvent!.startDate!),
+                        //           DateTime.parse(widget.classEvent!.endDate!)),
+                        //     );
+                        //   },
+                        // ),
+                      ]
+                    : [],
                 iconTheme: const IconThemeData(color: Colors.white),
                 expandedHeight: 200.0,
                 pinned: true,

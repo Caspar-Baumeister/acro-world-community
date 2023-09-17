@@ -13,7 +13,6 @@ void main() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
   await initHiveForFlutter();
-
   await CredentialPreferences.init();
   await PlacePreferences.init();
 
