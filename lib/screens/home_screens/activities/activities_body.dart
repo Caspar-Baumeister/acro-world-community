@@ -19,68 +19,37 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
   @override
   Widget build(BuildContext context) {
     // Wrap everything by DefaultTabController length 2
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-          body: Column(
-        children: [
-          // Searchbar that sets the place as state and provider
-          const SizedBox(height: 10),
-          Row(
-            children: [
-              const Expanded(
-                child: SizedBox(
-                  height: 40,
-                  child: PlaceButton(
-                    rightPadding: false,
-                  ),
+    return Column(
+      children: [
+        // Searchbar that sets the place as state and provider
+        const SizedBox(height: 10),
+        Row(
+          children: [
+            const Expanded(
+              child: SizedBox(
+                height: 40,
+                child: PlaceButton(
+                  rightPadding: false,
                 ),
               ),
-              IconButton(
-                onPressed: () => buildMortal(context, const CreateClassModal()),
-                icon: const Icon(Icons.add),
-              ),
-            ],
-          ),
-
-          // date chooser that sets the state date
-          ActivitiesQuery(activityType: activityType),
-          const Divider(color: PRIMARY_COLOR),
-          TabBar(
-            padding: const EdgeInsets.only(bottom: 6, top: 4),
-            onTap: (int value) => setState(() {
-              activityType = value == 1 ? "jams" : "classes";
-            }),
-            tabs: const [
-              Padding(
-                padding: EdgeInsets.only(bottom: 12.0),
-                child: Text(
-                  "Classes",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: 12.0),
-                child: Text(
-                  "Trainings & Jams",
-                  style: TextStyle(color: Colors.black),
-                ),
-              )
-            ],
-          ),
-          const SizedBox(height: 6),
-          // flexible TabBarView that shows either the results of classes or jams
-          const Flexible(
-            child: TabBarView(
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                ClassesView(),
-                ClassesView(),
-              ],
             ),
-          )
-        ],
-      )),
+            IconButton(
+              onPressed: () => buildMortal(context, const CreateClassModal()),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        ),
+
+        // date chooser that sets the state date
+        const ActivitiesQuery(),
+        const Divider(color: PRIMARY_COLOR),
+
+        const SizedBox(height: 6),
+        // flexible TabBarView that shows either the results of classes or jams
+        const Flexible(
+          child: ClassesView(),
+        )
+      ],
     );
   }
 }
