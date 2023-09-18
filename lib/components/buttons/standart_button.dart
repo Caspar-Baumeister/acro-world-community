@@ -42,9 +42,9 @@ class StandartButton extends StatelessWidget {
           child: Center(
             child: loading
                 ? Container(
-                    height: 30,
-                    width: 30,
-                    padding: const EdgeInsets.all(5),
+                    height: 40,
+                    width: 40,
+                    padding: const EdgeInsets.all(10),
                     child: CircularProgressIndicator(
                       color: isFilled ? Colors.white : PRIMARY_COLOR,
                     ))

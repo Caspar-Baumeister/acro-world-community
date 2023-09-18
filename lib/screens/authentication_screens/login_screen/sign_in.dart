@@ -6,8 +6,10 @@ import 'package:acroworld/screens/authentication_screens/forgot_password_screen/
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({required this.toggleView, Key? key}) : super(key: key);
@@ -40,129 +42,166 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
+    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: false,
-        titleSpacing: 0.0,
-        title: const Text(''),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 50.0),
+      body: SafeArea(
         child: Form(
           key: _formKey,
-          child: Column(
-            children: <Widget>[
-              const Spacer(),
-              const Image(
-                image: AssetImage('assets/logo/yoga2 transp.png'),
-                height: 100,
+          child: SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight:
+                    isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
               ),
-              const Spacer(),
-              TextFormField(
-                controller: emailController,
-                autofocus: true,
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                decoration: buildInputDecoration(labelText: 'Email'),
-                validator: (val) =>
-                    (val == null || val.isEmpty) ? 'Enter an email' : null,
-              ),
-              errorEmail != ""
-                  ? Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 8.0, left: 10),
-                      child: Text(
-                        errorEmail,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: Column(
+                  mainAxisAlignment: isKeyboardOpen
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Image(
+                        image: AssetImage('assets/logo/yoga2 transp.png'),
+                        height: 100,
                       ),
+                    ),
+                    TextFormField(
+                      controller: emailController,
+                      autofocus: true,
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      decoration: buildInputDecoration(labelText: 'Email'),
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter an email'
+                          : null,
+                    ),
+                    errorEmail != ""
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(top: 8.0, left: 10),
+                            child: Text(
+                              errorEmail,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                      controller: passwordController,
+                      textInputAction: TextInputAction.done,
+                      obscureText: isObscure,
+                      decoration: buildInputDecoration(
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              isObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                          )),
+                      onFieldSubmitted: (_) => loading ? null : onSignin(),
+                    ),
+                    errorPassword != ""
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(top: 12.0, left: 10),
+                            child: Text(
+                              errorPassword,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
+                    const SizedBox(height: 20.0),
+                    StandartButton(
+                      text: "Login",
+                      onPressed: () => onSignin(),
+                      loading: loading,
+                      isFilled: true,
+                      buttonFillColor: COLOR7,
+                    ),
+                    error != ""
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 12.0, left: 10),
+                            child: Text(
+                              error,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0)
+                          .copyWith(top: 8, bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const ForgotPassword()),
+                              );
+                            },
+                            child: Text(
+                              "forgot password",
+                              style: STANDART_TEXT_STYLE.copyWith(
+                                  color: LINK_COLOR),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () async {
+                              Uri url =
+                                  Uri.parse("https://teacher.acroworld.de");
+                              if (!await launchUrl(url)) {
+                                throw 'Could not launch $url';
+                              }
+                            },
+                            child: Text(
+                              "teacher login",
+                              style: STANDART_TEXT_STYLE.copyWith(
+                                  color: LINK_COLOR),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                      ),
+                      onPressed: () => widget.toggleView(),
+                      child: const Text(
+                        "Register",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
                     )
-                  : Container(),
-              const SizedBox(height: 20.0),
-              TextFormField(
-                controller: passwordController,
-                textInputAction: TextInputAction.done,
-                obscureText: isObscure,
-                decoration: buildInputDecoration(
-                    labelText: 'Password',
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        // Based on passwordVisible state choose the icon
-                        isObscure ? Icons.visibility : Icons.visibility_off,
-                        color: Colors.black,
-                      ),
-                      onPressed: () {
-                        // Update the state i.e. toogle the state of passwordVisible variable
-                        setState(() {
-                          isObscure = !isObscure;
-                        });
-                      },
-                    )),
-                onFieldSubmitted: (_) => loading ? null : onSignin(),
-              ),
-              errorPassword != ""
-                  ? Container(
-                      alignment: Alignment.centerLeft,
-                      padding: const EdgeInsets.only(top: 12.0, left: 10),
-                      child: Text(
-                        errorPassword,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                    )
-                  : Container(),
-              const SizedBox(height: 20.0),
-              StandartButton(
-                text: "Login",
-                onPressed: () => onSignin(),
-                loading: loading,
-                isFilled: true,
-                buttonFillColor: COLOR7,
-              ),
-              error != ""
-                  ? Padding(
-                      padding: const EdgeInsets.only(top: 12.0, left: 10),
-                      child: Text(
-                        error,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
-                      ),
-                    )
-                  : Container(),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                            builder: (context) => const ForgotPassword()),
-                      );
-                    },
-                    child: const Text(
-                      "forgot password",
-                      style: TextStyle(color: LINK_COLOR),
-                    )),
-              ),
-              OutlinedButton(
-                style: OutlinedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+                  ],
                 ),
-                onPressed: () => widget.toggleView(),
-                child: const Text(
-                  "Register",
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                  ),
-                ),
               ),
-              const Spacer(),
-            ],
+            ),
           ),
         ),
       ),
