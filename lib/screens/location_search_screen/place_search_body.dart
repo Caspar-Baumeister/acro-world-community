@@ -5,6 +5,7 @@ import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/components/search_bar_widget.dart';
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
+import 'package:acroworld/screens/location_search_screen/set_to_user_location_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -126,6 +127,8 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
             },
             autofocus: true,
           ),
+          const SizedBox(height: 20),
+          const SetToUserLocationWidget(),
           const SizedBox(height: 20),
           SingleChildScrollView(
             child: query.isNotEmpty

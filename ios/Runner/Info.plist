@@ -3,9 +3,11 @@
 <plist version="1.0">
 	<dict>
 		<key>NSLocationWhenInUseUsageDescription</key>
-		<string>We need to access you location to show you events close to you</string>
+		<string>We need to access your location to show you events close to you</string>
+		<key>NSLocationAlwaysUsageDescription</key>
+		<string>We need to access your location to show you events close to you</string>
 		<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-		<string>We need to access you location to show you events close to you</string>
+		<string>We need to access your location to show you events close to you</string>
 		<key>NSCalendarsUsageDescription</key>
 		<string>safe events in your calendar</string>
 		<key>NSContactsUsageDescription</key>

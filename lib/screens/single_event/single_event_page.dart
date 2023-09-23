@@ -2,9 +2,9 @@ import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/components/wrapper/bookmark_event_mutation_widget.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SingleEventPage extends StatefulWidget {
   const SingleEventPage({Key? key, required this.event}) : super(key: key);
@@ -49,16 +49,19 @@ class _SingleEventPageState extends State<SingleEventPage> {
       bottomNavigationBar: widget.event.pretixName != null
           ? SafeArea(
               child: BottomAppBar(
-                  height: 60,
-                  elevation: 0,
-                  child: Center(
-                      child: Padding(
+                height: 60,
+                elevation: 0,
+                child: Center(
+                  child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
                     child: StandartButton(
-                        text: "Book via AcroWorld",
-                        onPressed: () => launchUrl(Uri.https(
-                            "booking.acroworld.de", widget.event.pretixName!))),
-                  ))),
+                      text: "Book via AcroWorld",
+                      onPressed: () => customLaunch(
+                          "https://booking.acroworld.de${widget.event.pretixName!}"),
+                    ),
+                  ),
+                ),
+              ),
             )
           : null,
       body: CustomScrollView(

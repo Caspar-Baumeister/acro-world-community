@@ -1,10 +1,10 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AcronycWidget extends StatelessWidget {
   const AcronycWidget({Key? key}) : super(key: key);
@@ -34,10 +34,7 @@ class AcronycWidget extends StatelessWidget {
                     color: LINK_COLOR, fontWeight: FontWeight.bold),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    const link = "https://acronyc.de/";
-                    if (await launchUrl(Uri.parse(link)) == false) {
-                      throw 'Could not launch $link';
-                    }
+                    await customLaunch("https://acronyc.de/");
                   },
               ),
               const TextSpan(

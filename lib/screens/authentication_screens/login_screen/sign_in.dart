@@ -6,10 +6,10 @@ import 'package:acroworld/screens/authentication_screens/forgot_password_screen/
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({required this.toggleView, Key? key}) : super(key: key);
@@ -164,11 +164,8 @@ class _SignInState extends State<SignIn> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              Uri url =
-                                  Uri.parse("https://teacher.acroworld.de");
-                              if (!await launchUrl(url)) {
-                                throw 'Could not launch $url';
-                              }
+                              await customLaunch(
+                                  "https://teacher.acroworld.de");
                             },
                             child: Text(
                               "teacher login",
