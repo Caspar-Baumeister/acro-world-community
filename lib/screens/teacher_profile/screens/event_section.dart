@@ -60,7 +60,11 @@ class EventSection extends StatelessWidget {
                     itemCount: events.length,
                     itemBuilder: ((context, index) {
                       EventModel event = events[index];
-                      return EventFilterOnCard(event: event);
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 4),
+                        child: EventFilterOnCard(event: event),
+                      );
                     })),
           );
         });

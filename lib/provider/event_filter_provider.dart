@@ -36,9 +36,9 @@ class EventFilterProvider extends ChangeNotifier {
     // get the events
     initialEvents = events
         .map((event) => EventModel.fromJson(event))
-        .where((element) =>
-            DateTime.parse(element.endDate!).difference(DateTime.now()).inDays >
-            0)
+        // .where((element) =>
+        //     DateTime.parse(element.endDate!).difference(DateTime.now()).inDays >
+        //     0)
         .toList();
 
     initialCategories = [];

@@ -1,12 +1,9 @@
-import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/event_filter_page.dart';
-import 'package:acroworld/screens/home_screens/events/widgets/create_event_modal.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_event_body.dart';
-import 'package:acroworld/screens/single_event/single_event_page.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,56 +16,96 @@ class FilterBar extends StatelessWidget with PreferredSizeWidget {
         Provider.of<EventFilterProvider>(context);
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Row(
-        children: [
-          eventFilterProvider.isFilterActive()
-              ? Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: GestureDetector(
-                      onTap: () => eventFilterProvider.resetFilter(),
-                      child: const Icon(Icons.arrow_back_ios_new_rounded)),
-                )
-              : Container(),
-          Flexible(
-            child: StandardIconButton(
-              text: eventFilterProvider.filterString(),
-              icon: Icons.filter_list,
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const EventFilterPage(),
-                  ),
-                );
-              },
-              showClose: eventFilterProvider.isFilterActive(),
-              onClose: () => eventFilterProvider.resetFilter(),
-            ),
+      title: InkWell(
+        onTap: () =>
+            showSearch(context: context, delegate: EventSearchDelegate()),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(30.0),
+            border: Border.all(color: Colors.black),
           ),
-          IconButton(
-            onPressed: () => buildMortal(context, const CreateEventModal()),
-            icon: const Icon(Icons.add),
+          child: Row(
+            children: [
+              const Icon(Icons.search, color: Colors.black),
+              const SizedBox(width: 10),
+              Text(
+                'Search...',
+                style: TextStyle(color: Colors.black.withOpacity(0.5)),
+              ),
+            ],
           ),
-          IconButton(
-            onPressed: () =>
-                showSearch(context: context, delegate: EventSearchDelegate()),
-            icon: const Icon(Icons.search),
-          )
-          // GestureDetector(
-          //   onTap: () => Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //       builder: (context) => const SearchPageEvents(),
-          //     ),
-          //   ),
-
-          //   child: const Padding(
-          //     padding: EdgeInsets.symmetric(horizontal: 8.0),
-          //     child: Icon(Icons.search),
-          //   ),
-          // )
-        ],
+        ),
       ),
+      actions: [
+        IconButton(
+          padding: const EdgeInsets.only(right: 12),
+          icon: Icon(Icons.filter_list,
+              color: eventFilterProvider.isFilterActive()
+                  ? Colors.black
+                  : Colors.black.withOpacity(0.5)),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const EventFilterPage(),
+              ),
+            );
+          },
+        ),
+      ],
+      // automaticallyImplyLeading: false,
+      // title: Row(
+      //   children: [
+      //     eventFilterProvider.isFilterActive()
+      //         ? Padding(
+      //             padding: const EdgeInsets.only(right: 8.0),
+      //             child: GestureDetector(
+      //                 onTap: () => eventFilterProvider.resetFilter(),
+      //                 child: const Icon(Icons.arrow_back_ios_new_rounded)),
+      //           )
+      //         : Container(),
+      //     Flexible(
+      //       child: StandardIconButton(
+      //         text: eventFilterProvider.filterString(),
+      //         icon: Icons.filter_list,
+      //         onPressed: () {
+      //           Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => const EventFilterPage(),
+      //             ),
+      //           );
+      //         },
+      //         showClose: eventFilterProvider.isFilterActive(),
+      //         onClose: () => eventFilterProvider.resetFilter(),
+      //       ),
+      //     ),
+      //     IconButton(
+      //       onPressed: () => buildMortal(context, const CreateEventModal()),
+      //       icon: const Icon(Icons.add),
+      //     ),
+      //     IconButton(
+      //       onPressed: () =>
+      //           showSearch(context: context, delegate: EventSearchDelegate()),
+      //       icon: const Icon(Icons.search),
+      //     )
+      //     // GestureDetector(
+      //     //   onTap: () => Navigator.push(
+      //     //     context,
+      //     //     MaterialPageRoute(
+      //     //       builder: (context) => const SearchPageEvents(),
+      //     //     ),
+      //     //   ),
+
+      //     //   child: const Padding(
+      //     //     padding: EdgeInsets.symmetric(horizontal: 8.0),
+      //     //     child: Icon(Icons.search),
+      //     //   ),
+      //     // )
+      //   ],
+      // ),
     );
   }
 
@@ -116,8 +153,8 @@ class EventSearchDelegate extends SearchDelegate {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SingleEventPage(
-              event: eventSuggestions[0],
+            builder: (context) => SingleEventQueryWrapper(
+              eventId: eventSuggestions[0].id!,
             ),
           ),
         );
