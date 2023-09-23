@@ -12,8 +12,6 @@ class Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<Gallery> {
-  OverlayEntry? _popupDialog;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
