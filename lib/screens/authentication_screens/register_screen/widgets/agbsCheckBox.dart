@@ -1,8 +1,8 @@
 import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AGBCheckbox extends StatefulWidget {
   const AGBCheckbox({Key? key, required this.isAgb, required this.setAgb})
@@ -38,9 +38,7 @@ class _AGBCheckboxState extends State<AGBCheckbox> {
                       color: Colors.blue, fontWeight: FontWeight.bold),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      if (!await launchUrl(AGB_URL)) {
-                        throw 'Could not launch';
-                      }
+                      await customLaunch(AGB_URL);
                     }),
             ],
           ),

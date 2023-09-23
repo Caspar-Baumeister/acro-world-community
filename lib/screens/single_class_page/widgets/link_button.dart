@@ -1,6 +1,6 @@
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class LinkButton extends StatelessWidget {
   const LinkButton({Key? key, required this.link, required this.text})
@@ -20,10 +20,7 @@ class LinkButton extends StatelessWidget {
           ),
         ),
         onPressed: () async {
-          Uri url = Uri.parse(link);
-          if (!await launchUrl(url)) {
-            throw 'Could not launch $url';
-          }
+          await customLaunch(link);
         },
         child: Text(text,
             maxLines: 1,

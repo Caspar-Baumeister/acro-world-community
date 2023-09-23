@@ -2,10 +2,10 @@ import 'dart:io';
 
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class VersionToOldPage extends StatelessWidget {
   const VersionToOldPage(
@@ -43,9 +43,7 @@ Please download the current version from the''',
                         String link = Platform.isAndroid
                             ? PLAY_STORE_LINK
                             : IOS_STORE_LINK;
-                        if (await launchUrl(Uri.parse(link)) == null) {
-                          throw 'Could not launch $link';
-                        }
+                        customLaunch(link);
                       },
                   ),
                 ]),

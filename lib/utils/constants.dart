@@ -18,7 +18,7 @@ const String COMMUNITY_IMG_URL =
 
 const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
 
-Uri AGB_URL = Uri.parse('https://acroworld.de');
+String AGB_URL = 'https://acroworld.de';
 
 const double STANDART_BUTTON_WIDTH = 300;
 
