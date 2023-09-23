@@ -82,27 +82,27 @@ class _SingleClassPageState extends State<SingleClassPage> {
                     return Container(); // Empty container when expanded
                   },
                 ),
-                actions: widget.classEvent != null
-                    ? [
-                        // ValueListenableBuilder<double>(
-                        //   valueListenable: _percentageCollapsed,
-                        //   builder: (context, percentage, child) {
-                        //     return IconButton(
-                        //       icon: const Icon(Icons.calendar_month_outlined),
-                        //       color: percentage > 0.5
-                        //           ? Colors.black
-                        //           : Colors.white,
-                        //       onPressed: () => add2CalendarFunction(
-                        //           widget.clas.name!,
-                        //           widget.clas.description!,
-                        //           widget.clas.locationName ?? "unknown",
-                        //           DateTime.parse(widget.classEvent!.startDate!),
-                        //           DateTime.parse(widget.classEvent!.endDate!)),
-                        //     );
-                        //   },
-                        // ),
-                      ]
-                    : [],
+                // actions: widget.classEvent != null
+                //     ? [
+                //         ValueListenableBuilder<double>(
+                //           valueListenable: _percentageCollapsed,
+                //           builder: (context, percentage, child) {
+                //             return IconButton(
+                //               icon: const Icon(Icons.calendar_month_outlined),
+                //               color: percentage > 0.5
+                //                   ? Colors.black
+                //                   : Colors.white,
+                //               onPressed: () => add2CalendarFunction(
+                //                   widget.clas.name!,
+                //                   widget.clas.description!,
+                //                   widget.clas.locationName ?? "unknown",
+                //                   DateTime.parse(widget.classEvent!.startDate!),
+                //                   DateTime.parse(widget.classEvent!.endDate!)),
+                //             );
+                //           },
+                //         ),
+                //       ]
+                //     : [],
                 iconTheme: const IconThemeData(color: Colors.white),
                 expandedHeight: 200.0,
                 pinned: true,

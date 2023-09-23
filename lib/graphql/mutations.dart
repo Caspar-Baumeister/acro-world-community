@@ -25,6 +25,23 @@ mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
     }
   """);
 
+  static final bookmarkEvent = gql("""
+  mutation bookmarkEvent(\$event_id: uuid) {
+  insert_event_bookmarks(objects: {event_id:  \$event_id}) {
+    affected_rows
+  }
+}
+""");
+
+  static final unBookmarkEvent = gql("""
+  mutation unBookmarkEvent(\$event_id: uuid, \$user_id: uuid) {
+  delete_event_bookmarks(where: {event_id: {_eq: \$event_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}
+
+""");
+
   static final likeTeacher = gql("""
   mutation likeTeacher(\$teacher_id: uuid) {
   insert_teacher_likes(objects: {teacher_id: \$teacher_id}) {

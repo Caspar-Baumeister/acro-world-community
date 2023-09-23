@@ -1,4 +1,5 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/wrapper/bookmark_event_mutation_widget.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -45,14 +46,6 @@ class _SingleEventPageState extends State<SingleEventPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: const BackButtonWidget(),
-      //   title: Text(
-      //     widget.event.name ?? "",
-      //     maxLines: 3,
-      //     style: HEADER_1_TEXT_STYLE.copyWith(color: Colors.black),
-      //   ),
-      // ),
       bottomNavigationBar: widget.event.pretixName != null
           ? SafeArea(
               child: BottomAppBar(
@@ -72,6 +65,21 @@ class _SingleEventPageState extends State<SingleEventPage> {
         controller: _scrollController,
         slivers: <Widget>[
           SliverAppBar(
+            actions: widget.event.isInitiallyBookmarket != null
+                ? [
+                    ValueListenableBuilder<double>(
+                      valueListenable: _percentageCollapsed,
+                      builder: (context, percentage, child) {
+                        return BookmarkEventMutationWidget(
+                            eventId: widget.event.id!,
+                            initialBookmarked:
+                                widget.event.isInitiallyBookmarket == true,
+                            color:
+                                percentage > 0.5 ? Colors.black : Colors.white);
+                      },
+                    ),
+                  ]
+                : [],
             centerTitle: false,
             leading: ValueListenableBuilder<double>(
               valueListenable: _percentageCollapsed,

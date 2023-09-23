@@ -16,6 +16,11 @@ class StandardAppBar extends StatefulWidget implements PreferredSizeWidget {
 class StandardAppBarState extends State<StandardAppBar> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: Text(widget.title));
+    return AppBar(
+      title: Text(widget.title),
+      leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+    );
   }
 }

@@ -1,33 +1,17 @@
-import 'dart:async';
-
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/teachers_page/teacher_body.dart';
-import 'package:acroworld/screens/system_pages/no_wifi_page.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class TeacherQuery extends StatefulWidget {
-  const TeacherQuery({Key? key}) : super(key: key);
+class TeacherQuery extends StatelessWidget {
+  const TeacherQuery({Key? key, required this.search}) : super(key: key);
 
-  @override
-  State<TeacherQuery> createState() => _TeacherQueryState();
-}
-
-class _TeacherQueryState extends State<TeacherQuery> {
-  List<StreamSubscription> eventListeners = [];
-
-  @override
-  void dispose() {
-    super.dispose();
-    for (final eventListener in eventListeners) {
-      eventListener.cancel();
-    }
-  }
+  final String search;
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +20,14 @@ class _TeacherQueryState extends State<TeacherQuery> {
       options: QueryOptions(
           document: Queries.getTeacherForList,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: {"user_id": userProvider.activeUser!.id!}),
+          variables: {
+            "user_id": userProvider.activeUser!.id!,
+            "search": "%$search%"
+          }),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
-          return const NoWifePage(
-            followUpWidget: TeacherQuery(),
-          );
+          return ErrorWidget(result.exception.toString());
         }
         VoidCallback runRefetch = (() {
           try {

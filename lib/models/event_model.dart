@@ -28,6 +28,7 @@ class EventModel {
   String? pretixName;
   bool? isFoodIncluded;
   bool? isAcomodationIncluded;
+  bool? isInitiallyBookmarket;
 
   EventModel(
       {this.createdAt,
@@ -52,6 +53,7 @@ class EventModel {
       this.url,
       this.description,
       this.teachers,
+      this.isInitiallyBookmarket,
       this.pretixName,
       this.userParticipants});
 
@@ -64,6 +66,7 @@ class EventModel {
     id = json['id'];
     pretixName = json['pretix_name'];
     isHighlighted = json['is_highlighted'];
+    isInitiallyBookmarket = json['bookmarks']?.isNotEmpty;
     links = json['links'] != null && json['links']!.isNotEmpty
         ? json['links'].cast<String>()
         : null;

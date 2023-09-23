@@ -21,120 +21,126 @@ class EventFilterPage extends StatelessWidget {
           centerTitle: true,
           automaticallyImplyLeading: true,
         ),
-        body: SafeArea(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, bottom: 10, top: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Categories",
-                        style: BIG_TEXT_STYLE,
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      CategorieFilterCards()
-                    ],
+        bottomNavigationBar: SafeArea(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Center(
+                  child: Text(
+                    "${eventFilterProvider.activeEvents.length.toString()} results",
+                    style: STANDART_TEXT_STYLE,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, bottom: 10, top: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Months",
-                        style: BIG_TEXT_STYLE,
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      DateFilterCards()
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, bottom: 10, top: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Countries",
-                        style: BIG_TEXT_STYLE,
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      CountryFilterCards()
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, bottom: 10, top: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Quick filter",
-                        style: BIG_TEXT_STYLE,
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      QuickFilterCards()
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(18.0),
-                  child: Center(
-                    child: Text(
-                      "${eventFilterProvider.activeEvents.length.toString()} results",
-                      style: STANDART_TEXT_STYLE,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 30)
-                      .copyWith(bottom: 20),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      StandartButton(
-                        text: "Reset",
-                        onPressed: () {
-                          eventFilterProvider.resetFilter();
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 30)
+                    .copyWith(bottom: 20),
+                height: 70,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    StandartButton(
+                      text: "Reset",
+                      onPressed: () {
+                        eventFilterProvider.resetFilter();
 
-                          Navigator.of(context).pop();
-                        },
-                        width: buttonWidth,
-                      ),
-                      StandartButton(
-                        text: "Apply",
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        isFilled: true,
-                        width: buttonWidth,
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            ),
+                        Navigator.of(context).pop();
+                      },
+                      width: buttonWidth,
+                    ),
+                    StandartButton(
+                      text: "Apply",
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      isFilled: true,
+                      width: buttonWidth,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Categories",
+                      style: BIG_TEXT_STYLE,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    CategorieFilterCards()
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Months",
+                      style: BIG_TEXT_STYLE,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    DateFilterCards()
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Countries",
+                      style: BIG_TEXT_STYLE,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    CountryFilterCards()
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 10, top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      "Quick filter",
+                      style: BIG_TEXT_STYLE,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    QuickFilterCards()
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+            ],
           ),
         ));
   }

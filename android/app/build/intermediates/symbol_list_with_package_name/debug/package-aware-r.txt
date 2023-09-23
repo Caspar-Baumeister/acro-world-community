@@ -122,6 +122,7 @@ drawable corner
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
 drawable launch_background
+drawable navigation_empty_icon
 drawable notification_action_background
 drawable notification_bg
 drawable notification_bg_low

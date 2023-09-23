@@ -1,5 +1,5 @@
 import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/single_event/single_event_page.dart';
+import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -54,8 +54,8 @@ class EventFilterOnCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SingleEventPage(
-            event: event,
+          builder: (context) => SingleEventQueryWrapper(
+            eventId: event.id!,
           ),
         ),
       ),

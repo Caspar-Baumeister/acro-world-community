@@ -2,6 +2,20 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final userBookmarks = gql("""
+query Me {
+  me {
+    bookmarks {
+      id
+      created_at
+      event {
+        ${Fragments.eventFragment}
+      }
+      
+    }
+  }
+}""");
+
   static final getAllBookingsOfClassEvent = gql("""
 query classEventBooking(\$class_event_id: uuid) {
   class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
@@ -42,7 +56,7 @@ query Config {
 
   static final getEventsByTeacherId = gql("""
 query getEventsByTeacherId(\$teacher_id: uuid) {
-  events(where: {confirmation_status: {_eq: Confirmed}, _and: {teachers: {teacher_id: {_eq: \$teacher_id}}}}) {
+  events(where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}, _and: {teachers: {teacher_id: {_eq: \$teacher_id}}}}) {
     ${Fragments.eventFragment}
   }
 }
@@ -50,8 +64,20 @@ query getEventsByTeacherId(\$teacher_id: uuid) {
 
   static final events = gql("""
 query Events {
-  events (where: {confirmation_status: {_eq: Confirmed}}){
+  events (where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}}){
      ${Fragments.eventFragment}
+  }
+}
+ """);
+
+  static final getEventByIdWithBookmark = gql("""
+query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
+  events_by_pk(id: \$event_id){
+     ${Fragments.eventFragment}
+     bookmarks(where: {user_id: {_eq: \$user_id}}) {
+      id
+      created_at
+    }
   }
 }
  """);
@@ -105,8 +131,8 @@ query Events {
   """);
 
   static final getTeacherForList = gql("""
-    query getTeacherForList(\$user_id: uuid) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}}) {
+    query getTeacherForList(\$user_id: uuid, \$search: String!) {
+      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
         id
         location_name
         name
