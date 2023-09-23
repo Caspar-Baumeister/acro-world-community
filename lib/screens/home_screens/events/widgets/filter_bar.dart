@@ -7,7 +7,7 @@ import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class FilterBar extends StatelessWidget with PreferredSizeWidget {
+class FilterBar extends StatelessWidget implements PreferredSizeWidget {
   const FilterBar({Key? key}) : super(key: key);
 
   @override
