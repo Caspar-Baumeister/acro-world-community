@@ -1,24 +1,5 @@
 class Fragments {
-  static const classEventFragment = """
-    class_id
-    created_at
-    end_date
-    id
-    is_cancelled
-    start_date
-    participants_aggregate {
-      aggregate {
-        count
-      }
-    }
-    participants {
-      user {
-        id
-        name
-        acro_role_id
-      }
-    }
-    class {
+  static const classFragment = """
       booking_email
       max_booking_slots
       class_booking_options {
@@ -65,6 +46,27 @@ class Fragments {
           name
           id
         }
+      }
+
+""";
+
+  static const classEventFragment = """
+    class_id
+    created_at
+    end_date
+    id
+    is_cancelled
+    start_date
+    participants_aggregate {
+      aggregate {
+        count
+      }
+    }
+    participants {
+      user {
+        id
+        name
+        acro_role_id
       }
     }
 """;
@@ -165,40 +167,40 @@ class Fragments {
   longitude
   """;
 
-  static const String classFragment = """
-    city
-    description
-    id
-    location_name
-    name
-    location
-    pricing
-    requirements
-    usc_url
-    class_pass_url
-    website_url
-    image_url
-    location
-    class_levels {
-      level {
-        name
-      }
-    }
-    class_events {
-      class_id
-      created_at
-      end_date
-      id
-      is_cancelled
-      start_date
-      participants_aggregate {
-        aggregate {
-          count
-        }
-      }
-    }
-    
-  """;
+  // static const String classFragment = """
+  //   city
+  //   description
+  //   id
+  //   location_name
+  //   name
+  //   location
+  //   pricing
+  //   requirements
+  //   usc_url
+  //   class_pass_url
+  //   website_url
+  //   image_url
+  //   location
+  //   class_levels {
+  //     level {
+  //       name
+  //     }
+  //   }
+  //   class_events {
+  //     class_id
+  //     created_at
+  //     end_date
+  //     id
+  //     is_cancelled
+  //     start_date
+  //     participants_aggregate {
+  //       aggregate {
+  //         count
+  //       }
+  //     }
+  //   }
+
+  // """;
 
   static const String jamFragment = """
   id

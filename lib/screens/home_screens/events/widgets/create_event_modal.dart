@@ -30,7 +30,7 @@ class CreateEventModal extends StatelessWidget {
             const Center(
               child: Text(
                 "Create a new event",
-                style: HEADER_1_TEXT_STYLE,
+                style: H16W7,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -46,7 +46,7 @@ class CreateEventModal extends StatelessWidget {
                               .isNotEmpty
                       ? "Go to your dashboard to create an event"
                       : "To be able to create an event, you first have to tell us something about yourself. Log in with your AcroWorld account and fill out some information. We will review your information promptly.",
-                  style: STANDART_TEXT_STYLE,
+                  style: H14W4,
                 ),
               ),
             ),

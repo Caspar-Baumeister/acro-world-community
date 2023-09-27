@@ -3,7 +3,6 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_following.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -23,20 +22,17 @@ class TeacherCard extends StatefulWidget {
 
 class _TeacherCardState extends State<TeacherCard> {
   late bool isLikedState;
-  late int teacherLikes;
   bool loading = false;
 
   @override
   void initState() {
     isLikedState = widget.isLiked;
-    teacherLikes = widget.teacher.userLikes?.length ?? 0;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    String uid = userProvider.getId();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -80,10 +76,10 @@ class _TeacherCardState extends State<TeacherCard> {
           ),
           title: Text(
             widget.teacher.name ?? "No name",
-            style: MAINTEXT,
+            style: H20W5,
           ),
-          subtitle: Text(widget.teacher.locationName ?? "no location provided",
-              style: SMALL_TEXT_STYLE),
+          // subtitle: Text(widget.teacher.locationName ?? "no location provided",
+          //     style: SMALL_TEXT_STYLE),
           trailing: Mutation(
               options: MutationOptions(
                   document: isLikedState
@@ -99,8 +95,6 @@ class _TeacherCardState extends State<TeacherCard> {
                       setState(() {
                         loading = true;
                       });
-                      await followButtonClicked(isLikedState, uid,
-                          widget.teacher.communityId!, widget.teacher.name);
                       isLikedState
                           ? runMutation({
                               'teacher_id': widget.teacher.id,
@@ -139,7 +133,7 @@ class _TeacherCardState extends State<TeacherCard> {
                                   ))
                               : Text(
                                   isLikedState ? "Following" : "Follow",
-                                  style: SMALL_TEXT_STYLE.copyWith(
+                                  style: MEDIUM_BUTTON_TEXT.copyWith(
                                     color: !isLikedState
                                         ? BUTTON_FILL_COLOR
                                         : Colors.white,
@@ -152,33 +146,4 @@ class _TeacherCardState extends State<TeacherCard> {
       ),
     );
   }
-
-  // // This controlls the joining and exiting from a community when following a teacher
-  // followButtonClicked() async {
-  //   String? token = AuthProvider.token;
-  //   final database = Database(token: token);
-  //   String uid = Provider.of<UserProvider>(context, listen: false).getId();
-
-  //   if (isLikedState) {
-  //     await database.deleteUserCommunitiesOne(widget.teacher.communityID!);
-  //     Fluttertoast.showToast(
-  //         msg: "You left the community of ${widget.teacher.name}",
-  //         toastLength: Toast.LENGTH_SHORT,
-  //         gravity: ToastGravity.TOP,
-  //         timeInSecForIosWeb: 2,
-  //         backgroundColor: Colors.red,
-  //         textColor: Colors.white,
-  //         fontSize: 16.0);
-  //   } else {
-  //     await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
-  //     Fluttertoast.showToast(
-  //         msg: "You joined the community of ${widget.teacher.name}",
-  //         toastLength: Toast.LENGTH_SHORT,
-  //         gravity: ToastGravity.TOP,
-  //         timeInSecForIosWeb: 2,
-  //         backgroundColor: Colors.green,
-  //         textColor: Colors.white,
-  //         fontSize: 16.0);
-  //   }
-  // }
 }

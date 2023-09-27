@@ -87,7 +87,7 @@ class SingleEventBody extends StatelessWidget {
                               child: Text(dateString,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: SMALL_TEXT_STYLE),
+                                  style: H12W4),
                             )
                           ],
                         ),
@@ -212,7 +212,7 @@ class SingleEventBody extends StatelessWidget {
                                   child: Text(countryLocationString,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: STANDART_TEXT_STYLE),
+                                      style: H14W4),
                                 ),
                               ],
                             ),

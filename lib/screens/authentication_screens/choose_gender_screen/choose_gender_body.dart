@@ -41,7 +41,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
               child: Text(
                 "Which applies more to you?",
                 textAlign: TextAlign.center,
-                style: GIGANTIC_TEXT_STYLE,
+                style: H24W8,
               ),
             ),
             const SizedBox(height: 10),
@@ -50,7 +50,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
               child: Text(
                 "We use this information to indicate a distribution of the participants for classes and jams.",
                 textAlign: TextAlign.center,
-                style: STANDART_DESCRIPTION,
+                style: H18W4,
               ),
             ),
             const SizedBox(height: 10),
@@ -98,7 +98,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                       right: 20,
                       child: Text(
                         "Flyer",
-                        style: GIGANTIC_TEXT_STYLE,
+                        style: H24W8,
                       ),
                     )
                   ],
@@ -144,7 +144,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                         left: 20,
                         child: Text(
                           "Base",
-                          style: GIGANTIC_TEXT_STYLE,
+                          style: H24W8,
                         ))
                   ],
                 ),

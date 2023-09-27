@@ -5,14 +5,12 @@ class TeacherModel {
   String? name;
   String? confirmationStatus;
   bool? isOrganization;
-  String? communityId;
   String? createdAt;
   String? description;
   String? instagramName;
   String? locationName;
   String? type;
   List<Images>? images;
-  List<TeacherLevels>? teacherLevels;
   String? userId;
   List<UserLikes>? userLikes;
   String? get profilImgUrl => images
@@ -25,14 +23,12 @@ class TeacherModel {
       this.name,
       this.confirmationStatus,
       this.isOrganization,
-      this.communityId,
       this.createdAt,
       this.description,
       this.instagramName,
       this.type,
       this.locationName,
       this.images,
-      this.teacherLevels,
       this.userId,
       this.userLikes});
 
@@ -42,7 +38,6 @@ class TeacherModel {
     name = json['name'];
     confirmationStatus = json['confirmation_status'];
     isOrganization = json['is_organization'];
-    communityId = json['community_id'];
     createdAt = json['created_at'];
     description = json['description'];
     instagramName = json['instagram_name'];
@@ -53,12 +48,7 @@ class TeacherModel {
         images!.add(Images.fromJson(v));
       });
     }
-    if (json['teacher_levels'] != null) {
-      teacherLevels = <TeacherLevels>[];
-      json['teacher_levels'].forEach((v) {
-        teacherLevels!.add(TeacherLevels.fromJson(v));
-      });
-    }
+
     userId = json['user_id'];
     if (json['user_likes'] != null) {
       userLikes = <UserLikes>[];
@@ -74,7 +64,6 @@ class TeacherModel {
     data['name'] = name;
     data['confirmation_status'] = confirmationStatus;
     data['is_organization'] = isOrganization;
-    data['community_id'] = communityId;
     data['created_at'] = createdAt;
     data['description'] = description;
     data['instagram_name'] = instagramName;
@@ -82,9 +71,7 @@ class TeacherModel {
     if (images != null) {
       data['images'] = images!.map((v) => v.toJson()).toList();
     }
-    if (teacherLevels != null) {
-      data['teacher_levels'] = teacherLevels!.map((v) => v.toJson()).toList();
-    }
+
     data['user_id'] = userId;
     if (userLikes != null) {
       data['user_likes'] = userLikes!.map((v) => v.toJson()).toList();

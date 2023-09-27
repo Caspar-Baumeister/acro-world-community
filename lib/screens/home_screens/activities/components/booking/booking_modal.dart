@@ -1,4 +1,4 @@
-import 'package:acroworld/components/buttons/standart_icon_button.dart';
+import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
@@ -68,7 +68,7 @@ class _BookingModalState extends State<BookingModal> {
             const SizedBox(height: 12.0),
             Text(
               "Reserve a place for ${clas.name} on ${DateFormat('EEEE, H:mm').format(widget.classEvent.date)}",
-              style: HEADER_1_TEXT_STYLE,
+              style: H16W7,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20.0),
@@ -91,10 +91,10 @@ class _BookingModalState extends State<BookingModal> {
             const SizedBox(height: 20),
             Text(
               "A non-refundable deposit ${currentOptionObject != null ? ("of ${currentOptionObject.deposit().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be required to confirm your reservation. The remaining balance ${currentOptionObject != null ? ("of ${currentOptionObject.toPayOnArrival().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be charged upon your arrival or as determined by the establishment. Please note that the deposit amount cannot be refunded in case of cancellation.",
-              style: SMALL_TEXT_STYLE,
+              style: H12W4,
             ),
             const SizedBox(height: 20),
-            StandartIconButton(
+            StandardIconButton(
               text: "Pay deposit",
               onPressed: () async {
                 setState(() {
@@ -131,7 +131,7 @@ class _BookingModalState extends State<BookingModal> {
             ),
             Text(
               "${widget.placesLeft} places left",
-              style: MINI_TEXT_STYLE,
+              style: H10W4,
             )
           ],
         ),
@@ -175,13 +175,13 @@ class BookOption extends StatelessWidget {
               children: [
                 Text(
                   bookingOption.title!,
-                  style: HEADER_1_TEXT_STYLE,
+                  style: H16W7,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   bookingOption.subtitle!,
-                  style: THIN_TEXT_STYLE,
+                  style: H14W4,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 )
@@ -198,21 +198,21 @@ class BookOption extends StatelessWidget {
                   Text(
                       bookingOption.price!.toStringAsFixed(2) +
                           getCurrecySymbol(bookingOption.currency),
-                      style: HEADER_2_TEXT_STYLE.copyWith(
+                      style: H16W7.copyWith(
                         decoration: TextDecoration.lineThrough,
                         fontWeight: FontWeight.w200,
                       )),
                   Text(
                     bookingOption.realPrice().toStringAsFixed(2) +
                         getCurrecySymbol(bookingOption.currency),
-                    style: HEADER_1_TEXT_STYLE,
+                    style: H16W7,
                   ),
                 ],
               )
             : Text(
                 bookingOption.realPrice().toStringAsFixed(2) +
                     getCurrecySymbol(bookingOption.currency),
-                style: HEADER_1_TEXT_STYLE,
+                style: H16W7,
               ),
       ],
     );

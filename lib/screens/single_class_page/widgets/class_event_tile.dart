@@ -76,7 +76,7 @@ class _ClassEventTileState extends State<ClassEventTile> {
                           DateTime.parse(widget.classEvent.startDate!))),
                       Text(
                           "${DateFormat('H:mm').format(DateTime.parse(widget.classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(widget.classEvent.endDate!))}",
-                          style: SMALL_TEXT_STYLE)
+                          style: H12W4)
                     ],
                   ),
                   classEventId != null

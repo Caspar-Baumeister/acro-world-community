@@ -65,14 +65,7 @@ class BookNowButton extends StatelessWidget {
                         classEvent: classEvent,
                         bookingOption: bookedOption,
                       )),
-                  child: const Text(
-                    "Reserved",
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.black,
-                    ),
-                  ),
+                  child: const Text("Reserved", style: MEDIUM_BUTTON_TEXT),
                 ),
               );
             }
@@ -138,7 +131,7 @@ class BookNowButton extends StatelessWidget {
               ),
               Text(
                 "$bookingsLeft places left",
-                style: MINI_TEXT_STYLE,
+                style: H10W4,
               )
             ],
           );

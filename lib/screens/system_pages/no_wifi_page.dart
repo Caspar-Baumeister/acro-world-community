@@ -28,7 +28,7 @@ class _NoWifePageState extends State<NoWifePage> {
           children: [
             const Text(
               "No connection to the internet",
-              style: HEADER_2_TEXT_STYLE,
+              style: H16W7,
             ),
             const SizedBox(
               height: 20,

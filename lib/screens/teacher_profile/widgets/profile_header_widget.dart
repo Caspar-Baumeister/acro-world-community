@@ -140,12 +140,6 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
             const SizedBox(
               height: 20,
             ),
-            widget.teacher.communityId != null
-                ? actions(context, widget.teacher.communityId!, null)
-                : Container(),
-            const SizedBox(
-              height: 20,
-            ),
           ],
         ),
       ),

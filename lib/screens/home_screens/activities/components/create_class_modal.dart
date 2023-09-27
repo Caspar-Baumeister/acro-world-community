@@ -30,7 +30,7 @@ class CreateClassModal extends StatelessWidget {
             const Center(
               child: Text(
                 "Create a new class/jam",
-                style: HEADER_1_TEXT_STYLE,
+                style: H16W7,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -46,7 +46,7 @@ class CreateClassModal extends StatelessWidget {
                               .isNotEmpty
                       ? "Go to your dashboard to create a class or jam"
                       : "To be able to create classes or jams, you first have to tell us something about yourself. Log in with your AcroWorld account and fill out some information. We will then review your information promptly. This procedure serves to prevent spam",
-                  style: STANDART_TEXT_STYLE,
+                  style: H14W4,
                 ),
               ),
             ),

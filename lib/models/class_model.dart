@@ -21,6 +21,7 @@ class ClassModel {
   String? bookingEmail;
   int? maxBookingSlots;
   List<ClassBookingOptions>? classBookingOptions;
+  bool? isInitiallyFavorized;
 
   ClassModel(
       {this.city,
@@ -35,6 +36,7 @@ class ClassModel {
       this.locationName,
       this.name,
       this.pricing,
+      this.isInitiallyFavorized,
       this.requirements,
       this.uscUrl,
       this.websiteUrl,
@@ -47,6 +49,7 @@ class ClassModel {
     classPassUrl = json['class_pass_url'];
     description = json['description'];
     distance = json['distance'];
+    isInitiallyFavorized = json['favorites']?.isNotEmpty;
     id = json['id'];
     imageUrl = json['image_url'];
     location =

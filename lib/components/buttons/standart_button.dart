@@ -52,7 +52,7 @@ class StandartButton extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Text(
                       text,
-                      style: STANDART_BUTTON_TEXT.copyWith(
+                      style: H18W6.copyWith(
                         color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
                       ),
                       textAlign: TextAlign.center,

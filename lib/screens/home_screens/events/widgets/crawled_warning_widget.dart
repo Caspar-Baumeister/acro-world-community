@@ -49,14 +49,14 @@ class CrawledWarningWidget extends StatelessWidget {
         return AlertDialog(
           title: const Text(
             'Imported content',
-            style: HEADER_2_TEXT_STYLE,
+            style: H16W7,
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 const Text(
                   'The information for this event comes from an external source and may be incorrect. We do not guarantee its correctness.',
-                  style: SMALL_TEXT_STYLE,
+                  style: H12W4,
                 ),
                 const SizedBox(height: 10),
                 RichText(
@@ -66,11 +66,11 @@ class CrawledWarningWidget extends StatelessWidget {
                       TextSpan(
                         text:
                             "If this is an event you are organizing and you would like to make adjustments, please contact us at ",
-                        style: SMALL_TEXT_STYLE.copyWith(color: Colors.black),
+                        style: H12W4.copyWith(color: Colors.black),
                       ),
                       TextSpan(
                           text: "info@acroworld.de",
-                          style: SMALL_TEXT_STYLE.copyWith(color: LINK_COLOR),
+                          style: H12W4.copyWith(color: LINK_COLOR),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               Clipboard.setData(const ClipboardData(

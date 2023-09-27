@@ -51,7 +51,7 @@ class SingleClassBody extends StatelessWidget {
                             DateTime.parse(classEvent!.startDate!))),
                         Text(
                             "${DateFormat('H:mm').format(DateTime.parse(classEvent!.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent!.endDate!))}",
-                            style: SMALL_TEXT_STYLE)
+                            style: H12W4)
                       ],
                     ),
                     const CustomDivider()

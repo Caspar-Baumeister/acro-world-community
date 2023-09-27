@@ -30,7 +30,7 @@ class FilterOnEventBody extends StatelessWidget {
               children: [
                 const Text(
                   "We could not find any events for your search",
-                  style: STANDART_TEXT_STYLE,
+                  style: H14W4,
                 ),
                 const SizedBox(
                   height: 10,

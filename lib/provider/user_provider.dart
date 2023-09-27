@@ -7,6 +7,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 class UserProvider extends ChangeNotifier {
   User? activeUser;
   String? token;
+  String? refreshToken;
 
   getId() {
     Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
@@ -20,7 +21,7 @@ class UserProvider extends ChangeNotifier {
     if (!isTokenExpired()) {
       return true;
     }
-    return await refreshToken();
+    return await refreshTokenFunction();
   }
 
   Future<bool> setUserFromToken() async {
@@ -32,7 +33,8 @@ class UserProvider extends ChangeNotifier {
     // TODO fill in rest of data
     final response = await Database(token: token).authorizedApi("""query {
             me { 
-              bio 
+              bio
+              email 
               id 
               image_url 
               name
@@ -67,7 +69,7 @@ class UserProvider extends ChangeNotifier {
     return Jwt.isExpired(token!);
   }
 
-  Future<bool> refreshToken() async {
+  Future<bool> refreshTokenFunction() async {
     String? email = CredentialPreferences.getEmail();
     String? password = CredentialPreferences.getPassword();
 
@@ -81,11 +83,13 @@ class UserProvider extends ChangeNotifier {
       final response = await Database().loginApi(email, password);
 
       String? newToken = response?["data"]?["login"]?["token"];
+      String? newRefreshToken = response?["data"]?["login"]?["refreshToken"];
 
       if (newToken == null) {
         return false;
       }
       token = newToken;
+      refreshToken = newRefreshToken;
       await setUserFromToken();
     }
 

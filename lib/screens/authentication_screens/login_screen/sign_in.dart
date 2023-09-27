@@ -158,8 +158,7 @@ class _SignInState extends State<SignIn> {
                             },
                             child: Text(
                               "forgot password",
-                              style: STANDART_TEXT_STYLE.copyWith(
-                                  color: LINK_COLOR),
+                              style: H14W4.copyWith(color: LINK_COLOR),
                             ),
                           ),
                           GestureDetector(
@@ -169,8 +168,7 @@ class _SignInState extends State<SignIn> {
                             },
                             child: Text(
                               "teacher login",
-                              style: STANDART_TEXT_STYLE.copyWith(
-                                  color: LINK_COLOR),
+                              style: H14W4.copyWith(color: LINK_COLOR),
                             ),
                           ),
                         ],

@@ -4,6 +4,7 @@ import 'package:acroworld/screens/home_screens/activities/components/booking/boo
 import 'package:acroworld/screens/home_screens/activities/components/class_event_tile_image.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
+import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
@@ -33,9 +34,9 @@ class ClassEventExpandedTile extends StatelessWidget {
       onTap: () => classEvent.classModel != null
           ? Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => SingleClassPage(
-                  clas: classEvent.classModel!,
-                  classEvent: classEvent,
+                builder: (context) => SingleEventQueryWrapper(
+                  classId: classEvent.classModel!.id!,
+                  classEventId: classEvent.id,
                 ),
               ),
             )
@@ -57,47 +58,43 @@ class ClassEventExpandedTile extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(classEvent.classModel?.name ?? "",
+                    Text(classEvent.classModel?.name ?? "Unknown",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: MEDIUM_BOLD_TEXT_STYLE),
-                    const SizedBox(height: 6),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        classEvent.startDate != null &&
-                                classEvent.endDate != null
-                            ? Text(
-                                "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
-                                style: SMALL_TEXT_STYLE)
-                            : const Text("time not given"),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Container(
-                              constraints: BoxConstraints(
-                                  maxWidth:
-                                      MediaQuery.of(context).size.width * 0.35),
-                              child: Text(
-                                  classEvent.classModel?.locationName ??
-                                      "no location name",
-                                  maxLines: 1,
-                                  overflow: TextOverflow.clip,
-                                  style: SMALL_TEXT_STYLE),
-                            ),
-                            const Icon(
-                              Icons.location_on,
-                              color: Colors.black,
-                              size: 16,
-                            ),
-                          ],
-                        ),
-                      ],
+                        style: CARD_TITLE_TEXT),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: Row(
+                        children: [
+                          classEvent.startDate != null &&
+                                  classEvent.endDate != null
+                              ? Text(
+                                  "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
+                                  style: CARD_DESCRIPTION_TEXT)
+                              : const Text("time not given"),
+                          const Spacer(),
+                          Container(
+                            constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width * 0.35),
+                            child: Text(
+                                classEvent.classModel?.locationName ??
+                                    "no location name",
+                                maxLines: 1,
+                                overflow: TextOverflow.clip,
+                                style: CARD_DESCRIPTION_TEXT),
+                          ),
+                          const Icon(
+                            Icons.location_on,
+                            color: Colors.black,
+                            size: 16,
+                          ),
+                        ],
+                      ),
                     ),
                     classTeachers.isNotEmpty
                         ? Padding(
-                            padding: const EdgeInsets.only(top: 3.0, bottom: 3),
+                            padding: const EdgeInsets.symmetric(vertical: 5),
                             child: ClassTeacherChips(
                               classTeacherList: List<TeacherModel>.from(
                                 classTeachers
@@ -106,34 +103,41 @@ class ClassEventExpandedTile extends StatelessWidget {
                               ),
                             ),
                           )
-                        : Container(
-                            height: 10,
-                          ),
+                        : Container(),
                     Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        classEvent.classModel?.classLevels != null &&
-                                classEvent.classModel!.classLevels!.isNotEmpty
-                            ? Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 12.0, bottom: 12),
-                                child: DifficultyWidget(
-                                  classEvent.classModel!.classLevels!,
-                                ),
-                              )
-                            : const SizedBox(
-                                width: DIFFICULTY_LEVEL_WIDTH,
-                                height: DIFFICULTY_LEVEL_HEIGHT,
-                              ),
                         classEvent.classModel?.classBookingOptions != null &&
                                 classEvent.classModel!.classBookingOptions!
                                     .isNotEmpty &&
                                 classEvent.classModel?.maxBookingSlots != null
-                            ? BookNowButton(
-                                classEvent: classEvent,
+                            ? const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 5),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.local_offer,
+                                      color: Colors.green,
+                                      size: 16,
+                                    ),
+                                    SizedBox(width: 6),
+                                    Text("discount with AcroWorld",
+                                        maxLines: 1,
+                                        overflow: TextOverflow.clip,
+                                        style: CARD_DESCRIPTION_TEXT),
+                                  ],
+                                ))
+                            : Container(),
+                        const Spacer(),
+                        classEvent.classModel?.classLevels != null &&
+                                classEvent.classModel!.classLevels!.isNotEmpty
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
+                                child: DifficultyWidget(
+                                  classEvent.classModel!.classLevels!,
+                                ),
                               )
-                            : Container()
+                            : const SizedBox(),
                       ],
                     ),
                   ],

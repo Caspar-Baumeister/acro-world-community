@@ -16,11 +16,11 @@ class CommingSoon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(header, style: MAINTEXT),
+          Text(header, style: H18W7),
           const SizedBox(height: 5),
           Text(
             content,
-            style: SMALL_TEXT_STYLE,
+            style: H12W4,
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 10),
@@ -30,7 +30,7 @@ class CommingSoon extends StatelessWidget {
               """
               This feature will soon be available 
               """,
-              style: MINI_TEXT_STYLE,
+              style: H10W4,
               textAlign: TextAlign.end,
             ),
           ),

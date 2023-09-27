@@ -5,30 +5,30 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class BookmarkEventMutationWidget extends StatefulWidget {
-  const BookmarkEventMutationWidget({
+class FavoriteClassMutationWidget extends StatefulWidget {
+  const FavoriteClassMutationWidget({
     Key? key,
-    required this.eventId,
-    required this.initialBookmarked,
+    required this.classId,
+    required this.initialFavorized,
     required this.color,
   }) : super(key: key);
 
-  final String eventId;
-  final bool initialBookmarked;
+  final String classId;
+  final bool initialFavorized;
   final Color color;
 
   @override
-  State<BookmarkEventMutationWidget> createState() =>
-      _BookmarkEventMutationWidgetState();
+  State<FavoriteClassMutationWidget> createState() =>
+      _FavoriteClassMutationWidgetState();
 }
 
-class _BookmarkEventMutationWidgetState
-    extends State<BookmarkEventMutationWidget> {
-  late bool isBookmarked;
+class _FavoriteClassMutationWidgetState
+    extends State<FavoriteClassMutationWidget> {
+  late bool isFavorized;
 
   @override
   void initState() {
-    isBookmarked = widget.initialBookmarked;
+    isFavorized = widget.initialFavorized;
     super.initState();
   }
 
@@ -39,17 +39,17 @@ class _BookmarkEventMutationWidgetState
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
         options: MutationOptions(
-          document: isBookmarked
-              ? Mutations.unBookmarkEvent
-              : Mutations.bookmarkEvent,
+          document: isFavorized
+              ? Mutations.unFavoritizeClass
+              : Mutations.favoritizeClass,
           onCompleted: (dynamic resultData) {
             print(resultData);
             setState(() {
-              isBookmarked = !isBookmarked;
+              isFavorized = !isFavorized;
             });
             Fluttertoast.showToast(
                 msg:
-                    "The event was succesfully ${isBookmarked ? "added" : "removed"} from your bookmarks",
+                    "The course was succesfully ${isFavorized ? "added" : "removed"} from your favorites",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
                 timeInSecForIosWeb: 2,
@@ -69,7 +69,7 @@ class _BookmarkEventMutationWidgetState
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Icon(
-                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                isFavorized ? Icons.favorite : Icons.favorite_border,
                 color: widget.color,
               ),
             );
@@ -77,16 +77,16 @@ class _BookmarkEventMutationWidgetState
 
           return IconButton(
             icon: Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+              isFavorized ? Icons.favorite : Icons.favorite_border,
               color: widget.color,
             ),
-            onPressed: () => isBookmarked
+            onPressed: () => isFavorized
                 ? runMutation({
-                    'event_id': widget.eventId,
+                    'class_id': widget.classId,
                     'user_id': userProvider.activeUser!.id!
                   })
                 : runMutation({
-                    'event_id': widget.eventId,
+                    'class_id': widget.classId,
                   }),
           );
         },

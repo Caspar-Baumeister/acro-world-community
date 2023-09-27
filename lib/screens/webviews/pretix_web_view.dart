@@ -37,7 +37,7 @@ class _PretixWebViewState extends State<PretixWebView> {
       appBar: AppBar(
           title: const Text(
             "AcroWorld",
-            style: HEADER_1_TEXT_STYLE,
+            style: H16W7,
           ),
           leading: IconButton(
             icon: const Icon(Icons.close),

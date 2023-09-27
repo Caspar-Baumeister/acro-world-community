@@ -22,9 +22,8 @@ class LinkButton extends StatelessWidget {
         onPressed: () async {
           await customLaunch(link);
         },
-        child: Text(text,
-            maxLines: 1,
-            style: MEDIUM_TEXT_STYLE.copyWith(color: Colors.black)),
+        child:
+            Text(text, maxLines: 1, style: H14W4.copyWith(color: Colors.black)),
       ),
     );
   }

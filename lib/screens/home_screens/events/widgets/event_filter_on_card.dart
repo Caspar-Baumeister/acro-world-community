@@ -112,7 +112,7 @@ class EventFilterOnCard extends StatelessWidget {
                                     .replaceAllMapped(
                                         exp, (Match m) => (' ${m.group(0)}'))
                                     .toLowerCase()),
-                                style: SMALL_TEXT_STYLE,
+                                style: H12W4,
                               ),
                             ),
                           ),
@@ -133,7 +133,7 @@ class EventFilterOnCard extends StatelessWidget {
                       child: Text(event.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: HEADER_1_TEXT_STYLE),
+                          style: H16W7),
                     ),
                     const SizedBox(height: 6),
                     event.startDate != null && event.endDate != null
@@ -157,7 +157,7 @@ class EventFilterOnCard extends StatelessWidget {
                                         "${DateFormat.MMMMd().format(DateTime.parse(event.startDate!))} - ${DateFormat.MMMMd().format(DateTime.parse(event.endDate!))}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: STANDART_TEXT_STYLE),
+                                    style: H14W4),
                               )
                             ],
                           )
@@ -184,19 +184,19 @@ class EventFilterOnCard extends StatelessWidget {
                                   child: Text(countryLocationString,
                                       maxLines: 2,
                                       overflow: TextOverflow.clip,
-                                      style: STANDART_TEXT_STYLE),
+                                      style: H14W4),
                                 ),
                               ],
                             ),
                           )
                         : Container(),
                     event.pretixName != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 7),
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: 7),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Center(
                                   child: Icon(
                                     Icons.check,
@@ -210,7 +210,7 @@ class EventFilterOnCard extends StatelessWidget {
                                 Text("book with AcroWorld",
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
-                                    style: STANDART_TEXT_STYLE),
+                                    style: H14W4),
                               ],
                             ),
                           )

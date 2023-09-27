@@ -2,6 +2,8 @@ import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/profile/header_widget.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookmarks/user_bookmarks_query.dart';
+import 'package:acroworld/screens/home_screens/profile/user_favorite_classes/user_favorite_classes.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,28 +16,14 @@ class ProfilePage extends StatelessWidget {
     return SafeArea(
       child: Scaffold(
         endDrawer: const SettingsDrawer(),
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(40),
-          child: Container(
-            decoration: const BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Color.fromARGB(255, 238, 238, 238),
-                ),
-              ),
-            ),
-            child: AppBar(
-              backgroundColor: Colors.white,
-              title: const Text(
-                "Profile",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.w600),
-              ),
-              centerTitle: false,
-              elevation: 0,
-              actions: const [],
-            ),
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: const Text(
+            "Your Profile",
+            style: H20W5,
           ),
+          centerTitle: false,
+          elevation: 0,
         ),
         body: DefaultTabController(
           length: 2,
@@ -69,21 +57,21 @@ class ProfilePage extends StatelessWidget {
                         //   Icons.book,
                         //   color: Colors.black,
                         // ),
-                        text: "Safed events",
+                        text: "Bookmarked events",
                       ),
                       Tab(
                         // icon: Icon(
                         //   Icons.star,
                         //   color: Colors.black,
                         // ),
-                        text: "Favorites",
+                        text: "Favorite activities",
                       ),
                     ],
                   ),
                 ),
-                Expanded(
+                const Expanded(
                   child: TabBarView(
-                    children: [const UserBookmarks(), Container()],
+                    children: [UserBookmarks(), UserFavoriteClasses()],
                   ),
                 ),
               ],

@@ -81,7 +81,7 @@ class _ParticipantsButtonState extends State<ParticipantsButton> {
                       widget.countParticipants != null
                           ? "${widget.countParticipants.toString()} ${widget.countParticipants != 1 ? "participants" : "participant"}       "
                           : "",
-                      style: SMALL_TEXT_STYLE.copyWith(color: PRIMARY_COLOR)),
+                      style: H12W4.copyWith(color: PRIMARY_COLOR)),
                 ),
               ),
               Positioned(

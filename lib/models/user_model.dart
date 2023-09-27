@@ -8,7 +8,7 @@ class User {
   String? teacherId;
   String? imageUrl;
   GenderModel? gender;
-
+  String? email;
   User(
       {this.userRoles,
       this.name,
@@ -16,6 +16,7 @@ class User {
       this.bio,
       this.teacherId,
       this.gender,
+      this.email,
       this.imageUrl});
 
   User.fromJson(Map<String, dynamic> json) {
@@ -30,6 +31,7 @@ class User {
         : null;
     name = json['name'];
     id = json['id'];
+    email = json['email'];
     bio = json['bio'];
     teacherId = json['teacher_id'];
     imageUrl = json['image_url'];
@@ -51,6 +53,7 @@ class UserRole {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
+
     return data;
   }
 }
