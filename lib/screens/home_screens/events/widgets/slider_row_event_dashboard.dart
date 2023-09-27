@@ -29,11 +29,11 @@ class SliderRowEventDashboard extends StatelessWidget {
               children: [
                 Text(
                   header,
-                  style: BIG_TEXT_STYLE,
+                  style: H20W6,
                 ),
                 Text(
                   "(view all)",
-                  style: STANDART_TEXT_STYLE.copyWith(color: LINK_COLOR),
+                  style: H14W4.copyWith(color: LINK_COLOR),
                 )
               ],
             ),

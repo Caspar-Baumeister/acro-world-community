@@ -30,7 +30,7 @@ class CalenderModal extends StatelessWidget {
                 child: ClassEventCalenderQuery(classId: classId)),
             const SizedBox(height: 20),
             StandartButton(
-                text: "Close", onPressed: () => Navigator.of(context).pop),
+                text: "Close", onPressed: () => Navigator.of(context).pop()),
             const SizedBox(height: 20),
           ],
         ),

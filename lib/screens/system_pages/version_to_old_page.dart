@@ -33,11 +33,11 @@ class VersionToOldPage extends StatelessWidget {
                           '''The current version $currentVersion is no longer supported. Only versions from version $minVersion onwards are supported.
                               
 Please download the current version from the''',
-                      style: STANDART_TEXT_STYLE.copyWith(color: Colors.black)),
+                      style: H14W4.copyWith(color: Colors.black)),
                   TextSpan(
                     text:
                         " ${Platform.isAndroid ? "Google Playstore." : "Appstore."} ", //"hier.",
-                    style: STANDART_TEXT_STYLE.copyWith(color: LINK_COLOR),
+                    style: H14W4.copyWith(color: LINK_COLOR),
                     recognizer: TapGestureRecognizer()
                       ..onTap = () async {
                         String link = Platform.isAndroid

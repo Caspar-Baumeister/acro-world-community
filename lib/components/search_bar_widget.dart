@@ -1,5 +1,7 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/decorators.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
@@ -25,16 +27,10 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    const styleActive = TextStyle(color: Colors.black);
-    const styleHint = TextStyle(color: Colors.black54);
-    final style = controller.text != "" ? styleHint : styleActive;
+    final style = controller.text != "" ? ACTIVE_INPUT_TEXT : HINT_INPUT_TEXT;
     return Container(
-      height: 42,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
-        color: Colors.white,
-        border: Border.all(color: STANDART_BORDER_COLOR),
-      ),
+      height: INPUTFIELD_HEIGHT,
+      decoration: searchBarDecoration,
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: TextField(
         autofocus: widget.autofocus,

@@ -30,7 +30,7 @@ class EventFilterPage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "${eventFilterProvider.activeEvents.length.toString()} results",
-                    style: STANDART_TEXT_STYLE,
+                    style: H14W4,
                   ),
                 ),
               ),
@@ -64,20 +64,20 @@ class EventFilterPage extends StatelessWidget {
             ],
           ),
         ),
-        body: SingleChildScrollView(
+        body: const SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 10, top: 10),
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Categories",
-                      style: BIG_TEXT_STYLE,
+                      style: H20W6,
                     ),
                     SizedBox(
                       height: 5,
@@ -87,14 +87,14 @@ class EventFilterPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 10, top: 10),
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Months",
-                      style: BIG_TEXT_STYLE,
+                      style: H20W6,
                     ),
                     SizedBox(
                       height: 5,
@@ -104,14 +104,14 @@ class EventFilterPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 10, top: 10),
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Countries",
-                      style: BIG_TEXT_STYLE,
+                      style: H20W6,
                     ),
                     SizedBox(
                       height: 5,
@@ -121,14 +121,14 @@ class EventFilterPage extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 20, right: 20, bottom: 10, top: 10),
+                padding:
+                    EdgeInsets.only(left: 20, right: 20, bottom: 10, top: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [
+                  children: [
                     Text(
                       "Quick filter",
-                      style: BIG_TEXT_STYLE,
+                      style: H20W6,
                     ),
                     SizedBox(
                       height: 5,
@@ -137,7 +137,7 @@ class EventFilterPage extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(
+              SizedBox(
                 height: 20,
               ),
             ],
@@ -165,7 +165,7 @@ class CountryFilterCards extends StatelessWidget {
             child: Chip(
               label: Text(
                 country,
-                style: SMALL_TEXT_STYLE.copyWith(
+                style: H12W4.copyWith(
                     color: isSelected ? Colors.white : PRIMARY_COLOR),
               ),
               labelPadding: const EdgeInsets.all(2.0),
@@ -198,7 +198,7 @@ class QuickFilterCards extends StatelessWidget {
           child: Chip(
             label: Text(
               "Highlights",
-              style: SMALL_TEXT_STYLE.copyWith(
+              style: H12W4.copyWith(
                   color: eventFilterProvider.onlyHighlighted
                       ? Colors.white
                       : PRIMARY_COLOR),
@@ -241,7 +241,7 @@ class CategorieFilterCards extends StatelessWidget {
                 capitalizeWords(category
                     .replaceAllMapped(exp, (Match m) => (' ${m.group(0)}'))
                     .toLowerCase()),
-                style: SMALL_TEXT_STYLE.copyWith(
+                style: H12W4.copyWith(
                     color: isSelected ? Colors.white : PRIMARY_COLOR),
               ),
               labelPadding: const EdgeInsets.all(2.0),
@@ -289,12 +289,12 @@ class DateFilterCards extends StatelessWidget {
                   children: [
                     Text(
                       DateFormat.MMMM().format(date),
-                      style: SMALL_TEXT_STYLE.copyWith(
+                      style: H12W4.copyWith(
                           color: isSelected ? Colors.white : PRIMARY_COLOR),
                     ),
                     Text(
                       DateFormat.y().format(date),
-                      style: MINI_TEXT_STYLE.copyWith(
+                      style: H10W4.copyWith(
                           color: isSelected ? Colors.white : PRIMARY_COLOR),
                     )
                   ],

@@ -1,17 +1,17 @@
 import 'package:acroworld/components/acronyc/acronyc_widget.dart';
-import 'package:acroworld/components/buttons/your_gender_button_widget.dart';
+import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/screens/authentication_screens/authenticate.dart';
+import 'package:acroworld/screens/essentials/essentials.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/gestures.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -26,66 +26,66 @@ class SettingsDrawer extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ListTile(
-                leading: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  imageUrl: userProvider.activeUser!.imageUrl ?? '',
-                  imageBuilder: (context, imageProvider) => Container(
-                    width: 50,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          image: imageProvider, fit: BoxFit.cover),
-                    ),
-                  ),
-                  placeholder: (context, url) => Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    width: 50,
-                    height: 50,
-                    decoration: const BoxDecoration(
-                      color: Colors.black12,
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.error,
-                      color: Colors.red,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  userProvider.activeUser!.name ?? "Unknown",
-                  style: BIG_TEXT_STYLE,
-                ),
-              ),
-              const Padding(
-                padding: EdgeInsets.only(left: 20.0, top: 10, right: 15),
-                child: YourGenderButtonWidget(),
-              ),
+              const SizedBox(height: 20),
               GestureDetector(
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => const AccountSettingsPage(),
                   ),
                 ),
-                child: ListTile(
+                child: const ListTile(
                     leading: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(Icons.settings),
+                  children: [
+                    Icon(Icons.settings_outlined),
                     SizedBox(
                       width: 15,
                     ),
                     Text(
                       "Settings",
-                      style: STANDART_DESCRIPTION,
+                      style: H18W4,
+                    )
+                  ],
+                )),
+              ),
+              const Divider(color: Colors.grey, height: 1),
+              GestureDetector(
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const EssentialsPage(),
+                  ),
+                ),
+                child: const ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.backpack_outlined),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Essentials",
+                      style: H18W4,
+                    )
+                  ],
+                )),
+              ),
+              const Divider(color: Colors.grey, height: 1),
+              GestureDetector(
+                onTap: () => showCupertinoModalPopup(
+                    context: context,
+                    builder: (BuildContext context) => const FeedbackPopUp()),
+                child: const ListTile(
+                    leading: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.feedback_outlined),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Text(
+                      "Feedback & Bugs",
+                      style: H18W4,
                     )
                   ],
                 )),
@@ -97,78 +97,20 @@ class SettingsDrawer extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const AcronycWidget(),
-                    const SizedBox(height: 10),
-                    const Divider(color: Colors.grey, height: 1),
-                    const SizedBox(height: 10),
-                    // RichText(
-                    //   textAlign: TextAlign.left,
-                    //   text: TextSpan(
-                    //     children: <TextSpan>[
-                    //       const TextSpan(
-                    //           text: "Help us spread the word by sending an ",
-                    //           style: TextStyle(color: Colors.black)),
-                    //       TextSpan(
-                    //           text: "invitation",
-                    //           style: const TextStyle(
-                    //               color: PRIMARY_COLOR,
-                    //               fontWeight: FontWeight.bold),
-                    //           recognizer: TapGestureRecognizer()
-                    //             ..onTap = () {
-                    //               Share.share(
-                    //                   "Download AcroWorld!\n...and find all classes and events around acroyoga\n\nAppstore: https://apps.apple.com/au/app/acroworld/id1633240146\nPlaystore: https://play.google.com/store/apps/details?id=com.community.acroworld&gl");
-                    //             }),
-                    //       const TextSpan(
-                    //           text: " to your friends!",
-                    //           style: TextStyle(color: Colors.black)),
-                    //     ],
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 10),
-                    // const Divider(color: Colors.grey, height: 1),
-                    // const SizedBox(height: 10),
-                    RichText(
-                      textAlign: TextAlign.left,
-                      text: TextSpan(
-                        children: <TextSpan>[
-                          const TextSpan(
-                              text: "For any problems, contact the support at ",
-                              style: TextStyle(color: Colors.black)),
-                          TextSpan(
-                              text: "info@acroworld.de",
-                              style: const TextStyle(
-                                  color: PRIMARY_COLOR,
-                                  fontWeight: FontWeight.bold),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Clipboard.setData(const ClipboardData(
-                                      text: "info@acroworld.de"));
-                                  Fluttertoast.showToast(
-                                      msg: "Email copied",
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.TOP,
-                                      timeInSecForIosWeb: 2,
-                                      backgroundColor: Colors.green,
-                                      textColor: Colors.white,
-                                      fontSize: 16.0);
-                                }),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    const Divider(color: Colors.grey, height: 1),
-                    const SizedBox(height: 10),
-                    // const TeacherButtonLinkWidget(),
-                    // StandartButton(
-                    //   isFilled: true,
-                    //   text: "Creator profile",
-                    //   onPressed: () => Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) => const CreateCreatorProfile(),
-                    //     ),
-                    //   ),
-                    // )
+                    // const AcronycWidget(),
+
+                    const Spacer(),
+                    CustomButton("Teacher dashboard", () {
+                      String? token = userProvider.token;
+                      String? refreshToken = userProvider.refreshToken;
+
+                      if (token != null && refreshToken != null) {
+                        customLaunch(
+                            "https://teacher.acroworld.de/token-callback?jwtToken=$token&refreshToken=$refreshToken");
+                      } else {
+                        customLaunch("https://teacher.acroworld.de");
+                      }
+                    }),
                   ],
                 ),
               )),

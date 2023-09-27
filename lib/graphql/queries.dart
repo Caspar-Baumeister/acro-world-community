@@ -16,6 +16,20 @@ query Me {
   }
 }""");
 
+  static final userFavorites = gql("""
+query Me {
+  me {
+    class_favorits {
+      id
+      created_at
+      classes {
+        ${Fragments.classFragment}
+      }
+      
+    }
+  }
+}""");
+
   static final getAllBookingsOfClassEvent = gql("""
 query classEventBooking(\$class_event_id: uuid) {
   class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
@@ -35,6 +49,9 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
   class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
     distance
     ${Fragments.classEventFragment}
+    class {
+      ${Fragments.classFragment}
+    }
   }
 }
 """);
@@ -42,6 +59,9 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
 query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
   class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
     ${Fragments.classEventFragment}
+    class {
+      ${Fragments.classFragment}
+    }
   }
 }
 """);
@@ -77,6 +97,33 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
      bookmarks(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
+    }
+  }
+}
+ """);
+
+  static final getClassByIdWithFavorite = gql("""
+query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
+  classes_by_pk(id: \$class_id){
+     ${Fragments.classFragment}
+     class_favorits(where: {user_id: {_eq: \$user_id}}) {
+      id
+      created_at
+    }
+  }
+}
+ """);
+
+  static final getClassEventWithClasByIdWithFavorite = gql("""
+query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: uuid!) {
+  class_events_by_pk(id: \$class_event_id){
+    ${Fragments.classEventFragment}
+    class {
+      ${Fragments.classFragment}
+      class_favorits(where: {user_id: {_eq: \$user_id}}) {
+      id
+      created_at
+      }
     }
   }
 }
@@ -137,7 +184,6 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
         location_name
         name
         type
-        community_id
         images(where: {is_profile_picture: {_eq: true}}) {
           image {
             url
@@ -156,6 +202,35 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
       }
     }""");
 
+  static final getFollowedTeacherForList = gql("""
+  query getTeacherForList(\$user_id: uuid, \$search: String!) {
+  me {
+    followed_teacher(order_by: {created_at: desc}, where: {teacher: {confirmation_status: {_eq: Confirmed}}, _and: {teacher: {name: {_ilike: \$search}}}}) {
+      teacher {
+        id
+        location_name
+        name
+        type
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+          is_profile_picture
+        }
+        is_organization
+        user_likes(where: {user_id: {_eq: \$user_id}}) {
+          user_id
+        }
+        user_likes_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }
+  }
+}""");
+
   static final getTeacherById = gql("""
   query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
     teachers_by_pk(id: \$teacher_id) {
@@ -165,45 +240,6 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
       ${Fragments.teacherFragment}
     }
   }
-  """);
-
-  static final getClasses = gql("""
-  query getClasses {
-    classes {
-      ${Fragments.classFragment}
-      class_teachers (where: {teacher: {confirmation_status: {_eq: Confirmed}}}) {
-      teacher {
-        id
-        name
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-        }
-      }
-    }
-    }
-  }
-  """);
-
-  static final getClassesByLocation = gql("""
-  query GetClassesByLocation(\$latitude: numeric, \$longitude: numeric) {
-    classes_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {distance: {_lte: "20"}, teacher: {teacher: {confirmation_status: {_eq: Confirmed}}}}) {
-        ${Fragments.classFragment}
-        distance
-        teacher (where: {teacher: {confirmation_status: {_eq: Confirmed}}}){
-          teacher {
-            id
-            name
-            images(where: {is_profile_picture: {_eq: true}}) {
-              image {
-                url
-              }
-            }
-          }
-        }
-      }
-    }
   """);
 
   static final getClassEventsByClassId = gql("""

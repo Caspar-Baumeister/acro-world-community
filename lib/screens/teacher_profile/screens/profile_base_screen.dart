@@ -6,7 +6,6 @@ import 'package:acroworld/screens/teacher_profile/screens/event_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_following.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -21,10 +20,10 @@ class ProfileBaseScreen extends StatefulWidget {
   final TeacherModel teacher;
   final String userId;
   @override
-  _ProfileBaseScreenState createState() => _ProfileBaseScreenState();
+  ProfileBaseScreenState createState() => ProfileBaseScreenState();
 }
 
-class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
+class ProfileBaseScreenState extends State<ProfileBaseScreen> {
   late bool isLikedState;
   bool loading = false;
 
@@ -38,7 +37,6 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    String uid = userProvider.getId();
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
@@ -77,11 +75,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                             setState(() {
                               loading = true;
                             });
-                            await followButtonClicked(
-                                isLikedState,
-                                uid,
-                                widget.teacher.communityId!,
-                                widget.teacher.name);
+
                             isLikedState
                                 ? runMutation({
                                     'teacher_id': widget.teacher.id,
@@ -121,7 +115,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                                         ))
                                     : Text(
                                         isLikedState ? "Following" : "Follow",
-                                        style: SMALL_TEXT_STYLE.copyWith(
+                                        style: H12W4.copyWith(
                                           color: !isLikedState
                                               ? BUTTON_FILL_COLOR
                                               : Colors.white,

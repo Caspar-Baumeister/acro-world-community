@@ -15,7 +15,7 @@ class AcronycWidget extends StatelessWidget {
       children: [
         const Text(
           "The Acronyc",
-          style: HEADER_1_TEXT_STYLE,
+          style: H16W7,
         ),
         const SizedBox(height: 10),
         Image.asset("assets/acronyc.png"),

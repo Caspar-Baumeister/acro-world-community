@@ -37,7 +37,7 @@ class _BookClassWebViewState extends State<BookClassWebView> {
       appBar: AppBar(
           title: const Text(
         "AcroWorld",
-        style: HEADER_1_TEXT_STYLE,
+        style: H16W7,
       )),
       resizeToAvoidBottomInset: true,
       body: SafeArea(

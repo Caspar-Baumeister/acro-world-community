@@ -22,15 +22,11 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
     return Column(
       children: [
         // Searchbar that sets the place as state and provider
-        const SizedBox(height: 10),
         Row(
           children: [
             const Expanded(
-              child: SizedBox(
-                height: 40,
-                child: PlaceButton(
-                  rightPadding: false,
-                ),
+              child: PlaceButton(
+                rightPadding: false,
               ),
             ),
             IconButton(

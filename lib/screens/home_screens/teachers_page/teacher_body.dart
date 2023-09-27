@@ -6,7 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class TeacherBody extends StatelessWidget {
-  const TeacherBody({Key? key, required this.teachers}) : super(key: key);
+  const TeacherBody({
+    Key? key,
+    required this.teachers,
+  }) : super(key: key);
 
   final List<TeacherModel> teachers;
 
@@ -24,8 +27,8 @@ class TeacherBody extends StatelessWidget {
     );
     Provider.of<UserProvider>(context);
 
-    return SingleChildScrollView(
-      child: Column(children: [...teacherList]),
-    );
+    return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [...teacherList]);
   }
 }

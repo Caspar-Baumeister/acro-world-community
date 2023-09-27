@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/components/buttons/standart_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
@@ -81,7 +82,7 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StandartIconButton(
+    return StandardIconButton(
       text: "My location",
       onPressed: () async {
         setState(() {

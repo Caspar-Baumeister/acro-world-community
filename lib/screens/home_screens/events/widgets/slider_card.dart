@@ -113,7 +113,7 @@ class SliderCard extends StatelessWidget {
                       Text(event.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: HEADER_1_TEXT_STYLE),
+                          style: H16W7),
                       Expanded(
                         child: countryLocationString != null
                             ? Container(
@@ -134,7 +134,7 @@ class SliderCard extends StatelessWidget {
                                       child: Text(countryLocationString,
                                           maxLines: 2,
                                           overflow: TextOverflow.clip,
-                                          style: STANDART_TEXT_STYLE),
+                                          style: H14W4),
                                     ),
                                   ],
                                 ),
@@ -164,7 +164,7 @@ class SliderCard extends StatelessWidget {
                               .replaceAllMapped(
                                   exp, (Match m) => (' ${m.group(0)}'))
                               .toLowerCase()),
-                          style: HEADER_1_TEXT_STYLE,
+                          style: H16W7,
                         ),
                       ),
                     ),
@@ -195,12 +195,12 @@ class SliderCard extends StatelessWidget {
                           Text(
                             DateFormat.MMM()
                                 .format(DateTime.parse(event.startDate!)),
-                            style: BIG_TEXT_STYLE,
+                            style: H20W6,
                           ),
                           Text(
                             dateString ??
                                 "${DateTime.parse(event.startDate!).day} - $endTimeString",
-                            style: STANDART_DESCRIPTION,
+                            style: H18W4,
                           )
                         ],
                       ),

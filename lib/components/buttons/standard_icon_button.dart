@@ -1,5 +1,7 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/decorators.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandardIconButton extends StatelessWidget {
@@ -12,6 +14,7 @@ class StandardIconButton extends StatelessWidget {
     this.width,
     this.showClose = false,
     this.onClose,
+    this.loading = false,
   }) : super(key: key);
 
   final IconData icon;
@@ -21,53 +24,52 @@ class StandardIconButton extends StatelessWidget {
   final double? width;
   final bool showClose;
   final Function? onClose;
+  final bool loading;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: onPressed,
+      onTap: loading ? null : onPressed,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: withBorder ? Border.all(color: BUTTON_FILL_COLOR) : null,
-          borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
-        ),
-        height: 40,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Icon(
-              icon,
-              color: Colors.black,
-            ),
-            const SizedBox(width: 6),
-            Expanded(
-              child: Text(
-                text,
-                maxLines: withBorder ? 1 : 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black,
-                ),
+        decoration: inputButtonDecoration,
+        height: INPUTFIELD_HEIGHT,
+        child: loading
+            ? Container(
+                height: 30,
+                width: 30,
+                padding: const EdgeInsets.all(5),
+                child: const CircularProgressIndicator(
+                  color: Colors.white,
+                ))
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Icon(
+                    icon,
+                    color: Colors.black,
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(text,
+                        maxLines: withBorder ? 1 : 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: ACTIVE_INPUT_TEXT),
+                  ),
+                  const SizedBox(width: 20),
+                  showClose
+                      ? GestureDetector(
+                          onTap: () => onClose!(),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.black,
+                          ),
+                        )
+                      : Container(),
+                  const SizedBox(width: 5),
+                ],
               ),
-            ),
-            const SizedBox(width: 20),
-            showClose
-                ? GestureDetector(
-                    onTap: () => onClose!(),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.black,
-                    ),
-                  )
-                : Container(),
-            const SizedBox(width: 5),
-          ],
-        ),
       ),
     );
   }

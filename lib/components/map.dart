@@ -1,3 +1,4 @@
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -43,10 +44,10 @@ class _MapState extends State<MapWidget> {
     mapController = controller;
   }
 
-  void _onLongPress(LatLng clickedLocation) {
-    _add(clickedLocation);
-    widget.onLocationSelected!(clickedLocation);
-  }
+  // void _onLongPress(LatLng clickedLocation) {
+  //   _add(clickedLocation);
+  //   widget.onLocationSelected!(clickedLocation);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,8 @@ class _MapState extends State<MapWidget> {
           target: center,
           zoom: widget.zoom ?? 0,
         ),
-        onLongPress: _onLongPress,
+        // onLongPress: _onLongPress,
+        onTap: (argument) => openMap(argument.latitude, argument.longitude),
         markers: Set<Marker>.of(markers.values),
       ),
     );

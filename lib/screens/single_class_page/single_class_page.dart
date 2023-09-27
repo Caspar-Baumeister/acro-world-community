@@ -1,3 +1,4 @@
+import 'package:acroworld/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/single_class_page/single_class_body.dart';
@@ -8,6 +9,8 @@ import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:intl/intl.dart';
 
 class SingleClassPage extends StatefulWidget {
   const SingleClassPage({Key? key, required this.clas, this.classEvent})
@@ -48,8 +51,75 @@ class _SingleClassPageState extends State<SingleClassPage> {
     super.dispose();
   }
 
+  void shareEvent(ClassEvent classEvent, ClassModel clas) {
+    final String content = '''
+${clas.name}
+
+${formatInstructors(clas.classTeachers)}
+${formatDateRange(DateTime.parse(classEvent.startDate!), DateTime.parse(classEvent.endDate!))}
+At: ${clas.locationName}
+-
+Found in the AcroWorld app
+''';
+
+    Share.share(content);
+  }
+
+  String formatDateRange(DateTime start, DateTime end) {
+    var dayFormatter = DateFormat('EEEE');
+    var timeFormatter = DateFormat('HH.mm');
+    return '${dayFormatter.format(start)}, ${timeFormatter.format(start)}-${timeFormatter.format(end)}';
+  }
+
+  String formatInstructors(List<ClassTeachers>? teachers) {
+    if (teachers == null || teachers.isEmpty) {
+      return "";
+    }
+    if (teachers.length <= 3) {
+      if (teachers.length == 1) {
+        return "By ${teachers[0].teacher!.name!}";
+      } else if (teachers.length == 2) {
+        return "By "
+            '${teachers[0].teacher!.name!} and ${teachers[1].teacher!.name!}';
+      } else {
+        return "By "
+            '${teachers[0].teacher!.name!}, ${teachers[1].teacher!.name!} and ${teachers[2].teacher!.name!}';
+      }
+    } else {
+      return "By "
+          '${teachers[0].teacher!.name!}, ${teachers[1].teacher!.name!}, ${teachers[2].teacher!.name!}, and more';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Widget> actions = [];
+    if (widget.clas.isInitiallyFavorized != null) {
+      actions.add(
+        ValueListenableBuilder<double>(
+          valueListenable: _percentageCollapsed,
+          builder: (context, percentage, child) {
+            return FavoriteClassMutationWidget(
+                classId: widget.clas.id!,
+                initialFavorized: widget.clas.isInitiallyFavorized == true,
+                color: percentage > 0.5 ? Colors.black : Colors.white);
+          },
+        ),
+      );
+    }
+    if (widget.classEvent != null) {
+      actions.add(
+        ValueListenableBuilder<double>(
+          valueListenable: _percentageCollapsed,
+          builder: (context, percentage, child) {
+            return IconButton(
+                onPressed: () => shareEvent(widget.classEvent!, widget.clas),
+                icon: Icon(Icons.ios_share,
+                    color: percentage > 0.5 ? Colors.black : Colors.white));
+          },
+        ),
+      );
+    }
     return Scaffold(
       body: Stack(
         children: [
@@ -82,7 +152,8 @@ class _SingleClassPageState extends State<SingleClassPage> {
                     return Container(); // Empty container when expanded
                   },
                 ),
-                // actions: widget.classEvent != null
+                actions: actions,
+                // widget.classEvent != null
                 //     ? [
                 //         ValueListenableBuilder<double>(
                 //           valueListenable: _percentageCollapsed,

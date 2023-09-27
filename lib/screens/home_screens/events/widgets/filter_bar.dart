@@ -4,6 +4,8 @@ import 'package:acroworld/screens/home_screens/events/event_filter_page.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_event_body.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
+import 'package:acroworld/utils/decorators.dart';
+import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,19 +22,15 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
         onTap: () =>
             showSearch(context: context, delegate: EventSearchDelegate()),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(30.0),
-            border: Border.all(color: Colors.black),
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
+          decoration: searchBarDecoration,
           child: Row(
             children: [
               const Icon(Icons.search, color: Colors.black),
               const SizedBox(width: 10),
               Text(
                 'Search...',
-                style: TextStyle(color: Colors.black.withOpacity(0.5)),
+                style: HINT_INPUT_TEXT,
               ),
             ],
           ),
