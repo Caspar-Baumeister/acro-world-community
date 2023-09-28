@@ -21,6 +21,6 @@ class FavoriteModel {
     userId = json['user_id'];
     classId = json['class_id'];
     classObject =
-        json['clas'] != null ? ClassModel.fromJson(json['clas']) : null;
+        json['classes'] != null ? ClassModel.fromJson(json['classes']) : null;
   }
 }

@@ -63,6 +63,8 @@ class _FavoriteClassMutationWidgetState
                 runMutation,
             QueryResult<dynamic>? result) {
           if (result == null || result.hasException) {
+            print("exaption");
+            print(result?.exception.toString());
             return Container();
           }
           if (result.isLoading) {
