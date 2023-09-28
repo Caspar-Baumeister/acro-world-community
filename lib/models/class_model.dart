@@ -49,7 +49,7 @@ class ClassModel {
     classPassUrl = json['class_pass_url'];
     description = json['description'];
     distance = json['distance'];
-    isInitiallyFavorized = json['favorites']?.isNotEmpty;
+    isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
     id = json['id'];
     imageUrl = json['image_url'];
     location =

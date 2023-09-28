@@ -43,7 +43,7 @@ mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
 """);
 
   static final favoritizeClass = gql("""
-  mutation favoritizeClass(\$class_id: uuid) {
+  mutation favoritizeClass(\$class_id: uuid!) {
   insert_class_favorites(objects: {class_id:  \$class_id}) {
     affected_rows
   }
@@ -51,7 +51,7 @@ mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
 """);
 
   static final unFavoritizeClass = gql("""
-  mutation unBookmarkEvent(\$class_id: uuid, \$user_id: uuid) {
+  mutation unBookmarkEvent(\$class_id: uuid!, \$user_id: uuid!) {
   delete_class_favorites(where: {class_id: {_eq: \$class_id}, user_id: {_eq: \$user_id}}) {
     affected_rows
   }
