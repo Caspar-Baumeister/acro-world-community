@@ -15,7 +15,7 @@ class EventSection extends StatelessWidget {
     return Query(
         options: QueryOptions(
             document: Queries.getEventsByTeacherId,
-            fetchPolicy: FetchPolicy.networkOnly,
+            fetchPolicy: FetchPolicy.noCache,
             variables: {"teacher_id": teacherId}),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
@@ -41,9 +41,15 @@ class EventSection extends StatelessWidget {
           });
 
           List<EventModel> events = [];
+          List<EventModel> ownedEvents = [];
+          List<EventModel> teachedEvents = [];
           try {
-            result.data!["events"]
-                .forEach((clas) => events.add(EventModel.fromJson(clas)));
+            result.data!["teachers_by_pk"]["events"].forEach((event) =>
+                teachedEvents.add(EventModel.fromJson(event["event"])));
+            result.data!["teachers_by_pk"]["owned_events"].forEach((event) =>
+                ownedEvents.add(EventModel.fromJson(event["event"])));
+
+            events = ownedEvents + teachedEvents;
           } catch (e) {
             print(e.toString());
           }

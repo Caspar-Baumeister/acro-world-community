@@ -1,4 +1,3 @@
-import 'package:acroworld/components/acronyc/acronyc_widget.dart';
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
@@ -9,7 +8,6 @@ import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/essentials/essentials.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

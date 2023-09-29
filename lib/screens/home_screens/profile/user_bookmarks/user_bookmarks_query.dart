@@ -4,7 +4,6 @@ import 'package:acroworld/models/bookmark_model.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
-import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

@@ -1,5 +1,4 @@
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
-import 'package:acroworld/components/buttons/standart_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:flutter/material.dart';

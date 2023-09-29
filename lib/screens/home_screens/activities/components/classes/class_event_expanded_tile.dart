@@ -1,9 +1,7 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/home_screens/activities/components/booking/booking_button.dart';
 import 'package:acroworld/screens/home_screens/activities/components/class_event_tile_image.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/constants.dart';

@@ -1,9 +1,7 @@
 import 'package:acroworld/components/class_widgets/class_template_card.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
-import 'package:acroworld/screens/single_class_page/single_class_page.dart';
-import 'package:acroworld/components/loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
