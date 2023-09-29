@@ -68,65 +68,22 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                   ),
                 ),
                 Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      widget.teacher.locationName != ""
-                          ? Column(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(top: 15.0),
-                                  child: Text(
-                                    "Location",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      letterSpacing: 0.4,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      constraints: BoxConstraints(
-                                          maxWidth: MediaQuery.of(context)
-                                                  .size
-                                                  .width /
-                                              3),
-                                      child: Text(
-                                        widget.teacher.locationName ?? "",
-                                        textAlign: TextAlign.center,
-                                        overflow: TextOverflow.clip,
-                                        maxLines: 2,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            )
-                          : Container(),
-                    ],
+                  child: Center(
+                    child: Text(
+                      widget.teacher.name ?? "No name",
+                      style: const TextStyle(
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                        letterSpacing: 0.4,
+                      ),
+                    ),
                   ),
                 )
               ],
             ),
             const SizedBox(
               height: 8,
-            ),
-            Text(
-              widget.teacher.name ?? "No name",
-              style: const TextStyle(
-                color: Colors.black87,
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
-                letterSpacing: 0.4,
-              ),
             ),
             widget.teacher.description != "" &&
                     widget.teacher.description != null

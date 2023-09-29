@@ -71,6 +71,7 @@ class _SignInState extends State<SignIn> {
                     TextFormField(
                       controller: emailController,
                       autofocus: true,
+                      autofillHints: const [AutofillHints.email],
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
                       decoration: buildInputDecoration(labelText: 'Email'),
@@ -93,6 +94,7 @@ class _SignInState extends State<SignIn> {
                     TextFormField(
                       controller: passwordController,
                       textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
                       obscureText: isObscure,
                       decoration: buildInputDecoration(
                           labelText: 'Password',

@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';
 import 'package:acroworld/utils/text_styles.dart';
@@ -36,13 +35,18 @@ class StandardIconButton extends StatelessWidget {
         decoration: inputButtonDecoration,
         height: INPUTFIELD_HEIGHT,
         child: loading
-            ? Container(
-                height: 30,
-                width: 30,
-                padding: const EdgeInsets.all(5),
-                child: const CircularProgressIndicator(
-                  color: Colors.white,
-                ))
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      height: 30,
+                      width: 30,
+                      padding: const EdgeInsets.all(5),
+                      child: const CircularProgressIndicator(
+                        color: Colors.black,
+                      )),
+                ],
+              )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
