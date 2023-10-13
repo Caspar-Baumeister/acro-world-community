@@ -1,5 +1,6 @@
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/send_feedback_button.dart';
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -104,9 +105,9 @@ class SettingsDrawer extends StatelessWidget {
 
                       if (token != null && refreshToken != null) {
                         customLaunch(
-                            "https://teacher.acroworld.de/token-callback?jwtToken=$token&refreshToken=$refreshToken");
+                            "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
                       } else {
-                        customLaunch("https://teacher.acroworld.de");
+                        customLaunch(AppEnvironment.dashboardUrl);
                       }
                     }),
                   ],
