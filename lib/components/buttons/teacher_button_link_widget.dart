@@ -1,4 +1,5 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -30,40 +31,12 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
         setState(() {
           loading = true;
         });
-        await customLaunch("https://teacher.acroworld.de");
+        await customLaunch(AppEnvironment.dashboardUrl);
         setState(() {
           loading = false;
         });
       },
       isFilled: true,
     );
-    // : RichText(
-    //     textAlign: TextAlign.left,
-    //     text: TextSpan(
-    //       children: <TextSpan>[
-    //         const TextSpan(
-    //             text:
-    //                 "You are an acro teacher and want to show your profile? Tell us about you in a brief email to ",
-    //             style: TextStyle(color: Colors.black)),
-    //         TextSpan(
-    //             text: "info@acroworld.de",
-    //             style: const TextStyle(
-    //                 color: PRIMARY_COLOR, fontWeight: FontWeight.bold),
-    //             recognizer: TapGestureRecognizer()
-    //               ..onTap = () {
-    //                 Clipboard.setData(
-    //                     const ClipboardData(text: "info@acroworld.de"));
-    //                 Fluttertoast.showToast(
-    //                     msg: "Email copied",
-    //                     toastLength: Toast.LENGTH_SHORT,
-    //                     gravity: ToastGravity.TOP,
-    //                     timeInSecForIosWeb: 2,
-    //                     backgroundColor: Colors.green,
-    //                     textColor: Colors.white,
-    //                     fontSize: 16.0);
-    //               }),
-    //       ],
-    //     ),
-    //   );
   }
 }

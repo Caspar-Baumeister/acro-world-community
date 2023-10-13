@@ -1,4 +1,5 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
@@ -165,8 +166,7 @@ class _SignInState extends State<SignIn> {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              await customLaunch(
-                                  "https://teacher.acroworld.de");
+                              await customLaunch(AppEnvironment.dashboardUrl);
                             },
                             child: Text(
                               "teacher login",
