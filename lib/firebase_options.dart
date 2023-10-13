@@ -78,13 +78,13 @@ class DefaultFirebaseOptions {
           iosBundleId: 'com.acroworld.community.ios.app',
         )
       : FirebaseOptions(
-          apiKey: 'AIzaSyD2ijvzTccfy6igvAuCLgU-LiL8vRxj0fw',
-          appId: '1:1077598628073:android:7e3df14179b75b4669a878',
+          apiKey: 'AIzaSyADpEzjlPHeWEiftRDE3H4l4q6Xn9jACZM',
+          appId: '1:1077598628073:ios:46cae47a4b98130b69a878',
           messagingSenderId: '1077598628073',
           projectId: 'acro-world-development',
           storageBucket: 'acro-world-development.appspot.com',
           iosClientId:
               '1077598628073-tpdst0qqnjfknaa0vns4lfjc2084rtc0.apps.googleusercontent.com',
-          iosBundleId: 'com.acroworld.poses.ios.app',
+          iosBundleId: 'com.acroworld.community.ios.app',
         );
 }
