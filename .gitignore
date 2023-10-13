@@ -31,6 +31,7 @@
 .pub/
 build
 
+
 # Web related
 lib/generated_plugin_registrant.dart
 
@@ -45,4 +46,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 /android/app/upload-keystore-acroworld.jks
+/android/app/build
 ios/Runner/Info.plist
