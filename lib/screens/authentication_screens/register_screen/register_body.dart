@@ -1,9 +1,8 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/choose_gender_screen/choose_gender.dart';
-import 'package:acroworld/screens/authentication_screens/register_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/screens/authentication_screens/register_screen/widgets/register_info.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
