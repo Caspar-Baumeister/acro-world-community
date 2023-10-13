@@ -20,7 +20,7 @@ class ActivitiesQuery extends StatefulWidget {
 }
 
 class _ActivitiesQueryState extends State<ActivitiesQuery> {
-  String from = DateTime.now().toIso8601String();
+  late String from;
   late String to;
   DateTime focusedDay = DateTime.now();
   DateTime initialSelectedDate = DateTime.now();
@@ -30,6 +30,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     DateTime now = DateTime.now();
     to = DateTime(now.year, now.month, now.day + (7 - now.weekday), 23)
         .toIso8601String();
+    from = DateTime(now.year, now.month, now.day).toIso8601String();
 
     super.initState();
   }

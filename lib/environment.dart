@@ -7,4 +7,4 @@ class AppEnvironment {
 
 
 // falls Caspar hier mal wieder dran rum gespielt hat ist hier das original:
-// isProduction ? "bro-devs.com" : ""dev.acroworld.de"; 
+// isProduction ? "bro-devs.com" : "dev.acroworld.de";
