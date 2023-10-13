@@ -85,12 +85,12 @@ query Config {
   static final getEventsByTeacherId =
       gql("""query getEventsByTeacherId(\$teacher_id: uuid!) {
   teachers_by_pk(id: \$teacher_id) {
-    events(where: {event: {confirmation_status: {_eq: Confirmed}}}) {
+    events(where: {event: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}}}) {
       event {
          ${Fragments.eventFragment}
       }
     }
-    owned_events(where: {event: {confirmation_status: {_eq: Confirmed}}}) {
+    owned_events(where: {event: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}}}) {
       event {
         ${Fragments.eventFragment}
       }

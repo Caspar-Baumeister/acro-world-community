@@ -133,14 +133,14 @@ class RegisterBodyState extends State<RegisterBody> {
                           ? 'Passwords are not the same'
                           : null,
                     ),
-                    const SizedBox(height: 20.0),
-                    AGBCheckbox(
-                        isAgb: isAgb,
-                        setAgb: (b) => setState(
-                              () {
-                                isAgb = b;
-                              },
-                            )),
+                    // const SizedBox(height: 20.0),
+                    // AGBCheckbox(
+                    //     isAgb: isAgb,
+                    //     setAgb: (b) => setState(
+                    //           () {
+                    //             isAgb = b;
+                    //           },
+                    //         )),
                     const SizedBox(height: 20.0),
                     Center(
                         child: StandartButton(

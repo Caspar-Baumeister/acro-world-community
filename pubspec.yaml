@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 ######### VERSION ##########
-version: 1.0.40+00
+version: 1.0.41+00
 ############################
 
 environment:
@@ -26,8 +26,8 @@ dependencies:
   graphql_flutter: ^5.1.0
   google_maps_flutter: ^2.2.3
   event_bus: ^2.0.0
-  firebase_messaging: ^14.6.8
-  firebase_core: ^2.5.0
+  firebase_messaging: ^14.6.9
+  firebase_core: ^2.17.0
   readmore: ^2.2.0
   url_launcher: ^6.1.14
   webview_flutter: ^3.0.4
@@ -51,13 +51,11 @@ dev_dependencies:
   table_calendar: ^3.0.5
   path_provider: ^2.0.10
 
-
 flutter_icons:
   image_path: "assets/logo/play_store_512.png"
   ios: true
   android: true
   remove_alpha_ios: true
-
 
 flutter:
   uses-material-design: true
