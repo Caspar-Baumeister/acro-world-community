@@ -57,28 +57,14 @@ void main() async {
     ),
   );
   WidgetsFlutterBinding.ensureInitialized();
+
   // FIREBASE //
   await Firebase.initializeApp(
     name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // await messaging.requestPermission(
-  //   alert: true,
-  //   announcement: false,
-  //   badge: true,
-  //   carPlay: false,
-  //   criticalAlert: false,
-  //   provisional: false,
-  //   sound: true,
-  // );
-
-  // final fcmToken = await FirebaseMessaging.instance.getToken();
-
-  // print("fcmToken");
-  // print(fcmToken);
+  // FIREBASE MESSENGING //
   NotificationService notificationService = NotificationService();
   await notificationService.initialize();
 
