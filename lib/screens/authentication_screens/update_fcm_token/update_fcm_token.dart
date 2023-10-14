@@ -1,6 +1,6 @@
+import 'package:acroworld/screens/authentication_screens/update_fcm_token/save_token_mutation_widget.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
-import 'package:acroworld/screens/authentication_screens/update_fcm_token/save_token_mutation_widget.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
@@ -30,12 +30,17 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
 
   Future<bool> _initToken() async {
     final newToken = await FirebaseMessaging.instance.getToken();
+
     token = newToken;
+    print("_initToken newToken");
+    print(newToken);
     return newToken != null ? true : false;
   }
 
   Future<void> _refreshToken() async {
     final newToken = await FirebaseMessaging.instance.getToken();
+    print("_refreshToken newToken");
+    print(newToken);
     setState(() {
       token = newToken;
     });
