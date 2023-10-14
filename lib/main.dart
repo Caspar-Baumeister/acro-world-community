@@ -60,7 +60,6 @@ void main() async {
 
   // FIREBASE //
   await Firebase.initializeApp(
-    name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
