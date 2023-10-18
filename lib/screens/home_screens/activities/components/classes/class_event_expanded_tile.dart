@@ -118,7 +118,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                                       size: 16,
                                     ),
                                     SizedBox(width: 6),
-                                    Text("discount with AcroWorld",
+                                    Text("booking discount",
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
                                         style: CARD_DESCRIPTION_TEXT),
