@@ -48,8 +48,7 @@ class _BookmarkEventMutationWidgetState
               isBookmarked = !isBookmarked;
             });
             Fluttertoast.showToast(
-                msg:
-                    "The event was succesfully ${isBookmarked ? "added" : "removed"} from your bookmarks",
+                msg: "${isBookmarked ? "Aadded to" : "Removed from"} bookmarks",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
                 timeInSecForIosWeb: 2,
