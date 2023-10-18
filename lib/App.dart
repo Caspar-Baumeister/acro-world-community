@@ -12,23 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class App extends StatefulWidget {
+class App extends StatelessWidget {
   final ValueNotifier<GraphQLClient> client;
 
   const App({Key? key, required this.client}) : super(key: key);
-
-  @override
-  State<App> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  NotificationService notificationService = NotificationService();
-
-  @override
-  void initState() {
-    notificationService.initialize();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,12 +28,35 @@ class _AppState extends State<App> {
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
         ],
         child: GraphQLProvider(
-          client: widget.client,
+          client: client,
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
-            home: const ConnectionWrapper(),
+            home: const FirebaseMessengerWrapper(),
           ),
         ));
+  }
+}
+
+class FirebaseMessengerWrapper extends StatefulWidget {
+  const FirebaseMessengerWrapper({Key? key}) : super(key: key);
+
+  @override
+  State<FirebaseMessengerWrapper> createState() =>
+      _FirebaseMessengerWrapperState();
+}
+
+class _FirebaseMessengerWrapperState extends State<FirebaseMessengerWrapper> {
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    notificationService.initialize(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const ConnectionWrapper();
   }
 }

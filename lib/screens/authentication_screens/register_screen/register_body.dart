@@ -176,12 +176,6 @@ class RegisterBodyState extends State<RegisterBody> {
       return;
     }
 
-    if (!isAgb) {
-      setState(() {
-        error = 'You need to accept the agbs';
-      });
-      return;
-    }
     setState(() {
       loading = true;
     });

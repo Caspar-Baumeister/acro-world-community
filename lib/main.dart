@@ -4,7 +4,6 @@ import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
-import 'package:acroworld/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -60,13 +59,8 @@ void main() async {
 
   // FIREBASE //
   await Firebase.initializeApp(
-    name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
-  // FIREBASE MESSENGING //
-  NotificationService notificationService = NotificationService();
-  await notificationService.initialize();
 
   return runApp(App(client: client));
 }
