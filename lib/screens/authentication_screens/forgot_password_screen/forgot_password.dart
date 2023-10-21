@@ -8,10 +8,10 @@ class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  ForgotPasswordState createState() => ForgotPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class ForgotPasswordState extends State<ForgotPassword> {
   late TextEditingController emailController;
   bool loading = false;
   String error = '';
@@ -84,14 +84,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     final response = await Database().forgotPassword(
       emailController.text,
     );
-    print(response.toString());
 
     if (response?["data"]["reset_password"]?["success"] == true) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) =>
-                ForgotPasswordSuccess(email: emailController.text)),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) =>
+                  ForgotPasswordSuccess(email: emailController.text)),
+        );
+      });
     } else {
       setState(() {
         error = "Something went wrong. Try again later";

@@ -6,8 +6,8 @@ import 'package:acroworld/screens/single_event/single_event_body.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SingleEventPage extends StatefulWidget {
   const SingleEventPage({Key? key, required this.event}) : super(key: key);
@@ -113,6 +113,7 @@ Found in the AcroWorld app
         },
       ),
     );
+
     return Scaffold(
       bottomNavigationBar: widget.event.pretixName != null
           ? SafeArea(

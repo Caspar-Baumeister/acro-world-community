@@ -12,8 +12,8 @@ class OpenGoogleMaps extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => openMap(latitude, longitude),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           Icon(
             Icons.location_on,
             color: Colors.black,
