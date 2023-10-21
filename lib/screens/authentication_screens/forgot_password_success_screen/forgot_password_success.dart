@@ -12,10 +12,10 @@ class ForgotPasswordSuccess extends StatefulWidget {
   final String email;
 
   @override
-  _ForgotPasswordSuccessState createState() => _ForgotPasswordSuccessState();
+  ForgotPasswordSuccessState createState() => ForgotPasswordSuccessState();
 }
 
-class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
+class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
   // Step 2
   Timer? countdownTimer;
   Duration myDuration = const Duration(hours: 1);
@@ -128,7 +128,6 @@ class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
     final response = await Database().forgotPassword(
       widget.email,
     );
-    print(response.toString());
 
     if (response?["data"]["reset_password"]?["success"] == true) {
       resetTimer();

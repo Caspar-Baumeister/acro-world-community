@@ -1,6 +1,6 @@
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
@@ -30,7 +30,6 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
 
-    // TODO fill in rest of data
     final response = await Database(token: token).authorizedApi("""query {
             me { 
               bio

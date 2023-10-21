@@ -79,18 +79,10 @@ PODS:
   - FMDB (2.7.5):
     - FMDB/standard (= 2.7.5)
   - FMDB/standard (2.7.5)
-  - google_maps_flutter_ios (0.0.1):
-    - Flutter
-    - GoogleMaps (< 8.0)
   - GoogleDataTransport (9.2.5):
     - GoogleUtilities/Environment (~> 7.7)
     - nanopb (< 2.30910.0, >= 2.30908.0)
     - PromisesObjC (< 3.0, >= 1.2)
-  - GoogleMaps (6.2.1):
-    - GoogleMaps/Maps (= 6.2.1)
-  - GoogleMaps/Base (6.2.1)
-  - GoogleMaps/Maps (6.2.1):
-    - GoogleMaps/Base
   - GoogleUtilities/AppDelegateSwizzler (7.11.5):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -151,7 +143,6 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_email_sender (from `.symlinks/plugins/flutter_email_sender/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
-  - google_maps_flutter_ios (from `.symlinks/plugins/google_maps_flutter_ios/ios`)
   - location (from `.symlinks/plugins/location/ios`)
   - maps_launcher (from `.symlinks/plugins/maps_launcher/ios`)
   - package_info_plus (from `.symlinks/plugins/package_info_plus/ios`)
@@ -173,7 +164,6 @@ SPEC REPOS:
     - FirebaseMessaging
     - FMDB
     - GoogleDataTransport
-    - GoogleMaps
     - GoogleUtilities
     - nanopb
     - PromisesObjC
@@ -199,8 +189,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_email_sender/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
-  google_maps_flutter_ios:
-    :path: ".symlinks/plugins/google_maps_flutter_ios/ios"
   location:
     :path: ".symlinks/plugins/location/ios"
   maps_launcher:
@@ -222,7 +210,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   add_2_calendar: e9d68636aed37fb18e12f5a3d74c2e0589487af0
-  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
+  connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
@@ -237,14 +225,12 @@ SPEC CHECKSUMS:
   flutter_email_sender: 02d7443217d8c41483223627972bfdc09f74276b
   fluttertoast: fafc4fa4d01a6a9e4f772ecd190ffa525e9e2d9c
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
-  google_maps_flutter_ios: abdac20d6ce8931f6ebc5f46616df241bfaa2cfd
   GoogleDataTransport: 54dee9d48d14580407f8f5fbf2f496e92437a2f2
-  GoogleMaps: 20d7b12be49a14287f797e88e0e31bc4156aaeb4
   GoogleUtilities: 13e2c67ede716b8741c7989e26893d151b2b2084
   location: d5cf8598915965547c3f36761ae9cc4f4e87d22e
   maps_launcher: 2e5b6a2d664ec6c27f82ffa81b74228d770ab203
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
-  package_info_plus: 6c92f08e1f853dc01228d6f553146438dafcd14e
+  package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
