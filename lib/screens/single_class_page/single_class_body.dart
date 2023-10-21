@@ -1,17 +1,16 @@
 import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
-import 'package:acroworld/components/map.dart';
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
-import 'package:intl/intl.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/open_map.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
+import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 
 class SingleClassBody extends StatelessWidget {
   const SingleClassBody({Key? key, required this.classe, this.classEvent})
@@ -156,13 +155,17 @@ class SingleClassBody extends StatelessWidget {
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20)),
                       constraints: const BoxConstraints(maxHeight: 150),
-                      child: MapWidget(
-                        zoom: 15.0,
-                        center: LatLng(classe.location!.coordinates![1] * 1.0,
-                            classe.location!.coordinates![0] * 1.0),
-                        markerLocation: LatLng(
-                            classe.location!.coordinates![1] * 1.0,
-                            classe.location!.coordinates![0] * 1.0),
+                      child: OpenMap(
+                        initialZoom: 15,
+                        latitude: classe.location!.coordinates![1] * 1.0,
+                        longitude: classe.location!.coordinates![0] * 1.0,
+
+                        // zoom: 15.0,
+                        // center: LatLng(classe.location!.coordinates![1] * 1.0,
+                        //     classe.location!.coordinates![0] * 1.0),
+                        // markerLocation: LatLng(
+                        //     classe.location!.coordinates![1] * 1.0,
+                        //     classe.location!.coordinates![0] * 1.0),
                       ),
                     ),
                     const Padding(

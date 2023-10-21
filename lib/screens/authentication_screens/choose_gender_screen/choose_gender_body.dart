@@ -155,15 +155,14 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                 options: MutationOptions(
                   document: Mutations.setGender,
                   onError: (error) {
-                    print("error in setGender");
+                    // ignore: avoid_print
                     print(error);
                   },
                   onCompleted: (dynamic resultData) {
                     setState(() {
                       loading = false;
                     });
-                    print("resultData");
-                    print(resultData);
+
                     widget.onContinue();
                   },
                 ),
@@ -174,9 +173,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                         setState(() {
                           loading = true;
                         });
-                        print("set gender inputs");
-                        print(userProvider.activeUser!.id!);
-                        print(gender);
+
                         runMutation({
                           'user_id': userProvider.activeUser!.id!,
                           'gender_id': gender

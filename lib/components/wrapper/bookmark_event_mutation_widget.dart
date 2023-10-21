@@ -43,12 +43,11 @@ class _BookmarkEventMutationWidgetState
               ? Mutations.unBookmarkEvent
               : Mutations.bookmarkEvent,
           onCompleted: (dynamic resultData) {
-            print(resultData);
             setState(() {
               isBookmarked = !isBookmarked;
             });
             Fluttertoast.showToast(
-                msg: "${isBookmarked ? "Aadded to" : "Removed from"} bookmarks",
+                msg: "${isBookmarked ? "Added to" : "Removed from"} bookmarks",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
                 timeInSecForIosWeb: 2,
