@@ -1,13 +1,12 @@
 import 'package:acroworld/components/custom_divider.dart';
-import 'package:acroworld/components/map.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/open_map.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:intl/intl.dart';
 
 class SingleEventBody extends StatelessWidget {
@@ -224,11 +223,10 @@ class SingleEventBody extends StatelessWidget {
                             decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20)),
                             constraints: const BoxConstraints(maxHeight: 150),
-                            child: MapWidget(
-                              zoom: 15.0,
-                              center: LatLng(latitude * 1.0, longitude * 1.0),
-                              markerLocation:
-                                  LatLng(latitude * 1.0, longitude * 1.0),
+                            child: OpenMap(
+                              latitude: latitude,
+                              longitude: longitude,
+                              initialZoom: 9,
                             ),
                           )
                         : Container(),

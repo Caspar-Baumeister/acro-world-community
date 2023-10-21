@@ -33,7 +33,9 @@ class _VersionWrapperState extends State<VersionWrapper> {
         } else if (queryResult.data != null) {
           String? minVersion = queryResult.data!["config"]?[0]?["min_version"];
           if (minVersion != null) {
+            // ignore: avoid_print
             print("minVersion");
+            // ignore: avoid_print
             print(minVersion);
             return FutureBuilder<PackageInfo>(
                 future: PackageInfo.fromPlatform(),

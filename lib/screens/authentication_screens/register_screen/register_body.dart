@@ -211,8 +211,9 @@ class RegisterBodyState extends State<RegisterBody> {
 
     // no error and token exist
     String token = response["data"]["register"]["token"];
-
-    Provider.of<UserProvider>(context, listen: false).token = token;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).token = token;
+    });
 
     // safe the user to provider
     bool setUserFromTokeResponse =
@@ -233,11 +234,13 @@ class RegisterBodyState extends State<RegisterBody> {
 
     // send to UserCommunities
     // send to UserCommunities
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const ChooseGender()
-          //UpdateFcmToken()
-          ),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const ChooseGender()
+            //UpdateFcmToken()
+            ),
+      );
+    });
 
     setState(() {
       loading = false;

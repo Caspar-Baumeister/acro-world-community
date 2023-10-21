@@ -43,7 +43,6 @@ class _FavoriteClassMutationWidgetState
               ? Mutations.unFavoritizeClass
               : Mutations.favoritizeClass,
           onCompleted: (dynamic resultData) {
-            print(resultData);
             setState(() {
               isFavorized = !isFavorized;
             });
@@ -63,7 +62,7 @@ class _FavoriteClassMutationWidgetState
                 runMutation,
             QueryResult<dynamic>? result) {
           if (result == null || result.hasException) {
-            print("exaption");
+            // ignore: avoid_print
             print(result?.exception.toString());
             return Container();
           }

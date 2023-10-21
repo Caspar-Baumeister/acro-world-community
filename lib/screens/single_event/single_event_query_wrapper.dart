@@ -36,8 +36,6 @@ class SingleEventQueryWrapper extends StatelessWidget {
         } else if (queryResult.data != null &&
             queryResult.data?["events_by_pk"] != null) {
           try {
-            print("event");
-            print(queryResult.data?["events_by_pk"]);
             EventModel event =
                 EventModel.fromJson(queryResult.data?["events_by_pk"]);
             return SingleEventPage(event: event);

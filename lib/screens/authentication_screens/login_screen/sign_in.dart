@@ -1,8 +1,8 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -17,10 +17,10 @@ class SignIn extends StatefulWidget {
   final Function toggleView;
 
   @override
-  _SignInState createState() => _SignInState();
+  SignInState createState() => SignInState();
 }
 
-class _SignInState extends State<SignIn> {
+class SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
   String errorEmail = "";
@@ -225,8 +225,6 @@ class _SignInState extends State<SignIn> {
     dynamic response = await Database()
         .loginApi(emailController?.text ?? "", passwordController?.text ?? "");
 
-    print(response);
-
     if (response?["errors"]?[0]["extensions"]?["exception"]?["thrownValue"]
             ?["code"] ==
         "auth/invalid-email") {
@@ -270,15 +268,17 @@ class _SignInState extends State<SignIn> {
     CredentialPreferences.setEmail(emailController?.text ?? "");
     CredentialPreferences.setPassword(passwordController?.text ?? "");
 
-    Provider.of<UserProvider>(context, listen: false).token = token;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<UserProvider>(context, listen: false).token = token;
 
-    // safe the user to provider
-    Provider.of<UserProvider>(context, listen: false).setUserFromToken();
+      // safe the user to provider
+      Provider.of<UserProvider>(context, listen: false).setUserFromToken();
 
-    // send to UserCommunities
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const UpdateFcmToken()),
-    );
+      // send to UserCommunities
+      Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const UpdateFcmToken()),
+      );
+    });
 
     setState(() {
       loading = false;

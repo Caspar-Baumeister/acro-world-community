@@ -17,14 +17,13 @@ dependencies:
   shared_preferences: ^2.0.11
   flutter_launcher_icons: ^0.11.0
   file_picker: ^5.2.5
+  flutter_map: ^6.0.0
+  latlong2: ^0.9.0
   maps_launcher: ^2.0.1
-  google_maps_flutter_web: ^0.4.0+5
   fluttertoast: ^8.0.9
   cached_network_image: ^3.2.0
-  http: ^0.13.4
   jwt_decode: ^0.3.1
   graphql_flutter: ^5.1.0
-  google_maps_flutter: ^2.2.3
   event_bus: ^2.0.0
   firebase_messaging: ^14.6.9
   firebase_core: ^2.17.0
@@ -36,8 +35,9 @@ dependencies:
   pie_chart: ^5.3.2
   carousel_slider: ^4.2.1
   internet_connection_checker: ^1.0.0+1
-  package_info_plus: ^3.1.0
+  package_info_plus: ^4.2.0
   http_auth: ^1.0.1
+  http: ^1.1.0
   photo_view: ^0.14.0
   add_2_calendar: ^2.2.4
   location: ^5.0.3
