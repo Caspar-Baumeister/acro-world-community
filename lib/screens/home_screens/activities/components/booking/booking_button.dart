@@ -112,6 +112,7 @@ class BookNowButton extends StatelessWidget {
                       ),
                       side: const BorderSide(width: 1, color: PRIMARY_COLOR),
                       padding: const EdgeInsets.all(2)),
+                  // TODO add stripe payment
                   onPressed: () => buildMortal(
                     context,
                     BookingModal(

@@ -13,10 +13,18 @@ class TeacherModel {
   List<Images>? images;
   String? userId;
   List<UserLikes>? userLikes;
-  String? get profilImgUrl => images
-      ?.firstWhere((Images image) => image.isProfilePicture == true)
-      .image
-      ?.url;
+
+  // get the profile image of the teacher
+  String? get profilImgUrl {
+    if (images != null) {
+      for (Images image in images!) {
+        if (image.isProfilePicture == true) {
+          return image.image!.url;
+        }
+      }
+    }
+    return null;
+  }
 
   TeacherModel(
       {this.id,
