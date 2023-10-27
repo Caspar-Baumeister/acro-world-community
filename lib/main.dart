@@ -6,6 +6,7 @@ import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 void main() async {
@@ -62,6 +63,10 @@ void main() async {
     name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // STRIPE //
+  Stripe.publishableKey =
+      "pk_test_51O3GqCKwmxSCW9DthK2a7OK4oT642myOk2KiiBIk8uqNturYtGiJ4Nz2IqPF67SpjESquJRjZ7I8Vyfkdzu4Knbx00lyD9wCVl";
 
   return runApp(App(client: client));
 }
