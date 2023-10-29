@@ -3,7 +3,7 @@ const bool isProduction = bool.fromEnvironment('dart.vm.product');
 class AppEnvironment {
   static const bool isProdBuild = isProduction;
   static const String backendHost =
-      isProduction ? "bro-devs.com" : "bro-devs.com";
+      isProduction ? "bro-devs.com" : "dev.acroworld.de";
   static const String dashboardUrl = isProduction
       ? "https://teacher.acroworld.de"
       : "https://admin-dev.acroworld.de";
