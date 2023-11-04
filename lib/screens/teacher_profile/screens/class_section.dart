@@ -55,7 +55,7 @@ class ClassSection extends StatelessWidget {
               onRefresh: () async => runRefetch(),
               child: classes.isEmpty
                   ? const Center(
-                      child: Text("no classes"),
+                      child: Text("No active classes."),
                     )
                   : ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),

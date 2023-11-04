@@ -60,13 +60,14 @@ void main() async {
 
   // FIREBASE //
   await Firebase.initializeApp(
+    // if the current platform is android, use no name, otherwise use acroworld
     name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   // STRIPE //
   Stripe.publishableKey =
-      "pk_test_51O41qQJh4wXolRmiAzl2RvmovyKVjpbEgu6RzwqmkemxtaCpodA5gRWdN1fodtWpjDWUPm5HHT5bzXgPXqyACV3k00SP4fMCzn";
+      "pk_test_51O3GqCKwmxSCW9DthK2a7OK4oT642myOk2KiiBIk8uqNturYtGiJ4Nz2IqPF67SpjESquJRjZ7I8Vyfkdzu4Knbx00lyD9wCVl";
 
 // set stripe account
   Stripe.merchantIdentifier = 'merchant.de.acroworld';

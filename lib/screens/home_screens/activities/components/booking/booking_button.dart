@@ -4,7 +4,7 @@ import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_information_modal.dart';
-import 'package:acroworld/screens/home_screens/activities/components/booking/stripe_test_modal.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -115,12 +115,11 @@ class BookNowButton extends StatelessWidget {
                   // TODO add stripe payment
                   onPressed: () => buildMortal(
                     context,
-                    const StripeTestModal(),
+                    BookingModal(
+                        classEvent: classEvent,
+                        placesLeft: bookingsLeft,
+                        refetch: refetch),
                   ),
-                  //   BookingModal(
-                  //       classEvent: classEvent,
-                  //       placesLeft: bookingsLeft,
-                  //       refetch: refetch),
 
                   child: const Text(
                     "Book now",

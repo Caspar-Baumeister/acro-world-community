@@ -1,17 +1,13 @@
-import 'package:acroworld/components/buttons/standard_icon_button.dart';
-import 'package:acroworld/environment.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/webviews/book_class_webview.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/checkout_modal.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
@@ -42,7 +38,7 @@ class _BookingModalState extends State<BookingModal> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    // UserProvider userProvider = Provider.of<UserProvider>(context);
     double width = MediaQuery.of(context).size.width;
     ClassModel clas = widget.classEvent.classModel!;
 
@@ -67,7 +63,7 @@ class _BookingModalState extends State<BookingModal> {
             ),
             const SizedBox(height: 12.0),
             Text(
-              "Reserve a place for ${clas.name} on ${DateFormat('EEEE, H:mm').format(widget.classEvent.date)}",
+              "Booking options for ${clas.name} on ${DateFormat('EEEE, H:mm').format(widget.classEvent.date)}",
               style: H16W7,
               textAlign: TextAlign.center,
             ),
@@ -88,46 +84,57 @@ class _BookingModalState extends State<BookingModal> {
                       ))
                   .toList(),
             ]),
+            // const SizedBox(height: 20),
+            // Text(
+            //   "A non-refundable deposit ${currentOptionObject != null ? ("of ${currentOptionObject.deposit().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be required to confirm your reservation. The remaining balance ${currentOptionObject != null ? ("of ${currentOptionObject.toPayOnArrival().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be charged upon your arrival or as determined by the establishment. Please note that the deposit amount cannot be refunded in case of cancellation.",
+            //   style: H12W4,
+            // ),
             const SizedBox(height: 20),
-            Text(
-              "A non-refundable deposit ${currentOptionObject != null ? ("of ${currentOptionObject.deposit().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be required to confirm your reservation. The remaining balance ${currentOptionObject != null ? ("of ${currentOptionObject.toPayOnArrival().toStringAsFixed(2)}${getCurrecySymbol(currentOptionObject.currency)}") : ""} will be charged upon your arrival or as determined by the establishment. Please note that the deposit amount cannot be refunded in case of cancellation.",
-              style: H12W4,
-            ),
-            const SizedBox(height: 20),
-            StandardIconButton(
-              text: "Pay deposit",
-              onPressed: () async {
-                setState(() {
-                  loading = true;
-                });
-                print(
-                    "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}");
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => BookClassWebView(
-                        initialUrl:
-                            "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}",
-                        onFinish: () {
-                          Fluttertoast.showToast(
-                              msg:
-                                  "Order completed, we have send an email with your name to the astablishment",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.TOP,
-                              timeInSecForIosWeb: 2,
-                              backgroundColor: Colors.green,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          widget.refetch!();
-                          Navigator.of(context).pop();
-                        }),
-                  ),
-                );
-                setState(() {
-                  loading = false;
-                });
+            StandartButton(
+              text: "Continue",
+              onPressed: () {
+                // close this modal and open the payment modal
+                Navigator.of(context).pop();
+                buildMortal(
+                    context,
+                    CheckoutModal(
+                      classEvent: widget.classEvent,
+                      bookingOption: currentOptionObject!,
+                    ));
               },
-              icon: Icons.paypal,
+              //   onPressed: () async {
+              //     setState(() {
+              //       loading = true;
+              //     });
+              //     print(
+              //         "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}");
+              //     await Navigator.push(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (context) => BookClassWebView(
+              //             initialUrl:
+              //                 "https://${AppEnvironment.backendHost}/api/payment/?bookingOptionId=${currentOptionObject!.id}&?classEventId=${widget.classEvent.id}&?userId=${userProvider.activeUser!.id}",
+              //             onFinish: () {
+              //               Fluttertoast.showToast(
+              //                   msg:
+              //                       "Order completed, we have send an email with your name to the astablishment",
+              //                   toastLength: Toast.LENGTH_SHORT,
+              //                   gravity: ToastGravity.TOP,
+              //                   timeInSecForIosWeb: 2,
+              //                   backgroundColor: Colors.green,
+              //                   textColor: Colors.white,
+              //                   fontSize: 16.0);
+              //               widget.refetch!();
+              //               Navigator.of(context).pop();
+              //             }),
+              //       ),
+              //     );
+              //     setState(() {
+              //       loading = false;
+              //     });
+              //   },
+              //   icon: Icons.paypal,
+              // ),
             ),
             Text(
               "${widget.placesLeft} places left",
