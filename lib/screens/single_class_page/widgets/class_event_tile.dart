@@ -1,4 +1,5 @@
 import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
+import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
@@ -6,13 +7,12 @@ import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_button.dart';
 import 'package:acroworld/screens/users_list/user_list_screen.dart';
-import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ClassEventTile extends StatefulWidget {
   const ClassEventTile(

@@ -22,11 +22,11 @@ class ClassesView extends StatelessWidget {
       print(e.toString());
     }
     return classEvents.isEmpty
-        ? Column(
+        ? const Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
-                child: Text("no classes found"),
+                child: Text("There are no classes close to you."),
               )
             ],
           )

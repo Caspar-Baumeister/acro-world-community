@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 // makes an test payment with stripe to the account acct_1O5td34FPJL5TYTc
 
@@ -90,29 +92,7 @@ class _StripeTestModalState extends State<StripeTestModal> {
                 CustomButton(
                   "Pay now",
                   () async {
-                    final paymentResult =
-                        await Stripe.instance.presentPaymentSheet();
-                    if (paymentResult != null) {
-                      // show flutter toast with success
-                      Fluttertoast.showToast(
-                          msg: "Payment successful",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.TOP,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    } else {
-                      // show flutter toast with error
-                      Fluttertoast.showToast(
-                          msg: "Payment failed",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.TOP,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
-                    }
+                    await Stripe.instance.presentPaymentSheet();
                   },
                   loading: !_ready,
                 )
@@ -151,7 +131,6 @@ class _StripeTestModalState extends State<StripeTestModal> {
           // Main params
           merchantDisplayName: 'Flutter Stripe Store Demo',
           paymentIntentClientSecret: data['paymentIntent'],
-
           // Customer keys
           customerEphemeralKeySecret: data['ephemeralKey'],
           customerId: data['customer'],
@@ -180,6 +159,12 @@ class _StripeTestModalState extends State<StripeTestModal> {
   }
 
   Future<Map<String, dynamic>> _createTestPaymentSheet() async {
+    // get User id
+    String? userId =
+        Provider.of<UserProvider>(context, listen: false).activeUser?.id;
+    if (userId == null) {
+      throw Exception("User id is null");
+    }
     // if platform is android, use 10.0.2.2 instead of localhost
     String host = "localhost"; // "10.0.2.2"; //
     // if (Theme.of(context).platform == TargetPlatform.android) {
@@ -192,7 +177,8 @@ class _StripeTestModalState extends State<StripeTestModal> {
       "amount": 300,
       "destination": "acct_1O5td34FPJL5TYTc",
       "currency": "eur",
-      "application_fee_amount": 10
+      "application_fee_amount": 10,
+      "user_id": userId
     });
     // 3. make a post request to the url with the body
     final response = await http.post(url,

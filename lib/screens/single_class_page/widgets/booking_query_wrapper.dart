@@ -3,7 +3,7 @@ import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_information_modal.dart';
-import 'package:acroworld/screens/home_screens/activities/components/booking/stripe_test_modal.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal.dart';
 import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -97,15 +97,13 @@ class BookingQueryHoverButton extends StatelessWidget {
             // TODO show kalender
             onPressed: () => buildMortal(
               context,
-              const StripeTestModal(),
+              // const StripeTestModal(),
+
+              BookingModal(
+                  classEvent: classEvent,
+                  placesLeft: bookingsLeft,
+                  refetch: refetch),
             ),
-            // buildMortal(
-            //   context,
-            //   BookingModal(
-            //       classEvent: classEvent,
-            //       placesLeft: bookingsLeft,
-            //       refetch: refetch),
-            // ),
           );
         } else {
           return Container();
