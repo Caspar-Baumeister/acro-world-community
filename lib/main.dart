@@ -69,6 +69,7 @@ void main() async {
   } else {
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
+        name = AppEnvironment.isProdBuild ? "acroworld" : null;
         break;
       case TargetPlatform.iOS:
         name = "acroworld";
