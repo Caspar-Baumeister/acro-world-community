@@ -40,7 +40,7 @@ class BookingInformationModal extends StatelessWidget {
             ),
             const SizedBox(height: 12.0),
             Text(
-              "You have successfully reserved ${clas.name} on ${DateFormat('EEEE, H:mm').format(classEvent.date)}",
+              "You have successfully reserved ${clas.name} on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)}",
               style: H16W7,
               textAlign: TextAlign.center,
             ),

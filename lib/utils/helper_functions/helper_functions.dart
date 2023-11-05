@@ -120,17 +120,17 @@ bool isSameDate(DateTime a, DateTime b) {
 Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
   List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
   sortedObjects.sort((classEvent1, classEvent2) =>
-      classEvent2.date.compareTo(classEvent1.date));
+      classEvent2.startDateDT.compareTo(classEvent1.startDateDT));
   LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
       LinkedHashMap<DateTime, List<ClassEvent>>(
     equals: isSameDayCustom,
     hashCode: getHashCode,
   );
   for (var obj in sortedObjects) {
-    if (objectMap[obj.date] != null) {
-      objectMap[obj.date]!.add(obj);
+    if (objectMap[obj.startDateDT] != null) {
+      objectMap[obj.startDateDT]!.add(obj);
     } else {
-      objectMap[obj.date] = List.from([obj]);
+      objectMap[obj.startDateDT] = List.from([obj]);
     }
   }
   return objectMap;

@@ -4,7 +4,6 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:table_calendar/table_calendar.dart';
 
 class ActivityCalenderWidget extends StatefulWidget {
@@ -36,7 +35,8 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       widget.setFocusedDay(laterDay(newSelectedDay, DateTime.now()));
 
       activityProvider.setActiveClasses(widget.classWeekEvents
-          .where((classEvent) => isSameDate(classEvent.date, newSelectedDay))
+          .where((classEvent) =>
+              isSameDate(classEvent.startDateDT, newSelectedDay))
           .toList());
     }
   }
@@ -52,7 +52,7 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
       calendarFormat: CalendarFormat.week,
       rangeSelectionMode: RangeSelectionMode.disabled,
       eventLoader: (day) => widget.classWeekEvents
-          .where((classEvent) => isSameDate(classEvent.date, day))
+          .where((classEvent) => isSameDate(classEvent.startDateDT, day))
           .toList(),
       startingDayOfWeek: StartingDayOfWeek.monday,
       availableCalendarFormats: const {CalendarFormat.week: 'week'},

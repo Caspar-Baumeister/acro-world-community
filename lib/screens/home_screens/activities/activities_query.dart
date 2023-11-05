@@ -127,7 +127,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 activityProvider.setActiveClasses(classWeekEvents
                     .where((ClassEvent classEvent) =>
-                        isSameDate(classEvent.date!, focusedDay))
+                        isSameDate(classEvent.startDateDT!, focusedDay))
                     .toList());
               });
             }

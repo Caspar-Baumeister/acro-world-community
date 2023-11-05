@@ -13,7 +13,8 @@ class ClassEvent {
   List<User>? participants;
   ClassModel? classModel;
 
-  get date => startDate != null ? DateTime.parse(startDate!) : null;
+  get startDateDT => startDate != null ? DateTime.parse(startDate!) : null;
+  get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
 
   ClassEvent(
       {this.classId,
