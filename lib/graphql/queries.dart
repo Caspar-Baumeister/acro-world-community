@@ -5,7 +5,7 @@ class Queries {
   static final userBookmarks = gql("""
 query Me {
   me {
-    bookmarks {
+    bookmarks (where: {event: {end_date_tz: {_gte: now}}}) {
       id
       created_at
       event {
