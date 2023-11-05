@@ -5,6 +5,8 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart'
+    show defaultTargetPlatform, kIsWeb, TargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -58,8 +60,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // FIREBASE //
+  String? name;
+  if (kIsWeb) {
+    throw UnsupportedError(
+      'DefaultFirebaseOptions have not been configured for web - '
+      'you can reconfigure this by running the FlutterFire CLI again.',
+    );
+  } else {
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        break;
+      case TargetPlatform.iOS:
+        name = "acroworld";
+        break;
+      default:
+        name = "acroworld";
+    }
+  }
   await Firebase.initializeApp(
-    name: "acroworld",
+    name: name,
     options: DefaultFirebaseOptions.currentPlatform,
   );
 

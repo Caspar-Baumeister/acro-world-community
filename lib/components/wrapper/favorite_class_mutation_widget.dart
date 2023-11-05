@@ -47,8 +47,7 @@ class _FavoriteClassMutationWidgetState
               isFavorized = !isFavorized;
             });
             Fluttertoast.showToast(
-                msg:
-                    "The course was succesfully ${isFavorized ? "added" : "removed"} from your favorites",
+                msg: "${isFavorized ? "Added to" : "Removed from"} favorites",
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
                 timeInSecForIosWeb: 2,
