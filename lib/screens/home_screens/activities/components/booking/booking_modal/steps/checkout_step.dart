@@ -215,6 +215,23 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         ],
                       ),
                     ),
+                    const SizedBox(height: 6.0),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Acro Discipline",
+                            style: H12W4,
+                          ),
+                          Text(
+                            "Standing and L-Basing",
+                            style: H12W4,
+                          ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 10.0),
                   ],
                 ),
