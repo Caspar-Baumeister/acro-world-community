@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "322527689838",
+    "project_id": "arcoworld-1415b",
+    "storage_bucket": "arcoworld-1415b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:322527689838:android:6a03192dc02d2619d8ba7f",
+        "android_client_info": {
+          "package_name": "com.community.acroworld"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "322527689838-2oqa2u381vh6go9vc0p48vhs1tv5n3j4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjE7Ifhq54h3WZ96OowouAezoTaOhpvrU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "322527689838-2oqa2u381vh6go9vc0p48vhs1tv5n3j4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "322527689838-fnt1vr3q79a0v4koa0iat02rqqcd262b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.acroworld"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
