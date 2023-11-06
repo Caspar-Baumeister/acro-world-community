@@ -60,26 +60,14 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // FIREBASE //
-  String? name;
   if (kIsWeb) {
     throw UnsupportedError(
       'DefaultFirebaseOptions have not been configured for web - '
       'you can reconfigure this by running the FlutterFire CLI again.',
     );
-  } else {
-    switch (defaultTargetPlatform) {
-      case TargetPlatform.android:
-        name = AppEnvironment.isProdBuild ? "acroworld" : null;
-        break;
-      case TargetPlatform.iOS:
-        name = "acroworld";
-        break;
-      default:
-        name = "acroworld";
-    }
   }
   await Firebase.initializeApp(
-    name: name,
+    name: "acroworld",
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
