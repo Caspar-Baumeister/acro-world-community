@@ -4,6 +4,7 @@ import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/account_settings/edit_userdata.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
   @override
   void initState() {
     super.initState();
-    initPaymentSheet();
+    initPaymentSheet(widget.bookingOption);
   }
 
   bool _ready = false;
@@ -138,7 +139,14 @@ class _CheckoutStepState extends State<CheckoutStep> {
                           ),
                           IconButton(
                             onPressed: () {
-                              widget.previousStep();
+                              // route to EditUserdata
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const EditUserdata(),
+                                  // EditUserdata(),
+                                ),
+                              );
                             },
                             icon: const Icon(
                               Icons.edit,
@@ -181,7 +189,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 6.0),
+                    const Divider(),
                     const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
@@ -222,7 +230,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "Acro Discipline",
+                            "Acro Style",
                             style: H12W4,
                           ),
                           Text(
@@ -253,24 +261,16 @@ class _CheckoutStepState extends State<CheckoutStep> {
     );
   }
 
-  Future<void> initPaymentSheet() async {
+  Future<void> initPaymentSheet(BookingOption bookingOption) async {
     try {
+      User user = Provider.of<UserProvider>(context, listen: false).activeUser!;
+
       // 1. create payment intent on the server
-      final data = await _createTestPaymentSheet();
+      final data = await _createTestPaymentSheet(user.id, bookingOption.price,
+          bookingOption.currency, "acct_1O5td34FPJL5TYTc");
 
       // define some billing details
-      const billingDetails = BillingDetails(
-        email: "ca@as.de",
-        phone: "+49123456789",
-        address: Address(
-          city: "Berlin",
-          country: "DE",
-          line1: "Test street 1",
-          line2: "Test street 2",
-          postalCode: "12345",
-          state: "Berlin",
-        ),
-      );
+      var billingDetails = BillingDetails(email: user.email, name: user.name);
 
       // 2. initialize the payment sheet
       final response = await Stripe.instance.initPaymentSheet(
@@ -307,26 +307,26 @@ class _CheckoutStepState extends State<CheckoutStep> {
     }
   }
 
-  Future<Map<String, dynamic>> _createTestPaymentSheet() async {
+  Future<Map<String, dynamic>> _createTestPaymentSheet(String? userId,
+      num? amount, String currency, String destinationAcct) async {
     // get User id
-    String? userId =
-        Provider.of<UserProvider>(context, listen: false).activeUser?.id;
     if (userId == null) {
       throw Exception("User id is null");
     }
+
+    // TODO define real host
     // if platform is android, use 10.0.2.2 instead of localhost
-    String host = "localhost"; // "10.0.2.2"; //
+    String host = "http://localhost:3000"; // "10.0.2.2"; //
     // if (Theme.of(context).platform == TargetPlatform.android) {
     //   host = "10.0.2.2";
     // }
     // 1. create payment intent on the server (localhost for now)
-    final url = Uri.parse('http://$host:3000/stripe/create-payment-sheet');
+    final url = Uri.parse('$host/stripe/create-payment-sheet');
     // 2. create a body with {"amount" : 300, "destination": "acct_1O5td34FPJL5TYTc", "currency": "eur", "application_fee_amount": 10}
     final body = jsonEncode({
-      "amount": 300,
+      "amount": amount,
       "destination": "acct_1O5td34FPJL5TYTc",
-      "currency": "eur",
-      "application_fee_amount": 10,
+      "currency": currency,
       "user_id": userId
     });
     // 3. make a post request to the url with the body
