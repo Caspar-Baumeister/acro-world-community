@@ -39,7 +39,9 @@ query classEventBooking(\$class_event_id: uuid) {
       price
       title
       commission
-    }
+      subtitle
+      id
+      }
   }
 }
 """);
