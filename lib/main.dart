@@ -5,8 +5,7 @@ import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
