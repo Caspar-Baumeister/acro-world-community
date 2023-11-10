@@ -56,6 +56,11 @@ class _BookingModalState extends State<BookingModal> {
           .bookingOption!;
     }
 
+    String? teacherStripeId = clas.owner?.teacher?.stripeId;
+    print("teacherStripeId");
+    print(clas.owner?.teacher?.stripeId);
+    print(clas.owner?.teacher?.isStripeEnabled);
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 24.0),
       child: SafeArea(
@@ -79,30 +84,33 @@ class _BookingModalState extends State<BookingModal> {
             const SizedBox(height: 20.0),
             BookingStepIndicator(currentStep: step),
             const SizedBox(height: 20.0),
-            step == 0
-                ? OptionChoosingStep(
-                    className: clas.name!,
-                    classDate: widget.classEvent.startDateDT,
-                    classBookingOptions: clas.classBookingOptions ?? [],
-                    placesLeft: widget.placesLeft.toInt(),
-                    onOptionSelected: setCurrentOption,
-                    currentOption: currentOption,
-                    nextStep: () {
-                      setState(() {
-                        step = 1;
-                      });
-                    },
-                  )
-                : CheckoutStep(
-                    className: clas.name!,
-                    classDate: widget.classEvent.startDateDT,
-                    bookingOption: currentOptionObject!,
-                    previousStep: () {
-                      setState(() {
-                        step = 0;
-                      });
-                    },
-                  ),
+            teacherStripeId == null
+                ? const Text("This teacher is not yet connected to Stripe")
+                : step == 0
+                    ? OptionChoosingStep(
+                        className: clas.name!,
+                        classDate: widget.classEvent.startDateDT,
+                        classBookingOptions: clas.classBookingOptions ?? [],
+                        placesLeft: widget.placesLeft.toInt(),
+                        onOptionSelected: setCurrentOption,
+                        currentOption: currentOption,
+                        nextStep: () {
+                          setState(() {
+                            step = 1;
+                          });
+                        },
+                      )
+                    : CheckoutStep(
+                        className: clas.name!,
+                        classDate: widget.classEvent.startDateDT,
+                        bookingOption: currentOptionObject!,
+                        teacherStripeId: teacherStripeId,
+                        previousStep: () {
+                          setState(() {
+                            step = 0;
+                          });
+                        },
+                      ),
           ],
         ),
       ),

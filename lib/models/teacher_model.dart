@@ -13,6 +13,8 @@ class TeacherModel {
   List<Images>? images;
   String? userId;
   List<UserLikes>? userLikes;
+  String? stripeId;
+  bool? isStripeEnabled;
 
   // get the profile image of the teacher
   String? get profilImgUrl {
@@ -38,6 +40,8 @@ class TeacherModel {
       this.locationName,
       this.images,
       this.userId,
+      this.isStripeEnabled,
+      this.stripeId,
       this.userLikes});
 
   TeacherModel.fromJson(Map<String, dynamic> json) {
@@ -64,27 +68,8 @@ class TeacherModel {
         userLikes!.add(UserLikes.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['name'] = name;
-    data['confirmation_status'] = confirmationStatus;
-    data['is_organization'] = isOrganization;
-    data['created_at'] = createdAt;
-    data['description'] = description;
-    data['instagram_name'] = instagramName;
-    data['location_name'] = locationName;
-    if (images != null) {
-      data['images'] = images!.map((v) => v.toJson()).toList();
-    }
-
-    data['user_id'] = userId;
-    if (userLikes != null) {
-      data['user_likes'] = userLikes!.map((v) => v.toJson()).toList();
-    }
-    return data;
+    stripeId = json['stripe_id'];
+    isStripeEnabled = json['is_stripe_enabled'];
   }
 }
 

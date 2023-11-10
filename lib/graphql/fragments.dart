@@ -26,20 +26,9 @@ class Fragments {
       website_url
       class_teachers {
         teacher {
-          id
-          name
-          type
-          confirmation_status
-          is_organization
-          images {
-            id
-            image {
-              id
-              url
-            }
-            is_profile_picture
-          }
+          $teacherFragment
         }
+        is_owner
       }
       class_levels {
         level {
@@ -103,19 +92,8 @@ class Fragments {
     
     teachers {
       teacher {
-        id
-        name
-        confirmation_status
-        is_organization
-        images {
-          id
-          image {
-            id
-            url
-          }
-          is_profile_picture
+          $teacherFragment
         }
-      }
     }""";
 
   static const teacherFragment = """
@@ -128,16 +106,12 @@ class Fragments {
   name
   user_id
   is_organization
+  stripe_id
+  is_stripe_enabled
   
   user_likes_aggregate {
     aggregate {
       count
-    }
-  }
-  teacher_levels {
-    level {
-      name
-      id
     }
   }
   images {
@@ -149,79 +123,27 @@ class Fragments {
   """;
 
   static const userFragment = """
-  id
-  name
-  image_url
-  bio
-  acro_role 
-    {
-      name
-      id
-    }
+
+              bio
+              email 
+              id 
+              image_url 
+              name
+              user_roles {
+                role {
+                  id
+                  name
+                }
+              }
+              level{
+                id
+                name
+              }
+              
+              acro_role {
+                id
+                name
+              }
+            
   """;
-
-  static const String communityFragment = """
-  id
-  name
-  latitude
-  longitude
-  """;
-
-  // static const String classFragment = """
-  //   city
-  //   description
-  //   id
-  //   location_name
-  //   name
-  //   location
-  //   pricing
-  //   requirements
-  //   usc_url
-  //   class_pass_url
-  //   website_url
-  //   image_url
-  //   location
-  //   class_levels {
-  //     level {
-  //       name
-  //     }
-  //   }
-  //   class_events {
-  //     class_id
-  //     created_at
-  //     end_date
-  //     id
-  //     is_cancelled
-  //     start_date
-  //     participants_aggregate {
-  //       aggregate {
-  //         count
-  //       }
-  //     }
-  //   }
-
-  // """;
-
-  static const String jamFragment = """
-  id
-  created_at
-  date
-  info
-  latitude
-  longitude
-  name
-  community_id
-  created_by_id
-  participants {
-    user {
-      $userFragment
-    }
-  }
-  community {
-    $communityFragment
-  }
-  created_by {
-    $userFragment
-  }
-""";
 }

@@ -23,6 +23,15 @@ class ClassModel {
   List<ClassBookingOptions>? classBookingOptions;
   bool? isInitiallyFavorized;
 
+  // get the first teacher, that is the owner or if there is no owner, the first teacher
+  ClassTeachers? get owner {
+    if (classTeachers != null) {
+      return classTeachers!.firstWhere((element) => element.isOwner == true,
+          orElse: () => classTeachers!.first);
+    }
+    return null;
+  }
+
   ClassModel(
       {this.city,
       this.bookingEmail,
@@ -80,30 +89,5 @@ class ClassModel {
         classLevels!.add(ClassLevels.fromJson(v));
       });
     }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['city'] = city;
-    data['class_pass_url'] = classPassUrl;
-    data['description'] = description;
-    data['id'] = id;
-    data['image_url'] = imageUrl;
-    if (location != null) {
-      data['location'] = location!.toJson();
-    }
-    data['location_name'] = locationName;
-    data['name'] = name;
-    data['pricing'] = pricing;
-    data['requirements'] = requirements;
-    data['usc_url'] = uscUrl;
-    data['website_url'] = websiteUrl;
-    if (classTeachers != null) {
-      data['class_teachers'] = classTeachers!.map((v) => v.toJson()).toList();
-    }
-    if (classLevels != null) {
-      data['class_levels'] = classLevels!.map((v) => v.toJson()).toList();
-    }
-    return data;
   }
 }
