@@ -34,8 +34,6 @@ class SingleEventQueryWrapper extends StatelessWidget {
                 }),
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        print("queryResult.data");
-        print(queryResult.data);
         if (queryResult.hasException) {
           return ErrorPage(error: queryResult.exception.toString());
         } else if (queryResult.isLoading) {

@@ -19,11 +19,13 @@ class CheckoutStep extends StatefulWidget {
       required this.className,
       required this.classDate,
       required this.bookingOption,
-      required this.previousStep})
+      required this.previousStep,
+      required this.teacherStripeId})
       : super(key: key);
 
   final String className;
   final DateTime classDate;
+  final String teacherStripeId;
   final BookingOption bookingOption;
   final Function previousStep;
 
@@ -190,56 +192,40 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       ),
                     ),
                     const Divider(),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "Acro level",
                             style: H12W4,
                           ),
                           Text(
-                            "Intermediate",
+                            user.level?.name ?? "Not specified",
                             style: H12W4,
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 6.0),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "Acro Role",
                             style: H12W4,
                           ),
                           Text(
-                            "Flyer and Base",
+                            user.gender?.name ?? "Not specified",
                             style: H12W4,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 6.0),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Acro Style",
-                            style: H12W4,
-                          ),
-                          Text(
-                            "Standing and L-Basing",
-                            style: H12W4,
-                          ),
-                        ],
-                      ),
-                    ),
+
                     const SizedBox(height: 10.0),
                   ],
                 ),
@@ -267,10 +253,20 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
       // 1. create payment intent on the server
       final data = await _createTestPaymentSheet(user.id, bookingOption.price,
-          bookingOption.currency, "acct_1O5td34FPJL5TYTc");
+          bookingOption.currency, widget.teacherStripeId);
 
       // define some billing details
-      var billingDetails = BillingDetails(email: user.email, name: user.name);
+      var billingDetails = BillingDetails(
+          email: user.email,
+          name: user.name,
+          phone: "+49123456789",
+          address: const Address(
+              city: "Berlin",
+              country: "Germany",
+              line1: "Karl-Marx-Str. 1",
+              line2: "Karl-Marx-Str. 2",
+              postalCode: "12043",
+              state: "Berlin"));
 
       // 2. initialize the payment sheet
       final response = await Stripe.instance.initPaymentSheet(
@@ -323,9 +319,12 @@ class _CheckoutStepState extends State<CheckoutStep> {
     // 1. create payment intent on the server (localhost for now)
     final url = Uri.parse('$host/stripe/create-payment-sheet');
     // 2. create a body with {"amount" : 300, "destination": "acct_1O5td34FPJL5TYTc", "currency": "eur", "application_fee_amount": 10}
+    if (amount == null) {
+      throw Exception("Amount is null");
+    }
     final body = jsonEncode({
-      "amount": amount,
-      "destination": "acct_1O5td34FPJL5TYTc",
+      "amount": amount * 100,
+      "destination": destinationAcct,
       "currency": currency,
       "user_id": userId
     });

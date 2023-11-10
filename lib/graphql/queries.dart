@@ -158,6 +158,24 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 }
   """);
 
+  static final allGender = gql("""
+  query Query {
+  acro_roles{
+    id
+    name
+  }
+}
+  """);
+
+  static final allLevels = gql("""
+  query Query {
+  levels{
+    id
+    name
+  }
+}
+  """);
+
   static final getPlaces = gql("""
   query GetPlaces(\$query: String!) {
     places(searchQuery: \$query) {

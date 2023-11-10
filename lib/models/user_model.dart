@@ -1,3 +1,4 @@
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/gender_model.dart';
 
 class User {
@@ -9,6 +10,8 @@ class User {
   String? imageUrl;
   GenderModel? gender;
   String? email;
+  Level? level;
+
   User(
       {this.userRoles,
       this.name,
@@ -17,6 +20,7 @@ class User {
       this.teacherId,
       this.gender,
       this.email,
+      this.level,
       this.imageUrl});
 
   User.fromJson(Map<String, dynamic> json) {
@@ -29,6 +33,8 @@ class User {
     gender = json["acro_role"] != null
         ? GenderModel.fromJson(json["acro_role"])
         : null;
+    level = json["level"] != null ? Level.fromJson(json["level"]) : null;
+
     name = json['name'];
     id = json['id'];
     email = json['email'];
