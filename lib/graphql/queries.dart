@@ -16,6 +16,33 @@ query Me {
   }
 }""");
 
+  static final userBookings = gql("""
+query userBookings {
+  me {
+    bookings {
+      created_at
+      updated_at
+      booking_option{
+        title
+      }
+      class_event {
+        start_date
+        end_date
+        class {
+          name
+          image_url
+          id
+          class_teachers {
+            teacher {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}""");
+
   static final userFavorites = gql("""
 query Me {
   me {

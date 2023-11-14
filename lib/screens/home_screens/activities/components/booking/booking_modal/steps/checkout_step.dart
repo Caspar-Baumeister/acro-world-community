@@ -282,6 +282,15 @@ class _CheckoutStepState extends State<CheckoutStep> {
           // Extra options
           style: ThemeMode.dark,
           billingDetails: billingDetails,
+          // appearance:  PaymentSheetAppearance
+          // (
+          //   colors: PaymentSheetAppearanceColors
+          // (
+          //     background: Colors.white,
+          //     secondaryText: Colors.grey,
+          //     error: Colors.red,
+          //     primaryText: Colors.black),
+          //   ),
         ),
       );
       print("Response from payment sheet: ${response.toString()}");

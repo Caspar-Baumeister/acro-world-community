@@ -1,6 +1,7 @@
 import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/profile/header_widget.dart';
+import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookmarks/user_bookmarks_query.dart';
 import 'package:acroworld/screens/home_screens/profile/user_favorite_classes/user_favorite_classes.dart';
 import 'package:acroworld/utils/text_styles.dart';
@@ -27,7 +28,7 @@ class ProfilePage extends StatelessWidget {
           elevation: 0,
         ),
         body: DefaultTabController(
-          length: 2,
+          length: 3,
           child: NestedScrollView(
             headerSliverBuilder: (context, _) {
               return [
@@ -54,25 +55,24 @@ class ProfilePage extends StatelessWidget {
                     indicatorColor: Colors.black,
                     tabs: const [
                       Tab(
-                        // icon: Icon(
-                        //   Icons.book,
-                        //   color: Colors.black,
-                        // ),
                         text: "Bookmarked events",
                       ),
                       Tab(
-                        // icon: Icon(
-                        //   Icons.star,
-                        //   color: Colors.black,
-                        // ),
                         text: "Favorite activities",
+                      ),
+                      Tab(
+                        text: "Bookings",
                       ),
                     ],
                   ),
                 ),
                 const Expanded(
                   child: TabBarView(
-                    children: [UserBookmarks(), UserFavoriteClasses()],
+                    children: [
+                      UserBookmarks(),
+                      UserFavoriteClasses(),
+                      UserBookings()
+                    ],
                   ),
                 ),
               ],
