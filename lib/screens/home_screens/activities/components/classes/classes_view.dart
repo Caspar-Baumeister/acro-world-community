@@ -22,9 +22,9 @@ class ClassesView extends StatelessWidget {
       print(e.toString());
     }
     return classEvents.isEmpty
-        ? Column(
+        ? const Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
                 child: Text("no classes found"),
               )
@@ -38,7 +38,7 @@ class ClassesView extends StatelessWidget {
               itemBuilder: (context, index) {
                 return Padding(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
+                      const EdgeInsets.only(left: 4.0, right: 4, bottom: 20),
                   child: ClassEventExpandedTile(
                     classEvent: classEvents[index],
                   ),

@@ -3,7 +3,7 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
@@ -12,38 +12,53 @@ import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({required this.toggleView, Key? key}) : super(key: key);
+class SignUp extends StatefulWidget {
+  const SignUp({required this.toggleView, Key? key}) : super(key: key);
   final Function toggleView;
 
   @override
-  SignInState createState() => SignInState();
+  SignUpState createState() => SignUpState();
 }
 
-class SignInState extends State<SignIn> {
+class SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
+  String errorName = "";
   String errorEmail = "";
   String errorPassword = "";
+  String errorPasswordConfirm = "";
+
+  bool isAgb = false;
+  void setAgb(bool b) {
+    setState(() {
+      isAgb = b;
+    });
+  }
 
   bool loading = false;
 
-  bool isObscure = true;
+  bool passwordObscure = true;
+  bool passwordConfirmObscure = true;
 
+  TextEditingController? nameController;
   TextEditingController? emailController;
   TextEditingController? passwordController;
+  TextEditingController? passwordConfirmController;
 
   @override
   void initState() {
     super.initState();
 
-    emailController = TextEditingController();
+    nameController = TextEditingController();
     passwordController = TextEditingController();
+    emailController = TextEditingController();
+    passwordConfirmController = TextEditingController();
   }
 
   @override
   Widget build(BuildContext context) {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -70,8 +85,29 @@ class SignInState extends State<SignIn> {
                       ),
                     ),
                     TextFormField(
-                      controller: emailController,
+                      controller: nameController,
                       autofocus: true,
+                      autofillHints: const [AutofillHints.email],
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      decoration: buildInputDecoration(labelText: 'Name'),
+                      validator: (val) =>
+                          (val == null || val.isEmpty) ? 'Enter a name' : null,
+                    ),
+                    errorName != ""
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(top: 8.0, left: 10),
+                            child: Text(
+                              errorName,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
+                    const SizedBox(height: 20.0),
+                    TextFormField(
+                      controller: emailController,
                       autofillHints: const [AutofillHints.email],
                       keyboardType: TextInputType.emailAddress,
                       textInputAction: TextInputAction.next,
@@ -96,13 +132,13 @@ class SignInState extends State<SignIn> {
                       controller: passwordController,
                       textInputAction: TextInputAction.done,
                       autofillHints: const [AutofillHints.password],
-                      obscureText: isObscure,
+                      obscureText: passwordObscure,
                       decoration: buildInputDecoration(
                           labelText: 'Password',
                           suffixIcon: IconButton(
                             icon: Icon(
                               // Based on passwordVisible state choose the icon
-                              isObscure
+                              passwordObscure
                                   ? Icons.visibility
                                   : Icons.visibility_off,
                               color: Colors.black,
@@ -110,11 +146,10 @@ class SignInState extends State<SignIn> {
                             onPressed: () {
                               // Update the state i.e. toogle the state of passwordVisible variable
                               setState(() {
-                                isObscure = !isObscure;
+                                passwordObscure = !passwordObscure;
                               });
                             },
                           )),
-                      onFieldSubmitted: (_) => loading ? null : onSignin(),
                     ),
                     errorPassword != ""
                         ? Container(
@@ -128,9 +163,50 @@ class SignInState extends State<SignIn> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
+                    TextFormField(
+                      controller: passwordConfirmController,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
+                      obscureText: passwordConfirmObscure,
+                      decoration: buildInputDecoration(
+                          labelText: 'Confirm password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              passwordConfirmObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                passwordConfirmObscure =
+                                    !passwordConfirmObscure;
+                              });
+                            },
+                          )),
+                      onFieldSubmitted: (_) =>
+                          loading ? null : onRegister(userProvider),
+                    ),
+                    errorPassword != ""
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding: const EdgeInsets.only(top: 12.0, left: 10),
+                            child: Text(
+                              errorPassword,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          )
+                        : Container(),
+                    const SizedBox(height: 20.0),
+                    // add agbs checkbox
+                    AGBCheckbox(isAgb: isAgb, setAgb: setAgb),
+                    const SizedBox(height: 20.0),
                     StandartButton(
-                      text: "Login",
-                      onPressed: () => onSignin(),
+                      text: "Register",
+                      onPressed: () => onRegister(userProvider),
                       loading: loading,
                       isFilled: true,
                       buttonFillColor: COLOR7,
@@ -149,22 +225,8 @@ class SignInState extends State<SignIn> {
                       padding: const EdgeInsets.symmetric(horizontal: 8.0)
                           .copyWith(top: 8, bottom: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => ForgotPassword(
-                                          initialEmail: emailController?.text,
-                                        )),
-                              );
-                            },
-                            child: Text(
-                              "Forgot password",
-                              style: H14W4.copyWith(color: LINK_COLOR),
-                            ),
-                          ),
                           GestureDetector(
                             onTap: () async {
                               await customLaunch(AppEnvironment.dashboardUrl);
@@ -185,7 +247,7 @@ class SignInState extends State<SignIn> {
                       ),
                       onPressed: () => widget.toggleView(),
                       child: const Text(
-                        "Register",
+                        "Login",
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
@@ -206,62 +268,99 @@ class SignInState extends State<SignIn> {
     );
   }
 
-  // triggert when login is pressed
-  void onSignin() async {
+  onRegister(UserProvider userProvider) async {
+    FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       error = '';
       errorEmail = '';
       errorPassword = '';
-    });
-
-    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
-    }
-    setState(() {
+      errorName = '';
+      errorPasswordConfirm = '';
       loading = true;
     });
 
-    // get the token trough the credentials
-    // (invalid credentials) return false
-    dynamic response = await Database()
-        .loginApi(emailController?.text ?? "", passwordController?.text ?? "");
-
-    if (response?["errors"]?[0]["extensions"]?["exception"]?["thrownValue"]
-            ?["code"] ==
-        "auth/invalid-email") {
+    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
       setState(() {
-        errorEmail = "incorrect email";
         loading = false;
       });
       return;
-    } else if (response?["errors"]?[0]["extensions"]?["exception"]
-            ?["thrownValue"]?["code"] ==
-        "auth/wrong-password") {
+    }
+    // check if password and password confirm are the same
+    if (passwordController?.text != passwordConfirmController?.text) {
       setState(() {
+        errorPasswordConfirm = "Passwords are not the same";
         loading = false;
-        errorPassword = "incorrect password";
       });
       return;
     }
 
-    String? token = response?["data"]?["login"]?["token"];
+    // check if agb is checked
+    if (!isAgb) {
+      setState(() {
+        error = "Please accept the terms and conditions";
+        loading = false;
+      });
+      return;
+    }
 
-    if (token == null) {
-      if (response?["errors"]?[0]["extensions"]?["exception"]?["thrownValue"]
-              ?["message"] !=
-          null) {
-        setState(() {
-          error = response?["errors"]?[0]["extensions"]?["exception"]
-              ?["thrownValue"]?["message"];
-          loading = false;
-        });
-      } else {
-        setState(() {
-          error = 'make sure you have a connection to the internet';
-          loading = false;
-        });
+    // check if emaailcontroller, passwordcontroller and namecontroller are not null
+    if (emailController?.text == null ||
+        passwordController?.text == null ||
+        nameController?.text == null) {
+      setState(() {
+        error = "We're sorry there are some problems in the controller";
+        loading = false;
+      });
+      return;
+    }
+
+    // register response
+    final response = await Database().registerApi(
+        emailController!.text, passwordController!.text, nameController!.text);
+
+    // error handling
+    String errorResponse =
+        "We're sorry there are some problems. Please try again later";
+    if (response["errors"] != null) {
+      if (response["errors"][0] != null &&
+          response["errors"][0]["message"] != null) {
+        errorResponse = response["errors"][0]["message"].toString();
       }
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
+      return;
+    } else if (response["data"] == null ||
+        response["data"]["register"] == null ||
+        response["data"]["register"]["token"] == null) {
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
+      return;
+    }
+    // no error and token exist set all errors to empty
+    setState(() {
+      error = '';
+      errorEmail = '';
+      errorPassword = '';
+      errorName = '';
+      errorPasswordConfirm = '';
+    });
 
+    // no error and token exist
+    String token = response["data"]["register"]["token"];
+
+    userProvider.token = token;
+    bool setUserFromTokeResponse = await userProvider.setUserFromToken();
+
+    if (!setUserFromTokeResponse) {
+      errorResponse = "We are not able to create an user";
+      setState(() {
+        error = errorResponse;
+        loading = false;
+      });
       return;
     }
 
@@ -269,15 +368,13 @@ class SignInState extends State<SignIn> {
     CredentialPreferences.setEmail(emailController?.text ?? "");
     CredentialPreferences.setPassword(passwordController?.text ?? "");
 
+    // send to UserCommunities
+    // send to UserCommunities
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<UserProvider>(context, listen: false).token = token;
-
-      // safe the user to provider
-      Provider.of<UserProvider>(context, listen: false).setUserFromToken();
-
-      // send to UserCommunities
       Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const UpdateFcmToken()),
+        MaterialPageRoute(builder: (context) => const UpdateFcmToken()
+            //UpdateFcmToken()
+            ),
       );
     });
 

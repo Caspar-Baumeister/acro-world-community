@@ -5,7 +5,9 @@ import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({Key? key, this.initialEmail}) : super(key: key);
+
+  final String? initialEmail;
 
   @override
   ForgotPasswordState createState() => ForgotPasswordState();
@@ -19,7 +21,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
+    emailController = TextEditingController(text: widget.initialEmail);
   }
 
   @override
@@ -40,7 +42,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 18.0),
               child: Text(
-                  "No worry, type in your email and we send you a link to choose a new one"),
+                  "Enter your email address and we'll send you a link to reset your password."),
             ),
             const SizedBox(height: 15),
             TextFormField(
