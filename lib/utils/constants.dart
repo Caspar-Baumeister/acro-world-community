@@ -19,7 +19,7 @@ const String COMMUNITY_IMG_URL =
 
 const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
 
-String AGB_URL = 'https://acroworld.de';
+String AGB_URL = 'https://acroworld.de/tac';
 
 const double STANDART_BUTTON_WIDTH = 300;
 

@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/authentication_screens/login_screen/sign_in.dart';
-import 'package:acroworld/screens/authentication_screens/register_screen/register.dart';
+import 'package:acroworld/screens/authentication_screens/register_screen/sign_up.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
@@ -39,7 +39,7 @@ class _AuthenticateState extends State<Authenticate> {
       return SignIn(toggleView: toggleView);
     } else {
       // if (confirmedFriend) {
-      return Register(toggleView: toggleView);
+      return SignUp(toggleView: toggleView);
       // } else {
       //   return FriendCode(confirmFriend: confirmFriend, toggleView: toggleView);
       // }

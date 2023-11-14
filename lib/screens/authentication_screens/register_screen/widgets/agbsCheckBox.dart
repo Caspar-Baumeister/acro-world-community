@@ -33,7 +33,7 @@ class _AGBCheckboxState extends State<AGBCheckbox> {
                   text: "I agree with the ",
                   style: TextStyle(color: Colors.black)),
               TextSpan(
-                  text: "agbs.",
+                  text: "terms and conditions.",
                   style: const TextStyle(
                       color: Colors.blue, fontWeight: FontWeight.bold),
                   recognizer: TapGestureRecognizer()
