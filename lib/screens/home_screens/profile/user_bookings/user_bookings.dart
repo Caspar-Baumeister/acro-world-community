@@ -31,6 +31,7 @@ class UserBookings extends StatelessWidget {
             List bookings = queryResult.data!["me"]![0]?["bookings"];
             List<UserBookingModel> userBookings =
                 bookings.map((e) => UserBookingModel.fromJson(e)).toList();
+            userBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
             return userBookings.isEmpty
                 ? const Center(
                     child: Text(
@@ -43,14 +44,56 @@ class UserBookings extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemCount: userBookings.length,
-                    itemBuilder: ((context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4),
-                        child:
+                    itemBuilder: (context, index) {
+                      // Check if the current booking is in the past
+                      bool isPastBooking =
+                          userBookings[index].endDate.isBefore(DateTime.now());
+
+                      // Check if the previous booking (if exists) is in the future
+                      bool isPreviousBookingFuture = index > 0
+                          ? userBookings[index - 1]
+                              .endDate
+                              .isAfter(DateTime.now())
+                          : false;
+
+                      // If current booking is past and previous (if exists) is future, show 'Past Bookings' heading
+                      if (isPastBooking && isPreviousBookingFuture) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Past Bookings",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
                             UserBookingsCard(userBooking: userBookings[index]),
-                      );
-                    }));
+                          ],
+                        );
+                      }
+
+                      // If it's the first item and it's a future booking, show 'Upcoming Bookings' heading
+                      if (index == 0 && !isPastBooking) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text("Upcoming Bookings",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
+                            ),
+                            UserBookingsCard(userBooking: userBookings[index]),
+                          ],
+                        );
+                      }
+
+                      // Default case, just show the booking card
+                      return UserBookingsCard(userBooking: userBookings[index]);
+                    },
+                  );
           } catch (e) {
             return ErrorPage(
                 error:
@@ -67,23 +110,35 @@ class UserBookings extends StatelessWidget {
 }
 
 class UserBookingModel {
+  String classEventId;
+  String classId;
   String eventName;
   String eventImage;
   DateTime startDate;
   DateTime endDate;
   String bookingTitle;
+  String status;
+  String? locationName;
 
   UserBookingModel({
+    required this.classEventId,
+    required this.classId,
     required this.eventName,
     required this.eventImage,
     required this.startDate,
     required this.endDate,
     required this.bookingTitle,
+    required this.status,
+    this.locationName,
   });
 
   // Factory constructor for creating a new UserBookingModel instance from a map.
   factory UserBookingModel.fromJson(Map<String, dynamic> json) {
     return UserBookingModel(
+      classEventId: json['class_event']['id'] as String,
+      classId: json['class_event']['class']['id'] as String,
+      locationName: json['class_event']['class']['location_name'] as String?,
+      status: json['status'] as String,
       eventName: json['class_event']['class']['name'] as String,
       eventImage: json['class_event']['class']['image_url'] as String,
       startDate: DateTime.parse(json['class_event']['start_date']),
