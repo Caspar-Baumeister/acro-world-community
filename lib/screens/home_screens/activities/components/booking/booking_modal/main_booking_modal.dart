@@ -110,6 +110,7 @@ class _BookingModalState extends State<BookingModal> {
                             step = 0;
                           });
                         },
+                        classEventId: widget.classEvent.id,
                       ),
           ],
         ),

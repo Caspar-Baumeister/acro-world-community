@@ -20,7 +20,8 @@ class CheckoutStep extends StatefulWidget {
       required this.classDate,
       required this.bookingOption,
       required this.previousStep,
-      required this.teacherStripeId})
+      required this.teacherStripeId,
+      this.classEventId})
       : super(key: key);
 
   final String className;
@@ -28,6 +29,7 @@ class CheckoutStep extends StatefulWidget {
   final String teacherStripeId;
   final BookingOption bookingOption;
   final Function previousStep;
+  final String? classEventId;
 
   @override
   State<CheckoutStep> createState() => _CheckoutStepState();
@@ -251,9 +253,21 @@ class _CheckoutStepState extends State<CheckoutStep> {
     try {
       User user = Provider.of<UserProvider>(context, listen: false).activeUser!;
 
+      // if user id, booking option id or class event id is null, throw an exception
+      if (user.id == null ||
+          bookingOption.id == null ||
+          widget.classEventId == null) {
+        throw Exception("User id, booking option id or class event id is null");
+      }
+
       // 1. create payment intent on the server
-      final data = await _createTestPaymentSheet(user.id, bookingOption.price,
-          bookingOption.currency, widget.teacherStripeId);
+      final data = await _createTestPaymentSheet(
+          user.id,
+          bookingOption.price,
+          bookingOption.currency,
+          widget.teacherStripeId,
+          widget.classEventId!,
+          bookingOption.id!);
 
       // define some billing details
       var billingDetails = BillingDetails(
@@ -312,8 +326,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
     }
   }
 
-  Future<Map<String, dynamic>> _createTestPaymentSheet(String? userId,
-      num? amount, String currency, String destinationAcct) async {
+  Future<Map<String, dynamic>> _createTestPaymentSheet(
+      String? userId,
+      num? amount,
+      String currency,
+      String destinationAcct,
+      String classEventId,
+      String bookingOptionId) async {
     // get User id
     if (userId == null) {
       throw Exception("User id is null");
@@ -335,7 +354,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
       "amount": amount * 100,
       "destination": destinationAcct,
       "currency": currency,
-      "user_id": userId
+      "user_id": userId,
+      "class_event_id": classEventId,
+      "booking_option_id": bookingOptionId
     });
     // 3. make a post request to the url with the body
     final response = await http.post(url,
