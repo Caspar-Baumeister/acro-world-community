@@ -29,8 +29,15 @@ class UserBookings extends StatelessWidget {
             queryResult.data?["me"] != null) {
           try {
             List bookings = queryResult.data!["me"]![0]?["bookings"];
-            List<UserBookingModel> userBookings =
-                bookings.map((e) => UserBookingModel.fromJson(e)).toList();
+            // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
+            List<UserBookingModel> userBookings = [];
+            for (var booking in bookings) {
+              try {
+                userBookings.add(UserBookingModel.fromJson(booking));
+              } catch (e) {
+                print("error inside user_bookings: $e");
+              }
+            }
             userBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
             return userBookings.isEmpty
                 ? const Center(
@@ -45,6 +52,7 @@ class UserBookings extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: userBookings.length,
                     itemBuilder: (context, index) {
+                      print("user_bookings: ${userBookings[index].status}");
                       // Check if the current booking is in the past
                       bool isPastBooking =
                           userBookings[index].endDate.isBefore(DateTime.now());
@@ -95,6 +103,7 @@ class UserBookings extends StatelessWidget {
                     },
                   );
           } catch (e) {
+            print("error inside user_bookings: $e");
             return ErrorPage(
                 error:
                     "An unexpected error occured, when transforming the user bookings to an objects with ${e.toString()} ");

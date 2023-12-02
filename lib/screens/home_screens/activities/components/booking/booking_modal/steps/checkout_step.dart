@@ -76,9 +76,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Title of the booking summary
-                          Text(
-                            "Booking summary for ${widget.className}",
-                            style: H16W7,
+                          Flexible(
+                            child: Text(
+                              "Booking summary for ${widget.className}",
+                              style: H16W7,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
                           IconButton(
                             onPressed: () {

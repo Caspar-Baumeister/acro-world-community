@@ -64,6 +64,7 @@ query Me {
 query classEventBooking(\$class_event_id: uuid) {
   class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
     user_id
+    status
     booking_option {
       discount
       price
