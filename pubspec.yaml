@@ -25,8 +25,8 @@ dependencies:
   jwt_decode: ^0.3.1
   graphql_flutter: ^5.1.0
   event_bus: ^2.0.0
-  firebase_messaging: ^14.6.9
-  firebase_core: ^2.17.0
+  firebase_messaging: 14.6.8
+  firebase_core: 2.16.0
   readmore: ^2.2.0
   url_launcher: ^6.1.14
   webview_flutter: ^3.0.4
