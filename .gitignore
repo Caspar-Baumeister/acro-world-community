@@ -49,7 +49,7 @@ app.*.map.json
 
 ios/Runner/Info.plist
 
-android/app/build
+/android/app/build
 ios/build
 
 # Do not remove or rename entries in this file, only add new ones
