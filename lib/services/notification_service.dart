@@ -7,6 +7,7 @@ class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
   Future initialize(BuildContext context) async {
+    print("NotificationService:initialize");
     // Request permissions
     await _fcm.requestPermission(
       alert: true,

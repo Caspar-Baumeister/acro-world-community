@@ -19,6 +19,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("App:build");
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -51,12 +52,14 @@ class _FirebaseMessengerWrapperState extends State<FirebaseMessengerWrapper> {
 
   @override
   void initState() {
+    print("_FirebaseMessengerWrapperState:initState");
     notificationService.initialize(context);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("_FirebaseMessengerWrapperState:build");
     return const ConnectionWrapper();
   }
 }
