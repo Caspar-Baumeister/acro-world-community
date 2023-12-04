@@ -14,6 +14,7 @@ class ConnectionWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("ConnectionWrapper:build");
     return FutureBuilder<bool>(
         future: InternetConnectionChecker().hasConnection,
         builder: ((context, snapshot) {
