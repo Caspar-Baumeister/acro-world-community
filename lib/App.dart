@@ -33,7 +33,7 @@ class App extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
-            home: const FirebaseMessengerWrapper(),
+            home: const ConnectionWrapper(),
           ),
         ));
   }
@@ -48,12 +48,12 @@ class FirebaseMessengerWrapper extends StatefulWidget {
 }
 
 class _FirebaseMessengerWrapperState extends State<FirebaseMessengerWrapper> {
-  NotificationService notificationService = NotificationService();
+  // NotificationService notificationService = NotificationService();
 
   @override
   void initState() {
     print("_FirebaseMessengerWrapperState:initState");
-    notificationService.initialize(context);
+    // notificationService.initialize(context);
     super.initState();
   }
 
