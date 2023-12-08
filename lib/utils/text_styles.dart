@@ -21,5 +21,6 @@ const TextStyle H16W5 = TextStyle(fontSize: 16, fontWeight: FontWeight.w500);
 const TextStyle H16W4 = TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
 const TextStyle H16W3 = TextStyle(fontSize: 14, fontWeight: FontWeight.w300);
 const TextStyle H14W4 = TextStyle(fontSize: 14, fontWeight: FontWeight.w400);
+const TextStyle H12W8 = TextStyle(fontSize: 12, fontWeight: FontWeight.w800);
 const TextStyle H12W4 = TextStyle(fontSize: 12, fontWeight: FontWeight.w400);
 const TextStyle H10W4 = TextStyle(fontSize: 10, fontWeight: FontWeight.w400);

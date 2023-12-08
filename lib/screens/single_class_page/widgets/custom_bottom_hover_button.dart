@@ -2,26 +2,32 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomHoverButton extends StatelessWidget {
-  const CustomBottomHoverButton(
-      {Key? key, required this.content, required this.onPressed})
-      : super(key: key);
+  const CustomBottomHoverButton({
+    Key? key,
+    required this.content,
+    required this.onPressed,
+    this.backgroundColor,
+  }) : super(key: key);
 
   final Widget content;
   final Function onPressed;
+  // add a color for the background
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Positioned(
       bottom: 10, // bottom padding
-      left: 10, // left padding
-      right: 10, // right padding
+      left: 25, // left padding
+      right: 25, // right padding
       child: ClipRRect(
         child: SafeArea(
           child: ElevatedButton(
             onPressed: () => onPressed(),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: PRIMARY_COLOR, // button text color
+              // if no color is given, use the primary color
+              backgroundColor: backgroundColor ?? PRIMARY_COLOR,
               padding: const EdgeInsets.all(15), // internal padding
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8.0),

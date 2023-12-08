@@ -7,7 +7,10 @@ import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
   // We're using HiveStore for persistence,
@@ -70,5 +73,39 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  return runApp(App(client: client));
+  await dotenv.load(fileName: ".env");
+  // STRIPE //
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+
+// set stripe account
+  Stripe.merchantIdentifier = 'merchant.de.acroworld';
+  Stripe.urlScheme = 'acroworld';
+
+  await Stripe.instance.applySettings();
+
+  // Sentry //
+
+  if (AppEnvironment.isProdBuild) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = AppEnvironment.sentryDsn;
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+      },
+      appRunner: () => runApp(App(client: client)),
+    );
+  } else {
+    runApp(App(client: client));
+  }
+
+  // try {
+  //   int? a;
+  //   a! + 1;
+  // } catch (exception, stackTrace) {
+  //   await Sentry.captureException(
+  //     exception,
+  //     stackTrace: stackTrace,
+  //   );
+  // }
 }
