@@ -13,6 +13,33 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 void main() async {
+  // Sentry //
+  if (AppEnvironment.isProdBuild) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = AppEnvironment.sentryDsn;
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+      },
+      appRunner: () => initMain(),
+    );
+  } else {
+    initMain();
+  }
+
+  // try {
+  //   int? a;
+  //   a! + 1;
+  // } catch (exception, stackTrace) {
+  //   await Sentry.captureException(
+  //     exception,
+  //     stackTrace: stackTrace,
+  //   );
+  // }
+}
+
+initMain() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
   await initHiveForFlutter();
@@ -73,39 +100,18 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  await dotenv.load(fileName: ".env");
   // STRIPE //
-  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+  try {
+    await dotenv.load(fileName: ".env");
 
-// set stripe account
-  Stripe.merchantIdentifier = 'merchant.de.acroworld';
-  Stripe.urlScheme = 'acroworld';
-
-  await Stripe.instance.applySettings();
-
-  // Sentry //
-
-  if (AppEnvironment.isProdBuild) {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn = AppEnvironment.sentryDsn;
-        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
-        // We recommend adjusting this value in production.
-        options.tracesSampleRate = 0.01;
-      },
-      appRunner: () => runApp(App(client: client)),
-    );
-  } else {
-    runApp(App(client: client));
+    Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+    Stripe.merchantIdentifier = 'merchant.de.acroworld';
+    Stripe.urlScheme = 'acroworld';
+    await Stripe.instance.applySettings();
+  } catch (e) {
+    print(e.toString());
+    rethrow;
   }
 
-  // try {
-  //   int? a;
-  //   a! + 1;
-  // } catch (exception, stackTrace) {
-  //   await Sentry.captureException(
-  //     exception,
-  //     stackTrace: stackTrace,
-  //   );
-  // }
+  runApp(App(client: client));
 }
