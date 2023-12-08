@@ -17,7 +17,7 @@ class BookingOption {
   num? price;
   String? subtitle;
   String? title;
-  String currency = "EUR";
+  String currency = "eur";
 
   double realPrice() {
     return (1 - (discount! * 0.01)) * price!;

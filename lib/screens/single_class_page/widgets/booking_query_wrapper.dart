@@ -1,12 +1,11 @@
 import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/home_screens/activities/components/booking/booking_information_modal.dart';
-import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -14,6 +13,17 @@ class BookingQueryHoverButton extends StatelessWidget {
   const BookingQueryHoverButton({Key? key, required this.classEvent})
       : super(key: key);
   final ClassEvent classEvent;
+
+  // This widget is a wrapper for the booking button
+  // It queries the database for all bookings of the given class event
+  // and then decides what to show
+
+  // case 1: user has already booked -> you reserved this class (later: storno reservation)
+  // case 2: there are no places left -> show booked out
+  // case 3: there are places left -> show booking button
+
+  // it needs the aggregated data
+  // and a true or false whether the user has already booked and the booking was successful
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +37,15 @@ class BookingQueryHoverButton extends StatelessWidget {
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (queryResult.hasException) {
-          return Container(
-            color: Colors.white,
-          ); //ErrorWidget(queryResult.exception.toString());
+          throw queryResult.exception!;
         } else if (queryResult.isLoading) {
           return CustomBottomHoverButton(
-              content: Container(
-                color: Colors.white,
-              ),
-              onPressed: () {});
+              content: Container(), onPressed: () {});
         } else if (queryResult.data != null &&
             queryResult.data?["class_event_booking"] != null) {
           final bookedUserJson = queryResult.data?["class_event_booking"];
+          // clean out the bookedUserJson where the status is not success
+          bookedUserJson.removeWhere((json) => json["status"] != "Success");
           num bookingsLeft =
               classEvent.classModel!.maxBookingSlots! - bookedUserJson.length;
           if (bookedUserJson.isNotEmpty) {
@@ -47,27 +54,33 @@ class BookingQueryHoverButton extends StatelessWidget {
 
             // case 1: user has already booked -> you reserved this class (later: storno reservation)
             if (bookedUserIds.contains(userProvider.activeUser!.id!)) {
-              BookingOption bookedOption = BookingOption.fromJson(
-                  bookedUserJson.firstWhere((json) =>
-                      json["user_id"] ==
-                      userProvider.activeUser!.id!)["booking_option"]);
+              // BookingOption bookedOption = BookingOption.fromJson(
+              //     bookedUserJson.firstWhere((json) =>
+              //         json["user_id"] ==
+              //         userProvider.activeUser!.id!)["booking_option"]);
               // show "Successfully reserved"
               return CustomBottomHoverButton(
-                content: const Text(
-                  "View your booking details",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                  content: const Text(
+                    "Booked",
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                onPressed: () => buildMortal(
-                    context,
-                    BookingInformationModal(
-                      classEvent: classEvent,
-                      bookingOption: bookedOption,
-                    )),
-              );
+                  // success color
+                  backgroundColor: Colors.green,
+                  onPressed: () {
+                    // show message that the user has already booked
+                    Fluttertoast.showToast(
+                        msg: "You have already booked this class",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  });
             }
             // case 2: there are no places left
             if (bookingsLeft <= 0) {
@@ -97,6 +110,8 @@ class BookingQueryHoverButton extends StatelessWidget {
             // TODO show kalender
             onPressed: () => buildMortal(
               context,
+              // const StripeTestModal(),
+
               BookingModal(
                   classEvent: classEvent,
                   placesLeft: bookingsLeft,

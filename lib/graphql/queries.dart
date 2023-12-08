@@ -16,6 +16,36 @@ query Me {
   }
 }""");
 
+  static final userBookings = gql("""
+query userBookings {
+  me {
+    bookings(where: {status: {_eq: Success}}) {
+      created_at
+      updated_at
+      booking_option{
+        id
+        title
+      }
+      status
+      class_event {
+        id
+        start_date
+        end_date
+        class {
+          name
+          image_url
+          id
+          class_teachers {
+            teacher {
+              name
+            }
+          }
+        }
+      }
+    }
+  }
+}""");
+
   static final userFavorites = gql("""
 query Me {
   me {
@@ -34,12 +64,15 @@ query Me {
 query classEventBooking(\$class_event_id: uuid) {
   class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
     user_id
+    status
     booking_option {
       discount
       price
       title
       commission
-    }
+      subtitle
+      id
+      }
   }
 }
 """);
@@ -152,6 +185,24 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       id
       name
     }
+  }
+}
+  """);
+
+  static final allGender = gql("""
+  query Query {
+  acro_roles{
+    id
+    name
+  }
+}
+  """);
+
+  static final allLevels = gql("""
+  query Query {
+  levels{
+    id
+    name
   }
 }
   """);

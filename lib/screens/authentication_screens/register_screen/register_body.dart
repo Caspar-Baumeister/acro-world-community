@@ -213,20 +213,22 @@ class RegisterBodyState extends State<RegisterBody> {
     String token = response["data"]["register"]["token"];
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<UserProvider>(context, listen: false).token = token;
-    });
 
-    // safe the user to provider
-    bool setUserFromTokeResponse =
-        await Provider.of<UserProvider>(context, listen: false)
-            .setUserFromToken();
-    if (!setUserFromTokeResponse) {
-      errorResponse = "We are not able to create an user";
-      setState(() {
-        error = errorResponse;
-        loading = false;
+      // safe the user to provider
+      Provider.of<UserProvider>(context, listen: false)
+          .setUserFromToken()
+          .then((value) {
+        // if the value is false, throw the error, that the user is not able to create
+        if (!value) {
+          errorResponse = "We are not able to create an user";
+          setState(() {
+            error = errorResponse;
+            loading = false;
+          });
+          return false;
+        }
       });
-      return;
-    }
+    });
 
     // safe the credentials to shared preferences
     CredentialPreferences.setEmail(emailController?.text ?? "");

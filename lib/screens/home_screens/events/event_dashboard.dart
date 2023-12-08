@@ -157,7 +157,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
       return;
     }
     final result = await Database(token: token).authorizedApi("""query Events {
-  events (where: {confirmation_status: {_eq: Confirmed}}){
+  events (where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}}){
      ${Fragments.eventFragment}
   }
 }""");

@@ -26,7 +26,7 @@ class ClassesView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Center(
-                child: Text("no classes found"),
+                child: Text("There are no classes close to you."),
               )
             ],
           )
