@@ -10,7 +10,7 @@ update_version() {
 git_commit_and_tag() {
   local version_string="$1"
   git add pubspec.yaml
-  git commit -m "chore: version $version_string"
+  git commit -m "Version $version_string"
   git tag "v$version_string"
 }
 
