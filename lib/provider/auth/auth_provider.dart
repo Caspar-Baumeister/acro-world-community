@@ -9,7 +9,6 @@ class AuthProvider {
     if (token == null) {
       return true;
     }
-    print('token: $token');
     final DateTime? expirationDate = Jwt.getExpiryDate(token!)?.toLocal();
     if (expirationDate != null) {
       return expirationDate.difference(DateTime.now()) <
@@ -22,7 +21,6 @@ class AuthProvider {
   static Future<String?> fetchToken() async {
     if (isTokenExpired()) {
       String? email = CredentialPreferences.getEmail();
-      print('email: $email');
       String? password = CredentialPreferences.getPassword();
       dynamic response = await Database().loginApi(email ?? "", password ?? "");
 

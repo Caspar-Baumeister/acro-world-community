@@ -13,7 +13,6 @@ class Authenticate extends StatefulWidget {
 
 class _AuthenticateState extends State<Authenticate> {
   bool showSignIn = true;
-  // bool confirmedFriend = false;
 
   @override
   void initState() {
@@ -23,27 +22,16 @@ class _AuthenticateState extends State<Authenticate> {
     }
   }
 
-  // void confirmFriend() {
-  //   setState(() {
-  //     confirmedFriend = true;
-  //   });
-  // }
-
   void toggleView() {
     setState(() => showSignIn = !showSignIn);
   }
 
   @override
   Widget build(BuildContext context) {
-    print('_AuthenticateState:build');
     if (showSignIn) {
       return SignIn(toggleView: toggleView);
     } else {
-      // if (confirmedFriend) {
       return SignUp(toggleView: toggleView);
-      // } else {
-      //   return FriendCode(confirmFriend: confirmFriend, toggleView: toggleView);
-      // }
     }
   }
 }

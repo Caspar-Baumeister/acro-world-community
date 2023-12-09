@@ -27,7 +27,6 @@ void main() async {
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
         String? token = await AuthProvider.fetchToken();
-        print('jwtToken: $token');
         return {
           'headers': token == null || token == ""
               ? {}
@@ -40,7 +39,6 @@ void main() async {
   final AuthLink authLink = AuthLink(
     getToken: () async {
       String? token = await AuthProvider.fetchToken();
-      print('jwtToken: $token');
       return token != null ? 'Bearer $token' : null;
     },
   );
@@ -69,6 +67,5 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print("runApp");
   return runApp(App(client: client));
 }
