@@ -17,6 +17,7 @@ class VersionWrapper extends StatefulWidget {
 class _VersionWrapperState extends State<VersionWrapper> {
   @override
   Widget build(BuildContext context) {
+    print('_VersionWrapperState:build');
     return Query(
       options: QueryOptions(
         document: Queries.config,

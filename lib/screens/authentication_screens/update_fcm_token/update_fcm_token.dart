@@ -29,17 +29,16 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
   }
 
   Future<bool> _initToken() async {
-    final newToken = await FirebaseMessaging.instance.getToken();
-
-    token = newToken;
     print("_initToken newToken");
+    final newToken = await FirebaseMessaging.instance.getToken();
+    token = newToken;
     print(newToken);
     return newToken != null ? true : false;
   }
 
   Future<void> _refreshToken() async {
-    final newToken = await FirebaseMessaging.instance.getToken();
     print("_refreshToken newToken");
+    final newToken = await FirebaseMessaging.instance.getToken();
     print(newToken);
     setState(() {
       token = newToken;
@@ -48,6 +47,7 @@ class _UpdateFcmTokenState extends State<UpdateFcmToken> {
 
   @override
   Widget build(BuildContext context) {
+    print('_UpdateFcmTokenState:build');
     return FutureBuilder<bool>(
       future: initialTokenLoaded,
       builder: ((context, snapshot) {

@@ -12,6 +12,7 @@ class _LoadingPageState extends State<LoadingPage> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    print('_LoadingPageState:build');
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: widget.onRefresh ??
@@ -23,10 +24,10 @@ class _LoadingPageState extends State<LoadingPage> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height -
                 AppBar().preferredSize.height,
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Center(
                   child: Image(
                     image: AssetImage("assets/muscleup_drawing.png"),
