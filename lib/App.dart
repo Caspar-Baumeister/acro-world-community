@@ -6,15 +6,17 @@ import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 class App extends StatelessWidget {
   final ValueNotifier<GraphQLClient> client;
 
   const App({Key? key, required this.client}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -30,8 +32,31 @@ class App extends StatelessWidget {
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
-            home: const ConnectionWrapper(),
+            home: const FirebaseMessengerWrapper(),
           ),
         ));
+  }
+}
+
+class FirebaseMessengerWrapper extends StatefulWidget {
+  const FirebaseMessengerWrapper({Key? key}) : super(key: key);
+
+  @override
+  State<FirebaseMessengerWrapper> createState() =>
+      _FirebaseMessengerWrapperState();
+}
+
+class _FirebaseMessengerWrapperState extends State<FirebaseMessengerWrapper> {
+  NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    notificationService.initialize(context);
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const ConnectionWrapper();
   }
 }
