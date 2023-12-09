@@ -40,7 +40,7 @@ void main() async {
   final AuthLink authLink = AuthLink(
     getToken: () async {
       String? token = await AuthProvider.fetchToken();
-
+      print('jwtToken: $token');
       return token != null ? 'Bearer $token' : null;
     },
   );
