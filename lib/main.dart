@@ -28,6 +28,7 @@ void main() async {
       inactivityTimeout: const Duration(seconds: 30),
       initialPayload: () async {
         String? token = await AuthProvider.fetchToken();
+        print('jwtToken: $token');
         return {
           'headers': token == null || token == ""
               ? {}
