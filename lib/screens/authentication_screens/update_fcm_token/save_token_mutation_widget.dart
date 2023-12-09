@@ -59,7 +59,7 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
               }
 
               print('me: ${queryResult.data}');
-              String? fcmToken = queryResult.data?['me'][0]['fcm_token'];
+              String? fcmToken = queryResult.data?['me']?[0]?['fcm_token'];
               if (fcmToken == null ||
                   fcmToken.isEmpty ||
                   fcmToken != widget.token) {
