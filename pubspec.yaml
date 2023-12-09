@@ -57,6 +57,11 @@ flutter_icons:
   android: true
   remove_alpha_ios: true
 
+# Activate script support "dart pub global activate flutter_scripts"
+# Run scripts with "flutter_scripts run -c <script>"
+scripts:
+  bundle: sh ./scripts/bundle.sh
+
 flutter:
   uses-material-design: true
   assets:
