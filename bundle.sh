@@ -22,20 +22,30 @@ check_git_clean() {
   fi
 }
 
-# Function to run "flutter build appbundle"
-build_appbundle() {
-  flutter build appbundle
+# Function to run Flutter build for the specified platform
+build_platform() {
+  local platform="$1"
+  case "$platform" in
+    "android")
+      flutter build appbundle
+      ;;
+    "ios")
+      flutter build ipa
+      ;;
+    *)
+      echo "Invalid platform: $platform"
+      exit 1
+      ;;
+  esac
 }
 
 # Function to display usage information
 display_usage() {
-  echo "Usage: $0 [options]"
-  echo "Increment the version in pubspec.yaml, create a Git tag, and build an Android App Bundle."
-  echo "Options:"
-  echo "  -h       Display this help message"
-  echo "  major   Increment the major version"
-  echo "  minor   Increment the minor version"
-  echo "  patch   Increment the patch version (default)"
+  echo "Usage: $0 <platform> <new_version>"
+  echo "Increment the version in pubspec.yaml, create a Git tag, and build for Android or iOS."
+  echo "Arguments:"
+  echo "  platform         Build platform (android or ios)"
+  echo "  new_version      Version increment option: --major, --minor, --patch (default)"
 }
 
 # Function to parse and increment version components
@@ -51,20 +61,20 @@ increment_version() {
 
   # Increment the specified component
   case "$component" in
-    "major")
+    "--major")
       major=$((major + 1))
       minor=0
       patch=0
       ;;
-    "minor")
+    "--minor")
       minor=$((minor + 1))
       patch=0
       ;;
-    "patch")
+    "--patch")
       patch=$((patch + 1))
       ;;
     *)
-      echo "Invalid component: $component"
+      echo "Invalid new version option: $component"
       exit 1
       ;;
   esac
@@ -87,11 +97,11 @@ fi
 check_git_clean
 
 # Determine the version component to increment
-if [ -z "$1" ]; then
-  # If no arguments are provided, increment the patch version by default
-  component="patch"
+if [ -z "$2" ]; then
+  # If no new version option is provided, increment the patch version by default
+  component="--patch"
 else
-  component="$1"
+  component="$2"
 fi
 
 # Get the current version from pubspec.yaml
@@ -106,7 +116,12 @@ update_version "$new_version"
 # Commit changes and create a Git tag
 git_commit_and_tag "$new_version"
 
-# Run "flutter build appbundle"
-build_appbundle
+# Check if the script is called with android or ios
+if [ "$1" == "android" ] || [ "$1" == "ios" ]; then
+  build_platform "$1"
+else
+  echo "Invalid platform: $1"
+  exit 1
+fi
 
-echo "Version updated to $new_version, Git tag created, and Android App Bundle built."
+echo "Version updated to $new_version, Git tag created, and build completed for specified platform."
