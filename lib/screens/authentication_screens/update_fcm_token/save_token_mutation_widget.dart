@@ -37,7 +37,8 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
           return const HomeScaffold();
         } else {
           return Query(
-            options: QueryOptions(document: Queries.getMe),
+            options: QueryOptions(
+                document: Queries.getMe, fetchPolicy: FetchPolicy.networkOnly),
             builder: (queryResult, {fetchMore, refetch}) {
               Future<void> runRefetch() async {
                 try {
