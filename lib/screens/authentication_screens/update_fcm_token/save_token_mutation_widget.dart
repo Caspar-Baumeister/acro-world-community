@@ -58,6 +58,7 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
                     child: ErrorPage(error: queryResult.exception.toString()));
               }
 
+              print('me: ${queryResult.data}');
               String? fcmToken = queryResult.data?['me'][0]['fcm_token'];
               if (fcmToken == null ||
                   fcmToken.isEmpty ||
