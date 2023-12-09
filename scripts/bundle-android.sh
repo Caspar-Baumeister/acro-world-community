@@ -14,6 +14,30 @@ git_commit_and_tag() {
   git tag "v$version_string"
 }
 
+# Function to check if the git directory is clean
+check_git_clean() {
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "Error: Git directory is not clean. Commit or discard changes before proceeding."
+    exit 1
+  fi
+}
+
+# Function to run "flutter build appbundle"
+build_appbundle() {
+  flutter build appbundle
+}
+
+# Function to display usage information
+display_usage() {
+  echo "Usage: $0 [options]"
+  echo "Increment the version in pubspec.yaml, create a Git tag, and build an Android App Bundle."
+  echo "Options:"
+  echo "  -h       Display this help message"
+  echo "  major   Increment the major version"
+  echo "  minor   Increment the minor version"
+  echo "  patch   Increment the patch version (default)"
+}
+
 # Function to parse and increment version components
 increment_version() {
   local current_version="$1"
@@ -53,17 +77,28 @@ increment_version() {
   echo "$new_version"
 }
 
-# Check if a version component is provided
+# Check if the script is called with -h
+if [ "$1" == "-h" ]; then
+  display_usage
+  exit 0
+fi
+
+# Check if the git directory is clean
+check_git_clean
+
+# Determine the version component to increment
 if [ -z "$1" ]; then
-  echo "Usage: $0 <major|minor|patch>"
-  exit 1
+  # If no arguments are provided, increment the patch version by default
+  component="patch"
+else
+  component="$1"
 fi
 
 # Get the current version from pubspec.yaml
 current_version=$(grep "^version: " pubspec.yaml | cut -d' ' -f2)
 
 # Increment the specified version component
-new_version=$(increment_version "$current_version" "$1")
+new_version=$(increment_version "$current_version" "$component")
 
 # Update the version in pubspec.yaml
 update_version "$new_version"
@@ -71,4 +106,7 @@ update_version "$new_version"
 # Commit changes and create a Git tag
 git_commit_and_tag "$new_version"
 
-echo "Version updated to $new_version and Git tag created."
+# Run "flutter build appbundle"
+build_appbundle
+
+echo "Version updated to $new_version, Git tag created, and Android App Bundle built."
