@@ -7,7 +7,7 @@ version: 1.2.3+90
 ############################
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=2.19.4 <3.0.0"
 
 dependencies:
   flutter:
@@ -57,8 +57,8 @@ flutter_icons:
   android: true
   remove_alpha_ios: true
 
-# Activate script support "dart pub global activate flutter_scripts"
-# Run scripts with "flutter_scripts run -c <script>"
+# Activate script support with "dart pub global activate rps"
+# Run scripts with "rps <script> <script-arguments>" e.g. "rps bundle android --patch"
 scripts:
   bundle: sh ./scripts/bundle.sh
 
