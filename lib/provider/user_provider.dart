@@ -74,6 +74,8 @@ class UserProvider extends ChangeNotifier {
     String? email = CredentialPreferences.getEmail();
     String? password = CredentialPreferences.getPassword();
 
+    print('refreshTokenFunction:email $email');
+
     if (email == null || password == null) {
       return false;
     }
