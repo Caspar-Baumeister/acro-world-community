@@ -46,6 +46,8 @@ class UserProvider extends ChangeNotifier {
             }
           }""");
 
+    print('response: $response');
+
     if (response?["data"]?["me"]?[0] == null) {
       return false;
     }
