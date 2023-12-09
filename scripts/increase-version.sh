@@ -27,10 +27,22 @@ increment_version() {
 
   # Increment the specified component
   case "$component" in
-    "major") major=$((major + 1));;
-    "minor") minor=$((minor + 1));;
-    "patch") patch=$((patch + 1));;
-    *) echo "Invalid component: $component"; exit 1;;
+    "major")
+      major=$((major + 1))
+      minor=0
+      patch=0
+      ;;
+    "minor")
+      minor=$((minor + 1))
+      patch=0
+      ;;
+    "patch")
+      patch=$((patch + 1))
+      ;;
+    *)
+      echo "Invalid component: $component"
+      exit 1
+      ;;
   esac
 
   # Increase versionCode by 1 from the previous versionCode
