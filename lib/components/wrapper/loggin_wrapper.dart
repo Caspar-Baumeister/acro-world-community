@@ -42,6 +42,7 @@ class _LogginWrapperState extends State<LogginWrapper> {
 
   @override
   Widget build(BuildContext context) {
+    print('_LogginWrapperState:build');
     return FutureBuilder(
         future: initCredentials,
         builder: ((context, snapshot) {
