@@ -17,7 +17,6 @@ class VersionWrapper extends StatefulWidget {
 class _VersionWrapperState extends State<VersionWrapper> {
   @override
   Widget build(BuildContext context) {
-    print('_VersionWrapperState:build');
     return Query(
       options: QueryOptions(
         document: Queries.config,
@@ -30,10 +29,8 @@ class _VersionWrapperState extends State<VersionWrapper> {
             error: queryResult.exception.toString(),
           );
         } else if (queryResult.isLoading) {
-          print('_VersionWrapperState:build - queryResult.isLoading');
           return const LoadingPage();
         } else if (queryResult.data != null) {
-          print('_VersionWrapperState:build - queryResult.data != null');
           String? minVersion = queryResult.data!["config"]?[0]?["min_version"];
           if (minVersion != null) {
             // ignore: avoid_print

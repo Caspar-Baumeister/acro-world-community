@@ -12,7 +12,6 @@ class _LoadingPageState extends State<LoadingPage> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
-    print('_LoadingPageState:build');
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: widget.onRefresh ??

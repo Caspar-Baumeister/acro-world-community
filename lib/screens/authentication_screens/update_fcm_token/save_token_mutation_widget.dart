@@ -19,7 +19,6 @@ class SaveTokenMutationWidget extends StatefulWidget {
 class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
   @override
   Widget build(BuildContext context) {
-    print('_SaveTokenMutationWidgetState:build');
     return Mutation(
       options: MutationOptions(document: Mutations.updateFcmToken),
       builder: (RunMutation runMutation, mutationResult) {

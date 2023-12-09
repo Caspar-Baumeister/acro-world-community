@@ -46,8 +46,6 @@ class UserProvider extends ChangeNotifier {
             }
           }""");
 
-    print('response: $response');
-
     if (response?["data"]?["me"]?[0] == null) {
       return false;
     }
@@ -73,8 +71,6 @@ class UserProvider extends ChangeNotifier {
   Future<bool> refreshTokenFunction() async {
     String? email = CredentialPreferences.getEmail();
     String? password = CredentialPreferences.getPassword();
-
-    print('refreshTokenFunction:email $email');
 
     if (email == null || password == null) {
       return false;
