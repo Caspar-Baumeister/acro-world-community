@@ -58,9 +58,9 @@ flutter_icons:
   remove_alpha_ios: true
 
 # Activate script support with "dart pub global activate rps"
-# Run scripts with "rps <script> <script-arguments>" e.g. "rps bundle android --patch"
+# Run scripts with "rps <script> <script-arguments>" e.g. "rps version patch"
 scripts:
-  bundle: sh ./scripts/bundle.sh
+  version: sh ./scripts/version.sh
 
 flutter:
   uses-material-design: true
