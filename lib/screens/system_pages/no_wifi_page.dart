@@ -33,7 +33,7 @@ class _NoWifePageState extends State<NoWifePage> {
             const SizedBox(
               height: 20,
             ),
-            StandartButton(
+            StandardButton(
               text: "reload",
               onPressed: () => onReload(),
               loading: loading,

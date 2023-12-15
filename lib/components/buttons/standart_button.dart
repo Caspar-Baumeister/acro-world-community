@@ -3,11 +3,12 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
-class StandartButton extends StatelessWidget {
-  const StandartButton(
+class StandardButton extends StatelessWidget {
+  const StandardButton(
       {Key? key,
       required this.text,
       required this.onPressed,
+      this.icon,
       this.buttonFillColor = BUTTON_FILL_COLOR,
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
@@ -22,6 +23,7 @@ class StandartButton extends StatelessWidget {
   final bool disabled;
   final bool loading;
   final bool isFilled;
+  final Icon? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -48,15 +50,21 @@ class StandartButton extends StatelessWidget {
                     child: CircularProgressIndicator(
                       color: isFilled ? Colors.white : PRIMARY_COLOR,
                     ))
-                : Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Text(
-                      text,
-                      style: H18W6.copyWith(
-                        color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      icon ?? Container(),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Text(
+                          text,
+                          style: H18W6.copyWith(
+                            color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
-                    ),
+                    ],
                   ),
           )),
     );

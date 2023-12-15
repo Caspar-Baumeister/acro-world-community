@@ -30,7 +30,5 @@ InputDecoration buildInputDecoration({
       ),
       alignLabelWithHint: true,
       hintText: labelText ?? "",
-      contentPadding:
-          const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
       suffixIcon: suffixIcon);
 }

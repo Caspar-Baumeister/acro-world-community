@@ -37,6 +37,18 @@ class UserProvider extends ChangeNotifier {
               id 
               image_url 
               name
+              fcm_token
+              teacher_profile {
+                id
+                name
+                images {
+                  image {
+                    url
+                    id
+                  }
+                  is_profile_picture
+                }
+              }
               user_roles {
                 role {
                   id
@@ -56,9 +68,14 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
     activeUser = User.fromJson(user);
-
+    print('UserProvider name ${activeUser?.teacherProfile?.name}');
+    print('UserProvider:notifyListeners');
     notifyListeners();
     return true;
+  }
+
+  void setUser(User user) {
+    activeUser = user;
   }
 
   bool isTokenExpired() {
@@ -67,6 +84,8 @@ class UserProvider extends ChangeNotifier {
     }
     return Jwt.isExpired(token!);
   }
+
+  Future<void> refetchCurrentUser() async {}
 
   Future<bool> refreshTokenFunction() async {
     String? email = CredentialPreferences.getEmail();

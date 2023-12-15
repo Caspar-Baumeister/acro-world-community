@@ -189,6 +189,17 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       bio
       created_at
       name
+      teacher_profile {
+        id
+        name
+        images {
+          image {
+            url
+            id
+          }
+          is_profile_picture
+        }
+      }
     }
   }
   """);

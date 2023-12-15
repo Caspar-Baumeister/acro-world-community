@@ -142,7 +142,7 @@ class RegisterBodyState extends State<RegisterBody> {
                     //         )),
                     const SizedBox(height: 20.0),
                     Center(
-                        child: StandartButton(
+                        child: StandardButton(
                       text: "Register",
                       onPressed: () async => onRegister(),
                       loading: loading,

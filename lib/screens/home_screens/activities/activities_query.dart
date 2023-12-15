@@ -22,9 +22,7 @@ class ActivitiesQuery extends StatefulWidget {
 class _ActivitiesQueryState extends State<ActivitiesQuery> {
   late String from;
   late String to;
-  DateTime focusedDay = DateTime.now();
-  DateTime initialSelectedDate = DateTime.now();
-  // double distance = 100;
+  DateTime? focusedDay;
 
   @override
   void initState() {
@@ -32,36 +30,11 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     to = DateTime(now.year, now.month, now.day + (7 - now.weekday), 23)
         .toIso8601String();
     from = DateTime(now.year, now.month, now.day).toIso8601String();
+    focusedDay ??= DateTime.now();
+    print('initState ${focusedDay.hashCode}');
 
     super.initState();
   }
-
-  // // increase distance and refetch
-  // void increaseDistance(Function runRefetch) async {
-  //   // wait for 3 seconds, so the user can see the empty list
-  //   await Future.delayed(const Duration(seconds: 3));
-
-  //   // increase distance by 200 km
-  //   setState(() {
-  //     distance += 200;
-  //   });
-
-  //   runRefetch();
-  //   // inform the user with a toast, that the distance was increased
-  //   Fluttertoast.showToast(
-  //       msg:
-  //           "No classes found in your area. Increasing search radius to $distance km.",
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.TOP,
-  //       timeInSecForIosWeb: 2,
-  //       backgroundColor: Colors.green,
-  //       textColor: Colors.white,
-  //       fontSize: 16.0);
-
-  //   // print information
-  //   print(
-  //       "No classes found in your area. Increasing search radius to $distance km.");
-  // }
 
   onPageChanged(focusDay) {
     setState(() {
@@ -109,8 +82,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
       selector = 'class_events_by_location_v1';
     }
 
-    // choose queryoption based on activityType
-
     ActivityProvider activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
 
@@ -130,8 +101,8 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
               child: ActivityCalenderWidget(
                 onPageChanged: (_) => {},
                 classWeekEvents: const [],
-                focusedDay: focusedDay,
-                setFocusedDay: (_) => {},
+                focusedDay: focusedDay!,
+                setFocusedDay: (newFocusedDay) => {focusedDay = newFocusedDay},
               ),
             );
           }
@@ -147,7 +118,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
 
           try {
             if (result.data![selector] != null) {
-              print(result.data![selector].length);
               classWeekEvents =
                   List<ClassEvent>.from(result.data![selector].map((json) {
                 return ClassEvent.fromJson(json);
@@ -155,18 +125,13 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
               WidgetsBinding.instance.addPostFrameCallback((_) async {
                 activityProvider.setActiveClasses(classWeekEvents
                     .where((ClassEvent classEvent) =>
-                        isSameDate(classEvent.date!, focusedDay))
+                        isSameDate(classEvent.date!, focusedDay!))
                     .toList());
               });
             }
           } catch (e) {
             print(e.toString());
           }
-
-          // if classWeekEvents is empty and place is not null -> increase distance and refetch
-          // if (classWeekEvents.isEmpty && place != null && distance < 500) {
-          //   increaseDistance(refetch!);
-          // }
 
           try {
             classWeekEvents.sort((a, b) => DateTime.parse(b.startDate!)
@@ -180,7 +145,7 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
           return ActivityCalenderWidget(
             onPageChanged: onPageChanged,
             classWeekEvents: classWeekEvents,
-            focusedDay: focusedDay,
+            focusedDay: focusedDay!,
             setFocusedDay: (newFocusedDay) => setState(() {
               focusedDay = newFocusedDay;
             }),

@@ -167,7 +167,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                   },
                 ),
                 builder: (runMutation, result) {
-                  return StandartButton(
+                  return StandardButton(
                       text: "Confirm",
                       onPressed: () {
                         setState(() {
@@ -184,7 +184,7 @@ class _ChooseGenderBodyState extends State<ChooseGenderBody> {
                       loading: loading);
                 }),
             const SizedBox(height: 20),
-            StandartButton(
+            StandardButton(
               text: "Skip",
               onPressed: () => widget.onContinue(),
               disabled: loading,
