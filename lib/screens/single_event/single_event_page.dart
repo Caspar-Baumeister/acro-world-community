@@ -123,7 +123,7 @@ Found in the AcroWorld app
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(top: 10.0),
-                    child: StandartButton(
+                    child: StandardButton(
                       text: "Book via AcroWorld",
                       onPressed: () => customLaunch(
                           "https://booking.acroworld.de${widget.event.pretixName!}"),

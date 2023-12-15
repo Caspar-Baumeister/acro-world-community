@@ -7,7 +7,7 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class ActivitiesBody extends StatefulWidget {
-  const ActivitiesBody({Key? key}) : super(key: key);
+  ActivitiesBody({Key? key}) : super(key: key);
 
   @override
   State<ActivitiesBody> createState() => _ActivitiesBodyState();
@@ -15,9 +15,11 @@ class ActivitiesBody extends StatefulWidget {
 
 class _ActivitiesBodyState extends State<ActivitiesBody> {
   String activityType = "classes";
+  final Widget activitesQuery = const ActivitiesQuery();
 
   @override
   Widget build(BuildContext context) {
+    print('activitesQuery ${activitesQuery.hashCode}');
     // Wrap everything by DefaultTabController length 2
     return Column(
       children: [
@@ -37,7 +39,7 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
         ),
 
         // date chooser that sets the state date
-        const ActivitiesQuery(),
+        activitesQuery,
         const Divider(color: PRIMARY_COLOR),
 
         const SizedBox(height: 6),

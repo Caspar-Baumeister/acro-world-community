@@ -204,7 +204,7 @@ class SignUpState extends State<SignUp> {
                     // add agbs checkbox
                     AGBCheckbox(isAgb: isAgb, setAgb: setAgb),
                     const SizedBox(height: 20.0),
-                    StandartButton(
+                    StandardButton(
                       text: "Register",
                       onPressed: () => onRegister(userProvider),
                       loading: loading,

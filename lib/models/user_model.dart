@@ -1,4 +1,5 @@
 import 'package:acroworld/models/gender_model.dart';
+import 'package:acroworld/models/teacher_model.dart';
 
 class User {
   List<UserRole>? userRoles;
@@ -7,8 +8,11 @@ class User {
   String? bio;
   String? teacherId;
   String? imageUrl;
+  String? fcmToken;
   GenderModel? gender;
+  TeacherModel? teacherProfile;
   String? email;
+
   User(
       {this.userRoles,
       this.name,
@@ -31,9 +35,13 @@ class User {
         : null;
     name = json['name'];
     id = json['id'];
+    fcmToken = json['fcmToken'];
     email = json['email'];
     bio = json['bio'];
     teacherId = json['teacher_id'];
+    teacherProfile = json['teacher_profile'] != null
+        ? TeacherModel.fromJson(json['teacher_profile'])
+        : null;
     imageUrl = json['image_url'];
   }
 }

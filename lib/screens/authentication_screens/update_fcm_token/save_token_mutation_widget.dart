@@ -1,10 +1,11 @@
 import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/HOME_SCREENS/home_scaffold.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 class SaveTokenMutationWidget extends StatefulWidget {
   const SaveTokenMutationWidget({Key? key, required this.token})
@@ -35,31 +36,9 @@ class _SaveTokenMutationWidgetState extends State<SaveTokenMutationWidget> {
           // FCM Token was updated
           return const HomeScaffold();
         } else {
-          return Query(
-            options: QueryOptions(
-                document: Queries.getMe, fetchPolicy: FetchPolicy.networkOnly),
-            builder: (queryResult, {fetchMore, refetch}) {
-              Future<void> runRefetch() async {
-                try {
-                  await refetch!();
-                } catch (e) {
-                  print(e.toString());
-                }
-              }
-
-              if (queryResult.isLoading) {
-                return LoadingPage(
-                  onRefresh: runRefetch,
-                );
-              }
-              if (queryResult.hasException) {
-                return RefreshIndicator(
-                    onRefresh: () => runRefetch(),
-                    child: ErrorPage(error: queryResult.exception.toString()));
-              }
-
-              print('me: ${queryResult.data}');
-              String? fcmToken = queryResult.data?['me']?[0]?['fcm_token'];
+          return Consumer<UserProvider>(
+            builder: (context, provider, child) {
+              String? fcmToken = provider.activeUser?.fcmToken;
               if (fcmToken == null ||
                   fcmToken.isEmpty ||
                   fcmToken != widget.token) {

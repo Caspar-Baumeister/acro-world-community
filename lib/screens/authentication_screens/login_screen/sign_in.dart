@@ -128,7 +128,7 @@ class SignInState extends State<SignIn> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    StandartButton(
+                    StandardButton(
                       text: "Login",
                       onPressed: () => onSignin(),
                       loading: loading,

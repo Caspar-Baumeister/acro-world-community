@@ -19,7 +19,7 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
-    return StandartButton(
+    return StandardButton(
       text: userProvider.activeUser?.userRoles != null &&
               userProvider.activeUser!.userRoles!
                   .where((UserRole role) =>

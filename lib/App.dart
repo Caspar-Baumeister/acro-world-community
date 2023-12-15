@@ -4,6 +4,7 @@ import 'package:acroworld/components/wrapper/connection_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/provider/activity_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
+import 'package:acroworld/provider/graphql_client_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/notification_service.dart';
@@ -19,6 +20,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('App:build');
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -26,6 +28,7 @@ class App extends StatelessWidget {
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
+          ChangeNotifierProvider(create: (_) => GraphQLClientProvider()),
         ],
         child: GraphQLProvider(
           client: client,
@@ -57,6 +60,12 @@ class _FirebaseMessengerWrapperState extends State<FirebaseMessengerWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return const ConnectionWrapper();
+    GraphQLClientProvider provider = Provider.of(context);
+    return GraphQLConsumer(
+      builder: (GraphQLClient client) {
+        provider.client = client;
+        return const ConnectionWrapper();
+      },
+    );
   }
 }

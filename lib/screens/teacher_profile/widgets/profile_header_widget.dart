@@ -110,7 +110,7 @@ Widget actions(BuildContext context, String communityId, String? webUrl) {
     children: [
       webUrl != null
           ? Flexible(
-              child: StandartButton(
+              child: StandardButton(
               text: "Website",
               onPressed: () {},
             ))

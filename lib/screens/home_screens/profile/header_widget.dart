@@ -11,57 +11,34 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          CachedNetworkImage(
-            fit: BoxFit.cover,
-            imageUrl: imgUrl,
-            imageBuilder: (context, imageProvider) => Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-              ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        CachedNetworkImage(
+          fit: BoxFit.cover,
+          imageUrl: imgUrl,
+          width: 75,
+          errorWidget: (context, url, error) => Container(
+            width: 100.0,
+            height: 100.0,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black12,
             ),
-            placeholder: (context, url) => Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black12,
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              width: 100.0,
-              height: 100.0,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black12,
-              ),
-              child: const Icon(
-                Icons.error,
-                color: Colors.red,
-              ),
+            child: const Icon(
+              Icons.error,
+              color: Colors.red,
             ),
           ),
-          Expanded(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  name,
-                  style: H20W5,
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+        ),
+        const SizedBox(width: 5),
+        Text(
+          name,
+          textAlign: TextAlign.start,
+          style: H20W5,
+        ),
+      ],
     );
   }
 }

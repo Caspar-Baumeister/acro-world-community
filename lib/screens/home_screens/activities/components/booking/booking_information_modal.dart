@@ -52,7 +52,7 @@ You have to pay the remaining ${leftToPay.toStringAsFixed(2) + getCurrecySymbol(
               style: H14W4,
             ),
             const SizedBox(height: 20),
-            StandartButton(
+            StandardButton(
               text: "To the event",
               onPressed: () => classEvent.classModel != null
                   ? Navigator.of(context).push(

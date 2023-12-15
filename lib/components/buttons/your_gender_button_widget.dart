@@ -37,7 +37,7 @@ class YourGenderButtonWidget extends StatelessWidget {
               meGenderResult.data!["me"]?[0]?['acro_role']);
 
           if (gender.id == null || gender.name == null) {
-            return StandartButton(
+            return StandardButton(
               text: "Choose a role",
               onPressed: () => buildMortal(
                 context,
@@ -67,7 +67,7 @@ class YourGenderButtonWidget extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              StandartButton(
+              StandardButton(
                 text: "Change role",
                 onPressed: () => buildMortal(
                   context,
