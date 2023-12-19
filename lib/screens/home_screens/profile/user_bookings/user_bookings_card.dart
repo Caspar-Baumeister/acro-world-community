@@ -21,13 +21,15 @@ class UserBookingsCard extends StatelessWidget {
       children: [
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => SingleEventQueryWrapper(
-                        classEventId: userBooking.classEventId,
-                        classId: userBooking.classId,
-                      ))),
+          onTap: () => userBooking.classId != null
+              ? Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SingleEventQueryWrapper(
+                            classEventId: userBooking.classEventId,
+                            classId: userBooking.classId!,
+                          )))
+              : null,
           child: SizedBox(
             height: BOOKING_CARD_HEIGHT,
             child: Row(
@@ -45,14 +47,14 @@ class UserBookingsCard extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(userBooking.eventName,
+                        Text(userBooking.eventName ?? "Unknown Event",
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: CARD_TITLE_TEXT),
                         Padding(
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
-                            userBooking.bookingTitle,
+                            userBooking.bookingTitle ?? "Unknown Booking",
                             style: CARD_DESCRIPTION_TEXT,
                           ),
                         ),

@@ -23,8 +23,6 @@ class ParticipatesQuery extends StatelessWidget {
         ),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
-          UserProvider userProvider = Provider.of<UserProvider>(context);
-
           if (result.hasException) {
             return Text(result.exception.toString());
           }
@@ -51,7 +49,10 @@ class ParticipatesQuery extends StatelessWidget {
               .map((u) => User(id: u["user"]["id"], name: u["user"]["name"])));
           bool isParticipate = false;
           participants.forEach(((element) {
-            if (element.id == userProvider.activeUser!.id) {
+            if (element.id ==
+                Provider.of<UserProvider>(context, listen: false)
+                    .activeUser
+                    ?.id) {
               isParticipate = true;
             }
           }));

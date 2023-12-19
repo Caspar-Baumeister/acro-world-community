@@ -234,12 +234,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getMe = gql("""
   query GetMe {
     me {
-      id
-      image_url
-      fcm_token
-      bio
-      created_at
-      name
+      ${Fragments.userFragment}
     }
   }
   """);
@@ -261,6 +256,29 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
         }
+        user_likes_aggregate {
+          aggregate {
+            count
+          }
+        }
+      }
+    }""");
+
+  static final getTeacherForListWithoutUserID = gql("""
+    query getTeacherForList(\$search: String!) {
+      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+        id
+        location_name
+        name
+        type
+        images(where: {is_profile_picture: {_eq: true}}) {
+          image {
+            url
+          }
+          is_profile_picture
+        }
+        is_organization
+       
         user_likes_aggregate {
           aggregate {
             count

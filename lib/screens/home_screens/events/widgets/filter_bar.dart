@@ -4,6 +4,7 @@ import 'package:acroworld/screens/home_screens/events/event_filter_page.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_event_body.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/decorators.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -18,39 +19,96 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
         Provider.of<EventFilterProvider>(context);
     return AppBar(
       automaticallyImplyLeading: false,
-      title: InkWell(
-        onTap: () =>
-            showSearch(context: context, delegate: EventSearchDelegate()),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10.0),
-          decoration: searchBarDecoration,
-          child: Row(
-            children: [
-              const Icon(Icons.search, color: Colors.black),
-              const SizedBox(width: 10),
-              Text(
-                'Search...',
-                style: HINT_INPUT_TEXT,
+      // if filter is active, show back button
+      title: Row(
+        children: [
+          // Conditionally display the leading icon
+          if (eventFilterProvider.isFilterActive())
+            IconButton(
+              padding:
+                  const EdgeInsets.only(left: 0), // Adjust this value as needed
+
+              icon: const Icon(Icons.arrow_back_ios_new_rounded),
+              onPressed: () => eventFilterProvider.resetFilter(),
+            ),
+          Expanded(
+            child: InkWell(
+              onTap: () =>
+                  showSearch(context: context, delegate: EventSearchDelegate()),
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0, vertical: 10.0),
+                decoration: searchBarDecoration,
+                child: Row(
+                  children: [
+                    const Icon(Icons.search, color: Colors.black),
+                    const SizedBox(width: 10),
+                    Text(
+                      'Search...',
+                      style: HINT_INPUT_TEXT,
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
       actions: [
-        IconButton(
-          padding: const EdgeInsets.only(right: 12),
-          icon: Icon(Icons.filter_list,
-              color: eventFilterProvider.isFilterActive()
-                  ? Colors.black
-                  : Colors.black.withOpacity(0.5)),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const EventFilterPage(),
+        Stack(
+          children: [
+            IconButton(
+              padding: const EdgeInsets.only(right: 12),
+              icon: Icon(Icons.filter_list,
+                  color: eventFilterProvider.isFilterActive()
+                      ? Colors.black
+                      : const Color.fromARGB(255, 54, 54, 54).withOpacity(0.5)),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const EventFilterPage(),
+                  ),
+                );
+              },
+            ),
+            if (eventFilterProvider.isFilterActive())
+              Positioned(
+                bottom: 5,
+                right: 5,
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EventFilterPage(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: const BoxDecoration(
+                      color: PRIMARY_COLOR,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 24,
+                      minHeight: 24,
+                    ),
+                    child: Center(
+                      child: Text(
+                        eventFilterProvider.getActiveFilterCount().toString(),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-            );
-          },
+          ],
         ),
       ],
       // automaticallyImplyLeading: false,

@@ -6,6 +6,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +33,6 @@ class _TeacherCardState extends State<TeacherCard> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: GestureDetector(
@@ -92,6 +92,21 @@ class _TeacherCardState extends State<TeacherCard> {
                   QueryResult<dynamic>? result) {
                 return GestureDetector(
                     onTap: () async {
+                      UserProvider userProvider =
+                          Provider.of<UserProvider>(context, listen: false);
+                      if (userProvider.activeUser?.id == null) {
+                        Fluttertoast.showToast(
+                            msg:
+                                "You need to be logged in to be able to follow teachers",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.TOP,
+                            timeInSecForIosWeb: 3,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+
+                        return;
+                      }
                       setState(() {
                         loading = true;
                       });

@@ -125,7 +125,7 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
     setState(() {
       loading = true;
     });
-    final response = await Database().forgotPassword(
+    final response = await DatabaseService().forgotPassword(
       widget.email,
     );
 

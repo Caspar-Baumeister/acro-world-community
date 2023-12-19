@@ -1,12 +1,11 @@
-import 'package:acroworld/graphql/fragments.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/events/get_my_teacher_query_wrapper.dart';
-import 'package:acroworld/screens/home_screens/events/widgets/carousel_slider_widget.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/slider_row_event_dashboard.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class EventDashboardBody extends StatefulWidget {
@@ -21,7 +20,8 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+    GraphQlClientService gqlService =
+        Provider.of<GraphQlClientService>(context);
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
 
@@ -58,18 +58,11 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => refetchEvents(eventFilterProvider, userProvider.token),
+      onRefresh: () => refetchEvents(eventFilterProvider, gqlService),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(10).copyWith(bottom: 4),
-                child: CarouselSliderWidget(
-                  sliders: eventFilterProvider.eventPoster,
-                  isDots: false,
-                )),
             highlights.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(bottom: 20),
@@ -152,21 +145,27 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
     );
   }
 
-  refetchEvents(EventFilterProvider eventFilterProvider, String? token) async {
-    if (token == null) {
-      return;
-    }
-    final result = await Database(token: token).authorizedApi("""query Events {
-  events (where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}}){
-     ${Fragments.eventFragment}
-  }
-}""");
+  refetchEvents(EventFilterProvider eventFilterProvider,
+      GraphQlClientService gqlService) async {
+    QueryResult? result = await gqlService.query(QueryOptions(
+        document: Queries.events,
+        fetchPolicy: FetchPolicy.networkOnly,
+        errorPolicy: ErrorPolicy.all));
 
-    if (result?["data"]?["events"] != null) {
+    if (result.data?["events"] != null) {
       // WidgetsBinding.instance.addPostFrameCallback((_) {
-      eventFilterProvider.setInitialData(result!["data"]!["events"]);
+      try {
+        eventFilterProvider.setInitialData(result.data!["events"]);
+      } catch (e) {
+        print("error while refetching events: ${e.toString()}}");
+        setState(() {
+          queryResult = "error";
+        });
+      }
+
       // });
     } else {
+      print("error while refetching events: $result");
       setState(() {
         queryResult = "error";
       });

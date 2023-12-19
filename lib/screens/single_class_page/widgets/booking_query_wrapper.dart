@@ -27,7 +27,6 @@ class BookingQueryHoverButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     // query for all bookings that where made for the given class event the user ids
     return Query(
       options: QueryOptions(
@@ -53,7 +52,10 @@ class BookingQueryHoverButton extends StatelessWidget {
                 bookedUserJson.map((json) => json["user_id"]));
 
             // case 1: user has already booked -> you reserved this class (later: storno reservation)
-            if (bookedUserIds.contains(userProvider.activeUser!.id!)) {
+            if (bookedUserIds.contains(
+                Provider.of<UserProvider>(context, listen: false)
+                    .activeUser!
+                    .id!)) {
               // BookingOption bookedOption = BookingOption.fromJson(
               //     bookedUserJson.firstWhere((json) =>
               //         json["user_id"] ==

@@ -3,28 +3,29 @@ import 'dart:convert';
 import 'package:acroworld/environment.dart';
 import 'package:http/http.dart' as http;
 
-class Database {
+class DatabaseService {
   final uri = Uri.https(AppEnvironment.backendHost, "hasura/v1/graphql");
-  String? token;
 
-  Database({this.token});
-
-  Future authorizedApi(String query) async {
+  Future<Map<String, dynamic>> loginWithRefreshToken(
+      String refreshToken) async {
     try {
       final response = await http.post(uri,
           headers: {
             'content-type': 'application/json',
-            'authorization': 'Bearer $token'
           },
-          body: json.encode({'query': query}));
+          body: json.encode({
+            'query':
+                "mutation MyMutation {loginWithRefreshToken(input: {refreshToken: \"$refreshToken\"}){token refreshToken}}"
+          }));
       return jsonDecode(response.body.toString());
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
     }
+    return {};
   }
 
-  Future loginApi(String email, String password) async {
+  Future<Map> loginApi(String email, String password) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -39,8 +40,8 @@ class Database {
     } catch (e) {
       // ignore: avoid_print
       print(e.toString());
+      return {"error": true, "message": e.toString()};
     }
-    return null;
   }
 
   Future forgotPassword(String email) async {
@@ -70,7 +71,7 @@ class Database {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", name: \"$name\"}){token}}"
+                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", name: \"$name\"}){token refreshToken}}"
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {

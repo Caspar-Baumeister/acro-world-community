@@ -12,7 +12,7 @@ class CreateEventModal extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+
     return Container(
       padding: const EdgeInsets.fromLTRB(0.0, 5.0, 0.0, 24.0),
       width: double.infinity,
@@ -37,16 +37,18 @@ class CreateEventModal extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(30.0).copyWith(top: 15),
               child: Center(
-                child: Text(
-                  userProvider.activeUser?.userRoles != null &&
-                          userProvider.activeUser!.userRoles!
-                              .where((UserRole role) =>
-                                  role.id ==
-                                  "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
-                              .isNotEmpty
-                      ? "Go to your dashboard to create an event"
-                      : "To be able to create an event, you first have to tell us something about yourself. Log in with your AcroWorld account and fill out some information. We will review your information promptly.",
-                  style: H14W4,
+                child: Consumer<UserProvider>(
+                  builder: (context, userProvider, child) => Text(
+                    userProvider.activeUser?.userRoles != null &&
+                            userProvider.activeUser!.userRoles!
+                                .where((UserRole role) =>
+                                    role.id ==
+                                    "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
+                                .isNotEmpty
+                        ? "Go to your dashboard to create an event"
+                        : "To be able to create an event, you first have to tell us something about yourself. Log in with your AcroWorld account and fill out some information. We will review your information promptly.",
+                    style: H14W4,
+                  ),
                 ),
               ),
             ),

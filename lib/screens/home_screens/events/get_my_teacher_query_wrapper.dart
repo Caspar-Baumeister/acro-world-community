@@ -17,72 +17,74 @@ class GetMyTeacherQueryWrapper extends StatelessWidget {
     UserProvider userProvider = Provider.of<UserProvider>(context);
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
-    return Query(
-      options: QueryOptions(
-          document: Queries.getFollowedTeachers,
-          fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'user_id': userProvider.activeUser!.id}),
-      builder: (QueryResult queryResult,
-          {VoidCallback? refetch, FetchMore? fetchMore}) {
-        Future<void> runRefetch() async {
-          try {
-            refetch!();
-          } catch (e) {
-            print(e.toString());
-          }
-        }
-
-        if (queryResult.hasException) {
-          return ErrorWidget(queryResult.exception.toString());
-        } else if (queryResult.isLoading) {
-          return LoadingWidget(
-            onRefresh: () => runRefetch(),
-          );
-        } else if (queryResult.data != null &&
-            queryResult.data?["teachers"] != null) {
-          List<TeacherModel> followedTeacher = [];
-
-          if (queryResult.data?["teachers"].isNotEmpty) {
-            followedTeacher = List<TeacherModel>.from(queryResult
-                .data?["teachers"]
-                .map((json) => TeacherModel.fromJson(json)));
-          }
-
-          List<EventModel> returnEvents = [];
-          if (followedTeacher.isNotEmpty) {
-            returnEvents =
-                eventFilterProvider.activeEvents.where((EventModel event) {
-              if (event.name == "Acro-Weekend Kiel") {}
-              if (event.teachers == null || event.teachers!.isEmpty) {
-                return false;
-              }
-
-              for (TeacherModel eventTeacher in event.teachers!) {
-                for (TeacherModel followTeacher in followedTeacher) {
-                  if (eventTeacher.id == followTeacher.id) {
-                    return true;
-                  }
+    return userProvider.activeUser?.id == null
+        ? Container()
+        : Query(
+            options: QueryOptions(
+                document: Queries.getFollowedTeachers,
+                fetchPolicy: FetchPolicy.networkOnly,
+                variables: {'user_id': userProvider.activeUser!.id}),
+            builder: (QueryResult queryResult,
+                {VoidCallback? refetch, FetchMore? fetchMore}) {
+              Future<void> runRefetch() async {
+                try {
+                  refetch!();
+                } catch (e) {
+                  print(e.toString());
                 }
               }
-              return false;
-            }).toList();
-          }
 
-          return returnEvents.isNotEmpty
-              ? Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: SliderRowEventDashboard(
-                    onViewAll: () => eventFilterProvider
-                        .changeAllFollowedTeachers(followedTeacher),
-                    header: "Tearchers you follow",
-                    events: returnEvents,
-                  ),
-                )
-              : Container();
-        } else {
-          return Container();
-        }
-      },
-    );
+              if (queryResult.hasException) {
+                return ErrorWidget(queryResult.exception.toString());
+              } else if (queryResult.isLoading) {
+                return LoadingWidget(
+                  onRefresh: () => runRefetch(),
+                );
+              } else if (queryResult.data != null &&
+                  queryResult.data?["teachers"] != null) {
+                List<TeacherModel> followedTeacher = [];
+
+                if (queryResult.data?["teachers"].isNotEmpty) {
+                  followedTeacher = List<TeacherModel>.from(queryResult
+                      .data?["teachers"]
+                      .map((json) => TeacherModel.fromJson(json)));
+                }
+
+                List<EventModel> returnEvents = [];
+                if (followedTeacher.isNotEmpty) {
+                  returnEvents = eventFilterProvider.activeEvents
+                      .where((EventModel event) {
+                    if (event.name == "Acro-Weekend Kiel") {}
+                    if (event.teachers == null || event.teachers!.isEmpty) {
+                      return false;
+                    }
+
+                    for (TeacherModel eventTeacher in event.teachers!) {
+                      for (TeacherModel followTeacher in followedTeacher) {
+                        if (eventTeacher.id == followTeacher.id) {
+                          return true;
+                        }
+                      }
+                    }
+                    return false;
+                  }).toList();
+                }
+
+                return returnEvents.isNotEmpty
+                    ? Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: SliderRowEventDashboard(
+                          onViewAll: () => eventFilterProvider
+                              .changeAllFollowedTeachers(followedTeacher),
+                          header: "Tearchers you follow",
+                          events: returnEvents,
+                        ),
+                      )
+                    : Container();
+              } else {
+                return Container();
+              }
+            },
+          );
   }
 }

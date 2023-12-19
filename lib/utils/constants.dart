@@ -27,5 +27,4 @@ const double STANDART_BUTTON_WIDTH = 300;
 const String PLAY_STORE_LINK =
     "https://play.google.com/store/apps/details?id=com.community.acroworld";
 
-const String IOS_STORE_LINK =
-    "https://apps.apple.com/us/app/acroworld/id1633240146";
+const String IOS_STORE_LINK = "https://apps.apple.com/us/app/acroworld";

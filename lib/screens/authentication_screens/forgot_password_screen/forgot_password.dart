@@ -83,7 +83,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
     setState(() {
       loading = true;
     });
-    final response = await Database().forgotPassword(
+    final response = await DatabaseService().forgotPassword(
       emailController.text,
     );
 

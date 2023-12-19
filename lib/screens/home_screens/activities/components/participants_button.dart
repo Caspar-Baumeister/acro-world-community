@@ -39,7 +39,6 @@ class _ParticipantsButtonState extends State<ParticipantsButton> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Mutation(
         options: MutationOptions(
             document: isParticipateState
@@ -102,7 +101,10 @@ class _ParticipantsButtonState extends State<ParticipantsButton> {
                       isParticipateState
                           ? runMutation({
                               'class_event_id': widget.classEventId,
-                              'user_id': userProvider.activeUser!.id!
+                              'user_id': Provider.of<UserProvider>(context,
+                                      listen: false)
+                                  .activeUser!
+                                  .id!
                             })
                           : runMutation({
                               'class_event_id': widget.classEventId,

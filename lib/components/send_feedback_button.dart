@@ -56,10 +56,15 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
   @override
   void initState() {
     super.initState();
-    _emailController = TextEditingController(
-        text: Provider.of<UserProvider>(context, listen: false)
-            .activeUser!
-            .email!);
+    if (Provider.of<UserProvider>(context, listen: false).activeUser != null) {
+      _emailController = TextEditingController(
+          text: Provider.of<UserProvider>(context, listen: false)
+                  .activeUser!
+                  .email ??
+              "");
+    } else {
+      _emailController = TextEditingController(text: "");
+    }
   }
 
   @override

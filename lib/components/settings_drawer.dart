@@ -1,24 +1,22 @@
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/preferences/login_credentials_preferences.dart';
 import 'package:acroworld/provider/auth/auth_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/essentials/essentials.dart';
+import 'package:acroworld/services/local_storage_service.dart';
+import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/utils/helper_functions/logout.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Drawer(
       child: SafeArea(
         child: Material(
@@ -99,11 +97,12 @@ class SettingsDrawer extends StatelessWidget {
                     // const AcronycWidget(),
 
                     const Spacer(),
-                    CustomButton("Teacher dashboard", () {
-                      String? token = userProvider.token;
-                      String? refreshToken = userProvider.refreshToken;
+                    CustomButton("Teacher dashboard", () async {
+                      final token = await AuthProvider().getToken();
+                      final refreshToken =
+                          LocalStorageService.get(Preferences.refreshToken);
 
-                      if (token != null && refreshToken != null) {
+                      if (refreshToken != null) {
                         customLaunch(
                             "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
                       } else {
@@ -118,8 +117,7 @@ class SettingsDrawer extends StatelessWidget {
                   icon: Icons.logout,
                   onPressed: () async {
                     await logOut(context);
-                  } //=> await AuthService().signOut(),
-                  )
+                  })
             ],
           ),
         ),
@@ -138,29 +136,5 @@ class SettingsDrawer extends StatelessWidget {
       ),
       onTap: onPressed,
     );
-  }
-
-  logOut(BuildContext context) {
-    // deletes the credentials
-    CredentialPreferences.removeEmail();
-    CredentialPreferences.removePassword();
-
-    // deletes the token and user from user provider
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
-    userProvider.token = null;
-
-    AuthProvider.token = null;
-
-    // safe the user to provider
-    userProvider.setUserFromToken();
-
-    // delete all and push to authentication
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(
-            builder: (context) => const Authenticate(
-                  initShowSignIn: true,
-                )),
-        (Route<dynamic> route) => false);
   }
 }

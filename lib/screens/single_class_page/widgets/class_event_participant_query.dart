@@ -14,7 +14,6 @@ class ClassEventParticipantQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Query(
       options: QueryOptions(
         fetchPolicy: FetchPolicy.networkOnly,
@@ -44,7 +43,10 @@ class ClassEventParticipantQuery extends StatelessWidget {
         List<User> participants = [];
         bool isParticipate = false;
         participantsWithMe.forEach(((element) {
-          if (element.id == userProvider.activeUser!.id) {
+          if (element.id ==
+              Provider.of<UserProvider>(context, listen: false)
+                  .activeUser!
+                  .id) {
             isParticipate = true;
           } else {
             participants.add(element);

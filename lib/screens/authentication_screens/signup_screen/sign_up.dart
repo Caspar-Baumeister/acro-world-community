@@ -1,10 +1,10 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
-import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/register_screen/widgets/agbsCheckBox.dart';
-import 'package:acroworld/screens/authentication_screens/update_fcm_token/update_fcm_token.dart';
+import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
+import 'package:acroworld/screens/home_screens/home_scaffold.dart';
+import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -58,7 +58,6 @@ class SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
-    UserProvider userProvider = Provider.of<UserProvider>(context);
 
     return Scaffold(
       body: SafeArea(
@@ -186,15 +185,14 @@ class SignUpState extends State<SignUp> {
                               });
                             },
                           )),
-                      onFieldSubmitted: (_) =>
-                          loading ? null : onRegister(userProvider),
+                      onFieldSubmitted: (_) => loading ? null : onRegister(),
                     ),
-                    errorPassword != ""
+                    errorPasswordConfirm != ""
                         ? Container(
                             alignment: Alignment.centerLeft,
                             padding: const EdgeInsets.only(top: 12.0, left: 10),
                             child: Text(
-                              errorPassword,
+                              errorPasswordConfirm,
                               style: const TextStyle(
                                   color: Colors.red, fontSize: 14.0),
                             ),
@@ -206,7 +204,7 @@ class SignUpState extends State<SignUp> {
                     const SizedBox(height: 20.0),
                     StandartButton(
                       text: "Register",
-                      onPressed: () => onRegister(userProvider),
+                      onPressed: () => onRegister(),
                       loading: loading,
                       isFilled: true,
                       buttonFillColor: COLOR7,
@@ -246,14 +244,7 @@ class SignUpState extends State<SignUp> {
                         ),
                       ),
                       onPressed: () => widget.toggleView(),
-                      child: const Text(
-                        "Login",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
-                      ),
+                      child: const Text("Login", style: BUTTON_TEXT),
                     ),
                     const SizedBox(
                       height: 40,
@@ -268,7 +259,7 @@ class SignUpState extends State<SignUp> {
     );
   }
 
-  onRegister(UserProvider userProvider) async {
+  onRegister() async {
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       error = '';
@@ -287,6 +278,7 @@ class SignUpState extends State<SignUp> {
     }
     // check if password and password confirm are the same
     if (passwordController?.text != passwordConfirmController?.text) {
+      print("yes this happend");
       setState(() {
         errorPasswordConfirm = "Passwords are not the same";
         loading = false;
@@ -314,68 +306,36 @@ class SignUpState extends State<SignUp> {
       return;
     }
 
-    // register response
-    final response = await Database().registerApi(
-        emailController!.text, passwordController!.text, nameController!.text);
-
-    // error handling
-    String errorResponse =
-        "We're sorry there are some problems. Please try again later";
-    if (response["errors"] != null) {
-      if (response["errors"][0] != null &&
-          response["errors"][0]["message"] != null) {
-        errorResponse = response["errors"][0]["message"].toString();
+    await AuthProvider()
+        .register(emailController!.text, passwordController!.text,
+            nameController!.text)
+        .then((response) {
+      if (response["errors"]?[0]["extensions"]?["exception"]?["errorInfo"]
+              ?["message"] !=
+          null) {
+        setState(() {
+          error = response["errors"]?[0]["extensions"]?["exception"]
+              ?["errorInfo"]?["message"];
+        });
+      } else if (response["error"] == false) {
+        final userProvider = Provider.of<UserProvider>(context, listen: false);
+        userProvider.setUserFromToken().then((value) {
+          if (value) {
+            NotificationService().updateToken(userProvider.client);
+            Navigator.of(context).push(
+              MaterialPageRoute(builder: (context) => const HomeScaffold()),
+            );
+          } else {
+            setState(() {
+              error = 'An unexpected error occured. Please try again later';
+            });
+          }
+        });
+      } else {
+        setState(() {
+          error = 'An unexpected error occured. Please try again later';
+        });
       }
-      setState(() {
-        error = errorResponse;
-        loading = false;
-      });
-      return;
-    } else if (response["data"] == null ||
-        response["data"]["register"] == null ||
-        response["data"]["register"]["token"] == null) {
-      setState(() {
-        error = errorResponse;
-        loading = false;
-      });
-      return;
-    }
-    // no error and token exist set all errors to empty
-    setState(() {
-      error = '';
-      errorEmail = '';
-      errorPassword = '';
-      errorName = '';
-      errorPasswordConfirm = '';
-    });
-
-    // no error and token exist
-    String token = response["data"]["register"]["token"];
-
-    userProvider.token = token;
-    bool setUserFromTokeResponse = await userProvider.setUserFromToken();
-
-    if (!setUserFromTokeResponse) {
-      errorResponse = "We are not able to create an user";
-      setState(() {
-        error = errorResponse;
-        loading = false;
-      });
-      return;
-    }
-
-    // safe the credentials to shared preferences
-    CredentialPreferences.setEmail(emailController?.text ?? "");
-    CredentialPreferences.setPassword(passwordController?.text ?? "");
-
-    // send to UserCommunities
-    // send to UserCommunities
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Navigator.of(context).push(
-        MaterialPageRoute(builder: (context) => const UpdateFcmToken()
-            //UpdateFcmToken()
-            ),
-      );
     });
 
     setState(() {

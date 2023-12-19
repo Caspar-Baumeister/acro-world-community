@@ -1,12 +1,8 @@
 import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/preferences/login_credentials_preferences.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/authentication_screens/authenticate.dart';
+import 'package:acroworld/utils/helper_functions/logout.dart';
 import 'package:flutter/material.dart';
-
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
 class DeleteAccount extends StatefulWidget {
   const DeleteAccount({Key? key}) : super(key: key);
@@ -79,7 +75,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
     );
   }
 
-  deleteAccount(Function runMutation) async {
+  deleteAccount(Function runMutation) {
     logOut(context);
     runMutation();
   }
@@ -149,23 +145,5 @@ class _DeleteAccountState extends State<DeleteAccount> {
             ),
           );
         });
-  }
-
-  logOut(BuildContext context) {
-    // deletes the credentials
-    CredentialPreferences.removeEmail();
-    CredentialPreferences.removePassword();
-
-    // deletes the token and user from user provider
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    userProvider.token = null;
-
-    // safe the user to provider
-    userProvider.setUserFromToken();
-
-    // delete all and push to authentication
-    Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => const Authenticate()),
-        (Route<dynamic> route) => false);
   }
 }
