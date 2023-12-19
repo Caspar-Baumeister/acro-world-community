@@ -1,18 +1,18 @@
-// import 'package:acroworld/components/buttons/standart_button.dart';
-// import 'package:acroworld/components/wrapper/auth_wrapper.dart';
-// import 'package:acroworld/utils/text_styles.dart';
-// import 'package:flutter/material.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
-// import 'package:internet_connection_checker/internet_connection_checker.dart';
+// // import 'package:acroworld/components/buttons/standart_button.dart';
+// // import 'package:acroworld/components/wrapper/auth_wrapper.dart';
+// // import 'package:acroworld/utils/text_styles.dart';
+// // import 'package:flutter/material.dart';
+// // import 'package:fluttertoast/fluttertoast.dart';
+// // import 'package:internet_connection_checker/internet_connection_checker.dart';
 
-// class NoWifePage extends StatefulWidget {
-//   const NoWifePage({Key? key, this.followUpWidget}) : super(key: key);
+// // class NoWifePage extends StatefulWidget {
+// //   const NoWifePage({Key? key, this.followUpWidget}) : super(key: key);
 
-//   final Widget? followUpWidget;
+// //   final Widget? followUpWidget;
 
-//   @override
-//   State<NoWifePage> createState() => _NoWifePageState();
-// }
+// //   @override
+// //   State<NoWifePage> createState() => _NoWifePageState();
+// // }
 
 // class _NoWifePageState extends State<NoWifePage> {
 //   bool loading = false;
@@ -33,7 +33,7 @@
 //             const SizedBox(
 //               height: 20,
 //             ),
-//             StandartButton(
+//             StandardButton(
 //               text: "reload",
 //               onPressed: () => onReload(),
 //               loading: loading,

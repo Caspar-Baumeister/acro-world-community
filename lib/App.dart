@@ -35,6 +35,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    print('App:build');
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(

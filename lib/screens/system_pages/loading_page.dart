@@ -23,10 +23,10 @@ class _LoadingPageState extends State<LoadingPage> {
           child: SizedBox(
             height: MediaQuery.of(context).size.height -
                 AppBar().preferredSize.height,
-            child: Column(
+            child: const Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Center(
                   child: Image(
                     image: AssetImage("assets/muscleup_drawing.png"),

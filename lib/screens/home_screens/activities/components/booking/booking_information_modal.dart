@@ -47,7 +47,7 @@ You can also view your booking details in your profile.""",
               style: H14W4,
             ),
             const SizedBox(height: 20),
-            StandartButton(
+            StandardButton(
               text: "To the event",
               onPressed: () => classEvent.classModel != null
                   ? Navigator.of(context).push(

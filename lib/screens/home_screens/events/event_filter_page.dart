@@ -41,7 +41,7 @@ class EventFilterPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    StandartButton(
+                    StandardButton(
                       text: "Reset",
                       onPressed: () {
                         eventFilterProvider.resetFilter();
@@ -50,7 +50,7 @@ class EventFilterPage extends StatelessWidget {
                       },
                       width: buttonWidth,
                     ),
-                    StandartButton(
+                    StandardButton(
                       text: "Apply",
                       onPressed: () {
                         Navigator.of(context).pop();
