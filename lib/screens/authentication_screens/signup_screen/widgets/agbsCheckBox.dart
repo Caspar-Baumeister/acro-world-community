@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/authentication_screens/register_screen/widgets/check_box.dart';
+import 'package:acroworld/components/custom_check_box.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
@@ -22,7 +22,7 @@ class _AGBCheckboxState extends State<AGBCheckbox> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        CheckBox(
+        CustomCheckBox(
             onTap: () => widget.setAgb(!widget.isAgb), isChecked: widget.isAgb),
         const SizedBox(width: 8),
         RichText(

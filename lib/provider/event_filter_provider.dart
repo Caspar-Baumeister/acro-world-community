@@ -32,6 +32,26 @@ class EventFilterProvider extends ChangeNotifier {
     // getInitialData();
   }
 
+  int getActiveFilterCount() {
+    int count = 0;
+    if (activeCategories.isNotEmpty) {
+      count += activeCategories.length;
+    }
+    if (activeCountries.isNotEmpty) {
+      count += activeCountries.length;
+    }
+    if (activeDates.isNotEmpty) {
+      count += activeDates.length;
+    }
+    if (onlyHighlighted) {
+      count += 1;
+    }
+    if (followedTeachers.isNotEmpty) {
+      count += 1;
+    }
+    return count;
+  }
+
   setInitialData(List events) {
     // get the events
     initialEvents = events

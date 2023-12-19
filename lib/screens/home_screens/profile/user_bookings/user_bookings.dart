@@ -28,9 +28,18 @@ class UserBookings extends StatelessWidget {
         } else if (queryResult.data != null &&
             queryResult.data?["me"] != null) {
           try {
-            List bookings = queryResult.data!["me"]![0]?["bookings"];
+            List bookings = queryResult.data!["me"]?[0]?["bookings"];
             // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
             List<UserBookingModel> userBookings = [];
+            if (bookings.isEmpty) {
+              return const Center(
+                child: Text(
+                  "You have no bookings",
+                  style: H16W7,
+                  textAlign: TextAlign.center,
+                ),
+              );
+            }
             for (var booking in bookings) {
               try {
                 userBookings.add(UserBookingModel.fromJson(booking));
@@ -119,14 +128,14 @@ class UserBookings extends StatelessWidget {
 }
 
 class UserBookingModel {
-  String classEventId;
-  String classId;
-  String eventName;
-  String eventImage;
+  String? classEventId;
+  String? classId;
+  String? eventName;
+  String? eventImage;
   DateTime startDate;
   DateTime endDate;
-  String bookingTitle;
-  String status;
+  String? bookingTitle;
+  String? status;
   String? locationName;
 
   UserBookingModel({
@@ -143,16 +152,35 @@ class UserBookingModel {
 
   // Factory constructor for creating a new UserBookingModel instance from a map.
   factory UserBookingModel.fromJson(Map<String, dynamic> json) {
+    // define the start and end date if they are not null
+    DateTime? startDate;
+    DateTime? endDate;
+
+    if (json['class_event']?['start_date'] != null) {
+      try {
+        startDate = DateTime.parse(json['class_event']?['start_date']);
+      } catch (e) {
+        print("error while parsing start date: $e");
+      }
+    }
+    if (json['class_event']?['end_date'] != null) {
+      try {
+        endDate = DateTime.parse(json['class_event']?['end_date']);
+      } catch (e) {
+        print("error while parsing end date: $e");
+      }
+    }
+
     return UserBookingModel(
-      classEventId: json['class_event']['id'] as String,
-      classId: json['class_event']['class']['id'] as String,
-      locationName: json['class_event']['class']['location_name'] as String?,
-      status: json['status'] as String,
-      eventName: json['class_event']['class']['name'] as String,
-      eventImage: json['class_event']['class']['image_url'] as String,
-      startDate: DateTime.parse(json['class_event']['start_date']),
-      endDate: DateTime.parse(json['class_event']['end_date']),
-      bookingTitle: json['booking_option']['title'] as String,
+      classEventId: json['class_event']?['id'] as String?,
+      classId: json['class_event']?['class']?['id'] as String?,
+      locationName: json['class_event']?['class']?['location_name'] as String?,
+      status: json['status'] as String?,
+      eventName: json['class_event']?['class']?['name'] as String?,
+      eventImage: json['class_event']?['class']?['image_url'] as String?,
+      startDate: startDate ?? DateTime.now(),
+      endDate: endDate ?? DateTime.now(),
+      bookingTitle: json['booking_option']?['title'] as String?,
     );
   }
 }

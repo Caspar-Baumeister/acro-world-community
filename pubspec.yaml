@@ -15,13 +15,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^6.0.1
   shared_preferences: ^2.0.11
-  flutter_launcher_icons: ^0.11.0
-  file_picker: ^5.2.5
+  flutter_launcher_icons: ^0.13.1
   flutter_map: ^6.0.0
   latlong2: ^0.9.0
-  maps_launcher: ^2.0.1
   fluttertoast: ^8.0.9
-  cached_network_image: ^3.2.0
+  cached_network_image: ^3.3.0
   jwt_decode: ^0.3.1
   graphql_flutter: ^5.1.0
   event_bus: ^2.0.0
@@ -29,14 +27,10 @@ dependencies:
   firebase_core: ^2.17.0
   readmore: ^2.2.0
   url_launcher: ^6.1.14
-  webview_flutter: ^3.0.4
-  toggle_switch: ^2.0.1
   share_plus: ^7.1.0
   pie_chart: ^5.3.2
-  carousel_slider: ^4.2.1
   internet_connection_checker: ^1.0.0+1
   package_info_plus: ^4.2.0
-  http_auth: ^1.0.1
   http: ^1.1.0
   photo_view: ^0.14.0
   add_2_calendar: ^2.2.4
@@ -44,15 +38,16 @@ dependencies:
   flutter_email_sender: ^6.0.2
   flutter_stripe: ^9.5.0+1
   sentry_flutter: ^7.13.2
-  flutter_dotenv: ^5.0.2
+  flutter_dotenv: ^5.1.0
+  flutter_native_splash: ^2.3.8
+  timeago: ^3.2.2
+  table_calendar: ^3.0.5
+  path_provider: ^2.0.10
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-  timeago: ^3.2.2
-  table_calendar: ^3.0.5
-  path_provider: ^2.0.10
+  flutter_lints: ^3.0.1
 
 flutter_icons:
   image_path: "assets/logo/play_store_512.png"
@@ -65,3 +60,9 @@ flutter:
   assets:
     - assets/
     - assets/logo/
+    - .env
+# flutter_native_splash:
+#   color: "#ffffff"
+#   image: "assets/logo/play_store_512.png"
+#   android: true
+#   ios: true

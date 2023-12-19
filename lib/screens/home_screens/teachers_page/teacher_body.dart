@@ -15,18 +15,18 @@ class TeacherBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-
     List<Widget> teacherList = List.from(
       teachers.where((TeacherModel teacher) => teacher.type != "Anonymous").map(
-            (teacher) => TeacherCard(
-                teacher: teacher,
-                isLiked: isTeacherFollowedByUser(
-                    teacher.userLikes, userProvider.activeUser!.id!)),
+            (teacher) => Consumer<UserProvider>(
+              builder: (context, userProvider, child) => TeacherCard(
+                  teacher: teacher,
+                  isLiked: userProvider.activeUser?.id == null
+                      ? false
+                      : isTeacherFollowedByUser(
+                          teacher.userLikes, userProvider.activeUser!.id!)),
+            ),
           ),
     );
-    Provider.of<UserProvider>(context);
-
     return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [...teacherList]);

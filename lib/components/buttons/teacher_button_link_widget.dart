@@ -18,25 +18,26 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-    return StandartButton(
-      text: userProvider.activeUser?.userRoles != null &&
-              userProvider.activeUser!.userRoles!
-                  .where((UserRole role) =>
-                      role.id == "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
-                  .isNotEmpty
-          ? "Your dashboard"
-          : "Apply",
-      onPressed: () async {
-        setState(() {
-          loading = true;
-        });
-        await customLaunch(AppEnvironment.dashboardUrl);
-        setState(() {
-          loading = false;
-        });
-      },
-      isFilled: true,
+    return Consumer<UserProvider>(
+      builder: (context, userProvider, child) => StandartButton(
+        text: userProvider.activeUser?.userRoles != null &&
+                userProvider.activeUser!.userRoles!
+                    .where((UserRole role) =>
+                        role.id == "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
+                    .isNotEmpty
+            ? "Your dashboard"
+            : "Apply",
+        onPressed: () async {
+          setState(() {
+            loading = true;
+          });
+          await customLaunch(AppEnvironment.dashboardUrl);
+          setState(() {
+            loading = false;
+          });
+        },
+        isFilled: true,
+      ),
     );
   }
 }

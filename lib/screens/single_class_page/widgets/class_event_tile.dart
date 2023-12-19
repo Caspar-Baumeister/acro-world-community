@@ -43,8 +43,6 @@ class _ClassEventTileState extends State<ClassEventTile> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-
     return Mutation(
         options: MutationOptions(
             onCompleted: (data) {
@@ -120,7 +118,10 @@ class _ClassEventTileState extends State<ClassEventTile> {
                           isParticipateState
                               ? runMutation({
                                   'class_event_id': widget.classEvent.id,
-                                  'user_id': userProvider.activeUser!.id!
+                                  'user_id': Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .activeUser!
+                                      .id!
                                 })
                               : runMutation({
                                   'class_event_id': widget.classEvent.id,

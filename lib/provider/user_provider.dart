@@ -1,18 +1,26 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/fragments.dart';
-import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:jwt_decode/jwt_decode.dart';
 
 class UserProvider extends ChangeNotifier {
-  User? activeUser;
-  String? token;
-  String? refreshToken;
-  final GraphQLClient client;
+  User? _activeUser;
+  GraphQLClient client;
 
   UserProvider({required this.client});
+
+  User? get activeUser {
+    return _activeUser;
+  }
+
+  // delete active user
+  void deleteActiveUser() {
+    _activeUser = null;
+    notifyListeners();
+  }
 
   Future<void> updateUserByJson(
       String userId, Map<String, dynamic> updates) async {
@@ -34,29 +42,18 @@ class UserProvider extends ChangeNotifier {
 
     final result = await client.mutate(options);
 
-    print("result: ${result.data}");
-
     if (result.hasException) {
       throw result.exception!;
     }
     // creates a User object from the result
     try {
-      activeUser = User.fromJson(result.data!["update_users_by_pk"]);
+      _activeUser = User.fromJson(result.data!["update_users_by_pk"]);
     } catch (e) {
-      print(e);
-
+      CustomErrorHandler.captureException(e.toString());
       rethrow;
     }
-
     notifyListeners();
     return;
-
-    // Handle the response as needed
-  }
-
-  getId() {
-    Map<String, dynamic> parseJwt = Jwt.parseJwt(token!);
-    return parseJwt["user_id"];
   }
 
   // create a hasChanged function, that checks if userdata has changed based on name, email, gender id and level id
@@ -66,25 +63,22 @@ class UserProvider extends ChangeNotifier {
     String? levelId,
   ) {
     // if the active user is null, return false
-    if (activeUser == null) {
+    if (_activeUser == null) {
       return null;
     }
-
     Map<String, dynamic> changes = {};
-
     // else checks if the name, email, genderId and levelId are the same as the active user
     // return true if they are not the same
 
-    if (activeUser!.gender?.id != genderId) {
+    if (_activeUser!.gender?.id != genderId) {
       changes["acro_role_id"] = genderId;
     }
-    if (activeUser!.level?.id != levelId) {
+    if (_activeUser!.level?.id != levelId) {
       changes["level_id"] = levelId;
     }
-    if (activeUser!.name != name) {
+    if (_activeUser!.name != name) {
       changes["name"] = name;
     }
-    print("changes: $changes");
     return changes;
   }
 
@@ -93,83 +87,37 @@ class UserProvider extends ChangeNotifier {
     if (changes == null || changes.isEmpty) {
       return null;
     }
-
-    await updateUserByJson(activeUser!.id!, changes);
-  }
-
-  Future<bool> validToken() async {
-    if (token == null) {
-      return false;
-    }
-    if (!isTokenExpired()) {
-      return true;
-    }
-    return await refreshTokenFunction();
+    await updateUserByJson(_activeUser!.id!, changes);
   }
 
   Future<bool> setUserFromToken() async {
-    if (token == "" || token == null) {
-      activeUser = null;
+    if (await AuthProvider().getToken() == null) {
+      print("no token");
+      _activeUser = null;
+      notifyListeners();
       return false;
     }
+    // create the options
+    QueryOptions options = QueryOptions(
+      document: Queries.getMe,
+    );
+    // get the result
+    final result = await client.query(options);
+
+    // if there is an exception, throw it
+    if (result.hasException) {
+      CustomErrorHandler.captureException(result.exception.toString());
+      return false;
+    }
+    // creates a User object from the result
     try {
-      final response = await Database(token: token).authorizedApi("""query {
-            me { 
-             ${Fragments.userFragment}
-            }
-          }""");
-
-      if (response?["data"]?["me"]?[0] == null) {
-        return false;
-      }
-
-      Map<String, dynamic> user = response["data"]["me"][0];
-
-      if (user["id"] == null || user["name"] == null) {
-        return false;
-      }
-      activeUser = User.fromJson(user);
-
+      _activeUser = User.fromJson(result.data!["me"][0]);
+      print("set active user id: ${_activeUser?.id}");
       notifyListeners();
       return true;
     } catch (e) {
-      print(e);
+      CustomErrorHandler.captureException(e.toString());
       return false;
     }
-  }
-
-  bool isTokenExpired() {
-    if (token == null) {
-      return true;
-    }
-    return Jwt.isExpired(token!);
-  }
-
-  Future<bool> refreshTokenFunction() async {
-    String? email = CredentialPreferences.getEmail();
-    String? password = CredentialPreferences.getPassword();
-
-    if (email == null || password == null) {
-      return false;
-    }
-
-    // get the token trough the credentials
-    // (invalid credentials) return false
-    if (isTokenExpired()) {
-      final response = await Database().loginApi(email, password);
-
-      String? newToken = response?["data"]?["login"]?["token"];
-      String? newRefreshToken = response?["data"]?["login"]?["refreshToken"];
-
-      if (newToken == null) {
-        return false;
-      }
-      token = newToken;
-      refreshToken = newRefreshToken;
-      await setUserFromToken();
-    }
-
-    // safe the user to provider
-    return true;
   }
 }

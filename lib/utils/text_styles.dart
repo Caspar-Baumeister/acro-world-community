@@ -8,6 +8,7 @@ const TextStyle CARD_TITLE_TEXT = H16W5;
 const TextStyle CARD_DESCRIPTION_TEXT = H12W4;
 TextStyle ACTIVE_INPUT_TEXT = H16W4.copyWith(color: Colors.black);
 TextStyle HINT_INPUT_TEXT = H16W3.copyWith(color: Colors.black);
+const BUTTON_TEXT = H16W7;
 
 const TextStyle H18W7 = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
 const TextStyle H18W6 = TextStyle(fontSize: 18, fontWeight: FontWeight.w600);

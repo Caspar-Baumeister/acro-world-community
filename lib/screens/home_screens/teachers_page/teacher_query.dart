@@ -26,22 +26,37 @@ class _TeacherQueryState extends State<TeacherQuery> {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+
+    // if user is not logged in query getTeacherForListWithoutUserID
+    // else if widget.isFollowed query getFollowedTeacherForList
+    // else query getTeacherForList
+
+    QueryOptions? queryOptions;
+    if (userProvider.activeUser?.id == null) {
+      queryOptions = QueryOptions(
+          document: Queries.getTeacherForListWithoutUserID,
+          fetchPolicy: FetchPolicy.networkOnly,
+          variables: {"search": "%${widget.search}%"});
+    } else if (widget.isFollowed) {
+      queryOptions = QueryOptions(
+          document: Queries.getFollowedTeacherForList,
+          fetchPolicy: FetchPolicy.networkOnly,
+          variables: {
+            "user_id": userProvider.activeUser!.id!,
+            "search": "%${widget.search}%"
+          });
+    } else {
+      queryOptions = QueryOptions(
+          document: Queries.getTeacherForList,
+          fetchPolicy: FetchPolicy.networkOnly,
+          variables: {
+            "user_id": userProvider.activeUser!.id!,
+            "search": "%${widget.search}%"
+          });
+    }
+
     return Query(
-      options: widget.isFollowed
-          ? QueryOptions(
-              document: Queries.getFollowedTeacherForList,
-              fetchPolicy: FetchPolicy.networkOnly,
-              variables: {
-                  "user_id": userProvider.activeUser!.id!,
-                  "search": "%${widget.search}%"
-                })
-          : QueryOptions(
-              document: Queries.getTeacherForList,
-              fetchPolicy: FetchPolicy.networkOnly,
-              variables: {
-                  "user_id": userProvider.activeUser!.id!,
-                  "search": "%${widget.search}%"
-                }),
+      options: queryOptions,
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {

@@ -9,13 +9,13 @@ class Mutations {
 }
 """);
 
-  static final setGender = gql("""
-mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
-  update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
-    id
-  }
-}
-""");
+//   static final setGender = gql("""
+// mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
+//   update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
+//     id
+//   }
+// }
+// """);
 
   static final setUserLevel = gql("""
 mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {

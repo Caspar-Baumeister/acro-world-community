@@ -13,7 +13,6 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return SafeArea(
       child: Scaffold(
         endDrawer: const SettingsDrawer(),
@@ -35,9 +34,11 @@ class ProfilePage extends StatelessWidget {
                 SliverList(
                   delegate: SliverChildListDelegate(
                     [
-                      HeaderWidget(
-                        imgUrl: userProvider.activeUser?.imageUrl ?? "",
-                        name: userProvider.activeUser?.name ?? "",
+                      Consumer<UserProvider>(
+                        builder: (context, userProvider, child) => HeaderWidget(
+                          imgUrl: userProvider.activeUser?.imageUrl ?? "",
+                          name: userProvider.activeUser?.name ?? "",
+                        ),
                       ),
                     ],
                   ),

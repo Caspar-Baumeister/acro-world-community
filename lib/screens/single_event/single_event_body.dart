@@ -1,8 +1,8 @@
 import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/open_google_maps.dart';
+import 'package:acroworld/components/open_map.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/open_map.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/text_styles.dart';

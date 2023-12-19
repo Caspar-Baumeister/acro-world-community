@@ -1,12 +1,17 @@
+import 'package:acroworld/graphql/mutations.dart';
+import 'package:acroworld/main.dart';
+import 'package:acroworld/models/fcm/fcm_event.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
+import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 
 class NotificationService {
   final FirebaseMessaging _fcm = FirebaseMessaging.instance;
 
-  Future initialize(BuildContext context) async {
+  Future initialize() async {
     // Request permissions
     await _fcm.requestPermission(
       alert: true,
@@ -17,7 +22,68 @@ class NotificationService {
       provisional: false,
       sound: true,
     );
+  }
 
+  Future<String?> getToken() async {
+    String? token = await _fcm.getToken();
+    return token;
+  }
+
+  // updateToken function with userprovider
+  Future<void> updateToken(GraphQLClient client) async {
+    getToken().then((value) {
+      if (value == null) {
+        return;
+      }
+      try {
+        client.mutate(
+          MutationOptions(
+            document: Mutations.updateFcmToken,
+            variables: {
+              'fcmToken': value,
+            },
+          ),
+        );
+
+        print("updateToken value");
+      } catch (e) {
+        print("updateToken error (client.mutate)");
+        print(e.toString());
+      }
+    }).catchError((err) {
+      print("updateToken error");
+      print(err.toString());
+    });
+  }
+
+  // // add token refresh listener
+  // Future<void> addTokenRefreshListener(GraphQLClient client) async {
+  //   _fcm.onTokenRefresh.listen((fcmToken) {
+  //     print("addTokenRefreshListener fcmToken: $fcmToken");
+  //     // try to save the token on the server
+  //     try {
+  //       client.mutate(
+  //         MutationOptions(
+  //           document: Mutations.updateFcmToken,
+  //           variables: {
+  //             'fcmToken': fcmToken,
+  //           },
+  //         ),
+  //       );
+  //     } catch (e) {
+  //       print("addTokenRefreshListener error (client.mutate)");
+  //       print(e.toString());
+  //     }
+  //     // Note: This callback is fired at each app startup and whenever a new
+  //     // token is generated.
+  //   }).onError((err) {
+  //     print("addTokenRefreshListener error");
+  //     print(err.toString());
+  //     // Error getting token.
+  //   });
+  // }
+
+  Future<void> addListeners(BuildContext context) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("message.messageType");
 
@@ -37,7 +103,7 @@ class NotificationService {
                 duration: const Duration(seconds: 5),
                 content: Center(
                   child: Text(
-                    "Teacher you follow where added to the ${getReadableEventType(event.eventType!)} ${event.name}",
+                    "Teacher you follow where added to the ${event.eventType?.value} ${event.name}",
                     textAlign: TextAlign.center,
                   ),
                 ),
@@ -89,7 +155,14 @@ class NotificationService {
                   label: 'View Event',
                   onPressed: () {
                     // Navigate to the EventScreen with the extracted ID
-                    Navigator.of(context).push(
+                    // Navigator.of(context).push(
+                    //   MaterialPageRoute(
+                    //     builder: (context) => SingleEventQueryWrapper(
+                    //       eventId: event.id,
+                    //     ),
+                    //   ),
+                    // );
+                    navigatorKey.currentState!.push(
                       MaterialPageRoute(
                         builder: (context) => SingleEventQueryWrapper(
                           eventId: event.id,
@@ -127,7 +200,14 @@ class NotificationService {
         case "EventCreated":
           try {
             final event = FCMEvent.fromJson(message.data);
-            Navigator.of(context).push(
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => SingleEventQueryWrapper(
+            //       eventId: event.id,
+            //     ),
+            //   ),
+            // );
+            navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (context) => SingleEventQueryWrapper(
                   eventId: event.id,
@@ -151,7 +231,14 @@ class NotificationService {
         case "EventUpdated":
           try {
             final event = FCMEvent.fromJson(message.data);
-            Navigator.of(context).push(
+            // Navigator.of(context).push(
+            //   MaterialPageRoute(
+            //     builder: (context) => SingleEventQueryWrapper(
+            //       eventId: event.id,
+            //     ),
+            //   ),
+            // );
+            navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (context) => SingleEventQueryWrapper(
                   eventId: event.id,
@@ -181,88 +268,5 @@ class NotificationService {
     //   if (initialMessage != null) {
 
     //   }
-  }
-}
-
-EventType _mapStringToEventType(String eventTypeString) {
-  switch (eventTypeString) {
-    case 'FestivalsAndCons':
-      return EventType.FestivalsAndCons;
-    case 'Retreats':
-      return EventType.Retreats;
-    case 'Trainings':
-      return EventType.Trainings;
-    default:
-      throw ArgumentError('Invalid event type string: $eventTypeString');
-  }
-}
-
-class FCMEvent {
-  EventType? eventType;
-  DateTime? endDate;
-  String? locationCountry;
-  String? locationCity;
-  String name;
-  String id;
-  String type;
-  DateTime? startDate;
-
-  FCMEvent({
-    required this.eventType,
-    required this.endDate,
-    required this.locationCountry,
-    required this.locationCity,
-    required this.name,
-    required this.id,
-    required this.type,
-    required this.startDate,
-  });
-
-  factory FCMEvent.fromJson(Map<String, dynamic> json) {
-    return FCMEvent(
-      eventType: json['event_type'] != null
-          ? _mapStringToEventType(json['event_type'])
-          : null,
-      endDate: json['endDate'] != null ? DateTime.parse(json['endDate']) : null,
-      locationCountry: json['location_country'],
-      locationCity: json['location_city'],
-      name: json['name'],
-      id: json['id'],
-      type: json['type'],
-      startDate:
-          json['startDate'] != null ? DateTime.parse(json['startDate']) : null,
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'event_type': eventType,
-      'endDate': endDate?.toIso8601String(),
-      'location_country': locationCountry,
-      'location_city': locationCity,
-      'name': name,
-      'id': id,
-      'type': type,
-      'startDate': startDate?.toIso8601String(),
-    };
-  }
-}
-
-enum EventType {
-  FestivalsAndCons,
-  Retreats,
-  Trainings,
-}
-
-String getReadableEventType(EventType eventType) {
-  switch (eventType) {
-    case EventType.FestivalsAndCons:
-      return 'festival or convention';
-    case EventType.Retreats:
-      return 'retreat';
-    case EventType.Trainings:
-      return 'training';
-    default:
-      return 'Unknown';
   }
 }

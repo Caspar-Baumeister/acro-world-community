@@ -36,7 +36,6 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
@@ -79,7 +78,11 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                             isLikedState
                                 ? runMutation({
                                     'teacher_id': widget.teacher.id,
-                                    'user_id': userProvider.activeUser!.id!
+                                    'user_id': Provider.of<UserProvider>(
+                                            context,
+                                            listen: false)
+                                        .activeUser!
+                                        .id!
                                   })
                                 : runMutation({
                                     'teacher_id': widget.teacher.id,

@@ -34,7 +34,6 @@ class _BookmarkEventMutationWidgetState
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
@@ -73,19 +72,21 @@ class _BookmarkEventMutationWidgetState
             );
           }
 
-          return IconButton(
-            icon: Icon(
-              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-              color: widget.color,
+          return Consumer<UserProvider>(
+            builder: (context, userProvider, child) => IconButton(
+              icon: Icon(
+                isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                color: widget.color,
+              ),
+              onPressed: () => isBookmarked
+                  ? runMutation({
+                      'event_id': widget.eventId,
+                      'user_id': userProvider.activeUser!.id!
+                    })
+                  : runMutation({
+                      'event_id': widget.eventId,
+                    }),
             ),
-            onPressed: () => isBookmarked
-                ? runMutation({
-                    'event_id': widget.eventId,
-                    'user_id': userProvider.activeUser!.id!
-                  })
-                : runMutation({
-                    'event_id': widget.eventId,
-                  }),
           );
         },
       ),

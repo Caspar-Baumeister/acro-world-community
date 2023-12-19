@@ -26,7 +26,6 @@ class HeartMutationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
@@ -42,7 +41,10 @@ class HeartMutationWidget extends StatelessWidget {
                 isLiked
                     ? runMutation({
                         'teacher_id': teacherId,
-                        'user_id': userProvider.activeUser!.id!
+                        'user_id':
+                            Provider.of<UserProvider>(context, listen: false)
+                                .activeUser!
+                                .id!
                       })
                     : runMutation({
                         'teacher_id': teacherId,

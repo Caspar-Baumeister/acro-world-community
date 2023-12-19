@@ -34,7 +34,6 @@ class _FavoriteClassMutationWidgetState
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Container(
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
@@ -83,7 +82,9 @@ class _FavoriteClassMutationWidgetState
             onPressed: () => isFavorized
                 ? runMutation({
                     'class_id': widget.classId,
-                    'user_id': userProvider.activeUser!.id!
+                    'user_id': Provider.of<UserProvider>(context, listen: false)
+                        .activeUser!
+                        .id!
                   })
                 : runMutation({
                     'class_id': widget.classId,

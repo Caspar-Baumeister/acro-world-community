@@ -1,8 +1,8 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-class CheckBox extends StatefulWidget {
-  const CheckBox(
+class CustomCheckBox extends StatefulWidget {
+  const CustomCheckBox(
       {Key? key, required this.onTap, required this.isChecked, this.size = 16})
       : super(key: key);
 
@@ -11,10 +11,10 @@ class CheckBox extends StatefulWidget {
   final double size;
 
   @override
-  State<CheckBox> createState() => _CheckBoxState();
+  State<CustomCheckBox> createState() => _CustomCheckBoxState();
 }
 
-class _CheckBoxState extends State<CheckBox> {
+class _CustomCheckBoxState extends State<CustomCheckBox> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
