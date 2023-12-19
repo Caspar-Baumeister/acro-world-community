@@ -36,33 +36,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
     super.initState();
   }
 
-  // // increase distance and refetch
-  // void increaseDistance(Function runRefetch) async {
-  //   // wait for 3 seconds, so the user can see the empty list
-  //   await Future.delayed(const Duration(seconds: 3));
-
-  //   // increase distance by 200 km
-  //   setState(() {
-  //     distance += 200;
-  //   });
-
-  //   runRefetch();
-  //   // inform the user with a toast, that the distance was increased
-  //   Fluttertoast.showToast(
-  //       msg:
-  //           "No classes found in your area. Increasing search radius to $distance km.",
-  //       toastLength: Toast.LENGTH_SHORT,
-  //       gravity: ToastGravity.TOP,
-  //       timeInSecForIosWeb: 2,
-  //       backgroundColor: Colors.green,
-  //       textColor: Colors.white,
-  //       fontSize: 16.0);
-
-  //   // print information
-  //   print(
-  //       "No classes found in your area. Increasing search radius to $distance km.");
-  // }
-
   onPageChanged(focusDay) {
     setState(() {
       from = DateTime(
@@ -108,8 +81,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
       );
       selector = 'class_events_by_location_v1';
     }
-
-    // choose queryoption based on activityType
 
     ActivityProvider activityProvider =
         Provider.of<ActivityProvider>(context, listen: false);
@@ -162,11 +133,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
           } catch (e) {
             print(e.toString());
           }
-
-          // if classWeekEvents is empty and place is not null -> increase distance and refetch
-          // if (classWeekEvents.isEmpty && place != null && distance < 500) {
-          //   increaseDistance(refetch!);
-          // }
 
           try {
             classWeekEvents.sort((a, b) => DateTime.parse(b.startDate!)
