@@ -19,11 +19,14 @@ class MyThemes {
         ),
       ),
     ),
+    drawerTheme: const DrawerThemeData(
+      backgroundColor: Colors.white,
+    ),
     textTheme: const TextTheme(
-      headline1: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-      headline2: TextStyle(fontSize: 22.5, fontWeight: FontWeight.bold),
-      headline3: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-      headline4: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
+      displayLarge: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+      displayMedium: TextStyle(fontSize: 22.5, fontWeight: FontWeight.bold),
+      displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+      headlineMedium: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
     ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.white,
@@ -33,33 +36,23 @@ class MyThemes {
       elevation: 0,
       titleTextStyle: TextStyle(color: Colors.black, fontSize: 18.0),
     ),
-
     progressIndicatorTheme:
         const ProgressIndicatorThemeData(color: PRIMARY_COLOR),
     primaryColor: PRIMARY_COLOR,
-    // appBarTheme: const AppBarTheme(
-    //   color: APPBAR_COLOR,
-    // ),
     textSelectionTheme: const TextSelectionThemeData(
       selectionColor: NOT_ACTIVE_COLOR,
       cursorColor: PRIMARY_COLOR,
       selectionHandleColor: PRIMARY_COLOR,
     ),
-    backgroundColor: Colors.white,
     brightness: Brightness.light,
     highlightColor: Colors.white,
-    colorScheme: ColorScheme.fromSwatch().copyWith(secondary: Colors.white),
+    colorScheme: ColorScheme.fromSwatch()
+        .copyWith(secondary: Colors.white)
+        .copyWith(background: Colors.white),
   );
 
   // maybe for outdoor
-  static final ThemeData darkTheme = ThemeData(
-    primaryColor: Colors.grey,
-    brightness: Brightness.dark,
-    highlightColor: Colors.white,
-    backgroundColor: Colors.black54,
-    textSelectionTheme:
-        const TextSelectionThemeData(selectionColor: Colors.grey),
-  );
+  static final ThemeData darkTheme = ThemeData();
 
   static ThemeData getThemeFromKey(MyThemeKeys themeKey) {
     switch (themeKey) {

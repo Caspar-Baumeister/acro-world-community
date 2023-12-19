@@ -9,12 +9,11 @@ import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:intl/intl.dart';
+import 'package:share_plus/share_plus.dart';
 
 class SingleClassPage extends StatefulWidget {
-  const SingleClassPage({Key? key, required this.clas, this.classEvent})
-      : super(key: key);
+  const SingleClassPage({super.key, required this.clas, this.classEvent});
 
   final ClassModel clas;
   final ClassEvent? classEvent;
@@ -153,27 +152,6 @@ Found in the AcroWorld app
                   },
                 ),
                 actions: actions,
-                // widget.classEvent != null
-                //     ? [
-                //         ValueListenableBuilder<double>(
-                //           valueListenable: _percentageCollapsed,
-                //           builder: (context, percentage, child) {
-                //             return IconButton(
-                //               icon: const Icon(Icons.calendar_month_outlined),
-                //               color: percentage > 0.5
-                //                   ? Colors.black
-                //                   : Colors.white,
-                //               onPressed: () => add2CalendarFunction(
-                //                   widget.clas.name!,
-                //                   widget.clas.description!,
-                //                   widget.clas.locationName ?? "unknown",
-                //                   DateTime.parse(widget.classEvent!.startDate!),
-                //                   DateTime.parse(widget.classEvent!.endDate!)),
-                //             );
-                //           },
-                //         ),
-                //       ]
-                //     : [],
                 iconTheme: const IconThemeData(color: Colors.white),
                 expandedHeight: 200.0,
                 pinned: true,
@@ -182,8 +160,6 @@ Found in the AcroWorld app
                   stretchModes: const <StretchMode>[
                     StretchMode.zoomBackground,
                   ],
-                  // title: Text(clas.name ?? "",
-                  //     maxLines: 3, style: HEADER_1_TEXT_STYLE),
                   background: CachedNetworkImage(
                     fit: BoxFit.cover,
                     height: 52.0,

@@ -1,18 +1,21 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/profile/header_widget.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookmarks/user_bookmarks_query.dart';
 import 'package:acroworld/screens/home_screens/profile/user_favorite_classes/user_favorite_classes.dart';
+import 'package:acroworld/services/local_storage_service.dart';
+import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -96,6 +99,12 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                                       icon: const Icon(Icons.open_in_browser),
                                       onPressed: () async {
                                         // get token and refresh token
+
+                                        final token =
+                                            await AuthProvider().getToken();
+                                        final refreshToken =
+                                            LocalStorageService.get(
+                                                Preferences.refreshToken);
 
                                         String? teacherId = provider
                                             .activeUser?.teacherProfile?.id;

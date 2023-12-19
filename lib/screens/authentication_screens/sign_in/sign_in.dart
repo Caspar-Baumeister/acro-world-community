@@ -14,7 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({required this.toggleView, Key? key}) : super(key: key);
+  const SignIn({required this.toggleView, super.key});
   final Function toggleView;
 
   @override
@@ -45,8 +45,6 @@ class SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
     bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
-
-    print("loading: $loading");
 
     return Scaffold(
       body: SafeArea(
@@ -144,7 +142,7 @@ class SignInState extends State<SignIn> {
                             )
                           : Container(),
                       const SizedBox(height: 20.0),
-                      StandartButton(
+                      StandardButton(
                         text: "Login",
                         onPressed: () async {
                           setState(() {

@@ -17,7 +17,7 @@ import 'package:provider/provider.dart';
 class App extends StatefulWidget {
   final ValueNotifier<GraphQLClient> client;
 
-  const App({Key? key, required this.client}) : super(key: key);
+  const App({super.key, required this.client});
 
   @override
   State<App> createState() => _AppState();
