@@ -1,5 +1,5 @@
 // ignore_for_file: constant_identifier_names
-const double CLASS_CARD_HEIGHT = 125;
+const double CLASS_CARD_HEIGHT = 135;
 const double BOOKING_CARD_HEIGHT = 100;
 const double CLASS_CARD_TEACHER_HEIGHT = 30;
 const double DIFFICULTY_LEVEL_HEIGHT = 22;

@@ -44,8 +44,6 @@ class NotificationService {
             },
           ),
         );
-
-        print("updateToken value");
       } catch (e) {
         print("updateToken error (client.mutate)");
         print(e.toString());

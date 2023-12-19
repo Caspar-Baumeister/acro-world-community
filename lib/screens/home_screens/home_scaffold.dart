@@ -1,12 +1,12 @@
-import 'package:acroworld/screens/HOME_SCREENS/events/event_page.dart';
 import 'package:acroworld/screens/HOME_SCREENS/activities/activities.dart';
 import 'package:acroworld/screens/HOME_SCREENS/components/custom_bottom_nav_bar.dart';
+import 'package:acroworld/screens/HOME_SCREENS/events/event_page.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/teacher_page.dart';
 import 'package:acroworld/screens/home_screens/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 
 class HomeScaffold extends StatefulWidget {
-  const HomeScaffold({Key? key}) : super(key: key);
+  const HomeScaffold({super.key});
 
   @override
   State<HomeScaffold> createState() => _HomeScaffoldState();
@@ -30,8 +30,8 @@ class _HomeScaffoldState extends State<HomeScaffold> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async => false,
+    return PopScope(
+      onPopInvoked: (_) => false,
       child: Scaffold(
         body: screens[activeIdx],
         bottomNavigationBar:

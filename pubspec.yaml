@@ -66,8 +66,8 @@ flutter:
     - assets/
     - assets/logo/
     - .env
-# flutter_native_splash:
-#   color: "#ffffff"
-#   image: "assets/logo/play_store_512.png"
-#   android: true
-#   ios: true
+flutter_native_splash:
+  color: "#ffffff"
+  image: "assets/muscleup_drawing.png"
+  android: true
+  ios: true

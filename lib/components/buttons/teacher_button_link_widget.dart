@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -18,15 +19,15 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
   @override
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
-      builder: (context, userProvider, child) => StandartButton(
-        text: userProvider.activeUser?.userRoles != null &&
+      builder: (context, userProvider, child) => CustomButton(
+        userProvider.activeUser?.userRoles != null &&
                 userProvider.activeUser!.userRoles!
                     .where((UserRole role) =>
                         role.id == "736a4c4c-ec50-41fc-87f8-5ff9de9e506d")
                     .isNotEmpty
             ? "Your dashboard"
             : "Apply",
-        onPressed: () async {
+        () async {
           setState(() {
             loading = true;
           });
@@ -35,7 +36,6 @@ class _TeacherButtonLinkWidgetState extends State<TeacherButtonLinkWidget> {
             loading = false;
           });
         },
-        isFilled: true,
       ),
     );
   }
