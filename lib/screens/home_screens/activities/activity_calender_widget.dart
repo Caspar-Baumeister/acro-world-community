@@ -43,7 +43,6 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('focusedDay ${widget.focusedDay.hashCode}');
     return TableCalendar(
       availableGestures: AvailableGestures.horizontalSwipe,
       firstDay: kFirstDay,

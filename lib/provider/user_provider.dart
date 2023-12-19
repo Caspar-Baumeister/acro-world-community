@@ -68,8 +68,6 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
     activeUser = User.fromJson(user);
-    print('UserProvider name ${activeUser?.teacherProfile?.name}');
-    print('UserProvider:notifyListeners');
     notifyListeners();
     return true;
   }
