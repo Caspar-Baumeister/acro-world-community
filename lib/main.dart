@@ -3,13 +3,12 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/screens/system_pages/version_to_old_page.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -43,58 +42,43 @@ initMain() async {
   await LocalStorageService.init();
   await PlacePreferences.init();
 
+  // Initialize the GraphQL client in the client singleton
+  GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
+
   // WEBSOCKETLINK //
   // used only for subscription
-  final WebSocketLink websocketLink = WebSocketLink(
-    'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
-    config: SocketClientConfig(
-      autoReconnect: true,
-      inactivityTimeout: const Duration(seconds: 30),
-      initialPayload: () async {
-        String? token = await AuthProvider().getToken();
-        return {
-          'headers': token == null || token == ""
-              ? {}
-              : {'Authorization': 'Bearer $token'}
-        };
-      },
-    ),
-  );
+  // final WebSocketLink websocketLink = WebSocketLink(
+  //   'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
+  //   config: SocketClientConfig(
+  //     autoReconnect: true,
+  //     inactivityTimeout: const Duration(seconds: 30),
+  //     initialPayload: () async {
+  //       String? token = await AuthProvider().getToken();
+  //       return {
+  //         'headers': token == null || token == ""
+  //             ? {}
+  //             : {'Authorization': 'Bearer $token'}
+  //       };
+  //     },
+  //   ),
+  // );
 
   // DEFINE THE GRAPHQL CLIENT //
-  final AuthLink authLink = AuthLink(
-    getToken: () async {
-      String? token = await AuthProvider().getToken();
+  // final AuthLink authLink = AuthLink(
+  //   getToken: () async {
+  //     String? token = await AuthProvider().getToken();
+  //     return token != null ? 'Bearer $token' : null;
+  //   },
+  // );
+  // final HttpLink httpLink = HttpLink(
+  //   'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
+  // );
 
-      return token != null ? 'Bearer $token' : null;
-    },
-  );
-  final HttpLink httpLink = HttpLink(
-    'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
-  );
+  //   final Link link = authLink.concat(httpLink);
 
-  final Link concatLink = authLink.concat(httpLink);
-
-  final Link link = Link.split(
-      (request) => request.isSubscription, websocketLink, concatLink);
-
-  ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: link,
-      // The default store is the InMemoryStore, which does NOT persist to disk
-      cache: GraphQLCache(store: HiveStore()),
-    ),
-  );
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
-    // FIREBASE //
-    if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
-    }
     // FIREBASE //
     await Firebase.initializeApp(
       name: "acroworld",
@@ -103,7 +87,6 @@ initMain() async {
 
     // FIREBASE MESSAGING //
     // initialize the firebase messaging service
-    // TODO give the client to the notification service and use it there to update the token in the backend
     NotificationService notificationService = NotificationService();
     await notificationService.initialize();
     notificationService.getToken();
@@ -119,7 +102,8 @@ initMain() async {
   }
 
   // check version
-  String minVersion = await VersionService.getVersionInfo(client.value);
+  String minVersion =
+      await VersionService.getVersionInfo(graphQLClientSingleton.client);
   if (minVersion == 'Error') {
     // TODO if there is an error, send the User to the error page
     minVersion = '0.0.0';
@@ -131,7 +115,7 @@ initMain() async {
       currentVersion: currentVersion, minVersion: minVersion);
 
   runApp(isValid
-      ? App(client: client)
+      ? const App()
       : VersionToOldPage(
           currentVersion: currentVersion, minVersion: minVersion));
 }

@@ -3,15 +3,16 @@ import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
-class AuthProvider {
-  static final AuthProvider _instance = AuthProvider._internal();
+class TokenSingletonService {
+  static final TokenSingletonService _instance =
+      TokenSingletonService._internal();
   String? _token;
 
-  factory AuthProvider() {
+  factory TokenSingletonService() {
     return _instance;
   }
 
-  AuthProvider._internal();
+  TokenSingletonService._internal();
 
   Future<bool> _isTokenExpired() async {
     if (_token == null) {
@@ -69,11 +70,13 @@ class AuthProvider {
   Future<Map> login(String email, String password) async {
     var response = await DatabaseService().loginApi(email, password);
     if (response["data"]?["login"]?["token"] != null) {
+      print("new token received");
       _token = response["data"]["login"]["token"];
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
       if (response["data"]?["login"]?["refreshToken"] != null) {
+        print("new refreshtoken received");
         String refreshToken = response["data"]["login"]["refreshToken"];
         await LocalStorageService.set(Preferences.refreshToken, refreshToken);
       }

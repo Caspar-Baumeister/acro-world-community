@@ -15,9 +15,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class App extends StatefulWidget {
-  final ValueNotifier<GraphQLClient> client;
-
-  const App({super.key, required this.client});
+  const App({super.key});
 
   @override
   State<App> createState() => _AppState();
@@ -38,18 +36,14 @@ class _AppState extends State<App> {
     print('App:build');
     return MultiProvider(
         providers: [
-          ChangeNotifierProvider(
-              create: (_) => UserProvider(client: widget.client.value)),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
-          Provider<GraphQlClientService>(
-            create: (_) => GraphQlClientService(widget.client.value),
-          ),
         ],
         child: GraphQLProvider(
-          client: widget.client,
+          client: ValueNotifier(GraphQLClientSingleton().client),
           child: MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,

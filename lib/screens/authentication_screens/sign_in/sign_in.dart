@@ -1,7 +1,7 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/screens/home_screens/home_scaffold.dart';
@@ -237,7 +237,7 @@ class SignInState extends State<SignIn> {
 
     // get the token trough the credentials
     // (invalid credentials) return false
-    await AuthProvider()
+    await TokenSingletonService()
         .login(emailController!.text, passwordController!.text)
         .then((response) {
       if (response["errors"] != null) {
@@ -252,13 +252,15 @@ class SignInState extends State<SignIn> {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.setUserFromToken().then((value) {
           if (value) {
-            NotificationService().updateToken(userProvider.client);
+            NotificationService().updateToken();
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const HomeScaffold()),
             );
           } else {
+            print("failed token");
+            TokenSingletonService().getToken().then((value) => print(value));
             setState(() {
-              error = 'An unexpected error occured. Please try again later';
+              error = 'We could not log you in. Please try again later';
             });
           }
         });

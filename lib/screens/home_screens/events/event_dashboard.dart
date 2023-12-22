@@ -9,7 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class EventDashboardBody extends StatefulWidget {
-  const EventDashboardBody({Key? key}) : super(key: key);
+  const EventDashboardBody({super.key});
 
   @override
   State<EventDashboardBody> createState() => _EventDashboardBodyState();
@@ -20,8 +20,6 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
 
   @override
   Widget build(BuildContext context) {
-    GraphQlClientService gqlService =
-        Provider.of<GraphQlClientService>(context);
     EventFilterProvider eventFilterProvider =
         Provider.of<EventFilterProvider>(context);
 
@@ -58,7 +56,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => refetchEvents(eventFilterProvider, gqlService),
+      onRefresh: () => refetchEvents(eventFilterProvider),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -145,15 +143,15 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
     );
   }
 
-  refetchEvents(EventFilterProvider eventFilterProvider,
-      GraphQlClientService gqlService) async {
-    QueryResult? result = await gqlService.query(QueryOptions(
+  refetchEvents(
+    EventFilterProvider eventFilterProvider,
+  ) async {
+    QueryResult? result = await GraphQLClientSingleton().query(QueryOptions(
         document: Queries.events,
         fetchPolicy: FetchPolicy.networkOnly,
         errorPolicy: ErrorPolicy.all));
 
     if (result.data?["events"] != null) {
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         eventFilterProvider.setInitialData(result.data!["events"]);
       } catch (e) {

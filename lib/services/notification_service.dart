@@ -2,6 +2,7 @@ import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/main.dart';
 import 'package:acroworld/models/fcm/fcm_event.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -30,13 +31,13 @@ class NotificationService {
   }
 
   // updateToken function with userprovider
-  Future<void> updateToken(GraphQLClient client) async {
+  Future<void> updateToken() async {
     getToken().then((value) {
       if (value == null) {
         return;
       }
       try {
-        client.mutate(
+        GraphQLClientSingleton().mutate(
           MutationOptions(
             document: Mutations.updateFcmToken,
             variables: {

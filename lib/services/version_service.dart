@@ -14,13 +14,14 @@ class VersionService {
       );
 
       if (result.hasException) {
-        CustomErrorHandler.captureException(result.exception.toString());
+        CustomErrorHandler.captureException(result.exception.toString(),
+            stackTrace: result.exception!.originalStackTrace);
         return 'Error';
       }
 
       return result.data!["config"]?[0]?["min_version"];
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
+    } catch (e, stackTrace) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
       return 'Error';
     }
   }

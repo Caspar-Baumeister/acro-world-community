@@ -1,4 +1,4 @@
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/HOME_SCREENS/home_scaffold.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
@@ -43,13 +43,13 @@ class AuthWrapper extends StatelessWidget {
 
   Future<bool> identifyAndSetUser(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final token = await AuthProvider().getToken();
+    final token = await TokenSingletonService().getToken();
     if (token != null) {
       // TODO decide if this maybe only happens if neccesarry to safe loading time
       bool userSet = await userProvider.setUserFromToken();
 
       if (userSet) {
-        NotificationService().updateToken(userProvider.client);
+        NotificationService().updateToken();
         return true;
       } else {
         return false;
