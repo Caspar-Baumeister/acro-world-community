@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SingleEventPage extends StatefulWidget {
-  const SingleEventPage({Key? key, required this.event}) : super(key: key);
+  const SingleEventPage({super.key, required this.event});
 
   final EventModel event;
 

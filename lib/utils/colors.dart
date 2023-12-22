@@ -25,6 +25,7 @@ const Color WARNING_COLOR = Color.fromARGB(255, 152, 0, 0);
 const Color SUCCESS_COLOR = Color.fromARGB(255, 0, 110, 4);
 const Color STANDART_BORDER_COLOR = Color.fromARGB(255, 0, 0, 0);
 const Color HIGHLIGHT_COLOR = Color.fromARGB(255, 255, 241, 241);
+const Color BACKGROUND_COLOR = Color.fromARGB(255, 255, 255, 255);
 
 const Color PRIMARY_COLOR = COLOR2; //Color(0xFF772f1a);
 const Color APPBAR_COLOR = PRIMARY_COLOR;
