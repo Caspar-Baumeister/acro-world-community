@@ -2,15 +2,15 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/fragments.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/user_model.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UserProvider extends ChangeNotifier {
   User? _activeUser;
-  GraphQLClient client;
 
-  UserProvider({required this.client});
+  UserProvider();
 
   User? get activeUser {
     return _activeUser;
@@ -40,7 +40,7 @@ class UserProvider extends ChangeNotifier {
       },
     );
 
-    final result = await client.mutate(options);
+    final result = await GraphQLClientSingleton().mutate(options);
 
     if (result.hasException) {
       throw result.exception!;
@@ -48,8 +48,8 @@ class UserProvider extends ChangeNotifier {
     // creates a User object from the result
     try {
       _activeUser = User.fromJson(result.data!["update_users_by_pk"]);
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
+    } catch (e, stackTrace) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
       rethrow;
     }
     notifyListeners();
@@ -91,32 +91,43 @@ class UserProvider extends ChangeNotifier {
   }
 
   Future<bool> setUserFromToken() async {
-    if (await AuthProvider().getToken() == null) {
+    if (await TokenSingletonService().getToken() == null) {
       print("no token");
       _activeUser = null;
       notifyListeners();
       return false;
     }
+    print("set user from token");
+
     // create the options
     QueryOptions options = QueryOptions(
       document: Queries.getMe,
     );
+
     // get the result
-    final result = await client.query(options);
+    final result = await GraphQLClientSingleton().query(options);
 
     // if there is an exception, throw it
     if (result.hasException) {
-      CustomErrorHandler.captureException(result.exception.toString());
+      CustomErrorHandler.captureException(result.exception.toString(),
+          stackTrace: result.exception!.originalStackTrace);
+      TokenSingletonService().logout();
+      return false;
+    } else if (result.data!["me"] == null || result.data!["me"].isEmpty) {
+      print("no me found");
+      _activeUser = null;
+      TokenSingletonService().logout();
+      notifyListeners();
       return false;
     }
     // creates a User object from the result
     try {
       _activeUser = User.fromJson(result.data!["me"][0]);
-      print("set active user id: ${_activeUser?.id}");
       notifyListeners();
       return true;
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
+    } catch (e, stackTrace) {
+      TokenSingletonService().logout();
+      CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
       return false;
     }
   }

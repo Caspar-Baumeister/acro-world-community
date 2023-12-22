@@ -1,6 +1,6 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/screens/home_screens/home_scaffold.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
-  const SignUp({required this.toggleView, Key? key}) : super(key: key);
+  const SignUp({required this.toggleView, super.key});
   final Function toggleView;
 
   @override
@@ -306,7 +306,7 @@ class SignUpState extends State<SignUp> {
       return;
     }
 
-    await AuthProvider()
+    await TokenSingletonService()
         .register(emailController!.text, passwordController!.text,
             nameController!.text)
         .then((response) {
@@ -321,7 +321,7 @@ class SignUpState extends State<SignUp> {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.setUserFromToken().then((value) {
           if (value) {
-            NotificationService().updateToken(userProvider.client);
+            NotificationService().updateToken();
             Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => const HomeScaffold()),
             );

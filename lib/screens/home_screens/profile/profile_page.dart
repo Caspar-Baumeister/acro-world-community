@@ -1,7 +1,7 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/profile/header_widget.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings.dart';
@@ -101,7 +101,8 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                                         // get token and refresh token
 
                                         final token =
-                                            await AuthProvider().getToken();
+                                            await TokenSingletonService()
+                                                .getToken();
                                         final refreshToken =
                                             LocalStorageService.get(
                                                 Preferences.refreshToken);

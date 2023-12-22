@@ -1,7 +1,7 @@
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/screens/essentials/essentials.dart';
 import 'package:acroworld/services/local_storage_service.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SettingsDrawer extends StatelessWidget {
-  const SettingsDrawer({Key? key}) : super(key: key);
+  const SettingsDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +98,7 @@ class SettingsDrawer extends StatelessWidget {
 
                     const Spacer(),
                     CustomButton("Teacher dashboard", () async {
-                      final token = await AuthProvider().getToken();
+                      final token = await TokenSingletonService().getToken();
                       final refreshToken =
                           LocalStorageService.get(Preferences.refreshToken);
 

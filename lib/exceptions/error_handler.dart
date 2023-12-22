@@ -15,7 +15,7 @@ class CustomErrorHandler {
       // ignore: avoid_print
       print(exception);
       // ignore: avoid_print
-      print(stackTrace);
+      print(stackTrace.toString());
     }
   }
 }
