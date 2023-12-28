@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class StandardIconButton extends StatelessWidget {
   const StandardIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     this.onPressed,
@@ -14,7 +14,7 @@ class StandardIconButton extends StatelessWidget {
     this.showClose = false,
     this.onClose,
     this.loading = false,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final String text;

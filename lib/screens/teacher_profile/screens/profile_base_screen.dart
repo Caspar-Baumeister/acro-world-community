@@ -14,8 +14,7 @@ import 'package:provider/provider.dart';
 
 class ProfileBaseScreen extends StatefulWidget {
   const ProfileBaseScreen(
-      {Key? key, required this.teacher, required this.userId})
-      : super(key: key);
+      {super.key, required this.teacher, required this.userId});
 
   final TeacherModel teacher;
   final String userId;

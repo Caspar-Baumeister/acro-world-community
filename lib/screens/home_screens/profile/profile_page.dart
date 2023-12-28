@@ -1,4 +1,4 @@
-import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/settings_drawer.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
@@ -71,35 +71,57 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
               centerTitle: false,
               elevation: 0,
             ),
-            body: DefaultTabController(
-              length: 3,
-              child: NestedScrollView(
-                headerSliverBuilder: (context, _) {
-                  return [
-                    SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: HeaderWidget(
-                              imgUrl: provider.activeUser?.teacherProfile
-                                      ?.profilImgUrl ??
-                                  provider.activeUser?.imageUrl ??
-                                  "",
-                              name: provider.activeUser?.teacherProfile?.name ??
-                                  provider.activeUser?.name ??
-                                  "",
-                            ),
-                          ),
-                          hasTeacherProfile
-                              ? Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: StandardButton(
-                                      text: 'Edit your profile',
-                                      icon: const Icon(Icons.open_in_browser),
-                                      onPressed: () async {
-                                        // get token and refresh token
+            body: RefreshIndicator(
+              onRefresh: () async {
+                await provider.setUserFromToken();
+              },
+              child: DefaultTabController(
+                length: 3,
+                child: NestedScrollView(
+                  headerSliverBuilder: (context, _) {
+                    return [
+                      SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            hasTeacherProfile
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0)
+                                        .copyWith(left: 20),
+                                    child: HeaderWidget(
+                                      imgUrl: provider.activeUser
+                                              ?.teacherProfile?.profilImgUrl ??
+                                          provider.activeUser?.imageUrl ??
+                                          "",
+                                      name: provider.activeUser?.teacherProfile
+                                              ?.name ??
+                                          provider.activeUser?.name ??
+                                          "",
+                                    ),
+                                  )
+                                : Container(),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 20),
+                              child: hasTeacherProfile
+                                  ? CustomButton('Edit your profile', () async {
+                                      // get token and refresh token
 
+                                      final token =
+                                          await TokenSingletonService()
+                                              .getToken();
+                                      final refreshToken =
+                                          LocalStorageService.get(
+                                              Preferences.refreshToken);
+
+                                      String? teacherId = provider
+                                          .activeUser?.teacherProfile?.id;
+                                      listenToResume = true;
+                                      customLaunch(
+                                          "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken&redirectTo=/app/teachers/$teacherId");
+                                    })
+                                  : CustomButton(
+                                      "Become a Partner",
+                                      () async {
                                         final token =
                                             await TokenSingletonService()
                                                 .getToken();
@@ -107,51 +129,54 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                                             LocalStorageService.get(
                                                 Preferences.refreshToken);
 
-                                        String? teacherId = provider
-                                            .activeUser?.teacherProfile?.id;
-                                        listenToResume = true;
-                                        customLaunch(
-                                            "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken&redirectTo=/app/teachers/$teacherId");
-                                      }),
-                                )
-                              : Container()
-                        ],
+                                        if (refreshToken != null) {
+                                          customLaunch(
+                                              "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
+                                        } else {
+                                          customLaunch(
+                                              AppEnvironment.dashboardUrl);
+                                        }
+                                      },
+                                    ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ];
-                },
-                body: Column(
-                  children: <Widget>[
-                    Material(
-                      color: Colors.white,
-                      child: TabBar(
-                        labelColor: Colors.black,
-                        unselectedLabelColor: Colors.grey[400],
-                        indicatorWeight: 1,
-                        indicatorColor: Colors.black,
-                        tabs: const [
-                          Tab(
-                            text: "Bookmarked events",
-                          ),
-                          Tab(
-                            text: "Favorite activities",
-                          ),
-                          Tab(
-                            text: "Bookings",
-                          ),
-                        ],
+                    ];
+                  },
+                  body: Column(
+                    children: <Widget>[
+                      Material(
+                        color: Colors.white,
+                        child: TabBar(
+                          labelColor: Colors.black,
+                          unselectedLabelColor: Colors.grey[400],
+                          indicatorWeight: 1,
+                          indicatorColor: Colors.black,
+                          tabs: const [
+                            Tab(
+                              text: "Events",
+                            ),
+                            Tab(
+                              text: "Activities",
+                            ),
+                            Tab(
+                              text: "Bookings",
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const Expanded(
-                      child: TabBarView(
-                        children: [
-                          UserBookmarks(),
-                          UserFavoriteClasses(),
-                          UserBookings()
-                        ],
+                      const Expanded(
+                        child: TabBarView(
+                          children: [
+                            UserBookmarks(),
+                            UserFavoriteClasses(),
+                            UserBookings()
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

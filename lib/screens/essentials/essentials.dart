@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 class EssentialsPage extends StatelessWidget {
-  const EssentialsPage({Key? key}) : super(key: key);
+  const EssentialsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +46,12 @@ class EssentialsPage extends StatelessWidget {
 
 class EssentialsCard extends StatelessWidget {
   const EssentialsCard(
-      {Key? key,
+      {super.key,
       required this.imgUrl,
       required this.title,
       required this.description,
       required this.code,
-      required this.link})
-      : super(key: key);
+      required this.link});
 
   final String imgUrl;
   final String title;

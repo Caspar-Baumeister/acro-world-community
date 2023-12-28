@@ -5,7 +5,7 @@ import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key, this.initialEmail}) : super(key: key);
+  const ForgotPassword({super.key, this.initialEmail});
 
   final String? initialEmail;
 

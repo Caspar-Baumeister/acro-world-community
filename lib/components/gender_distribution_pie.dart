@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class GenderDistributionPie extends StatelessWidget {
-  const GenderDistributionPie({Key? key, required this.users})
-      : super(key: key);
+  const GenderDistributionPie({super.key, required this.users});
 
   final List<User> users;
 

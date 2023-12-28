@@ -1,4 +1,8 @@
 // ignore_for_file: constant_identifier_names
+
+const double appBarExpandedHeight = 200.0;
+const double appBarCollapsedThreshold = 0.5;
+
 const double CLASS_CARD_HEIGHT = 135;
 const double BOOKING_CARD_HEIGHT = 100;
 const double CLASS_CARD_TEACHER_HEIGHT = 30;

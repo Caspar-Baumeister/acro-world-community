@@ -331,6 +331,9 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 query getClassEventsByClassId (\$class_id: uuid) {
   class_events(where: {class_id: {_eq: \$class_id}}) {
    ${Fragments.classEventFragment}
+   class {
+      ${Fragments.classFragment}
+    }
   }
 }
 """);

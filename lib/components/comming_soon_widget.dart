@@ -2,8 +2,7 @@ import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CommingSoon extends StatelessWidget {
-  const CommingSoon({Key? key, required this.header, required this.content})
-      : super(key: key);
+  const CommingSoon({super.key, required this.header, required this.content});
   final String header;
   final String content;
 

@@ -10,11 +10,10 @@ import 'package:intl/intl.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
-      {Key? key,
+      {super.key,
       required this.classEvent,
       required this.placesLeft,
-      required this.refetch})
-      : super(key: key);
+      required this.refetch});
 
   final ClassEvent classEvent;
   final num placesLeft;
@@ -121,8 +120,7 @@ class _BookingModalState extends State<BookingModal> {
 
 // a widget, that shows the user where he is in the booking process
 class BookingStepIndicator extends StatelessWidget {
-  const BookingStepIndicator({Key? key, required this.currentStep})
-      : super(key: key);
+  const BookingStepIndicator({super.key, required this.currentStep});
   final int currentStep;
 
   @override
@@ -177,13 +175,12 @@ class BookingStepIndicator extends StatelessWidget {
 
 class BookingHeader extends StatelessWidget {
   const BookingHeader(
-      {Key? key,
+      {super.key,
       required this.className,
       required this.teacherName,
       required this.startDate,
       required this.currentStep,
-      required this.endDate})
-      : super(key: key);
+      required this.endDate});
   // classname
   final String className;
   final String teacherName;

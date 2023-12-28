@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatefulWidget {
-  const LoadingPage({Key? key, this.onRefresh}) : super(key: key);
+  const LoadingPage({super.key, this.onRefresh});
   final Future<void> Function()? onRefresh;
 
   @override

@@ -6,8 +6,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordSuccess extends StatefulWidget {
-  const ForgotPasswordSuccess({Key? key, required this.email})
-      : super(key: key);
+  const ForgotPasswordSuccess({super.key, required this.email});
 
   final String email;
 

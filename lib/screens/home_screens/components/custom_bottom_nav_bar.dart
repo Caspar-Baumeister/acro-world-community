@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({
-    Key? key,
+    super.key,
     required this.activeIdx,
     required this.changeIdx,
-  }) : super(key: key);
+  });
 
   final int activeIdx;
   final Function changeIdx;

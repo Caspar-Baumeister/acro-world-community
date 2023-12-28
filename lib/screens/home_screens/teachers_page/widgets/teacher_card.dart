@@ -11,8 +11,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class TeacherCard extends StatefulWidget {
-  const TeacherCard({Key? key, required this.teacher, required this.isLiked})
-      : super(key: key);
+  const TeacherCard({super.key, required this.teacher, required this.isLiked});
 
   final TeacherModel teacher;
   final bool isLiked;

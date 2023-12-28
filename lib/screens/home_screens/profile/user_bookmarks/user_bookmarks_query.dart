@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UserBookmarks extends StatelessWidget {
-  const UserBookmarks({Key? key}) : super(key: key);
+  const UserBookmarks({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,24 +31,14 @@ class UserBookmarks extends StatelessWidget {
             List<BookmarkModel> bookmarkModels =
                 bookmarks.map((e) => BookmarkModel.fromJson(e)).toList();
             return bookmarkModels.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text(
-                          "You have no bookmarked events",
-                          style: H16W7,
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          "Get informed about early bird deadlines and organize your events",
-                          style: H14W4.copyWith(
-                            color: Colors.grey[600],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+                ? const Center(
+                    child: Padding(
+                      padding: EdgeInsets.all(40.0),
+                      child: Text(
+                        "You have no bookmarked events",
+                        style: H16W7,
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   )
                 : ListView.builder(

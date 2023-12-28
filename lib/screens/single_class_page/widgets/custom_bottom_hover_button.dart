@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class CustomBottomHoverButton extends StatelessWidget {
   const CustomBottomHoverButton({
-    Key? key,
+    super.key,
     required this.content,
     required this.onPressed,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   final Widget content;
   final Function onPressed;

@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 
 class SliderRowEventDashboard extends StatelessWidget {
   const SliderRowEventDashboard(
-      {Key? key,
+      {super.key,
       required this.onViewAll,
       required this.header,
-      required this.events})
-      : super(key: key);
+      required this.events});
 
   final Function onViewAll;
   final String header;

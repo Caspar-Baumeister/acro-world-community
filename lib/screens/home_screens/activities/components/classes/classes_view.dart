@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 class ClassesView extends StatelessWidget {
   const ClassesView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

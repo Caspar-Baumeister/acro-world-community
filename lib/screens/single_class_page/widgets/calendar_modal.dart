@@ -4,7 +4,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CalenderModal extends StatelessWidget {
-  const CalenderModal({Key? key, required this.classId}) : super(key: key);
+  const CalenderModal({super.key, required this.classId});
 
   final String classId;
 

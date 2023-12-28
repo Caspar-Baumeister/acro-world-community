@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 class TextWithLeadingIcon extends StatelessWidget {
   const TextWithLeadingIcon(
-      {Key? key, required this.icon, required this.text, this.gap = 6})
-      : super(key: key);
+      {super.key, required this.icon, required this.text, this.gap = 6});
 
   final Widget icon;
   final Widget text;

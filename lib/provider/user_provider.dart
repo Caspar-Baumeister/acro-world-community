@@ -22,8 +22,9 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUserByJson(
+  Future<bool> updateUserByJson(
       String userId, Map<String, dynamic> updates) async {
+    print("USERID: $userId");
     String mutation = '''
     mutation updateUser(\$user_id: uuid!, \$updates: users_set_input!) {
       update_users_by_pk(pk_columns: {id: \$user_id}, _set: \$updates) {
@@ -43,17 +44,19 @@ class UserProvider extends ChangeNotifier {
     final result = await GraphQLClientSingleton().mutate(options);
 
     if (result.hasException) {
-      throw result.exception!;
+      CustomErrorHandler.captureException(result.exception.toString(),
+          stackTrace: result.exception!.originalStackTrace);
+      return false;
     }
     // creates a User object from the result
     try {
       _activeUser = User.fromJson(result.data!["update_users_by_pk"]);
     } catch (e, stackTrace) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
-      rethrow;
+      return false;
     }
     notifyListeners();
-    return;
+    return true;
   }
 
   // create a hasChanged function, that checks if userdata has changed based on name, email, gender id and level id
@@ -83,11 +86,11 @@ class UserProvider extends ChangeNotifier {
   }
 
   // a function that updates the user based on the input
-  Future updateUserFromChanges(Map<String, dynamic>? changes) async {
+  Future<bool> updateUserFromChanges(Map<String, dynamic>? changes) async {
     if (changes == null || changes.isEmpty) {
-      return null;
+      return false;
     }
-    await updateUserByJson(_activeUser!.id!, changes);
+    return await updateUserByJson(_activeUser!.id!, changes);
   }
 
   Future<bool> setUserFromToken() async {
@@ -101,8 +104,7 @@ class UserProvider extends ChangeNotifier {
 
     // create the options
     QueryOptions options = QueryOptions(
-      document: Queries.getMe,
-    );
+        document: Queries.getMe, fetchPolicy: FetchPolicy.networkOnly);
 
     // get the result
     final result = await GraphQLClientSingleton().query(options);

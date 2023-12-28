@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 class CustomCheckBox extends StatefulWidget {
   const CustomCheckBox(
-      {Key? key, required this.onTap, required this.isChecked, this.size = 16})
-      : super(key: key);
+      {super.key,
+      required this.onTap,
+      required this.isChecked,
+      this.size = 16});
 
   final VoidCallback onTap;
   final bool isChecked;

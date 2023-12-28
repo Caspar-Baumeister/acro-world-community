@@ -5,12 +5,12 @@ import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_ca
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 // This page body has only one downwards scroll with full with cards
 class FilterOnEventBody extends StatelessWidget {
-  const FilterOnEventBody({Key? key}) : super(key: key);
+  const FilterOnEventBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -106,7 +106,7 @@ class FilterOnEventBody extends StatelessWidget {
 }
 
 class MonthStringWidget extends StatelessWidget {
-  const MonthStringWidget({Key? key, required this.date}) : super(key: key);
+  const MonthStringWidget({super.key, required this.date});
   final DateTime date;
 
   @override

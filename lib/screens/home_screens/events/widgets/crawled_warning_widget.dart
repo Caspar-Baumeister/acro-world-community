@@ -7,12 +7,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class CrawledWarningWidget extends StatelessWidget {
   const CrawledWarningWidget(
-      {Key? key,
+      {super.key,
       required this.child,
       this.right = 10,
       this.top = 6,
-      required this.showWarning})
-      : super(key: key);
+      required this.showWarning});
 
   final Widget child;
   final double? right;

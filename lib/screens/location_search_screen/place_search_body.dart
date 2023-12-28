@@ -1,18 +1,18 @@
+import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/components/search_bar_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/components/search_bar_widget.dart';
-import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/screens/location_search_screen/set_to_user_location_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class PlaceQuery extends StatelessWidget {
-  const PlaceQuery({Key? key, required this.placeId, required this.onPlaceSet})
-      : super(key: key);
+  const PlaceQuery(
+      {super.key, required this.placeId, required this.onPlaceSet});
 
   final String placeId;
   final Function(Place place) onPlaceSet;
@@ -44,8 +44,8 @@ class PlaceQuery extends StatelessWidget {
 }
 
 class PlacesQuery extends StatelessWidget {
-  const PlacesQuery({Key? key, required this.query, required this.onPlaceIdSet})
-      : super(key: key);
+  const PlacesQuery(
+      {super.key, required this.query, required this.onPlaceIdSet});
 
   final String query;
   final Function(String placeId) onPlaceIdSet;
@@ -101,7 +101,7 @@ class PlacesQuery extends StatelessWidget {
 }
 
 class PlaceSearchBody extends StatefulWidget {
-  const PlaceSearchBody({Key? key}) : super(key: key);
+  const PlaceSearchBody({super.key});
 
   @override
   State<PlaceSearchBody> createState() => _PlaceSearchBodyState();

@@ -13,8 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SingleClassBody extends StatelessWidget {
-  const SingleClassBody({Key? key, required this.classe, this.classEvent})
-      : super(key: key);
+  const SingleClassBody({super.key, required this.classe, this.classEvent});
 
   final ClassModel classe;
   final ClassEvent? classEvent;

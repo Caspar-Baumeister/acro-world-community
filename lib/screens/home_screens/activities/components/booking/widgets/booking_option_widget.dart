@@ -6,11 +6,10 @@ import 'package:flutter/material.dart';
 
 class BookOption extends StatelessWidget {
   const BookOption(
-      {Key? key,
+      {super.key,
       required this.bookingOption,
       required this.onChanged,
-      required this.value})
-      : super(key: key);
+      required this.value});
 
   final Function(bool?) onChanged;
   final bool value;

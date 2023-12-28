@@ -4,8 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 class FullScreenImageView extends StatelessWidget {
-  const FullScreenImageView({Key? key, required this.url, required this.tag})
-      : super(key: key);
+  const FullScreenImageView({super.key, required this.url, required this.tag});
 
   final String url;
   final String tag;

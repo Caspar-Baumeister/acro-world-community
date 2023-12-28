@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
   const SearchBarWidget(
-      {required this.onChanged, Key? key, this.autofocus = false})
-      : super(key: key);
+      {required this.onChanged, super.key, this.autofocus = false});
 
   final ValueChanged<String> onChanged;
   final bool autofocus;

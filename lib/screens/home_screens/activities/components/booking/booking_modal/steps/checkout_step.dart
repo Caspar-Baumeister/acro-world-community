@@ -1,28 +1,31 @@
 import 'dart:convert';
 
 import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/edit_userdata.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class CheckoutStep extends StatefulWidget {
   const CheckoutStep(
-      {Key? key,
+      {super.key,
       required this.className,
       required this.classDate,
       required this.bookingOption,
       required this.previousStep,
       required this.teacherStripeId,
-      this.classEventId})
-      : super(key: key);
+      this.classEventId});
 
   final String className;
   final DateTime classDate;
@@ -36,13 +39,21 @@ class CheckoutStep extends StatefulWidget {
 }
 
 class _CheckoutStepState extends State<CheckoutStep> {
+  bool _ready = false;
+
   @override
   void initState() {
     super.initState();
-    initPaymentSheet(widget.bookingOption);
+    if (widget.bookingOption.id != null && widget.classEventId != null) {
+      initPaymentSheet(widget.bookingOption.id!, widget.classEventId!);
+    } else {
+      CustomErrorHandler.captureException(
+          Exception(
+              "Booking option id or class event id is null when trying to book a class"),
+          stackTrace: StackTrace.current);
+    }
   }
 
-  bool _ready = false;
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).activeUser!;
@@ -239,9 +250,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
               const SizedBox(height: 20.0),
 
               CustomButton(
-                "Pay now",
+                "Pay",
                 () async {
-                  await Stripe.instance.presentPaymentSheet();
+                  await attemptToPresentPaymentSheet();
                 },
                 loading: !_ready,
                 width: double.infinity,
@@ -253,50 +264,72 @@ class _CheckoutStepState extends State<CheckoutStep> {
     );
   }
 
-  Future<void> initPaymentSheet(BookingOption bookingOption) async {
+  Future<void> attemptToPresentPaymentSheet() async {
     try {
-      User user = Provider.of<UserProvider>(context, listen: false).activeUser!;
+      // Present the payment sheet
+      await Stripe.instance.presentPaymentSheet();
+    } on StripeException catch (e) {
+      CustomErrorHandler.captureException(e, stackTrace: StackTrace.current);
+    }
+  }
 
-      // if user id, booking option id or class event id is null, throw an exception
-      if (user.id == null ||
-          bookingOption.id == null ||
-          widget.classEventId == null) {
-        throw Exception("User id, booking option id or class event id is null");
+  Future<void> initPaymentSheet(
+      String bookingOptionId, String classEventId) async {
+    try {
+      User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
+
+      // TODO if user is null, tell the user that login is required then close the booking modal
+      // for now we assume that if the user is not logged in, there is an error
+      if (user == null || user.id == null) {
+        Fluttertoast.showToast(
+            msg: "Please redo the login process and try again",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 2,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+        Navigator.pop(context);
+        return;
       }
 
       // 1. create payment intent on the server
-      final data = await _createTestPaymentSheet(
-          user.id,
-          bookingOption.price,
-          bookingOption.currency,
-          widget.teacherStripeId,
-          widget.classEventId!,
-          bookingOption.id!);
+      final paymentSheetResponseData = await _createPaymentSheet(
+        bookingOptionId,
+        classEventId,
+      );
 
       // define some billing details
       var billingDetails = BillingDetails(
-          email: user.email,
-          name: user.name,
-          phone: "+49123456789",
-          address: const Address(
-              city: "Berlin",
-              country: "Germany",
-              line1: "Karl-Marx-Str. 1",
-              line2: "Karl-Marx-Str. 2",
-              postalCode: "12043",
-              state: "Berlin"));
-
+        email: user.email,
+        name: user.name,
+        phone: "+49123456789",
+        address: const Address(
+          city: "Berlin",
+          country: "Germany",
+          line1: "Karl-Marx-Str. 1",
+          line2: "Karl-Marx-Str. 2",
+          postalCode: "12043",
+          state: "Berlin",
+        ),
+      );
+      if (paymentSheetResponseData == null) {
+        CustomErrorHandler.captureException(
+            Exception("Payment sheet response data is null"),
+            stackTrace: StackTrace.current);
+      }
       // 2. initialize the payment sheet
       final response = await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           // Set to true for custom flow
           customFlow: false,
           // Main params
-          merchantDisplayName: 'Flutter Stripe Store Demo',
-          paymentIntentClientSecret: data['paymentIntent'],
+          merchantDisplayName: "AcroWorld",
+          paymentIntentClientSecret:
+              paymentSheetResponseData!['payment_intent'],
           // Customer keys
-          customerEphemeralKeySecret: data['ephemeralKey'],
-          customerId: data['customer'],
+          customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
+          customerId: paymentSheetResponseData['customer_id'],
           // Extra options
           style: ThemeMode.dark,
           billingDetails: billingDetails,
@@ -315,7 +348,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
       setState(() {
         _ready = true;
       });
-    } catch (e) {
+    } catch (e, stackTrace) {
       // show flutter toast with error
       Fluttertoast.showToast(
           msg: "Error initializing payment sheet: ${e.toString()}",
@@ -326,11 +359,30 @@ class _CheckoutStepState extends State<CheckoutStep> {
           textColor: Colors.white,
           fontSize: 16.0);
 
-      rethrow;
+      CustomErrorHandler.captureException(e, stackTrace: stackTrace);
     }
   }
 
-  Future<Map<String, dynamic>> _createTestPaymentSheet(
+  Future<Map<String, dynamic>?> _createPaymentSheet(
+      String bookingOptionId, String classEventId) async {
+    {
+      QueryResult<Object?> response = await GraphQLClientSingleton().mutate(
+          MutationOptions(document: Mutations.createPaymentSheet, variables: {
+        "bookingOptionId": bookingOptionId,
+        "classEventId": classEventId,
+      }));
+      if (response.hasException) {
+        CustomErrorHandler.captureException(response.exception,
+            stackTrace: response.exception!.originalStackTrace);
+      } else if (response.data != null) {
+        return response.data!["create_payment_sheet"];
+      }
+      print("Response from server: ${response.data}");
+      return null;
+    }
+  }
+
+  Future<Map<String, dynamic>> createTestPaymentSheet(
       String? userId,
       num? amount,
       String currency,

@@ -8,8 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserBookingsCard extends StatelessWidget {
-  const UserBookingsCard({Key? key, required this.userBooking})
-      : super(key: key);
+  const UserBookingsCard({super.key, required this.userBooking});
 
   final UserBookingModel userBooking;
 
@@ -31,7 +30,7 @@ class UserBookingsCard extends StatelessWidget {
                           )))
               : null,
           child: SizedBox(
-            height: BOOKING_CARD_HEIGHT,
+            height: BOOKING_CARD_HEIGHT + 24,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

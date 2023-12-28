@@ -9,8 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
-  const SingleEventQueryWrapper({Key? key, required this.eventId})
-      : super(key: key);
+  const SingleEventQueryWrapper({super.key, required this.eventId});
 
   final String eventId;
 

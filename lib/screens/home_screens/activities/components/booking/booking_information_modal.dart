@@ -10,8 +10,7 @@ import 'package:intl/intl.dart';
 
 class BookingInformationModal extends StatelessWidget {
   const BookingInformationModal(
-      {Key? key, required this.classEvent, required this.bookingOption})
-      : super(key: key);
+      {super.key, required this.classEvent, required this.bookingOption});
 
   final ClassEvent classEvent;
   final BookingOption bookingOption;

@@ -1,6 +1,20 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final createPaymentSheet = gql("""
+mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!) {
+  create_payment_sheet(
+    booking_option_id: \$bookingOptionId
+    class_event_id: \$classEventId
+  ) {
+    payment_intent
+    ephemeral_key
+    customer_id
+  }
+}
+
+""");
+
   static final resetPassword = gql("""
   mutation resetPassword(\$email: String) {
   reset_password(input: {email: \$email}) {

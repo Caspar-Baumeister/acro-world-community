@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class StandardButton extends StatelessWidget {
   const StandardButton(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.onPressed,
       this.icon,
@@ -13,8 +13,7 @@ class StandardButton extends StatelessWidget {
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
-      this.isFilled = false})
-      : super(key: key);
+      this.isFilled = false});
 
   final String text;
   final VoidCallback onPressed;

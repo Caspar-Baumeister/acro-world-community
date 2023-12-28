@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UserFavoriteClasses extends StatelessWidget {
-  const UserFavoriteClasses({Key? key}) : super(key: key);
+  const UserFavoriteClasses({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,26 +31,13 @@ class UserFavoriteClasses extends StatelessWidget {
             List<FavoriteModel> favoriteModels =
                 favorites.map((e) => FavoriteModel.fromJson(e)).toList();
             return favoriteModels.isEmpty
-                ? Center(
+                ? const Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            "You have no favorite activities",
-                            style: H16W7,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "Get informed about changes and receive important messages from the organisers",
-                            style: H14W4.copyWith(
-                              color: Colors.grey[600],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      padding: EdgeInsets.all(40.0),
+                      child: Text(
+                        "You have no favorite activities",
+                        style: H16W7,
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   )

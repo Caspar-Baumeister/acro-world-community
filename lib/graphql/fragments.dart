@@ -135,6 +135,16 @@ class Fragments {
                   name
                 }
               }
+              teacher_id
+              teacher_profile{
+                name
+                images{
+                  is_profile_picture
+                  image{
+                    url
+                  }
+                }
+              }
               level{
                 id
                 name

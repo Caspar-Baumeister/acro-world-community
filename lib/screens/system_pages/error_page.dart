@@ -1,8 +1,7 @@
-
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
-  const ErrorPage({Key? key, required this.error}) : super(key: key);
+  const ErrorPage({super.key, required this.error});
 
   final String error;
 
@@ -20,7 +19,7 @@ class ErrorPage extends StatelessWidget {
 }
 
 class ErrorScreenWidget extends StatelessWidget {
-  const ErrorScreenWidget({Key? key, required this.error}) : super(key: key);
+  const ErrorScreenWidget({super.key, required this.error});
 
   final String error;
 

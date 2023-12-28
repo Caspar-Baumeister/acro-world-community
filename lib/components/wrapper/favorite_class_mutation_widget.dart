@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 
 class FavoriteClassMutationWidget extends StatefulWidget {
   const FavoriteClassMutationWidget({
-    Key? key,
+    super.key,
     required this.classId,
     required this.initialFavorized,
     required this.color,
-  }) : super(key: key);
+  });
 
   final String classId;
   final bool initialFavorized;

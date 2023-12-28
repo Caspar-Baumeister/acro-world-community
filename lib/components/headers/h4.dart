@@ -2,7 +2,7 @@ import 'package:acroworld/components/headers/h.dart';
 import 'package:flutter/material.dart';
 
 class H4 extends StatelessWidget {
-  const H4({Key? key, required this.text}) : super(key: key);
+  const H4({super.key, required this.text});
 
   final String text;
 

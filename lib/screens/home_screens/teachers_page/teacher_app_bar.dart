@@ -7,8 +7,7 @@ import 'package:flutter/services.dart';
 class TeacherAppBar extends StatefulWidget implements PreferredSizeWidget {
   final Function(String) onSearchChanged;
 
-  const TeacherAppBar({Key? key, required this.onSearchChanged})
-      : super(key: key);
+  const TeacherAppBar({super.key, required this.onSearchChanged});
 
   @override
   TeacherAppBarState createState() => TeacherAppBarState();

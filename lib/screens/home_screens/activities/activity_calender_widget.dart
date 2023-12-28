@@ -8,12 +8,12 @@ import 'package:table_calendar/table_calendar.dart';
 
 class ActivityCalenderWidget extends StatefulWidget {
   const ActivityCalenderWidget({
-    Key? key,
+    super.key,
     required this.onPageChanged,
     required this.classWeekEvents,
     required this.focusedDay,
     required this.setFocusedDay,
-  }) : super(key: key);
+  });
 
   final Function(DateTime focusDay) onPageChanged;
   final Function(DateTime newFocusedDay) setFocusedDay;

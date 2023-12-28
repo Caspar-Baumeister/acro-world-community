@@ -41,6 +41,7 @@ initMain() async {
   await initHiveForFlutter();
   await LocalStorageService.init();
   await PlacePreferences.init();
+  await dot_env.dotenv.load(fileName: ".env");
 
   // Initialize the GraphQL client in the client singleton
   GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
@@ -63,19 +64,6 @@ initMain() async {
   //   ),
   // );
 
-  // DEFINE THE GRAPHQL CLIENT //
-  // final AuthLink authLink = AuthLink(
-  //   getToken: () async {
-  //     String? token = await AuthProvider().getToken();
-  //     return token != null ? 'Bearer $token' : null;
-  //   },
-  // );
-  // final HttpLink httpLink = HttpLink(
-  //   'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
-  // );
-
-  //   final Link link = authLink.concat(httpLink);
-
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -92,8 +80,8 @@ initMain() async {
     notificationService.getToken();
 
     // STRIPE //
-    await dot_env.dotenv.load(fileName: ".env");
-    Stripe.publishableKey = dot_env.dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+    print("stripe key: ${AppEnvironment.stripePublishableKey}");
+    Stripe.publishableKey = AppEnvironment.stripePublishableKey;
     Stripe.merchantIdentifier = 'merchant.de.acroworld';
     Stripe.urlScheme = 'acroworld';
     await Stripe.instance.applySettings();
@@ -101,7 +89,7 @@ initMain() async {
     CustomErrorHandler.captureException(exception, stackTrace: stackTrace);
   }
 
-  // check version
+  // VERSION CHECK //
   String minVersion =
       await VersionService.getVersionInfo(graphQLClientSingleton.client);
   if (minVersion == 'Error') {

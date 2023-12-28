@@ -3,15 +3,14 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class BookingQueryHoverButton extends StatelessWidget {
-  const BookingQueryHoverButton({Key? key, required this.classEvent})
-      : super(key: key);
+  const BookingQueryHoverButton({super.key, required this.classEvent});
   final ClassEvent classEvent;
 
   // This widget is a wrapper for the booking button

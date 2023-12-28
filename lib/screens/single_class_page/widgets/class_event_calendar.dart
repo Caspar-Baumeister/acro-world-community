@@ -1,12 +1,12 @@
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/single_class_page/widgets/class_event_participant_query.dart';
+import 'package:acroworld/screens/home_screens/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ClassEventCalendar extends StatefulWidget {
-  const ClassEventCalendar({required this.kEvents, Key? key}) : super(key: key);
+  const ClassEventCalendar({required this.kEvents, super.key});
 
   final Map<DateTime, List<ClassEvent>> kEvents;
 
@@ -16,7 +16,7 @@ class ClassEventCalendar extends StatefulWidget {
 
 class ClassEventCalendarState extends State<ClassEventCalendar> {
   late ValueNotifier<List<ClassEvent>> _selectedEvents;
-  final CalendarFormat _calendarFormat = CalendarFormat.week;
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode rangeSelectionMode = RangeSelectionMode
       .disabled; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
@@ -77,7 +77,7 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
 
-          availableCalendarFormats: const {CalendarFormat.week: 'week'},
+          availableCalendarFormats: const {CalendarFormat.month: 'month'},
           calendarStyle: CalendarStyle(
               // Use `CalendarStyle` to customize the UI
               outsideDaysVisible: false,
@@ -98,9 +98,10 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
               shrinkWrap: true,
               itemCount: value.length,
               itemBuilder: (context, index) {
-                return ClassEventParticipantQuery(
-                  classEvent: value[index],
-                );
+                return ClassEventExpandedTile(classEvent: value[index]);
+                // ClassEventParticipantQuery(
+                //   classEvent: value[index],
+                // );
               },
             );
           },

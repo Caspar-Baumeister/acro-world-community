@@ -9,11 +9,10 @@ class OpenMap extends StatelessWidget {
   final double initialZoom;
 
   const OpenMap(
-      {Key? key,
+      {super.key,
       required this.latitude,
       required this.longitude,
-      required this.initialZoom})
-      : super(key: key);
+      required this.initialZoom});
   @override
   Widget build(BuildContext context) {
     return Stack(

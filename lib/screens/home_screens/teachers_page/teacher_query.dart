@@ -10,10 +10,10 @@ import 'package:provider/provider.dart';
 
 class TeacherQuery extends StatefulWidget {
   const TeacherQuery({
-    Key? key,
+    super.key,
     required this.search,
     required this.isFollowed,
-  }) : super(key: key);
+  });
 
   final String search;
   final bool isFollowed;

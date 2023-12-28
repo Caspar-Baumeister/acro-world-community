@@ -3,8 +3,7 @@ import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class LinkButton extends StatelessWidget {
-  const LinkButton({Key? key, required this.link, required this.text})
-      : super(key: key);
+  const LinkButton({super.key, required this.link, required this.text});
 
   final String link;
   final String text;

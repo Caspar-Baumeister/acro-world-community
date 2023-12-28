@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 
 class ClassTemplateCard extends StatelessWidget {
   const ClassTemplateCard({
-    Key? key,
+    super.key,
     required this.indexClass,
-  }) : super(key: key);
+  });
 
   final ClassModel indexClass;
 

@@ -5,15 +5,14 @@ import 'package:flutter/material.dart';
 
 class StandartIconButton extends StatelessWidget {
   const StandartIconButton(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.onPressed,
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
       this.isFilled = false,
-      required this.icon})
-      : super(key: key);
+      required this.icon});
 
   final String text;
   final VoidCallback onPressed;

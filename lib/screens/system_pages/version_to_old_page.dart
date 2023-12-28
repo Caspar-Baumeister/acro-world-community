@@ -9,8 +9,7 @@ import 'package:flutter/material.dart';
 
 class VersionToOldPage extends StatelessWidget {
   const VersionToOldPage(
-      {Key? key, required this.currentVersion, required this.minVersion})
-      : super(key: key);
+      {super.key, required this.currentVersion, required this.minVersion});
 
   final String currentVersion;
   final String minVersion;

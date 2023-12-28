@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 
 class BookmarkEventMutationWidget extends StatefulWidget {
   const BookmarkEventMutationWidget({
-    Key? key,
+    super.key,
     required this.eventId,
     required this.initialBookmarked,
     required this.color,
-  }) : super(key: key);
+  });
 
   final String eventId;
   final bool initialBookmarked;

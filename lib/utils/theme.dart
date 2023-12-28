@@ -1,7 +1,7 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
-enum MyThemeKeys { LIGHT, DARK }
+enum MyThemeKeys { light, dark }
 
 class MyThemes {
   static final ThemeData lightTheme = ThemeData(
@@ -18,6 +18,20 @@ class MyThemes {
             ),
           ),
         ),
+      ),
+      bottomSheetTheme: const BottomSheetThemeData(
+        modalBackgroundColor: BACKGROUND_COLOR,
+        surfaceTintColor: BACKGROUND_COLOR,
+        backgroundColor: BACKGROUND_COLOR,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(20.0),
+          ),
+        ),
+      ),
+      // set modal background color
+      dialogTheme: const DialogTheme(
+        backgroundColor: BACKGROUND_COLOR,
       ),
       drawerTheme: const DrawerThemeData(
         backgroundColor: BACKGROUND_COLOR,
@@ -57,9 +71,9 @@ class MyThemes {
 
   static ThemeData getThemeFromKey(MyThemeKeys themeKey) {
     switch (themeKey) {
-      case MyThemeKeys.LIGHT:
+      case MyThemeKeys.light:
         return lightTheme;
-      case MyThemeKeys.DARK:
+      case MyThemeKeys.dark:
         return darkTheme;
       default:
         return lightTheme;

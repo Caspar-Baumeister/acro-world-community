@@ -12,12 +12,11 @@ import '../../../../graphql/mutations.dart';
 
 class ParticipantsButton extends StatefulWidget {
   const ParticipantsButton(
-      {Key? key,
+      {super.key,
       this.countParticipants,
       required this.classEventId,
       required this.isParticipate,
-      required this.runRefetch})
-      : super(key: key);
+      required this.runRefetch});
 
   final int? countParticipants;
   final String classEventId;

@@ -5,7 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class DeleteAccount extends StatefulWidget {
-  const DeleteAccount({Key? key}) : super(key: key);
+  const DeleteAccount({super.key});
 
   @override
   State<DeleteAccount> createState() => _DeleteAccountState();
@@ -35,7 +35,7 @@ class _DeleteAccountState extends State<DeleteAccount> {
                   fontSize: 16.0);
             } else {
               Fluttertoast.showToast(
-                  msg: "something went wrong",
+                  msg: "something went wrong, please write us an email",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.TOP,
                   timeInSecForIosWeb: 1,

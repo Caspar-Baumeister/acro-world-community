@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
   const DescriptionTextWidget(
-      {Key? key, required this.text, this.isHeader = false})
-      : super(key: key);
+      {super.key, required this.text, this.isHeader = false});
   final String text;
   final bool isHeader;
 

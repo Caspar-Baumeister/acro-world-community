@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 
 class DifficultyWidget extends StatelessWidget {
   const DifficultyWidget(this.classLevel,
-      {Key? key,
+      {super.key,
       this.height = DIFFICULTY_LEVEL_HEIGHT,
-      this.totalWidth = DIFFICULTY_LEVEL_WIDTH})
-      : super(key: key);
+      this.totalWidth = DIFFICULTY_LEVEL_WIDTH});
 
   final List<ClassLevels>? classLevel;
   final double height;

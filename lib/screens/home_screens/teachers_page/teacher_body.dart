@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 
 class TeacherBody extends StatelessWidget {
   const TeacherBody({
-    Key? key,
+    super.key,
     required this.teachers,
-  }) : super(key: key);
+  });
 
   final List<TeacherModel> teachers;
 

@@ -11,9 +11,9 @@ import 'package:intl/intl.dart';
 
 class SingleEventBody extends StatelessWidget {
   const SingleEventBody({
-    Key? key,
+    super.key,
     required this.event,
-  }) : super(key: key);
+  });
 
   final EventModel event;
 

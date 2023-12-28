@@ -8,14 +8,13 @@ import 'package:provider/provider.dart';
 
 class HeartMutationWidget extends StatelessWidget {
   const HeartMutationWidget(
-      {Key? key,
+      {super.key,
       required this.isLiked,
       required this.teacherLikes,
       required this.setIsLiked,
       required this.setTeacherLikes,
       required this.teacherId,
-      this.size = 42})
-      : super(key: key);
+      this.size = 42});
 
   final bool isLiked;
   final int teacherLikes;
@@ -72,11 +71,10 @@ class HeartMutationWidget extends StatelessWidget {
 
 class HeartWidget extends StatelessWidget {
   const HeartWidget(
-      {Key? key,
+      {super.key,
       required this.isLiked,
       required this.likes,
-      required this.size})
-      : super(key: key);
+      required this.size});
 
   final bool isLiked;
   final int likes;

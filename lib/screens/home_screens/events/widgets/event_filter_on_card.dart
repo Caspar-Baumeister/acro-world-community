@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class EventFilterOnCard extends StatelessWidget {
-  const EventFilterOnCard({Key? key, required this.event}) : super(key: key);
+  const EventFilterOnCard({super.key, required this.event});
 
   final EventModel event;
 

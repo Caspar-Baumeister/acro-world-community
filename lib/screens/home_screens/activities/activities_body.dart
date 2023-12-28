@@ -7,7 +7,7 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class ActivitiesBody extends StatefulWidget {
-  const ActivitiesBody({Key? key}) : super(key: key);
+  const ActivitiesBody({super.key});
 
   @override
   State<ActivitiesBody> createState() => _ActivitiesBodyState();

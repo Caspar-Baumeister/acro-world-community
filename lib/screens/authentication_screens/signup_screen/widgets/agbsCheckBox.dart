@@ -5,8 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class AGBCheckbox extends StatefulWidget {
-  const AGBCheckbox({Key? key, required this.isAgb, required this.setAgb})
-      : super(key: key);
+  const AGBCheckbox({super.key, required this.isAgb, required this.setAgb});
 
   final bool isAgb;
 

@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class Gallery extends StatefulWidget {
-  const Gallery({Key? key, required this.images}) : super(key: key);
+  const Gallery({super.key, required this.images});
   final List<Images>? images;
 
   @override
@@ -112,7 +112,7 @@ class _GalleryState extends State<Gallery> {
 }
 
 class AnimatedDialog extends StatefulWidget {
-  const AnimatedDialog({Key? key, required this.child}) : super(key: key);
+  const AnimatedDialog({super.key, required this.child});
 
   final Widget child;
 

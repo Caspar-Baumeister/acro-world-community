@@ -8,8 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 class FriendCode extends StatelessWidget {
   const FriendCode(
-      {Key? key, required this.confirmFriend, required this.toggleView})
-      : super(key: key);
+      {super.key, required this.confirmFriend, required this.toggleView});
 
   final Function confirmFriend;
   final Function toggleView;
