@@ -196,5 +196,3 @@ app.*.symbols
 
 # Android build outputs
 android/app/build/
-
-build/
