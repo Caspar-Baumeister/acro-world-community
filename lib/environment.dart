@@ -3,6 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
 const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 class AppEnvironment {
+  static const bool enableSentry = isProduction;
   static const bool isProdBuild = isProduction;
   static const String backendHost =
       isProduction ? "bro-devs.com" : "dev.acroworld.de";

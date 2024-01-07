@@ -63,6 +63,10 @@ class EventFilterOnCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           color: event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
+          border: Border.all(
+            color: HIGHLIGHT_COLOR,
+            width: 1,
+          ),
         ),
         height: CLASS_CARD_HEIGHT,
         child: Row(

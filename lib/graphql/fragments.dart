@@ -102,7 +102,6 @@ class Fragments {
   type
   id
   location_name
-  community_id
   name
   user_id
   is_organization

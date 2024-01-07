@@ -3,6 +3,7 @@ import 'package:acroworld/components/wrapper/bookmark_event_mutation_widget.dart
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -31,9 +32,9 @@ class _SingleEventPageState extends State<SingleEventPage> {
   void _updatePercentage() {
     if (!_scrollController.hasClients) return;
 
-    const double expandedHeight = 200.0 - kToolbarHeight;
-    final double currentHeight =
-        200.0 - _scrollController.offset.clamp(0.0, expandedHeight);
+    const double expandedHeight = appBarExpandedHeight - kToolbarHeight;
+    final double currentHeight = appBarExpandedHeight -
+        _scrollController.offset.clamp(0.0, expandedHeight);
     final double percentage = 1.0 - (currentHeight / expandedHeight);
     _percentageCollapsed.value = percentage;
   }
@@ -94,10 +95,13 @@ Found in the AcroWorld app
         ValueListenableBuilder<double>(
           valueListenable: _percentageCollapsed,
           builder: (context, percentage, child) {
+            print("percentage: $percentage");
             return BookmarkEventMutationWidget(
                 eventId: widget.event.id!,
                 initialBookmarked: widget.event.isInitiallyBookmarket == true,
-                color: percentage > 0.5 ? Colors.black : Colors.white);
+                color: percentage > appBarCollapsedThreshold
+                    ? Colors.black
+                    : Colors.white);
           },
         ),
       );
@@ -109,7 +113,9 @@ Found in the AcroWorld app
           return IconButton(
               onPressed: () => shareEvent(widget.event),
               icon: Icon(Icons.ios_share,
-                  color: percentage > 0.5 ? Colors.black : Colors.white));
+                  color: percentage > appBarCollapsedThreshold
+                      ? Colors.black
+                      : Colors.white));
         },
       ),
     );
@@ -144,7 +150,9 @@ Found in the AcroWorld app
               builder: (context, percentage, child) {
                 return IconButton(
                   icon: const Icon(Icons.arrow_back_ios),
-                  color: percentage > 0.5 ? Colors.black : Colors.white,
+                  color: percentage > appBarCollapsedThreshold
+                      ? Colors.black
+                      : Colors.white,
                   onPressed: () => Navigator.pop(context),
                 );
               },
@@ -152,7 +160,7 @@ Found in the AcroWorld app
             title: ValueListenableBuilder<double>(
               valueListenable: _percentageCollapsed,
               builder: (context, percentage, child) {
-                if (percentage > 0.5) {
+                if (percentage > appBarCollapsedThreshold) {
                   return Text(widget.event.name ?? "",
                       maxLines: 3,
                       style:
@@ -162,7 +170,7 @@ Found in the AcroWorld app
               },
             ),
             iconTheme: const IconThemeData(color: Colors.white),
-            expandedHeight: 200.0,
+            expandedHeight: appBarExpandedHeight,
             pinned: true,
             stretch: true,
             flexibleSpace: FlexibleSpaceBar(

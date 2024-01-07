@@ -68,17 +68,16 @@ Found in the AcroWorld app
 
   @override
   Widget build(BuildContext context) {
-    print("single class page build");
     final ClassTeachers? billingTeacher =
         findFirstTeacherOrNull(widget.clas.classTeachers);
 
-    print("billingTeacher: $billingTeacher");
     List<Widget> actions = [];
     if (widget.clas.isInitiallyFavorized != null) {
       actions.add(
         ValueListenableBuilder<double>(
           valueListenable: _percentageCollapsed,
           builder: (context, percentage, child) {
+            print("percentage: $percentage");
             return FavoriteClassMutationWidget(
                 classId: widget.clas.id!,
                 initialFavorized: widget.clas.isInitiallyFavorized == true,
@@ -105,44 +104,39 @@ Found in the AcroWorld app
       );
     }
     return Scaffold(
-      body: Stack(
-        children: [
-          CustomScrollView(
-            controller: _scrollController,
-            slivers: <Widget>[
-              _buildSliverAppBar(context, _percentageCollapsed.value),
-              SliverToBoxAdapter(
-                child: SingleClassBody(
-                  classe: widget.clas,
-                  classEvent: widget.classEvent,
-                ),
-              ),
-            ],
+      bottomNavigationBar: _buildBottomHoverButton(context, billingTeacher),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: <Widget>[
+          _buildSliverAppBar(context, _percentageCollapsed.value),
+          SliverToBoxAdapter(
+            child: SingleClassBody(
+              classe: widget.clas,
+              classEvent: widget.classEvent,
+            ),
           ),
-          _buildBottomHoverButton(context, billingTeacher),
         ],
       ),
     );
   }
 
-  Widget _buildBottomHoverButton(
+  BottomAppBar? _buildBottomHoverButton(
       BuildContext context, ClassTeachers? billingTeacher) {
-    if (widget.classEvent != null) {
-      return _buildBookingQueryHoverButton(context, billingTeacher);
-    } else {
-      return _buildCalendarButton(context);
-    }
-  }
-
-  Widget _buildBookingQueryHoverButton(
-      BuildContext context, ClassTeachers? billingTeacher) {
-    if (widget.classEvent!.classModel?.classBookingOptions != null &&
+    if (widget.classEvent != null &&
+        widget.classEvent!.classModel?.classBookingOptions != null &&
         widget.classEvent!.classModel!.classBookingOptions!.isNotEmpty &&
         billingTeacher != null) {
-      return BookingQueryHoverButton(classEvent: widget.classEvent!);
-    } else {
-      return Container();
+      return BottomAppBar(
+          height: 60,
+          elevation: 0,
+          child: BookingQueryHoverButton(classEvent: widget.classEvent!));
+    } else if (widget.classEvent != null) {
+      return null;
     }
+    return BottomAppBar(
+        height: 60,
+        elevation: 0,
+        child: Container(child: _buildCalendarButton(context)));
   }
 
   Widget _buildCalendarButton(BuildContext context) {

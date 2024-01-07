@@ -18,7 +18,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   // Sentry //
-  if (AppEnvironment.isProdBuild) {
+  if (AppEnvironment.enableSentry) {
     await SentryFlutter.init(
       (options) {
         options.dsn = AppEnvironment.sentryDsn;
