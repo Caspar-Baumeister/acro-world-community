@@ -1,11 +1,11 @@
-import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/components/custom_sliver_app_bar.dart';
 import 'package:acroworld/components/wrapper/bookmark_event_mutation_widget.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:share_plus/share_plus.dart';
@@ -95,7 +95,6 @@ Found in the AcroWorld app
         ValueListenableBuilder<double>(
           valueListenable: _percentageCollapsed,
           builder: (context, percentage, child) {
-            print("percentage: $percentage");
             return BookmarkEventMutationWidget(
                 eventId: widget.event.id!,
                 initialBookmarked: widget.event.isInitiallyBookmarket == true,
@@ -122,18 +121,15 @@ Found in the AcroWorld app
 
     return Scaffold(
       bottomNavigationBar: widget.event.pretixName != null
-          ? SafeArea(
-              child: BottomAppBar(
-                height: 60,
-                elevation: 0,
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 10.0),
-                    child: StandardButton(
-                      text: "Book via AcroWorld",
-                      onPressed: () => customLaunch(
-                          "https://booking.acroworld.de${widget.event.pretixName!}"),
-                    ),
+          ? BottomAppBar(
+              elevation: 0,
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: CustomButton(
+                    "Book via AcroWorld",
+                    () => customLaunch(
+                        "https://booking.acroworld.de/${widget.event.pretixName!}"),
                   ),
                 ),
               ),
@@ -142,59 +138,11 @@ Found in the AcroWorld app
       body: CustomScrollView(
         controller: _scrollController,
         slivers: <Widget>[
-          SliverAppBar(
+          CustomSliverAppBar(
             actions: actions,
-            centerTitle: false,
-            leading: ValueListenableBuilder<double>(
-              valueListenable: _percentageCollapsed,
-              builder: (context, percentage, child) {
-                return IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  color: percentage > appBarCollapsedThreshold
-                      ? Colors.black
-                      : Colors.white,
-                  onPressed: () => Navigator.pop(context),
-                );
-              },
-            ),
-            title: ValueListenableBuilder<double>(
-              valueListenable: _percentageCollapsed,
-              builder: (context, percentage, child) {
-                if (percentage > appBarCollapsedThreshold) {
-                  return Text(widget.event.name ?? "",
-                      maxLines: 3,
-                      style:
-                          const TextStyle(color: Colors.black, fontSize: 18));
-                }
-                return Container(); // Empty container when expanded
-              },
-            ),
-            iconTheme: const IconThemeData(color: Colors.white),
-            expandedHeight: appBarExpandedHeight,
-            pinned: true,
-            stretch: true,
-            flexibleSpace: FlexibleSpaceBar(
-              stretchModes: const <StretchMode>[
-                StretchMode.zoomBackground,
-              ],
-              // title: Text(clas.name ?? "",
-              //     maxLines: 3, style: HEADER_1_TEXT_STYLE),
-              background: CachedNetworkImage(
-                fit: BoxFit.cover,
-                height: 52.0,
-                placeholder: (context, url) => Container(
-                  color: Colors.black12,
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.black12,
-                  child: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                ),
-                imageUrl: widget.event.mainImageUrl ?? "",
-              ),
-            ),
+            percentageCollapsed: _percentageCollapsed,
+            headerText: widget.event.name ?? "",
+            imgUrl: widget.event.mainImageUrl ?? "",
           ),
           SliverToBoxAdapter(
             child: SingleEventBody(

@@ -12,11 +12,13 @@ class LinkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 5.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
+      child: FilledButton(
+        // set fillcolor to white
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // set border to black and width to 1
+          side: MaterialStateProperty.all<BorderSide>(
+              const BorderSide(color: Colors.black, width: 1)),
         ),
         onPressed: () async {
           await customLaunch(link);

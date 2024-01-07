@@ -115,7 +115,7 @@ class FilterBubbleState extends State<FilterBubble> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: !_isSelected ? Colors.white : Colors.black,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(color: !_isSelected ? Colors.black : Colors.white),
         ),
         child: Center(

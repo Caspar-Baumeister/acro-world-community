@@ -1,3 +1,4 @@
+import 'package:acroworld/components/custom_sliver_app_bar.dart';
 import 'package:acroworld/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
@@ -9,8 +10,6 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/find_billing_teacher.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
-import 'package:acroworld/utils/text_styles.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -108,7 +107,13 @@ Found in the AcroWorld app
       body: CustomScrollView(
         controller: _scrollController,
         slivers: <Widget>[
-          _buildSliverAppBar(context, _percentageCollapsed.value),
+          CustomSliverAppBar(
+              actions: actions,
+              percentageCollapsed: _percentageCollapsed,
+              headerText: widget.clas.name ?? "",
+              imgUrl: widget.clas.imageUrl ?? "")
+          // _buildSliverAppBar(context, _percentageCollapsed.value),
+          ,
           SliverToBoxAdapter(
             child: SingleClassBody(
               classe: widget.clas,
@@ -127,16 +132,13 @@ Found in the AcroWorld app
         widget.classEvent!.classModel!.classBookingOptions!.isNotEmpty &&
         billingTeacher != null) {
       return BottomAppBar(
-          height: 60,
           elevation: 0,
           child: BookingQueryHoverButton(classEvent: widget.classEvent!));
     } else if (widget.classEvent != null) {
       return null;
     }
     return BottomAppBar(
-        height: 60,
-        elevation: 0,
-        child: Container(child: _buildCalendarButton(context)));
+        elevation: 0, child: Container(child: _buildCalendarButton(context)));
   }
 
   Widget _buildCalendarButton(BuildContext context) {
@@ -151,64 +153,6 @@ Found in the AcroWorld app
       ),
       onPressed: () =>
           buildMortal(context, CalenderModal(classId: widget.clas.id!)),
-    );
-  }
-
-  Widget _buildSliverAppBar(BuildContext context, double percentage) {
-    return SliverAppBar(
-      centerTitle: false,
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios),
-        color:
-            percentage > appBarCollapsedThreshold ? Colors.black : Colors.white,
-        onPressed: () => Navigator.pop(context),
-      ),
-      title: percentage > appBarCollapsedThreshold
-          ? Text(
-              widget.clas.name ?? "",
-              maxLines: 1,
-              style: H20W5,
-              overflow: TextOverflow.fade,
-            )
-          : Container(), // Empty container when expanded
-      actions: [
-        FavoriteClassMutationWidget(
-            classId: widget.clas.id!,
-            initialFavorized: widget.clas.isInitiallyFavorized == true,
-            color: percentage > appBarCollapsedThreshold
-                ? Colors.black
-                : Colors.white),
-        IconButton(
-            onPressed: () => shareEvent(widget.classEvent!, widget.clas),
-            icon: Icon(Icons.ios_share,
-                color: percentage > appBarCollapsedThreshold
-                    ? Colors.black
-                    : Colors.white)),
-      ],
-      iconTheme: const IconThemeData(color: Colors.white),
-      expandedHeight: appBarExpandedHeight,
-      pinned: true,
-      stretch: true,
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const <StretchMode>[
-          StretchMode.zoomBackground,
-        ],
-        background: CachedNetworkImage(
-          fit: BoxFit.cover,
-          height: 52.0,
-          placeholder: (context, url) => Container(
-            color: Colors.black12,
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.black12,
-            child: const Icon(
-              Icons.error,
-              color: Colors.red,
-            ),
-          ),
-          imageUrl: widget.clas.imageUrl ?? "",
-        ),
-      ),
     );
   }
 }

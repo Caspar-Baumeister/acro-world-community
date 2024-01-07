@@ -6,7 +6,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 class CustomErrorHandler {
   static Future<void> captureException(dynamic exception,
       {StackTrace? stackTrace}) async {
-    if (AppEnvironment.isProdBuild) {
+    if (AppEnvironment.enableSentry) {
       await Sentry.captureException(
         exception,
         stackTrace: stackTrace,

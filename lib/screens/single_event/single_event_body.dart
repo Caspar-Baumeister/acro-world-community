@@ -234,7 +234,7 @@ class SingleEventBody extends StatelessWidget {
                 ),
               )
             : Container(),
-        const SizedBox(height: 50)
+        const SizedBox(height: 10)
       ],
     ));
   }

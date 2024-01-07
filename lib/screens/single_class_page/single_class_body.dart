@@ -212,12 +212,11 @@ class SingleClassBody extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const CustomDivider()
                   ],
                 )
               : Container(),
           // ClassEventCalenderQuery(classId: classe.id!),
-          const SizedBox(height: 100)
+          const SizedBox(height: 10)
         ],
       ),
     ));
