@@ -16,7 +16,7 @@ class AppEnvironment {
 
   static String stripePublishableKey = isProduction
       ? dot_env.dotenv.env['STRIPE_PUBLISHABLE_LIVE_KEY']!
-      : dot_env.dotenv.env['STRIPE_PUBLISHABLE_TEST_KEY']!;
+      : "pk_test_51OPnwnC43x9xByRIG4kRS8c37cd2DTCxvySyiFf6XOBnjefX8OLhLMNyPoYcfs9WxOHCTdocWMsFr5gLY5R2vbsS00eUgNP1LD";
 }
 
 
