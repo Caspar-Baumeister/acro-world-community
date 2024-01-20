@@ -135,7 +135,8 @@ class Fragments {
                 }
               }
               teacher_id
-              teacher_profile{
+              teacher_profile {
+                id
                 name
                 images{
                   is_profile_picture
