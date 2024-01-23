@@ -1,8 +1,8 @@
 import 'package:acroworld/components/custom_sliver_app_bar.dart';
-import 'package:acroworld/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/single_class_page/single_class_body.dart';
+import 'package:acroworld/screens/single_class_page/widgets/back_drop_action_row.dart';
 import 'package:acroworld/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
@@ -71,37 +71,21 @@ Found in the AcroWorld app
         findFirstTeacherOrNull(widget.clas.classTeachers);
 
     List<Widget> actions = [];
-    if (widget.clas.isInitiallyFavorized != null) {
-      actions.add(
-        ValueListenableBuilder<double>(
-          valueListenable: _percentageCollapsed,
-          builder: (context, percentage, child) {
-            print("percentage: $percentage");
-            return FavoriteClassMutationWidget(
-                classId: widget.clas.id!,
-                initialFavorized: widget.clas.isInitiallyFavorized == true,
-                color: percentage > appBarCollapsedThreshold
-                    ? Colors.black
-                    : Colors.white);
-          },
-        ),
-      );
-    }
-    if (widget.classEvent != null) {
-      actions.add(
-        ValueListenableBuilder<double>(
-          valueListenable: _percentageCollapsed,
-          builder: (context, percentage, child) {
-            return IconButton(
-                onPressed: () => shareEvent(widget.classEvent!, widget.clas),
-                icon: Icon(Icons.ios_share,
-                    color: percentage > appBarCollapsedThreshold
-                        ? Colors.black
-                        : Colors.white));
-          },
-        ),
-      );
-    }
+
+    actions.add(
+      ValueListenableBuilder<double>(
+        valueListenable: _percentageCollapsed,
+        builder: (context, percentage, child) {
+          return BackDropActionRow(
+              isCollapsed: percentage > appBarCollapsedThreshold,
+              classId: widget.clas.id!,
+              classEvent: widget.classEvent,
+              initialFavorized: widget.clas.isInitiallyFavorized,
+              shareEvents: () => shareEvent(widget.classEvent!, widget.clas));
+        },
+      ),
+    );
+
     return Scaffold(
       bottomNavigationBar: _buildBottomHoverButton(context, billingTeacher),
       body: CustomScrollView(

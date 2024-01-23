@@ -17,6 +17,8 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
+// TODO create a stripe service that handles all stripe related stuff
+
 class CheckoutStep extends StatefulWidget {
   const CheckoutStep(
       {super.key,
@@ -293,6 +295,10 @@ class _CheckoutStepState extends State<CheckoutStep> {
         return;
       }
 
+      print("Booking option id:");
+      print(bookingOptionId);
+      print(classEventId);
+
       // 1. create payment intent on the server
       final paymentSheetResponseData = await _createPaymentSheet(
         bookingOptionId,
@@ -313,12 +319,15 @@ class _CheckoutStepState extends State<CheckoutStep> {
           state: "Berlin",
         ),
       );
+
+      print("Payment sheet response data: $paymentSheetResponseData");
       if (paymentSheetResponseData == null) {
         CustomErrorHandler.captureException(
             Exception("Payment sheet response data is null"),
             stackTrace: StackTrace.current);
       }
       // 2. initialize the payment sheet
+
       final response = await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
           // Set to true for custom flow

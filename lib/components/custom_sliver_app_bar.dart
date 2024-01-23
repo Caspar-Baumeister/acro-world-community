@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -24,12 +26,8 @@ class CustomSliverAppBar extends StatelessWidget {
       leading: ValueListenableBuilder<double>(
         valueListenable: _percentageCollapsed,
         builder: (context, percentage, child) {
-          return IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            color: percentage > appBarCollapsedThreshold
-                ? Colors.black
-                : Colors.white,
-            onPressed: () => Navigator.pop(context),
+          return BlurIconButton(
+            isCollapsed: percentage > appBarCollapsedThreshold,
           );
         },
       ),
@@ -68,6 +66,39 @@ class CustomSliverAppBar extends StatelessWidget {
             ),
           ),
           imageUrl: imgUrl,
+        ),
+      ),
+    );
+  }
+}
+
+class BlurIconButton extends StatelessWidget {
+  const BlurIconButton({super.key, required this.isCollapsed});
+
+  final bool isCollapsed;
+
+  @override
+  Widget build(BuildContext context) {
+    double blurFactor = isCollapsed ? 0 : 4;
+
+    return ClipOval(
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.2), // Subdued color
+            shape: BoxShape.circle, // Circular shape
+          ),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: blurFactor, sigmaY: blurFactor),
+            child: const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Icon(
+                Icons.arrow_back_ios,
+                color: Colors.black,
+              ),
+            ),
+          ),
         ),
       ),
     );

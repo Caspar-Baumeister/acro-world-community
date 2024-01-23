@@ -1,9 +1,9 @@
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/components/custom_sliver_app_bar.dart';
-import 'package:acroworld/components/wrapper/bookmark_event_mutation_widget.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/single_event/single_event_body.dart';
+import 'package:acroworld/screens/single_event/widgets/back_drop_action_row_event.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -95,29 +95,15 @@ Found in the AcroWorld app
         ValueListenableBuilder<double>(
           valueListenable: _percentageCollapsed,
           builder: (context, percentage, child) {
-            return BookmarkEventMutationWidget(
+            return BackDropActionRowEvent(
+                isCollapsed: percentage > appBarCollapsedThreshold,
                 eventId: widget.event.id!,
-                initialBookmarked: widget.event.isInitiallyBookmarket == true,
-                color: percentage > appBarCollapsedThreshold
-                    ? Colors.black
-                    : Colors.white);
+                initialyBookmarked: widget.event.isInitiallyBookmarket,
+                shareEvents: () => shareEvent(widget.event));
           },
         ),
       );
     }
-    actions.add(
-      ValueListenableBuilder<double>(
-        valueListenable: _percentageCollapsed,
-        builder: (context, percentage, child) {
-          return IconButton(
-              onPressed: () => shareEvent(widget.event),
-              icon: Icon(Icons.ios_share,
-                  color: percentage > appBarCollapsedThreshold
-                      ? Colors.black
-                      : Colors.white));
-        },
-      ),
-    );
 
     return Scaffold(
       bottomNavigationBar: widget.event.pretixName != null

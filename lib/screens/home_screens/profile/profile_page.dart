@@ -152,6 +152,7 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                           labelColor: Colors.black,
                           unselectedLabelColor: Colors.grey[400],
                           indicatorWeight: 1,
+                          indicatorSize: TabBarIndicatorSize.tab,
                           indicatorColor: Colors.black,
                           tabs: const [
                             Tab(
