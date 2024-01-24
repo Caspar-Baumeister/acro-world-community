@@ -19,7 +19,7 @@ query Me {
   static final userBookings = gql("""
 query userBookings {
   me {
-    bookings(where: {status: {_eq: Success}}) {
+    bookings(where: {status: {_eq: Confirmed}}) {
       created_at
       updated_at
       booking_option{
