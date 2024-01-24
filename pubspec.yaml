@@ -65,7 +65,6 @@ flutter:
   assets:
     - assets/
     - assets/logo/
-    - .env
 flutter_native_splash:
   color: "#ffffff"
   image: "assets/muscleup_drawing.png"

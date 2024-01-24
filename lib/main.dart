@@ -41,7 +41,6 @@ initMain() async {
   await initHiveForFlutter();
   await LocalStorageService.init();
   await PlacePreferences.init();
-  await dot_env.dotenv.load(fileName: ".env");
 
   // Initialize the GraphQL client in the client singleton
   GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
