@@ -1,3 +1,4 @@
+import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -9,21 +10,37 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class BookingQueryHoverButton extends StatelessWidget {
+class BookingQueryHoverButton extends StatefulWidget {
   const BookingQueryHoverButton({super.key, required this.classEvent});
   final ClassEvent classEvent;
 
+  @override
+  State<BookingQueryHoverButton> createState() =>
+      _BookingQueryHoverButtonState();
+}
+
+class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
+  VoidCallback? _refetch;
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to the specific refetch event
+    Provider.of<EventBusProvider>(context, listen: false)
+        .listenToRefetchBookingQuery((event) {
+      _callRefetch();
+      // Call your refetch logic here
+    });
+  }
+
+  void _callRefetch() {
+    print("Refetching booking query");
+    if (_refetch != null) {
+      _refetch!();
+    }
+  }
+
   // This widget is a wrapper for the booking button
-  // It queries the database for all bookings of the given class event
-  // and then decides what to show
-
-  // case 1: user has already booked -> you reserved this class (later: storno reservation)
-  // case 2: there are no places left -> show booked out
-  // case 3: there are places left -> show booking button
-
-  // it needs the aggregated data
-  // and a true or false whether the user has already booked and the booking was successful
-
   @override
   Widget build(BuildContext context) {
     // query for all bookings that where made for the given class event the user ids
@@ -31,21 +48,23 @@ class BookingQueryHoverButton extends StatelessWidget {
       options: QueryOptions(
           document: Queries.getAllBookingsOfClassEvent,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'class_event_id': classEvent.id}),
+          variables: {'class_event_id': widget.classEvent.id}),
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
+        _refetch = refetch;
+
         if (queryResult.hasException) {
           throw queryResult.exception!;
         } else if (queryResult.isLoading) {
           return CustomBottomHoverButton(
               content: Container(), onPressed: () {});
         } else if (queryResult.data != null &&
-            queryResult.data?["class_event_booking"] != null) {
-          final bookedUserJson = queryResult.data?["class_event_booking"];
+            queryResult.data?["class_event_bookings"] != null) {
+          final bookedUserJson = queryResult.data?["class_event_bookings"];
           // clean out the bookedUserJson where the status is not success
-          bookedUserJson.removeWhere((json) => json["status"] != "Success");
-          num bookingsLeft =
-              classEvent.classModel!.maxBookingSlots! - bookedUserJson.length;
+          bookedUserJson.removeWhere((json) => json["status"] != "Confirmed");
+          num bookingsLeft = widget.classEvent.classModel!.maxBookingSlots! -
+              bookedUserJson.length;
           if (bookedUserJson.isNotEmpty) {
             List<String> bookedUserIds = List<String>.from(
                 bookedUserJson.map((json) => json["user_id"]));
@@ -114,7 +133,7 @@ class BookingQueryHoverButton extends StatelessWidget {
               // const StripeTestModal(),
 
               BookingModal(
-                  classEvent: classEvent,
+                  classEvent: widget.classEvent,
                   placesLeft: bookingsLeft,
                   refetch: refetch),
             ),

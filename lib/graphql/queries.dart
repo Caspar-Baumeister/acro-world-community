@@ -62,7 +62,7 @@ query Me {
 
   static final getAllBookingsOfClassEvent = gql("""
 query classEventBooking(\$class_event_id: uuid) {
-  class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
+  class_event_bookings(where: {class_event_id: {_eq: \$class_event_id}}) {
     user_id
     status
     booking_option {

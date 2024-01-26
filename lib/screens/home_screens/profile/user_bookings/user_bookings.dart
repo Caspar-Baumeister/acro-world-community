@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UserBookings extends StatelessWidget {
-  const UserBookings({Key? key}) : super(key: key);
+  const UserBookings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,12 @@ class UserBookings extends StatelessWidget {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                             ),
-                            UserBookingsCard(userBooking: userBookings[index]),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              child: UserBookingsCard(
+                                  userBooking: userBookings[index]),
+                            ),
                           ],
                         );
                       }
@@ -102,13 +107,22 @@ class UserBookings extends StatelessWidget {
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                             ),
-                            UserBookingsCard(userBooking: userBookings[index]),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              child: UserBookingsCard(
+                                  userBooking: userBookings[index]),
+                            ),
                           ],
                         );
                       }
 
                       // Default case, just show the booking card
-                      return UserBookingsCard(userBooking: userBookings[index]);
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 8),
+                          child: UserBookingsCard(
+                              userBooking: userBookings[index]));
                     },
                   );
           } catch (e) {

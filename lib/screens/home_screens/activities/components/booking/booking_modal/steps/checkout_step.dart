@@ -1,20 +1,16 @@
-import 'dart:convert';
-
 import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/edit_userdata.dart';
-import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 // TODO create a stripe service that handles all stripe related stuff
@@ -254,6 +250,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               CustomButton(
                 "Pay",
                 () async {
+                  print("pressed pay");
                   await attemptToPresentPaymentSheet();
                 },
                 loading: !_ready,
@@ -268,8 +265,15 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
   Future<void> attemptToPresentPaymentSheet() async {
     try {
-      // Present the payment sheet
-      await Stripe.instance.presentPaymentSheet();
+      await StripeService().attemptToPresentPaymentSheet().then((value) {
+        Navigator.of(context).pop();
+        // TODO refresh the booking status from stripe and then refresh the queries
+        // Access the EventBusProvider
+        var eventBusProvider =
+            Provider.of<EventBusProvider>(context, listen: false);
+// Fire the refetch event for booking query
+        eventBusProvider.fireRefetchBookingQuery();
+      });
     } on StripeException catch (e) {
       CustomErrorHandler.captureException(e, stackTrace: StackTrace.current);
     }
@@ -280,8 +284,6 @@ class _CheckoutStepState extends State<CheckoutStep> {
     try {
       User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
 
-      // TODO if user is null, tell the user that login is required then close the booking modal
-      // for now we assume that if the user is not logged in, there is an error
       if (user == null || user.id == null) {
         Fluttertoast.showToast(
             msg: "Please redo the login process and try again",
@@ -295,68 +297,11 @@ class _CheckoutStepState extends State<CheckoutStep> {
         return;
       }
 
-      print("Booking option id:");
-      print(bookingOptionId);
-      print(classEventId);
-
-      // 1. create payment intent on the server
-      final paymentSheetResponseData = await _createPaymentSheet(
-        bookingOptionId,
-        classEventId,
-      );
-
-      // define some billing details
-      var billingDetails = BillingDetails(
-        email: user.email,
-        name: user.name,
-        phone: "+49123456789",
-        address: const Address(
-          city: "Berlin",
-          country: "Germany",
-          line1: "Karl-Marx-Str. 1",
-          line2: "Karl-Marx-Str. 2",
-          postalCode: "12043",
-          state: "Berlin",
-        ),
-      );
-
-      print("Payment sheet response data: $paymentSheetResponseData");
-      if (paymentSheetResponseData == null) {
-        CustomErrorHandler.captureException(
-            Exception("Payment sheet response data is null"),
-            stackTrace: StackTrace.current);
-      }
-      // 2. initialize the payment sheet
-
-      final response = await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          // Set to true for custom flow
-          customFlow: false,
-          // Main params
-          merchantDisplayName: "AcroWorld",
-          paymentIntentClientSecret:
-              paymentSheetResponseData!['payment_intent'],
-          // Customer keys
-          customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
-          customerId: paymentSheetResponseData['customer_id'],
-          // Extra options
-          style: ThemeMode.dark,
-          billingDetails: billingDetails,
-          // appearance:  PaymentSheetAppearance
-          // (
-          //   colors: PaymentSheetAppearanceColors
-          // (
-          //     background: Colors.white,
-          //     secondaryText: Colors.grey,
-          //     error: Colors.red,
-          //     primaryText: Colors.black),
-          //   ),
-        ),
-      );
-      print("Response from payment sheet: ${response.toString()}");
-      setState(() {
-        _ready = true;
-      });
+      StripeService()
+          .initPaymentSheet(user, bookingOptionId, classEventId)
+          .then((value) => setState(() {
+                _ready = true;
+              }));
     } catch (e, stackTrace) {
       // show flutter toast with error
       Fluttertoast.showToast(
@@ -370,65 +315,5 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
       CustomErrorHandler.captureException(e, stackTrace: stackTrace);
     }
-  }
-
-  Future<Map<String, dynamic>?> _createPaymentSheet(
-      String bookingOptionId, String classEventId) async {
-    {
-      QueryResult<Object?> response = await GraphQLClientSingleton().mutate(
-          MutationOptions(document: Mutations.createPaymentSheet, variables: {
-        "bookingOptionId": bookingOptionId,
-        "classEventId": classEventId,
-      }));
-      if (response.hasException) {
-        CustomErrorHandler.captureException(response.exception,
-            stackTrace: response.exception!.originalStackTrace);
-      } else if (response.data != null) {
-        return response.data!["create_payment_sheet"];
-      }
-      print("Response from server: ${response.data}");
-      return null;
-    }
-  }
-
-  Future<Map<String, dynamic>> createTestPaymentSheet(
-      String? userId,
-      num? amount,
-      String currency,
-      String destinationAcct,
-      String classEventId,
-      String bookingOptionId) async {
-    // get User id
-    if (userId == null) {
-      throw Exception("User id is null");
-    }
-
-    // TODO define real host
-    // if platform is android, use 10.0.2.2 instead of localhost
-    String host = "http://localhost:3000"; // "10.0.2.2"; //
-    // if (Theme.of(context).platform == TargetPlatform.android) {
-    //   host = "10.0.2.2";
-    // }
-    // 1. create payment intent on the server (localhost for now)
-    final url = Uri.parse('$host/stripe/create-payment-sheet');
-    // 2. create a body with {"amount" : 300, "destination": "acct_1O5td34FPJL5TYTc", "currency": "eur", "application_fee_amount": 10}
-    if (amount == null) {
-      throw Exception("Amount is null");
-    }
-    final body = jsonEncode({
-      "amount": amount * 100,
-      "destination": destinationAcct,
-      "currency": currency,
-      "user_id": userId,
-      "class_event_id": classEventId,
-      "booking_option_id": bookingOptionId
-    });
-    // 3. make a post request to the url with the body
-    final response = await http.post(url,
-        headers: {'Content-Type': 'application/json'}, body: body);
-    // print the response with title
-    print("Response from server: ${response.body}");
-
-    return jsonDecode(response.body);
   }
 }
