@@ -157,6 +157,7 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   unselectedLabelColor: Colors.grey[400],
                   indicatorWeight: 1,
                   indicatorColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
                     Tab(
                       icon: Icon(

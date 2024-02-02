@@ -56,9 +56,6 @@ class _BookingModalState extends State<BookingModal> {
     }
 
     String? teacherStripeId = clas.owner?.teacher?.stripeId;
-    print("teacherStripeId");
-    print(clas.owner?.teacher?.stripeId);
-    print(clas.owner?.teacher?.isStripeEnabled);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 24.0),

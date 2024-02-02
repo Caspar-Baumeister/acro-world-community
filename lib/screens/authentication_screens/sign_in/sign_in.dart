@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
@@ -172,7 +173,7 @@ class SignInState extends State<SignIn> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0)
                             .copyWith(top: 8, bottom: 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             GestureDetector(
                               onTap: () {
@@ -188,27 +189,18 @@ class SignInState extends State<SignIn> {
                                 style: H14W4.copyWith(color: LINK_COLOR),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () async {
-                                await customLaunch(AppEnvironment.dashboardUrl);
-                              },
-                              child: Text(
-                                "Partner dashboard",
-                                style: H14W4.copyWith(color: LINK_COLOR),
-                              ),
-                            ),
                           ],
                         ),
                       ),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
+                      LinkButtonComponent(
+                        text: "Register",
                         onPressed: () => widget.toggleView(),
-                        child: const Text("Register", style: BUTTON_TEXT),
                       ),
+                      const SizedBox(height: 10),
+                      LinkButtonComponent(
+                          text: "Partner Dashboard",
+                          onPressed: () async =>
+                              await customLaunch(AppEnvironment.dashboardUrl)),
                       const SizedBox(
                         height: 40,
                       )

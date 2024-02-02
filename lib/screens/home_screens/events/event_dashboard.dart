@@ -63,7 +63,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
           children: [
             highlights.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider.changeHighlighted(),
                       header: "Highlights",
@@ -73,7 +73,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             bookable.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () {
                         eventFilterProvider.resetFilter();
@@ -90,7 +90,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             const GetMyTeacherQueryWrapper(),
             upcoming.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () {
                         eventFilterProvider.resetFilter();
@@ -106,7 +106,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             festivalsAndCons.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider
                           .setActiveCategory(["FestivalsAndCons"]),
@@ -117,7 +117,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             trainings.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Trainings"]),
@@ -128,7 +128,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             retreats.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(bottom: 20, top: 20),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Retreats"]),

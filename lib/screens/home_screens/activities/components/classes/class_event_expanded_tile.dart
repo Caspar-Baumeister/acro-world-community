@@ -5,7 +5,6 @@ import 'package:acroworld/screens/home_screens/activities/components/classes/cla
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/find_billing_teacher.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,8 +25,6 @@ class ClassEventExpandedTile extends StatelessWidget {
               classTeacher.teacher?.type != "Anonymous")
           .toList();
     }
-
-    final ClassTeachers? billingTeacher = findFirstTeacherOrNull(classTeachers);
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -107,9 +104,8 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Row(
                       children: [
                         classEvent.classModel?.classBookingOptions != null &&
-                                classEvent.classModel!.classBookingOptions!
-                                    .isNotEmpty &&
-                                billingTeacher != null
+                                classEvent
+                                    .classModel!.classBookingOptions!.isNotEmpty
                             ? const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 5),
                                 child: Row(

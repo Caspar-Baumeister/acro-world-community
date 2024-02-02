@@ -65,14 +65,33 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
               ),
               Expanded(
                 child: Center(
-                  child: Text(
-                    widget.teacher.name ?? "No name",
-                    style: const TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                      letterSpacing: 0.4,
-                    ),
+                  child: Column(
+                    children: [
+                      Text(
+                        widget.teacher.name ?? "No name",
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          letterSpacing: 0.4,
+                        ),
+                      ),
+                      widget.teacher.userLikes != null &&
+                              widget.teacher.userLikes!.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 5),
+                              child: Text(
+                                "${widget.teacher.userLikes!.length} followers",
+                                style: const TextStyle(
+                                  color: Colors.black54,
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 14,
+                                  letterSpacing: 0.4,
+                                ),
+                              ),
+                            )
+                          : Container(),
+                    ],
                   ),
                 ),
               )

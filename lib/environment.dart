@@ -1,5 +1,3 @@
-import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
-
 const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 class AppEnvironment {

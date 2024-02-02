@@ -63,7 +63,8 @@ class DatabaseService {
     return null;
   }
 
-  Future registerApi(String email, String password, String name) async {
+  Future registerApi(String email, String password, String name,
+      {bool? isNewsletter}) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -71,7 +72,7 @@ class DatabaseService {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {register(input: {email: \"$email\", password: \"$password\", name: \"$name\"}){token refreshToken}}"
+                """mutation MyMutation {register(input: {email: "$email", password: "$password", name: "$name", isNewsletter: ${isNewsletter == true ? "true" : "false"}){token refreshToken}}"""
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {

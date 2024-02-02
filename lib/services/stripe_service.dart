@@ -9,7 +9,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class StripeService {
-  Future<void> initPaymentSheet(
+  Future<bool> initPaymentSheet(
       User user, String bookingOptionId, String classEventId) async {
     // 1. create payment intent on the server
     final paymentSheetResponseData = await _createPaymentSheet(
@@ -37,6 +37,8 @@ class StripeService {
       CustomErrorHandler.captureException(
           Exception("Payment sheet response data is null"),
           stackTrace: StackTrace.current);
+
+      return false;
     }
     // 2. initialize the payment sheet
 
@@ -46,7 +48,7 @@ class StripeService {
         customFlow: false,
         // Main params
         merchantDisplayName: "AcroWorld",
-        paymentIntentClientSecret: paymentSheetResponseData!['payment_intent'],
+        paymentIntentClientSecret: paymentSheetResponseData['payment_intent'],
         // Customer keys
         customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
         customerId: paymentSheetResponseData['customer_id'],
@@ -56,6 +58,8 @@ class StripeService {
       ),
     );
     print("Response from payment sheet: ${response.toString()}");
+
+    return true;
   }
 
   Future<void> attemptToPresentPaymentSheet() async {

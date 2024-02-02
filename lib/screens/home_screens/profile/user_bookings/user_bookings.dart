@@ -1,4 +1,5 @@
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings_card.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
@@ -19,6 +20,9 @@ class UserBookings extends StatelessWidget {
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (queryResult.hasException) {
+          CustomErrorHandler.captureException(
+              Exception("Error while transforming user bookings to objects"),
+              stackTrace: StackTrace.current);
           return ErrorWidget(queryResult.exception.toString());
         } else if (queryResult.isLoading) {
           return const Padding(
@@ -29,6 +33,7 @@ class UserBookings extends StatelessWidget {
             queryResult.data?["me"] != null) {
           try {
             List bookings = queryResult.data!["me"]?[0]?["bookings"];
+
             // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
             List<UserBookingModel> userBookings = [];
             if (bookings.isEmpty) {
@@ -44,11 +49,29 @@ class UserBookings extends StatelessWidget {
               try {
                 userBookings.add(UserBookingModel.fromJson(booking));
               } catch (e) {
-                print("error inside user_bookings: $e");
+                CustomErrorHandler.captureException(
+                    Exception(
+                        "Error while transforming user bookings to objects"),
+                    stackTrace: StackTrace.current);
               }
             }
-            userBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
-            return userBookings.isEmpty
+            // split the bookings into past and future bookings
+            List<UserBookingModel> pastBookings = [];
+            List<UserBookingModel> futureBookings = [];
+
+            for (var booking in userBookings) {
+              if (booking.endDate.isBefore(DateTime.now())) {
+                pastBookings.add(booking);
+              } else {
+                futureBookings.add(booking);
+              }
+            }
+
+            pastBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
+            futureBookings.sort((a, b) => a.startDate.compareTo(b.startDate));
+
+            userBookings = [...futureBookings, ...pastBookings];
+            return pastBookings.isEmpty && futureBookings.isEmpty
                 ? const Center(
                     child: Text(
                       "You have no bookings",
@@ -61,7 +84,6 @@ class UserBookings extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: userBookings.length,
                     itemBuilder: (context, index) {
-                      print("user_bookings: ${userBookings[index].status}");
                       // Check if the current booking is in the past
                       bool isPastBooking =
                           userBookings[index].endDate.isBefore(DateTime.now());

@@ -1,3 +1,4 @@
+import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
@@ -8,7 +9,6 @@ import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,14 @@ class SignUpState extends State<SignUp> {
   String errorPasswordConfirm = "";
 
   bool isAgb = false;
+  bool isNewsletter = false;
+
+  void setNewsletter(bool b) {
+    setState(() {
+      isNewsletter = b;
+    });
+  }
+
   void setAgb(bool b) {
     setState(() {
       isAgb = b;
@@ -199,8 +207,11 @@ class SignUpState extends State<SignUp> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    // add agbs checkbox
                     AGBCheckbox(isAgb: isAgb, setAgb: setAgb),
+                    const SizedBox(height: 20.0),
+                    NewsletterCheckbox(
+                        isNewsletter: isNewsletter,
+                        setNewsletter: setNewsletter),
                     const SizedBox(height: 20.0),
                     StandardButton(
                       text: "Register",
@@ -219,33 +230,16 @@ class SignUpState extends State<SignUp> {
                             ),
                           )
                         : Container(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0)
-                          .copyWith(top: 8, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await customLaunch(AppEnvironment.dashboardUrl);
-                            },
-                            child: Text(
-                              "Partner dashboard",
-                              style: H14W4.copyWith(color: LINK_COLOR),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
+                    const SizedBox(height: 20),
+                    LinkButtonComponent(
+                      text: "Login",
                       onPressed: () => widget.toggleView(),
-                      child: const Text("Login", style: BUTTON_TEXT),
                     ),
+                    const SizedBox(height: 10),
+                    LinkButtonComponent(
+                        text: "Partner Dashboard",
+                        onPressed: () async =>
+                            await customLaunch(AppEnvironment.dashboardUrl)),
                     const SizedBox(
                       height: 40,
                     )

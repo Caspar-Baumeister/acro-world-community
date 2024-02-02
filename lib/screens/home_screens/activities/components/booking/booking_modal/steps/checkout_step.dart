@@ -299,16 +299,31 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
       StripeService()
           .initPaymentSheet(user, bookingOptionId, classEventId)
-          .then((value) => setState(() {
-                _ready = true;
-              }));
+          .then((value) {
+        if (value) {
+          return setState(() {
+            _ready = true;
+          });
+        } else {
+          Navigator.pop(context);
+          Fluttertoast.showToast(
+              msg:
+                  "Error initializing payment, try again later or contact support",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP,
+              timeInSecForIosWeb: 3,
+              backgroundColor: Colors.red,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      });
     } catch (e, stackTrace) {
       // show flutter toast with error
       Fluttertoast.showToast(
-          msg: "Error initializing payment sheet: ${e.toString()}",
+          msg: "Error initializing payment, try again later or contact support",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
+          timeInSecForIosWeb: 3,
           backgroundColor: Colors.red,
           textColor: Colors.white,
           fontSize: 16.0);
