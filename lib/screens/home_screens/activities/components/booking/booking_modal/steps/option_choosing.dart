@@ -3,6 +3,7 @@ import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/widgets/booking_option_widget.dart';
 import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class OptionChoosingStep extends StatelessWidget {
   const OptionChoosingStep(
@@ -24,6 +25,7 @@ class OptionChoosingStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("currentOption: $currentOption");
     return Column(
       children: [
         Column(children: [
@@ -42,7 +44,18 @@ class OptionChoosingStep extends StatelessWidget {
         CustomButton(
           "Continue",
           () {
-            nextStep();
+            if (currentOption != null) {
+              nextStep();
+            } else {
+              Fluttertoast.showToast(
+                  msg: "Please select an option to continue booking the class",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 3,
+                  backgroundColor: Colors.red,
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
           },
           width: double.infinity,
         ),

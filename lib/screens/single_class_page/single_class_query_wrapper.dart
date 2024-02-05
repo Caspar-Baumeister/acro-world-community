@@ -55,8 +55,7 @@ class SingleEventQueryWrapper extends StatelessWidget {
           try {
             ClassEvent classEvent =
                 ClassEvent.fromJson(queryResult.data?["class_events_by_pk"]);
-            print("success");
-            print(classEvent.classModel!);
+
             return SingleClassPage(
               clas: classEvent.classModel!,
               classEvent: classEvent,

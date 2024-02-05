@@ -12,7 +12,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ActivitiesQuery extends StatefulWidget {
-  const ActivitiesQuery({Key? key}) : super(key: key);
+  const ActivitiesQuery({super.key});
   // gets the input from classes/jams tabbar -> decides on selector and query
 
   @override
@@ -118,7 +118,6 @@ class _ActivitiesQueryState extends State<ActivitiesQuery> {
 
           try {
             if (result.data![selector] != null) {
-              print(result.data![selector].length);
               classWeekEvents =
                   List<ClassEvent>.from(result.data![selector].map((json) {
                 return ClassEvent.fromJson(json);

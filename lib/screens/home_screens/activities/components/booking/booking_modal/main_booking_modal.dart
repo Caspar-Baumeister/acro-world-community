@@ -3,10 +3,10 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/steps/checkout_step.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/steps/option_choosing.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/widgets/header_section.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/widgets/step_indicator.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
@@ -25,7 +25,6 @@ class BookingModal extends StatefulWidget {
 
 class _BookingModalState extends State<BookingModal> {
   late String? currentOption;
-  bool loading = false;
   int step = 0;
 
   @override
@@ -78,7 +77,14 @@ class _BookingModalState extends State<BookingModal> {
               currentStep: step,
             ),
             const SizedBox(height: 20.0),
-            BookingStepIndicator(currentStep: step),
+            BookingStepIndicator(
+              currentStep: step,
+              setStep: (int newStep) {
+                setState(() {
+                  step = newStep;
+                });
+              },
+            ),
             const SizedBox(height: 20.0),
             teacherStripeId == null
                 ? const Text("This teacher is not yet connected to Stripe")
@@ -88,7 +94,7 @@ class _BookingModalState extends State<BookingModal> {
                         classDate: widget.classEvent.startDateDT,
                         classBookingOptions: clas.classBookingOptions ?? [],
                         placesLeft: widget.placesLeft.toInt(),
-                        onOptionSelected: setCurrentOption,
+                        onOptionSelected: (p0) => setCurrentOption(p0),
                         currentOption: currentOption,
                         nextStep: () {
                           setState(() {
@@ -111,105 +117,6 @@ class _BookingModalState extends State<BookingModal> {
           ],
         ),
       ),
-    );
-  }
-}
-
-// a widget, that shows the user where he is in the booking process
-class BookingStepIndicator extends StatelessWidget {
-  const BookingStepIndicator({super.key, required this.currentStep});
-  final int currentStep;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      // cap the width to 300
-      width: MediaQuery.of(context).size.width > 300
-          ? 300
-          : MediaQuery.of(context).size.width,
-      // round corners
-      decoration: BoxDecoration(
-        color: SLIGHTEST_GREY_BG,
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // the first step
-            Text(
-              "Choose option",
-              // the style indicates which step is the current one
-              style: currentStep == 0
-                  ? H12W8
-                  : H12W4.copyWith(color: SLIGHTEST_GREY_TEXT),
-
-              textAlign: TextAlign.center,
-            ),
-            // an arrow
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: SLIGHTEST_GREY_TEXT,
-              size: 10,
-            ),
-
-            // the second step
-            Text(
-              "Checkout",
-              // the style indicates which step is the current one
-              style: currentStep == 1
-                  ? H12W8
-                  : H12W4.copyWith(color: SLIGHTEST_GREY_TEXT),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BookingHeader extends StatelessWidget {
-  const BookingHeader(
-      {super.key,
-      required this.className,
-      required this.teacherName,
-      required this.startDate,
-      required this.currentStep,
-      required this.endDate});
-  // classname
-  final String className;
-  final String teacherName;
-  final DateTime startDate;
-  final DateTime endDate;
-  final int currentStep;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // the class name in the header
-        Text(
-          className,
-          style: H24W8,
-          textAlign: TextAlign.center,
-        ),
-        // the teacher name
-        const SizedBox(height: 8.0),
-        Text(
-          teacherName,
-          style: H16W3,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 6.0),
-        // the date in the form of "Monday 14.07.24, 12:00 am - 02:00 pm gmt"
-        Text(
-          "${DateFormat('EEEE dd.MM.yy, hh:mm a').format(startDate)} - ${DateFormat('hh:mm a').format(endDate)}",
-          style: H16W3,
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 }

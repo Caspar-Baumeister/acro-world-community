@@ -16,25 +16,20 @@ class CustomBottomHoverButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Positioned(
-      bottom: 10, // bottom padding
-      left: 25, // left padding
-      right: 25, // right padding
-      child: ClipRRect(
-        child: SafeArea(
-          child: ElevatedButton(
-            onPressed: () => onPressed(),
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              // if no color is given, use the primary color
-              backgroundColor: backgroundColor ?? PRIMARY_COLOR,
-              padding: const EdgeInsets.all(15), // internal padding
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
+    return ClipRRect(
+      child: SafeArea(
+        child: ElevatedButton(
+          onPressed: () => onPressed(),
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            // if no color is given, use the primary color
+            backgroundColor: backgroundColor ?? PRIMARY_COLOR,
+            padding: const EdgeInsets.all(15), // internal padding
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
             ),
-            child: Center(child: content),
           ),
+          child: Center(child: content),
         ),
       ),
     );

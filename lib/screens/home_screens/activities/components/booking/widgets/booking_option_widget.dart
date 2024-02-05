@@ -59,21 +59,21 @@ class BookOption extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                      bookingOption.price!.toStringAsFixed(2) +
+                      bookingOption.originalPrice().toStringAsFixed(2) +
                           getCurrecySymbol(bookingOption.currency),
                       style: H16W7.copyWith(
                         decoration: TextDecoration.lineThrough,
                         fontWeight: FontWeight.w200,
                       )),
                   Text(
-                    bookingOption.realPrice().toStringAsFixed(2) +
+                    bookingOption.realPriceDiscounted().toStringAsFixed(2) +
                         getCurrecySymbol(bookingOption.currency),
                     style: H16W7,
                   ),
                 ],
               )
             : Text(
-                bookingOption.realPrice().toStringAsFixed(2) +
+                bookingOption.realPriceDiscounted().toStringAsFixed(2) +
                     getCurrecySymbol(bookingOption.currency),
                 style: H16W7,
               ),

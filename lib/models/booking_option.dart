@@ -19,16 +19,12 @@ class BookingOption {
   String? title;
   String currency = "€";
 
-  double realPrice() {
-    return (1 - (discount! * 0.01)) * price!;
+  double realPriceDiscounted() {
+    return (1 - (discount! * 0.01)) * price! * 0.01;
   }
 
-  double deposit() {
-    return ((commission!) * 0.01) * price!;
-  }
-
-  double toPayOnArrival() {
-    return realPrice() - deposit();
+  double originalPrice() {
+    return price! * 0.01;
   }
 
   BookingOption(
