@@ -100,9 +100,10 @@ class UserBookings extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text("Past Bookings",
+                            Padding(
+                              padding:
+                                  const EdgeInsets.all(8.0).copyWith(left: 20),
+                              child: const Text("Past Bookings",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
@@ -122,9 +123,10 @@ class UserBookings extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text("Upcoming Bookings",
+                            Padding(
+                              padding:
+                                  const EdgeInsets.all(8.0).copyWith(left: 20),
+                              child: const Text("Upcoming Bookings",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),

@@ -76,12 +76,11 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                           letterSpacing: 0.4,
                         ),
                       ),
-                      widget.teacher.userLikes != null &&
-                              widget.teacher.userLikes!.isNotEmpty
+                      widget.teacher.likes != null
                           ? Padding(
                               padding: const EdgeInsets.only(top: 5),
                               child: Text(
-                                "${widget.teacher.userLikes!.length} followers",
+                                "${widget.teacher.likes} followers",
                                 style: const TextStyle(
                                   color: Colors.black54,
                                   fontWeight: FontWeight.w400,

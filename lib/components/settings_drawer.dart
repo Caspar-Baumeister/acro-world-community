@@ -71,7 +71,9 @@ class SettingsDrawer extends StatelessWidget {
               GestureDetector(
                 onTap: () => showCupertinoModalPopup(
                     context: context,
-                    builder: (BuildContext context) => const FeedbackPopUp()),
+                    builder: (BuildContext context) => const FeedbackPopUp(
+                        subject: 'Feedback from AcroWorld App',
+                        title: "Feedback & Bugs")),
                 child: const ListTile(
                     leading: Row(
                   mainAxisSize: MainAxisSize.min,

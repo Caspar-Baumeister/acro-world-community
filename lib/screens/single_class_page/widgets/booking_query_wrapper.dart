@@ -2,11 +2,12 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/home_screens/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/booking_modal/main_booking_modal.dart';
+import 'package:acroworld/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -91,15 +92,16 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
                   // success color
                   backgroundColor: Colors.green,
                   onPressed: () {
-                    // show message that the user has already booked
-                    Fluttertoast.showToast(
-                        msg: "You have already booked this class",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.TOP,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                    // open modal to storno reservation and show the booking info
+                    buildMortal(
+                      context,
+                      BookingInformationModal(
+                          classEvent: widget.classEvent,
+                          userId:
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .activeUser!
+                                  .id!),
+                    );
                   });
             }
             // case 2: there are no places left
@@ -114,7 +116,12 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
                   ),
                 ),
                 // TODO show kalender
-                onPressed: () {},
+                onPressed: () => widget.classEvent.classModel?.id != null
+                    ? buildMortal(
+                        context,
+                        CalenderModal(
+                            classId: widget.classEvent.classModel!.id!))
+                    : null,
               );
             }
           }

@@ -72,17 +72,21 @@ class StripeService {
       String bookingOptionId, String classEventId) async {
     {
       QueryResult<Object?> response = await GraphQLClientSingleton().mutate(
-          MutationOptions(document: Mutations.createPaymentSheet, variables: {
-        "bookingOptionId": bookingOptionId,
-        "classEventId": classEventId,
-      }));
+          MutationOptions(
+              fetchPolicy: FetchPolicy.networkOnly,
+              document: Mutations.createPaymentSheet,
+              variables: {
+            "bookingOptionId": bookingOptionId,
+            "classEventId": classEventId,
+          }));
       if (response.hasException) {
         CustomErrorHandler.captureException(response.exception,
             stackTrace: response.exception!.originalStackTrace);
       } else if (response.data != null) {
+        print("Response from server: ${response.data}");
         return response.data!["create_payment_sheet"];
       }
-      print("Response from server: ${response.data}");
+      print("Something went wrong while creating payment sheet.");
       return null;
     }
   }

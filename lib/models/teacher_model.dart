@@ -12,7 +12,8 @@ class TeacherModel {
   String? type;
   List<Images>? images;
   String? userId;
-  List<UserLikes>? userLikes;
+  bool? likedByUser;
+  num? likes;
   String? stripeId;
   bool? isStripeEnabled;
 
@@ -42,7 +43,7 @@ class TeacherModel {
       this.userId,
       this.isStripeEnabled,
       this.stripeId,
-      this.userLikes});
+      this.likedByUser});
 
   TeacherModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -54,6 +55,7 @@ class TeacherModel {
     description = json['description'];
     instagramName = json['instagram_name'];
     locationName = json['location_name'];
+    likes = json['user_likes_aggregate']?["aggregate"]?["count"];
     if (json['images'] != null) {
       images = <Images>[];
       json['images'].forEach((v) {
@@ -63,10 +65,7 @@ class TeacherModel {
 
     userId = json['user_id'];
     if (json['user_likes'] != null) {
-      userLikes = <UserLikes>[];
-      json['user_likes'].forEach((v) {
-        userLikes!.add(UserLikes.fromJson(v));
-      });
+      likedByUser = json['user_likes'].length > 0 ? true : false;
     }
     stripeId = json['stripe_id'];
     isStripeEnabled = json['is_stripe_enabled'];

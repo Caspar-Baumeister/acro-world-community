@@ -15,7 +15,8 @@ class UserBookingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
+    print("status");
+    print(userBooking.status);
     return Column(
       children: [
         GestureDetector(
@@ -30,24 +31,24 @@ class UserBookingsCard extends StatelessWidget {
                           )))
               : null,
           child: SizedBox(
-            height: BOOKING_CARD_HEIGHT + 24,
+            height: BOOKING_CARD_HEIGHT + 38,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Card Image
                 ClassEventTileImage(
-                  width: screenWidth * 0.25,
+                  width: screenWidth * 0.3,
                   isCancelled: false,
                   imgUrl: userBooking.eventImage,
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8).copyWith(left: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(userBooking.eventName ?? "Unknown Event",
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: CARD_TITLE_TEXT),
                         Padding(
@@ -80,22 +81,39 @@ class UserBookingsCard extends StatelessWidget {
                         Row(
                           children: [
                             // location icon and location name
-                            const Icon(
-                              Icons.location_on,
-                              color: PRIMARY_COLOR,
-                              size: 15,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              userBooking.locationName ??
-                                  "Click to see location",
-                              style: CARD_DESCRIPTION_TEXT,
-                            ),
 
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: userBooking.status == "Cancelled"
+                                    ? WARNING_COLOR
+                                    : userBooking.status == "Confirmed"
+                                        ? SUCCESS_COLOR
+                                        : userBooking.status == "Pending"
+                                            ? DARK_GREY
+                                            : userBooking.status == "Completed"
+                                                ? SUCCESS_COLOR
+                                                : DARK_GREY,
+                                // rounded corners
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                "${userBooking.status}",
+                                style: CARD_DESCRIPTION_TEXT.copyWith(
+                                    color: Colors.white),
+                              ),
+                            ),
                             const Spacer(),
                             Text(
-                              "Status: ${userBooking.status}",
+                              userBooking.locationName ?? "More",
                               style: CARD_DESCRIPTION_TEXT,
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: PRIMARY_COLOR,
+                              size: 15,
                             ),
                             // the price of the booking
                           ],

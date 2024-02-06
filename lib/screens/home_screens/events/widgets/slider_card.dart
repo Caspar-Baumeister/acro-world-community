@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SliderCard extends StatelessWidget {
-  const SliderCard({required this.event, Key? key}) : super(key: key);
+  const SliderCard({required this.event, super.key});
   final EventModel event;
 
   @override
@@ -70,21 +70,21 @@ class SliderCard extends StatelessWidget {
             decoration: BoxDecoration(
               color:
                   event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x90E8E8E8),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              // boxShadow: const [
+              //   BoxShadow(
+              //     color: Color(0x90E8E8E8),
+              //     spreadRadius: 5,
+              //     blurRadius: 7,
+              //     offset: Offset(0, 3), // changes position of shadow
+              //   ),
+              // ],
             ),
             child: Column(
               children: [
                 SizedBox(
                   // clipBehavior: Clip.antiAlias,
-                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.55,
                   width: double.infinity,
                   child: CachedNetworkImage(
                     imageUrl: event.mainImageUrl ??
@@ -103,7 +103,7 @@ class SliderCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.45,
                   padding:
                       const EdgeInsets.all(8.0).copyWith(top: 20, bottom: 4),
                   alignment: Alignment.centerLeft,
@@ -117,14 +117,18 @@ class SliderCard extends StatelessWidget {
                       Expanded(
                         child: countryLocationString != null
                             ? Container(
-                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.only(top: 5),
+                                alignment: Alignment.topLeft,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(
-                                      Icons.location_on_outlined,
-                                      color: Colors.black,
-                                      size: 16,
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 3.0),
+                                      child: Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.black,
+                                        size: 16,
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 5,
@@ -173,7 +177,7 @@ class SliderCard extends StatelessWidget {
               : Container(),
           event.startDate != null
               ? Positioned(
-                  top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.35,
                   left: 20,
                   child: Container(
                     decoration: const BoxDecoration(

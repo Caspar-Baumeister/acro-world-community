@@ -1,7 +1,6 @@
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/HOME_SCREENS/teachers_page/widgets/teacher_card.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,11 +18,11 @@ class TeacherBody extends StatelessWidget {
       teachers.where((TeacherModel teacher) => teacher.type != "Anonymous").map(
             (teacher) => Consumer<UserProvider>(
               builder: (context, userProvider, child) => TeacherCard(
-                  teacher: teacher,
-                  isLiked: userProvider.activeUser?.id == null
-                      ? false
-                      : isTeacherFollowedByUser(
-                          teacher.userLikes, userProvider.activeUser!.id!)),
+                teacher: teacher,
+                isLiked: userProvider.activeUser?.id == null
+                    ? false
+                    : teacher.likedByUser ?? false,
+              ),
             ),
           ),
     );

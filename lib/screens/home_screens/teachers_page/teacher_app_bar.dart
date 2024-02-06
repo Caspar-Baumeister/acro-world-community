@@ -24,6 +24,24 @@ class TeacherAppBarState extends State<TeacherAppBar> {
   void initState() {
     super.initState();
     _controller.addListener(_onSearchChanged);
+    _focusNode.addListener(_handleFocusChange);
+  }
+
+  _onSearchChanged() {
+    widget.onSearchChanged(_controller.text);
+  }
+
+  void _handleFocusChange() {
+    setState(() {}); // Rebuild the widget when focus changes
+  }
+
+  @override
+  void dispose() {
+    _focusNode.removeListener(_handleFocusChange);
+    _controller.removeListener(_onSearchChanged);
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -55,21 +73,27 @@ class TeacherAppBarState extends State<TeacherAppBar> {
                 ? null
                 : IconButton(
                     onPressed: () {
-                      // If there's text in the TextField, clear it.
-                      if (_controller.text.isNotEmpty) {
-                        _controller.clear();
-                      }
-                      // If there isn't any text and the TextField has focus, unfocus it and close the keyboard.
-                      else if (_focusNode.hasFocus) {
-                        _focusNode.unfocus();
-                        SystemChannels.textInput.invokeMethod(
-                            'TextInput.hide'); // This closes the keyboard.
-                      }
+                      setState(() {
+                        // Wrap state changes in setState
+                        if (_controller.text.isNotEmpty) {
+                          _controller.clear();
+                        } else if (_focusNode.hasFocus) {
+                          _focusNode.unfocus();
+                          SystemChannels.textInput
+                              .invokeMethod('TextInput.hide');
+                        } else {
+                          _focusNode.requestFocus();
+                          SystemChannels.textInput
+                              .invokeMethod('TextInput.show');
+                        }
+                      });
                     },
                     icon: Icon(
                       _controller.text.isNotEmpty
                           ? Icons.close
-                          : Icons.keyboard_arrow_down,
+                          : (_focusNode.hasFocus
+                              ? Icons.keyboard_arrow_down
+                              : Icons.keyboard_arrow_up),
                       color: Colors.black,
                     ))),
         style: ACTIVE_INPUT_TEXT, // Black text
@@ -78,15 +102,5 @@ class TeacherAppBarState extends State<TeacherAppBar> {
       backgroundColor: Colors.transparent,
       elevation: 0.0,
     );
-  }
-
-  _onSearchChanged() {
-    widget.onSearchChanged(_controller.text);
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 }

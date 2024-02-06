@@ -76,7 +76,7 @@ class GetMyTeacherQueryWrapper extends StatelessWidget {
                         child: SliderRowEventDashboard(
                           onViewAll: () => eventFilterProvider
                               .changeAllFollowedTeachers(followedTeacher),
-                          header: "Tearchers you follow",
+                          header: "Followed Teacher",
                           events: returnEvents,
                         ),
                       )

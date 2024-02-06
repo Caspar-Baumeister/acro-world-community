@@ -302,14 +302,21 @@ class SignUpState extends State<SignUp> {
 
     await TokenSingletonService()
         .register(emailController!.text, passwordController!.text,
-            nameController!.text)
+            nameController!.text,
+            isNewsletter: isNewsletter)
         .then((response) {
+      print("response");
+      print(response);
       if (response["errors"]?[0]["extensions"]?["exception"]?["errorInfo"]
               ?["message"] !=
           null) {
         setState(() {
           error = response["errors"]?[0]["extensions"]?["exception"]
               ?["errorInfo"]?["message"];
+        });
+      } else if (response["errors"]?[0]["message"] != null) {
+        setState(() {
+          error = response["errors"]?[0]["message"];
         });
       } else if (response["error"] == false) {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
