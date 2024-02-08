@@ -39,3 +39,34 @@ const Color BUTTON_FILL_COLOR = PRIMARY_COLOR;
 const Color BUTTON_TEXT_COLOR = PRIMARY_COLOR;
 const Color STANDART_TEXT_COLOR = Colors.black;
 const Color UNIMPORTANT_TEXT_COLOR = Color.fromARGB(255, 79, 79, 79);
+
+const Color _whiteGreen = Color.fromARGB(255, 233, 255, 233);
+const Color _lightGreen = Color(0xFF588157);
+const Color _darkGreen = Color(0xFF1D2E28);
+const Color _blackGreen = Color.fromARGB(255, 0, 23, 8);
+
+const Color _lightGreyColor = Color(0xFFB3B3B3);
+const Color _black = Color(0xFF000000);
+const Color _white = Color(0xFFFFFFFF);
+const Color _red = Color(0xFFAD3B3B);
+const Color _grey = Color(0xFF707070);
+
+class CustomColors {
+  // COLOR SCHEME //
+  static const Color primaryColor = _darkGreen;
+  static const Color accentColor = _lightGreen;
+  static const Color backgroundColor = _whiteGreen;
+
+// BORDER COLORS //
+  static const Color inactiveBorderColor = _grey;
+  static const Color activeBorderColor = _darkGreen;
+  static const Color errorBorderColor = _red;
+
+// TEXT COLORS //
+  static const Color errorTextColor = _red;
+  static const Color lightTextColor = _white;
+  static const Color disabledTextColor = _grey;
+
+  static const Color primaryTextColor = _blackGreen;
+  static const Color secondaryTextColor = _darkGreen;
+}

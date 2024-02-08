@@ -15,7 +15,3 @@ class AppEnvironment {
   static String stripePublishableKey =
       "pk_test_51OPnwnC43x9xByRIG4kRS8c37cd2DTCxvySyiFf6XOBnjefX8OLhLMNyPoYcfs9WxOHCTdocWMsFr5gLY5R2vbsS00eUgNP1LD";
 }
-
-
-// falls Caspar hier mal wieder dran rum gespielt hat ist hier das original:
-// isProduction ? "bro-devs.com" : "dev.acroworld.de";
