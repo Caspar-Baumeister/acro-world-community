@@ -8,7 +8,6 @@ import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/logout.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -30,17 +29,17 @@ class SettingsDrawer extends StatelessWidget {
                     builder: (context) => const AccountSettingsPage(),
                   ),
                 ),
-                child: const ListTile(
+                child: ListTile(
                     leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.settings_outlined),
-                    SizedBox(
+                    const Icon(Icons.settings_outlined),
+                    const SizedBox(
                       width: 15,
                     ),
                     Text(
                       "Settings",
-                      style: H18W4,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     )
                   ],
                 )),
@@ -52,17 +51,17 @@ class SettingsDrawer extends StatelessWidget {
                     builder: (context) => const EssentialsPage(),
                   ),
                 ),
-                child: const ListTile(
+                child: ListTile(
                     leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.backpack_outlined),
-                    SizedBox(
+                    const Icon(Icons.backpack_outlined),
+                    const SizedBox(
                       width: 15,
                     ),
                     Text(
                       "Essentials",
-                      style: H18W4,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     )
                   ],
                 )),
@@ -74,17 +73,17 @@ class SettingsDrawer extends StatelessWidget {
                     builder: (BuildContext context) => const FeedbackPopUp(
                         subject: 'Feedback from AcroWorld App',
                         title: "Feedback & Bugs")),
-                child: const ListTile(
+                child: ListTile(
                     leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.feedback_outlined),
-                    SizedBox(
+                    const Icon(Icons.feedback_outlined),
+                    const SizedBox(
                       width: 15,
                     ),
                     Text(
                       "Feedback & Bugs",
-                      style: H18W4,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     )
                   ],
                 )),

@@ -1,7 +1,6 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -93,15 +92,15 @@ class HeartWidget extends StatelessWidget {
         Icon(
           isLiked ? Icons.favorite_sharp : Icons.favorite_border_sharp,
           size: size,
-          color: PRIMARY_COLOR,
+          color: CustomColors.primaryColor,
         ),
         Center(
           child: Text(
             likes.toString(),
-            style: H12W4.copyWith(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
-                color: isLiked ? Colors.white : PRIMARY_COLOR),
+                color: isLiked ? Colors.white : CustomColors.primaryColor),
           ),
         )
       ],

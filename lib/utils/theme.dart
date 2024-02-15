@@ -1,28 +1,45 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/text_constants.dart';
 import 'package:flutter/material.dart';
 
 enum MyThemeKeys { light, dark }
 
 class MyThemes {
   static final ThemeData lightTheme = ThemeData(
-      indicatorColor: PRIMARY_COLOR,
-      dividerColor: Colors.grey,
-      dividerTheme: const DividerThemeData(color: Colors.grey),
-      scaffoldBackgroundColor: Colors.white,
+      textTheme: TextTheme(
+        displayLarge: displayLargeTextStyle(CustomColors.primaryTextColor),
+        displayMedium: displayMediumTextStyle(CustomColors.primaryTextColor),
+        displaySmall: displaySmallTextStyle(CustomColors.primaryTextColor),
+        headlineMedium: headlineMediumTextStyle(CustomColors.primaryTextColor),
+        headlineSmall: headlineSmallTextStyle(CustomColors.primaryTextColor),
+        titleLarge: titleLargeTextStyle(CustomColors.primaryTextColor),
+        titleMedium: titleMediumTextStyle(CustomColors.primaryTextColor),
+        titleSmall: titleSmallTextStyle(CustomColors.primaryTextColor),
+        bodyLarge: bodyLargeTextStyle(CustomColors.primaryTextColor),
+        bodyMedium: bodyMediumTextStyle(CustomColors.primaryTextColor),
+        labelLarge: labelLargeTextStyle(CustomColors.primaryTextColor),
+        bodySmall: bodySmallTextStyle(CustomColors.primaryTextColor),
+        labelSmall: labelSmallTextStyle(CustomColors.primaryTextColor),
+      ),
+      indicatorColor: CustomColors.primaryColor,
+      dividerColor: CustomColors.inactiveBorderColor,
+      dividerTheme:
+          const DividerThemeData(color: CustomColors.inactiveBorderColor),
+      scaffoldBackgroundColor: CustomColors.backgroundColor,
       tabBarTheme: const TabBarTheme(
         indicator: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: PRIMARY_COLOR,
+              color: CustomColors.primaryColor,
               width: 2.0,
             ),
           ),
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(
-        modalBackgroundColor: BACKGROUND_COLOR,
-        surfaceTintColor: BACKGROUND_COLOR,
-        backgroundColor: BACKGROUND_COLOR,
+        modalBackgroundColor: CustomColors.backgroundColor,
+        surfaceTintColor: CustomColors.backgroundColor,
+        backgroundColor: CustomColors.backgroundColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(20.0),
@@ -31,39 +48,32 @@ class MyThemes {
       ),
       // set modal background color
       dialogTheme: const DialogTheme(
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: CustomColors.backgroundColor,
       ),
       drawerTheme: const DrawerThemeData(
-        backgroundColor: BACKGROUND_COLOR,
+        backgroundColor: CustomColors.backgroundColor,
       ),
-      textTheme: const TextTheme(
-        displayLarge: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-        displayMedium: TextStyle(fontSize: 22.5, fontWeight: FontWeight.bold),
-        displaySmall: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-        headlineMedium: TextStyle(fontSize: 18.5, fontWeight: FontWeight.bold),
-      ),
-      appBarTheme: const AppBarTheme(
-        backgroundColor: BACKGROUND_COLOR,
-        iconTheme: IconThemeData(color: Colors.black),
-        actionsIconTheme: IconThemeData(color: Colors.black),
+      appBarTheme: AppBarTheme(
+        backgroundColor: CustomColors.backgroundColor,
+        iconTheme: const IconThemeData(color: CustomColors.iconColor),
+        actionsIconTheme: const IconThemeData(color: CustomColors.iconColor),
         centerTitle: true,
         elevation: 0,
-        surfaceTintColor: BACKGROUND_COLOR,
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 18.0),
+        surfaceTintColor: CustomColors.backgroundColor,
+        titleTextStyle: headlineSmallTextStyle(CustomColors.primaryTextColor),
       ),
       progressIndicatorTheme:
-          const ProgressIndicatorThemeData(color: PRIMARY_COLOR),
-      primaryColor: PRIMARY_COLOR,
+          const ProgressIndicatorThemeData(color: CustomColors.primaryColor),
+      primaryColor: CustomColors.primaryColor,
       textSelectionTheme: const TextSelectionThemeData(
-        selectionColor: NOT_ACTIVE_COLOR,
-        cursorColor: PRIMARY_COLOR,
-        selectionHandleColor: PRIMARY_COLOR,
+        // selectionColor: NOT_ACTIVE_COLOR,
+        cursorColor: CustomColors.primaryColor,
+        selectionHandleColor: CustomColors.primaryColor,
       ),
       brightness: Brightness.light,
-      highlightColor: Colors.white,
+      highlightColor: CustomColors.highlightedColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-        secondary: BACKGROUND_COLOR,
-        background: Colors.white,
+        background: CustomColors.backgroundColor,
       ));
 
   // maybe for outdoor

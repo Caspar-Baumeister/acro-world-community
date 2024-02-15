@@ -9,7 +9,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class StripeService {
-  Future<bool> initPaymentSheet(
+  Future<String?> initPaymentSheet(
       User user, String bookingOptionId, String classEventId) async {
     // 1. create payment intent on the server
     final paymentSheetResponseData = await _createPaymentSheet(
@@ -33,12 +33,14 @@ class StripeService {
     );
 
     print("Payment sheet response data: $paymentSheetResponseData");
-    if (paymentSheetResponseData == null) {
+    if (paymentSheetResponseData == null ||
+        paymentSheetResponseData["payment_intent"] == null) {
       CustomErrorHandler.captureException(
-          Exception("Payment sheet response data is null"),
+          Exception(
+              "Payment sheet response data is null + ${paymentSheetResponseData?["payment_intent"]}"),
           stackTrace: StackTrace.current);
 
-      return false;
+      return null;
     }
     // 2. initialize the payment sheet
 
@@ -59,12 +61,22 @@ class StripeService {
     );
     print("Response from payment sheet: ${response.toString()}");
 
-    return true;
+    return paymentSheetResponseData['payment_intent'];
   }
 
-  Future<void> attemptToPresentPaymentSheet() async {
+  Future<void> attemptToPresentPaymentSheet(String paymentIntentId) async {
     PaymentSheetPaymentOption? present =
         await Stripe.instance.presentPaymentSheet();
+
+    MutationOptions options = MutationOptions(
+      document: Mutations.confirmPayment,
+      variables: {'payment_intent_id': paymentIntentId},
+    );
+    try {
+      GraphQLClientSingleton().mutate(options);
+    } catch (e) {
+      CustomErrorHandler.captureException(e);
+    }
     print("present: $present");
   }
 

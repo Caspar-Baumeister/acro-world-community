@@ -1,5 +1,6 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -50,8 +51,8 @@ class _BookmarkEventMutationWidgetState
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.TOP,
                 timeInSecForIosWeb: 2,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
+                backgroundColor: CustomColors.successBgColor,
+                textColor: CustomColors.whiteTextColor,
                 fontSize: 16.0);
           },
         ),

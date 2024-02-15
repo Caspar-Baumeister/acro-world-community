@@ -1,6 +1,5 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class DifficultyWidget extends StatelessWidget {
@@ -59,7 +58,7 @@ class DifficultyWidget extends StatelessWidget {
       child: Center(
           child: Text(
         text,
-        style: H12W4,
+        style: Theme.of(context).textTheme.bodySmall,
       )),
     );
   }

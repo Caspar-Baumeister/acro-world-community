@@ -3,7 +3,6 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -73,10 +72,8 @@ class _TeacherCardState extends State<TeacherCard> {
               ),
             ),
           ),
-          title: Text(
-            widget.teacher.name ?? "No name",
-            style: H20W5,
-          ),
+          title: Text(widget.teacher.name ?? "No name",
+              style: Theme.of(context).textTheme.headlineSmall),
           // subtitle: Text(widget.teacher.locationName ?? "no location provided",
           //     style: SMALL_TEXT_STYLE),
           trailing: Mutation(
@@ -127,9 +124,10 @@ class _TeacherCardState extends State<TeacherCard> {
                     },
                     child: Container(
                         decoration: BoxDecoration(
-                          color:
-                              isLikedState ? BUTTON_FILL_COLOR : Colors.white,
-                          border: Border.all(color: BUTTON_FILL_COLOR),
+                          color: isLikedState
+                              ? CustomColors.primaryColor
+                              : Colors.white,
+                          border: Border.all(color: CustomColors.primaryColor),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         height: 35,
@@ -143,15 +141,18 @@ class _TeacherCardState extends State<TeacherCard> {
                                   child: CircularProgressIndicator(
                                     color: isLikedState == true
                                         ? Colors.white
-                                        : PRIMARY_COLOR,
+                                        : CustomColors.primaryColor,
                                   ))
                               : Text(
-                                  isLikedState ? "Following" : "Follow",
-                                  style: MEDIUM_BUTTON_TEXT.copyWith(
-                                    color: !isLikedState
-                                        ? BUTTON_FILL_COLOR
-                                        : Colors.white,
-                                  ),
+                                  isLikedState ? "Followed" : "Follow",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        color: !isLikedState
+                                            ? CustomColors.primaryColor
+                                            : Colors.white,
+                                      ),
                                   textAlign: TextAlign.center,
                                 ),
                         )));

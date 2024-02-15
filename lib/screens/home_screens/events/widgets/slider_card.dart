@@ -1,9 +1,7 @@
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -68,17 +66,10 @@ class SliderCard extends StatelessWidget {
             height: EVENT_DASHBOARD_SLIDER_HEIGHT,
             width: EVENT_DASHBOARD_SLIDER_WIDTH,
             decoration: BoxDecoration(
-              color:
-                  event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
+              color: event.isHighlighted == true
+                  ? const Color.fromARGB(255, 242, 255, 242)
+                  : Colors.white,
               borderRadius: const BorderRadius.all(Radius.circular(10)),
-              // boxShadow: const [
-              //   BoxShadow(
-              //     color: Color(0x90E8E8E8),
-              //     spreadRadius: 5,
-              //     blurRadius: 7,
-              //     offset: Offset(0, 3), // changes position of shadow
-              //   ),
-              // ],
             ),
             child: Column(
               children: [
@@ -113,7 +104,7 @@ class SliderCard extends StatelessWidget {
                       Text(event.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: H16W7),
+                          style: Theme.of(context).textTheme.titleLarge),
                       Expanded(
                         child: countryLocationString != null
                             ? Container(
@@ -138,7 +129,9 @@ class SliderCard extends StatelessWidget {
                                       child: Text(countryLocationString,
                                           maxLines: 2,
                                           overflow: TextOverflow.clip,
-                                          style: H14W4),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
                                     ),
                                   ],
                                 ),
@@ -168,7 +161,7 @@ class SliderCard extends StatelessWidget {
                               .replaceAllMapped(
                                   exp, (Match m) => (' ${m.group(0)}'))
                               .toLowerCase()),
-                          style: H16W7,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
                     ),
@@ -199,12 +192,12 @@ class SliderCard extends StatelessWidget {
                           Text(
                             DateFormat.MMM()
                                 .format(DateTime.parse(event.startDate!)),
-                            style: H20W6,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
                             dateString ??
                                 "${DateTime.parse(event.startDate!).day} - $endTimeString",
-                            style: H18W4,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           )
                         ],
                       ),

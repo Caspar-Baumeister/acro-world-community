@@ -45,6 +45,8 @@ class Fragments {
     end_date
     id
     is_cancelled
+    available_booking_slots
+    max_booking_slots
     start_date
     participants_aggregate {
       aggregate {

@@ -28,7 +28,7 @@
 //           children: [
 //             const Text(
 //               "No connection to the internet",
-//               style: H16W7,
+//               style: Theme.of(context).textTheme.titleLarge,
 //             ),
 //             const SizedBox(
 //               height: 20,

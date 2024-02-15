@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class CommingSoon extends StatelessWidget {
@@ -15,21 +14,21 @@ class CommingSoon extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text(header, style: H18W7),
+          Text(header, style: Theme.of(context).textTheme.headlineSmall),
           const SizedBox(height: 5),
           Text(
             content,
-            style: H12W4,
+            style: Theme.of(context).textTheme.bodySmall,
             textAlign: TextAlign.start,
           ),
           const SizedBox(height: 10),
           Container(
             alignment: Alignment.centerRight,
-            child: const Text(
+            child: Text(
               """
               This feature will soon be available 
               """,
-              style: H10W4,
+              style: Theme.of(context).textTheme.labelSmall,
               textAlign: TextAlign.end,
             ),
           ),

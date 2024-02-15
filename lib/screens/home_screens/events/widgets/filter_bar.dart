@@ -6,7 +6,6 @@ import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_even
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/decorators.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,7 +44,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
                     const SizedBox(width: 10),
                     Text(
                       'Search...',
-                      style: HINT_INPUT_TEXT,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
                 ),
@@ -88,7 +87,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
-                      color: PRIMARY_COLOR,
+                      color: CustomColors.primaryColor,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(

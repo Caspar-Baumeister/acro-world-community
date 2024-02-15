@@ -97,7 +97,7 @@ class _TeacherQueryState extends State<TeacherQuery> {
           }
 
           return RefreshIndicator(
-            color: PRIMARY_COLOR,
+            color: CustomColors.primaryColor,
             onRefresh: (() async => runRefetch()),
             child: TeacherBody(
               teachers: teachers,

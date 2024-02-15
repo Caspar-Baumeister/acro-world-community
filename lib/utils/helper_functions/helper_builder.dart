@@ -8,8 +8,7 @@ InputDecoration buildInputDecoration({
   bool error = false,
 }) {
   return InputDecoration(
-      isDense: true,
-      floatingLabelBehavior: FloatingLabelBehavior.never,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
       fillColor: Colors.white,
       filled: true,
       errorBorder: OutlineInputBorder(

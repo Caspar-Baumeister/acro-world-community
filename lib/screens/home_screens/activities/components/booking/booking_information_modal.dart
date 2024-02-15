@@ -4,7 +4,6 @@ import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +39,7 @@ in the AcroWorld app
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: PRIMARY_COLOR,
+              color: CustomColors.primaryColor,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,
@@ -48,13 +47,14 @@ in the AcroWorld app
             const SizedBox(height: 12.0),
             Text(
               "You have successfully booked ${clas.name} on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)}",
-              style: H16W7,
+              style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
             StandardButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
+              isFilled: true,
             ),
             const SizedBox(height: 15),
             LinkButtonComponent(

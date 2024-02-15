@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -24,21 +23,21 @@ class BookingHeader extends StatelessWidget {
         // the class name in the header
         Text(
           className,
-          style: H24W8,
+          style: Theme.of(context).textTheme.displayMedium,
           textAlign: TextAlign.center,
         ),
         // the teacher name
         const SizedBox(height: 8.0),
         Text(
           teacherName,
-          style: H16W3,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 6.0),
         // the date in the form of "Monday 14.07.24, 12:00 am - 02:00 pm gmt"
         Text(
           "${DateFormat('EEEE dd.MM.yy, hh:mm a').format(startDate)} - ${DateFormat('hh:mm a').format(endDate)}",
-          style: H16W3,
+          style: Theme.of(context).textTheme.titleLarge,
           textAlign: TextAlign.center,
         ),
       ],

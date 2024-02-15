@@ -1,5 +1,21 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:flutter/material.dart';
+
+class AppPaddings {
+  static const double tiny = 4.0;
+  static const double small = 8.0;
+  static const double medium = 16.0;
+  static const double large = 24.0;
+  static const double extraLarge = 32.0;
+  static const double toLarge = 64.0;
+}
+
+class AppBorders {
+  static BorderRadius smallRadius = BorderRadius.circular(10.0);
+  static BorderRadius defaultRadius = BorderRadius.circular(20.0);
+}
+
 const double appBarExpandedHeight = 200.0;
 const double appBarCollapsedThreshold = 0.5;
 

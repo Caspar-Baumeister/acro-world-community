@@ -10,13 +10,9 @@ import 'package:flutter/material.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
-      {super.key,
-      required this.classEvent,
-      required this.placesLeft,
-      required this.refetch});
+      {super.key, required this.classEvent, required this.refetch});
 
   final ClassEvent classEvent;
-  final num placesLeft;
   final void Function()? refetch;
 
   @override
@@ -63,7 +59,7 @@ class _BookingModalState extends State<BookingModal> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: PRIMARY_COLOR,
+              color: CustomColors.primaryColor,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,
@@ -93,9 +89,10 @@ class _BookingModalState extends State<BookingModal> {
                         className: clas.name!,
                         classDate: widget.classEvent.startDateDT,
                         classBookingOptions: clas.classBookingOptions ?? [],
-                        placesLeft: widget.placesLeft.toInt(),
+                        placesLeft: widget.classEvent.availableBookingSlots,
                         onOptionSelected: (p0) => setCurrentOption(p0),
                         currentOption: currentOption,
+                        maxPlaces: widget.classEvent.maxBookingSlots,
                         nextStep: () {
                           setState(() {
                             step = 1;

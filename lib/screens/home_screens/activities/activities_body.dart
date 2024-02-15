@@ -38,7 +38,7 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
 
         // date chooser that sets the state date
         const ActivitiesQuery(),
-        const Divider(color: PRIMARY_COLOR),
+        const Divider(color: CustomColors.primaryColor),
 
         const SizedBox(height: 6),
         // flexible TabBarView that shows either the results of classes or jams

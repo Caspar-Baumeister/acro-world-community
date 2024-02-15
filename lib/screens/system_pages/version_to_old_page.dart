@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -33,11 +32,17 @@ class VersionToOldPage extends StatelessWidget {
                             '''The current version $currentVersion is no longer supported. Only versions from version $minVersion onwards are supported.
                                 
     Please download the current version from the''',
-                        style: H14W4.copyWith(color: Colors.black)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(color: Colors.black)),
                     TextSpan(
                       text:
                           " ${Platform.isAndroid ? "Google Playstore." : "Appstore."} ", //"hier.",
-                      style: H14W4.copyWith(color: LINK_COLOR),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(color: CustomColors.linkTextColor),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
                           String link = Platform.isAndroid

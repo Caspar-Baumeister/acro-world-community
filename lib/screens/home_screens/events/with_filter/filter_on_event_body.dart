@@ -3,7 +3,6 @@ import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +27,9 @@ class FilterOnEventBody extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "We could not find any events for your search",
-                  style: H14W4,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(
                   height: 10,

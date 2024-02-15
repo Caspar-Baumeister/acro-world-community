@@ -7,7 +7,6 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/edit_userdata.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -38,6 +37,7 @@ class CheckoutStep extends StatefulWidget {
 
 class _CheckoutStepState extends State<CheckoutStep> {
   bool _ready = false;
+  String? paymentIntentId;
 
   @override
   void initState() {
@@ -65,7 +65,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               Container(
                 // round corners and add shadow
                 decoration: BoxDecoration(
-                  color: SLIGHTEST_GREY_BG,
+                  color: CustomColors.secondaryBackgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
@@ -88,7 +88,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
                           Flexible(
                             child: Text(
                               "Booking summary for ${widget.className}",
-                              style: H16W7,
+                              style: Theme.of(context).textTheme.titleLarge,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -112,11 +112,11 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         children: [
                           Text(
                             "${widget.bookingOption.title}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             "${widget.bookingOption.price}€",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -130,7 +130,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               Container(
                 // round corners and add shadow
                 decoration: BoxDecoration(
-                  color: SLIGHTEST_GREY_BG,
+                  color: CustomColors.secondaryBackgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
@@ -150,9 +150,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Title of the booking summary
-                          const Text(
+                          Text(
                             "Your information",
-                            style: H16W7,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           IconButton(
                             onPressed: () {
@@ -178,13 +178,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Name",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             "${user.name}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -195,13 +195,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Email",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             "${user.email}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -212,13 +212,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Acro level",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             user.level?.name ?? "Not specified",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -229,13 +229,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Acro Role",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             user.gender?.name ?? "Not specified",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -250,8 +250,20 @@ class _CheckoutStepState extends State<CheckoutStep> {
               CustomButton(
                 "Pay",
                 () async {
-                  print("pressed pay");
-                  await attemptToPresentPaymentSheet();
+                  if (paymentIntentId == null) {
+                    Fluttertoast.showToast(
+                        msg:
+                            "Something went wrong. Try again later or contact the support",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP,
+                        timeInSecForIosWeb: 2,
+                        backgroundColor: CustomColors.errorTextColor,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
+                  } else {
+                    print("pressed pay");
+                    await attemptToPresentPaymentSheet(paymentIntentId!);
+                  }
                 },
                 loading: !_ready,
                 width: double.infinity,
@@ -263,9 +275,11 @@ class _CheckoutStepState extends State<CheckoutStep> {
     );
   }
 
-  Future<void> attemptToPresentPaymentSheet() async {
+  Future<void> attemptToPresentPaymentSheet(String paymentIntentId) async {
     try {
-      await StripeService().attemptToPresentPaymentSheet().then((value) {
+      await StripeService()
+          .attemptToPresentPaymentSheet(paymentIntentId)
+          .then((value) {
         Navigator.of(context).pop();
         // TODO refresh the booking status from stripe and then refresh the queries
         // Access the EventBusProvider
@@ -290,7 +304,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.TOP,
             timeInSecForIosWeb: 2,
-            backgroundColor: Colors.red,
+            backgroundColor: CustomColors.errorTextColor,
             textColor: Colors.white,
             fontSize: 16.0);
         Navigator.pop(context);
@@ -299,10 +313,11 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
       StripeService()
           .initPaymentSheet(user, bookingOptionId, classEventId)
-          .then((value) {
-        if (value) {
+          .then((paymentIntent) {
+        if (paymentIntent != null) {
           return setState(() {
             _ready = true;
+            paymentIntentId = paymentIntent;
           });
         } else {
           Navigator.pop(context);
@@ -312,7 +327,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.TOP,
               timeInSecForIosWeb: 3,
-              backgroundColor: Colors.red,
+              backgroundColor: CustomColors.errorTextColor,
               textColor: Colors.white,
               fontSize: 16.0);
         }
@@ -324,7 +339,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.TOP,
           timeInSecForIosWeb: 3,
-          backgroundColor: Colors.red,
+          backgroundColor: CustomColors.errorTextColor,
           textColor: Colors.white,
           fontSize: 16.0);
 

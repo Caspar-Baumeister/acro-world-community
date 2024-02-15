@@ -1,7 +1,6 @@
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/slider_card.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class SliderRowEventDashboard extends StatelessWidget {
@@ -18,6 +17,7 @@ class SliderRowEventDashboard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -26,13 +26,13 @@ class SliderRowEventDashboard extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  header,
-                  style: H20W6,
-                ),
+                Text(header, style: Theme.of(context).textTheme.headlineMedium),
                 Text(
                   "(view all)",
-                  style: H14W4.copyWith(color: LINK_COLOR),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: CustomColors.linkTextColor),
                 )
               ],
             ),

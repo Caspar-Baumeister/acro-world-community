@@ -63,7 +63,7 @@ class _ActivityCalenderWidgetState extends State<ActivityCalenderWidget> {
           todayDecoration:
               BoxDecoration(color: Colors.grey[400]!, shape: BoxShape.circle),
           selectedDecoration: const BoxDecoration(
-              color: PRIMARY_COLOR, shape: BoxShape.circle)),
+              color: CustomColors.primaryColor, shape: BoxShape.circle)),
       onDaySelected: (DateTime newSelectedDay, DateTime _) {
         _onDaySelected(newSelectedDay);
       },

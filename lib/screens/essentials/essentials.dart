@@ -1,6 +1,5 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -113,24 +112,27 @@ class EssentialsCard extends StatelessWidget {
                     Text(title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: H16W7),
+                        style: Theme.of(context).textTheme.titleLarge),
                     // item description
                     Text(description,
                         maxLines: 8,
                         overflow: TextOverflow.ellipsis,
-                        style: H12W4),
+                        style: Theme.of(context).textTheme.bodySmall),
                     // item rabat code
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Code: ",
-                          style: H14W4,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         Text(code,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: H14W4.copyWith(color: Colors.red)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(color: Colors.red)),
                       ],
                     ),
                   ],

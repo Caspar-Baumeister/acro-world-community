@@ -84,7 +84,7 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
               todayDecoration: BoxDecoration(
                   color: Colors.grey[400]!, shape: BoxShape.circle),
               selectedDecoration: const BoxDecoration(
-                  color: PRIMARY_COLOR, shape: BoxShape.circle)),
+                  color: CustomColors.primaryColor, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
