@@ -1,8 +1,8 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class EssentialsPage extends StatelessWidget {
   const EssentialsPage({super.key});
@@ -65,14 +65,9 @@ class EssentialsCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         Clipboard.setData(ClipboardData(text: code));
-        Fluttertoast.showToast(
-            msg: "Code copied! You will be redirected to the website",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 4,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showSuccessToast(
+          "Code copied! You will be redirected to the website",
+        );
         await Future.delayed(const Duration(seconds: 4));
         customLaunch(link);
       },

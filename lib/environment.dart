@@ -1,4 +1,4 @@
-const bool isProduction = false; //bool.fromEnvironment('dart.vm.product');
+const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 class AppEnvironment {
   static const bool enableSentry = isProduction;
@@ -13,5 +13,10 @@ class AppEnvironment {
       'https://fb76faf08aa435a6de1ffb468aff6136@o4506325948366848.ingest.sentry.io/4506325953937408';
 
   static String stripePublishableKey =
+      isProduction ? stripeLivePublishableKey : stripeTestPublishableKey;
+
+  static String stripeLivePublishableKey =
+      "pk_live_51O3GqCKwmxSCW9DtYK0YflQyi30q4q0KkzboHwaPJ4N3YXsxZ9mE9tlreE3cr6eTWPf1OjH95BvyRnsa3c8NlNzI00vW4e2xap";
+  static String stripeTestPublishableKey =
       "pk_test_51OPnwnC43x9xByRIG4kRS8c37cd2DTCxvySyiFf6XOBnjefX8OLhLMNyPoYcfs9WxOHCTdocWMsFr5gLY5R2vbsS00eUgNP1LD";
 }

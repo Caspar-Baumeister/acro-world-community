@@ -1,8 +1,8 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CrawledWarningWidget extends StatelessWidget {
   const CrawledWarningWidget(
@@ -79,14 +79,9 @@ class CrawledWarningWidget extends StatelessWidget {
                             ..onTap = () {
                               Clipboard.setData(const ClipboardData(
                                   text: "info@acroworld.de"));
-                              Fluttertoast.showToast(
-                                  msg: "Email copied",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.TOP,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.green,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
+                              showSuccessToast(
+                                "Email copied",
+                              );
                             }),
                     ],
                   ),

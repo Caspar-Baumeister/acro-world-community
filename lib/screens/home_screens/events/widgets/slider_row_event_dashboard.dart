@@ -28,7 +28,7 @@ class SliderRowEventDashboard extends StatelessWidget {
               children: [
                 Text(header, style: Theme.of(context).textTheme.headlineMedium),
                 Text(
-                  "(view all)",
+                  "view all",
                   style: Theme.of(context)
                       .textTheme
                       .bodyLarge!

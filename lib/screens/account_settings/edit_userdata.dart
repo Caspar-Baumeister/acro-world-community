@@ -4,8 +4,8 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/gender_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -160,23 +160,10 @@ class _EditUserdataState extends State<EditUserdata> {
                         .then((value) {
                       if (value) {
                         // notify the user
-                        Fluttertoast.showToast(
-                            msg: "Your data has been updated",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.TOP,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.green,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                        showSuccessToast("Your data has been updated");
                       } else {
-                        Fluttertoast.showToast(
-                            msg: "Something went wrong, profile not updated",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.TOP,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                        showErrorToast(
+                            "Something went wrong, profile not updated");
                       }
 
                       // and pop the page

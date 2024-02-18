@@ -1,6 +1,5 @@
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 
 class BookOption extends StatelessWidget {
@@ -59,21 +58,21 @@ class BookOption extends StatelessWidget {
                 children: [
                   Text(
                       bookingOption.originalPrice().toStringAsFixed(2) +
-                          getCurrecySymbol(bookingOption.currency),
+                          bookingOption.currency.symbol,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                             decoration: TextDecoration.lineThrough,
                             fontWeight: FontWeight.w200,
                           )),
                   Text(
                     bookingOption.realPriceDiscounted().toStringAsFixed(2) +
-                        getCurrecySymbol(bookingOption.currency),
+                        bookingOption.currency.symbol,
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               )
             : Text(
                 bookingOption.realPriceDiscounted().toStringAsFixed(2) +
-                    getCurrecySymbol(bookingOption.currency),
+                    bookingOption.currency.symbol,
                 style: Theme.of(context).textTheme.titleLarge,
               ),
       ],

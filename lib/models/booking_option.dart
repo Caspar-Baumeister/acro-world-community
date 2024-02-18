@@ -1,3 +1,5 @@
+import 'package:acroworld/utils/helper_functions/currency_formater.dart';
+
 class ClassBookingOptions {
   BookingOption? bookingOption;
 
@@ -17,7 +19,7 @@ class BookingOption {
   num? price;
   String? subtitle;
   String? title;
-  String currency = "€";
+  CurrencyDetail currency = CurrencyDetail.getCurrencyDetail("");
 
   double realPriceDiscounted() {
     return (1 - (discount! * 0.01)) * price! * 0.01;
@@ -44,7 +46,7 @@ class BookingOption {
     subtitle = json['subtitle'];
     title = json['title'];
     if (json['currency'] != null) {
-      currency = json['currency'];
+      currency = CurrencyDetail.getCurrencyDetail(json['currency']);
     }
   }
 }

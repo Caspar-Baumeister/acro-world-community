@@ -3,8 +3,8 @@ import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/screens/home_screens/activities/components/booking/widgets/booking_option_widget.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class OptionChoosingStep extends StatelessWidget {
   const OptionChoosingStep(
@@ -50,14 +50,9 @@ class OptionChoosingStep extends StatelessWidget {
             if (currentOption != null) {
               nextStep();
             } else {
-              Fluttertoast.showToast(
-                  msg: "Please select an option to continue booking the class",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.TOP,
-                  timeInSecForIosWeb: 3,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              showErrorToast(
+                "Please select an option to continue booking the class",
+              );
             }
           },
           width: double.infinity,

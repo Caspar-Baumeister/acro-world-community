@@ -2,6 +2,10 @@
 
 import 'package:flutter/material.dart';
 
+class AppConstants {
+  static const int inAppMessageTime = 2;
+}
+
 class AppPaddings {
   static const double tiny = 4.0;
   static const double small = 8.0;

@@ -3,9 +3,9 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -91,15 +91,9 @@ class _TeacherCardState extends State<TeacherCard> {
                       UserProvider userProvider =
                           Provider.of<UserProvider>(context, listen: false);
                       if (userProvider.activeUser?.id == null) {
-                        Fluttertoast.showToast(
-                            msg:
-                                "You need to be logged in to be able to follow teachers",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.TOP,
-                            timeInSecForIosWeb: 3,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
+                        showErrorToast(
+                          "You need to be logged in to be able to follow teachers",
+                        );
 
                         return;
                       }

@@ -1,9 +1,8 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackPopUp extends StatefulWidget {
@@ -32,25 +31,11 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
       await FlutterEmailSender.send(email);
     } catch (error) {
       if (error is PlatformException && error.code == 'not_available') {
-        Fluttertoast.showToast(
-            msg:
-                "No email clients found! Please contact us directly at info@acroworld.de",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showSuccessToast(
+            "No email clients found! Please contact us directly at info@acroworld.de");
       } else {
-        Fluttertoast.showToast(
-            msg:
-                "An error occurred while sending feedback. Please contact us directly at info@acroworld.de",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showErrorToast(
+            "An error occurred while sending feedback. Please contact us directly at info@acroworld.de");
         // Handle other errors, or show a generic error message
       }
     }

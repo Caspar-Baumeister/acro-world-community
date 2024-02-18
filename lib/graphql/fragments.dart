@@ -10,6 +10,7 @@ class Fragments {
           price
           subtitle
           title
+          currency
         }
       }
       city

@@ -78,7 +78,6 @@ initMain() async {
     notificationService.getToken();
 
     // STRIPE //
-    print("stripe key: ${AppEnvironment.stripePublishableKey}");
     Stripe.publishableKey = AppEnvironment.stripePublishableKey;
     Stripe.merchantIdentifier = 'merchant.de.acroworld';
     Stripe.urlScheme = 'acroworld';

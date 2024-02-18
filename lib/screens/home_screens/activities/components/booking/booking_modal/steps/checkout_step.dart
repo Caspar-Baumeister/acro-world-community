@@ -7,9 +7,9 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/edit_userdata.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 // TODO create a stripe service that handles all stripe related stuff
@@ -251,15 +251,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
                 "Pay",
                 () async {
                   if (paymentIntentId == null) {
-                    Fluttertoast.showToast(
-                        msg:
-                            "Something went wrong. Try again later or contact the support",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.TOP,
-                        timeInSecForIosWeb: 2,
-                        backgroundColor: CustomColors.errorTextColor,
-                        textColor: Colors.white,
-                        fontSize: 16.0);
+                    showErrorToast(
+                      "Something went wrong. Try again later or contact the support",
+                    );
                   } else {
                     print("pressed pay");
                     await attemptToPresentPaymentSheet(paymentIntentId!);
@@ -299,14 +293,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
       User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
 
       if (user == null || user.id == null) {
-        Fluttertoast.showToast(
-            msg: "Please redo the login process and try again",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 2,
-            backgroundColor: CustomColors.errorTextColor,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showErrorToast(
+          "Please redo the login process and try again",
+        );
         Navigator.pop(context);
         return;
       }
@@ -321,27 +310,16 @@ class _CheckoutStepState extends State<CheckoutStep> {
           });
         } else {
           Navigator.pop(context);
-          Fluttertoast.showToast(
-              msg:
-                  "Error initializing payment, try again later or contact support",
-              toastLength: Toast.LENGTH_SHORT,
-              gravity: ToastGravity.TOP,
-              timeInSecForIosWeb: 3,
-              backgroundColor: CustomColors.errorTextColor,
-              textColor: Colors.white,
-              fontSize: 16.0);
+          showErrorToast(
+            "Error initializing payment, try again later or contact support",
+          );
         }
       });
     } catch (e, stackTrace) {
       // show flutter toast with error
-      Fluttertoast.showToast(
-          msg: "Error initializing payment, try again later or contact support",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 3,
-          backgroundColor: CustomColors.errorTextColor,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      showErrorToast(
+        "Error initializing payment, try again later or contact support",
+      );
 
       CustomErrorHandler.captureException(e, stackTrace: stackTrace);
     }

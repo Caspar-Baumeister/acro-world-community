@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class GraphQLErrorHandler {
@@ -13,12 +12,6 @@ class GraphQLErrorHandler {
     if (errorMessage == "") {
       errorMessage = "An unknown error occured";
     }
-    Fluttertoast.showToast(
-        msg: errorMessage,
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.TOP,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0);
+    showErrorToast(errorMessage);
   }
 }
