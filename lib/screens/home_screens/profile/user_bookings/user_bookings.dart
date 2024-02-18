@@ -3,7 +3,6 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings_card.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -37,10 +36,10 @@ class UserBookings extends StatelessWidget {
             // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
             List<UserBookingModel> userBookings = [];
             if (bookings.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
                   "You have no bookings",
-                  style: H16W7,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               );
@@ -72,10 +71,10 @@ class UserBookings extends StatelessWidget {
 
             userBookings = [...futureBookings, ...pastBookings];
             return pastBookings.isEmpty && futureBookings.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
                       "You have no bookings",
-                      style: H16W7,
+                      style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center,
                     ),
                   )

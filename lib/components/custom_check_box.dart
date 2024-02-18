@@ -24,7 +24,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
       child: Container(
         decoration: BoxDecoration(
             border: Border.all(color: Colors.grey),
-            color: widget.isChecked ? PRIMARY_COLOR : Colors.white,
+            color: widget.isChecked ? CustomColors.primaryColor : Colors.white,
             borderRadius: const BorderRadius.all(Radius.circular(6))),
         child: widget.isChecked
             ? Icon(

@@ -1,7 +1,6 @@
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -121,13 +120,13 @@ class CategorieFilterCards extends StatelessWidget {
 //                   children: [
 //                     Text(
 //                       DateFormat.MMMM().format(date),
-//                       style: H12W4.copyWith(
-//                           color: isSelected ? Colors.white : PRIMARY_COLOR),
+//                       style: Theme.of(context).textTheme.bodySmall.copyWith(
+//                           color: isSelected ? Colors.white : CustomColors.primaryColor),
 //                     ),
 //                     Text(
 //                       DateFormat.y().format(date),
-//                       style: H10W4.copyWith(
-//                           color: isSelected ? Colors.white : PRIMARY_COLOR),
+//                       style: Theme.of(context).textTheme.labelSmall.copyWith(
+//                           color: isSelected ? Colors.white : CustomColors.primaryColor),
 //                     )
 //                   ],
 //                 ),
@@ -209,10 +208,11 @@ class FilterChipCard extends StatelessWidget {
     return Chip(
       label: Text(
         label,
-        style: H12W4.copyWith(color: isActive ? Colors.white : PRIMARY_COLOR),
+        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+            color: isActive ? Colors.white : CustomColors.primaryColor),
       ),
       labelPadding: const EdgeInsets.all(0.0),
-      backgroundColor: isActive ? ACTIVE_COLOR : Colors.white,
+      backgroundColor: isActive ? CustomColors.primaryColor : Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 5),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),

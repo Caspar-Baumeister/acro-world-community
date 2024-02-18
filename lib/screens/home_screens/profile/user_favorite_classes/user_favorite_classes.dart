@@ -4,7 +4,6 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/favorite_model.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -31,12 +30,12 @@ class UserFavoriteClasses extends StatelessWidget {
             List<FavoriteModel> favoriteModels =
                 favorites.map((e) => FavoriteModel.fromJson(e)).toList();
             return favoriteModels.isEmpty
-                ? const Center(
+                ? Center(
                     child: Padding(
-                      padding: EdgeInsets.all(40.0),
+                      padding: const EdgeInsets.all(40.0),
                       child: Text(
                         "You have no favorite activities",
-                        style: H16W7,
+                        style: Theme.of(context).textTheme.titleLarge,
                         textAlign: TextAlign.center,
                       ),
                     ),

@@ -23,7 +23,7 @@ class CustomBottomHoverButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
             // if no color is given, use the primary color
-            backgroundColor: backgroundColor ?? PRIMARY_COLOR,
+            backgroundColor: backgroundColor ?? CustomColors.primaryColor,
             padding: const EdgeInsets.all(15), // internal padding
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),

@@ -39,6 +39,13 @@ mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {
 }
 """);
 
+  static final confirmPayment = gql("""
+mutation confirmPayment(\$payment_intent_id : uuid!) {
+  payment_intent_succeeded(objects: {payment_intent_id: \$payment_intent_id}) {
+    id
+  } 
+}""");
+
   static final updateFcmToken = gql("""
     mutation UpdateFcmToken(\$fcmToken: String!) {
       update_users(_set: {fcm_token: \$fcmToken}, where: {}) {

@@ -23,7 +23,7 @@ class CustomBottomNavBar extends StatelessWidget {
       showSelectedLabels: true,
       currentIndex: activeIdx,
       onTap: (index) => changeIdx(index),
-      selectedItemColor: PRIMARY_COLOR,
+      selectedItemColor: CustomColors.primaryColor,
       unselectedItemColor: Colors.grey[600],
       items: const [
         BottomNavigationBarItem(

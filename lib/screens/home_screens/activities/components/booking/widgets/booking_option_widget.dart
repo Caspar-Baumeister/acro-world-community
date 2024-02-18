@@ -1,7 +1,5 @@
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class BookOption extends StatelessWidget {
@@ -23,7 +21,7 @@ class BookOption extends StatelessWidget {
           height: 24.0,
           width: 24.0,
           child: Checkbox(
-            activeColor: SUCCESS_COLOR,
+            activeColor: CustomColors.successTextColor,
             value: value,
             onChanged: (_) => onChanged(_),
           ),
@@ -38,13 +36,13 @@ class BookOption extends StatelessWidget {
               children: [
                 Text(
                   bookingOption.title!,
-                  style: H16W7,
+                  style: Theme.of(context).textTheme.titleLarge,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   bookingOption.subtitle!,
-                  style: H14W4,
+                  style: Theme.of(context).textTheme.bodyLarge,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 )
@@ -60,22 +58,22 @@ class BookOption extends StatelessWidget {
                 children: [
                   Text(
                       bookingOption.originalPrice().toStringAsFixed(2) +
-                          getCurrecySymbol(bookingOption.currency),
-                      style: H16W7.copyWith(
-                        decoration: TextDecoration.lineThrough,
-                        fontWeight: FontWeight.w200,
-                      )),
+                          bookingOption.currency.symbol,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                            decoration: TextDecoration.lineThrough,
+                            fontWeight: FontWeight.w200,
+                          )),
                   Text(
                     bookingOption.realPriceDiscounted().toStringAsFixed(2) +
-                        getCurrecySymbol(bookingOption.currency),
-                    style: H16W7,
+                        bookingOption.currency.symbol,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
                 ],
               )
             : Text(
                 bookingOption.realPriceDiscounted().toStringAsFixed(2) +
-                    getCurrecySymbol(bookingOption.currency),
-                style: H16W7,
+                    bookingOption.currency.symbol,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
       ],
     );

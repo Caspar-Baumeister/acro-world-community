@@ -1,5 +1,4 @@
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
@@ -37,12 +36,12 @@ class DescriptionTextWidgetState extends State<DescriptionTextWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         widget.isHeader
-            ? const Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
                 child: Text(
                   "Description",
                   textAlign: TextAlign.start,
-                  style: H20W3,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
               )
             : Container(),
@@ -58,7 +57,8 @@ class DescriptionTextWidgetState extends State<DescriptionTextWidget> {
                       children: <Widget>[
                         Text(
                           flag ? "read more" : "fold in",
-                          style: const TextStyle(color: LINK_COLOR),
+                          style: const TextStyle(
+                              color: CustomColors.linkTextColor),
                         ),
                       ],
                     ),

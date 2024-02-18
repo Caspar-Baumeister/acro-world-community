@@ -3,7 +3,6 @@ import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -62,9 +61,11 @@ class EventFilterOnCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
-          color: event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
+          color: event.isHighlighted == true
+              ? CustomColors.highlightedColor
+              : Colors.white,
           border: Border.all(
-            color: HIGHLIGHT_COLOR,
+            color: CustomColors.highlightedColor,
             width: 1,
           ),
         ),
@@ -116,7 +117,7 @@ class EventFilterOnCard extends StatelessWidget {
                                     .replaceAllMapped(
                                         exp, (Match m) => (' ${m.group(0)}'))
                                     .toLowerCase()),
-                                style: H12W4,
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                             ),
                           ),
@@ -137,7 +138,7 @@ class EventFilterOnCard extends StatelessWidget {
                       child: Text(event.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: H16W7),
+                          style: Theme.of(context).textTheme.titleLarge),
                     ),
                     const SizedBox(height: 6),
                     event.startDate != null && event.endDate != null
@@ -161,7 +162,8 @@ class EventFilterOnCard extends StatelessWidget {
                                         "${DateFormat.MMMMd().format(DateTime.parse(event.startDate!))} - ${DateFormat.MMMMd().format(DateTime.parse(event.endDate!))}",
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: H14W4),
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge),
                               )
                             ],
                           )
@@ -188,33 +190,36 @@ class EventFilterOnCard extends StatelessWidget {
                                   child: Text(countryLocationString,
                                       maxLines: 2,
                                       overflow: TextOverflow.clip,
-                                      style: H14W4),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
                                 ),
                               ],
                             ),
                           )
                         : Container(),
                     event.pretixName != null
-                        ? const Padding(
-                            padding: EdgeInsets.only(top: 7),
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 7),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Center(
+                                const Center(
                                   child: Icon(
                                     Icons.check,
-                                    color: SUCCESS_COLOR,
+                                    color: CustomColors.successTextColor,
                                     size: 16,
                                   ),
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 5,
                                 ),
                                 Text("book with AcroWorld",
                                     maxLines: 2,
                                     overflow: TextOverflow.clip,
-                                    style: H14W4),
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge),
                               ],
                             ),
                           )

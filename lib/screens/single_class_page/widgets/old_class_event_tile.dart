@@ -74,7 +74,7 @@
 //                           DateTime.parse(widget.classEvent.startDate!))),
 //                       Text(
 //                           "${DateFormat('H:mm').format(DateTime.parse(widget.classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(widget.classEvent.endDate!))}",
-//                           style: H12W4)
+//                           style: Theme.of(context).textTheme.bodySmall)
 //                     ],
 //                   ),
 //                   classEventId != null

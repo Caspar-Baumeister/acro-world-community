@@ -1,6 +1,5 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -55,7 +54,8 @@ class TeacherAppBarState extends State<TeacherAppBar> {
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
                   STANDART_ROUNDNESS_STRONG), // Rounded corners
-              borderSide: const BorderSide(color: STANDART_BORDER_COLOR),
+              borderSide:
+                  const BorderSide(color: CustomColors.activeBorderColor),
             ),
             prefixIcon: const Icon(Icons.search, color: Colors.black),
             hintText: 'Search...',
@@ -64,11 +64,12 @@ class TeacherAppBarState extends State<TeacherAppBar> {
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(
                   STANDART_ROUNDNESS_STRONG), // Rounded corners
-              borderSide: const BorderSide(color: STANDART_BORDER_COLOR),
+              borderSide:
+                  const BorderSide(color: CustomColors.inactiveBorderColor),
             ),
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            hintStyle: HINT_INPUT_TEXT,
+            hintStyle: Theme.of(context).textTheme.titleLarge,
             suffixIcon: !_focusNode.hasFocus && _controller.text.isEmpty
                 ? null
                 : IconButton(
@@ -96,7 +97,7 @@ class TeacherAppBarState extends State<TeacherAppBar> {
                               : Icons.keyboard_arrow_up),
                       color: Colors.black,
                     ))),
-        style: ACTIVE_INPUT_TEXT, // Black text
+        style: Theme.of(context).textTheme.titleLarge, // Black text
         cursorColor: Colors.black,
       ),
       backgroundColor: Colors.transparent,

@@ -64,7 +64,7 @@ class DatabaseService {
   }
 
   Future registerApi(String email, String password, String name,
-      {bool? isNewsletter}) async {
+      {bool? isNewsletterEnabled}) async {
     try {
       final response = await http.post(uri,
           headers: {
@@ -72,7 +72,7 @@ class DatabaseService {
           },
           body: json.encode({
             'query':
-                """mutation MyMutation {register(input: {email: "$email", password: "$password", name: "$name", isNewsletter: ${isNewsletter == true ? "true" : "false"}){token refreshToken}}"""
+                """mutation MyMutation {register(input: {email: "$email", password: "$password", name: "$name", isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}}){token refreshToken}}"""
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {

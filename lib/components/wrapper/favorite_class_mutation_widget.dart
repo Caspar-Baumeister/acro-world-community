@@ -1,7 +1,7 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -45,14 +45,8 @@ class _FavoriteClassMutationWidgetState
             setState(() {
               isFavorized = !isFavorized;
             });
-            Fluttertoast.showToast(
-                msg: "${isFavorized ? "Added to" : "Removed from"} favorites",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showSuccessToast(
+                "${isFavorized ? "Added to" : "Removed from"} favorites");
           },
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,

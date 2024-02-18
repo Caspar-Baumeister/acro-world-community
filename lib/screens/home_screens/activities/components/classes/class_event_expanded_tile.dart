@@ -4,8 +4,8 @@ import 'package:acroworld/screens/home_screens/activities/components/class_event
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -58,7 +58,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Text(classEvent.classModel?.name ?? "Unknown",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: CARD_TITLE_TEXT),
+                        style: Theme.of(context).textTheme.titleLarge),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       child: Row(
@@ -67,7 +67,8 @@ class ClassEventExpandedTile extends StatelessWidget {
                                   classEvent.endDate != null
                               ? Text(
                                   "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
-                                  style: CARD_DESCRIPTION_TEXT)
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium!)
                               : const Text("time not given"),
                           const Spacer(),
                           Container(
@@ -79,7 +80,7 @@ class ClassEventExpandedTile extends StatelessWidget {
                                     "no location name",
                                 maxLines: 1,
                                 overflow: TextOverflow.clip,
-                                style: CARD_DESCRIPTION_TEXT),
+                                style: Theme.of(context).textTheme.bodyMedium!),
                           ),
                           const Icon(
                             Icons.location_on,
@@ -106,20 +107,23 @@ class ClassEventExpandedTile extends StatelessWidget {
                         classEvent.classModel?.classBookingOptions != null &&
                                 classEvent
                                     .classModel!.classBookingOptions!.isNotEmpty
-                            ? const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5),
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.local_offer,
-                                      color: Colors.green,
+                                      color: CustomColors.successTextColor,
                                       size: 16,
                                     ),
-                                    SizedBox(width: 6),
+                                    const SizedBox(width: 6),
                                     Text("direct booking",
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
-                                        style: CARD_DESCRIPTION_TEXT),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!),
                                   ],
                                 ))
                             : Container(),

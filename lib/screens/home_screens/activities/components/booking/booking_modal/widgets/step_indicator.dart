@@ -1,5 +1,4 @@
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 // a widget, that shows the user where he is in the booking process
@@ -18,7 +17,7 @@ class BookingStepIndicator extends StatelessWidget {
           : MediaQuery.of(context).size.width,
       // round corners
       decoration: BoxDecoration(
-        color: SLIGHTEST_GREY_BG,
+        color: CustomColors.secondaryBackgroundColor,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Padding(
@@ -35,8 +34,11 @@ class BookingStepIndicator extends StatelessWidget {
                 "Choose option",
                 // the style indicates which step is the current one
                 style: currentStep == 0
-                    ? H12W8
-                    : H12W4.copyWith(color: SLIGHTEST_GREY_TEXT),
+                    ? Theme.of(context).textTheme.titleSmall
+                    : Theme.of(context)
+                        .textTheme
+                        .bodySmall!
+                        .copyWith(color: CustomColors.lightTextColor),
 
                 textAlign: TextAlign.center,
               ),
@@ -44,7 +46,7 @@ class BookingStepIndicator extends StatelessWidget {
             // an arrow
             const Icon(
               Icons.arrow_forward_ios,
-              color: SLIGHTEST_GREY_TEXT,
+              color: CustomColors.lightTextColor,
               size: 10,
             ),
 
@@ -53,8 +55,11 @@ class BookingStepIndicator extends StatelessWidget {
               "Checkout",
               // the style indicates which step is the current one
               style: currentStep == 1
-                  ? H12W8
-                  : H12W4.copyWith(color: SLIGHTEST_GREY_TEXT),
+                  ? Theme.of(context).textTheme.bodySmall!
+                  : Theme.of(context)
+                      .textTheme
+                      .bodySmall!
+                      .copyWith(color: CustomColors.lightTextColor),
               textAlign: TextAlign.center,
             ),
           ],

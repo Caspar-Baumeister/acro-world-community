@@ -4,9 +4,9 @@ import 'package:acroworld/models/fcm/fcm_event.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class NotificationService {
@@ -122,14 +122,9 @@ class NotificationService {
               ),
             );
           } catch (e) {
-            Fluttertoast.showToast(
-                msg: "We could not redirect you to the relevant event",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showErrorToast(
+              "We could not redirect you to the relevant event",
+            );
             print("onMessage error");
             print(e.toString());
           }
@@ -173,14 +168,9 @@ class NotificationService {
               ),
             );
           } catch (e) {
-            Fluttertoast.showToast(
-                msg: "We could not redirect you to the relevant event",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showErrorToast(
+              "We could not redirect you to the relevant event",
+            );
             print("onMessage error");
             print(e.toString());
           }
@@ -214,14 +204,9 @@ class NotificationService {
               ),
             );
           } catch (e) {
-            Fluttertoast.showToast(
-                msg: "We could not redirect you to the relevant event",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showErrorToast(
+              "We could not redirect you to the relevant event",
+            );
             print("onMessageOpenedApp error");
             print(e.toString());
           }
@@ -230,13 +215,6 @@ class NotificationService {
         case "EventUpdated":
           try {
             final event = FCMEvent.fromJson(message.data);
-            // Navigator.of(context).push(
-            //   MaterialPageRoute(
-            //     builder: (context) => SingleEventQueryWrapper(
-            //       eventId: event.id,
-            //     ),
-            //   ),
-            // );
             navigatorKey.currentState!.push(
               MaterialPageRoute(
                 builder: (context) => SingleEventQueryWrapper(
@@ -245,14 +223,9 @@ class NotificationService {
               ),
             );
           } catch (e) {
-            Fluttertoast.showToast(
-                msg: "We could not redirect you to the relevant event",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.red,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showErrorToast(
+              "We could not redirect you to the relevant event",
+            );
             print("onMessageOpenedApp error");
             print(e.toString());
           }

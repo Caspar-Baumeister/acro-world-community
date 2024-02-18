@@ -10,7 +10,6 @@ import 'package:acroworld/screens/home_screens/profile/user_favorite_classes/use
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -64,9 +63,9 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
             appBar: AppBar(
               automaticallyImplyLeading: false,
               backgroundColor: Colors.white,
-              title: const Text(
+              title: Text(
                 "Your Profile",
-                style: H20W5,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               centerTitle: false,
               elevation: 0,

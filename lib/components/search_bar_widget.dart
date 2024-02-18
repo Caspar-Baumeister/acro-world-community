@@ -1,6 +1,5 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
@@ -25,7 +24,9 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final style = controller.text != "" ? ACTIVE_INPUT_TEXT : HINT_INPUT_TEXT;
+    final style = controller.text != ""
+        ? Theme.of(context).textTheme.titleLarge
+        : Theme.of(context).textTheme.titleLarge;
     return Container(
       height: INPUTFIELD_HEIGHT,
       decoration: searchBarDecoration,
@@ -35,15 +36,13 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
         textInputAction: TextInputAction.search,
         controller: controller,
         decoration: InputDecoration(
-          icon: Icon(
+          icon: const Icon(
             Icons.search,
-            color: style.color,
           ),
           suffixIcon: controller.text != ""
               ? GestureDetector(
-                  child: Icon(
+                  child: const Icon(
                     Icons.close,
-                    color: style.color,
                   ),
                   onTap: () {
                     controller.clear();

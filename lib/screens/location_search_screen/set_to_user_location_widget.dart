@@ -1,14 +1,14 @@
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 import 'package:provider/provider.dart';
 
 class SetToUserLocationWidget extends StatefulWidget {
-  const SetToUserLocationWidget({Key? key}) : super(key: key);
+  const SetToUserLocationWidget({super.key});
 
   @override
   State<SetToUserLocationWidget> createState() =>
@@ -46,15 +46,8 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
     ]);
 
     if (locationData0 == null) {
-      Fluttertoast.showToast(
-          msg:
-              "We could not locate you, please enter your current location manually",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 4,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+      showErrorToast(
+          "We could not locate you, please enter your current location manually");
 
       return;
     }

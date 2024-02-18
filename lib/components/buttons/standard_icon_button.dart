@@ -1,6 +1,5 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandardIconButton extends StatelessWidget {
@@ -59,7 +58,7 @@ class StandardIconButton extends StatelessWidget {
                     child: Text(text,
                         maxLines: withBorder ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: ACTIVE_INPUT_TEXT),
+                        style: Theme.of(context).textTheme.titleLarge),
                   ),
                   const SizedBox(width: 20),
                   showClose

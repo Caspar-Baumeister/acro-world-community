@@ -2,6 +2,18 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+//getBokableSingleClassEvents
+  static final getBokableSingleClassEvents = gql("""
+{
+  class_events(where: {recurring_pattern: {is_recurring: {_eq: false}}, max_booking_slots: {_gt: 0}}) {
+    class {
+      ${Fragments.classFragment}
+    }
+    ${Fragments.classEventFragment}
+  }
+}
+""");
+
   static final userBookmarks = gql("""
 query Me {
   me {
@@ -60,21 +72,32 @@ query Me {
   }
 }""");
 
-  static final getAllBookingsOfClassEvent = gql("""
-query classEventBooking(\$class_event_id: uuid) {
-  class_event_bookings(where: {class_event_id: {_eq: \$class_event_id}}) {
-    user_id
-    status
-    booking_option {
-      discount
-      price
-      title
-      commission
-      subtitle
-      id
+//   static final getAllBookingsOfClassEvent = gql("""
+// query classEventBooking(\$class_event_id: uuid) {
+//   class_event_bookings(where: {class_event_id: {_eq: \$class_event_id}}) {
+//     user_id
+//     status
+//     booking_option {
+//       discount
+//       price
+//       title
+//       commission
+//       subtitle
+//       id
+//       }
+//   }
+// }
+// """);
+
+  static final isClassEventBooked = gql("""
+query isClassEventBooked(\$class_event_id: uuid) {
+    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
+      aggregate {
+        count
       }
-  }
+    }
 }
+
 """);
 
   static final getClassEventsFromToLocationWithClass = gql("""
@@ -106,14 +129,6 @@ query Config {
   }
 }
 """);
-
-//   static final getEventsByTeacherId = gql("""
-// query getEventsByTeacherId(\$teacher_id: uuid) {
-//   events(where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}, _and: {teachers: {teacher_id: {_eq: \$teacher_id}}}}) {
-//     ${Fragments.eventFragment}
-//   }
-// }
-// """);
 
   static final getEventsByTeacherId =
       gql("""query getEventsByTeacherId(\$teacher_id: uuid!) {

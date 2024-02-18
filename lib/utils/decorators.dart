@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 // SEARCH
 Decoration searchBarDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
-  color: Colors.white,
-  border: Border.all(color: STANDART_BORDER_COLOR),
+  border: Border.all(color: CustomColors.inactiveBorderColor),
 );
 
 // TEXT INPUT FIELD
@@ -16,8 +15,7 @@ Decoration searchBarDecoration = BoxDecoration(
 // TEXT INPUT BUTTON
 
 Decoration inputButtonDecoration = BoxDecoration(
-  border: Border.all(color: STANDART_BORDER_COLOR, width: 0.5),
-  color: Colors.white,
+  border: Border.all(color: CustomColors.inactiveBorderColor, width: 0.5),
   borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
 );
 

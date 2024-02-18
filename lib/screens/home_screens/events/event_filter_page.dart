@@ -1,7 +1,6 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/filter_chip_cards.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,7 @@ class EventFilterPage extends StatelessWidget {
                 child: Center(
                   child: Text(
                     "${eventFilterProvider.activeEvents.length.toString()} results",
-                    style: H14W4,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ),
@@ -62,7 +61,7 @@ class EventFilterPage extends StatelessWidget {
             ],
           ),
         ),
-        body: const SingleChildScrollView(
+        body: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -73,10 +72,8 @@ class EventFilterPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Categories",
-                      style: H20W6,
-                    ),
+                    Text("Categories",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     SizedBox(
                       height: 5,
                     ),
@@ -90,10 +87,8 @@ class EventFilterPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Dates",
-                      style: H20W6,
-                    ),
+                    Text("Dates",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     SizedBox(
                       height: 5,
                     ),
@@ -107,10 +102,8 @@ class EventFilterPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Countries",
-                      style: H20W6,
-                    ),
+                    Text("Countries",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     SizedBox(
                       height: 5,
                     ),
@@ -124,10 +117,8 @@ class EventFilterPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Quick filter",
-                      style: H20W6,
-                    ),
+                    Text("Quick filter",
+                        style: Theme.of(context).textTheme.headlineMedium),
                     SizedBox(
                       height: 5,
                     ),

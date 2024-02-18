@@ -1,9 +1,8 @@
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class CrawledWarningWidget extends StatelessWidget {
   const CrawledWarningWidget(
@@ -31,7 +30,7 @@ class CrawledWarningWidget extends StatelessWidget {
                   onTap: () => showMyDialog(context),
                   child: const Icon(
                     Icons.error,
-                    color: WARNING_COLOR,
+                    color: CustomColors.errorTextColor,
                   ),
                 ),
               ),
@@ -46,16 +45,16 @@ class CrawledWarningWidget extends StatelessWidget {
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text(
+          title: Text(
             'Imported content',
-            style: H16W7,
+            style: Theme.of(context).textTheme.titleLarge,
           ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                const Text(
+                Text(
                   'The information for this event comes from an external source and may be incorrect. We do not guarantee its correctness.',
-                  style: H12W4,
+                  style: Theme.of(context).textTheme.bodySmall,
                 ),
                 const SizedBox(height: 10),
                 RichText(
@@ -65,23 +64,24 @@ class CrawledWarningWidget extends StatelessWidget {
                       TextSpan(
                         text:
                             "If this is an event you are organizing and you would like to make adjustments, please contact us at ",
-                        style: H12W4.copyWith(color: Colors.black),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: Colors.black),
                       ),
                       TextSpan(
                           text: "info@acroworld.de",
-                          style: H12W4.copyWith(color: LINK_COLOR),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodySmall!
+                              .copyWith(color: CustomColors.linkTextColor),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               Clipboard.setData(const ClipboardData(
                                   text: "info@acroworld.de"));
-                              Fluttertoast.showToast(
-                                  msg: "Email copied",
-                                  toastLength: Toast.LENGTH_SHORT,
-                                  gravity: ToastGravity.TOP,
-                                  timeInSecForIosWeb: 2,
-                                  backgroundColor: Colors.green,
-                                  textColor: Colors.white,
-                                  fontSize: 16.0);
+                              showSuccessToast(
+                                "Email copied",
+                              );
                             }),
                     ],
                   ),

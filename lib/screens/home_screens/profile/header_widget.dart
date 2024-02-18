@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -56,7 +55,7 @@ class HeaderWidget extends StatelessWidget {
               child: Text(
                 name,
                 textAlign: TextAlign.start,
-                style: H20W5,
+                style: Theme.of(context).textTheme.headlineMedium,
                 maxLines: 2,
               ),
             ),

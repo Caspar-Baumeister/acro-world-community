@@ -1,23 +1,22 @@
-import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
+import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-class SliderCard extends StatelessWidget {
-  const SliderCard({required this.event, super.key});
-  final EventModel event;
+class ClassEventSliderCard extends StatelessWidget {
+  const ClassEventSliderCard({required this.classEvent, super.key});
+  final ClassEvent classEvent;
 
   @override
   Widget build(BuildContext context) {
     String endTimeString = "";
     String? dateString;
 
-    if (event.endDate != null && event.startDate != null) {
-      DateTime endDateTime = DateTime.parse(event.endDate!);
-      DateTime startDateTime = DateTime.parse(event.startDate!);
+    if (classEvent.endDate != null && classEvent.startDate != null) {
+      DateTime endDateTime = DateTime.parse(classEvent.endDate!);
+      DateTime startDateTime = DateTime.parse(classEvent.startDate!);
       endTimeString = endDateTime.day.toString();
       if (endDateTime.month != startDateTime.month) {
         endTimeString =
@@ -31,30 +30,16 @@ class SliderCard extends StatelessWidget {
     }
 
     String? countryLocationString;
-    if ((event.locationCountry != null && event.locationCountry != "") ||
-        (event.locationCity != null && event.locationCity != "")) {
-      countryLocationString = "";
-
-      if (event.locationCountry != null && event.locationCountry != "") {
-        countryLocationString += event.locationCountry.toString();
-      }
-      if ((event.locationCountry != null && event.locationCountry != "") &&
-          (event.locationCity != null && event.locationCity != "")) {
-        countryLocationString += ", ";
-      }
-      if (event.locationCity != null && event.locationCity != "") {
-        countryLocationString += event.locationCity.toString();
-      }
-    } else if (event.originLocationName != null &&
-        event.originLocationName != "") {
-      countryLocationString = event.originLocationName.toString();
+    if (classEvent.classModel?.locationName != null &&
+        classEvent.classModel?.locationName != "") {
+      countryLocationString = classEvent.classModel!.locationName.toString();
     }
-    RegExp exp = RegExp(r'(?<=[a-z])[A-Z]');
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
-          builder: (context) => SingleEventQueryWrapper(
-            eventId: event.id!,
+          builder: (context) => SingleClassPage(
+            classEvent: classEvent,
+            clas: classEvent.classModel!,
           ),
         ),
       ),
@@ -65,11 +50,8 @@ class SliderCard extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
             height: EVENT_DASHBOARD_SLIDER_HEIGHT,
             width: EVENT_DASHBOARD_SLIDER_WIDTH,
-            decoration: BoxDecoration(
-              color: event.isHighlighted == true
-                  ? const Color.fromARGB(255, 242, 255, 242)
-                  : Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
             child: Column(
               children: [
@@ -78,7 +60,7 @@ class SliderCard extends StatelessWidget {
                   height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.55,
                   width: double.infinity,
                   child: CachedNetworkImage(
-                    imageUrl: event.mainImageUrl ??
+                    imageUrl: classEvent.classModel?.imageUrl ??
                         "https://images.unsplash.com/photo-1629122558657-d5dc4c30ca60?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1771&q=80",
                     fit: BoxFit.cover,
                     placeholder: (context, url) => Container(
@@ -101,7 +83,7 @@ class SliderCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(event.name ?? "",
+                      Text(classEvent.classModel?.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleLarge),
@@ -144,31 +126,7 @@ class SliderCard extends StatelessWidget {
               ],
             ),
           ),
-          event.eventType != null
-              ? Positioned.fill(
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4),
-                        child: Text(
-                          capitalizeWords(event.eventType!
-                              .replaceAllMapped(
-                                  exp, (Match m) => (' ${m.group(0)}'))
-                              .toLowerCase()),
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                      ),
-                    ),
-                  ),
-                )
-              : Container(),
-          event.startDate != null
+          classEvent.startDate != null
               ? Positioned(
                   top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.35,
                   left: 20,
@@ -191,12 +149,12 @@ class SliderCard extends StatelessWidget {
                         children: [
                           Text(
                             DateFormat.MMM()
-                                .format(DateTime.parse(event.startDate!)),
+                                .format(DateTime.parse(classEvent.startDate!)),
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
                             dateString ??
-                                "${DateTime.parse(event.startDate!).day} - $endTimeString",
+                                "${DateTime.parse(classEvent.startDate!).day} - $endTimeString",
                             style: Theme.of(context).textTheme.headlineSmall,
                           )
                         ],
