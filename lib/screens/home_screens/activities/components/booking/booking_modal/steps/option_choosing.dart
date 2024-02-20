@@ -28,7 +28,6 @@ class OptionChoosingStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("currentOption: $currentOption");
     return Column(
       children: [
         Column(children: [

@@ -24,8 +24,6 @@ class BookableSingleClassEventRow extends StatelessWidget {
         } else if (queryResult.data != null &&
             queryResult.data?["class_events"] != null &&
             queryResult.data?["class_events"].isNotEmpty) {
-          print("BookableSingleClassEventRow: length of class_events:");
-          print(queryResult.data?["class_events"].length);
           List<ClassEvent> singleClassEvents = List<ClassEvent>.from(queryResult
               .data?["class_events"]
               .map((event) => ClassEvent.fromJson(event)));

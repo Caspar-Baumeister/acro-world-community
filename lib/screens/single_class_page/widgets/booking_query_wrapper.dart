@@ -45,7 +45,6 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
   // This widget is a wrapper for the booking button
   @override
   Widget build(BuildContext context) {
-    print("class event id ${widget.classEvent.id}");
     // query for all bookings that where made for the given class event the user ids
     return Query(
       options: QueryOptions(
