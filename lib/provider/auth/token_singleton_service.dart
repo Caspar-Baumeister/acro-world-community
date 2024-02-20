@@ -28,7 +28,8 @@ class TokenSingletonService {
   }
 
   Future<String?> getToken() async {
-    if (_token == null || await _isTokenExpired()) {
+    bool isTokenExpired = await _isTokenExpired();
+    if (_token == null || isTokenExpired) {
       print("token was null run fetch token");
       await _fetchToken();
     }

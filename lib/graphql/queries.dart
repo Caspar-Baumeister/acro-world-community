@@ -91,7 +91,7 @@ query Me {
 
   static final isClassEventBooked = gql("""
 query isClassEventBooked(\$class_event_id: uuid) {
-    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
+    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}) {
       aggregate {
         count
       }

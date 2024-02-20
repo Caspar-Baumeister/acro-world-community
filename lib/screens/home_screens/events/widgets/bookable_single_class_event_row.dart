@@ -24,8 +24,8 @@ class BookableSingleClassEventRow extends StatelessWidget {
         } else if (queryResult.data != null &&
             queryResult.data?["class_events"] != null &&
             queryResult.data?["class_events"].isNotEmpty) {
-          print("queryResult.data?[lass_events]");
-          print(queryResult.data?["class_events"]);
+          print("BookableSingleClassEventRow: length of class_events:");
+          print(queryResult.data?["class_events"].length);
           List<ClassEvent> singleClassEvents = List<ClassEvent>.from(queryResult
               .data?["class_events"]
               .map((event) => ClassEvent.fromJson(event)));
@@ -36,7 +36,7 @@ class BookableSingleClassEventRow extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 alignment: Alignment.centerLeft,
-                child: Text("Direct Booking",
+                child: Text("Book trough AcroWorld",
                     style: Theme.of(context).textTheme.headlineMedium),
               ),
               const SizedBox(height: 10),

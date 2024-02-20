@@ -98,6 +98,7 @@ class StripeService {
         print("Response from server: ${response.data}");
         return response.data!["create_payment_sheet"];
       }
+      print("response: $response");
       print("Something went wrong while creating payment sheet.");
       return null;
     }

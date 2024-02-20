@@ -67,15 +67,10 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Padding(
-              padding: EdgeInsets.only(
-                  bottom: AppPaddings.large, top: AppPaddings.medium),
-              child: BookableSingleClassEventRow(),
-            ),
             highlights.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider.changeHighlighted(),
                       header: "Highlights",
@@ -83,11 +78,15 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                     ),
                   )
                 : Container(),
-
+            const Padding(
+              padding: EdgeInsets.only(
+                  bottom: AppPaddings.medium, top: AppPaddings.medium),
+              child: BookableSingleClassEventRow(),
+            ),
             // bookable.isNotEmpty
             //     ? Padding(
             //         padding: const EdgeInsets.only(
-            //             bottom: AppPaddings.large, top: AppPaddings.medium),
+            //             bottom: AppPaddings.medium, top: AppPaddings.medium),
             //         child: SliderRowEventDashboard(
             //           onViewAll: () {
             //             eventFilterProvider.resetFilter();
@@ -105,7 +104,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             upcoming.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () {
                         eventFilterProvider.resetFilter();
@@ -122,7 +121,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             festivalsAndCons.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider
                           .setActiveCategory(["FestivalsAndCons"]),
@@ -134,7 +133,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             workshops.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Workshops"]),
@@ -146,7 +145,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             trainings.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Trainings"]),
@@ -158,7 +157,7 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
             retreats.isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(
-                        bottom: AppPaddings.large, top: AppPaddings.medium),
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Retreats"]),
