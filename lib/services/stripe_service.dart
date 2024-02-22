@@ -18,6 +18,7 @@ class StripeService {
     );
 
     // define some billing details
+    //TODO remove hard coded values
     var billingDetails = BillingDetails(
       email: user.email,
       name: user.name,
@@ -43,23 +44,26 @@ class StripeService {
       return null;
     }
     // 2. initialize the payment sheet
-
-    final response = await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        // Set to true for custom flow
-        customFlow: false,
-        // Main params
-        merchantDisplayName: "AcroWorld",
-        paymentIntentClientSecret: paymentSheetResponseData['payment_intent'],
-        // Customer keys
-        customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
-        customerId: paymentSheetResponseData['customer_id'],
-        // Extra options
-        style: ThemeMode.dark,
-        billingDetails: billingDetails,
-      ),
-    );
-    print("Response from payment sheet: ${response.toString()}");
+    try {
+      final response = await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          // Set to true for custom flow
+          customFlow: false,
+          // Main params
+          merchantDisplayName: "AcroWorld",
+          paymentIntentClientSecret: paymentSheetResponseData['payment_intent'],
+          // Customer keys
+          customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
+          customerId: paymentSheetResponseData['customer_id'],
+          // Extra options
+          style: ThemeMode.dark,
+          billingDetails: billingDetails,
+        ),
+      );
+      print("Response from payment sheet: ${response.toString()}");
+    } catch (e, stacktrace) {
+      CustomErrorHandler.captureException(e, stackTrace: stacktrace);
+    }
 
     return paymentSheetResponseData['payment_intent'];
   }
