@@ -35,7 +35,7 @@ dependencies:
   photo_view: ^0.14.0
   location: ^5.0.3
   flutter_email_sender: ^6.0.2
-  flutter_stripe: ^9.5.0+1
+  flutter_stripe: ^10.0.0
   sentry_flutter: ^7.13.2
   flutter_native_splash: ^2.3.8
   timeago: ^3.2.2

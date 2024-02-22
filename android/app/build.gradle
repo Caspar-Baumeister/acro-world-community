@@ -35,7 +35,7 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace 'com.community.acroworld'
-    compileSdkVersion 33
+    compileSdkVersion 34
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
