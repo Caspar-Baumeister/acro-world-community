@@ -1,9 +1,8 @@
 import 'package:acroworld/components/buttons/place_button/place_button.dart';
 import 'package:acroworld/screens/home_screens/activities/activities_query.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/classes_view.dart';
-import 'package:acroworld/screens/home_screens/activities/components/create_class_modal.dart';
+import 'package:acroworld/screens/map/map_page.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class ActivitiesBody extends StatefulWidget {
@@ -30,8 +29,11 @@ class _ActivitiesBodyState extends State<ActivitiesBody> {
               ),
             ),
             IconButton(
-              onPressed: () => buildMortal(context, const CreateClassModal()),
-              icon: const Icon(Icons.add),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                    builder: (context) => const FlutterMapScreen()),
+              ),
+              icon: const Icon(Icons.location_on_outlined),
             ),
           ],
         ),

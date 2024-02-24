@@ -6,6 +6,11 @@ class AppConstants {
   static const int inAppMessageTime = 2;
 }
 
+class AppSizes {
+  static const double iconSizeMedium = 24.0;
+  static const double iconSizeLarge = 36.0;
+}
+
 class AppPaddings {
   static const double tiny = 4.0;
   static const double small = 8.0;

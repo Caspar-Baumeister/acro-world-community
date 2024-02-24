@@ -94,6 +94,19 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
   }
 }
 """);
+
+  static final getClassEventsByDistance = gql("""
+query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$distance: float8){
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: now}, distance: {_lte: \$distance}}) {
+    distance
+    ${Fragments.classEventFragment}
+    class {
+      ${Fragments.classFragment}
+    }
+  }
+}
+""");
+
   static final getClassEventsFromToWithClass = gql("""
 query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
   class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
