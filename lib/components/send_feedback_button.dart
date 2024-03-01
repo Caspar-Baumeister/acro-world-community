@@ -1,13 +1,15 @@
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class FeedbackPopUp extends StatefulWidget {
-  const FeedbackPopUp({Key? key}) : super(key: key);
+  const FeedbackPopUp({super.key, required this.subject, required this.title});
+
+  final String subject;
+  final String title;
 
   @override
   FeedbackPopUpState createState() => FeedbackPopUpState();
@@ -20,7 +22,7 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
   void _sendEmail() async {
     final Email email = Email(
       body: _feedbackController.text,
-      subject: 'Feedback from AcroWorld App',
+      subject: widget.subject,
       recipients: ['info@acroworld.de'],
       cc: [_emailController.text],
     );
@@ -29,25 +31,11 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
       await FlutterEmailSender.send(email);
     } catch (error) {
       if (error is PlatformException && error.code == 'not_available') {
-        Fluttertoast.showToast(
-            msg:
-                "No email clients found! Please install or setup an email client to send feedback.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showSuccessToast(
+            "No email clients found! Please contact us directly at info@acroworld.de");
       } else {
-        Fluttertoast.showToast(
-            msg:
-                "An error occurred while sending feedback. Please try again later.",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showErrorToast(
+            "An error occurred while sending feedback. Please contact us directly at info@acroworld.de");
         // Handle other errors, or show a generic error message
       }
     }
@@ -70,9 +58,13 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoAlertDialog(
-      title: const Text('Give Feedback'),
+      title: Text(widget.title),
       content: Column(
         children: <Widget>[
+          Container(
+              alignment: Alignment.centerLeft,
+              padding: const EdgeInsets.only(top: 10.0),
+              child: const Text("Your Email")),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: CupertinoTextField(
@@ -84,7 +76,7 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: CupertinoTextField(
               controller: _feedbackController,
-              placeholder: "Feedback",
+              placeholder: "Message",
               minLines: 4,
               maxLines: 8,
             ),

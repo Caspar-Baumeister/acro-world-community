@@ -1,4 +1,6 @@
+import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -6,9 +8,7 @@ import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/a
 import 'package:acroworld/screens/home_screens/home_scaffold.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,6 +29,14 @@ class SignUpState extends State<SignUp> {
   String errorPasswordConfirm = "";
 
   bool isAgb = false;
+  bool isNewsletter = false;
+
+  void setNewsletter(bool b) {
+    setState(() {
+      isNewsletter = b;
+    });
+  }
+
   void setAgb(bool b) {
     setState(() {
       isAgb = b;
@@ -83,16 +91,13 @@ class SignUpState extends State<SignUp> {
                         height: 100,
                       ),
                     ),
-                    TextFormField(
-                      controller: nameController,
-                      autofocus: true,
-                      autofillHints: const [AutofillHints.email],
-                      keyboardType: TextInputType.name,
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(labelText: 'Name'),
-                      validator: (val) =>
-                          (val == null || val.isEmpty) ? 'Enter a name' : null,
-                    ),
+                    InputFieldComponent(
+                        controller: nameController!,
+                        autoFocus: true,
+                        autofillHints: const [AutofillHints.email],
+                        keyboardType: TextInputType.name,
+                        textInputAction: TextInputAction.next,
+                        labelText: 'Name'),
                     errorName != ""
                         ? Container(
                             alignment: Alignment.centerLeft,
@@ -105,16 +110,12 @@ class SignUpState extends State<SignUp> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    TextFormField(
-                      controller: emailController,
-                      autofillHints: const [AutofillHints.email],
-                      keyboardType: TextInputType.emailAddress,
-                      textInputAction: TextInputAction.next,
-                      decoration: buildInputDecoration(labelText: 'Email'),
-                      validator: (val) => (val == null || val.isEmpty)
-                          ? 'Enter an email'
-                          : null,
-                    ),
+                    InputFieldComponent(
+                        controller: emailController!,
+                        autofillHints: const [AutofillHints.email],
+                        keyboardType: TextInputType.emailAddress,
+                        textInputAction: TextInputAction.next,
+                        labelText: 'Email'),
                     errorEmail != ""
                         ? Container(
                             alignment: Alignment.centerLeft,
@@ -127,28 +128,27 @@ class SignUpState extends State<SignUp> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    TextFormField(
-                      controller: passwordController,
+                    InputFieldComponent(
+                      controller: passwordController!,
                       textInputAction: TextInputAction.done,
                       autofillHints: const [AutofillHints.password],
                       obscureText: passwordObscure,
-                      decoration: buildInputDecoration(
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              passwordObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              // Update the state i.e. toogle the state of passwordVisible variable
-                              setState(() {
-                                passwordObscure = !passwordObscure;
-                              });
-                            },
-                          )),
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          // Based on passwordVisible state choose the icon
+                          passwordObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          // Update the state i.e. toogle the state of passwordVisible variable
+                          setState(() {
+                            passwordObscure = !passwordObscure;
+                          });
+                        },
+                      ),
                     ),
                     errorPassword != ""
                         ? Container(
@@ -162,29 +162,27 @@ class SignUpState extends State<SignUp> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    TextFormField(
-                      controller: passwordConfirmController,
+                    InputFieldComponent(
+                      controller: passwordConfirmController!,
                       textInputAction: TextInputAction.done,
                       autofillHints: const [AutofillHints.password],
                       obscureText: passwordConfirmObscure,
-                      decoration: buildInputDecoration(
-                          labelText: 'Confirm password',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              passwordConfirmObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              // Update the state i.e. toogle the state of passwordVisible variable
-                              setState(() {
-                                passwordConfirmObscure =
-                                    !passwordConfirmObscure;
-                              });
-                            },
-                          )),
+                      labelText: 'Confirm password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          // Based on passwordVisible state choose the icon
+                          passwordConfirmObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: Colors.black,
+                        ),
+                        onPressed: () {
+                          // Update the state i.e. toogle the state of passwordVisible variable
+                          setState(() {
+                            passwordConfirmObscure = !passwordConfirmObscure;
+                          });
+                        },
+                      ),
                       onFieldSubmitted: (_) => loading ? null : onRegister(),
                     ),
                     errorPasswordConfirm != ""
@@ -199,15 +197,18 @@ class SignUpState extends State<SignUp> {
                           )
                         : Container(),
                     const SizedBox(height: 20.0),
-                    // add agbs checkbox
                     AGBCheckbox(isAgb: isAgb, setAgb: setAgb),
+                    const SizedBox(height: 20.0),
+                    NewsletterCheckbox(
+                        isNewsletter: isNewsletter,
+                        setNewsletter: setNewsletter),
                     const SizedBox(height: 20.0),
                     StandardButton(
                       text: "Register",
                       onPressed: () => onRegister(),
                       loading: loading,
                       isFilled: true,
-                      buttonFillColor: COLOR7,
+                      buttonFillColor: CustomColors.primaryColor,
                     ),
                     error != ""
                         ? Padding(
@@ -219,33 +220,16 @@ class SignUpState extends State<SignUp> {
                             ),
                           )
                         : Container(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0)
-                          .copyWith(top: 8, bottom: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () async {
-                              await customLaunch(AppEnvironment.dashboardUrl);
-                            },
-                            child: Text(
-                              "Partner dashboard",
-                              style: H14W4.copyWith(color: LINK_COLOR),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18),
-                        ),
-                      ),
+                    const SizedBox(height: 20),
+                    LinkButtonComponent(
+                      text: "Login",
                       onPressed: () => widget.toggleView(),
-                      child: const Text("Login", style: BUTTON_TEXT),
                     ),
+                    const SizedBox(height: 10),
+                    LinkButtonComponent(
+                        text: "Partner Dashboard",
+                        onPressed: () async =>
+                            await customLaunch(AppEnvironment.dashboardUrl)),
                     const SizedBox(
                       height: 40,
                     )
@@ -308,7 +292,8 @@ class SignUpState extends State<SignUp> {
 
     await TokenSingletonService()
         .register(emailController!.text, passwordController!.text,
-            nameController!.text)
+            nameController!.text,
+            isNewsletterEnabled: isNewsletter)
         .then((response) {
       if (response["errors"]?[0]["extensions"]?["exception"]?["errorInfo"]
               ?["message"] !=
@@ -316,6 +301,10 @@ class SignUpState extends State<SignUp> {
         setState(() {
           error = response["errors"]?[0]["extensions"]?["exception"]
               ?["errorInfo"]?["message"];
+        });
+      } else if (response["errors"]?[0]["message"] != null) {
+        setState(() {
+          error = response["errors"]?[0]["message"];
         });
       } else if (response["error"] == false) {
         final userProvider = Provider.of<UserProvider>(context, listen: false);

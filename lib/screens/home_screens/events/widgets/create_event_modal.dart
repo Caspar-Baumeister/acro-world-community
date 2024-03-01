@@ -2,12 +2,11 @@ import 'package:acroworld/components/buttons/teacher_button_link_widget.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreateEventModal extends StatelessWidget {
-  const CreateEventModal({Key? key}) : super(key: key);
+  const CreateEventModal({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,16 +20,16 @@ class CreateEventModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: PRIMARY_COLOR,
+              color: CustomColors.primaryColor,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,
             ),
             const SizedBox(height: 30.0),
-            const Center(
+            Center(
               child: Text(
                 "Create a new event",
-                style: H16W7,
+                style: Theme.of(context).textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
             ),
@@ -47,7 +46,7 @@ class CreateEventModal extends StatelessWidget {
                                 .isNotEmpty
                         ? "Go to your dashboard to create an event"
                         : "To be able to create an event, you first have to tell us something about yourself. Log in with your AcroWorld account and fill out some information. We will review your information promptly.",
-                    style: H14W4,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
               ),

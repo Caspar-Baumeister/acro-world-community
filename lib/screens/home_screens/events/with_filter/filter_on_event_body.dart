@@ -3,14 +3,13 @@ import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 // This page body has only one downwards scroll with full with cards
 class FilterOnEventBody extends StatelessWidget {
-  const FilterOnEventBody({Key? key}) : super(key: key);
+  const FilterOnEventBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +27,9 @@ class FilterOnEventBody extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   "We could not find any events for your search",
-                  style: H14W4,
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(
                   height: 10,
@@ -106,7 +105,7 @@ class FilterOnEventBody extends StatelessWidget {
 }
 
 class MonthStringWidget extends StatelessWidget {
-  const MonthStringWidget({Key? key, required this.date}) : super(key: key);
+  const MonthStringWidget({super.key, required this.date});
   final DateTime date;
 
   @override

@@ -1,12 +1,11 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class EssentialsPage extends StatelessWidget {
-  const EssentialsPage({Key? key}) : super(key: key);
+  const EssentialsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +45,12 @@ class EssentialsPage extends StatelessWidget {
 
 class EssentialsCard extends StatelessWidget {
   const EssentialsCard(
-      {Key? key,
+      {super.key,
       required this.imgUrl,
       required this.title,
       required this.description,
       required this.code,
-      required this.link})
-      : super(key: key);
+      required this.link});
 
   final String imgUrl;
   final String title;
@@ -67,14 +65,9 @@ class EssentialsCard extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () async {
         Clipboard.setData(ClipboardData(text: code));
-        Fluttertoast.showToast(
-            msg: "Code copied! You will be redirected to the website",
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 4,
-            backgroundColor: Colors.green,
-            textColor: Colors.white,
-            fontSize: 16.0);
+        showSuccessToast(
+          "Code copied! You will be redirected to the website",
+        );
         await Future.delayed(const Duration(seconds: 4));
         customLaunch(link);
       },
@@ -114,24 +107,27 @@ class EssentialsCard extends StatelessWidget {
                     Text(title,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: H16W7),
+                        style: Theme.of(context).textTheme.titleLarge),
                     // item description
                     Text(description,
                         maxLines: 8,
                         overflow: TextOverflow.ellipsis,
-                        style: H12W4),
+                        style: Theme.of(context).textTheme.bodySmall),
                     // item rabat code
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Code: ",
-                          style: H14W4,
+                          style: Theme.of(context).textTheme.bodyLarge,
                         ),
                         Text(code,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: H14W4.copyWith(color: Colors.red)),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(color: Colors.red)),
                       ],
                     ),
                   ],

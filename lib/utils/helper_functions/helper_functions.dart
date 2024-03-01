@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -32,20 +31,6 @@ bool isTeacherFollowedByUser(List<UserLikes>? followerList, String userId) {
     }
   }
   return false;
-}
-
-// builds the modal widgets
-Future<void> buildMortal(BuildContext context, Widget mordal) {
-  return showModalBottomSheet(
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
-      context: context,
-      builder: (context) => Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: mordal));
 }
 
 DateTime parseDateStr(String inputString) {
@@ -113,7 +98,10 @@ DateTime laterDay(DateTime a, DateTime b) {
   return a.isBefore(b) ? b : a;
 }
 
-bool isSameDate(DateTime a, DateTime b) {
+bool isSameDate(DateTime? a, DateTime? b) {
+  if (a == null || b == null) {
+    return false;
+  }
   return a.day == b.day && a.month == b.month && a.year == b.year;
 }
 

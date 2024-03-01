@@ -6,8 +6,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordSuccess extends StatefulWidget {
-  const ForgotPasswordSuccess({Key? key, required this.email})
-      : super(key: key);
+  const ForgotPasswordSuccess({super.key, required this.email});
 
   final String email;
 
@@ -94,7 +93,7 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
             padding: EdgeInsets.symmetric(horizontal: 30.0),
             child: Text(
               "The link is only valid for one hour, but you can request a new link at any time.",
-              style: TextStyle(color: WARNING_COLOR),
+              style: TextStyle(color: CustomColors.errorTextColor),
               textAlign: TextAlign.center,
             ),
           ),

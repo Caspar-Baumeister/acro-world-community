@@ -193,3 +193,6 @@ app.*.symbols
 
 # Project specific
 .env* 
+
+# Android build outputs
+android/app/build/

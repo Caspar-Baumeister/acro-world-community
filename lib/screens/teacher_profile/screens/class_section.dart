@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClassSection extends StatelessWidget {
-  const ClassSection({Key? key, required this.teacherId}) : super(key: key);
+  const ClassSection({super.key, required this.teacherId});
 
   final String teacherId;
 

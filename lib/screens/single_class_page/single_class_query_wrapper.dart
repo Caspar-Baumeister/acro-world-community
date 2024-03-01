@@ -1,3 +1,4 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
@@ -11,8 +12,7 @@ import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
   const SingleEventQueryWrapper(
-      {Key? key, required this.classId, this.classEventId})
-      : super(key: key);
+      {super.key, required this.classId, this.classEventId});
 
   final String classId;
   final String? classEventId;
@@ -44,7 +44,8 @@ class SingleEventQueryWrapper extends StatelessWidget {
             ClassModel clas =
                 ClassModel.fromJson(queryResult.data?["classes_by_pk"]);
             return SingleClassPage(clas: clas);
-          } catch (e) {
+          } catch (e, trace) {
+            CustomErrorHandler.captureException(e, stackTrace: trace);
             return ErrorPage(
                 error:
                     "An unexpected error occured, when transforming the classes_by_pk data to an object with classId $classId");
@@ -54,16 +55,21 @@ class SingleEventQueryWrapper extends StatelessWidget {
           try {
             ClassEvent classEvent =
                 ClassEvent.fromJson(queryResult.data?["class_events_by_pk"]);
+
             return SingleClassPage(
               clas: classEvent.classModel!,
               classEvent: classEvent,
             );
-          } catch (e) {
+          } catch (e, trace) {
+            CustomErrorHandler.captureException(e, stackTrace: trace);
             return ErrorPage(
                 error:
                     "An unexpected error occured, when transforming the class_event_by_pk data to an object with classEventId $classEventId");
           }
         } else {
+          CustomErrorHandler.captureException(
+              "An unexpected error occured, when fetching the class / classEvent with id $classId / $classEventId",
+              stackTrace: StackTrace.current);
           return ErrorPage(
               error:
                   "An unexpected error occured, when fetching the class / classEvent with id $classId / $classEventId");

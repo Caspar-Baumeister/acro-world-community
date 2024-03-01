@@ -12,8 +12,10 @@ class ClassEvent {
   ParticipantsAggregate? participantsAggregate;
   List<User>? participants;
   ClassModel? classModel;
+  num? availableBookingSlots;
+  num? maxBookingSlots;
 
-  get startDateDT => startDate != null ? DateTime.parse(startDate!) : null;
+  DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
 
   ClassEvent(
@@ -25,6 +27,8 @@ class ClassEvent {
       this.startDate,
       this.participantsAggregate,
       this.participants,
+      this.maxBookingSlots,
+      this.availableBookingSlots,
       this.classModel});
 
   ClassEvent.fromJson(Map<String, dynamic> json) {
@@ -32,6 +36,9 @@ class ClassEvent {
     createdAt = json['created_at'];
     endDate = json['end_date'];
     id = json['id'];
+    availableBookingSlots = json['available_booking_slots'];
+    maxBookingSlots = json['max_booking_slots'];
+
     isCancelled = json['is_cancelled'];
     startDate = json['start_date'];
     participantsAggregate = json['participants_aggregate'] != null

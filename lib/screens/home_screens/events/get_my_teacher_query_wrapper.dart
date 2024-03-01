@@ -10,7 +10,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class GetMyTeacherQueryWrapper extends StatelessWidget {
-  const GetMyTeacherQueryWrapper({Key? key}) : super(key: key);
+  const GetMyTeacherQueryWrapper({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +76,7 @@ class GetMyTeacherQueryWrapper extends StatelessWidget {
                         child: SliderRowEventDashboard(
                           onViewAll: () => eventFilterProvider
                               .changeAllFollowedTeachers(followedTeacher),
-                          header: "Tearchers you follow",
+                          header: "Followed Teacher",
                           events: returnEvents,
                         ),
                       )

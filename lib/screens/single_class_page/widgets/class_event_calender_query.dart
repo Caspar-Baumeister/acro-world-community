@@ -4,12 +4,10 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/screens/single_class_page/widgets/class_event_calendar.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
-
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClassEventCalenderQuery extends StatelessWidget {
-  const ClassEventCalenderQuery({Key? key, required this.classId})
-      : super(key: key);
+  const ClassEventCalenderQuery({super.key, required this.classId});
 
   final String classId;
 

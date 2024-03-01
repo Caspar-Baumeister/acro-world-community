@@ -1,28 +1,28 @@
-import 'dart:convert';
-
 import 'package:acroworld/components/buttons/custom_button.dart';
+import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/account_settings/edit_userdata.dart';
+import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
+// TODO create a stripe service that handles all stripe related stuff
 
 class CheckoutStep extends StatefulWidget {
   const CheckoutStep(
-      {Key? key,
+      {super.key,
       required this.className,
       required this.classDate,
       required this.bookingOption,
       required this.previousStep,
       required this.teacherStripeId,
-      this.classEventId})
-      : super(key: key);
+      this.classEventId});
 
   final String className;
   final DateTime classDate;
@@ -36,13 +36,22 @@ class CheckoutStep extends StatefulWidget {
 }
 
 class _CheckoutStepState extends State<CheckoutStep> {
+  bool _ready = false;
+  String? paymentIntentId;
+
   @override
   void initState() {
     super.initState();
-    initPaymentSheet(widget.bookingOption);
+    if (widget.bookingOption.id != null && widget.classEventId != null) {
+      initPaymentSheet(widget.bookingOption.id!, widget.classEventId!);
+    } else {
+      CustomErrorHandler.captureException(
+          Exception(
+              "Booking option id or class event id is null when trying to book a class"),
+          stackTrace: StackTrace.current);
+    }
   }
 
-  bool _ready = false;
   @override
   Widget build(BuildContext context) {
     User user = Provider.of<UserProvider>(context).activeUser!;
@@ -56,7 +65,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               Container(
                 // round corners and add shadow
                 decoration: BoxDecoration(
-                  color: SLIGHTEST_GREY_BG,
+                  color: CustomColors.secondaryBackgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
@@ -79,7 +88,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
                           Flexible(
                             child: Text(
                               "Booking summary for ${widget.className}",
-                              style: H16W7,
+                              style: Theme.of(context).textTheme.titleLarge,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -103,11 +112,14 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         children: [
                           Text(
                             "${widget.bookingOption.title}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
-                            "${widget.bookingOption.price}€",
-                            style: H12W4,
+                            widget.bookingOption
+                                    .realPriceDiscounted()
+                                    .toStringAsFixed(2) +
+                                widget.bookingOption.currency.symbol,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -121,7 +133,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               Container(
                 // round corners and add shadow
                 decoration: BoxDecoration(
-                  color: SLIGHTEST_GREY_BG,
+                  color: CustomColors.secondaryBackgroundColor,
                   borderRadius: BorderRadius.circular(10.0),
                   boxShadow: [
                     BoxShadow(
@@ -141,9 +153,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Title of the booking summary
-                          const Text(
+                          Text(
                             "Your information",
-                            style: H16W7,
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
                           IconButton(
                             onPressed: () {
@@ -169,13 +181,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Name",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             "${user.name}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -186,13 +198,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Email",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             "${user.email}",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -203,13 +215,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Acro level",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             user.level?.name ?? "Not specified",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -220,13 +232,13 @@ class _CheckoutStepState extends State<CheckoutStep> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
+                          Text(
                             "Acro Role",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
                             user.gender?.name ?? "Not specified",
-                            style: H12W4,
+                            style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],
                       ),
@@ -239,9 +251,16 @@ class _CheckoutStepState extends State<CheckoutStep> {
               const SizedBox(height: 20.0),
 
               CustomButton(
-                "Pay now",
+                "Pay",
                 () async {
-                  await Stripe.instance.presentPaymentSheet();
+                  if (paymentIntentId == null) {
+                    showErrorToast(
+                      "Something went wrong. Try again later or contact the support",
+                    );
+                  } else {
+                    print("pressed pay");
+                    await attemptToPresentPaymentSheet(paymentIntentId!);
+                  }
                 },
                 loading: !_ready,
                 width: double.infinity,
@@ -253,121 +272,59 @@ class _CheckoutStepState extends State<CheckoutStep> {
     );
   }
 
-  Future<void> initPaymentSheet(BookingOption bookingOption) async {
+  Future<void> attemptToPresentPaymentSheet(String paymentIntentId) async {
     try {
-      User user = Provider.of<UserProvider>(context, listen: false).activeUser!;
-
-      // if user id, booking option id or class event id is null, throw an exception
-      if (user.id == null ||
-          bookingOption.id == null ||
-          widget.classEventId == null) {
-        throw Exception("User id, booking option id or class event id is null");
-      }
-
-      // 1. create payment intent on the server
-      final data = await _createTestPaymentSheet(
-          user.id,
-          bookingOption.price,
-          bookingOption.currency,
-          widget.teacherStripeId,
-          widget.classEventId!,
-          bookingOption.id!);
-
-      // define some billing details
-      var billingDetails = BillingDetails(
-          email: user.email,
-          name: user.name,
-          phone: "+49123456789",
-          address: const Address(
-              city: "Berlin",
-              country: "Germany",
-              line1: "Karl-Marx-Str. 1",
-              line2: "Karl-Marx-Str. 2",
-              postalCode: "12043",
-              state: "Berlin"));
-
-      // 2. initialize the payment sheet
-      final response = await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          // Set to true for custom flow
-          customFlow: false,
-          // Main params
-          merchantDisplayName: 'Flutter Stripe Store Demo',
-          paymentIntentClientSecret: data['paymentIntent'],
-          // Customer keys
-          customerEphemeralKeySecret: data['ephemeralKey'],
-          customerId: data['customer'],
-          // Extra options
-          style: ThemeMode.dark,
-          billingDetails: billingDetails,
-          // appearance:  PaymentSheetAppearance
-          // (
-          //   colors: PaymentSheetAppearanceColors
-          // (
-          //     background: Colors.white,
-          //     secondaryText: Colors.grey,
-          //     error: Colors.red,
-          //     primaryText: Colors.black),
-          //   ),
-        ),
-      );
-      print("Response from payment sheet: ${response.toString()}");
-      setState(() {
-        _ready = true;
+      await StripeService()
+          .attemptToPresentPaymentSheet(paymentIntentId)
+          .then((value) {
+        Navigator.of(context).pop();
+        // TODO refresh the booking status from stripe and then refresh the queries
+        // Access the EventBusProvider
+        var eventBusProvider =
+            Provider.of<EventBusProvider>(context, listen: false);
+// Fire the refetch event for booking query
+        eventBusProvider.fireRefetchBookingQuery();
       });
-    } catch (e) {
-      // show flutter toast with error
-      Fluttertoast.showToast(
-          msg: "Error initializing payment sheet: ${e.toString()}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-
-      rethrow;
+    } on StripeException catch (e) {
+      CustomErrorHandler.captureException(e, stackTrace: StackTrace.current);
     }
   }
 
-  Future<Map<String, dynamic>> _createTestPaymentSheet(
-      String? userId,
-      num? amount,
-      String currency,
-      String destinationAcct,
-      String classEventId,
-      String bookingOptionId) async {
-    // get User id
-    if (userId == null) {
-      throw Exception("User id is null");
-    }
+  Future<void> initPaymentSheet(
+      String bookingOptionId, String classEventId) async {
+    try {
+      User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
 
-    // TODO define real host
-    // if platform is android, use 10.0.2.2 instead of localhost
-    String host = "http://localhost:3000"; // "10.0.2.2"; //
-    // if (Theme.of(context).platform == TargetPlatform.android) {
-    //   host = "10.0.2.2";
-    // }
-    // 1. create payment intent on the server (localhost for now)
-    final url = Uri.parse('$host/stripe/create-payment-sheet');
-    // 2. create a body with {"amount" : 300, "destination": "acct_1O5td34FPJL5TYTc", "currency": "eur", "application_fee_amount": 10}
-    if (amount == null) {
-      throw Exception("Amount is null");
-    }
-    final body = jsonEncode({
-      "amount": amount * 100,
-      "destination": destinationAcct,
-      "currency": currency,
-      "user_id": userId,
-      "class_event_id": classEventId,
-      "booking_option_id": bookingOptionId
-    });
-    // 3. make a post request to the url with the body
-    final response = await http.post(url,
-        headers: {'Content-Type': 'application/json'}, body: body);
-    // print the response with title
-    print("Response from server: ${response.body}");
+      if (user == null || user.id == null) {
+        showErrorToast(
+          "Please redo the login process and try again",
+        );
+        Navigator.pop(context);
+        return;
+      }
 
-    return jsonDecode(response.body);
+      StripeService()
+          .initPaymentSheet(user, bookingOptionId, classEventId)
+          .then((paymentIntent) {
+        if (paymentIntent != null) {
+          return setState(() {
+            _ready = true;
+            paymentIntentId = paymentIntent;
+          });
+        } else {
+          Navigator.pop(context);
+          showErrorToast(
+            "Error initializing payment, try again later or contact support",
+          );
+        }
+      });
+    } catch (e, stackTrace) {
+      // show flutter toast with error
+      showErrorToast(
+        "Error initializing payment, try again later or contact support",
+      );
+
+      CustomErrorHandler.captureException(e, stackTrace: stackTrace);
+    }
   }
 }

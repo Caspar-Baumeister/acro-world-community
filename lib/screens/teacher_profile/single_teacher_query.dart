@@ -9,8 +9,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SingleTeacherQuery extends StatelessWidget {
-  const SingleTeacherQuery({Key? key, required this.teacherId})
-      : super(key: key);
+  const SingleTeacherQuery({super.key, required this.teacherId});
   final String teacherId;
 
   @override

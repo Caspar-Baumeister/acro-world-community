@@ -6,6 +6,8 @@ EventType mapStringToEventType(String eventTypeString) {
       return EventType.Retreats;
     case 'Trainings':
       return EventType.Trainings;
+    case 'Workshops':
+      return EventType.Workshops;
     default:
       throw ArgumentError('Invalid event type string: $eventTypeString');
   }
@@ -21,6 +23,8 @@ extension EventTypeValue on EventType {
         return 'Retreats';
       case EventType.Trainings:
         return 'Trainings';
+      case EventType.Workshops:
+        return 'Workshops';
       default:
         throw ArgumentError('Invalid event type: $this');
     }
@@ -31,4 +35,5 @@ enum EventType {
   FestivalsAndCons,
   Retreats,
   Trainings,
+  Workshops,
 }

@@ -1,19 +1,20 @@
+import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/open_map.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/utils/text_styles.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SingleEventBody extends StatelessWidget {
   const SingleEventBody({
-    Key? key,
+    super.key,
     required this.event,
-  }) : super(key: key);
+  });
 
   final EventModel event;
 
@@ -62,7 +63,9 @@ class SingleEventBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(event.name ?? "", maxLines: 3, style: H20W5),
+              Text(event.name ?? "",
+                  maxLines: 3,
+                  style: Theme.of(context).textTheme.headlineLarge),
               const SizedBox(height: 20),
               dateString != null
                   ? Column(
@@ -86,7 +89,7 @@ class SingleEventBody extends StatelessWidget {
                               child: Text(dateString,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: H12W4),
+                                  style: Theme.of(context).textTheme.bodySmall),
                             )
                           ],
                         ),
@@ -110,10 +113,10 @@ class SingleEventBody extends StatelessWidget {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           "Pricing",
                           textAlign: TextAlign.start,
-                          style: H20W3,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         const SizedBox(height: 10),
                         DescriptionTextWidget(
@@ -128,8 +131,13 @@ class SingleEventBody extends StatelessWidget {
                   ? Column(
                       children: [
                         Center(
-                          child: LinkButton(
-                              text: "Official website", link: event.url!),
+                          child: Padding(
+                            padding: const EdgeInsets.all(AppPaddings.small),
+                            child: LinkButtonComponent(
+                                text: "Official website",
+                                onPressed: () async =>
+                                    await customLaunch(event.url!)),
+                          ),
                         ),
                       ],
                     )
@@ -143,19 +151,16 @@ class SingleEventBody extends StatelessWidget {
                 child: Container(
                   alignment: Alignment.centerLeft,
                   padding: const EdgeInsets.only(bottom: 8.0),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        const Text(
-                          "Teacher:",
-                          style: H20W3,
-                        ),
-                        const SizedBox(width: 10),
-                        ClassTeacherChips(classTeacherList: event.teachers!),
-                      ],
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Teacher",
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                      const SizedBox(height: AppPaddings.small),
+                      ClassTeacherChips(classTeacherList: event.teachers!),
+                    ],
                   ),
                 ),
               )
@@ -178,9 +183,11 @@ class SingleEventBody extends StatelessWidget {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text(
+                                Text(
                                   "Location",
-                                  style: H20W3,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headlineMedium,
                                 ),
                                 OpenGoogleMaps(
                                   latitude: latitude * 1.0,
@@ -211,7 +218,9 @@ class SingleEventBody extends StatelessWidget {
                                   child: Text(countryLocationString,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
-                                      style: H14W4),
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge),
                                 ),
                               ],
                             ),
@@ -234,7 +243,7 @@ class SingleEventBody extends StatelessWidget {
                 ),
               )
             : Container(),
-        const SizedBox(height: 50)
+        const SizedBox(height: 10)
       ],
     ));
   }

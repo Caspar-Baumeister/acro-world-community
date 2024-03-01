@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 
 class ClassEventTileImage extends StatelessWidget {
   const ClassEventTileImage(
-      {Key? key, required this.width, this.imgUrl, required this.isCancelled})
-      : super(key: key);
+      {super.key, required this.width, this.imgUrl, required this.isCancelled});
 
   final double width;
   final String? imgUrl;

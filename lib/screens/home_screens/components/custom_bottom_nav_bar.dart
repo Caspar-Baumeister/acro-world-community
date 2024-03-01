@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   const CustomBottomNavBar({
-    Key? key,
+    super.key,
     required this.activeIdx,
     required this.changeIdx,
-  }) : super(key: key);
+  });
 
   final int activeIdx;
   final Function changeIdx;
@@ -23,7 +23,7 @@ class CustomBottomNavBar extends StatelessWidget {
       showSelectedLabels: true,
       currentIndex: activeIdx,
       onTap: (index) => changeIdx(index),
-      selectedItemColor: PRIMARY_COLOR,
+      selectedItemColor: CustomColors.primaryColor,
       unselectedItemColor: Colors.grey[600],
       items: const [
         BottomNavigationBarItem(

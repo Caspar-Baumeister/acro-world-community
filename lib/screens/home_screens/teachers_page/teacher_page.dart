@@ -3,7 +3,7 @@ import 'package:acroworld/screens/home_screens/teachers_page/teacher_query.dart'
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatefulWidget {
-  const TeacherPage({Key? key}) : super(key: key);
+  const TeacherPage({super.key});
 
   @override
   State<TeacherPage> createState() => _TeacherPageState();
@@ -57,8 +57,7 @@ class _TeacherPageState extends State<TeacherPage> {
 
 class FilterRow extends StatelessWidget {
   const FilterRow(
-      {Key? key, required this.selectFollowed, required this.isFollowed})
-      : super(key: key);
+      {super.key, required this.selectFollowed, required this.isFollowed});
   final Function(bool) selectFollowed;
   final bool isFollowed;
 
@@ -83,11 +82,10 @@ class FilterBubble extends StatefulWidget {
   final bool initialValue;
 
   const FilterBubble(
-      {Key? key,
+      {super.key,
       required this.label,
       required this.onTap,
-      required this.initialValue})
-      : super(key: key);
+      required this.initialValue});
 
   @override
   FilterBubbleState createState() => FilterBubbleState();
@@ -117,7 +115,7 @@ class FilterBubbleState extends State<FilterBubble> {
         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
         decoration: BoxDecoration(
           color: !_isSelected ? Colors.white : Colors.black,
-          borderRadius: BorderRadius.circular(30),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(color: !_isSelected ? Colors.black : Colors.white),
         ),
         child: Center(

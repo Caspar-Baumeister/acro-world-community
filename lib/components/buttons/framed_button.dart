@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 class FramedButton extends StatelessWidget {
-  const FramedButton({Key? key, required this.child, required this.onPressed})
-      : super(key: key);
+  const FramedButton({super.key, required this.child, required this.onPressed});
 
   final Widget child;
   final Function onPressed;

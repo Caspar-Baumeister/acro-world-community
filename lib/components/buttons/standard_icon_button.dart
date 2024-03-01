@@ -1,11 +1,10 @@
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandardIconButton extends StatelessWidget {
   const StandardIconButton({
-    Key? key,
+    super.key,
     required this.icon,
     required this.text,
     this.onPressed,
@@ -14,7 +13,7 @@ class StandardIconButton extends StatelessWidget {
     this.showClose = false,
     this.onClose,
     this.loading = false,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final String text;
@@ -59,7 +58,7 @@ class StandardIconButton extends StatelessWidget {
                     child: Text(text,
                         maxLines: withBorder ? 1 : 2,
                         overflow: TextOverflow.ellipsis,
-                        style: ACTIVE_INPUT_TEXT),
+                        style: Theme.of(context).textTheme.titleLarge),
                   ),
                   const SizedBox(width: 20),
                   showClose

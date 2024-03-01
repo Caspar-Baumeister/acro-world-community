@@ -10,7 +10,6 @@ import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart' as dot_env;
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -18,7 +17,7 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   // Sentry //
-  if (AppEnvironment.isProdBuild) {
+  if (AppEnvironment.enableSentry) {
     await SentryFlutter.init(
       (options) {
         options.dsn = AppEnvironment.sentryDsn;
@@ -63,19 +62,6 @@ initMain() async {
   //   ),
   // );
 
-  // DEFINE THE GRAPHQL CLIENT //
-  // final AuthLink authLink = AuthLink(
-  //   getToken: () async {
-  //     String? token = await AuthProvider().getToken();
-  //     return token != null ? 'Bearer $token' : null;
-  //   },
-  // );
-  // final HttpLink httpLink = HttpLink(
-  //   'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
-  // );
-
-  //   final Link link = authLink.concat(httpLink);
-
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -92,8 +78,7 @@ initMain() async {
     notificationService.getToken();
 
     // STRIPE //
-    await dot_env.dotenv.load(fileName: ".env");
-    Stripe.publishableKey = dot_env.dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+    Stripe.publishableKey = AppEnvironment.stripePublishableKey;
     Stripe.merchantIdentifier = 'merchant.de.acroworld';
     Stripe.urlScheme = 'acroworld';
     await Stripe.instance.applySettings();
@@ -101,7 +86,7 @@ initMain() async {
     CustomErrorHandler.captureException(exception, stackTrace: stackTrace);
   }
 
-  // check version
+  // VERSION CHECK //
   String minVersion =
       await VersionService.getVersionInfo(graphQLClientSingleton.client);
   if (minVersion == 'Error') {

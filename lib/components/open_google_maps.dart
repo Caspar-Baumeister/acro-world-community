@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 class OpenGoogleMaps extends StatelessWidget {
   const OpenGoogleMaps(
-      {Key? key, required this.latitude, required this.longitude})
-      : super(key: key);
+      {super.key, required this.latitude, required this.longitude});
   final double latitude;
   final double longitude;
 

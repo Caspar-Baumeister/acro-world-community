@@ -1,49 +1,58 @@
-import 'package:acroworld/components/custom_check_box.dart';
+import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/custom_check_widget.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-class AGBCheckbox extends StatefulWidget {
-  const AGBCheckbox({Key? key, required this.isAgb, required this.setAgb})
-      : super(key: key);
+class AGBCheckbox extends StatelessWidget {
+  const AGBCheckbox({super.key, required this.isAgb, required this.setAgb});
 
   final bool isAgb;
 
   final Function(bool b) setAgb;
 
   @override
-  State<AGBCheckbox> createState() => _AGBCheckboxState();
+  Widget build(BuildContext context) {
+    return CustomCheckWidget(
+      isChecked: isAgb,
+      setChecked: setAgb,
+      content: RichText(
+        textAlign: TextAlign.left,
+        text: TextSpan(
+          children: <TextSpan>[
+            const TextSpan(
+                text: "I agree with the ",
+                style: TextStyle(color: Colors.black)),
+            TextSpan(
+                text: "terms and conditions.",
+                style: const TextStyle(
+                    color: Colors.blue, fontWeight: FontWeight.bold),
+                recognizer: TapGestureRecognizer()
+                  ..onTap = () async {
+                    await customLaunch(AGB_URL);
+                  }),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
-class _AGBCheckboxState extends State<AGBCheckbox> {
+class NewsletterCheckbox extends StatelessWidget {
+  const NewsletterCheckbox(
+      {super.key, required this.isNewsletter, required this.setNewsletter});
+
+  final bool isNewsletter;
+
+  final Function(bool b) setNewsletter;
+
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CustomCheckBox(
-            onTap: () => widget.setAgb(!widget.isAgb), isChecked: widget.isAgb),
-        const SizedBox(width: 8),
-        RichText(
-          textAlign: TextAlign.left,
-          text: TextSpan(
-            children: <TextSpan>[
-              const TextSpan(
-                  text: "I agree with the ",
-                  style: TextStyle(color: Colors.black)),
-              TextSpan(
-                  text: "terms and conditions.",
-                  style: const TextStyle(
-                      color: Colors.blue, fontWeight: FontWeight.bold),
-                  recognizer: TapGestureRecognizer()
-                    ..onTap = () async {
-                      await customLaunch(AGB_URL);
-                    }),
-            ],
-          ),
-        ),
-      ],
-    );
+    return CustomCheckWidget(
+        isChecked: isNewsletter,
+        setChecked: setNewsletter,
+        content: const Text(
+            "Get newsletter-exclusive special offers and updates for our AcroYoga teachers, studios and organizers.",
+            style: TextStyle(color: Colors.black)));
   }
 }

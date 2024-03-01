@@ -3,7 +3,7 @@ import 'package:acroworld/screens/authentication_screens/signup_screen/sign_up.d
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  const Authenticate({Key? key, this.initShowSignIn}) : super(key: key);
+  const Authenticate({super.key, this.initShowSignIn});
 
   final bool? initShowSignIn;
 

@@ -5,12 +5,11 @@ import 'package:gql/ast.dart';
 
 class QueryUserListScreen extends StatelessWidget {
   const QueryUserListScreen(
-      {Key? key,
+      {super.key,
       required this.query,
       required this.variables,
       this.title,
-      this.classEventId})
-      : super(key: key);
+      this.classEventId});
 
   final DocumentNode query;
   final Map<String, dynamic> variables;

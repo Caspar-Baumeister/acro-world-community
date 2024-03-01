@@ -8,8 +8,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ParticipatesQuery extends StatelessWidget {
-  const ParticipatesQuery({Key? key, required this.classEventId})
-      : super(key: key);
+  const ParticipatesQuery({super.key, required this.classEventId});
 
   final String classEventId;
 

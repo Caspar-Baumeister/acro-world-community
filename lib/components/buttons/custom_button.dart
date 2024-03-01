@@ -1,4 +1,5 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -13,15 +14,14 @@ class CustomButton extends StatelessWidget {
   final bool isWithAuth;
 
   const CustomButton(this.text, this.onPressed,
-      {Key? key,
-      this.width = 300,
+      {super.key,
+      this.width = STANDART_BUTTON_WIDTH,
       this.height = 48.0,
       this.fontSize = 14.0,
       this.padding = const EdgeInsets.all(18.0),
       this.disabled = false,
       this.loading = false,
-      this.isWithAuth = false})
-      : super(key: key);
+      this.isWithAuth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,7 @@ class CustomButton extends StatelessWidget {
       ,
       child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: PRIMARY_COLOR),
+            border: Border.all(color: CustomColors.primaryColor),
             borderRadius: BorderRadius.circular(12.0),
           ),
           width: width,

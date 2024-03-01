@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class H extends StatelessWidget {
-  const H(this.text, {Key? key, required this.style}) : super(key: key);
+  const H(this.text, {super.key, required this.style});
 
   final String text;
   final TextStyle? style;
