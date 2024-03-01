@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 // makes an test payment with stripe to the account acct_1O5td34FPJL5TYTc
 
 class StripeTestModal extends StatefulWidget {
-  const StripeTestModal({Key? key}) : super(key: key);
+  const StripeTestModal({super.key});
 
   @override
   State<StripeTestModal> createState() => _StripeTestModalState();
@@ -196,8 +196,7 @@ class BookingOptionWidget extends StatelessWidget {
       {required this.bookingOption,
       required this.onChanged,
       required this.selected,
-      Key? key})
-      : super(key: key);
+      super.key});
   final DummyBookingOption bookingOption;
   final Function(bool) onChanged;
   final bool selected;
