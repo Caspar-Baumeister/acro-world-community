@@ -30,6 +30,7 @@ class CalendarProvider extends ChangeNotifier {
     DateTime now = DateTime.now();
     to = DateTime(now.year, now.month, now.day + (7 - now.weekday), 23);
     from = DateTime(now.year, now.month, now.day);
+    _focusedDay = DateTime.now();
     fetchClasseEvents();
   }
 
