@@ -1,15 +1,13 @@
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SliderCard extends StatelessWidget {
-  const SliderCard({required this.event, Key? key}) : super(key: key);
+  const SliderCard({required this.event, super.key});
   final EventModel event;
 
   @override
@@ -68,23 +66,16 @@ class SliderCard extends StatelessWidget {
             height: EVENT_DASHBOARD_SLIDER_HEIGHT,
             width: EVENT_DASHBOARD_SLIDER_WIDTH,
             decoration: BoxDecoration(
-              color:
-                  event.isHighlighted == true ? HIGHLIGHT_COLOR : Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(20)),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x90E8E8E8),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
+              color: event.isHighlighted == true
+                  ? const Color.fromARGB(255, 242, 255, 242)
+                  : Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
             ),
             child: Column(
               children: [
                 SizedBox(
                   // clipBehavior: Clip.antiAlias,
-                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.6,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.55,
                   width: double.infinity,
                   child: CachedNetworkImage(
                     imageUrl: event.mainImageUrl ??
@@ -103,7 +94,7 @@ class SliderCard extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  height: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.45,
                   padding:
                       const EdgeInsets.all(8.0).copyWith(top: 20, bottom: 4),
                   alignment: Alignment.centerLeft,
@@ -113,18 +104,22 @@ class SliderCard extends StatelessWidget {
                       Text(event.name ?? "",
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
-                          style: H16W7),
+                          style: Theme.of(context).textTheme.titleLarge),
                       Expanded(
                         child: countryLocationString != null
                             ? Container(
-                                alignment: Alignment.centerLeft,
+                                padding: const EdgeInsets.only(top: 5),
+                                alignment: Alignment.topLeft,
                                 child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(
-                                      Icons.location_on_outlined,
-                                      color: Colors.black,
-                                      size: 16,
+                                    const Padding(
+                                      padding: EdgeInsets.only(top: 3.0),
+                                      child: Icon(
+                                        Icons.location_on_outlined,
+                                        color: Colors.black,
+                                        size: 16,
+                                      ),
                                     ),
                                     const SizedBox(
                                       width: 5,
@@ -134,7 +129,9 @@ class SliderCard extends StatelessWidget {
                                       child: Text(countryLocationString,
                                           maxLines: 2,
                                           overflow: TextOverflow.clip,
-                                          style: H14W4),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge),
                                     ),
                                   ],
                                 ),
@@ -164,7 +161,7 @@ class SliderCard extends StatelessWidget {
                               .replaceAllMapped(
                                   exp, (Match m) => (' ${m.group(0)}'))
                               .toLowerCase()),
-                          style: H16W7,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
                       ),
                     ),
@@ -173,7 +170,7 @@ class SliderCard extends StatelessWidget {
               : Container(),
           event.startDate != null
               ? Positioned(
-                  top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.4,
+                  top: EVENT_DASHBOARD_SLIDER_HEIGHT * 0.35,
                   left: 20,
                   child: Container(
                     decoration: const BoxDecoration(
@@ -195,12 +192,12 @@ class SliderCard extends StatelessWidget {
                           Text(
                             DateFormat.MMM()
                                 .format(DateTime.parse(event.startDate!)),
-                            style: H20W6,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
                             dateString ??
                                 "${DateTime.parse(event.startDate!).day} - $endTimeString",
-                            style: H18W4,
+                            style: Theme.of(context).textTheme.headlineSmall,
                           )
                         ],
                       ),

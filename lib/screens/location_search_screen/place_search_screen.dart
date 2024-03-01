@@ -5,8 +5,8 @@ import 'place_search_body.dart';
 
 class PlaceSearchScreen extends StatelessWidget {
   const PlaceSearchScreen({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

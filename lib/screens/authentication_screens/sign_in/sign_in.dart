@@ -1,4 +1,6 @@
+import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
@@ -7,9 +9,7 @@ import 'package:acroworld/screens/authentication_screens/forgot_password_screen/
 import 'package:acroworld/screens/home_screens/home_scaffold.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,13 +71,13 @@ class SignInState extends State<SignIn> {
                           height: 100,
                         ),
                       ),
-                      TextFormField(
-                        controller: emailController,
-                        autofocus: true,
+                      InputFieldComponent(
+                        controller: emailController!,
                         autofillHints: const [AutofillHints.email],
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
-                        decoration: buildInputDecoration(labelText: 'Email'),
+                        labelText: 'Email',
+                        autoFocus: true,
                         validator: (val) => (val == null || val.isEmpty)
                             ? 'Enter an email'
                             : null,
@@ -95,28 +95,27 @@ class SignInState extends State<SignIn> {
                             )
                           : Container(),
                       const SizedBox(height: 20.0),
-                      TextFormField(
-                          controller: passwordController,
+                      InputFieldComponent(
+                          controller: passwordController!,
                           textInputAction: TextInputAction.done,
                           autofillHints: const [AutofillHints.password],
                           obscureText: isObscure,
-                          decoration: buildInputDecoration(
-                              labelText: 'Password',
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  // Based on passwordVisible state choose the icon
-                                  isObscure
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  // Update the state i.e. toogle the state of passwordVisible variable
-                                  setState(() {
-                                    isObscure = !isObscure;
-                                  });
-                                },
-                              )),
+                          labelText: 'Password',
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              isObscure
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.black,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                isObscure = !isObscure;
+                              });
+                            },
+                          ),
                           onFieldSubmitted: (_) async {
                             if (loading == false) {
                               setState(() {
@@ -155,7 +154,7 @@ class SignInState extends State<SignIn> {
                         },
                         loading: loading,
                         isFilled: true,
-                        buttonFillColor: COLOR7,
+                        buttonFillColor: CustomColors.primaryColor,
                       ),
                       error != ""
                           ? Padding(
@@ -172,7 +171,7 @@ class SignInState extends State<SignIn> {
                         padding: const EdgeInsets.symmetric(horizontal: 8.0)
                             .copyWith(top: 8, bottom: 20),
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             GestureDetector(
                               onTap: () {
@@ -185,30 +184,25 @@ class SignInState extends State<SignIn> {
                               },
                               child: Text(
                                 "Forgot password",
-                                style: H14W4.copyWith(color: LINK_COLOR),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () async {
-                                await customLaunch(AppEnvironment.dashboardUrl);
-                              },
-                              child: Text(
-                                "Partner dashboard",
-                                style: H14W4.copyWith(color: LINK_COLOR),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                        color: CustomColors.linkTextColor),
                               ),
                             ),
                           ],
                         ),
                       ),
-                      OutlinedButton(
-                        style: OutlinedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                        ),
+                      LinkButtonComponent(
+                        text: "Register",
                         onPressed: () => widget.toggleView(),
-                        child: const Text("Register", style: BUTTON_TEXT),
                       ),
+                      const SizedBox(height: 10),
+                      LinkButtonComponent(
+                          text: "Partner Dashboard",
+                          onPressed: () async =>
+                              await customLaunch(AppEnvironment.dashboardUrl)),
                       const SizedBox(
                         height: 40,
                       )

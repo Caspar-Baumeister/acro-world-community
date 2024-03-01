@@ -5,8 +5,7 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:pie_chart/pie_chart.dart';
 
 class GenderDistributionPieFromJamId extends StatelessWidget {
-  const GenderDistributionPieFromJamId({Key? key, required this.jamId})
-      : super(key: key);
+  const GenderDistributionPieFromJamId({super.key, required this.jamId});
 
   final String jamId;
 

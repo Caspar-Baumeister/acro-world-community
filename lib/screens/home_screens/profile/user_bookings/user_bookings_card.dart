@@ -3,20 +3,17 @@ import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookin
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserBookingsCard extends StatelessWidget {
-  const UserBookingsCard({Key? key, required this.userBooking})
-      : super(key: key);
+  const UserBookingsCard({super.key, required this.userBooking});
 
   final UserBookingModel userBooking;
 
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-
     return Column(
       children: [
         GestureDetector(
@@ -31,35 +28,35 @@ class UserBookingsCard extends StatelessWidget {
                           )))
               : null,
           child: SizedBox(
-            height: BOOKING_CARD_HEIGHT,
+            height: BOOKING_CARD_HEIGHT + 38,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Card Image
                 ClassEventTileImage(
-                  width: screenWidth * 0.25,
+                  width: screenWidth * 0.3,
                   isCancelled: false,
                   imgUrl: userBooking.eventImage,
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8).copyWith(left: 12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(userBooking.eventName ?? "Unknown Event",
-                            maxLines: 1,
+                            maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: CARD_TITLE_TEXT),
+                            style: Theme.of(context).textTheme.titleLarge),
                         Padding(
                           padding: const EdgeInsets.only(top: 5.0),
                           child: Text(
                             userBooking.bookingTitle ?? "Unknown Booking",
-                            style: CARD_DESCRIPTION_TEXT,
+                            style: Theme.of(context).textTheme.bodyMedium!,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          padding: const EdgeInsets.symmetric(vertical: 3),
                           child: Row(
                             children: [
                               // the startdate of the event in the format of Mo. 2.3.23 at 12:00 - 13:00
@@ -67,12 +64,14 @@ class UserBookingsCard extends StatelessWidget {
                               Text(
                                   DateFormat("E. dd.MM.yy")
                                       .format(userBooking.startDate),
-                                  style: CARD_DESCRIPTION_TEXT),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium!),
 
                               const Spacer(),
                               Text(
                                   "${DateFormat("HH:mm").format(userBooking.startDate)} - ${DateFormat('HH:mm').format(userBooking.endDate)}",
-                                  style: CARD_DESCRIPTION_TEXT),
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium!),
                             ],
                           ),
                         ),
@@ -81,22 +80,41 @@ class UserBookingsCard extends StatelessWidget {
                         Row(
                           children: [
                             // location icon and location name
-                            const Icon(
-                              Icons.location_on,
-                              color: PRIMARY_COLOR,
-                              size: 15,
-                            ),
-                            const SizedBox(width: 5),
-                            Text(
-                              userBooking.locationName ??
-                                  "Click to see location",
-                              style: CARD_DESCRIPTION_TEXT,
-                            ),
 
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: userBooking.status == "Cancelled"
+                                    ? CustomColors.errorTextColor
+                                    : userBooking.status == "Confirmed"
+                                        ? CustomColors.successTextColor
+                                        : userBooking.status == "Pending"
+                                            ? DARK_GREY
+                                            : userBooking.status == "Completed"
+                                                ? CustomColors.successTextColor
+                                                : DARK_GREY,
+                                // rounded corners
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                "${userBooking.status}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
                             const Spacer(),
                             Text(
-                              "Status: ${userBooking.status}",
-                              style: CARD_DESCRIPTION_TEXT,
+                              userBooking.locationName ?? "More",
+                              style: Theme.of(context).textTheme.bodyMedium!,
+                            ),
+                            const SizedBox(width: 5),
+                            const Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              color: CustomColors.primaryColor,
+                              size: 15,
                             ),
                             // the price of the booking
                           ],
@@ -108,11 +126,6 @@ class UserBookingsCard extends StatelessWidget {
               ],
             ),
           ),
-        ),
-        const SizedBox(height: 10),
-        Divider(
-          endIndent: screenWidth * 0.05,
-          indent: screenWidth * 0.05,
         ),
         const SizedBox(height: 10),
       ],

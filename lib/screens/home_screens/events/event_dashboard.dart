@@ -2,8 +2,10 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/screens/home_screens/events/get_my_teacher_query_wrapper.dart';
+import 'package:acroworld/screens/home_screens/events/widgets/bookable_single_class_event_row.dart';
 import 'package:acroworld/screens/home_screens/events/widgets/slider_row_event_dashboard.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -27,9 +29,9 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
         .where((element) => element.isHighlighted == true)
         .toList();
 
-    List<EventModel> bookable = eventFilterProvider.activeEvents
-        .where((element) => element.pretixName != null)
-        .toList();
+    // List<EventModel> bookable = eventFilterProvider.activeEvents
+    //     .where((element) => element.pretixName != null)
+    //     .toList();
 
     List<EventModel> festivalsAndCons = eventFilterProvider.activeEvents
         .where((element) => element.eventType == "FestivalsAndCons")
@@ -41,6 +43,10 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
 
     List<EventModel> retreats = eventFilterProvider.activeEvents
         .where((element) => element.eventType == "Retreats")
+        .toList();
+
+    List<EventModel> workshops = eventFilterProvider.activeEvents
+        .where((element) => element.eventType == "Workshops")
         .toList();
 
     List<EventModel> upcoming = eventFilterProvider.activeEvents
@@ -63,7 +69,8 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
           children: [
             highlights.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider.changeHighlighted(),
                       header: "Highlights",
@@ -71,26 +78,33 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                     ),
                   )
                 : Container(),
-            bookable.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
-                    child: SliderRowEventDashboard(
-                      onViewAll: () {
-                        eventFilterProvider.resetFilter();
-                        for (EventModel date in upcoming) {
-                          eventFilterProvider.tryAddingActiveEventDates(
-                              DateTime.parse(date.startDate!));
-                        }
-                      },
-                      header: "Discount via AcroWorld",
-                      events: bookable,
-                    ),
-                  )
-                : Container(),
+            const Padding(
+              padding: EdgeInsets.only(
+                  bottom: AppPaddings.medium, top: AppPaddings.medium),
+              child: BookableSingleClassEventRow(),
+            ),
+            // bookable.isNotEmpty
+            //     ? Padding(
+            //         padding: const EdgeInsets.only(
+            //             bottom: AppPaddings.medium, top: AppPaddings.medium),
+            //         child: SliderRowEventDashboard(
+            //           onViewAll: () {
+            //             eventFilterProvider.resetFilter();
+            //             for (EventModel date in upcoming) {
+            //               eventFilterProvider.tryAddingActiveEventDates(
+            //                   DateTime.parse(date.startDate!));
+            //             }
+            //           },
+            //           header: "Direct Booking",
+            //           events: bookable,
+            //         ),
+            //       )
+            //     : Container(),
             const GetMyTeacherQueryWrapper(),
             upcoming.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () {
                         eventFilterProvider.resetFilter();
@@ -106,7 +120,8 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             festivalsAndCons.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () => eventFilterProvider
                           .setActiveCategory(["FestivalsAndCons"]),
@@ -115,9 +130,22 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                     ),
                   )
                 : Container(),
+            workshops.isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
+                    child: SliderRowEventDashboard(
+                      onViewAll: () =>
+                          eventFilterProvider.setActiveCategory(["Workshops"]),
+                      header: "Workshops",
+                      events: workshops,
+                    ),
+                  )
+                : Container(),
             trainings.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Trainings"]),
@@ -128,7 +156,8 @@ class _EventDashboardBodyState extends State<EventDashboardBody> {
                 : Container(),
             retreats.isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: 20),
+                    padding: const EdgeInsets.only(
+                        bottom: AppPaddings.medium, top: AppPaddings.medium),
                     child: SliderRowEventDashboard(
                       onViewAll: () =>
                           eventFilterProvider.setActiveCategory(["Retreats"]),

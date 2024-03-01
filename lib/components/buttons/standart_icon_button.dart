@@ -1,19 +1,17 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandartIconButton extends StatelessWidget {
   const StandartIconButton(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.onPressed,
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
       this.isFilled = false,
-      required this.icon})
-      : super(key: key);
+      required this.icon});
 
   final String text;
   final VoidCallback onPressed;
@@ -34,8 +32,8 @@ class StandartIconButton extends StatelessWidget {
           : onPressed,
       child: Container(
           decoration: BoxDecoration(
-            color: isFilled ? BUTTON_FILL_COLOR : Colors.white,
-            border: Border.all(color: BUTTON_FILL_COLOR),
+            color: isFilled ? CustomColors.primaryColor : Colors.white,
+            border: Border.all(color: CustomColors.primaryColor),
             borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
           ),
           width: width,
@@ -47,7 +45,9 @@ class StandartIconButton extends StatelessWidget {
                     width: 30,
                     padding: const EdgeInsets.all(5),
                     child: CircularProgressIndicator(
-                      color: isFilled == true ? Colors.white : PRIMARY_COLOR,
+                      color: isFilled == true
+                          ? Colors.white
+                          : CustomColors.primaryColor,
                     ))
                 : Row(
                     mainAxisSize: MainAxisSize.min,
@@ -58,9 +58,12 @@ class StandartIconButton extends StatelessWidget {
                       const SizedBox(width: 10),
                       Text(
                         text,
-                        style: H18W6.copyWith(
-                          color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
-                        ),
+                        style:
+                            Theme.of(context).textTheme.headlineSmall!.copyWith(
+                                  color: !isFilled
+                                      ? CustomColors.primaryColor
+                                      : Colors.white,
+                                ),
                         textAlign: TextAlign.center,
                       ),
                     ],

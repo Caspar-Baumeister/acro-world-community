@@ -1,13 +1,13 @@
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/screens/home_screens/profile/user_bookings/user_bookings_card.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class UserBookings extends StatelessWidget {
-  const UserBookings({Key? key}) : super(key: key);
+  const UserBookings({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +19,9 @@ class UserBookings extends StatelessWidget {
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (queryResult.hasException) {
+          CustomErrorHandler.captureException(
+              Exception("Error while transforming user bookings to objects"),
+              stackTrace: StackTrace.current);
           return ErrorWidget(queryResult.exception.toString());
         } else if (queryResult.isLoading) {
           return const Padding(
@@ -29,13 +32,14 @@ class UserBookings extends StatelessWidget {
             queryResult.data?["me"] != null) {
           try {
             List bookings = queryResult.data!["me"]?[0]?["bookings"];
+
             // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
             List<UserBookingModel> userBookings = [];
             if (bookings.isEmpty) {
-              return const Center(
+              return Center(
                 child: Text(
                   "You have no bookings",
-                  style: H16W7,
+                  style: Theme.of(context).textTheme.titleLarge,
                   textAlign: TextAlign.center,
                 ),
               );
@@ -44,15 +48,33 @@ class UserBookings extends StatelessWidget {
               try {
                 userBookings.add(UserBookingModel.fromJson(booking));
               } catch (e) {
-                print("error inside user_bookings: $e");
+                CustomErrorHandler.captureException(
+                    Exception(
+                        "Error while transforming user bookings to objects"),
+                    stackTrace: StackTrace.current);
               }
             }
-            userBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
-            return userBookings.isEmpty
-                ? const Center(
+            // split the bookings into past and future bookings
+            List<UserBookingModel> pastBookings = [];
+            List<UserBookingModel> futureBookings = [];
+
+            for (var booking in userBookings) {
+              if (booking.endDate.isBefore(DateTime.now())) {
+                pastBookings.add(booking);
+              } else {
+                futureBookings.add(booking);
+              }
+            }
+
+            pastBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
+            futureBookings.sort((a, b) => a.startDate.compareTo(b.startDate));
+
+            userBookings = [...futureBookings, ...pastBookings];
+            return pastBookings.isEmpty && futureBookings.isEmpty
+                ? Center(
                     child: Text(
                       "You have no bookings",
-                      style: H16W7,
+                      style: Theme.of(context).textTheme.titleLarge,
                       textAlign: TextAlign.center,
                     ),
                   )
@@ -61,7 +83,6 @@ class UserBookings extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: userBookings.length,
                     itemBuilder: (context, index) {
-                      print("user_bookings: ${userBookings[index].status}");
                       // Check if the current booking is in the past
                       bool isPastBooking =
                           userBookings[index].endDate.isBefore(DateTime.now());
@@ -78,14 +99,20 @@ class UserBookings extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text("Past Bookings",
+                            Padding(
+                              padding:
+                                  const EdgeInsets.all(8.0).copyWith(left: 20),
+                              child: const Text("Past Bookings",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                             ),
-                            UserBookingsCard(userBooking: userBookings[index]),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              child: UserBookingsCard(
+                                  userBooking: userBookings[index]),
+                            ),
                           ],
                         );
                       }
@@ -95,20 +122,30 @@ class UserBookings extends StatelessWidget {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Text("Upcoming Bookings",
+                            Padding(
+                              padding:
+                                  const EdgeInsets.all(8.0).copyWith(left: 20),
+                              child: const Text("Upcoming Bookings",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold)),
                             ),
-                            UserBookingsCard(userBooking: userBookings[index]),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 8),
+                              child: UserBookingsCard(
+                                  userBooking: userBookings[index]),
+                            ),
                           ],
                         );
                       }
 
                       // Default case, just show the booking card
-                      return UserBookingsCard(userBooking: userBookings[index]);
+                      return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 8),
+                          child: UserBookingsCard(
+                              userBooking: userBookings[index]));
                     },
                   );
           } catch (e) {

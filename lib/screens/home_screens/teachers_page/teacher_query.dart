@@ -10,10 +10,10 @@ import 'package:provider/provider.dart';
 
 class TeacherQuery extends StatefulWidget {
   const TeacherQuery({
-    Key? key,
+    super.key,
     required this.search,
     required this.isFollowed,
-  }) : super(key: key);
+  });
 
   final String search;
   final bool isFollowed;
@@ -97,7 +97,7 @@ class _TeacherQueryState extends State<TeacherQuery> {
           }
 
           return RefreshIndicator(
-            color: PRIMARY_COLOR,
+            color: CustomColors.primaryColor,
             onRefresh: (() async => runRefetch()),
             child: TeacherBody(
               teachers: teachers,

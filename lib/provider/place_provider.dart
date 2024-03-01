@@ -1,19 +1,19 @@
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/preferences/place_preferences.dart';
+import 'package:acroworld/services/location_singleton.dart';
 import 'package:flutter/material.dart';
+import 'package:latlong2/latlong.dart';
 
 class PlaceProvider extends ChangeNotifier {
-  Place? place;
+  LocationSingleton locationSingelton = LocationSingleton();
 
-  PlaceProvider() {
-    // get the place from shared preferences
-    place = PlacePreferences.getSavedPlace();
+  updatePlace(Place newPlace) {
+    locationSingelton.setPlace(newPlace);
+    notifyListeners();
   }
 
-  updatePlace(Place? newPlace) {
-    place = newPlace;
-    // save the place to shared preferences
-    PlacePreferences.setSavedPlace(place);
+  updatePlaceByLaTLang(LatLng latLng) {
+    locationSingelton.setPlace(
+        Place(description: 'Map Area', id: 'maparea', latLng: latLng));
     notifyListeners();
   }
 }

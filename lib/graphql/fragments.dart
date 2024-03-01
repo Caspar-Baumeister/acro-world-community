@@ -10,6 +10,7 @@ class Fragments {
           price
           subtitle
           title
+          currency
         }
       }
       city
@@ -45,6 +46,8 @@ class Fragments {
     end_date
     id
     is_cancelled
+    available_booking_slots
+    max_booking_slots
     start_date
     participants_aggregate {
       aggregate {
@@ -102,7 +105,6 @@ class Fragments {
   type
   id
   location_name
-  community_id
   name
   user_id
   is_organization
@@ -133,6 +135,17 @@ class Fragments {
                 role {
                   id
                   name
+                }
+              }
+              teacher_id
+              teacher_profile {
+                id
+                name
+                images{
+                  is_profile_picture
+                  image{
+                    url
+                  }
                 }
               }
               level{

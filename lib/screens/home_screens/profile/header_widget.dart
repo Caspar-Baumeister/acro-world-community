@@ -1,10 +1,8 @@
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({Key? key, required this.imgUrl, required this.name})
-      : super(key: key);
+  const HeaderWidget({super.key, required this.imgUrl, required this.name});
 
   final String imgUrl;
   final String name;
@@ -18,10 +16,25 @@ class HeaderWidget extends StatelessWidget {
         CachedNetworkImage(
           fit: BoxFit.cover,
           imageUrl: imgUrl,
-          width: 75,
+          imageBuilder: (context, imageProvider) => Container(
+            width: 75,
+            height: 75,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+            ),
+          ),
+          placeholder: (context, url) => Container(
+            width: 75,
+            height: 75,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black12,
+            ),
+          ),
           errorWidget: (context, url, error) => Container(
-            width: 100.0,
-            height: 100.0,
+            width: 75,
+            height: 75,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.black12,
@@ -33,10 +46,20 @@ class HeaderWidget extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 5),
-        Text(
-          name,
-          textAlign: TextAlign.start,
-          style: H20W5,
+        Expanded(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 30,
+              ),
+              child: Text(
+                name,
+                textAlign: TextAlign.start,
+                style: Theme.of(context).textTheme.headlineMedium,
+                maxLines: 2,
+              ),
+            ),
+          ),
         ),
       ],
     );

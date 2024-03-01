@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 
 class SpacedColumn extends StatelessWidget {
   const SpacedColumn({
-    Key? key,
+    super.key,
     required this.space,
     required this.children,
     this.crossAxisAlignment,
-  }) : super(key: key);
+  });
 
   final double space;
   final List<Widget> children;

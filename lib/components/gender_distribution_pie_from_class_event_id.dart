@@ -6,8 +6,7 @@ import 'package:pie_chart/pie_chart.dart';
 
 class GenderDistributionPieFromClassEventId extends StatelessWidget {
   const GenderDistributionPieFromClassEventId(
-      {Key? key, required this.classEventId})
-      : super(key: key);
+      {super.key, required this.classEventId});
 
   final String classEventId;
 

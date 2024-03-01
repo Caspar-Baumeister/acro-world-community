@@ -6,12 +6,11 @@ import 'package:acroworld/screens/home_screens/events/with_filter/filter_on_even
 import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/decorators.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class FilterBar extends StatelessWidget implements PreferredSizeWidget {
-  const FilterBar({Key? key}) : super(key: key);
+  const FilterBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +44,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
                     const SizedBox(width: 10),
                     Text(
                       'Search...',
-                      style: HINT_INPUT_TEXT,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
                   ],
                 ),
@@ -88,7 +87,7 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
                   child: Container(
                     padding: const EdgeInsets.all(2),
                     decoration: const BoxDecoration(
-                      color: PRIMARY_COLOR,
+                      color: CustomColors.primaryColor,
                       shape: BoxShape.circle,
                     ),
                     constraints: const BoxConstraints(
@@ -111,57 +110,6 @@ class FilterBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
       ],
-      // automaticallyImplyLeading: false,
-      // title: Row(
-      //   children: [
-      //     eventFilterProvider.isFilterActive()
-      //         ? Padding(
-      //             padding: const EdgeInsets.only(right: 8.0),
-      //             child: GestureDetector(
-      //                 onTap: () => eventFilterProvider.resetFilter(),
-      //                 child: const Icon(Icons.arrow_back_ios_new_rounded)),
-      //           )
-      //         : Container(),
-      //     Flexible(
-      //       child: StandardIconButton(
-      //         text: eventFilterProvider.filterString(),
-      //         icon: Icons.filter_list,
-      //         onPressed: () {
-      //           Navigator.push(
-      //             context,
-      //             MaterialPageRoute(
-      //               builder: (context) => const EventFilterPage(),
-      //             ),
-      //           );
-      //         },
-      //         showClose: eventFilterProvider.isFilterActive(),
-      //         onClose: () => eventFilterProvider.resetFilter(),
-      //       ),
-      //     ),
-      //     IconButton(
-      //       onPressed: () => buildMortal(context, const CreateEventModal()),
-      //       icon: const Icon(Icons.add),
-      //     ),
-      //     IconButton(
-      //       onPressed: () =>
-      //           showSearch(context: context, delegate: EventSearchDelegate()),
-      //       icon: const Icon(Icons.search),
-      //     )
-      //     // GestureDetector(
-      //     //   onTap: () => Navigator.push(
-      //     //     context,
-      //     //     MaterialPageRoute(
-      //     //       builder: (context) => const SearchPageEvents(),
-      //     //     ),
-      //     //   ),
-
-      //     //   child: const Padding(
-      //     //     padding: EdgeInsets.symmetric(horizontal: 8.0),
-      //     //     child: Icon(Icons.search),
-      //     //   ),
-      //     // )
-      //   ],
-      // ),
     );
   }
 

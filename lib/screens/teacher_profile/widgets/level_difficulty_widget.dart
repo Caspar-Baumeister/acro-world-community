@@ -1,14 +1,12 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class DifficultyWidget extends StatelessWidget {
   const DifficultyWidget(this.classLevel,
-      {Key? key,
+      {super.key,
       this.height = DIFFICULTY_LEVEL_HEIGHT,
-      this.totalWidth = DIFFICULTY_LEVEL_WIDTH})
-      : super(key: key);
+      this.totalWidth = DIFFICULTY_LEVEL_WIDTH});
 
   final List<ClassLevels>? classLevel;
   final double height;
@@ -60,7 +58,7 @@ class DifficultyWidget extends StatelessWidget {
       child: Center(
           child: Text(
         text,
-        style: H12W4,
+        style: Theme.of(context).textTheme.bodySmall,
       )),
     );
   }

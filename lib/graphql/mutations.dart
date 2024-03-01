@@ -1,6 +1,20 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final createPaymentSheet = gql("""
+mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!) {
+  create_payment_sheet(
+    booking_option_id: \$bookingOptionId
+    class_event_id: \$classEventId
+  ) {
+    payment_intent
+    ephemeral_key
+    customer_id
+  }
+}
+
+""");
+
   static final resetPassword = gql("""
   mutation resetPassword(\$email: String) {
   reset_password(input: {email: \$email}) {
@@ -24,6 +38,13 @@ mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {
   }
 }
 """);
+
+  static final confirmPayment = gql("""
+mutation confirmPayment(\$payment_intent_id : uuid!) {
+  payment_intent_succeeded(objects: {payment_intent_id: \$payment_intent_id}) {
+    id
+  } 
+}""");
 
   static final updateFcmToken = gql("""
     mutation UpdateFcmToken(\$fcmToken: String!) {

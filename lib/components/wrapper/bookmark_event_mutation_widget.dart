@@ -1,17 +1,17 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class BookmarkEventMutationWidget extends StatefulWidget {
   const BookmarkEventMutationWidget({
-    Key? key,
+    super.key,
     required this.eventId,
     required this.initialBookmarked,
     required this.color,
-  }) : super(key: key);
+  });
 
   final String eventId;
   final bool initialBookmarked;
@@ -45,14 +45,8 @@ class _BookmarkEventMutationWidgetState
             setState(() {
               isBookmarked = !isBookmarked;
             });
-            Fluttertoast.showToast(
-                msg: "${isBookmarked ? "Added to" : "Removed from"} bookmarks",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.TOP,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.green,
-                textColor: Colors.white,
-                fontSize: 16.0);
+            showSuccessToast(
+                "${isBookmarked ? "Added to" : "Removed from"} bookmarks");
           },
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,

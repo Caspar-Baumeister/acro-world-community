@@ -1,16 +1,15 @@
 import 'package:acroworld/components/gender_distribution_pie_from_class_event_id.dart';
-import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/components/spaced_column/spaced_column.dart';
 import 'package:acroworld/components/users/user_list_item.dart';
+import 'package:acroworld/models/user_model.dart';
 import 'package:flutter/material.dart';
 
 class UserList extends StatelessWidget {
   const UserList(
-      {Key? key,
+      {super.key,
       required this.users,
       this.onScrollEndReached,
-      this.classEventId})
-      : super(key: key);
+      this.classEventId});
 
   final List<User> users;
   final VoidCallback? onScrollEndReached;

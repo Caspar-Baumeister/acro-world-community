@@ -1,21 +1,19 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class HeartMutationWidget extends StatelessWidget {
   const HeartMutationWidget(
-      {Key? key,
+      {super.key,
       required this.isLiked,
       required this.teacherLikes,
       required this.setIsLiked,
       required this.setTeacherLikes,
       required this.teacherId,
-      this.size = 42})
-      : super(key: key);
+      this.size = 42});
 
   final bool isLiked;
   final int teacherLikes;
@@ -72,11 +70,10 @@ class HeartMutationWidget extends StatelessWidget {
 
 class HeartWidget extends StatelessWidget {
   const HeartWidget(
-      {Key? key,
+      {super.key,
       required this.isLiked,
       required this.likes,
-      required this.size})
-      : super(key: key);
+      required this.size});
 
   final bool isLiked;
   final int likes;
@@ -95,15 +92,15 @@ class HeartWidget extends StatelessWidget {
         Icon(
           isLiked ? Icons.favorite_sharp : Icons.favorite_border_sharp,
           size: size,
-          color: PRIMARY_COLOR,
+          color: CustomColors.primaryColor,
         ),
         Center(
           child: Text(
             likes.toString(),
-            style: H12W4.copyWith(
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
                 fontWeight: FontWeight.w500,
                 fontSize: 13,
-                color: isLiked ? Colors.white : PRIMARY_COLOR),
+                color: isLiked ? Colors.white : CustomColors.primaryColor),
           ),
         )
       ],

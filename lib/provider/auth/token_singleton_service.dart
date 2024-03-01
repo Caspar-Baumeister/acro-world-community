@@ -28,7 +28,9 @@ class TokenSingletonService {
   }
 
   Future<String?> getToken() async {
-    if (_token == null || await _isTokenExpired()) {
+    bool isTokenExpired = await _isTokenExpired();
+    if (_token == null || isTokenExpired) {
+      print("token was null run fetch token");
       await _fetchToken();
     }
     return _token;
@@ -41,8 +43,10 @@ class TokenSingletonService {
           await LocalStorageService.get(Preferences.refreshToken);
       // if there is no refresh token, return null
       if (refreshToken == null) {
+        print("refetch token was null in fetchtoken");
         return null;
       }
+      print("refetch token was not null in fetchtoken");
       // if there is a refresh token, fetch a new token from the backend
       dynamic response =
           await DatabaseService().loginWithRefreshToken(refreshToken);
@@ -90,8 +94,10 @@ class TokenSingletonService {
   }
 
   // REGISTER //
-  Future<Map> register(String email, String password, String name) async {
-    var response = await DatabaseService().registerApi(email, password, name);
+  Future<Map> register(String email, String password, String name,
+      {bool? isNewsletterEnabled}) async {
+    var response = await DatabaseService().registerApi(email, password, name,
+        isNewsletterEnabled: isNewsletterEnabled);
     if (response["data"]?["register"]?["token"] != null) {
       _token = response["data"]["register"]["token"];
       await LocalStorageService.set(Preferences.token, _token);
@@ -115,5 +121,8 @@ class TokenSingletonService {
     _token = null;
     await LocalStorageService.remove(Preferences.token);
     await LocalStorageService.remove(Preferences.refreshToken);
+
+    print("this is the refetch token after logout");
+    print(await LocalStorageService.get(Preferences.refreshToken));
   }
 }

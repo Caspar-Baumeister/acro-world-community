@@ -8,13 +8,11 @@ import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class SingleClassBody extends StatelessWidget {
-  const SingleClassBody({Key? key, required this.classe, this.classEvent})
-      : super(key: key);
+  const SingleClassBody({super.key, required this.classe, this.classEvent});
 
   final ClassModel classe;
   final ClassEvent? classEvent;
@@ -35,7 +33,8 @@ class SingleClassBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(classe.name ?? "", maxLines: 3, style: H20W5),
+          Text(classe.name ?? "",
+              maxLines: 3, style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 20),
           classEvent != null &&
                   classEvent!.startDate != null &&
@@ -50,7 +49,7 @@ class SingleClassBody extends StatelessWidget {
                             DateTime.parse(classEvent!.startDate!))),
                         Text(
                             "${DateFormat('H:mm').format(DateTime.parse(classEvent!.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent!.endDate!))}",
-                            style: H12W4)
+                            style: Theme.of(context).textTheme.bodySmall)
                       ],
                     ),
                     const CustomDivider()
@@ -70,9 +69,9 @@ class SingleClassBody extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Teacher:",
-                      style: H20W3,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 2),
                     SingleChildScrollView(
@@ -99,10 +98,10 @@ class SingleClassBody extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Requirements",
                       textAlign: TextAlign.start,
-                      style: H20W3,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -117,10 +116,10 @@ class SingleClassBody extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       "Prices",
                       textAlign: TextAlign.start,
-                      style: H20W3,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     const SizedBox(height: 10),
                     Text(
@@ -140,9 +139,9 @@ class SingleClassBody extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
+                        Text(
                           "Location",
-                          style: H20W3,
+                          style: Theme.of(context).textTheme.headlineMedium,
                         ),
                         OpenGoogleMaps(
                           latitude: classe.location!.coordinates![1] * 1.0,
@@ -183,9 +182,9 @@ class SingleClassBody extends StatelessWidget {
                   children: [
                     Container(
                       alignment: Alignment.centerLeft,
-                      child: const Text(
+                      child: Text(
                         "Links",
-                        style: H20W3,
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
                     ),
                     Container(
@@ -213,12 +212,11 @@ class SingleClassBody extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const CustomDivider()
                   ],
                 )
               : Container(),
           // ClassEventCalenderQuery(classId: classe.id!),
-          const SizedBox(height: 100)
+          const SizedBox(height: 10)
         ],
       ),
     ));

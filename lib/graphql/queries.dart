@@ -2,6 +2,18 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+//getBokableSingleClassEvents
+  static final getBokableSingleClassEvents = gql("""
+{
+  class_events(where: {recurring_pattern: {is_recurring: {_eq: false}}, max_booking_slots: {_gt: 0}}) {
+    class {
+      ${Fragments.classFragment}
+    }
+    ${Fragments.classEventFragment}
+  }
+}
+""");
+
   static final userBookmarks = gql("""
 query Me {
   me {
@@ -19,7 +31,7 @@ query Me {
   static final userBookings = gql("""
 query userBookings {
   me {
-    bookings(where: {status: {_eq: Success}}) {
+    bookings(where: {status: {_eq: Confirmed}}, order_by: {class_event: {start_date: asc}}) {
       created_at
       updated_at
       booking_option{
@@ -60,21 +72,15 @@ query Me {
   }
 }""");
 
-  static final getAllBookingsOfClassEvent = gql("""
-query classEventBooking(\$class_event_id: uuid) {
-  class_event_booking(where: {class_event_id: {_eq: \$class_event_id}}) {
-    user_id
-    status
-    booking_option {
-      discount
-      price
-      title
-      commission
-      subtitle
-      id
+  static final isClassEventBooked = gql("""
+query isClassEventBooked(\$class_event_id: uuid) {
+    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}) {
+      aggregate {
+        count
       }
-  }
+    }
 }
+
 """);
 
   static final getClassEventsFromToLocationWithClass = gql("""
@@ -88,6 +94,19 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
   }
 }
 """);
+
+  static final getClassEventsByDistance = gql("""
+query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$distance: float8){
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: now}, distance: {_lte: \$distance}}) {
+    distance
+    ${Fragments.classEventFragment}
+    class {
+      ${Fragments.classFragment}
+    }
+  }
+}
+""");
+
   static final getClassEventsFromToWithClass = gql("""
 query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
   class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
@@ -106,14 +125,6 @@ query Config {
   }
 }
 """);
-
-//   static final getEventsByTeacherId = gql("""
-// query getEventsByTeacherId(\$teacher_id: uuid) {
-//   events(where: {confirmation_status: {_eq: Confirmed}, end_date_tz: {_gte: now}, _and: {teachers: {teacher_id: {_eq: \$teacher_id}}}}) {
-//     ${Fragments.eventFragment}
-//   }
-// }
-// """);
 
   static final getEventsByTeacherId =
       gql("""query getEventsByTeacherId(\$teacher_id: uuid!) {
@@ -331,6 +342,9 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 query getClassEventsByClassId (\$class_id: uuid) {
   class_events(where: {class_id: {_eq: \$class_id}}) {
    ${Fragments.classEventFragment}
+   class {
+      ${Fragments.classFragment}
+    }
   }
 }
 """);

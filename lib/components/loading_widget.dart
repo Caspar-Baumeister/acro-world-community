@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key, this.onRefresh}) : super(key: key);
+  const LoadingWidget({super.key, this.onRefresh});
   final Future<void> Function()? onRefresh;
 
   @override

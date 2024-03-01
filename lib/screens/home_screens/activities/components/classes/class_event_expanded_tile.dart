@@ -4,15 +4,16 @@ import 'package:acroworld/screens/home_screens/activities/components/class_event
 import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ClassEventExpandedTile extends StatelessWidget {
-  const ClassEventExpandedTile({Key? key, required this.classEvent})
-      : super(key: key);
+  const ClassEventExpandedTile(
+      {super.key, required this.classEvent, this.showFullDate});
   final ClassEvent classEvent;
+  final bool? showFullDate;
 
   @override
   Widget build(BuildContext context) {
@@ -59,38 +60,50 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Text(classEvent.classModel?.name ?? "Unknown",
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: CARD_TITLE_TEXT),
+                        style: Theme.of(context).textTheme.titleLarge),
+                    // if showFullDate is true, show "Today, Tomorrow, 03. March, 04. March, etc"
+                    if (showFullDate == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text(
+                          DateFormat('d. MMMM')
+                              .format(DateTime.parse(classEvent.startDate!)),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          classEvent.startDate != null &&
-                                  classEvent.endDate != null
-                              ? Text(
-                                  "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
-                                  style: CARD_DESCRIPTION_TEXT)
-                              : const Text("time not given"),
-                          const Spacer(),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.35),
-                            child: Text(
-                                classEvent.classModel?.locationName ??
-                                    "no location name",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: CARD_DESCRIPTION_TEXT),
+                          Flexible(
+                            child: classEvent.startDate != null &&
+                                    classEvent.endDate != null
+                                ? Text(
+                                    "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium!)
+                                : const Text(""),
                           ),
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.black,
-                            size: 16,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(classEvent.classModel?.locationName ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium!),
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.black,
+                                size: 16,
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    classTeachers.isNotEmpty
+                    classTeachers.isNotEmpty && showFullDate != true
                         ? Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: ClassTeacherChips(
@@ -105,23 +118,25 @@ class ClassEventExpandedTile extends StatelessWidget {
                     Row(
                       children: [
                         classEvent.classModel?.classBookingOptions != null &&
-                                classEvent.classModel!.classBookingOptions!
-                                    .isNotEmpty &&
-                                classEvent.classModel?.maxBookingSlots != null
-                            ? const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 5),
+                                classEvent
+                                    .classModel!.classBookingOptions!.isNotEmpty
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 5),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.local_offer,
-                                      color: Colors.green,
+                                      color: CustomColors.successTextColor,
                                       size: 16,
                                     ),
-                                    SizedBox(width: 6),
-                                    Text("booking discount",
+                                    const SizedBox(width: 6),
+                                    Text("direct booking",
                                         maxLines: 1,
                                         overflow: TextOverflow.clip,
-                                        style: CARD_DESCRIPTION_TEXT),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!),
                                   ],
                                 ))
                             : Container(),

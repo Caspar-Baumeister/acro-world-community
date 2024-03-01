@@ -1,20 +1,18 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class StandardButton extends StatelessWidget {
   const StandardButton(
-      {Key? key,
+      {super.key,
       required this.text,
       required this.onPressed,
       this.icon,
-      this.buttonFillColor = BUTTON_FILL_COLOR,
+      this.buttonFillColor = CustomColors.primaryColor,
       this.width = STANDART_BUTTON_WIDTH,
       this.disabled = false,
       this.loading = false,
-      this.isFilled = false})
-      : super(key: key);
+      this.isFilled = false});
 
   final String text;
   final VoidCallback onPressed;
@@ -48,7 +46,8 @@ class StandardButton extends StatelessWidget {
                     width: 40,
                     padding: const EdgeInsets.all(10),
                     child: CircularProgressIndicator(
-                      color: isFilled ? Colors.white : PRIMARY_COLOR,
+                      color:
+                          isFilled ? Colors.white : CustomColors.primaryColor,
                     ))
                 : Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -58,9 +57,14 @@ class StandardButton extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 10.0),
                         child: Text(
                           text,
-                          style: H18W6.copyWith(
-                            color: !isFilled ? BUTTON_FILL_COLOR : Colors.white,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: !isFilled
+                                    ? CustomColors.primaryColor
+                                    : Colors.white,
+                              ),
                           textAlign: TextAlign.center,
                         ),
                       ),

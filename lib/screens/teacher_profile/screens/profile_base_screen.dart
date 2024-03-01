@@ -6,16 +6,13 @@ import 'package:acroworld/screens/teacher_profile/screens/event_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ProfileBaseScreen extends StatefulWidget {
   const ProfileBaseScreen(
-      {Key? key, required this.teacher, required this.userId})
-      : super(key: key);
+      {super.key, required this.teacher, required this.userId});
 
   final TeacherModel teacher;
   final String userId;
@@ -30,8 +27,8 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
   @override
   void initState() {
     super.initState();
-    isLikedState =
-        isTeacherFollowedByUser(widget.teacher.userLikes, widget.userId);
+    isLikedState = widget.teacher.likedByUser ??
+        false; // set the initial state of the like
   }
 
   @override
@@ -98,9 +95,10 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                           child: Container(
                               decoration: BoxDecoration(
                                 color: isLikedState
-                                    ? BUTTON_FILL_COLOR
+                                    ? CustomColors.primaryColor
                                     : Colors.white,
-                                border: Border.all(color: BUTTON_FILL_COLOR),
+                                border: Border.all(
+                                    color: CustomColors.primaryColor),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               height: 35,
@@ -114,15 +112,18 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                                         child: CircularProgressIndicator(
                                           color: isLikedState == true
                                               ? Colors.white
-                                              : PRIMARY_COLOR,
+                                              : CustomColors.primaryColor,
                                         ))
                                     : Text(
-                                        isLikedState ? "Following" : "Follow",
-                                        style: H12W4.copyWith(
-                                          color: !isLikedState
-                                              ? BUTTON_FILL_COLOR
-                                              : Colors.white,
-                                        ),
+                                        isLikedState ? "Followed" : "Follow",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: !isLikedState
+                                                  ? CustomColors.primaryColor
+                                                  : Colors.white,
+                                            ),
                                         textAlign: TextAlign.center,
                                       ),
                               )));
@@ -158,6 +159,7 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   unselectedLabelColor: Colors.grey[400],
                   indicatorWeight: 1,
                   indicatorColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
                     Tab(
                       icon: Icon(

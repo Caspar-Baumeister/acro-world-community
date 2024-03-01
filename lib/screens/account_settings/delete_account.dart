@@ -1,11 +1,11 @@
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/utils/helper_functions/logout.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class DeleteAccount extends StatefulWidget {
-  const DeleteAccount({Key? key}) : super(key: key);
+  const DeleteAccount({super.key});
 
   @override
   State<DeleteAccount> createState() => _DeleteAccountState();
@@ -25,23 +25,9 @@ class _DeleteAccountState extends State<DeleteAccount> {
         if (result != null) {
           if (result.data?['delete_account'] != null) {
             if (result.data!['delete_account']["success"] == true) {
-              Fluttertoast.showToast(
-                  msg: "your account was deleted",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.TOP,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.green,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              showSuccessToast("your account was deleted");
             } else {
-              Fluttertoast.showToast(
-                  msg: "something went wrong",
-                  toastLength: Toast.LENGTH_SHORT,
-                  gravity: ToastGravity.TOP,
-                  timeInSecForIosWeb: 1,
-                  backgroundColor: Colors.red,
-                  textColor: Colors.white,
-                  fontSize: 16.0);
+              showErrorToast("something went wrong, please write us an email");
             }
           }
         }

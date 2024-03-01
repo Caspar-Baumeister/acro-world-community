@@ -4,13 +4,13 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/gender_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class EditUserdata extends StatefulWidget {
-  const EditUserdata({Key? key}) : super(key: key);
+  const EditUserdata({super.key});
 
   @override
   State<EditUserdata> createState() => _EditUserdataState();
@@ -158,15 +158,13 @@ class _EditUserdataState extends State<EditUserdata> {
                     Provider.of<UserProvider>(context, listen: false)
                         .updateUserFromChanges(changes)
                         .then((value) {
-                      // notify the user
-                      Fluttertoast.showToast(
-                          msg: "Your data has been updated",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.TOP,
-                          timeInSecForIosWeb: 2,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
+                      if (value) {
+                        // notify the user
+                        showSuccessToast("Your data has been updated");
+                      } else {
+                        showErrorToast(
+                            "Something went wrong, profile not updated");
+                      }
 
                       // and pop the page
                       Navigator.pop(context);
@@ -187,8 +185,7 @@ class _EditUserdataState extends State<EditUserdata> {
 
 class ChooseGenderInput extends StatelessWidget {
   const ChooseGenderInput(
-      {Key? key, required this.currentGender, required this.setCurrentGender})
-      : super(key: key);
+      {super.key, required this.currentGender, required this.setCurrentGender});
 
   final String? currentGender;
   final Function(String, String) setCurrentGender;
@@ -265,8 +262,7 @@ class ChooseGenderInput extends StatelessWidget {
 
 class ChooseLevelInput extends StatelessWidget {
   const ChooseLevelInput(
-      {Key? key, required this.currentLevel, required this.setCurrentLevel})
-      : super(key: key);
+      {super.key, required this.currentLevel, required this.setCurrentLevel});
 
   final String? currentLevel;
   final Function(String, String) setCurrentLevel;

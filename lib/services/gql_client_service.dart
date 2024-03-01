@@ -20,9 +20,7 @@ class GraphQLClientSingleton {
   void _initClient() {
     final AuthLink authLink = AuthLink(
       getToken: () async {
-        print("get token called");
         String? token = await TokenSingletonService().getToken();
-        print("token: $token");
         return token != null ? 'Bearer $token' : null;
       },
     );

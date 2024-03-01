@@ -1,10 +1,8 @@
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class LinkButton extends StatelessWidget {
-  const LinkButton({Key? key, required this.link, required this.text})
-      : super(key: key);
+  const LinkButton({super.key, required this.link, required this.text});
 
   final String link;
   final String text;
@@ -13,17 +11,23 @@ class LinkButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(right: 5.0),
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
-          ),
+      child: FilledButton(
+        // set fillcolor to white
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+          // set border to black and width to 1
+          side: MaterialStateProperty.all<BorderSide>(
+              const BorderSide(color: Colors.black, width: 1)),
         ),
         onPressed: () async {
           await customLaunch(link);
         },
-        child:
-            Text(text, maxLines: 1, style: H14W4.copyWith(color: Colors.black)),
+        child: Text(text,
+            maxLines: 1,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: Colors.black)),
       ),
     );
   }

@@ -1,11 +1,11 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
-import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key, this.initialEmail}) : super(key: key);
+  const ForgotPassword({super.key, this.initialEmail});
 
   final String? initialEmail;
 
@@ -37,6 +37,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 20.0),
             const Padding(
@@ -45,12 +46,12 @@ class ForgotPasswordState extends State<ForgotPassword> {
                   "Enter your email address and we'll send you a link to reset your password."),
             ),
             const SizedBox(height: 15),
-            TextFormField(
+            InputFieldComponent(
               controller: emailController,
-              autofocus: true,
+              autoFocus: true,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
-              decoration: buildInputDecoration(labelText: 'Email'),
+              labelText: 'Email',
               validator: (val) =>
                   (val == null || val.isEmpty) ? 'Enter an email' : null,
               onFieldSubmitted: (value) => onForgotPassword(),
