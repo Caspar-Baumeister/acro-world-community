@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ClassEventExpandedTile extends StatelessWidget {
-  const ClassEventExpandedTile({super.key, required this.classEvent});
+  const ClassEventExpandedTile(
+      {super.key, required this.classEvent, this.showFullDate});
   final ClassEvent classEvent;
+  final bool? showFullDate;
 
   @override
   Widget build(BuildContext context) {
@@ -59,38 +61,49 @@ class ClassEventExpandedTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.titleLarge),
+                    // if showFullDate is true, show "Today, Tomorrow, 03. March, 04. March, etc"
+                    if (showFullDate == true)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 5),
+                        child: Text(
+                          DateFormat('d. MMMM')
+                              .format(DateTime.parse(classEvent.startDate!)),
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                      ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 5),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          classEvent.startDate != null &&
-                                  classEvent.endDate != null
-                              ? Text(
-                                  "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
-                                  style:
-                                      Theme.of(context).textTheme.bodyMedium!)
-                              : const Text("time not given"),
-                          const Spacer(),
-                          Container(
-                            constraints: BoxConstraints(
-                                maxWidth:
-                                    MediaQuery.of(context).size.width * 0.35),
-                            child: Text(
-                                classEvent.classModel?.locationName ??
-                                    "no location name",
-                                maxLines: 1,
-                                overflow: TextOverflow.clip,
-                                style: Theme.of(context).textTheme.bodyMedium!),
+                          Flexible(
+                            child: classEvent.startDate != null &&
+                                    classEvent.endDate != null
+                                ? Text(
+                                    "${DateFormat('H:mm').format(DateTime.parse(classEvent.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent.endDate!))}",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium!)
+                                : const Text(""),
                           ),
-                          const Icon(
-                            Icons.location_on,
-                            color: Colors.black,
-                            size: 16,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(classEvent.classModel?.locationName ?? "",
+                                  maxLines: 1,
+                                  overflow: TextOverflow.clip,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium!),
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.black,
+                                size: 16,
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
-                    classTeachers.isNotEmpty
+                    classTeachers.isNotEmpty && showFullDate != true
                         ? Padding(
                             padding: const EdgeInsets.symmetric(vertical: 5),
                             child: ClassTeacherChips(

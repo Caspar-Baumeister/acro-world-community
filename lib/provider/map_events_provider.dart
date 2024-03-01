@@ -49,6 +49,9 @@ class MapEventsProvider extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
+    print(_locationSingleton.place.description);
+    print(_locationSingleton.radius);
+
     // fetch classevents from the backend
     QueryOptions options = QueryOptions(
       document: Queries.getClassEventsByDistance,
@@ -66,9 +69,6 @@ class MapEventsProvider extends ChangeNotifier {
         print("result.exception: ${result.exception}");
       }
 
-      print(
-          "result.data: ${result.data?['class_events_by_location_v1']?.length}");
-
       if (result.data != null &&
           result.data!['class_events_by_location_v1'] != null) {
         _classeEvents.clear();
@@ -81,12 +81,18 @@ class MapEventsProvider extends ChangeNotifier {
                 .map((json) => ClassEvent.fromJson(json)),
           );
 
-          // Loop through newEvents and add them if they don't exist in _classeEvents based on classId
           for (var newEvent in newEvents) {
-            bool exists = _classeEvents.any(
+            int index = _classeEvents.indexWhere(
                 (existingEvent) => existingEvent.classId == newEvent.classId);
-            if (!exists) {
-              _classeEvents.add(newEvent);
+
+            if (index != -1) {
+              // Event exists, check if the new event's start date is earlier
+              if (newEvent.startDateDT
+                  .isBefore(_classeEvents[index].startDateDT)) {
+                _classeEvents[index] = newEvent; // Update the existing event
+              }
+            } else {
+              _classeEvents.add(newEvent); // Add new event as it does not exist
             }
           }
 

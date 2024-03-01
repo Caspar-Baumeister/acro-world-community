@@ -6,6 +6,7 @@ import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/location_search_screen/set_to_user_location_widget.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -141,6 +142,8 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         placeId: placeId,
                         onPlaceSet: (Place place) {
                           LocationSingleton().setPlace(place);
+                          Provider.of<PlaceProvider>(context, listen: false)
+                              .updatePlace(place);
                           Provider.of<CalendarProvider>(context, listen: false)
                               .fetchClasseEvents();
                           // updateCurrentCameraPosition MapEventsProvider

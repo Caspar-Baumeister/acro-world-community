@@ -26,7 +26,7 @@ class LocationSingleton extends ChangeNotifier {
         description: 'Berlin, Germany',
         latLng: const LatLng(52.5200, 13.4050),
       );
-  double get radius => _radius ?? 100;
+  double get radius => _radius ?? 20;
 
   void setRadius(double newRadius) {
     _radius = newRadius;

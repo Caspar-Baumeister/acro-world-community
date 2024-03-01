@@ -1,6 +1,9 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
+import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/screens/map/components/map_app_bar.dart';
 import 'package:acroworld/screens/map/components/marker_component.dart';
+import 'package:acroworld/screens/map/components/new_area_component.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -23,27 +26,33 @@ class CustomMapComponent extends StatefulWidget {
 
 class _CustomMapComponentState extends State<CustomMapComponent> {
   MapController mapController = MapController();
+  bool isReady = false;
+  LatLng? currentCenter;
 
   @override
   void initState() {
     super.initState();
     // add listener so that if the provider updates, the map updates
-    Provider.of<MapEventsProvider>(context, listen: false).addListener(() {
+    Provider.of<PlaceProvider>(context, listen: false).addListener(() {
       mapController.move(
-        Provider.of<MapEventsProvider>(
+        Provider.of<PlaceProvider>(
           context,
           listen: false,
-        ).place.latLng,
+        ).locationSingelton.place.latLng,
         mapController.camera.zoom,
       );
+    });
+    // set isReady to true after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        isReady = true;
+      });
     });
   }
 
   @override
   void dispose() {
     mapController.dispose();
-    Provider.of<MapEventsProvider>(context, listen: false)
-        .removeListener(() {});
     super.dispose();
   }
 
@@ -60,6 +69,9 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
               //set controller to position
               if (position.center != null) {
                 mapController.move(position.center!, mapController.camera.zoom);
+                setState(() {
+                  currentCenter = position.center;
+                });
               }
             },
             onTap: (_, __) {
@@ -96,58 +108,28 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
             )
           ],
         ),
-        // Positioned(
-        //   left: 0,
-        //   right: 0,
-        //   top: 0,
-        //   child: SafeArea(
-        //     child: Column(
-        //       children: [
-        //         const MapAppBar(),
-        //         NewAreaComponent(
-        //           mapEventProvider: mapEventProvider,
-        //           center: mapController.camera.center,
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
+        Positioned(
+          left: 0,
+          right: 0,
+          top: 0,
+          child: SafeArea(
+            child: Column(
+              children: [
+                const MapAppBar(),
+                isReady && currentCenter != null
+                    ? Consumer<PlaceProvider>(
+                        builder: (context, PlaceProvider placeProvider, child) {
+                        return NewAreaComponent(
+                          placeProvider: placeProvider,
+                          center: currentCenter!,
+                        );
+                      })
+                    : Container(),
+              ],
+            ),
+          ),
+        ),
       ],
     );
   }
 }
-
-// class NewAreaComponent extends StatelessWidget {
-//   const NewAreaComponent({
-//     super.key,
-//     required this.mapEventProvider,
-//     required this.center,
-//   });
-
-//   final MapEventsProvider mapEventProvider;
-//   final LatLng center;
-//   final bool isReady;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print("center $center");
-//     print("is ready $isReady");
-//     if (center.latitude != mapEventProvider.place.latLng.latitude ||
-//         center.longitude != mapEventProvider.place.latLng.longitude) {
-//       return Padding(
-//         padding: const EdgeInsets.only(top: AppPaddings.small),
-//         child: SizedBox(
-//           width: 200,
-//           child: StandardButtonSmall(
-//               onPressed: () {
-//                 mapEventProvider.setPlaceToMapArea(center);
-//               },
-//               isFilled: true,
-//               text: "Search in this area"),
-//         ),
-//       );
-//     } else {
-//       return Container();
-//     }
-//   }
-// }
