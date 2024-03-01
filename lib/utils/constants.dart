@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class AppConstants {
   static const int inAppMessageTime = 2;
+  static const double maxRadius = 300;
 }
 
 class AppSizes {

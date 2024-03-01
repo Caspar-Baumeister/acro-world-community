@@ -115,7 +115,10 @@ class _CheckoutStepState extends State<CheckoutStep> {
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           Text(
-                            "${widget.bookingOption.price}€",
+                            widget.bookingOption
+                                    .realPriceDiscounted()
+                                    .toStringAsFixed(2) +
+                                widget.bookingOption.currency.symbol,
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                         ],

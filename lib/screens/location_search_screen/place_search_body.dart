@@ -4,8 +4,11 @@ import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/components/search_bar_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/screens/location_search_screen/set_to_user_location_widget.dart';
+import 'package:acroworld/services/location_singleton.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -19,6 +22,8 @@ class PlaceQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // TODO create a location service that sets the place and fetches the right place from the place id
+    // and fetches all possible places
     return Query(
       options: QueryOptions(
           document: Queries.getPlace,
@@ -114,7 +119,6 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
 
   @override
   Widget build(BuildContext context) {
-    PlaceProvider placeProvider = Provider.of<PlaceProvider>(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
@@ -127,16 +131,24 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
             },
             autofocus: true,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppPaddings.medium),
           const SetToUserLocationWidget(),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppPaddings.medium),
           SingleChildScrollView(
             child: query.isNotEmpty
                 ? placeId.isNotEmpty
                     ? PlaceQuery(
                         placeId: placeId,
                         onPlaceSet: (Place place) {
-                          placeProvider.updatePlace(place);
+                          LocationSingleton().setPlace(place);
+                          Provider.of<CalendarProvider>(context, listen: false)
+                              .fetchClasseEvents();
+                          // updateCurrentCameraPosition MapEventsProvider
+                          Provider.of<MapEventsProvider>(context, listen: false)
+                              .setPlaceFromPlace(place);
+
+                          Provider.of<MapEventsProvider>(context, listen: false)
+                              .fetchClasseEvents();
                           if (!isNavigatedBack) {
                             Navigator.of(context).pop();
                             setState(() {

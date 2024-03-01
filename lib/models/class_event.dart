@@ -15,7 +15,7 @@ class ClassEvent {
   num? availableBookingSlots;
   num? maxBookingSlots;
 
-  get startDateDT => startDate != null ? DateTime.parse(startDate!) : null;
+  DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
 
   ClassEvent(

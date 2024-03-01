@@ -98,7 +98,10 @@ DateTime laterDay(DateTime a, DateTime b) {
   return a.isBefore(b) ? b : a;
 }
 
-bool isSameDate(DateTime a, DateTime b) {
+bool isSameDate(DateTime? a, DateTime? b) {
+  if (a == null || b == null) {
+    return false;
+  }
   return a.day == b.day && a.month == b.month && a.year == b.year;
 }
 

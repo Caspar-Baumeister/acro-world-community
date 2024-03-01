@@ -4,9 +4,10 @@ import 'package:acroworld/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/main.dart';
 import 'package:acroworld/provider/activity_provider.dart';
-import 'package:acroworld/provider/class_event_provider.dart';
+import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/map_controller:provider.dart';
+import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/notification_service.dart';
@@ -38,11 +39,12 @@ class _AppState extends State<App> {
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => PlaceProvider()),
           ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
           ChangeNotifierProvider(create: (_) => ActivityProvider()),
-          ChangeNotifierProvider(create: (_) => ClassEventProvider()),
+          ChangeNotifierProvider(create: (_) => MapControllerProvider()),
+          ChangeNotifierProvider(create: (_) => CalendarProvider()),
+          ChangeNotifierProvider(create: (_) => MapEventsProvider()),
         ],
         child: GraphQLProvider(
           client: ValueNotifier(GraphQLClientSingleton().client),

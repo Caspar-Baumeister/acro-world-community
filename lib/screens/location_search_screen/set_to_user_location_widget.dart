@@ -1,6 +1,7 @@
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -59,7 +60,8 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
         latLng: LatLng(locationData.latitude!, locationData.longitude!));
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      Provider.of<PlaceProvider>(context, listen: false).updatePlace(userPlace);
+      LocationSingleton().setPlace(userPlace);
+      Provider.of<CalendarProvider>(context, listen: false).fetchClasseEvents();
       Navigator.of(context).pop();
     });
   }
