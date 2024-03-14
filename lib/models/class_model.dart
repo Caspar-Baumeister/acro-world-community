@@ -1,9 +1,9 @@
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/event_model.dart';
+import 'package:acroworld/types_and_extensions/event_type.dart';
 
 class ClassModel {
-  String? city;
   String? classPassUrl;
   String? description;
   String? id;
@@ -22,6 +22,9 @@ class ClassModel {
   int? maxBookingSlots;
   List<ClassBookingOptions>? classBookingOptions;
   bool? isInitiallyFavorized;
+  EventType? eventType;
+  String? city;
+  String? country;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -33,8 +36,7 @@ class ClassModel {
   }
 
   ClassModel(
-      {this.city,
-      this.bookingEmail,
+      {this.bookingEmail,
       this.maxBookingSlots,
       this.classBookingOptions,
       this.classPassUrl,
@@ -51,10 +53,12 @@ class ClassModel {
       this.websiteUrl,
       this.classTeachers,
       this.distance,
+      this.eventType,
+      this.city,
+      this.country,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
-    city = json['city'];
     classPassUrl = json['class_pass_url'];
     description = json['description'];
     distance = json['distance'];
@@ -71,6 +75,8 @@ class ClassModel {
     websiteUrl = json['website_url'];
     bookingEmail = json['booking_email'];
     maxBookingSlots = json['max_booking_slots'];
+    city = json['location_city'];
+    country = json['location_country'];
     if (json['class_booking_options'] != null) {
       classBookingOptions = <ClassBookingOptions>[];
       json['class_booking_options'].forEach((v) {
@@ -89,5 +95,9 @@ class ClassModel {
         classLevels!.add(ClassLevels.fromJson(v));
       });
     }
+
+    eventType = json['event_type'] != null
+        ? mapStringToEventType(json['event_type'])
+        : null;
   }
 }

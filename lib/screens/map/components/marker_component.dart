@@ -23,7 +23,7 @@ class MarkerComponent extends StatelessWidget {
           color: classEventProvider.selectedClassEvent?.id == classEvent.id
               ? CustomColors.accentColor
               : CustomColors.iconColor,
-          size: AppSizes.iconSizeLarge),
+          size: AppDimensions.iconSizeLarge),
     );
   }
 }

@@ -14,6 +14,8 @@ class ClassEvent {
   ClassModel? classModel;
   num? availableBookingSlots;
   num? maxBookingSlots;
+  RecurringPattern? recurringPattern;
+  bool? isHighlighted;
 
   DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
@@ -29,12 +31,15 @@ class ClassEvent {
       this.participants,
       this.maxBookingSlots,
       this.availableBookingSlots,
+      this.recurringPattern,
+      this.isHighlighted,
       this.classModel});
 
   ClassEvent.fromJson(Map<String, dynamic> json) {
     classId = json['class_id'];
     createdAt = json['created_at'];
     endDate = json['end_date'];
+    isHighlighted = json['is_highlighted'];
     id = json['id'];
     availableBookingSlots = json['available_booking_slots'];
     maxBookingSlots = json['max_booking_slots'];
@@ -52,6 +57,35 @@ class ClassEvent {
     }
     classModel =
         json['class'] != null ? ClassModel.fromJson(json['class']) : null;
+
+    recurringPattern = json['recurring_pattern'] != null
+        ? RecurringPattern.fromJson(json['recurring_pattern'])
+        : null;
+  }
+}
+
+class RecurringPattern {
+  bool? isRecurring;
+  String? id;
+  String? startDate;
+  String? endDate;
+
+  RecurringPattern({this.isRecurring, this.id, this.startDate, this.endDate});
+
+  RecurringPattern.fromJson(Map<String, dynamic> json) {
+    isRecurring = json['is_recurring'];
+    id = json['id'];
+    startDate = json['start_date'];
+    endDate = json['end_date'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['is_recurring'] = isRecurring;
+    data['id'] = id;
+    data['start_date'] = startDate;
+    data['end_date'] = endDate;
+    return data;
   }
 }
 

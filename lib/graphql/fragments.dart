@@ -37,6 +37,16 @@ class Fragments {
           id
         }
       }
+      event_type
+
+""";
+
+  static const recurringPatternFragment = """
+
+        is_recurring
+        id
+        start_date
+        end_date
 
 """;
 
@@ -61,6 +71,7 @@ class Fragments {
         acro_role_id
       }
     }
+    
 """;
 
   static const eventFragment = """created_at

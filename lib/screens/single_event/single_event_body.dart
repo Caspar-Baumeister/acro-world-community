@@ -4,7 +4,7 @@ import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/open_map.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';

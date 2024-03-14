@@ -1,14 +1,15 @@
 import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/open_map.dart';
-import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/home_screens/activities/components/classes/class_teacher_chips.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
 
 class SingleClassBody extends StatelessWidget {
@@ -29,7 +30,8 @@ class SingleClassBody extends StatelessWidget {
     }
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30).copyWith(top: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
+          .copyWith(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -60,8 +62,12 @@ class SingleClassBody extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    DescriptionTextWidget(text: classe.description ?? ""),
-                    const CustomDivider()
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Html(
+                        data: classe.description!,
+                      ),
+                    ),
                   ],
                 )
               : Container(),

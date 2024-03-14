@@ -1,7 +1,8 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/components/show_more_text.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeaderWidget extends StatefulWidget {
@@ -30,67 +31,38 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              CachedNetworkImage(
-                fit: BoxFit.cover,
+              CustomAvatarCachedNetworkImage(
                 imageUrl: widget.teacher.profilImgUrl ?? "",
-                imageBuilder: (context, imageProvider) => Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                        image: imageProvider, fit: BoxFit.cover),
-                  ),
-                ),
-                placeholder: (context, url) => Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black12,
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  width: 200.0,
-                  height: 200.0,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black12,
-                  ),
-                  child: const Icon(
-                    Icons.error,
-                    color: Colors.red,
-                  ),
-                ),
+                radius: 150,
               ),
               Expanded(
                 child: Center(
-                  child: Column(
-                    children: [
-                      Text(
-                        widget.teacher.name ?? "No name",
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                          letterSpacing: 0.4,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppPaddings.medium,
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          widget.teacher.name ?? "No name",
+                          style: Theme.of(context).textTheme.titleLarge,
                         ),
-                      ),
-                      widget.teacher.likes != null
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Text(
-                                "${widget.teacher.likes} followers",
-                                style: const TextStyle(
-                                  color: Colors.black54,
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 14,
-                                  letterSpacing: 0.4,
+                        widget.teacher.likes != null
+                            ? Padding(
+                                padding: const EdgeInsets.only(top: 5),
+                                child: Text(
+                                  "${widget.teacher.likes} follower",
+                                  style: const TextStyle(
+                                    color: Colors.black54,
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 14,
+                                    letterSpacing: 0.4,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : Container(),
-                    ],
+                              )
+                            : Container(),
+                      ],
+                    ),
                   ),
                 ),
               )
