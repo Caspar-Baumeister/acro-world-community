@@ -1,6 +1,8 @@
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/map_events_provider.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -54,14 +56,21 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
     }
     locationData = locationData0;
 
-    Place userPlace = Place(
+    Place place = Place(
         id: "0",
         description: "My location",
         latLng: LatLng(locationData.latitude!, locationData.longitude!));
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      LocationSingleton().setPlace(userPlace);
+      LocationSingleton().setPlace(place);
+      Provider.of<PlaceProvider>(context, listen: false).updatePlace(place);
       Provider.of<CalendarProvider>(context, listen: false).fetchClasseEvents();
+      // updateCurrentCameraPosition MapEventsProvider
+      Provider.of<MapEventsProvider>(context, listen: false)
+          .setPlaceFromPlace(place);
+
+      Provider.of<MapEventsProvider>(context, listen: false)
+          .fetchClasseEvents();
       Navigator.of(context).pop();
     });
   }

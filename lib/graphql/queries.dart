@@ -2,18 +2,6 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
-//getBokableSingleClassEvents
-  static final getBokableSingleClassEvents = gql("""
-{
-  class_events(where: {recurring_pattern: {is_recurring: {_eq: false}}, max_booking_slots: {_gt: 0}}) {
-    class {
-      ${Fragments.classFragment}
-    }
-    ${Fragments.classEventFragment}
-  }
-}
-""");
-
   static final userBookmarks = gql("""
 query Me {
   me {
@@ -83,6 +71,7 @@ query isClassEventBooked(\$class_event_id: uuid) {
 
 """);
 
+// this is for the calendar widget with date filter for a specific week
   static final getClassEventsFromToLocationWithClass = gql("""
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
   class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
@@ -95,6 +84,7 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
 }
 """);
 
+// this is for the map widget without any date filter
   static final getClassEventsByDistance = gql("""
 query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$distance: float8){
   class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: now}, distance: {_lte: \$distance}}) {
@@ -107,12 +97,20 @@ query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$dist
 }
 """);
 
-  static final getClassEventsFromToWithClass = gql("""
-query getClassEventsFromToWithClass(\$from: timestamptz!, \$to: timestamptz!) {
-  class_events(where: {end_date: {_gte: \$from}, start_date: {_lte: \$to}, class: {class_teachers: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
+// this is for the discovery page
+// get all classes and for every class event
+  static final getEventOccurences = gql("""
+query getEventOccurences {
+  class_events(where: {end_date: {_gte: "now"}}) {
     ${Fragments.classEventFragment}
+    is_highlighted
+    recurring_pattern {
+      ${Fragments.recurringPatternFragment}
+    }
     class {
       ${Fragments.classFragment}
+      location_country
+      location_city
     }
   }
 }

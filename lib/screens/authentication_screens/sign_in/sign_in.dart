@@ -5,8 +5,8 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/calendar_page_route.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
-import 'package:acroworld/screens/home_screens/home_scaffold.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -248,7 +248,7 @@ class SignInState extends State<SignIn> {
           if (value) {
             NotificationService().updateToken();
             Navigator.of(context).push(
-              MaterialPageRoute(builder: (context) => const HomeScaffold()),
+              CalendarPageRoute(),
             );
           } else {
             print("failed token");

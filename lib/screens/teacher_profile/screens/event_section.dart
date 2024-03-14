@@ -1,7 +1,7 @@
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/screens/home_screens/events/widgets/event_filter_on_card.dart';
+import 'package:acroworld/screens/main_pages/events/widgets/event_filter_on_card.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 

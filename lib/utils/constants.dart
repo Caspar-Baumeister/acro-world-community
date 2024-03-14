@@ -7,9 +7,26 @@ class AppConstants {
   static const double maxRadius = 300;
 }
 
-class AppSizes {
+class AspectRatios {
+  static const ar_21_9 = 21 / 9;
+  static const ar_1_1 = 1 / 1;
+  static const ar_9_16 = 9 / 16;
+  static const ar_26_9 = 26 / 9;
+  static const ar_19_9 = 19 / 9;
+  static const ar_1_2 = 1 / 2;
+  static const ar_6_5 = 7 / 5;
+}
+
+class AppDimensions {
+  static const double bottomNavBarHeight = 100.0;
+  static const double iconSizeTiny = 14;
+  static const double iconSizeSmall = 20;
+
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 36.0;
+  static const double avatarSizeMedium = 45;
+  static const double eventDashboardSliderWidth = 150;
+  static const double eventVerticalScrollCardHeight = 135;
 }
 
 class AppPaddings {

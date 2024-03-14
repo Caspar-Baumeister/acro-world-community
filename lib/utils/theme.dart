@@ -51,13 +51,14 @@ class MyThemes {
         backgroundColor: CustomColors.backgroundColor,
       ),
       drawerTheme: const DrawerThemeData(
-        backgroundColor: CustomColors.backgroundColor,
-      ),
+          backgroundColor: CustomColors.backgroundColor,
+          surfaceTintColor: CustomColors.backgroundColor),
       appBarTheme: AppBarTheme(
         backgroundColor: CustomColors.backgroundColor,
         iconTheme: const IconThemeData(color: CustomColors.iconColor),
         actionsIconTheme: const IconThemeData(color: CustomColors.iconColor),
         centerTitle: true,
+        foregroundColor: CustomColors.backgroundColor,
         elevation: 0,
         surfaceTintColor: CustomColors.backgroundColor,
         titleTextStyle: headlineSmallTextStyle(CustomColors.primaryTextColor),
@@ -73,8 +74,8 @@ class MyThemes {
       brightness: Brightness.light,
       highlightColor: CustomColors.highlightedColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-        background: CustomColors.backgroundColor,
-      ));
+          background: CustomColors.backgroundColor,
+          surfaceTint: CustomColors.backgroundColor));
 
   // maybe for outdoor
   static final ThemeData darkTheme = ThemeData();

@@ -2,7 +2,6 @@ import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/screens/class_section.dart';
-import 'package:acroworld/screens/teacher_profile/screens/event_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -134,7 +133,7 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
         ),
       ),
       body: DefaultTabController(
-        length: 3,
+        length: 2,
         child: NestedScrollView(
           headerSliverBuilder: (context, _) {
             return [
@@ -161,12 +160,12 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   indicatorColor: Colors.black,
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
-                    Tab(
-                      icon: Icon(
-                        Icons.calendar_month_outlined,
-                        color: Colors.black,
-                      ),
-                    ),
+                    // Tab(
+                    //   icon: Icon(
+                    //     Icons.calendar_month_outlined,
+                    //     color: Colors.black,
+                    //   ),
+                    // ),
                     Tab(
                       icon: Icon(
                         Icons.festival_outlined,
@@ -186,7 +185,7 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                 child: TabBarView(
                   children: [
                     ClassSection(teacherId: widget.teacher.id!),
-                    EventSection(teacherId: widget.teacher.id!),
+                    // EventSection(teacherId: widget.teacher.id!),
                     Gallery(images: widget.teacher.images),
                   ],
                 ),

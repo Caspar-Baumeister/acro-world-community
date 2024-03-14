@@ -1,4 +1,6 @@
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 const double _fontSizeDisplayLarge = 26.0;
 const double _fontSizeDisplayMedium = 24.0;
@@ -91,3 +93,13 @@ TextStyle labelSmallTextStyle(Color color) => TextStyle(
       fontWeight: FontWeight.normal,
       color: color,
     );
+
+class CustomHtmlStyle {
+  Style headlineStyle = Style(
+    fontSize: FontSize(_fontSizeHeadlineSmall),
+    fontWeight: FontWeight.w800,
+    color: CustomColors.primaryTextColor,
+    maxLines: 2,
+    textOverflow: TextOverflow.ellipsis,
+  );
+}

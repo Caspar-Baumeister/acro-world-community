@@ -12,7 +12,7 @@ void showSuccessToast(String message) {
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
       backgroundColor: CustomColors.successBgColor,
       textColor: CustomColors.whiteTextColor,
-      fontSize: const TextTheme().bodyLarge!.fontSize!);
+      fontSize: const TextTheme().bodyLarge?.fontSize);
 }
 
 // show error toast
@@ -24,5 +24,5 @@ void showErrorToast(String message) {
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
       backgroundColor: CustomColors.errorTextColor,
       textColor: CustomColors.whiteTextColor,
-      fontSize: const TextTheme().bodyLarge!.fontSize!);
+      fontSize: const TextTheme().bodyLarge?.fontSize);
 }

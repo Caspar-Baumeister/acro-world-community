@@ -4,6 +4,7 @@ import 'package:acroworld/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/main.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
@@ -42,6 +43,7 @@ class _AppState extends State<App> {
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
           ChangeNotifierProvider(create: (_) => CalendarProvider()),
           ChangeNotifierProvider(create: (_) => MapEventsProvider()),
+          ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
         ],
         child: GraphQLProvider(

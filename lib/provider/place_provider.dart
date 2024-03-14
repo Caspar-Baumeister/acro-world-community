@@ -13,7 +13,7 @@ class PlaceProvider extends ChangeNotifier {
 
   updatePlaceByLaTLang(LatLng latLng) {
     locationSingelton.setPlace(
-        Place(description: 'Map Area', id: 'maparea', latLng: latLng));
+        Place(description: 'Map Area', id: 'map_area', latLng: latLng));
     notifyListeners();
   }
 }

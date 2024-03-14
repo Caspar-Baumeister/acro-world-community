@@ -92,8 +92,8 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
                   markers: mapEventsProvider.classeEvents
                       .map((ClassEvent classEvent) {
                     return Marker(
-                      width: AppSizes.iconSizeLarge,
-                      height: AppSizes.iconSizeLarge,
+                      width: AppDimensions.iconSizeLarge,
+                      height: AppDimensions.iconSizeLarge,
                       point: LatLng(
                         classEvent.classModel!.location!.coordinates![1]
                             .toDouble(),
