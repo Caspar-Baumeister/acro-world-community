@@ -223,6 +223,8 @@ class DiscoveryProvider extends ChangeNotifier {
         } catch (e, s) {
           CustomErrorHandler.captureException(e, stackTrace: s);
         }
+
+        setActiveEvents();
       }
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);

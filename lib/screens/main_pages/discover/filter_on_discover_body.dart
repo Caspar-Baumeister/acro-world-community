@@ -1,7 +1,7 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discovery_filter_on_card.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -19,88 +19,96 @@ class FilterOnDiscoveryBody extends StatelessWidget {
     List<ClassEvent> activeEvents = discoveryProvider.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
-    return activeEvents.isEmpty
-        ? SizedBox(
-            width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  "We could not find any events for your search",
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-                const SizedBox(
-                  height: 10,
-                ),
-                StandardButton(
-                  text: "Reset Filter",
-                  onPressed: () {
-                    discoveryProvider.resetFilter();
-                  },
-                  width: STANDART_BUTTON_WIDTH,
-                ),
-              ],
-            ),
-          )
-        : ListView.builder(
-            itemCount: activeEvents.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (index == 0) {
-                // Always show the first item
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15),
-                      child: MonthStringWidget(
-                          date: DateTime.parse(activeEvents[0].startDate!)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: DiscoveryFilterOnCard(
-                        event: activeEvents[index],
-                      ),
-                    ),
-                  ],
-                );
-              }
-
-              final previousItem = activeEvents[index - 1];
-              final currentItem = activeEvents[index];
-
-              if (DateTime.parse(previousItem.startDate!).month ==
-                  DateTime.parse(currentItem.startDate!).month) {
-                // Same date, just display the item
-                return Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  child: DiscoveryFilterOnCard(
-                    event: currentItem,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+      child: activeEvents.isEmpty
+          ? SizedBox(
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "We could not find any events for your search",
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
-                );
-              } else {
-                // Different date, display a date separator and the item
-                return Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 15, top: 15),
-                      child: MonthStringWidget(
-                          date: DateTime.parse(currentItem.startDate!)),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
-                      child: DiscoveryFilterOnCard(
-                        event: currentItem,
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  StandardButton(
+                    text: "Reset Filter",
+                    onPressed: () {
+                      discoveryProvider.resetFilter();
+                    },
+                    width: STANDART_BUTTON_WIDTH,
+                  ),
+                ],
+              ),
+            )
+          : ListView.builder(
+              itemCount: activeEvents.length,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  // Always show the first item
+                  return Column(
+                    children: [
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: AppPaddings.small),
+                        child: MonthStringWidget(
+                            date: DateTime.parse(activeEvents[0].startDate!)),
                       ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: AppPaddings.small),
+                        child: ClassEventExpandedTile(
+                          classEvent: activeEvents[index],
+                          showFullDate: true,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                final previousItem = activeEvents[index - 1];
+                final currentItem = activeEvents[index];
+
+                if (DateTime.parse(previousItem.startDate!).month ==
+                    DateTime.parse(currentItem.startDate!).month) {
+                  // Same date, just display the item
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                    child: ClassEventExpandedTile(
+                      classEvent: currentItem,
+                      showFullDate: true,
                     ),
-                  ],
-                );
-              }
-            },
-          );
+                  );
+                } else {
+                  // Different date, display a date separator and the item
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            bottom: AppPaddings.medium,
+                            top: AppPaddings.medium),
+                        child: MonthStringWidget(
+                            date: DateTime.parse(currentItem.startDate!)),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: AppPaddings.small),
+                        child: ClassEventExpandedTile(
+                          classEvent: currentItem,
+                          showFullDate: true,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              },
+            ),
+    );
   }
 }
 

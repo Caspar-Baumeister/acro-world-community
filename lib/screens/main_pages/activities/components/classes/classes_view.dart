@@ -58,7 +58,8 @@ class ClassesView extends StatelessWidget {
         itemCount: classEvents.length,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.only(left: 4.0, right: 4, bottom: 20),
+            padding: const EdgeInsets.only(
+                left: 4.0, right: 4, bottom: AppPaddings.small),
             child: ClassEventExpandedTile(
               classEvent: classEvents[index],
             ),

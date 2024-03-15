@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:acroworld/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class BackDropActionRow extends StatefulWidget {
@@ -13,9 +14,6 @@ class BackDropActionRow extends StatefulWidget {
     required this.classEvent,
     super.key,
   });
-
-  //BackDropActionRow(isCollapsed: percentage > appBarCollapsedThreshold, classId: widget.clas.id!,
-  //             initialFavorized: widget.clas.isInitiallyFavorized, shareEvents: () => shareEvent(widget.classEvent!, widget.clas))
 
   final bool isCollapsed;
   final String classId;
@@ -48,9 +46,9 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
               sigmaY: blurFactor), // Adjust blur values as needed
           child: SizedBox(
             height: 65,
-            width: 100,
             child: Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppPaddings.small),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 // twi gesture detector with star and check icon with color and function depending on isCompleted and isMarked

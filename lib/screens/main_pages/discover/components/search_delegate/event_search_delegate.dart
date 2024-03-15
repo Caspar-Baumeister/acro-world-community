@@ -1,6 +1,6 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discovery_filter_on_card.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/screens/main_pages/events/with_filter/filter_on_event_body.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +70,9 @@ class EventSearchDelegate extends SearchDelegate {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: DiscoveryFilterOnCard(
-                  event: eventSuggestions[index],
+                child: ClassEventExpandedTile(
+                  classEvent: eventSuggestions[index],
+                  showFullDate: true,
                 ),
               ),
             ],
@@ -86,8 +87,9 @@ class EventSearchDelegate extends SearchDelegate {
           // Same date, just display the item
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DiscoveryFilterOnCard(
-              event: currentItem,
+            child: ClassEventExpandedTile(
+              classEvent: currentItem,
+              showFullDate: true,
             ),
           );
         } else {
@@ -101,8 +103,9 @@ class EventSearchDelegate extends SearchDelegate {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: DiscoveryFilterOnCard(
-                  event: currentItem,
+                child: ClassEventExpandedTile(
+                  classEvent: currentItem,
+                  showFullDate: true,
                 ),
               ),
             ],
@@ -138,8 +141,9 @@ class EventSearchDelegate extends SearchDelegate {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: DiscoveryFilterOnCard(
-                  event: eventSuggestions[index],
+                child: ClassEventExpandedTile(
+                  classEvent: eventSuggestions[index],
+                  showFullDate: true,
                 ),
               ),
             ],
@@ -154,8 +158,9 @@ class EventSearchDelegate extends SearchDelegate {
           // Same date, just display the item
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: DiscoveryFilterOnCard(
-              event: currentItem,
+            child: ClassEventExpandedTile(
+              classEvent: currentItem,
+              showFullDate: true,
             ),
           );
         } else {
@@ -169,8 +174,9 @@ class EventSearchDelegate extends SearchDelegate {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: DiscoveryFilterOnCard(
-                  event: currentItem,
+                child: ClassEventExpandedTile(
+                  classEvent: currentItem,
+                  showFullDate: true,
                 ),
               ),
             ],

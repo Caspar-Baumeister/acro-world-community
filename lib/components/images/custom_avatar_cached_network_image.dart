@@ -43,7 +43,10 @@ class CustomAvatarCachedNetworkImage extends StatelessWidget {
       placeholder: (context, url) => Container(
         width: width,
         height: height,
-        color: CustomColors.secondaryBackgroundColor,
+        decoration: const BoxDecoration(
+          color: CustomColors.secondaryBackgroundColor,
+          shape: BoxShape.circle,
+        ),
       ),
       errorWidget: (context, url, error) => Container(
         width: width,

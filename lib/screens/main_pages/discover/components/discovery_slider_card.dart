@@ -69,7 +69,7 @@ class DiscoverySliderCard extends StatelessWidget {
                               classEvent.startDate, classEvent.endDate),
                           style: Theme.of(context)
                               .textTheme
-                              .bodySmall!
+                              .bodyMedium!
                               .copyWith(color: CustomColors.accentColor)
                               .copyWith(letterSpacing: -0.5)),
                     ),

@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/main_pages/activities/components/class_event_tile_image.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';

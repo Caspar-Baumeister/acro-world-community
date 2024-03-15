@@ -74,7 +74,7 @@ query isClassEventBooked(\$class_event_id: uuid) {
 // this is for the calendar widget with date filter for a specific week
   static final getClassEventsFromToLocationWithClass = gql("""
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
-  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: \$from}, end_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
+  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {end_date: {_gte: \$from}, start_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
     distance
     ${Fragments.classEventFragment}
     class {
