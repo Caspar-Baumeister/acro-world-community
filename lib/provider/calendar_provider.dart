@@ -96,14 +96,6 @@ class CalendarProvider extends ChangeNotifier {
     Place place = _locationSingleton.place;
     double radius = _locationSingleton.radius;
 
-    print("lat, lang and radius, from, to");
-
-    print(place.latLng.latitude);
-    print(place.latLng.longitude);
-    print(radius);
-    print(from.toIso8601String());
-    print(to.toIso8601String());
-
     QueryOptions queryOptions = QueryOptions(
       document: Queries.getClassEventsFromToLocationWithClass,
       fetchPolicy: FetchPolicy.cacheAndNetwork,

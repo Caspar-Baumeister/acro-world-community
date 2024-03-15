@@ -1,6 +1,5 @@
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -12,7 +11,6 @@ class ClassTeacherChips extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: CLASS_CARD_TEACHER_HEIGHT,
       child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(

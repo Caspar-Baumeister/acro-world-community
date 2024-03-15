@@ -1,4 +1,5 @@
 import 'package:acroworld/components/custom_divider.dart';
+import 'package:acroworld/components/datetime/date_time_service.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/open_map.dart';
 import 'package:acroworld/models/class_event.dart';
@@ -6,11 +7,10 @@ import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:intl/intl.dart';
 
 class SingleClassBody extends StatelessWidget {
   const SingleClassBody({super.key, required this.classe, this.classEvent});
@@ -44,16 +44,14 @@ class SingleClassBody extends StatelessWidget {
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(formatDateTime(
-                            DateTime.parse(classEvent!.startDate!))),
-                        Text(
-                            "${DateFormat('H:mm').format(DateTime.parse(classEvent!.startDate!))} - ${DateFormat('Hm').format(DateTime.parse(classEvent!.endDate!))}",
-                            style: Theme.of(context).textTheme.bodySmall)
-                      ],
-                    ),
+                    Text(
+                        DateTimeService.getDateString(
+                            classEvent!.startDate!, classEvent!.endDate!),
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyLarge!
+                            .copyWith(color: CustomColors.accentColor)
+                            .copyWith(letterSpacing: -0.5)),
                     const CustomDivider()
                   ],
                 )
@@ -164,13 +162,6 @@ class SingleClassBody extends StatelessWidget {
                         initialZoom: 15,
                         latitude: classe.location!.coordinates![1] * 1.0,
                         longitude: classe.location!.coordinates![0] * 1.0,
-
-                        // zoom: 15.0,
-                        // center: LatLng(classe.location!.coordinates![1] * 1.0,
-                        //     classe.location!.coordinates![0] * 1.0),
-                        // markerLocation: LatLng(
-                        //     classe.location!.coordinates![1] * 1.0,
-                        //     classe.location!.coordinates![0] * 1.0),
                       ),
                     ),
                     const Padding(
