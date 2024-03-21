@@ -1,5 +1,6 @@
 import 'package:acroworld/components/class_widgets/class_template_card.dart';
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/favorite_model.dart';
@@ -45,12 +46,17 @@ class UserFavoriteClasses extends StatelessWidget {
                     shrinkWrap: true,
                     itemCount: favoriteModels.length,
                     itemBuilder: ((context, index) {
-                      ClassModel event = favoriteModels[index].classObject!;
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 4),
-                        child: ClassTemplateCard(indexClass: event),
-                      );
+                      try {
+                        ClassModel event = favoriteModels[index].classObject!;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0, vertical: 4),
+                          child: ClassTemplateCard(indexClass: event),
+                        );
+                      } catch (e, s) {
+                        CustomErrorHandler.captureException(e, stackTrace: s);
+                        return Container();
+                      }
                     }));
           } catch (e) {
             return const ErrorPage(

@@ -24,6 +24,7 @@ class EventModel {
   String? url;
   String? description;
   List<TeacherModel>? teachers;
+  List<TeacherModel>? owners;
   List<User>? userParticipants;
   String? pretixName;
   bool? isFoodIncluded;

@@ -32,23 +32,27 @@ class DiscoverDashboardBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-                padding: const EdgeInsets.only(top: AppPaddings.small),
-                child: SliderRowDashboardDiscovery(
-                    onViewAll: () {
-                      discoveryProvider.setToOnlyHighlightedFilter();
-                    },
-                    header: 'Highlights',
-                    events: discoveryProvider.getHighlightedEvents())),
-            Padding(
-                padding: const EdgeInsets.only(top: AppPaddings.small),
-                child: SliderRowDashboardDiscovery(
-                    onViewAll: () {
-                      discoveryProvider.setToOnlyBookableFilter();
-                    },
-                    header: 'Bookable Events',
-                    subHeader: "Tickets available here!",
-                    events: discoveryProvider.getBookableEvents())),
+            discoveryProvider.getHighlightedEvents().isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    child: SliderRowDashboardDiscovery(
+                        onViewAll: () {
+                          discoveryProvider.setToOnlyHighlightedFilter();
+                        },
+                        header: 'Highlights',
+                        events: discoveryProvider.getHighlightedEvents()))
+                : Container(),
+            discoveryProvider.getBookableEvents().isNotEmpty
+                ? Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    child: SliderRowDashboardDiscovery(
+                        onViewAll: () {
+                          discoveryProvider.setToOnlyBookableFilter();
+                        },
+                        header: 'Bookable Events',
+                        subHeader: "Tickets available here!",
+                        events: discoveryProvider.getBookableEvents()))
+                : Container(),
             // Followed Teacher
             // for each event type in the discovery provider, create a slider row with the events
             ...eventSliders
