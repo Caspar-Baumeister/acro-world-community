@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 20),
                             child: hasTeacherProfile
-                                ? CustomButton('Edit your profile', () async {
+                                ? CustomButton('Dashboard', () async {
                                     // get token and refresh token
 
                                     final token = await TokenSingletonService()
