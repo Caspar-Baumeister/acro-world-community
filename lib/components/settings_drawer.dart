@@ -98,7 +98,7 @@ class SettingsDrawer extends StatelessWidget {
                     // const AcronycWidget(),
 
                     const Spacer(),
-                    CustomButton("Teacher dashboard", () async {
+                    CustomButton("Creator Dashboard", () async {
                       final token = await TokenSingletonService().getToken();
                       final refreshToken =
                           LocalStorageService.get(Preferences.refreshToken);
