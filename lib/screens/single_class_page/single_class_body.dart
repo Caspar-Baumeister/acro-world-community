@@ -2,6 +2,7 @@ import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/datetime/date_time_service.dart';
 import 'package:acroworld/components/open_google_maps.dart';
 import 'package:acroworld/components/open_map.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
@@ -9,6 +10,7 @@ import 'package:acroworld/screens/main_pages/activities/components/classes/class
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -64,6 +66,13 @@ class SingleClassBody extends StatelessWidget {
                       alignment: Alignment.centerLeft,
                       child: Html(
                         data: classe.description!,
+                        onLinkTap: (url, attributes, element) {
+                          if (url != null) {
+                            customLaunch(url).catchError((e) =>
+                                CustomErrorHandler.captureException(
+                                    e.toString()));
+                          }
+                        },
                       ),
                     ),
                   ],
@@ -98,42 +107,6 @@ class SingleClassBody extends StatelessWidget {
                   ],
                 )
               : Container(),
-          classe.requirements != null && classe.requirements != ""
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Requirements",
-                      textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      classe.requirements!,
-                      textAlign: TextAlign.start,
-                    ),
-                    const CustomDivider()
-                  ],
-                )
-              : Container(),
-          classe.pricing != null && classe.pricing != ""
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Prices",
-                      textAlign: TextAlign.start,
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    const SizedBox(height: 10),
-                    Text(
-                      classe.pricing!,
-                      textAlign: TextAlign.start,
-                    ),
-                    const CustomDivider()
-                  ],
-                )
-              : Container(),
 
           classe.location?.coordinates?[1] != null &&
                   classe.location?.coordinates?[0] != null
@@ -153,6 +126,23 @@ class SingleClassBody extends StatelessWidget {
                         )
                       ],
                     ),
+                    classe.locationName != null
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 5),
+                            child: Text(
+                              classe.locationName!,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    letterSpacing: -0.5,
+                                    height: 1.1,
+                                  ),
+                            ),
+                          )
+                        : Container(),
                     const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
@@ -184,36 +174,20 @@ class SingleClassBody extends StatelessWidget {
                         style: Theme.of(context).textTheme.headlineMedium,
                       ),
                     ),
-                    Container(
-                      alignment: Alignment.centerLeft,
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            classe.uscUrl != null && classe.uscUrl != ""
-                                ? LinkButton(
-                                    text: "Urban Sport", link: classe.uscUrl!)
-                                : Container(),
-                            classe.classPassUrl != null &&
-                                    classe.classPassUrl != ""
-                                ? LinkButton(
-                                    text: "Class Pass",
-                                    link: classe.classPassUrl!)
-                                : Container(),
-                            classe.websiteUrl != null && classe.websiteUrl != ""
-                                ? LinkButton(
-                                    text: "Website", link: classe.websiteUrl!)
-                                : Container(),
-                          ],
-                        ),
-                      ),
-                    ),
+                    classe.websiteUrl != null && classe.websiteUrl != ""
+                        ? Container(
+                            alignment: Alignment.centerLeft,
+                            padding:
+                                const EdgeInsets.only(top: AppPaddings.medium),
+                            child: LinkButton(
+                                text: "Website", link: classe.websiteUrl!),
+                          )
+                        : Container(),
                   ],
                 )
               : Container(),
           // ClassEventCalenderQuery(classId: classe.id!),
-          const SizedBox(height: 10)
+          const SizedBox(height: AppPaddings.extraLarge)
         ],
       ),
     ));
