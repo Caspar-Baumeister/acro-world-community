@@ -132,6 +132,8 @@ PODS:
   - StripeUICore (23.18.3):
     - StripeCore (= 23.18.3)
   - Toast (4.1.0)
+  - uni_links (0.0.1):
+    - Flutter
   - url_launcher_ios (0.0.1):
     - Flutter
 
@@ -151,6 +153,7 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
+  - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
 
 SPEC REPOS:
@@ -209,6 +212,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   stripe_ios:
     :path: ".symlinks/plugins/stripe_ios/ios"
+  uni_links:
+    :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
@@ -250,6 +255,7 @@ SPEC CHECKSUMS:
   StripePaymentsUI: c12de264eda974d91e43a769f53a6c6afc9a1715
   StripeUICore: 090c4fe916d039616ce8f8de30392f4aeb33dd16
   Toast: ec33c32b8688982cecc6348adeae667c1b9938da
+  uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 4216a46c3f732883f82dfc83361d95deaedb048e

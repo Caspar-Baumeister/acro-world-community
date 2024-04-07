@@ -1,5 +1,6 @@
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/routing/deeplinking/deeplinking.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/screens/main_pages/activities/activities_page.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
@@ -43,7 +44,11 @@ class AuthWrapper extends StatelessWidget {
 
   Future<bool> identifyAndSetUser(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final token = await TokenSingletonService().getToken();
+    final token = await TokenSingletonService().getToken().then((value) {
+      Deeplinking().initialize(context);
+      return value;
+    });
+
     if (token != null) {
       // TODO decide if this maybe only happens if neccesarry to safe loading time
       bool userSet = await userProvider.setUserFromToken();

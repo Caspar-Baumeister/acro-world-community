@@ -65,6 +65,7 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
         FlutterMap(
           mapController: mapController,
           options: MapOptions(
+            interactiveFlags: InteractiveFlag.all & ~InteractiveFlag.rotate,
             onPositionChanged: (position, hasGesture) {
               //set controller to position
               if (position.center != null) {

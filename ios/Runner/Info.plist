@@ -2,6 +2,19 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 	<dict>
+		<key>com.apple.developer.associated-domains</key>
+		<array>
+			<string>applinks:acroworld.de</string>
+		</array>
+		<key>NSPrivacyAccessedAPITypes</key>
+			<array>
+				<dict>
+					<key>NSPrivacyAccessedAPICategory</key>
+					<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+					<key>NSPrivacyAccessedAPIReason</key>
+					<string>We use UserDefaults to store user preferences and session information for a better user experience.</string>
+				</dict>
+			</array>
 		<key>NSLocationWhenInUseUsageDescription</key>
 		<string>We need to access your location to show you events close to you</string>
 		<key>NSLocationAlwaysUsageDescription</key>
