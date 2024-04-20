@@ -4,7 +4,7 @@
 	<dict>
 		<key>com.apple.developer.associated-domains</key>
 		<array>
-			<string>applinks:acroworld.de</string>
+			<string>applinks:link.acroworld.de</string>
 		</array>
 		<key>NSPrivacyAccessedAPITypes</key>
 			<array>
