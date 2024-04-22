@@ -196,3 +196,15 @@ app.*.symbols
 
 # Android build outputs
 android/app/build/
+**/android/**/build/
+
+# iOS build outputs
+ios/Runner/build/
+**/ios/**/build/
+
+# Web build outputs
+web/build/
+
+# Flutter build outputs
+build/
+**/build/
