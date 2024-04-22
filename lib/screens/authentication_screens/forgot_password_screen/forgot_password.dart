@@ -1,17 +1,19 @@
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
+import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
-import 'package:acroworld/utils/helper_functions/helper_builder.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPassword extends StatefulWidget {
-  const ForgotPassword({Key? key}) : super(key: key);
+  const ForgotPassword({super.key, this.initialEmail});
+
+  final String? initialEmail;
 
   @override
-  _ForgotPasswordState createState() => _ForgotPasswordState();
+  ForgotPasswordState createState() => ForgotPasswordState();
 }
 
-class _ForgotPasswordState extends State<ForgotPassword> {
+class ForgotPasswordState extends State<ForgotPassword> {
   late TextEditingController emailController;
   bool loading = false;
   String error = '';
@@ -19,7 +21,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   @override
   void initState() {
     super.initState();
-    emailController = TextEditingController();
+    emailController = TextEditingController(text: widget.initialEmail);
   }
 
   @override
@@ -35,26 +37,27 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       body: Container(
         padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 50.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const SizedBox(height: 20.0),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 18.0),
               child: Text(
-                  "No worry, type in your email and we send you a link to choose a new one"),
+                  "Enter your email address and we'll send you a link to reset your password."),
             ),
             const SizedBox(height: 15),
-            TextFormField(
+            InputFieldComponent(
               controller: emailController,
-              autofocus: true,
+              autoFocus: true,
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
-              decoration: buildInputDecoration(labelText: 'Email'),
+              labelText: 'Email',
               validator: (val) =>
                   (val == null || val.isEmpty) ? 'Enter an email' : null,
               onFieldSubmitted: (value) => onForgotPassword(),
             ),
             const SizedBox(height: 20.0),
-            StandartButton(
+            StandardButton(
               text: "Send email",
               onPressed: () {
                 onForgotPassword();
@@ -81,17 +84,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     setState(() {
       loading = true;
     });
-    final response = await Database().forgotPassword(
+    final response = await DatabaseService().forgotPassword(
       emailController.text,
     );
-    print(response.toString());
 
     if (response?["data"]["reset_password"]?["success"] == true) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) =>
-                ForgotPasswordSuccess(email: emailController.text)),
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+              builder: (context) =>
+                  ForgotPasswordSuccess(email: emailController.text)),
+        );
+      });
     } else {
       setState(() {
         error = "Something went wrong. Try again later";

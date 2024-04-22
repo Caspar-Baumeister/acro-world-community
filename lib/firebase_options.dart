@@ -59,7 +59,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDrEgJIfdilKn8rymGbZ11xM2hb0lCi7ms',
-    appId: '1:322527689838:ios:75c0547a7adc978ed8ba7f',
+    appId: '1:322527689838:ios:74ac6ec191f0c5d4d8ba7f',
     messagingSenderId: '322527689838',
     projectId: 'arcoworld-1415b',
     storageBucket: 'arcoworld-1415b.appspot.com',

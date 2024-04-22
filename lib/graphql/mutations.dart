@@ -1,7 +1,20 @@
-import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final createPaymentSheet = gql("""
+mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!) {
+  create_payment_sheet(
+    booking_option_id: \$bookingOptionId
+    class_event_id: \$classEventId
+  ) {
+    payment_intent
+    ephemeral_key
+    customer_id
+  }
+}
+
+""");
+
   static final resetPassword = gql("""
   mutation resetPassword(\$email: String) {
   reset_password(input: {email: \$email}) {
@@ -10,79 +23,28 @@ class Mutations {
 }
 """);
 
-  static final setGender = gql("""
-mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
-  update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
+//   static final setGender = gql("""
+// mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
+//   update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
+//     id
+//   }
+// }
+// """);
+
+  static final setUserLevel = gql("""
+mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {
+  update_users_by_pk(pk_columns: {id: \$user_id}, _set: {level_id: \$level_id}) {
     id
   }
 }
 """);
 
-  static final insertCommunityMessage = gql("""
-    mutation InsertCommunityMessage(\$content: String, \$communityId: uuid) {
-      insert_community_messages(objects: {content: \$content, community_id: \$communityId}) {
-        affected_rows
-      }
-    }
-  """);
-
-  static final particapteToJam = gql("""
-    mutation InsertJamParticipants(\$jamId: uuid) {
-      insert_jam_participants(objects: {jam_id: \$jamId}) {
-        affected_rows
-        returning {
-          jam {
-            ${Fragments.jamFragment}
-          }
-        }
-      }
-    }
-  """);
-
-  static final removeJamParticipation = gql("""
-    mutation RemoveJamParticipation(\$jamId: uuid) {
-      delete_jam_participants(where: {jam_id: {_eq: \$jamId}}) {
-        affected_rows
-        returning {
-          jam {
-            ${Fragments.jamFragment}
-          }
-        }
-      }
-    }
-  """);
-
-  static final insertJam = gql("""
-    mutation InsertJam(\$communityId: uuid, \$date: timestamptz, \$latitude: numeric, \$longitude: numeric, \$name: String, \$info: String) {
-      insert_jams_one(object: {community_id: \$communityId, date: \$date, latitude: \$latitude, longitude: \$longitude, name: \$name, info: \$info}) {
-         ${Fragments.jamFragment}
-      }
-    }
-  """);
-
-  static final updateJam = gql("""
-    mutation UpdateJam(\$jamId: uuid!, \$date: timestamptz, \$latitude: numeric, \$longitude: numeric, \$name: String, \$info: String) {
-      update_jams_by_pk(pk_columns: {id: \$jamId}, _set: {name: \$name, longitude: \$longitude, latitude: \$latitude, info:  \$info, date: \$date}) {
-        ${Fragments.jamFragment}
-      }
-    }
-  """);
-
-  static final deleteJam = gql("""
-    mutation DeleteJam(\$jamId: uuid) {
-      delete_jams(where: {id: {_eq: \$jamId}}) {
-        affected_rows
-      }
-    }
-  """);
-
-  static final insertCommunity = gql("""
-    mutation InsertCommunity(\$name: String, \$location: geography, \$longitude: float8, \$latitude: float8) {
-      insert_communities_one(object: {location: \$location, latitude: \$latitude, longitude: \$longitude, name: \$name}) {
-        id
-      }
-    }
-  """);
+  static final confirmPayment = gql("""
+mutation confirmPayment(\$payment_intent_id : uuid!) {
+  payment_intent_succeeded(objects: {payment_intent_id: \$payment_intent_id}) {
+    id
+  } 
+}""");
 
   static final updateFcmToken = gql("""
     mutation UpdateFcmToken(\$fcmToken: String!) {
@@ -92,12 +54,38 @@ mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
     }
   """);
 
-  static final updateLastVisetedAt = gql("""
-  mutation updateLastVisetedAt(\$community_id: uuid, \$user_id: uuid) {
-  update_user_communities(where: {community_id: {_eq: \$community_id}, user_id: {_eq: \$user_id}}, _set: {last_visited_at: "now()"}) {
+  static final bookmarkEvent = gql("""
+  mutation bookmarkEvent(\$event_id: uuid) {
+  insert_event_bookmarks(objects: {event_id:  \$event_id}) {
     affected_rows
   }
 }
+""");
+
+  static final unBookmarkEvent = gql("""
+  mutation unBookmarkEvent(\$event_id: uuid, \$user_id: uuid) {
+  delete_event_bookmarks(where: {event_id: {_eq: \$event_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}
+
+""");
+
+  static final favoritizeClass = gql("""
+  mutation favoritizeClass(\$class_id: uuid!) {
+  insert_class_favorites(objects: {class_id:  \$class_id}) {
+    affected_rows
+  }
+}
+""");
+
+  static final unFavoritizeClass = gql("""
+  mutation unBookmarkEvent(\$class_id: uuid!, \$user_id: uuid!) {
+  delete_class_favorites(where: {class_id: {_eq: \$class_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}
+
 """);
 
   static final likeTeacher = gql("""

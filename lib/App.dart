@@ -1,36 +1,58 @@
+// ignore_for_file: file_names
+
+import 'package:acroworld/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/components/loggin_wrapper.dart';
-import 'package:acroworld/provider/all_other_coms.dart';
-import 'package:acroworld/provider/user_communities.dart';
+import 'package:acroworld/main.dart';
+import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/event_filter_provider.dart';
+import 'package:acroworld/provider/map_events_provider.dart';
+import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/theme.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
-class App extends StatelessWidget {
-  final ValueNotifier<GraphQLClient> client;
+class App extends StatefulWidget {
+  const App({super.key});
 
-  const App({Key? key, required this.client}) : super(key: key);
+  @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final NotificationService notificationService = NotificationService();
+
+  @override
+  void initState() {
+    super.initState();
+    // add listeners to the notification service to handle notifications with context
+    notificationService.addListeners(context);
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('App:build');
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => UserCommunitiesProvider()),
-          ChangeNotifierProvider(create: (_) => AllOtherComs()),
+          ChangeNotifierProvider(create: (_) => EventFilterProvider()),
           ChangeNotifierProvider(create: (_) => EventBusProvider()),
+          ChangeNotifierProvider(create: (_) => CalendarProvider()),
+          ChangeNotifierProvider(create: (_) => MapEventsProvider()),
+          ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
+          ChangeNotifierProvider(create: (_) => PlaceProvider()),
         ],
         child: GraphQLProvider(
-          client: client,
+          client: ValueNotifier(GraphQLClientSingleton().client),
           child: MaterialApp(
+            navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             theme: MyThemes.lightTheme,
-            // TODO version and internet check wrapper (pulls min version, compares, if no result
-            // TODO no wifi screen. Otherwise either old version screen or continue)
-            // LoginWrapper checks for token?
-            // Also possible: Routerdelegate with auth check and guards
-            home: const LogginWrapper(),
+            home: const AuthWrapper(),
           ),
         ));
   }

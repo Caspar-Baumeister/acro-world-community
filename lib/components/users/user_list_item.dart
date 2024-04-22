@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class UserListItem extends StatelessWidget {
-  const UserListItem({Key? key, required this.user}) : super(key: key);
+  const UserListItem({super.key, required this.user});
 
   final User user;
 

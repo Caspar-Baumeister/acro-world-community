@@ -1,21 +1,20 @@
 import 'dart:async';
 
-import 'package:acroworld/components/standart_button.dart';
+import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordSuccess extends StatefulWidget {
-  const ForgotPasswordSuccess({Key? key, required this.email})
-      : super(key: key);
+  const ForgotPasswordSuccess({super.key, required this.email});
 
   final String email;
 
   @override
-  _ForgotPasswordSuccessState createState() => _ForgotPasswordSuccessState();
+  ForgotPasswordSuccessState createState() => ForgotPasswordSuccessState();
 }
 
-class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
+class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
   // Step 2
   Timer? countdownTimer;
   Duration myDuration = const Duration(hours: 1);
@@ -94,12 +93,12 @@ class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
             padding: EdgeInsets.symmetric(horizontal: 30.0),
             child: Text(
               "The link is only valid for one hour, but you can request a new link at any time.",
-              style: TextStyle(color: WARNING_COLOR),
+              style: TextStyle(color: CustomColors.errorTextColor),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 15.0),
-          StandartButton(
+          StandardButton(
             text: "send new email",
             onPressed: () {
               onForgotPassword();
@@ -125,10 +124,9 @@ class _ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
     setState(() {
       loading = true;
     });
-    final response = await Database().forgotPassword(
+    final response = await DatabaseService().forgotPassword(
       widget.email,
     );
-    print(response.toString());
 
     if (response?["data"]["reset_password"]?["success"] == true) {
       resetTimer();

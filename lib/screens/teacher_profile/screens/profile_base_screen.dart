@@ -1,39 +1,37 @@
-import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/graphql/mutations.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/teacher_profile/screens/class_section.dart';
 import 'package:acroworld/screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/text_styles.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ProfileBaseScreen extends StatefulWidget {
-  const ProfileBaseScreen({Key? key, required this.teacher}) : super(key: key);
+  const ProfileBaseScreen(
+      {super.key, required this.teacher, required this.userId});
 
   final TeacherModel teacher;
+  final String userId;
   @override
-  _ProfileBaseScreenState createState() => _ProfileBaseScreenState();
+  ProfileBaseScreenState createState() => ProfileBaseScreenState();
 }
 
-class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
+class ProfileBaseScreenState extends State<ProfileBaseScreen> {
   late bool isLikedState;
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    isLikedState = widget.teacher.isLikedByMe;
+    isLikedState = widget.teacher.likedByUser ??
+        false; // set the initial state of the like
   }
 
   @override
   Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(40),
@@ -56,7 +54,7 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
             elevation: 0,
             actions: [
               Padding(
-                padding: const EdgeInsets.only(right: 20.0),
+                padding: const EdgeInsets.only(right: 20.0, top: 5, bottom: 5),
                 child: Mutation(
                     options: MutationOptions(
                         document: isLikedState
@@ -72,11 +70,15 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                             setState(() {
                               loading = true;
                             });
-                            await followButtonClicked();
+
                             isLikedState
                                 ? runMutation({
                                     'teacher_id': widget.teacher.id,
-                                    'user_id': userProvider.activeUser!.id!
+                                    'user_id': Provider.of<UserProvider>(
+                                            context,
+                                            listen: false)
+                                        .activeUser!
+                                        .id!
                                   })
                                 : runMutation({
                                     'teacher_id': widget.teacher.id,
@@ -92,9 +94,10 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                           child: Container(
                               decoration: BoxDecoration(
                                 color: isLikedState
-                                    ? BUTTON_FILL_COLOR
+                                    ? CustomColors.primaryColor
                                     : Colors.white,
-                                border: Border.all(color: BUTTON_FILL_COLOR),
+                                border: Border.all(
+                                    color: CustomColors.primaryColor),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               height: 35,
@@ -108,30 +111,22 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                                         child: CircularProgressIndicator(
                                           color: isLikedState == true
                                               ? Colors.white
-                                              : PRIMARY_COLOR,
+                                              : CustomColors.primaryColor,
                                         ))
                                     : Text(
-                                        isLikedState ? "Following" : "Follow",
-                                        style: SECONDARYTEXT.copyWith(
-                                          color: !isLikedState
-                                              ? BUTTON_FILL_COLOR
-                                              : Colors.white,
-                                        ),
+                                        isLikedState ? "Followed" : "Follow",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: !isLikedState
+                                                  ? CustomColors.primaryColor
+                                                  : Colors.white,
+                                            ),
                                         textAlign: TextAlign.center,
                                       ),
                               )));
                     }),
-
-                // HeartMutationWidget(
-                //     isLiked: isLikedState,
-                //     teacherLikes: teacherLikes,
-                //     setIsLiked: (liked) => setState(() {
-                //           isLikedState = liked;
-                //         }),
-                //     setTeacherLikes: (likes) => setState(() {
-                //           teacherLikes = likes;
-                //         }),
-                //     teacherId: widget.teacher.id!),
               ),
             ],
           ),
@@ -163,10 +158,17 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   unselectedLabelColor: Colors.grey[400],
                   indicatorWeight: 1,
                   indicatorColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
+                    // Tab(
+                    //   icon: Icon(
+                    //     Icons.calendar_month_outlined,
+                    //     color: Colors.black,
+                    //   ),
+                    // ),
                     Tab(
                       icon: Icon(
-                        Icons.calendar_month_outlined,
+                        Icons.festival_outlined,
                         color: Colors.black,
                       ),
                     ),
@@ -182,8 +184,9 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
               Expanded(
                 child: TabBarView(
                   children: [
-                    ClassSection(teacher: widget.teacher),
-                    Gallery(pictureUrls: widget.teacher.pictureUrls),
+                    ClassSection(teacherId: widget.teacher.id!),
+                    // EventSection(teacherId: widget.teacher.id!),
+                    Gallery(images: widget.teacher.images),
                   ],
                 ),
               ),
@@ -192,33 +195,5 @@ class _ProfileBaseScreenState extends State<ProfileBaseScreen> {
         ),
       ),
     );
-  }
-
-  followButtonClicked() async {
-    String? token = AuthProvider.token;
-    final database = Database(token: token);
-    String uid = Provider.of<UserProvider>(context, listen: false).getId();
-
-    if (isLikedState) {
-      await database.deleteUserCommunitiesOne(widget.teacher.communityID!);
-      Fluttertoast.showToast(
-          msg: "You left the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else {
-      await database.insertUserCommunitiesOne(widget.teacher.communityID!, uid);
-      Fluttertoast.showToast(
-          msg: "You joined the community of ${widget.teacher.name}",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.TOP,
-          timeInSecForIosWeb: 2,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    }
   }
 }

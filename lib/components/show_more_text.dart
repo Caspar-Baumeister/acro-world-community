@@ -2,15 +2,16 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
+  const DescriptionTextWidget(
+      {super.key, required this.text, this.isHeader = false});
   final String text;
-
-  const DescriptionTextWidget({Key? key, required this.text}) : super(key: key);
+  final bool isHeader;
 
   @override
-  _DescriptionTextWidgetState createState() => _DescriptionTextWidgetState();
+  DescriptionTextWidgetState createState() => DescriptionTextWidgetState();
 }
 
-class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
+class DescriptionTextWidgetState extends State<DescriptionTextWidget> {
   late String firstHalf;
   late String secondHalf;
 
@@ -31,29 +32,45 @@ class _DescriptionTextWidgetState extends State<DescriptionTextWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return secondHalf.isEmpty
-        ? Container(alignment: Alignment.centerLeft, child: Text(firstHalf))
-        : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(flag ? ("$firstHalf...") : (firstHalf + secondHalf)),
-              InkWell(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    Text(
-                      flag ? "show more" : "show less",
-                      style: const TextStyle(color: LINK_COLOR),
-                    ),
-                  ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        widget.isHeader
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Text(
+                  "Description",
+                  textAlign: TextAlign.start,
+                  style: Theme.of(context).textTheme.headlineMedium,
                 ),
-                onTap: () {
-                  setState(() {
-                    flag = !flag;
-                  });
-                },
+              )
+            : Container(),
+        secondHalf.isEmpty
+            ? Container(alignment: Alignment.centerLeft, child: Text(firstHalf))
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(flag ? ("$firstHalf...") : (firstHalf + secondHalf)),
+                  InkWell(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          flag ? "read more" : "fold in",
+                          style: const TextStyle(
+                              color: CustomColors.linkTextColor),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      setState(() {
+                        flag = !flag;
+                      });
+                    },
+                  ),
+                ],
               ),
-            ],
-          );
+      ],
+    );
   }
 }

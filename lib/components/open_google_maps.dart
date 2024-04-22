@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 class OpenGoogleMaps extends StatelessWidget {
   const OpenGoogleMaps(
-      {Key? key, required this.latitude, required this.longitude})
-      : super(key: key);
+      {super.key, required this.latitude, required this.longitude});
   final double latitude;
   final double longitude;
 
@@ -12,8 +11,8 @@ class OpenGoogleMaps extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => openMap(latitude, longitude),
-      child: Row(
-        children: const [
+      child: const Row(
+        children: [
           Icon(
             Icons.location_on,
             color: Colors.black,

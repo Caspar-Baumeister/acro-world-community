@@ -6,8 +6,7 @@ import 'package:pie_chart/pie_chart.dart';
 
 class GenderDistributionPieFromClassEventId extends StatelessWidget {
   const GenderDistributionPieFromClassEventId(
-      {Key? key, required this.classEventId})
-      : super(key: key);
+      {super.key, required this.classEventId});
 
   final String classEventId;
 
@@ -21,9 +20,7 @@ class GenderDistributionPieFromClassEventId extends StatelessWidget {
       builder: (QueryResult genderAggregates,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (genderAggregates.hasException) {
-          print("error in getAcroRoleAggregatesFromClassEvent query");
-          print(genderAggregates.exception);
-          return Container();
+          return ErrorWidget(genderAggregates.exception.toString());
         } else if (genderAggregates.isLoading) {
           return const LoadingIndicator();
         } else if (genderAggregates.data != null &&

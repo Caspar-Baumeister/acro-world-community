@@ -7,6 +7,7 @@ class PlacePreferences {
   static SharedPreferences? _preferences;
 
   static const _keySavedLocation = 'saved_location';
+  static const _keyRadius = 'radius';
 
   static Future init() async =>
       _preferences = await SharedPreferences.getInstance();
@@ -17,6 +18,20 @@ class PlacePreferences {
     }
   }
 
+  static Future setRadius(double radius) async {
+    if (_preferences != null) {
+      await _preferences!.setDouble(_keyRadius, radius);
+    }
+  }
+
+  static double? getRadius() {
+    if (_preferences != null) {
+      return _preferences!.getDouble(_keyRadius);
+    } else {
+      return null;
+    }
+  }
+
   static Place? getSavedPlace() {
     String? savedPlaceAsString = _preferences!.getString(_keySavedLocation);
 
@@ -24,9 +39,7 @@ class PlacePreferences {
         savedPlaceAsString.runtimeType != Null &&
         savedPlaceAsString.isNotEmpty &&
         jsonDecode(savedPlaceAsString).runtimeType != Null) {
-      print("savedPlaceAsString");
-      print(savedPlaceAsString);
-      print(savedPlaceAsString.runtimeType);
+      print("savedPlaceAsString: $savedPlaceAsString");
       return Place.fromJson(jsonDecode(savedPlaceAsString));
     } else {
       return null;

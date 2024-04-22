@@ -1,23 +1,69 @@
 import 'dart:collection';
 
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/jam_model.dart';
-import 'package:flutter/material.dart';
+import 'package:acroworld/models/teacher_model.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// builds the modal widgets
-Future<void> buildMortal(BuildContext context, Widget mordal) {
-  return showModalBottomSheet(
-      backgroundColor: Colors.white,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))),
-      context: context,
-      builder: (context) => Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: mordal));
+Future<void> customLaunch(String url) async {
+  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+    throw Exception('Could not launch $url');
+  }
+}
+
+String getCurrecySymbol(String currency) {
+  try {
+    var format = NumberFormat.simpleCurrency(name: currency);
+    return format.currencySymbol;
+  } catch (e) {
+    print(e.toString());
+    return "";
+  }
+}
+
+bool isTeacherFollowedByUser(List<UserLikes>? followerList, String userId) {
+  if (followerList == null) {
+    return false;
+  }
+  for (UserLikes userLike in followerList) {
+    if (userLike.userId == userId) {
+      return true;
+    }
+  }
+  return false;
+}
+
+DateTime parseDateStr(String inputString) {
+  DateFormat format = DateFormat.yMMMMd();
+  return format.parse(inputString);
+}
+
+String capitalizeWords(String input) {
+  if (input.isEmpty) {
+    return input;
+  }
+
+  List<String> words = input.toLowerCase().split(' ');
+
+  for (int i = 0; i < words.length; i++) {
+    String word = words[i];
+    if (word == "and") {
+      words[i] = word;
+    } else if (word.isNotEmpty) {
+      words[i] = '${word[0].toUpperCase()}${word.substring(1)}';
+    }
+  }
+
+  return words.join(' ');
+}
+
+bool isDateMonthAndYearInList(List<DateTime> dates, DateTime newDate) {
+  for (DateTime date in dates) {
+    if (date.month == newDate.month && date.year == newDate.year) {
+      return true;
+    }
+  }
+  return false;
 }
 
 String dateToText(DateTime date) {
@@ -48,48 +94,31 @@ String dateToText(DateTime date) {
   return "";
 }
 
-bool isSameDate(DateTime a, DateTime b) {
-  return a.day == b.day && a.month == b.month && a.year == b.year;
+DateTime laterDay(DateTime a, DateTime b) {
+  return a.isBefore(b) ? b : a;
 }
 
-Map<DateTime, List<Jam>> jamListToHash(List<Jam> jams) {
-  List<Jam> sortedJams = List<Jam>.from(jams);
-  sortedJams.sort((j1, j2) => j1.date!.isBefore(j2.date!) ? 1 : 0);
-  LinkedHashMap<DateTime, List<Jam>> jamMap =
-      LinkedHashMap<DateTime, List<Jam>>(
-    equals: isSameDayCustom,
-    hashCode: getHashCode,
-  );
-  for (Jam jam in sortedJams) {
-    if (jamMap[jam.date] != null) {
-      jamMap[jam.date]!.add(jam);
-    } else {
-      jamMap[jam.date!] = List.from([jam]);
-    }
+bool isSameDate(DateTime? a, DateTime? b) {
+  if (a == null || b == null) {
+    return false;
   }
-  return jamMap;
-
-  // jamMap..addAll({
-  //     for (var jam in jams)
-
-  //     jam.date: [jam]
-  //   });
+  return a.day == b.day && a.month == b.month && a.year == b.year;
 }
 
 Map<DateTime, List<ClassEvent>> classEventToHash(List objects) {
   List<ClassEvent> sortedObjects = List<ClassEvent>.from(objects);
   sortedObjects.sort((classEvent1, classEvent2) =>
-      classEvent2.date.compareTo(classEvent1.date));
+      classEvent2.startDateDT.compareTo(classEvent1.startDateDT));
   LinkedHashMap<DateTime, List<ClassEvent>> objectMap =
       LinkedHashMap<DateTime, List<ClassEvent>>(
     equals: isSameDayCustom,
     hashCode: getHashCode,
   );
   for (var obj in sortedObjects) {
-    if (objectMap[obj.date] != null) {
-      objectMap[obj.date]!.add(obj);
+    if (objectMap[obj.startDateDT] != null) {
+      objectMap[obj.startDateDT]!.add(obj);
     } else {
-      objectMap[obj.date] = List.from([obj]);
+      objectMap[obj.startDateDT] = List.from([obj]);
     }
   }
   return objectMap;
@@ -121,11 +150,7 @@ final kFirstDay = kToday; //DateTime(kToday.year, kToday.month - 3, kToday.day);
 final kLastDay = DateTime(kToday.year, kToday.month + 2, kToday.day);
 
 Future<void> openMap(double latitude, double longitude) async {
-  Uri googleUrl = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude');
-  if (await canLaunchUrl(googleUrl)) {
-    await launchUrl(googleUrl);
-  } else {
-    throw 'Could not open the map.';
-  }
+  String googleUrl =
+      'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+  customLaunch(googleUrl);
 }

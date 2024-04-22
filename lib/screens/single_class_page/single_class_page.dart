@@ -1,67 +1,142 @@
-import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/components/custom_sliver_app_bar.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/single_class_page/single_class_body.dart';
-import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/screens/single_class_page/widgets/back_drop_action_row.dart';
+import 'package:acroworld/screens/single_class_page/widgets/booking_query_wrapper.dart';
+import 'package:acroworld/screens/single_class_page/widgets/calendar_modal.dart';
+import 'package:acroworld/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
+import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/find_billing_teacher.dart';
+import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:share_plus/share_plus.dart';
 
-class SingleClassPage extends StatelessWidget {
-  const SingleClassPage(
-      {Key? key, required this.teacherClass, required this.teacherName})
-      : super(key: key);
+class SingleClassPage extends StatefulWidget {
+  const SingleClassPage({super.key, required this.clas, this.classEvent});
 
-  final ClassModel teacherClass;
-  final String teacherName;
+  final ClassModel clas;
+  final ClassEvent? classEvent;
+
+  @override
+  State<SingleClassPage> createState() => _SingleClassPageState();
+}
+
+class _SingleClassPageState extends State<SingleClassPage> {
+  final ScrollController _scrollController = ScrollController();
+  final ValueNotifier<double> _percentageCollapsed = ValueNotifier(0.0);
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_updatePercentage);
+  }
+
+  void _updatePercentage() {
+    if (!_scrollController.hasClients) return;
+
+    const double expandedHeight = appBarExpandedHeight - kToolbarHeight;
+    final double currentHeight = appBarExpandedHeight -
+        _scrollController.offset.clamp(0.0, expandedHeight);
+    final double percentage = 1.0 - (currentHeight / expandedHeight);
+    _percentageCollapsed.value = percentage;
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_updatePercentage);
+    _scrollController.dispose();
+    _percentageCollapsed.dispose();
+    super.dispose();
+  }
+
+  void shareEvent(ClassEvent classEvent, ClassModel clas) {
+    final String content = '''
+${clas.name}
+
+${formatInstructors(clas.classTeachers)}
+${formatDateRangeForInstructor(DateTime.parse(classEvent.startDate!), DateTime.parse(classEvent.endDate!))}
+At: ${clas.locationName}
+-
+Found in the AcroWorld app
+''';
+
+    Share.share(content);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final ClassTeachers? billingTeacher =
+        findFirstTeacherOrNull(widget.clas.classTeachers);
+
+    List<Widget> actions = [];
+
+    actions.add(
+      ValueListenableBuilder<double>(
+        valueListenable: _percentageCollapsed,
+        builder: (context, percentage, child) {
+          return BackDropActionRow(
+              isCollapsed: percentage > appBarCollapsedThreshold,
+              classId: widget.clas.id!,
+              classEvent: widget.classEvent,
+              initialFavorized: widget.clas.isInitiallyFavorized,
+              shareEvents: () => shareEvent(widget.classEvent!, widget.clas));
+        },
+      ),
+    );
+
     return Scaffold(
-        appBar: AppBar(
-            leading: const BackButton(color: Colors.black),
-            title: RichText(
-              overflow: TextOverflow.ellipsis,
-              text: TextSpan(
-                children: <TextSpan>[
-                  TextSpan(
-                      text: teacherClass.name,
-                      style:
-                          const TextStyle(color: Colors.black, fontSize: 18)),
-                ],
-              ),
-            )),
-        body: Query(
-            options: QueryOptions(
-                document: Queries.getClassEventsByClassId,
-                fetchPolicy: FetchPolicy.networkOnly,
-                variables: {"class_id": teacherClass.id}),
-            builder: (QueryResult result,
-                {VoidCallback? refetch, FetchMore? fetchMore}) {
-              if (result.hasException) {
-                return Text(result.exception.toString());
-              }
+      bottomNavigationBar: _buildBottomHoverButton(context, billingTeacher),
+      body: CustomScrollView(
+        controller: _scrollController,
+        slivers: <Widget>[
+          CustomSliverAppBar(
+              actions: actions,
+              percentageCollapsed: _percentageCollapsed,
+              headerText: widget.clas.name ?? "",
+              imgUrl: widget.clas.imageUrl ?? "")
+          // _buildSliverAppBar(context, _percentageCollapsed.value),
+          ,
+          SliverToBoxAdapter(
+            child: SingleClassBody(
+              classe: widget.clas,
+              classEvent: widget.classEvent,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-              if (result.isLoading) {
-                return const LoadingWidget();
-              }
+  BottomAppBar? _buildBottomHoverButton(
+      BuildContext context, ClassTeachers? billingTeacher) {
+    if (widget.classEvent != null &&
+        widget.classEvent!.classModel?.classBookingOptions != null &&
+        widget.classEvent!.classModel!.classBookingOptions!.isNotEmpty &&
+        billingTeacher != null) {
+      return BottomAppBar(
+          elevation: 0,
+          child: BookingQueryHoverButton(classEvent: widget.classEvent!));
+    } else if (widget.classEvent != null) {
+      return null;
+    }
+    return BottomAppBar(
+        elevation: 0, child: Container(child: _buildCalendarButton(context)));
+  }
 
-              VoidCallback runRefetch = (() {
-                try {
-                  refetch!();
-                } catch (e) {
-                  print(e.toString());
-                }
-              });
-
-              List<ClassEvent> classEvents = [];
-
-              result.data!["class_events"].forEach(
-                  (cEvent) => classEvents.add(ClassEvent.fromJson(cEvent)));
-
-              return SingleClassBody(
-                classe: teacherClass,
-                classEvents: classEvents,
-              );
-            }));
+  Widget _buildCalendarButton(BuildContext context) {
+    return CustomBottomHoverButton(
+      content: const Text(
+        "Calendar",
+        style: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: Colors.white,
+        ),
+      ),
+      onPressed: () =>
+          buildMortal(context, CalenderModal(classId: widget.clas.id!)),
+    );
   }
 }

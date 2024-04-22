@@ -1,16 +1,14 @@
+import 'package:acroworld/components/class_widgets/class_template_card.dart';
+import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
-import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/single_class_page/single_class_page.dart';
-import 'package:acroworld/components/loading_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ClassSection extends StatelessWidget {
-  const ClassSection({Key? key, required this.teacher}) : super(key: key);
+  const ClassSection({super.key, required this.teacherId});
 
-  final TeacherModel teacher;
+  final String teacherId;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +16,7 @@ class ClassSection extends StatelessWidget {
         options: QueryOptions(
             document: Queries.getClassesByTeacherId,
             fetchPolicy: FetchPolicy.networkOnly,
-            variables: {"teacher_id": teacher.id}),
+            variables: {"teacher_id": teacherId}),
         builder: (QueryResult result,
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
@@ -44,74 +42,31 @@ class ClassSection extends StatelessWidget {
 
           List<ClassModel> classes = [];
 
-          result.data!["classes"]
-              .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
+          try {
+            result.data!["classes"]
+                .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
+          } catch (e) {
+            print(e.toString());
+          }
 
-          return ListView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              itemCount: classes.length,
-              itemBuilder: ((context, index) {
-                ClassModel indexClass = classes[index];
-                return GestureDetector(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => SingleClassPage(
-                              teacherClass: indexClass,
-                              teacherName: teacher.name ?? "no name",
-                            )),
-                  ),
-                  child: ListTile(
-                    // leading: const CircleAvatar(
-                    //   radius: 3,
-                    //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-                    // ),
-                    leading: indexClass.imageUrl != null
-                        ? SizedBox(
-                            height: 85.0,
-                            width: 120.0,
-                            child: CachedNetworkImage(
-                              fit: BoxFit.cover,
-                              imageUrl: indexClass.imageUrl!,
-                              imageBuilder: (context, imageProvider) =>
-                                  Container(
-                                height: 85.0,
-                                width: 120.0,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  image: DecorationImage(
-                                      image: imageProvider, fit: BoxFit.cover),
-                                ),
-                              ),
-                              placeholder: (context, url) => Container(
-                                height: 85.0,
-                                width: 120.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.black12,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                height: 85.0,
-                                width: 120.0,
-                                decoration: BoxDecoration(
-                                  color: Colors.black12,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                                child: const Icon(
-                                  Icons.error,
-                                  color: Colors.red,
-                                ),
-                              ),
-                            ),
-                          )
-                        : null,
-                    title: Text(indexClass.name),
-                    subtitle: Text(indexClass.locationName),
-                    //     style: const TextStyle(fontWeight: FontWeight.w300)),
-                  ),
-                );
-              }));
+          return Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: RefreshIndicator(
+              onRefresh: () async => runRefetch(),
+              child: classes.isEmpty
+                  ? const Center(
+                      child: Text("No active classes."),
+                    )
+                  : ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: classes.length,
+                      itemBuilder: ((context, index) {
+                        ClassModel indexClass = classes[index];
+                        return ClassTemplateCard(indexClass: indexClass);
+                      })),
+            ),
+          );
         });
   }
 }

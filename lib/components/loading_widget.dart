@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingWidget extends StatelessWidget {
-  const LoadingWidget({Key? key, this.onRefresh}) : super(key: key);
+  const LoadingWidget({super.key, this.onRefresh});
   final Future<void> Function()? onRefresh;
 
   @override
@@ -11,20 +11,15 @@ class LoadingWidget extends StatelessWidget {
           () async {
             return;
           },
-      child: SingleChildScrollView(
-        physics: const AlwaysScrollableScrollPhysics(),
+      child: const SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
         child: SizedBox(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
+            children: [
               Center(
                 child: CircularProgressIndicator(),
-                // child: Image(
-                //   image: AssetImage("assets/muscleup_drawing.png"),
-                //   height: 200,
-                //   fit: BoxFit.contain,
-                // ),
               ),
             ],
           ),

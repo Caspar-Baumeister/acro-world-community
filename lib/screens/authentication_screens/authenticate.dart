@@ -1,9 +1,9 @@
-import 'package:acroworld/screens/authentication_screens/login_screen/sign_in.dart';
-import 'package:acroworld/screens/authentication_screens/register_screen/register.dart';
+import 'package:acroworld/screens/authentication_screens/sign_in/sign_in.dart';
+import 'package:acroworld/screens/authentication_screens/signup_screen/sign_up.dart';
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  const Authenticate({Key? key, this.initShowSignIn}) : super(key: key);
+  const Authenticate({super.key, this.initShowSignIn});
 
   final bool? initShowSignIn;
 
@@ -12,8 +12,7 @@ class Authenticate extends StatefulWidget {
 }
 
 class _AuthenticateState extends State<Authenticate> {
-  bool showSignIn = false;
-  // bool confirmedFriend = false;
+  bool showSignIn = true;
 
   @override
   void initState() {
@@ -22,12 +21,6 @@ class _AuthenticateState extends State<Authenticate> {
       showSignIn = widget.initShowSignIn!;
     }
   }
-
-  // void confirmFriend() {
-  //   setState(() {
-  //     confirmedFriend = true;
-  //   });
-  // }
 
   void toggleView() {
     setState(() => showSignIn = !showSignIn);
@@ -38,11 +31,7 @@ class _AuthenticateState extends State<Authenticate> {
     if (showSignIn) {
       return SignIn(toggleView: toggleView);
     } else {
-      // if (confirmedFriend) {
-      return Register(toggleView: toggleView);
-      // } else {
-      //   return FriendCode(confirmFriend: confirmFriend, toggleView: toggleView);
-      // }
+      return SignUp(toggleView: toggleView);
     }
   }
 }

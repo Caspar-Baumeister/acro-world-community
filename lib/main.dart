@@ -1,78 +1,106 @@
 import 'package:acroworld/App.dart';
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/provider/auth/auth_provider.dart';
-import 'package:acroworld/preferences/login_credentials_preferences.dart';
+import 'package:acroworld/screens/system_pages/version_to_old_page.dart';
+import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/services/local_storage_service.dart';
+import 'package:acroworld/services/notification_service.dart';
+import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
+  // Sentry //
+  if (AppEnvironment.enableSentry) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = AppEnvironment.sentryDsn;
+        // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+        // We recommend adjusting this value in production.
+        options.tracesSampleRate = 0.01;
+      },
+      appRunner: () {
+        return initMain();
+      },
+    );
+  } else {
+    initMain();
+  }
+}
+
+initMain() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
   await initHiveForFlutter();
-
-  await CredentialPreferences.init();
+  await LocalStorageService.init();
   await PlacePreferences.init();
 
-  final HttpLink httpLink = HttpLink(
-    'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
-  );
+  // Initialize the GraphQL client in the client singleton
+  GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
 
-  final WebSocketLink websocketLink = WebSocketLink(
-    'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
-    config: SocketClientConfig(
-      autoReconnect: true,
-      inactivityTimeout: const Duration(seconds: 30),
-      initialPayload: () async {
-        String? token = await AuthProvider.fetchToken();
-        return {
-          'headers': {'Authorization': 'Bearer $token'}
-        };
-      },
-    ),
-  );
+  // WEBSOCKETLINK //
+  // used only for subscription
+  // final WebSocketLink websocketLink = WebSocketLink(
+  //   'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
+  //   config: SocketClientConfig(
+  //     autoReconnect: true,
+  //     inactivityTimeout: const Duration(seconds: 30),
+  //     initialPayload: () async {
+  //       String? token = await AuthProvider().getToken();
+  //       return {
+  //         'headers': token == null || token == ""
+  //             ? {}
+  //             : {'Authorization': 'Bearer $token'}
+  //       };
+  //     },
+  //   ),
+  // );
 
-  final AuthLink authLink = AuthLink(
-    getToken: () async {
-      String? token = await AuthProvider.fetchToken();
-
-      return 'Bearer $token';
-    },
-  );
-
-  final Link concatLink = authLink.concat(httpLink);
-
-  final Link link = Link.split(
-      (request) => request.isSubscription, websocketLink, concatLink);
-
-  ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: link,
-      // The default store is the InMemoryStore, which does NOT persist to disk
-      cache: GraphQLCache(store: HiveStore()),
-    ),
-  );
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  try {
+    // FIREBASE //
+    await Firebase.initializeApp(
+      name: "acroworld",
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-  NotificationSettings settings = await messaging.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+    // FIREBASE MESSAGING //
+    // initialize the firebase messaging service
+    NotificationService notificationService = NotificationService();
+    await notificationService.initialize();
+    notificationService.getToken();
 
-  print('User granted permission: ${settings.authorizationStatus}');
+    // STRIPE //
+    Stripe.publishableKey = AppEnvironment.stripePublishableKey;
+    Stripe.merchantIdentifier = 'merchant.de.acroworld';
+    Stripe.urlScheme = 'acroworld';
+    await Stripe.instance.applySettings();
+  } catch (exception, stackTrace) {
+    CustomErrorHandler.captureException(exception, stackTrace: stackTrace);
+  }
 
-  return runApp(App(client: client));
+  // VERSION CHECK //
+  String minVersion =
+      await VersionService.getVersionInfo(graphQLClientSingleton.client);
+  if (minVersion == 'Error') {
+    // TODO if there is an error, send the User to the error page
+    minVersion = '0.0.0';
+    CustomErrorHandler.captureException(
+        "error in receiving version info from backend");
+  }
+  String currentVersion = await VersionService.getCurrentAppVersion();
+  bool isValid = VersionService.verifyVersionString(
+      currentVersion: currentVersion, minVersion: minVersion);
+
+  runApp(isValid
+      ? const App()
+      : VersionToOldPage(
+          currentVersion: currentVersion, minVersion: minVersion));
 }

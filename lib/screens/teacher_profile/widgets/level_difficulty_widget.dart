@@ -1,132 +1,65 @@
+import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-// class DifficultyWidget extends StatelessWidget {
-//   const DifficultyWidget(this.classLevel, {Key? key}) : super(key: key);
-
-//   final List<String> classLevel;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Row(
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         Container(
-//           width: 22,
-//           height: 22,
-//           decoration: BoxDecoration(
-//             color: Colors.green[100],
-//             border: classLevel.contains("Beginner") ? Border.all() : null,
-//           ),
-//         ),
-//         Container(
-//           width: 22,
-//           height: 22,
-//           decoration: BoxDecoration(
-//             color: Colors.yellow[100],
-//             border: classLevel.contains("Intermediate") ? Border.all() : null,
-//           ),
-//         ),
-//         Container(
-//           width: 22,
-//           height: 22,
-//           decoration: BoxDecoration(
-//             color: Colors.red[100],
-//             border: classLevel.contains("Advanced") ? Border.all() : null,
-//           ),
-//         )
-//       ],
-//     );
-//   }
-// }
-
 class DifficultyWidget extends StatelessWidget {
   const DifficultyWidget(this.classLevel,
-      {Key? key,
+      {super.key,
       this.height = DIFFICULTY_LEVEL_HEIGHT,
-      this.totalWidth = DIFFICULTY_LEVEL_WIDTH})
-      : super(key: key);
+      this.totalWidth = DIFFICULTY_LEVEL_WIDTH});
 
-  final List<String> classLevel;
+  final List<ClassLevels>? classLevel;
   final double height;
   final double totalWidth;
 
   @override
   Widget build(BuildContext context) {
+    // take first entry and paints in that colour/ show this text
+    List<String> levels = classLevel?.map((e) => e.level!.name!).toList() ??
+        List<String>.from([]);
+    Gradient? gradient;
+    Color? color;
+    String text = "";
+    if (levels.contains("Open")) {
+      gradient = const LinearGradient(
+        begin: Alignment.centerLeft,
+        end: Alignment.centerRight,
+        colors: [
+          Color.fromARGB(255, 194, 246, 195),
+          Color.fromARGB(255, 251, 243, 172),
+          Color.fromARGB(255, 252, 181, 188),
+        ],
+        stops: [
+          0.33,
+          0.66,
+          0.99,
+        ],
+      );
+      text = "Open";
+    } else if (levels.isEmpty) {
+      return Container();
+    } else if (levels[0] == "Beginner") {
+      color = const Color.fromARGB(255, 194, 246, 195);
+      text = "Beginner";
+    } else if (levels[0] == "Intermediate") {
+      color = const Color.fromARGB(255, 251, 243, 172);
+      text = "Intermediate";
+    } else if (levels[0] == "Advanced") {
+      color = const Color.fromARGB(255, 252, 181, 188);
+      text = "Advanced";
+    }
     return Container(
-      height: height,
-      width: totalWidth,
-      decoration: classLevel.contains("Open")
-          ? const BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  Color.fromARGB(255, 194, 246, 195),
-                  Color.fromARGB(255, 251, 243, 172),
-                  Color.fromARGB(255, 252, 181, 188),
-                ],
-                stops: [
-                  0.33,
-                  0.66,
-                  0.99,
-                ],
-              ),
-            )
-          : null,
-      child: !classLevel.contains("Open")
-          ? Stack(
-              alignment: Alignment.center,
-              children: [
-                Row(
-                  children: [
-                    classLevel.contains("Beginner")
-                        ? Flexible(
-                            child: Container(
-                              constraints: const BoxConstraints.expand(),
-                              height: height,
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 194, 246, 195),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                    classLevel.contains("Intermediate")
-                        ? Flexible(
-                            child: Container(
-                              constraints: const BoxConstraints.expand(),
-                              height: height,
-                              decoration: const BoxDecoration(
-                                  color: Color.fromARGB(255, 251, 243, 172)),
-                            ),
-                          )
-                        : Container(),
-                    classLevel.contains("Advanced")
-                        ? Flexible(
-                            child: Container(
-                              constraints: const BoxConstraints.expand(),
-                              height: height,
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 252, 181, 188),
-                              ),
-                            ),
-                          )
-                        : Container(),
-                  ],
-                ),
-                classLevel.length == 1
-                    ? Text(
-                        classLevel[0],
-                        style: const TextStyle(fontSize: 10),
-                      )
-                    : Container()
-              ],
-            )
-          : const Center(
-              child: Text(
-              "Open",
-              style: TextStyle(fontSize: 10),
-            )),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          gradient: gradient,
+          color: color),
+      child: Center(
+          child: Text(
+        text,
+        style: Theme.of(context).textTheme.bodySmall,
+      )),
     );
   }
 }

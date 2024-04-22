@@ -1,23 +1,23 @@
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/single_class_page/widgets/class_event_participant_query.dart';
+import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ClassEventCalendar extends StatefulWidget {
-  const ClassEventCalendar({required this.kEvents, Key? key}) : super(key: key);
+  const ClassEventCalendar({required this.kEvents, super.key});
 
   final Map<DateTime, List<ClassEvent>> kEvents;
 
   @override
-  _ClassEventCalendarState createState() => _ClassEventCalendarState();
+  ClassEventCalendarState createState() => ClassEventCalendarState();
 }
 
-class _ClassEventCalendarState extends State<ClassEventCalendar> {
+class ClassEventCalendarState extends State<ClassEventCalendar> {
   late ValueNotifier<List<ClassEvent>> _selectedEvents;
-  final CalendarFormat _calendarFormat = CalendarFormat.week;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+  final CalendarFormat _calendarFormat = CalendarFormat.month;
+  RangeSelectionMode rangeSelectionMode = RangeSelectionMode
       .disabled; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -41,15 +41,6 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
     return widget.kEvents[day] ?? [];
   }
 
-  List<ClassEvent> _getEventsForRange(DateTime start, DateTime end) {
-    // Implementation
-    final days = daysInRange(start, end);
-
-    return [
-      for (final d in days) ..._getEventsForDay(d),
-    ];
-  }
-
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
     if (!isSameDay(_selectedDay, selectedDay)) {
       setState(() {
@@ -57,29 +48,10 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
         _focusedDay = focusedDay;
         _rangeStart = null; // Important to clean those
         _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+        rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
-    }
-  }
-
-  void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
-    setState(() {
-      _selectedDay = null;
-      _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
-    });
-
-    // `start` or `end` could be null
-    if (start != null && end != null) {
-      _selectedEvents.value = _getEventsForRange(start, end);
-    } else if (start != null) {
-      _selectedEvents.value = _getEventsForDay(start);
-    } else if (end != null) {
-      _selectedEvents.value = _getEventsForDay(end);
     }
   }
 
@@ -105,23 +77,15 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
 
-          availableCalendarFormats: const {CalendarFormat.week: 'week'},
+          availableCalendarFormats: const {CalendarFormat.month: 'month'},
           calendarStyle: CalendarStyle(
               // Use `CalendarStyle` to customize the UI
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
                   color: Colors.grey[400]!, shape: BoxShape.circle),
               selectedDecoration: const BoxDecoration(
-                  color: PRIMARY_COLOR, shape: BoxShape.circle)),
+                  color: CustomColors.primaryColor, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
-          //onRangeSelected: _onRangeSelected,
-          // onFormatChanged: (format) {
-          //   if (_calendarFormat != format) {
-          //     setState(() {
-          //       _calendarFormat = format;
-          //     });
-          //   }
-          // },
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;
           },
@@ -134,9 +98,10 @@ class _ClassEventCalendarState extends State<ClassEventCalendar> {
               shrinkWrap: true,
               itemCount: value.length,
               itemBuilder: (context, index) {
-                return ClassEventParticipantQuery(
-                  classEvent: value[index],
-                );
+                return ClassEventExpandedTile(classEvent: value[index]);
+                // ClassEventParticipantQuery(
+                //   classEvent: value[index],
+                // );
               },
             );
           },

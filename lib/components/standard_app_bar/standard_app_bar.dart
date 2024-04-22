@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 
 class StandardAppBar extends StatefulWidget implements PreferredSizeWidget {
-  const StandardAppBar({Key? key, required this.title})
-      : preferredSize = const Size.fromHeight(kToolbarHeight),
-        super(key: key);
+  const StandardAppBar({super.key, required this.title})
+      : preferredSize = const Size.fromHeight(kToolbarHeight);
 
   @override
   final Size preferredSize;
   final String title;
 
   @override
-  _StandardAppBarState createState() => _StandardAppBarState();
+  StandardAppBarState createState() => StandardAppBarState();
 }
 
-class _StandardAppBarState extends State<StandardAppBar> {
+class StandardAppBarState extends State<StandardAppBar> {
   @override
   Widget build(BuildContext context) {
-    return AppBar(title: Text(widget.title));
+    return AppBar(
+      title: Text(widget.title),
+      leading: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back_ios_new_rounded)),
+    );
   }
 }

@@ -2,7 +2,7 @@ import 'package:acroworld/components/headers/h.dart';
 import 'package:flutter/material.dart';
 
 class H4 extends StatelessWidget {
-  const H4({Key? key, required this.text}) : super(key: key);
+  const H4({super.key, required this.text});
 
   final String text;
 
@@ -10,7 +10,7 @@ class H4 extends StatelessWidget {
   Widget build(BuildContext context) {
     return H(
       text,
-      style: Theme.of(context).textTheme.headline4,
+      style: Theme.of(context).textTheme.headlineMedium,
     );
   }
 }
