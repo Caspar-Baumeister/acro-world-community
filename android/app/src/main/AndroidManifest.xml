@@ -19,6 +19,51 @@
            
             <meta-data android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+            <!-- App Links -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with https://YOUR_HOST -->
+                <!-- If a user clicks on a shared link that uses the "http" scheme, your
+                    app should be able to delegate that traffic to "https". -->
+                <data 
+                    android:scheme="http" 
+                    android:host="www.link.acroworld.de"/>
+            </intent-filter>
+                        <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with https://YOUR_HOST -->
+                <!-- If a user clicks on a shared link that uses the "http" scheme, your
+                    app should be able to delegate that traffic to "https". -->
+                <data 
+                    android:scheme="https" 
+                    android:host="www.link.acroworld.de"/>
+            </intent-filter>
+                        <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with https://YOUR_HOST -->
+                <!-- If a user clicks on a shared link that uses the "http" scheme, your
+                    app should be able to delegate that traffic to "https". -->
+                <data 
+                    android:scheme="http" 
+                    android:host="link.acroworld.de"/>
+            </intent-filter>
+                        <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Accepts URIs that begin with https://YOUR_HOST -->
+                <!-- If a user clicks on a shared link that uses the "http" scheme, your
+                    app should be able to delegate that traffic to "https". -->
+                <data 
+                    android:scheme="https" 
+                    android:host="link.acroworld.de"/>
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
