@@ -208,3 +208,10 @@ web/build/
 # Flutter build outputs
 build/
 **/build/
+
+# Dart tools
+.dart_tool/
+
+# assets
+assets/
+**/assets/
