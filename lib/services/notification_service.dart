@@ -1,9 +1,7 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/main.dart';
 import 'package:acroworld/models/fcm/fcm_event.dart';
-import 'package:acroworld/screens/single_event/single_event_query_wrapper.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -46,12 +44,10 @@ class NotificationService {
           ),
         );
       } catch (e) {
-        print("updateToken error (client.mutate)");
-        print(e.toString());
+        CustomErrorHandler.captureException(e, stackTrace: StackTrace.current);
       }
     }).catchError((err) {
-      print("updateToken error");
-      print(err.toString());
+      CustomErrorHandler.captureException(err, stackTrace: StackTrace.current);
     });
   }
 
@@ -85,7 +81,6 @@ class NotificationService {
   Future<void> addListeners(BuildContext context) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       print("message.messageType");
-
       print(message.messageType);
       print("message.data[]");
       print(message.data["type"]);
@@ -95,32 +90,32 @@ class NotificationService {
           try {
             // Show a Snackbar to notify the user about the message
             final event = FCMEvent.fromJson(message.data);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Colors.teal,
-                duration: const Duration(seconds: 5),
-                content: Center(
-                  child: Text(
-                    "Teacher you follow where added to the ${event.eventType?.value} ${event.name}",
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                action: SnackBarAction(
-                  label: 'View Event',
-                  onPressed: () {
-                    // Navigate to the EventScreen with the extracted ID
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => SingleEventQueryWrapper(
-                          eventId: event.id,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   SnackBar(
+            //     behavior: SnackBarBehavior.floating,
+            //     backgroundColor: Colors.teal,
+            //     duration: const Duration(seconds: 5),
+            //     content: Center(
+            //       child: Text(
+            //         "Teacher you follow where added to the ${event.eventType?.value} ${event.name}",
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //     action: SnackBarAction(
+            //       label: 'View Event',
+            //       onPressed: () {
+            //         // Navigate to the EventScreen with the extracted ID
+            //         Navigator.of(context).push(
+            //           MaterialPageRoute(
+            //             builder: (context) => SingleEventQueryWrapper(
+            //               eventId: event.id,
+            //             ),
+            //           ),
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // );
           } catch (e) {
             showErrorToast(
               "We could not redirect you to the relevant event",
@@ -156,13 +151,13 @@ class NotificationService {
                     //     ),
                     //   ),
                     // );
-                    navigatorKey.currentState!.push(
-                      MaterialPageRoute(
-                        builder: (context) => SingleEventQueryWrapper(
-                          eventId: event.id,
-                        ),
-                      ),
-                    );
+                    // navigatorKey.currentState!.push(
+                    // MaterialPageRoute(
+                    //   builder: (context) => SingleEventQueryWrapper(
+                    //     eventId: event.id,
+                    //   ),
+                    // ),
+                    // );
                   },
                 ),
               ),
@@ -196,13 +191,13 @@ class NotificationService {
             //     ),
             //   ),
             // );
-            navigatorKey.currentState!.push(
-              MaterialPageRoute(
-                builder: (context) => SingleEventQueryWrapper(
-                  eventId: event.id,
-                ),
-              ),
-            );
+            // navigatorKey.currentState!.push(
+            //   MaterialPageRoute(
+            //     builder: (context) => SingleEventQueryWrapper(
+            //       eventId: event.id,
+            //     ),
+            //   ),
+            // );
           } catch (e) {
             showErrorToast(
               "We could not redirect you to the relevant event",
@@ -215,13 +210,13 @@ class NotificationService {
         case "EventUpdated":
           try {
             final event = FCMEvent.fromJson(message.data);
-            navigatorKey.currentState!.push(
-              MaterialPageRoute(
-                builder: (context) => SingleEventQueryWrapper(
-                  eventId: event.id,
-                ),
-              ),
-            );
+            // navigatorKey.currentState!.push(
+            // MaterialPageRoute(
+            //   builder: (context) => SingleEventQueryWrapper(
+            //     eventId: event.id,
+            //   ),
+            // ),
+            // );
           } catch (e) {
             showErrorToast(
               "We could not redirect you to the relevant event",

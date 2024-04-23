@@ -17,14 +17,10 @@ class ClassTemplateCard extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => SingleEventQueryWrapper(
-                  classId: indexClass.id!,
+                  urlSlug: indexClass.urlSlug!,
                 )),
       ),
       child: ListTile(
-        // leading: const CircleAvatar(
-        //   radius: 3,
-        //   backgroundImage: AssetImage("assets/logo/play_store_512.png"),
-        // ),
         leading: indexClass.imageUrl != null
             ? SizedBox(
                 height: 85.0,

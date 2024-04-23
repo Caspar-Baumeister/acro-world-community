@@ -51,15 +51,22 @@ class _SingleClassPageState extends State<SingleClassPage> {
     super.dispose();
   }
 
-  void shareEvent(ClassEvent classEvent, ClassModel clas) {
+  void shareEvent(ClassEvent? classEvent, ClassModel clas) {
+    String deeplinkUrl =
+        "https://link.acroworld.de/event/?urlSlug=${clas.urlSlug}";
+    if (classEvent?.id != null) {
+      deeplinkUrl += "&eventId=${classEvent!.id!}";
+    }
     final String content = '''
-${clas.name}
+Hey, I just found this event on AcroWorld that I think you might like: 
 
+${clas.name}
 ${formatInstructors(clas.classTeachers)}
-${formatDateRangeForInstructor(DateTime.parse(classEvent.startDate!), DateTime.parse(classEvent.endDate!))}
+${classEvent != null ? formatDateRangeForInstructor(DateTime.parse(classEvent.startDate!), DateTime.parse(classEvent.endDate!)) : null}
 At: ${clas.locationName}
 -
-Found in the AcroWorld app
+If you have the app, you can find the event here: 
+$deeplinkUrl
 ''';
 
     Share.share(content);

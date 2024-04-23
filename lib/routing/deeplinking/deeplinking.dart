@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:uni_links/uni_links.dart';
 
@@ -33,12 +35,33 @@ class Deeplinking {
   void handleDeepLink(BuildContext context, Uri uri) {
     print("Deep link: $uri");
 
+    if (uri.path.contains("/event/")) {
+      uri.queryParametersAll.forEach((key, value) {
+        print("key: $key, value: $value");
+      });
+
+      print("urlSlug: ${uri.queryParameters["urlSlug"]}");
+      print("eventId: ${uri.queryParameters["eventId"]}");
+
+      // get the url slug and the class event id from the uri parameters
+      final String? urlSlug = uri.queryParameters["urlSlug"];
+      final String? classEventId = uri.queryParameters["eventId"];
+
+      if (urlSlug == null) {
+        Navigator.of(context).push(DiscoverPageRoute());
+        return;
+      }
+      Navigator.of(context).push(SingleEventIdWrapperPageRoute(
+          urlSlug: urlSlug, classEventId: classEventId));
+    }
+
+    // check if token is present
+
     // if (authProvider.authState == AuthStates.unauthenticated) {
     //   Navigator.of(context).push(LandingPageRoute());
     // } else if (authProvider.authState == AuthStates.unConfirmed) {
     //   Navigator.of(context).push(ConfirmEmailPageRoute());
 
-    print("uri.path: ${uri.path}");
     // if (uri.path.contains("/register")) {
     //   IntentRouter.route(context, Intents.frontend_auth_register);
     // } else if (uri.path.contains("/user/missingData")) {

@@ -32,6 +32,7 @@ query userBookings {
         start_date
         end_date
         class {
+          url_slug
           name
           image_url
           id
@@ -161,8 +162,8 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
  """);
 
   static final getClassByIdWithFavorite = gql("""
-query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
-  classes_by_pk(id: \$class_id){
+query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
+  classes(where: {url_slug: {_eq: \$url_slug}}){
      ${Fragments.classFragment}
      class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id

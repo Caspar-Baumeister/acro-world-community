@@ -25,6 +25,7 @@ class ClassModel {
   EventType? eventType;
   String? city;
   String? country;
+  String? urlSlug;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -42,6 +43,7 @@ class ClassModel {
       this.classPassUrl,
       this.description,
       this.id,
+      this.urlSlug,
       this.imageUrl,
       this.location,
       this.locationName,
@@ -64,6 +66,7 @@ class ClassModel {
     distance = json['distance'];
     isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
     id = json['id'];
+    urlSlug = json['url_slug'];
     imageUrl = json['image_url'];
     location =
         json['location'] != null ? Location.fromJson(json['location']) : null;

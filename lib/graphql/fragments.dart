@@ -1,5 +1,6 @@
 class Fragments {
   static const classFragment = """
+      url_slug
       booking_email
       max_booking_slots
       class_booking_options {

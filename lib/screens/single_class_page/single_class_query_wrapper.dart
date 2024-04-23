@@ -12,9 +12,9 @@ import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
   const SingleEventQueryWrapper(
-      {super.key, required this.classId, this.classEventId});
+      {super.key, required this.urlSlug, this.classEventId});
 
-  final String classId;
+  final String urlSlug;
   final String? classEventId;
 
   @override
@@ -27,7 +27,7 @@ class SingleEventQueryWrapper extends StatelessWidget {
               : Queries.getClassEventWithClasByIdWithFavorite,
           fetchPolicy: FetchPolicy.networkOnly,
           variables: classEventId == null
-              ? {'class_id': classId, "user_id": userProvider.activeUser!.id}
+              ? {'url_slug': urlSlug, "user_id": userProvider.activeUser!.id}
               : {
                   'class_event_id': classEventId,
                   "user_id": userProvider.activeUser!.id
@@ -35,20 +35,22 @@ class SingleEventQueryWrapper extends StatelessWidget {
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (queryResult.hasException) {
+          CustomErrorHandler.captureException(queryResult.exception,
+              stackTrace: StackTrace.current);
           return ErrorPage(error: queryResult.exception.toString());
         } else if (queryResult.isLoading) {
           return const LoadingPage();
         } else if (queryResult.data != null &&
-            queryResult.data?["classes_by_pk"] != null) {
+            queryResult.data?["classes"]?[0] != null) {
           try {
             ClassModel clas =
-                ClassModel.fromJson(queryResult.data?["classes_by_pk"]);
+                ClassModel.fromJson(queryResult.data?["classes"][0]);
             return SingleClassPage(clas: clas);
           } catch (e, trace) {
             CustomErrorHandler.captureException(e, stackTrace: trace);
             return ErrorPage(
                 error:
-                    "An unexpected error occured, when transforming the classes_by_pk data to an object with classId $classId");
+                    "An unexpected error occured, when transforming the classes_by_pk data to an object with urlSlug $urlSlug");
           }
         } else if (queryResult.data != null &&
             queryResult.data?["class_events_by_pk"] != null) {
@@ -68,11 +70,11 @@ class SingleEventQueryWrapper extends StatelessWidget {
           }
         } else {
           CustomErrorHandler.captureException(
-              "An unexpected error occured, when fetching the class / classEvent with id $classId / $classEventId",
+              "An unexpected error occured, when fetching the class / classEvent with id $urlSlug / $classEventId",
               stackTrace: StackTrace.current);
           return ErrorPage(
               error:
-                  "An unexpected error occured, when fetching the class / classEvent with id $classId / $classEventId");
+                  "An unexpected error occured, when fetching the class / classEvent with id $urlSlug / $classEventId");
         }
       },
     );

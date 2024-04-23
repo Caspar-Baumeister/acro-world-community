@@ -24,7 +24,7 @@ class UserBookingsCard extends StatelessWidget {
                   MaterialPageRoute(
                       builder: (context) => SingleEventQueryWrapper(
                             classEventId: userBooking.classEventId,
-                            classId: userBooking.classId!,
+                            urlSlug: userBooking.urlSlug!,
                           )))
               : null,
           child: SizedBox(

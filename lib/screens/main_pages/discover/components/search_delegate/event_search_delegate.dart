@@ -1,7 +1,7 @@
+import 'package:acroworld/components/month_string_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
-import 'package:acroworld/screens/main_pages/events/with_filter/filter_on_event_body.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

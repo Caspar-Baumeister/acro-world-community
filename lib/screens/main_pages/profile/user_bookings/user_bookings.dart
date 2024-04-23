@@ -167,6 +167,7 @@ class UserBookings extends StatelessWidget {
 class UserBookingModel {
   String? classEventId;
   String? classId;
+  String? urlSlug;
   String? eventName;
   String? eventImage;
   DateTime startDate;
@@ -182,6 +183,7 @@ class UserBookingModel {
     required this.eventImage,
     required this.startDate,
     required this.endDate,
+    required this.urlSlug,
     required this.bookingTitle,
     required this.status,
     this.locationName,
@@ -218,6 +220,7 @@ class UserBookingModel {
       startDate: startDate ?? DateTime.now(),
       endDate: endDate ?? DateTime.now(),
       bookingTitle: json['booking_option']?['title'] as String?,
+      urlSlug: json['class_event']?['class']?['url_slug'] as String?,
     );
   }
 }
