@@ -202,11 +202,7 @@ android/app/build/
 ios/Runner/build/
 **/ios/**/build/
 
-# Web build outputs
-web/build/
-
 # Flutter build outputs
-build/
 **/build/
 
 # Dart tools
