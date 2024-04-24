@@ -6,7 +6,7 @@ import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +20,11 @@ class SingleEventQueryWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     UserProvider userProvider = Provider.of<UserProvider>(context);
+    if (userProvider.activeUser == null) {
+      return const ErrorPage(
+        error: "You need to be logged in to view this page.",
+      );
+    }
     return Query(
       options: QueryOptions(
           document: classEventId == null
@@ -37,11 +42,14 @@ class SingleEventQueryWrapper extends StatelessWidget {
         if (queryResult.hasException) {
           CustomErrorHandler.captureException(queryResult.exception,
               stackTrace: StackTrace.current);
-          return ErrorPage(error: queryResult.exception.toString());
+          return const Center(
+            child: Text("This event does not exist."),
+          );
         } else if (queryResult.isLoading) {
           return const LoadingPage();
         } else if (queryResult.data != null &&
             queryResult.data?["classes"]?[0] != null) {
+          print("data: ${queryResult.data}");
           try {
             ClassModel clas =
                 ClassModel.fromJson(queryResult.data?["classes"][0]);

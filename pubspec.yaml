@@ -42,7 +42,7 @@ dependencies:
   table_calendar: ^3.0.5
   path_provider: ^2.0.10
   flutter_svg: ^2.0.10+1
-  uni_links: ^0.5.1
+  app_links: ^4.0.1
 
 dev_dependencies:
   flutter_test:
