@@ -17,20 +17,9 @@ class StripeService {
       classEventId,
     );
 
-    // define some billing details
-    //TODO remove hard coded values
     var billingDetails = BillingDetails(
       email: user.email,
       name: user.name,
-      phone: "+49123456789",
-      address: const Address(
-        city: "Berlin",
-        country: "Germany",
-        line1: "Karl-Marx-Str. 1",
-        line2: "Karl-Marx-Str. 2",
-        postalCode: "12043",
-        state: "Berlin",
-      ),
     );
 
     print("Payment sheet response data: $paymentSheetResponseData");
