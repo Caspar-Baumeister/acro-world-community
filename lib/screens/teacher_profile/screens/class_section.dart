@@ -1,5 +1,6 @@
 import 'package:acroworld/components/class_widgets/class_template_card.dart';
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:flutter/material.dart';
@@ -46,8 +47,12 @@ class ClassSection extends StatelessWidget {
             result.data!["classes"]
                 .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
           } catch (e) {
-            print(e.toString());
+            CustomErrorHandler.captureException(e.toString(),
+                stackTrace: StackTrace.current);
           }
+
+          classes =
+              classes.where((element) => element.urlSlug != null).toList();
 
           return Padding(
             padding: const EdgeInsets.only(top: 8.0),

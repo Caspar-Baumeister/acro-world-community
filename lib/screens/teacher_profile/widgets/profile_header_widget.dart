@@ -100,23 +100,6 @@ Widget actions(BuildContext context, String communityId, String? webUrl) {
             ))
           : Container(),
       webUrl != null ? const SizedBox(width: 15) : Container(),
-      // Flexible(
-      //     child: StandartButton(
-      //   text: "Community",
-      //   onPressed: () => Navigator.push(
-      //     context,
-      //     MaterialPageRoute(
-      //         builder: (context) => FetchCommunityChatroom(
-      //               communityId: communityId,
-      //             )),
-      //   ),
-      //   // () => Navigator.of(context).push(
-      //   //   MaterialPageRoute(
-      //   //       builder: (context) => COmmun(
-      //   //           teacher: widget.teacher, isLiked: isLikedState)),
-      //   // ),,
-      //   isFilled: true,
-      // )),
     ],
   );
 }

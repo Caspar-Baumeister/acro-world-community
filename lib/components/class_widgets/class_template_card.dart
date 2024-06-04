@@ -17,7 +17,7 @@ class ClassTemplateCard extends StatelessWidget {
       onTap: () => Navigator.of(context).push(
         MaterialPageRoute(
             builder: (context) => SingleEventQueryWrapper(
-                  urlSlug: indexClass.urlSlug!,
+                  urlSlug: indexClass.urlSlug ?? "",
                 )),
       ),
       child: ListTile(

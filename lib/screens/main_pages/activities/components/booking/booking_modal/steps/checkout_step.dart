@@ -4,7 +4,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/account_settings/edit_userdata.dart';
+import 'package:acroworld/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -163,7 +163,8 @@ class _CheckoutStepState extends State<CheckoutStep> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const EditUserdata(),
+                                  builder: (context) =>
+                                      const EditUserdataPage(),
                                   // EditUserdata(),
                                 ),
                               );

@@ -5,8 +5,8 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class TeacherBody extends StatelessWidget {
-  const TeacherBody({
+class CommunityBody extends StatelessWidget {
+  const CommunityBody({
     super.key,
     required this.teachers,
   });

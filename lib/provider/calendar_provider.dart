@@ -98,7 +98,7 @@ class CalendarProvider extends ChangeNotifier {
 
     QueryOptions queryOptions = QueryOptions(
       document: Queries.getClassEventsFromToLocationWithClass,
-      fetchPolicy: FetchPolicy.cacheAndNetwork,
+      fetchPolicy: FetchPolicy.networkOnly,
       variables: {
         "from": from.toIso8601String(),
         "to": to.toIso8601String(),
@@ -127,15 +127,6 @@ class CalendarProvider extends ChangeNotifier {
                     json['class']?["location"]?["coordinates"] != null)
                 .map((json) => ClassEvent.fromJson(json)),
           );
-
-          // // Loop through newEvents and add them if they don't exist in _classeEvents based on classId
-          // for (var newEvent in newEvents) {
-          //   bool exists = _weekClassEvents.any(
-          //       (existingEvent) => existingEvent.classId == newEvent.classId);
-          //   if (!exists) {
-          //     _weekClassEvents.add(newEvent);
-          //   }
-          // }
         } catch (e, s) {
           CustomErrorHandler.captureException(e, stackTrace: s);
         }

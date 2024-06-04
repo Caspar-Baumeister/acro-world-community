@@ -160,12 +160,6 @@ class ProfileBaseScreenState extends State<ProfileBaseScreen> {
                   indicatorColor: Colors.black,
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: const [
-                    // Tab(
-                    //   icon: Icon(
-                    //     Icons.calendar_month_outlined,
-                    //     color: Colors.black,
-                    //   ),
-                    // ),
                     Tab(
                       icon: Icon(
                         Icons.festival_outlined,
