@@ -251,7 +251,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               const SizedBox(height: 20.0),
 
               CustomButton(
-                "Pay",
+                "Continue to payment",
                 () async {
                   if (paymentIntentId == null) {
                     showErrorToast(
@@ -304,7 +304,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
       }
 
       StripeService()
-          .initPaymentSheet(user, bookingOptionId, classEventId)
+          .initPaymentSheet(user, widget.bookingOption, classEventId)
           .then((paymentIntent) {
         if (paymentIntent != null) {
           return setState(() {

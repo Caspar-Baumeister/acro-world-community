@@ -18,5 +18,5 @@ class AppEnvironment {
   static String stripeLivePublishableKey =
       "pk_live_51O3GqCKwmxSCW9DtYK0YflQyi30q4q0KkzboHwaPJ4N3YXsxZ9mE9tlreE3cr6eTWPf1OjH95BvyRnsa3c8NlNzI00vW4e2xap";
   static String stripeTestPublishableKey =
-      "pk_test_51OPnwnC43x9xByRIG4kRS8c37cd2DTCxvySyiFf6XOBnjefX8OLhLMNyPoYcfs9WxOHCTdocWMsFr5gLY5R2vbsS00eUgNP1LD";
+      "pk_test_51O3GqCKwmxSCW9DthK2a7OK4oT642myOk2KiiBIk8uqNturYtGiJ4Nz2IqPF67SpjESquJRjZ7I8Vyfkdzu4Knbx00lyD9wCVl";
 }
