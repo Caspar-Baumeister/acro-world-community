@@ -1,7 +1,7 @@
 import 'package:acroworld/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/screens/base_page.dart';
-import 'package:acroworld/screens/main_pages/community/teacher_app_bar.dart';
-import 'package:acroworld/screens/main_pages/community/teacher_query.dart';
+import 'package:acroworld/screens/main_pages/community/community_app_bar.dart';
+import 'package:acroworld/screens/main_pages/community/community_query.dart';
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatefulWidget {

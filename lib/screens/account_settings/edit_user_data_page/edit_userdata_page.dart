@@ -4,19 +4,20 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/gender_model.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/screens/base_page.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class EditUserdata extends StatefulWidget {
-  const EditUserdata({super.key});
+class EditUserdataPage extends StatefulWidget {
+  const EditUserdataPage({super.key});
 
   @override
-  State<EditUserdata> createState() => _EditUserdataState();
+  State<EditUserdataPage> createState() => _EditUserdataPageState();
 }
 
-class _EditUserdataState extends State<EditUserdata> {
+class _EditUserdataPageState extends State<EditUserdataPage> {
   late TextEditingController nameController;
   String? acroRole;
   String? acroRoleId;
@@ -53,47 +54,22 @@ class _EditUserdataState extends State<EditUserdata> {
 
   @override
   Widget build(BuildContext context) {
-    // define a scaffold
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
     return WillPopScope(
       onWillPop: () async {
-        print("back button pressed");
-        // if the user presses the back button, check if the user has changed anything
-        final changes = Provider.of<UserProvider>(context, listen: false)
-            .getChanges(nameController.text, acroRoleId, acroLevelId);
-        print("changes $changes");
-        // if so, show a dialog
+        final changes = userProvider.getChanges(
+            nameController.text, acroRoleId, acroLevelId);
         if (changes != null && changes.isNotEmpty) {
-          showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text("Are you sure?"),
-                  content: const Text(
-                      "You have unsaved changes. Are you sure you want to leave?"),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: const Text("No"),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        Navigator.pop(context);
-                      },
-                      child: const Text("Yes"),
-                    ),
-                  ],
-                );
-              });
+          showPopDialog(context);
           return Future.value(false);
         } else {
           // if not, just pop the page
           return Future.value(true);
         }
       },
-      child: Scaffold(
+      child: BasePage(
+        makeScrollable: false,
         // an appbar with a back button and a title
         appBar: AppBar(
           leading: IconButton(
@@ -106,80 +82,105 @@ class _EditUserdataState extends State<EditUserdata> {
         ),
         // make a bottom
         // a body with grey background and a Column
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Name:"),
-                    const SizedBox(height: 8.0),
-                    TextField(
-                      controller: nameController,
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 8.0, vertical: 0),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        filled: true,
-                        fillColor: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: <Widget>[
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("Name:"),
+                  const SizedBox(height: 8.0),
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 8.0, vertical: 0),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
+                      filled: true,
+                      fillColor: Colors.white,
                     ),
-                    const SizedBox(height: 16.0),
+                  ),
+                  const SizedBox(height: 16.0),
 
-                    const Text("Acro Role:"),
-                    const SizedBox(height: 8.0),
-                    ChooseGenderInput(
-                      currentGender: acroRole,
-                      setCurrentGender: setAcroRole,
-                    ),
-                    const SizedBox(height: 8.0),
-                    // same for the level
-                    const SizedBox(height: 16.0),
-                    const Text("Acro Level:"),
-                    const SizedBox(height: 8.0),
-                    ChooseLevelInput(
-                      currentLevel: acroLevel,
-                      setCurrentLevel: setAcroLevel,
-                    )
-                  ],
-                ),
-                const Spacer(),
-                CustomButton("Save", () {
-                  final changes = Provider.of<UserProvider>(context,
-                          listen: false)
-                      .getChanges(nameController.text, acroRoleId, acroLevelId);
-                  // check if the user has changed anything
-                  if (changes != null && changes.isNotEmpty) {
-                    // if so, update the user
-                    Provider.of<UserProvider>(context, listen: false)
-                        .updateUserFromChanges(changes)
-                        .then((value) {
-                      if (value) {
-                        // notify the user
-                        showSuccessToast("Your data has been updated");
-                      } else {
-                        showErrorToast(
-                            "Something went wrong, profile not updated");
-                      }
+                  const Text("Acro Role:"),
+                  const SizedBox(height: 8.0),
+                  ChooseGenderInput(
+                    currentGender: acroRole,
+                    setCurrentGender: setAcroRole,
+                  ),
+                  const SizedBox(height: 8.0),
+                  // same for the level
+                  const SizedBox(height: 16.0),
+                  const Text("Acro Level:"),
+                  const SizedBox(height: 8.0),
+                  ChooseLevelInput(
+                    currentLevel: acroLevel,
+                    setCurrentLevel: setAcroLevel,
+                  )
+                ],
+              ),
+              const Spacer(),
+              CustomButton("Save", () {
+                final changes = Provider.of<UserProvider>(context,
+                        listen: false)
+                    .getChanges(nameController.text, acroRoleId, acroLevelId);
+                // check if the user has changed anything
+                if (changes != null && changes.isNotEmpty) {
+                  // if so, update the user
+                  Provider.of<UserProvider>(context, listen: false)
+                      .updateUserFromChanges(changes)
+                      .then((value) {
+                    if (value) {
+                      // notify the user
+                      showSuccessToast("Your data has been updated");
+                    } else {
+                      showErrorToast(
+                          "Something went wrong, profile not updated");
+                    }
 
-                      // and pop the page
-                      Navigator.pop(context);
-                    });
-                  } else {
-                    // if not, just pop the page
+                    // and pop the page
                     Navigator.pop(context);
-                  }
-                })
-              ],
-            ),
+                  });
+                } else {
+                  // if not, just pop the page
+                  Navigator.pop(context);
+                }
+              })
+            ],
           ),
         ),
       ),
     );
+  }
+
+  Future<dynamic> showPopDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text("Are you sure?"),
+            content: const Text(
+                "You have unsaved changes. Are you sure you want to leave?"),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("No"),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                child: const Text("Yes"),
+              ),
+            ],
+          );
+        });
   }
 }
 

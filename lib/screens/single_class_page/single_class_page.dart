@@ -52,11 +52,11 @@ class _SingleClassPageState extends State<SingleClassPage> {
   }
 
   void shareEvent(ClassEvent? classEvent, ClassModel clas) {
-    String deeplinkUrl =
-        "https://link.acroworld.de/event/?urlSlug=${clas.urlSlug}";
-    if (classEvent?.id != null) {
-      deeplinkUrl += "&eventId=${classEvent!.id!}";
-    }
+    // String deeplinkUrl =
+    //     "https://link.acroworld.de/event/?urlSlug=${clas.urlSlug}";
+    // if (classEvent?.id != null) {
+    //   deeplinkUrl += "&eventId=${classEvent!.id!}";
+    // }
     final String content = '''
 Hey, I just found this event on AcroWorld that I think you might like: 
 
@@ -64,10 +64,9 @@ ${clas.name}
 ${formatInstructors(clas.classTeachers)}
 ${classEvent != null ? formatDateRangeForInstructor(DateTime.parse(classEvent.startDate!), DateTime.parse(classEvent.endDate!)) : null}
 At: ${clas.locationName}
--
-If you have the app, you can find the event here: 
-$deeplinkUrl
 ''';
+// If you have the app, you can find the event here:
+// $deeplinkUrl
 
     Share.share(content);
   }

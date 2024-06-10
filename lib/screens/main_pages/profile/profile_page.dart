@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 8.0, horizontal: 20),
                             child: hasTeacherProfile
-                                ? CustomButton('Dashboard', () async {
+                                ? CustomButton('Teacher Profile', () async {
                                     // get token and refresh token
 
                                     final token = await TokenSingletonService()
@@ -117,10 +117,10 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                                         provider.activeUser?.teacherProfile?.id;
                                     listenToResume = true;
                                     customLaunch(
-                                        "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken&redirectTo=/app/teachers/$teacherId");
+                                        "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken&redirectTo=/app");
                                   })
                                 : CustomButton(
-                                    "Become a Partner",
+                                    "Create Events",
                                     () async {
                                       final token =
                                           await TokenSingletonService()

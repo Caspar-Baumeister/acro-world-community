@@ -2,7 +2,7 @@ import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/main_pages/community/teacher_body.dart';
+import 'package:acroworld/screens/main_pages/community/community_body.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -99,7 +99,7 @@ class _TeacherQueryState extends State<TeacherQuery> {
           return RefreshIndicator(
             color: CustomColors.primaryColor,
             onRefresh: (() async => runRefetch()),
-            child: TeacherBody(
+            child: CommunityBody(
               teachers: teachers,
             ),
           );

@@ -1,9 +1,11 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:acroworld/screens/teacher_profile/screens/profile_base_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -35,13 +37,18 @@ class SingleTeacherQuery extends StatelessWidget {
           return const LoadingPage();
         } else if (result.data != null &&
             result.data?["teachers_by_pk"] != null) {
-          TeacherModel teacher =
-              TeacherModel.fromJson(result.data?["teachers_by_pk"]);
-
-          return ProfileBaseScreen(
-            teacher: teacher,
-            userId: userProvider.activeUser!.id!,
-          );
+          try {
+            TeacherModel teacher =
+                TeacherModel.fromJson(result.data?["teachers_by_pk"]);
+            return ProfileBaseScreen(
+              teacher: teacher,
+              userId: userProvider.activeUser!.id!,
+            );
+          } catch (e) {
+            CustomErrorHandler.captureException(e.toString(),
+                stackTrace: StackTrace.current);
+            return ErrorPage(error: e.toString());
+          }
         } else {
           return const LoadingPage();
         }

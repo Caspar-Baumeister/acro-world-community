@@ -75,7 +75,7 @@ initMain() async {
     // initialize the firebase messaging service
     NotificationService notificationService = NotificationService();
     await notificationService.initialize();
-    notificationService.getToken();
+    // notificationService.getToken();
 
     // STRIPE //
     Stripe.publishableKey = AppEnvironment.stripePublishableKey;
