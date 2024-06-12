@@ -1,7 +1,9 @@
 // Stripe Service class for making bookings
 
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/graphql/mutations.dart';
+import 'package:acroworld/models/booking_option.dart';
 import 'package:acroworld/models/user_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +12,10 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class StripeService {
   Future<String?> initPaymentSheet(
-      User user, String bookingOptionId, String classEventId) async {
+      User user, BookingOption bookingOption, String classEventId) async {
     // 1. create payment intent on the server
     final paymentSheetResponseData = await _createPaymentSheet(
-      bookingOptionId,
+      bookingOption.id!,
       classEventId,
     );
 
@@ -33,23 +35,38 @@ class StripeService {
       return null;
     }
     // 2. initialize the payment sheet
+    var amount = '${bookingOption.price! / 100}';
     try {
       final response = await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
-          // Set to true for custom flow
-          customFlow: false,
-          // Main params
-          merchantDisplayName: "AcroWorld",
-          paymentIntentClientSecret: paymentSheetResponseData['payment_intent'],
-          // Customer keys
-          customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
-          customerId: paymentSheetResponseData['customer_id'],
-          // Extra options
-          style: ThemeMode.dark,
-          billingDetails: billingDetails,
-          billingDetailsCollectionConfiguration:
-              const BillingDetailsCollectionConfiguration(),
-        ),
+            // Set to true for custom flow
+            customFlow: false,
+            // Main params
+            merchantDisplayName: "AcroWorld",
+            paymentIntentClientSecret:
+                paymentSheetResponseData['payment_intent'],
+            // Customer keys
+            customerEphemeralKeySecret:
+                paymentSheetResponseData['ephemeral_key'],
+            customerId: paymentSheetResponseData['customer_id'],
+            // Extra options
+            style: ThemeMode.dark,
+            billingDetails: billingDetails,
+            allowsDelayedPaymentMethods: true,
+            googlePay: PaymentSheetGooglePay(
+              merchantCountryCode: "DE",
+              label: bookingOption.title,
+              currencyCode: bookingOption.currency.label,
+              amount: amount,
+              testEnv: !AppEnvironment.isProdBuild,
+            ),
+            applePay:
+                PaymentSheetApplePay(merchantCountryCode: "DE", cartItems: [
+              ImmediateCartSummaryItem(
+                label: bookingOption.title!,
+                amount: amount,
+              )
+            ])),
       );
       print("Response from payment sheet: ${response.toString()}");
     } catch (e, stacktrace) {
