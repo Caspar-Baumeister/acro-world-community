@@ -41,15 +41,17 @@ class BookOption extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                Text(
-                  bookingOption.subtitle!,
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        letterSpacing: -0.5,
-                        height: 1.1,
-                      ),
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 2,
-                )
+                bookingOption.subtitle != null
+                    ? Text(
+                        bookingOption.subtitle!,
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              letterSpacing: -0.5,
+                              height: 1.1,
+                            ),
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                      )
+                    : Container()
               ],
             ),
           ),
