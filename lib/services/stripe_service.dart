@@ -47,6 +47,8 @@ class StripeService {
           // Extra options
           style: ThemeMode.dark,
           billingDetails: billingDetails,
+          billingDetailsCollectionConfiguration:
+              const BillingDetailsCollectionConfiguration(),
         ),
       );
       print("Response from payment sheet: ${response.toString()}");
