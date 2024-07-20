@@ -4,7 +4,7 @@ import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/calendar_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
 import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -312,7 +312,7 @@ class SignUpState extends State<SignUp> {
           if (value) {
             NotificationService().updateToken();
             Navigator.of(context).push(
-              CalendarPageRoute(),
+              DiscoverPageRoute(),
             );
           } else {
             setState(() {

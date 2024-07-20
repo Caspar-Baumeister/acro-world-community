@@ -20,21 +20,21 @@ class PrimaryBottomNavbar extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<Widget> items = [
       PrimaryBottomNavbarItem(
-        icon: IconLibrary.calendar.icon,
+        imageIcon: IconLibrary.world.imageIcon,
         isSelected: selectedIndex == 0,
-        label: 'Calendar',
+        label: 'Events',
         onPressed: () {
           // navigate to home page
-          Navigator.of(context).push(CalendarPageRoute());
+          Navigator.of(context).push(DiscoverPageRoute());
         },
       ),
       PrimaryBottomNavbarItem(
-        icon: IconLibrary.discover.icon,
+        icon: IconLibrary.calendar.icon,
         isSelected: selectedIndex == 1,
-        label: 'Discover',
+        label: 'Around me',
         onPressed: () {
           // navigate to club page
-          Navigator.of(context).push(DiscoverPageRoute());
+          Navigator.of(context).push(CalendarPageRoute());
         },
       ),
       PrimaryBottomNavbarItem(

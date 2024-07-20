@@ -27,3 +27,11 @@ String formatInstructors(List<ClassTeachers>? teachers) {
         '${teachers[0].teacher!.name!}, ${teachers[1].teacher!.name!}, ${teachers[2].teacher!.name!}, and more';
   }
 }
+
+String getDateStringMonthDay(DateTime start) {
+  // get the start day, month and time
+  var dayFormatter = DateFormat('d');
+  var monthFormatter = DateFormat('MMMM');
+  var timeFormatter = DateFormat('HH.mm');
+  return '${dayFormatter.format(start)} ${monthFormatter.format(start)} ${timeFormatter.format(start)}';
+}

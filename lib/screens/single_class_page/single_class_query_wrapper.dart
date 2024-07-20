@@ -7,14 +7,16 @@ import 'package:acroworld/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:flutter/material.dart';
+import 'package:gql/src/ast/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
   const SingleEventQueryWrapper(
-      {super.key, required this.urlSlug, this.classEventId});
+      {super.key, this.urlSlug, this.classId, this.classEventId});
 
-  final String urlSlug;
+  final String? urlSlug;
+  final String? classId;
   final String? classEventId;
 
   @override
@@ -25,18 +27,36 @@ class SingleEventQueryWrapper extends StatelessWidget {
         error: "You need to be logged in to view this page.",
       );
     }
+    if (urlSlug == null && classId == null && classEventId == null) {
+      return const ErrorPage(
+        error: "No id or slug provided.",
+      );
+    }
+
+    var variables = {
+      "user_id": userProvider.activeUser!.id,
+    };
+    DocumentNode query;
+    String? queryName;
+    if (classEventId != null) {
+      query = Queries.getClassEventWithClasByIdWithFavorite;
+      variables["class_event_id"] = classEventId;
+      queryName = "class_events_by_pk";
+    } else if (classId != null && urlSlug == null) {
+      query = Queries.getClassByIdWithFavorite;
+      variables["class_id"] = classId;
+      queryName = "classes_by_pk";
+    } else {
+      query = Queries.getClassBySlugWithFavorite;
+      variables["url_slug"] = urlSlug;
+      queryName = "classes";
+    }
+
     return Query(
       options: QueryOptions(
-          document: classEventId == null
-              ? Queries.getClassByIdWithFavorite
-              : Queries.getClassEventWithClasByIdWithFavorite,
+          document: query,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: classEventId == null
-              ? {'url_slug': urlSlug, "user_id": userProvider.activeUser!.id}
-              : {
-                  'class_event_id': classEventId,
-                  "user_id": userProvider.activeUser!.id
-                }),
+          variables: variables),
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (queryResult.hasException) {
@@ -48,33 +68,28 @@ class SingleEventQueryWrapper extends StatelessWidget {
         } else if (queryResult.isLoading) {
           return const LoadingPage();
         } else if (queryResult.data != null &&
-            queryResult.data?["classes"]?[0] != null) {
-          print("data: ${queryResult.data}");
+            queryResult.data?[queryName] != null) {
+          var queryData = queryResult.data?[queryName];
+
           try {
-            ClassModel clas =
-                ClassModel.fromJson(queryResult.data?["classes"][0]);
+            if (queryName == "class_events_by_pk") {
+              ClassEvent classEvent = ClassEvent.fromJson(queryData);
+              return SingleClassPage(
+                clas: classEvent.classModel!,
+                classEvent: classEvent,
+              );
+            }
+            if (queryName == "classes") {
+              queryData = queryResult.data?["classes"][0];
+            }
+
+            ClassModel clas = ClassModel.fromJson(queryData);
             return SingleClassPage(clas: clas);
           } catch (e, trace) {
             CustomErrorHandler.captureException(e, stackTrace: trace);
             return ErrorPage(
                 error:
-                    "An unexpected error occured, when transforming the classes_by_pk data to an object with urlSlug $urlSlug");
-          }
-        } else if (queryResult.data != null &&
-            queryResult.data?["class_events_by_pk"] != null) {
-          try {
-            ClassEvent classEvent =
-                ClassEvent.fromJson(queryResult.data?["class_events_by_pk"]);
-
-            return SingleClassPage(
-              clas: classEvent.classModel!,
-              classEvent: classEvent,
-            );
-          } catch (e, trace) {
-            CustomErrorHandler.captureException(e, stackTrace: trace);
-            return ErrorPage(
-                error:
-                    "An unexpected error occured, when transforming the class_event_by_pk data to an object with classEventId $classEventId");
+                    "There was an error transforming the data from $queryName: $queryData");
           }
         } else {
           CustomErrorHandler.captureException(

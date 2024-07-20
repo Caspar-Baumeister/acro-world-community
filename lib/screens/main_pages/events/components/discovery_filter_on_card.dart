@@ -1,8 +1,8 @@
 import 'package:acroworld/components/datetime/date_time_service.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discovery_slider_card.dart';
-import 'package:acroworld/screens/main_pages/discover/components/event_card_image_section.dart';
+import 'package:acroworld/screens/main_pages/events/components/discovery_slider_card.dart';
+import 'package:acroworld/screens/main_pages/events/components/event_card_image_section.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';

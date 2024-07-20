@@ -58,10 +58,9 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
                         classId: widget.classId,
                         initialFavorized: widget.initialFavorized == true,
                         color: Colors.black),
-                  if (widget.classEvent != null)
-                    IconButton(
-                        onPressed: () => widget.shareEvents(),
-                        icon: const Icon(Icons.ios_share, color: Colors.black))
+                  IconButton(
+                      onPressed: () => widget.shareEvents(),
+                      icon: const Icon(Icons.ios_share, color: Colors.black))
                 ],
               ),
             ),

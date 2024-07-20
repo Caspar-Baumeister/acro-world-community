@@ -1,5 +1,6 @@
 import 'package:acroworld/models/class_model.dart';
-import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
+import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -14,12 +15,14 @@ class ClassTemplateCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-            builder: (context) => SingleEventQueryWrapper(
-                  urlSlug: indexClass.urlSlug ?? "",
-                )),
-      ),
+      onTap: indexClass.urlSlug != null || indexClass.id != null
+          ? () => Navigator.of(context).push(
+                SingleEventIdWrapperPageRoute(
+                  urlSlug: indexClass.urlSlug,
+                  classId: indexClass.id,
+                ),
+              )
+          : () => showErrorToast("This class is not available anymore"),
       child: ListTile(
         leading: indexClass.imageUrl != null
             ? SizedBox(

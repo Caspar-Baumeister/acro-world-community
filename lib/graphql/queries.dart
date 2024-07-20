@@ -161,9 +161,21 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
 }
  """);
 
-  static final getClassByIdWithFavorite = gql("""
+  static final getClassBySlugWithFavorite = gql("""
 query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
   classes(where: {url_slug: {_eq: \$url_slug}}){
+     ${Fragments.classFragment}
+     class_favorits(where: {user_id: {_eq: \$user_id}}) {
+      id
+      created_at
+    }
+  }
+}
+ """);
+
+  static final getClassByIdWithFavorite = gql("""
+query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
+   classes_by_pk(id: \$class_id){
      ${Fragments.classFragment}
      class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
@@ -329,6 +341,17 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getTeacherById = gql("""
   query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
     teachers_by_pk(id: \$teacher_id) {
+      user_likes(where: {user_id: {_eq: \$user_id}}) {
+        user_id
+      }
+      ${Fragments.teacherFragment}
+    }
+  }
+  """);
+
+  static final getTeacherBySlug = gql("""
+  query getTeacherById(\$teacher_slug: String!, \$user_id: uuid) {
+    teachers(where: {url_slug: {_eq: \$teacher_slug}}) {
       user_likes(where: {user_id: {_eq: \$user_id}}) {
         user_id
       }

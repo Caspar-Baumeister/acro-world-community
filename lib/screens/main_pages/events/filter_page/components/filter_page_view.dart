@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/main_pages/events/widgets/filter_chip_cards.dart';
+import 'package:acroworld/screens/main_pages/events/filter_page/components/filter_chip_cards.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 

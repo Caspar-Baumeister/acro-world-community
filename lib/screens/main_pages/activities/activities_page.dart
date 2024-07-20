@@ -12,7 +12,7 @@ class ActivitiesPage extends StatelessWidget {
     return const BasePage(
       makeScrollable: false,
       appBar: CalendarAppBar(),
-      bottomNavigationBar: PrimaryBottomNavbar(selectedIndex: 0),
+      bottomNavigationBar: PrimaryBottomNavbar(selectedIndex: 1),
       child: ActivitiesBody(),
     );
   }

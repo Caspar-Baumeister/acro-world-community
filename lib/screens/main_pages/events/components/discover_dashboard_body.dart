@@ -1,12 +1,28 @@
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/screens/main_pages/discover/components/slider_row_dashboard_discovery.dart';
+import 'package:acroworld/screens/main_pages/events/components/slider_row_dashboard_discovery.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class DiscoverDashboardBody extends StatelessWidget {
+class DiscoverDashboardBody extends StatefulWidget {
   const DiscoverDashboardBody({super.key});
+
+  @override
+  State<DiscoverDashboardBody> createState() => _DiscoverDashboardBodyState();
+}
+
+class _DiscoverDashboardBodyState extends State<DiscoverDashboardBody> {
+  @override
+  void initState() {
+    super.initState();
+
+    // add post frame callback to fetch all event occurences
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await Provider.of<DiscoveryProvider>(context, listen: false)
+          .fetchAllEventOccurences();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

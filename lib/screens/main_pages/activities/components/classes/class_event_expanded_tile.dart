@@ -1,12 +1,13 @@
 import 'package:acroworld/components/datetime/date_time_service.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
 import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 
 class ClassEventExpandedTile extends StatelessWidget {
@@ -28,16 +29,17 @@ class ClassEventExpandedTile extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () => classEvent.classModel != null
-          ? Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SingleEventQueryWrapper(
-                  urlSlug: classEvent.classModel!.urlSlug!,
+      onTap: classEvent.classModel?.urlSlug != null ||
+              classEvent.classModel?.id != null ||
+              classEvent.id != null
+          ? () => Navigator.of(context).push(
+                SingleEventIdWrapperPageRoute(
+                  urlSlug: classEvent.classModel?.urlSlug,
+                  classId: classEvent.classModel?.id,
                   classEventId: classEvent.id,
                 ),
-              ),
-            )
-          : null,
+              )
+          : () => showErrorToast("This class is not available anymore"),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
         child: Row(

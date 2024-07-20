@@ -2,7 +2,7 @@ import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/deeplinking/deeplinking.dart';
 import 'package:acroworld/screens/authentication_screens/authenticate.dart';
-import 'package:acroworld/screens/main_pages/activities/activities_page.dart';
+import 'package:acroworld/screens/main_pages/events/discover_page.dart';
 import 'package:acroworld/screens/system_pages/error_page.dart';
 import 'package:acroworld/screens/system_pages/loading_page.dart';
 import 'package:acroworld/services/notification_service.dart';
@@ -33,7 +33,7 @@ class AuthWrapper extends StatelessWidget {
 
         if (snapshot.data != null && snapshot.data == true) {
           // Token is present, user is logged in
-          return const ActivitiesPage(); //UpdateFcmToken(); // Replace with your actual home screen
+          return const DiscoverPage(); //UpdateFcmToken(); // Replace with your actual home screen
         } else {
           // No token found, user is not logged in
           return const Authenticate(); // Replace with your actual login screen

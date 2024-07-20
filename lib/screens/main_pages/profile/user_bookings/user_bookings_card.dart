@@ -1,6 +1,6 @@
+import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
 import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/screens/main_pages/profile/user_bookings/user_bookings.dart';
-import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -18,15 +18,15 @@ class UserBookingsCard extends StatelessWidget {
       children: [
         GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () => userBooking.classId != null
-              ? Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SingleEventQueryWrapper(
-                            classEventId: userBooking.classEventId,
-                            urlSlug: userBooking.urlSlug!,
-                          )))
-              : null,
+          onTap: () =>
+              userBooking.classId != null || userBooking.urlSlug != null
+                  ? Navigator.of(context).push(
+                      SingleEventIdWrapperPageRoute(
+                          classId: userBooking.classId,
+                          classEventId: userBooking.classEventId,
+                          urlSlug: userBooking.urlSlug),
+                    )
+                  : null,
           child: SizedBox(
             height: BOOKING_CARD_HEIGHT + 38,
             child: Row(

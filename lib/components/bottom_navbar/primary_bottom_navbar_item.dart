@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 class PrimaryBottomNavbarItem extends StatelessWidget {
   const PrimaryBottomNavbarItem(
       {super.key,
-      required this.icon,
+      this.icon,
       required this.label,
       required this.onPressed,
-      required this.isSelected});
+      required this.isSelected,
+      this.imageIcon});
 
-  final IconData icon;
+  final IconData? icon;
+  final AssetImage? imageIcon;
   final String label;
   final Function() onPressed;
   final bool isSelected;
@@ -24,13 +26,24 @@ class PrimaryBottomNavbarItem extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? CustomColors.primaryColor
-                  : CustomColors.inactiveBorderColor,
-              size: AppDimensions.iconSizeMedium,
-            ),
+            imageIcon != null
+                ? Image(
+                    image: imageIcon!,
+                    color: isSelected
+                        ? CustomColors.primaryColor
+                        : CustomColors.inactiveBorderColor,
+                    width: AppDimensions.iconSizeMedium,
+                    height: AppDimensions.iconSizeMedium,
+                  )
+                : icon != null
+                    ? Icon(
+                        icon,
+                        color: isSelected
+                            ? CustomColors.primaryColor
+                            : CustomColors.inactiveBorderColor,
+                        size: AppDimensions.iconSizeMedium,
+                      )
+                    : Container(),
             const SizedBox(height: AppPaddings.small),
             Text(
               label,

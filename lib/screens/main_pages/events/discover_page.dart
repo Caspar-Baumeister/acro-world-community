@@ -2,9 +2,9 @@ import 'package:acroworld/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/screens/base_page.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discover_appbar.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discover_dashboard_body.dart';
-import 'package:acroworld/screens/main_pages/discover/filter_on_discover_body.dart';
+import 'package:acroworld/screens/main_pages/events/components/discover_appbar.dart';
+import 'package:acroworld/screens/main_pages/events/components/discover_dashboard_body.dart';
+import 'package:acroworld/screens/main_pages/events/filter_on_discover_body.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class DiscoverPage extends StatelessWidget {
     return const BasePage(
       appBar: DiscoveryAppBar(),
       bottomNavigationBar: PrimaryBottomNavbar(
-        selectedIndex: 1,
+        selectedIndex: 0,
       ),
       makeScrollable: false,
       child: DiscoverBody(),

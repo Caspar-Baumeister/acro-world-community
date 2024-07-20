@@ -25,6 +25,7 @@ enum IconLibrary {
   profile,
   community,
   bird,
+  world,
 }
 
 // extension for the assetName
@@ -70,6 +71,8 @@ extension ImageAssetNameExtension on IconLibrary {
         return "assets/icons/arrow_east.png";
       case IconLibrary.arrowWest:
         return "assets/icons/arrow_west.png";
+      case IconLibrary.world:
+        return "assets/icons/earth_location.png";
 
       default:
         throw Exception("Icon not found");
@@ -118,6 +121,8 @@ extension ImageIconExtension on IconLibrary {
         return const AssetImage("assets/icons/arrow_east.png");
       case IconLibrary.arrowWest:
         return const AssetImage("assets/icons/arrow_west.png");
+      case IconLibrary.world:
+        return const AssetImage("assets/icons/earth_location.png");
 
       default:
         throw Exception("Icon not found");

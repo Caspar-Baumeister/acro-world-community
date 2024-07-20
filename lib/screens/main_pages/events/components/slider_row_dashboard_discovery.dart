@@ -1,5 +1,5 @@
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/main_pages/discover/components/discovery_slider_card.dart';
+import 'package:acroworld/screens/main_pages/events/components/discovery_slider_card.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';

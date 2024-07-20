@@ -1,5 +1,5 @@
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/screens/main_pages/discover/filter_page/components/base_chip_wrapper.dart';
+import 'package:acroworld/screens/main_pages/events/filter_page/components/base_chip_wrapper.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
