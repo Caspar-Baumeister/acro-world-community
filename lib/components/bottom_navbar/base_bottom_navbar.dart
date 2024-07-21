@@ -24,7 +24,6 @@ class BaseBottomNavigationBar extends StatelessWidget {
           ? EdgeInsets.only(bottom: keyboardHeight)
           : EdgeInsets.zero,
       child: SizedBox(
-        height: height,
         child: SafeArea(
           child: Padding(
               padding: const EdgeInsets.symmetric(

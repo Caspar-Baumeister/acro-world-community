@@ -22,9 +22,11 @@ class PrimaryBottomNavbarItem extends StatelessWidget {
     return InkWell(
       onTap: onPressed,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppPaddings.small, vertical: AppPaddings.tiny),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
             imageIcon != null
                 ? Image(
