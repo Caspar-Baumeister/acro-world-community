@@ -87,7 +87,7 @@ class SignUpState extends State<SignUp> {
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 40.0),
                       child: Image(
-                        image: AssetImage('assets/logo/yoga2 transp.png'),
+                        image: AssetImage('assets/logo/logo_transparent.png'),
                         height: 100,
                       ),
                     ),
