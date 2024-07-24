@@ -5,28 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
-class FavoriteClassMutationWidget extends StatefulWidget {
-  const FavoriteClassMutationWidget({
+class ReportButtonMutationWrapper extends StatefulWidget {
+  const ReportButtonMutationWrapper({
     super.key,
     required this.classId,
-    required this.initialFavorized,
+    required this.initialReported,
   });
 
   final String classId;
-  final bool initialFavorized;
+  final bool initialReported;
 
   @override
-  State<FavoriteClassMutationWidget> createState() =>
-      _FavoriteClassMutationWidgetState();
+  State<ReportButtonMutationWrapper> createState() =>
+      _ReportButtonMutationWrapperState();
 }
 
-class _FavoriteClassMutationWidgetState
-    extends State<FavoriteClassMutationWidget> {
-  late bool isFavorized;
+class _ReportButtonMutationWrapperState
+    extends State<ReportButtonMutationWrapper> {
+  late bool isReported;
 
   @override
   void initState() {
-    isFavorized = widget.initialFavorized;
+    isReported = widget.initialReported;
     super.initState();
   }
 
@@ -36,15 +36,15 @@ class _FavoriteClassMutationWidgetState
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
         options: MutationOptions(
-          document: isFavorized
+          document: isReported
               ? Mutations.unFavoritizeClass
               : Mutations.favoritizeClass,
           onCompleted: (dynamic resultData) {
             setState(() {
-              isFavorized = !isFavorized;
+              isReported = !isReported;
             });
             showSuccessToast(
-                "${isFavorized ? "Added to" : "Removed from"} favorites");
+                "${isReported ? "Added to" : "Removed from"} favorites");
           },
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
@@ -60,16 +60,18 @@ class _FavoriteClassMutationWidgetState
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Icon(
-                isFavorized ? Icons.favorite : Icons.favorite_border,
+                isReported ? Icons.flag : Icons.flag_outlined,
+                color: isReported ? Colors.red : Colors.black,
               ),
             );
           }
 
           return IconButton(
             icon: Icon(
-              isFavorized ? Icons.favorite : Icons.favorite_border,
+              isReported ? Icons.flag : Icons.flag_outlined,
+              color: isReported ? Colors.red : Colors.black,
             ),
-            onPressed: () => isFavorized
+            onPressed: () => isReported
                 ? runMutation({
                     'class_id': widget.classId,
                     'user_id': Provider.of<UserProvider>(context, listen: false)

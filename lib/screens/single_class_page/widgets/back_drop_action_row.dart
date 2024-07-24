@@ -55,12 +55,20 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
                 children: [
                   if (widget.initialFavorized != null)
                     FavoriteClassMutationWidget(
-                        classId: widget.classId,
-                        initialFavorized: widget.initialFavorized == true,
-                        color: Colors.black),
+                      classId: widget.classId,
+                      initialFavorized: widget.initialFavorized == true,
+                    ),
                   IconButton(
-                      onPressed: () => widget.shareEvents(),
-                      icon: const Icon(Icons.ios_share, color: Colors.black))
+                    onPressed: () => widget.shareEvents(),
+                    icon: const Icon(
+                      Icons.ios_share,
+                      color: Colors.black,
+                    ),
+                  ),
+                  // ReportButtonMutationWrapper(
+                  //   classId: widget.classId,
+                  //   initialReported: false,
+                  // ),
                 ],
               ),
             ),
