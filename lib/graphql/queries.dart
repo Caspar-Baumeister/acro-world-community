@@ -169,6 +169,9 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
       id
       created_at
     }
+     class_flags(where: {user_id: {_eq: \$user_id}}) {
+      id
+      }
   }
 }
  """);
@@ -180,7 +183,10 @@ query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
      class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
-    }
+     }
+     class_flags(where: {user_id: {_eq: \$user_id}}) {
+      id
+      }
   }
 }
  """);
@@ -194,6 +200,9 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
+      }
+      class_flags(where: {user_id: {_eq: \$user_id}}) {
+        id
       }
     }
   }
