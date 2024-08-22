@@ -38,6 +38,9 @@ class SingleEventQueryWrapper extends StatelessWidget {
     };
     DocumentNode query;
     String? queryName;
+    print("classEventId: $classEventId");
+    print("classId: $classId");
+    print("urlSlug: $urlSlug");
     if (classEventId != null) {
       query = Queries.getClassEventWithClasByIdWithFavorite;
       variables["class_event_id"] = classEventId;
