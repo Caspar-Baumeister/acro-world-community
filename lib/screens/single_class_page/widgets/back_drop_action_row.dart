@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:acroworld/components/mutation_wrapper/report_button_mutation_wrapper.dart';
 import 'package:acroworld/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -12,6 +13,7 @@ class BackDropActionRow extends StatefulWidget {
     required this.initialFavorized,
     required this.shareEvents,
     required this.classEvent,
+    required this.initialReported,
     super.key,
   });
 
@@ -20,6 +22,7 @@ class BackDropActionRow extends StatefulWidget {
   final bool? initialFavorized;
   final Function shareEvents;
   final ClassEvent? classEvent;
+  final bool initialReported;
 
   @override
   State<BackDropActionRow> createState() => _BackDropActionRowState();
@@ -65,10 +68,10 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
                       color: Colors.black,
                     ),
                   ),
-                  // ReportButtonMutationWrapper(
-                  //   classId: widget.classId,
-                  //   initialReported: false,
-                  // ),
+                  ReportButtonMutationWrapper(
+                    classId: widget.classId,
+                    initialReported: widget.initialReported,
+                  ),
                 ],
               ),
             ),

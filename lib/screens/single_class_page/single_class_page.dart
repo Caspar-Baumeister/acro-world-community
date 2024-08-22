@@ -89,6 +89,7 @@ At: ${clas.locationName}
               classId: widget.clas.id!,
               classEvent: widget.classEvent,
               initialFavorized: widget.clas.isInitiallyFavorized,
+              initialReported: widget.clas.isInitiallyFlagged ?? false,
               shareEvents: () => shareEvent(widget.classEvent, widget.clas));
         },
       ),

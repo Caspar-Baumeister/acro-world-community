@@ -36,15 +36,14 @@ class _ReportButtonMutationWrapperState
       constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
       child: Mutation(
         options: MutationOptions(
-          document: isReported
-              ? Mutations.unFavoritizeClass
-              : Mutations.favoritizeClass,
+          document: isReported ? Mutations.unFlagClass : Mutations.flagClass,
           onCompleted: (dynamic resultData) {
             setState(() {
               isReported = !isReported;
             });
-            showSuccessToast(
-                "${isReported ? "Added to" : "Removed from"} favorites");
+            showSuccessToast(isReported
+                ? "Flagged the event as not happening"
+                : "Removed flag from event");
           },
         ),
         builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
@@ -67,21 +66,16 @@ class _ReportButtonMutationWrapperState
           }
 
           return IconButton(
-            icon: Icon(
-              isReported ? Icons.flag : Icons.flag_outlined,
-              color: isReported ? Colors.red : Colors.black,
-            ),
-            onPressed: () => isReported
-                ? runMutation({
+              icon: Icon(
+                isReported ? Icons.flag : Icons.flag_outlined,
+                color: isReported ? Colors.red : Colors.black,
+              ),
+              onPressed: () => runMutation({
                     'class_id': widget.classId,
                     'user_id': Provider.of<UserProvider>(context, listen: false)
                         .activeUser!
                         .id!
-                  })
-                : runMutation({
-                    'class_id': widget.classId,
-                  }),
-          );
+                  }));
         },
       ),
     );
