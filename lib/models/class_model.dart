@@ -22,6 +22,10 @@ class ClassModel {
   int? maxBookingSlots;
   List<ClassBookingOptions>? classBookingOptions;
   bool? isInitiallyFavorized;
+  bool? isInitiallyFlagged;
+  num? amountActiveFlaggs;
+  num? amountNonActiveFlaggs;
+  num? amountFavorits;
   EventType? eventType;
   String? city;
   String? country;
@@ -58,13 +62,26 @@ class ClassModel {
       this.eventType,
       this.city,
       this.country,
+      this.isInitiallyFlagged,
+      this.amountActiveFlaggs,
+      this.amountNonActiveFlaggs,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
+    amountActiveFlaggs = json['class_flags']
+            ?.where((flag) => flag['is_active'] == true)
+            .length ??
+        0;
+    amountNonActiveFlaggs = json['class_flags']
+            ?.where((flag) => flag['is_active'] == false)
+            .length ??
+        0;
     classPassUrl = json['class_pass_url'];
     description = json['description'];
     distance = json['distance'];
     isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
+    isInitiallyFlagged = json['class_flags']?.isNotEmpty;
+
     id = json['id'];
     urlSlug = json['url_slug'];
     imageUrl = json['image_url'];

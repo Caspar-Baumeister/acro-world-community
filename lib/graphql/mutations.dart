@@ -79,9 +79,26 @@ mutation confirmPayment(\$payment_intent_id : uuid!) {
 }
 """);
 
+  static final flagClass = gql("""
+  mutation flagClass(\$class_id: uuid!, \$user_id: uuid!) {
+  insert_class_flag(objects: {class_id:  \$class_id, user_id: \$user_id}) {
+    affected_rows
+  }
+}
+""");
+
   static final unFavoritizeClass = gql("""
   mutation unBookmarkEvent(\$class_id: uuid!, \$user_id: uuid!) {
   delete_class_favorites(where: {class_id: {_eq: \$class_id}, user_id: {_eq: \$user_id}}) {
+    affected_rows
+  }
+}
+
+""");
+
+  static final unFlagClass = gql("""
+  mutation unFlagEvent(\$class_id: uuid!, \$user_id: uuid!) {
+  delete_class_flag(where: {class_id: {_eq: \$class_id}, user_id: {_eq: \$user_id}}) {
     affected_rows
   }
 }
