@@ -26,3 +26,14 @@ void showErrorToast(String message) {
       textColor: CustomColors.whiteTextColor,
       fontSize: const TextTheme().bodyLarge?.fontSize);
 }
+
+void showInfoToast(String message) {
+  Fluttertoast.showToast(
+      msg: message,
+      toastLength: Toast.LENGTH_SHORT,
+      gravity: ToastGravity.TOP,
+      timeInSecForIosWeb: AppConstants.inAppMessageTime,
+      backgroundColor: CustomColors.infoBgColor,
+      textColor: CustomColors.whiteTextColor,
+      fontSize: const TextTheme().bodyLarge?.fontSize);
+}

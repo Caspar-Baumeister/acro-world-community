@@ -56,10 +56,14 @@ class CustomColors {
   // COLOR SCHEME //
   static const Color primaryColor = _darkGreen;
   static const Color accentColor = _lightGreen;
-  static const Color backgroundColor = _white;
-  static const Color secondaryBackgroundColor = _lightGreyColor;
+
   static const Color highlightedColor = _highlight_green;
 
+// BACKGROUND COLORS //
+  static const Color successBgColor = _lightGreen;
+  static const Color infoBgColor = _grey;
+  static const Color backgroundColor = _white;
+  static const Color secondaryBackgroundColor = _lightGreyColor;
 // BORDER COLORS //
   static const Color inactiveBorderColor = _grey;
   static const Color activeBorderColor = _darkGreen;
@@ -68,7 +72,7 @@ class CustomColors {
 // TEXT COLORS //
   static const Color errorTextColor = _red;
   static const Color successTextColor = _lightGreen;
-  static const Color successBgColor = _lightGreen;
+
   static const Color lightTextColor = _grey;
   static const Color disabledTextColor = _grey;
   static const Color linkTextColor = _blue;
