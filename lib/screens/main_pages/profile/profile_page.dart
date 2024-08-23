@@ -122,20 +122,22 @@ class _ProfilePageState extends State<ProfilePage> with WidgetsBindingObserver {
                                 : CustomButton(
                                     "Create Events",
                                     () async {
-                                      final token =
-                                          await TokenSingletonService()
-                                              .getToken();
-                                      final refreshToken =
-                                          LocalStorageService.get(
-                                              Preferences.refreshToken);
+                                      print(await TokenSingletonService()
+                                          .getUserRoles());
+                                      // final token =
+                                      //     await TokenSingletonService()
+                                      //         .getToken();
+                                      // final refreshToken =
+                                      //     LocalStorageService.get(
+                                      //         Preferences.refreshToken);
 
-                                      if (refreshToken != null) {
-                                        customLaunch(
-                                            "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
-                                      } else {
-                                        customLaunch(
-                                            AppEnvironment.dashboardUrl);
-                                      }
+                                      // if (refreshToken != null) {
+                                      //   customLaunch(
+                                      //       "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
+                                      // } else {
+                                      //   customLaunch(
+                                      //       AppEnvironment.dashboardUrl);
+                                      // }
                                     },
                                   ),
                           ),

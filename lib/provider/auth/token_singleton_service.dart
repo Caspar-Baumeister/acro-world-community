@@ -125,4 +125,21 @@ class TokenSingletonService {
     print("this is the refetch token after logout");
     print(await LocalStorageService.get(Preferences.refreshToken));
   }
+
+  // Get user roles //
+  Future<List<String>> getUserRoles() async {
+    if (_token == null) {
+      _token = await LocalStorageService.get(Preferences.token);
+      if (_token == null) {
+        return [];
+      }
+    }
+    Map<String, dynamic> payload = Jwt.parseJwt(_token!);
+    if (payload["https://hasura.io/jwt/claims"]?["x-hasura-allowed-roles"] !=
+        null) {
+      return List<String>.from(
+          payload["https://hasura.io/jwt/claims"]["x-hasura-allowed-roles"]);
+    }
+    return [];
+  }
 }
