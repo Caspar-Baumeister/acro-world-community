@@ -266,6 +266,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   query GetMe {
     me {
       ${Fragments.userFragment}
+      is_email_verified
     }
   }
   """);

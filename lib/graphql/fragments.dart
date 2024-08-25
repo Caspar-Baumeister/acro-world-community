@@ -137,7 +137,6 @@ class Fragments {
   """;
 
   static const userFragment = """
-
               bio
               email 
               id 
@@ -164,7 +163,7 @@ class Fragments {
                 id
                 name
               }
-              
+
               acro_role {
                 id
                 name

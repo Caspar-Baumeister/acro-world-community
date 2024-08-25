@@ -12,8 +12,12 @@ class InputFieldComponent extends StatelessWidget {
   final TextEditingController controller;
   final String? Function(String?)? validator;
   final void Function(String?)? onFieldSubmitted;
+  final int? maxLines;
+  final int? minLines;
   final Widget? suffixIcon;
   final bool? autoFocus;
+  final bool? isFootnoteError;
+  final void Function()? onEditingComplete;
 
   const InputFieldComponent(
       {super.key,
@@ -22,11 +26,15 @@ class InputFieldComponent extends StatelessWidget {
       this.keyboardType,
       this.textInputAction,
       this.autofillHints,
+      this.onEditingComplete,
       this.onFieldSubmitted,
       this.labelText,
+      this.maxLines,
+      this.minLines,
       this.validator,
       this.autoFocus,
       this.suffixIcon,
+      this.isFootnoteError = true,
       required this.controller})
       : super();
 
@@ -35,11 +43,14 @@ class InputFieldComponent extends StatelessWidget {
     return Column(
       children: [
         TextFormField(
+          onEditingComplete: onEditingComplete,
           controller: controller,
           obscureText: obscureText,
           autofocus: autoFocus ?? false,
           autofillHints: autofillHints,
           keyboardType: keyboardType,
+          maxLines: maxLines ?? 1,
+          minLines: minLines,
           textInputAction: textInputAction,
           validator: validator,
           cursorColor: CustomColors.primaryTextColor,
@@ -50,27 +61,10 @@ class InputFieldComponent extends StatelessWidget {
             labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
             alignLabelWithHint: true,
             // floatingLabelBehavior: FloatingLabelBehavior,
-            errorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                  color: CustomColors.errorBorderColor, width: 1.0),
-              borderRadius: AppBorders.defaultRadius,
-            ),
-            focusedErrorBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                  color: CustomColors.errorBorderColor, width: 1.0),
-              borderRadius: AppBorders.defaultRadius,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                  color: CustomColors.activeBorderColor, width: 1.0),
-              borderRadius: AppBorders.defaultRadius,
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(
-                  width: 1.0, color: CustomColors.inactiveBorderColor),
-              borderRadius: AppBorders.defaultRadius,
-            ),
-            contentPadding: const EdgeInsets.fromLTRB(15.0, 15.0, 15.0, 15.0),
+
+            contentPadding:
+                const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
+                    .copyWith(bottom: AppPaddings.medium),
           ).applyDefaults(Theme.of(context).inputDecorationTheme),
         ),
         footnoteText != null
@@ -79,7 +73,9 @@ class InputFieldComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0, left: 10),
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: CustomColors.errorTextColor,
+                          color: isFootnoteError == true
+                              ? CustomColors.errorTextColor
+                              : CustomColors.primaryTextColor,
                         )),
               )
             : const SizedBox(height: 0),

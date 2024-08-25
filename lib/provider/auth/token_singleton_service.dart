@@ -36,6 +36,14 @@ class TokenSingletonService {
     return _token;
   }
 
+  Future<String?> refreshToken() async {
+    _token = null;
+    LocalStorageService.remove(Preferences.token);
+    await _fetchToken();
+
+    return null;
+  }
+
   Future<String?> _fetchToken() async {
     if (await _isTokenExpired()) {
       // check if there is a refresh token in shared preferences

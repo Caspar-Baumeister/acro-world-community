@@ -14,6 +14,7 @@ class User {
   TeacherModel? teacherProfile;
   String? email;
   Level? level;
+  bool? isEmailVerified;
 
   User(
       {this.userRoles,

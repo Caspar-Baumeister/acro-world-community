@@ -9,6 +9,9 @@ class AppEnvironment {
       ? "https://teacher.acroworld.de"
       : "https://admin-dev.acroworld.de";
 
+  static const String websiteUrl =
+      isProduction ? "https://acroworld.net" : "https://dev.acroworld.de";
+
   static const String sentryDsn =
       'https://fb76faf08aa435a6de1ffb468aff6136@o4506325948366848.ingest.sentry.io/4506325953937408';
 

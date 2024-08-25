@@ -133,4 +133,9 @@ class UserProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  Future<bool> checkEmailVerification() async {
+    return await setUserFromToken()
+        .then((_) => _activeUser?.isEmailVerified ?? false);
+  }
 }

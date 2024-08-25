@@ -1,3 +1,4 @@
+import 'package:acroworld/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/components/buttons/custom_button.dart';
 import 'package:acroworld/graphql/queries.dart';
 import 'package:acroworld/models/class_event.dart';
@@ -71,14 +72,8 @@ class _EditUserdataPageState extends State<EditUserdataPage> {
       child: BasePage(
         makeScrollable: false,
         // an appbar with a back button and a title
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.maybePop(context);
-            },
-          ),
-          title: const Text("Edit your data"),
+        appBar: const CustomAppbarSimple(
+          title: "Edit User Data",
         ),
         // make a bottom
         // a body with grey background and a Column

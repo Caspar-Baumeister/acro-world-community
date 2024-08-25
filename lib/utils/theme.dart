@@ -1,4 +1,5 @@
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/text_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,28 @@ class MyThemes {
               width: 2.0,
             ),
           ),
+        ),
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        errorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              color: CustomColors.errorBorderColor, width: 1.0),
+          borderRadius: AppBorders.defaultRadius,
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              color: CustomColors.errorBorderColor, width: 1.0),
+          borderRadius: AppBorders.defaultRadius,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              color: CustomColors.activeBorderColor, width: 1.0),
+          borderRadius: AppBorders.defaultRadius,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(
+              width: 1.0, color: CustomColors.inactiveBorderColor),
+          borderRadius: AppBorders.defaultRadius,
         ),
       ),
       bottomSheetTheme: const BottomSheetThemeData(

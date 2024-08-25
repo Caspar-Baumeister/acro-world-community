@@ -19,6 +19,8 @@ class AspectRatios {
 }
 
 class AppDimensions {
+  static const double modalControllerWidth = 40.0;
+  static const double modalControllerHeight = 5.0;
   static const double bottomNavBarHeight = 100.0;
   static const double iconSizeTiny = 14;
   static const double iconSizeSmall = 20;

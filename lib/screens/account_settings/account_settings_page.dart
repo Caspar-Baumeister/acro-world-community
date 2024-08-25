@@ -1,7 +1,8 @@
-import 'package:acroworld/components/buttons/back_button.dart';
+import 'package:acroworld/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/screens/account_settings/delete_account.dart';
 import 'package:acroworld/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/screens/base_page.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class AccountSettingsPage extends StatelessWidget {
@@ -11,17 +12,9 @@ class AccountSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage(
       makeScrollable: false,
-      appBar: AppBar(
-        leading: const BackButtonWidget(),
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        title: const Text(
-          "Settings",
-          style: TextStyle(color: Colors.black),
-        ),
-      ),
+      appBar: const CustomAppbarSimple(title: "Account settings"),
       child: Padding(
-        padding: const EdgeInsets.all(8.0).copyWith(bottom: 50),
+        padding: const EdgeInsets.all(AppPaddings.small).copyWith(bottom: 50),
         child: Column(children: [
           // a menu item called "user settings" that leads to the edit user data page
           Container(
