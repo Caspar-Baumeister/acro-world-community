@@ -16,3 +16,7 @@ For help getting started with Flutter, view our
 samples, guidance on mobile development, and a full API reference.
 
 ## use the version script
+
+Activate script support with "dart pub global activate rps"
+export PATH="$PATH":"$HOME/.pub-cache/bin"
+run scripts with "rps <script> <script-arguments>" e.g. "rps version patch"
