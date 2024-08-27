@@ -29,4 +29,29 @@ class UserService {
 
     return result.data!['send_verification_email']['success'];
   }
+
+  // verify code
+  Future<bool> verifyCode(String code) async {
+    const String mutation = """
+    mutation verifyCode(\$code: String!) {
+      verify_email(code: \$code)
+    }
+  """;
+
+    final QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(mutation),
+        variables: {
+          'code': code,
+        },
+      ),
+    );
+
+    if (result.hasException) {
+      CustomErrorHandler.captureException(result.exception);
+      return false;
+    }
+
+    return result.data!['verify_email'];
+  }
 }
