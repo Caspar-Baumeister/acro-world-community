@@ -53,4 +53,13 @@ class DateTimeService {
     }
     return "";
   }
+
+  // get the date of the startDate
+  static String getDateStringOnlyDate(String? startDate) {
+    if (startDate != null) {
+      DateTime startDateTime = DateTime.parse(startDate);
+      return "${startDateTime.day}. ${DateFormat.yMMMM().format(startDateTime)}";
+    }
+    return "";
+  }
 }

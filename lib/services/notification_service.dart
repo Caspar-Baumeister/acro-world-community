@@ -35,7 +35,8 @@ class NotificationService {
         return;
       }
       try {
-        GraphQLClientSingleton().mutate(
+        final graphQLClient = GraphQLClientSingleton().client;
+        graphQLClient.mutate(
           MutationOptions(
             document: Mutations.updateFcmToken,
             variables: {

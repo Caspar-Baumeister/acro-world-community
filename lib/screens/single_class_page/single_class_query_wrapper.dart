@@ -13,11 +13,16 @@ import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
   const SingleEventQueryWrapper(
-      {super.key, this.urlSlug, this.classId, this.classEventId});
+      {super.key,
+      this.urlSlug,
+      this.classId,
+      this.classEventId,
+      required this.isCreator});
 
   final String? urlSlug;
   final String? classId;
   final String? classEventId;
+  final bool isCreator;
 
   @override
   Widget build(BuildContext context) {
@@ -33,25 +38,30 @@ class SingleEventQueryWrapper extends StatelessWidget {
       );
     }
 
-    var variables = {
-      "user_id": userProvider.activeUser!.id,
-    };
+    Map<String, dynamic> variables = {};
     DocumentNode query;
     String? queryName;
     print("classEventId: $classEventId");
     print("classId: $classId");
     print("urlSlug: $urlSlug");
-    if (classEventId != null) {
+    if (isCreator) {
+      query = Queries.getClassBySlugWithOutFavorite;
+      variables["url_slug"] = urlSlug;
+      queryName = "classes";
+    } else if (classEventId != null) {
       query = Queries.getClassEventWithClasByIdWithFavorite;
       variables["class_event_id"] = classEventId;
+      variables["user_id"] = userProvider.activeUser!.id;
       queryName = "class_events_by_pk";
     } else if (classId != null && urlSlug == null) {
       query = Queries.getClassByIdWithFavorite;
       variables["class_id"] = classId;
+      variables["user_id"] = userProvider.activeUser!.id;
       queryName = "classes_by_pk";
     } else {
       query = Queries.getClassBySlugWithFavorite;
       variables["url_slug"] = urlSlug;
+      variables["user_id"] = userProvider.activeUser!.id;
       queryName = "classes";
     }
 
@@ -87,7 +97,7 @@ class SingleEventQueryWrapper extends StatelessWidget {
             }
 
             ClassModel clas = ClassModel.fromJson(queryData);
-            return SingleClassPage(clas: clas);
+            return SingleClassPage(clas: clas, isCreator: isCreator);
           } catch (e, trace) {
             CustomErrorHandler.captureException(e, stackTrace: trace);
             return ErrorPage(

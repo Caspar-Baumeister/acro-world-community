@@ -41,7 +41,9 @@ class UserProvider extends ChangeNotifier {
       },
     );
 
-    final result = await GraphQLClientSingleton().mutate(options);
+    final graphQLClient = GraphQLClientSingleton().client;
+
+    final result = await graphQLClient.mutate(options);
 
     if (result.hasException) {
       CustomErrorHandler.captureException(result.exception.toString(),
@@ -106,8 +108,10 @@ class UserProvider extends ChangeNotifier {
     QueryOptions options = QueryOptions(
         document: Queries.getMe, fetchPolicy: FetchPolicy.networkOnly);
 
+    final graphQLClient = GraphQLClientSingleton().client;
+
     // get the result
-    final result = await GraphQLClientSingleton().query(options);
+    final result = await graphQLClient.query(options);
 
     // if there is an exception, throw it
     if (result.hasException) {

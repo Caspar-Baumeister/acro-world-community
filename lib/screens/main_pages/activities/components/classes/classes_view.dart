@@ -1,8 +1,8 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/components/loading_widget.dart';
+import 'package:acroworld/components/tiles/event_tiles/class_event_expanded_tile.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

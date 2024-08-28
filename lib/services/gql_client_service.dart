@@ -18,13 +18,23 @@ class GraphQLClientSingleton {
     _initClient();
   }
 
-  void _initClient() {
-    final AuthLink authLink = AuthLink(
-      getToken: () async {
-        String? token = await TokenSingletonService().getToken();
-        return token;
-      },
-    );
+  void _initClient({bool asTeacher = false}) {
+    Link authLink;
+    if (asTeacher) {
+      authLink = CustomAuthLink(
+        getToken: () async {
+          String? token = await TokenSingletonService().getToken();
+          return token;
+        },
+      );
+    } else {
+      authLink = AuthLink(
+        getToken: () async {
+          String? token = await TokenSingletonService().getToken();
+          return token != null ? 'Bearer $token' : '';
+        },
+      );
+    }
 
     final HttpLink httpLink = HttpLink(
       'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
@@ -38,8 +48,8 @@ class GraphQLClientSingleton {
     );
   }
 
-  void updateClient() {
-    _initClient();
+  void updateClient(bool asTeacher) {
+    _initClient(asTeacher: asTeacher);
   }
 
   Future<QueryResult> query(QueryOptions options) async {
@@ -53,18 +63,16 @@ class GraphQLClientSingleton {
   GraphQLClient get client => _client;
 }
 
-class AuthLink extends Link {
+class CustomAuthLink extends Link {
   final Future<String?> Function()? getToken;
 
-  AuthLink({this.getToken});
+  CustomAuthLink({this.getToken});
 
   @override
   Stream<Response> request(Request request, [NextLink? forward]) async* {
     final headers = Map<String, String>.from(
       request.context.entry<HttpLinkHeaders>()?.headers ?? {},
     );
-
-    print("current headers: $headers");
 
     // Exempt certain operations from adding headers
     if (request.operation.operationName == "LoginWithRefreshToken") {
@@ -78,7 +86,7 @@ class AuthLink extends Link {
       final allowedRoles = decodedToken["https://hasura.io/jwt/claims"]
           ["x-hasura-allowed-roles"] as List<dynamic>;
 
-      print("allowed roles: $allowedRoles");
+      print("User Roles: $allowedRoles");
 
       final roleWithHighestPrivileges = allowedRoles.contains('AdminUser')
           ? 'AdminUser'

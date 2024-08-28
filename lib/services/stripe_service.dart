@@ -85,7 +85,9 @@ class StripeService {
       variables: {'payment_intent_id': paymentIntentId},
     );
     try {
-      GraphQLClientSingleton().mutate(options);
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      await graphQLClient.mutate(options);
     } catch (e) {
       CustomErrorHandler.captureException(e);
     }
@@ -95,7 +97,9 @@ class StripeService {
   Future<Map<String, dynamic>?> _createPaymentSheet(
       String bookingOptionId, String classEventId) async {
     {
-      QueryResult<Object?> response = await GraphQLClientSingleton().mutate(
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> response = await graphQLClient.mutate(
           MutationOptions(
               fetchPolicy: FetchPolicy.networkOnly,
               document: Mutations.createPaymentSheet,

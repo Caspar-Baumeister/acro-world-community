@@ -3,10 +3,16 @@ import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.d
 
 class SingleEventIdWrapperPageRoute extends BaseRoute<void> {
   SingleEventIdWrapperPageRoute(
-      {String? urlSlug, String? classId, String? classEventId})
+      {String? urlSlug,
+      String? classId,
+      String? classEventId,
+      bool isCreator = false})
       : super(
           SingleEventQueryWrapper(
-              urlSlug: urlSlug, classId: classId, classEventId: classEventId),
+              urlSlug: urlSlug,
+              classId: classId,
+              classEventId: classEventId,
+              isCreator: isCreator),
           guards: [],
         );
 }

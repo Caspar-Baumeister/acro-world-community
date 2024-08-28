@@ -156,8 +156,9 @@ class DiscoveryProvider extends ChangeNotifier {
             ? FetchPolicy.cacheAndNetwork
             : FetchPolicy.networkOnly);
     try {
-      QueryResult<Object?> result =
-          await GraphQLClientSingleton().query(options);
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> result = await graphQLClient.query(options);
 
       if (result.hasException) {
         CustomErrorHandler.captureException(result.exception);
@@ -230,7 +231,6 @@ class DiscoveryProvider extends ChangeNotifier {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }
 
-    print("length of allEventOccurences: ${_allEventOccurences.length}");
     _loading = false;
     notifyListeners();
   }

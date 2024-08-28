@@ -1,5 +1,5 @@
+import 'package:acroworld/components/tiles/event_tiles/class_event_expanded_tile.dart';
 import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';

@@ -114,8 +114,10 @@ class CalendarProvider extends ChangeNotifier {
     );
     String selector = 'class_events_by_location_v1';
     try {
-      QueryResult<Object?> result =
-          await GraphQLClientSingleton().query(queryOptions);
+      // Correct usage
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
       if (result.hasException) {
         CustomErrorHandler.captureException(result.exception!);

@@ -1,3 +1,4 @@
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -8,6 +9,7 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColors.backgroundColor,
       body: Center(
         child: Text(
           "An unexpected error occured. Consider updating your current app version. Error: $error",

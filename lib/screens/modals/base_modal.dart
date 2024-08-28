@@ -44,18 +44,18 @@ class BaseModal extends StatelessWidget {
   }
 }
 
-// builds the modal widgets
-Future<void> buildMortal(BuildContext context, Widget mordal) {
-  FocusScope.of(context).requestFocus(FocusNode());
-  return showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-          borderRadius:
-              BorderRadius.vertical(top: AppBorders.defaultRadius.topLeft)),
-      context: context,
-      builder: (context) => Padding(
-          padding:
-              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-          child: mordal));
-}
+// // builds the modal widgets
+// Future<void> buildMortal(BuildContext context, Widget mordal) {
+//   FocusScope.of(context).requestFocus(FocusNode());
+//   return showModalBottomSheet(
+//       useSafeArea: true,
+//       isScrollControlled: true,
+//       shape: RoundedRectangleBorder(
+//           borderRadius:
+//               BorderRadius.vertical(top: AppBorders.defaultRadius.topLeft)),
+//       context: context,
+//       builder: (context) => Padding(
+//           padding:
+//               EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+//           child: mordal));
+// }

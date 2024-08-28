@@ -234,6 +234,7 @@ class SignInState extends State<SignIn> {
     await TokenSingletonService()
         .login(emailController!.text, passwordController!.text)
         .then((response) {
+      print("response: $response");
       if (response["errors"] != null) {
         final errorMap = parseGraphQLError(response);
 

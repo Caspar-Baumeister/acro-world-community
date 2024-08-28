@@ -7,6 +7,7 @@ import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
+import 'package:acroworld/provider/my_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -36,6 +37,7 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     print('App:build');
+    final graphQLClient = GraphQLClientSingleton().client;
     return MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_) => UserProvider()),
@@ -45,9 +47,10 @@ class _AppState extends State<App> {
           ChangeNotifierProvider(create: (_) => MapEventsProvider()),
           ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
           ChangeNotifierProvider(create: (_) => PlaceProvider()),
+          ChangeNotifierProvider(create: (_) => MyEventsProvider()),
         ],
         child: GraphQLProvider(
-          client: ValueNotifier(GraphQLClientSingleton().client),
+          client: ValueNotifier(graphQLClient),
           child: MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,

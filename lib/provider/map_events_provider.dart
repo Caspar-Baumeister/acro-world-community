@@ -62,8 +62,9 @@ class MapEventsProvider extends ChangeNotifier {
       },
     );
     try {
-      QueryResult<Object?> result =
-          await GraphQLClientSingleton().query(options);
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> result = await graphQLClient.query(options);
 
       if (result.hasException) {
         print("result.exception: ${result.exception}");

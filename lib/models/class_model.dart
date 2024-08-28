@@ -30,6 +30,7 @@ class ClassModel {
   String? city;
   String? country;
   String? urlSlug;
+  List<ClassEvent>? classEvents;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -60,6 +61,7 @@ class ClassModel {
       this.classTeachers,
       this.distance,
       this.eventType,
+      this.classEvents,
       this.city,
       this.country,
       this.isInitiallyFlagged,
@@ -68,6 +70,14 @@ class ClassModel {
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
+    if (json['class_events'] != null) {
+      classEvents = <ClassEvent>[];
+      json['class_events'].forEach((v) {
+        ClassEvent newClassEvent = ClassEvent.fromJson(v);
+        newClassEvent.classModel = this;
+        classEvents!.add(newClassEvent);
+      });
+    }
     amountActiveFlaggs = json['class_flags']
             ?.where((flag) => flag['is_active'] == true)
             .length ??

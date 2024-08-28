@@ -14,10 +14,12 @@ import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SingleClassPage extends StatefulWidget {
-  const SingleClassPage({super.key, required this.clas, this.classEvent});
+  const SingleClassPage(
+      {super.key, required this.clas, this.classEvent, this.isCreator = false});
 
   final ClassModel clas;
   final ClassEvent? classEvent;
+  final bool isCreator;
 
   @override
   State<SingleClassPage> createState() => _SingleClassPageState();
@@ -90,7 +92,11 @@ At: ${clas.locationName}
               classEvent: widget.classEvent,
               initialFavorized: widget.clas.isInitiallyFavorized,
               initialReported: widget.clas.isInitiallyFlagged ?? false,
-              shareEvents: () => shareEvent(widget.classEvent, widget.clas));
+              shareEvents: () => shareEvent(
+                    widget.classEvent,
+                    widget.clas,
+                  ),
+              isCreator: widget.isCreator);
         },
       ),
     );

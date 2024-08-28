@@ -6,12 +6,13 @@ import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_r
 import 'package:acroworld/screens/main_pages/profile/header_widget.dart';
 import 'package:acroworld/screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/screens/main_pages/profile/user_favorite_classes/user_favorite_classes.dart';
-import 'package:acroworld/screens/modals/base_modal.dart';
 import 'package:acroworld/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +68,9 @@ class ProfileBody extends StatelessWidget {
                           hasTeacherProfile
                               ? CustomButton('Switch to Creator Mode',
                                   () async {
+                                  final graphQLSingleton =
+                                      GraphQLClientSingleton();
+                                  graphQLSingleton.updateClient(true);
                                   // Switch to
                                   print("Switch to Creator Mode");
                                   // Switch to creator mode

@@ -42,7 +42,7 @@ initMain() async {
   await PlacePreferences.init();
 
   // Initialize the GraphQL client in the client singleton
-  GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
+  final graphQLClientSingleton = GraphQLClientSingleton().client;
 
   // WEBSOCKETLINK //
   // used only for subscription
@@ -88,7 +88,7 @@ initMain() async {
 
   // VERSION CHECK //
   String minVersion =
-      await VersionService.getVersionInfo(graphQLClientSingleton.client);
+      await VersionService.getVersionInfo(graphQLClientSingleton);
   if (minVersion == 'Error') {
     // TODO if there is an error, send the User to the error page
     minVersion = '0.0.0';

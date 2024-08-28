@@ -2,6 +2,22 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getClasses = gql("""
+query getClasses {
+  classes {
+    ${Fragments.classFragment}
+    class_events(where: {end_date: {_gte: now}}) {
+      ${Fragments.classEventFragment}
+    }
+  }
+  classes_aggregate {
+    aggregate{
+      count
+    }
+  }
+}
+""");
+
   static final userBookmarks = gql("""
 query Me {
   me {
@@ -157,6 +173,15 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
       id
       created_at
     }
+  }
+}
+ """);
+
+  static final getClassBySlugWithOutFavorite = gql("""
+query getClassByIdWithFavorite(\$url_slug: String!) {
+  classes(where: {url_slug: {_eq: \$url_slug}}){
+     ${Fragments.classFragment}
+     
   }
 }
  """);
