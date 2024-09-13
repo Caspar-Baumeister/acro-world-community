@@ -23,14 +23,14 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
   @override
   Widget build(BuildContext context) {
     return BaseModal(
-      title: "Create Partner Account",
+      title: "Become a Creator",
       noPadding: false,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
             child: Text(
-              'To create events, you first need to create a creator account.',
+              'As a creator, you can grow your audience, host events, and be featured in others. Your followers will automatically receive notifications about your activities, and you can effortlessly set up a booking system for your events.\n\nTo become a creator, you need to create a creator profile. This will take you less then 5 minutes and is completely free.',
               style: Theme.of(context)
                   .textTheme
                   .bodySmall!

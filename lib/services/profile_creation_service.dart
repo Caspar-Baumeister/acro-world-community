@@ -6,18 +6,19 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ProfileCreationService {
   final GraphQLClient client;
+  final ImageUploadService imageUploadService;
 
-  ProfileCreationService(this.client);
+  ProfileCreationService(this.client, this.imageUploadService);
 
   Future<String> uploadProfileImage(Uint8List image) async {
-    return await _uploadImage(image,
+    return await imageUploadService.uploadImage(image,
         path: 'profile_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
   Future<List<String>> uploadAdditionalImages(List<Uint8List> images) async {
     List<String> imageUrls = [];
     for (var image in images) {
-      final String imageUrl = await _uploadImage(
+      final String imageUrl = await imageUploadService.uploadImage(
         image,
         path:
             'additional_images/${DateTime.now().millisecondsSinceEpoch}_${images.indexOf(image)}.png',
@@ -27,20 +28,23 @@ class ProfileCreationService {
     return imageUrls;
   }
 
-  Future<void> createTeacherProfile(
+  Future<String> createTeacherProfile(
     String name,
     String description,
     String urlSlug,
     String profileImageUrl,
     List<String> additionalImageUrls,
+    String type,
+    String userId,
   ) async {
     const String mutation = """
-    mutation CreateTeacher(\$name: String!, \$description: String!, \$urlSlug: String!, \$type: teacher_type_enum!, \$images: [teacher_images_insert_input!]!) {
+    mutation CreateTeacher(\$userId: uuid!, \$name: String!, \$description: String!, \$urlSlug: String!, \$type: teacher_type_enum!, \$images: [teacher_images_insert_input!]!) {
       insert_teachers(
         objects: {
           name: \$name,
           description: \$description,
           url_slug: \$urlSlug,
+          user_id: \$userId,
           type: \$type,
           images: { data: \$images }
         }
@@ -50,7 +54,6 @@ class ProfileCreationService {
     }
   """;
 
-    // Construct the list of images
     final List<Map<String, dynamic>> imagesInput = [
       {
         'image': {
@@ -74,25 +77,34 @@ class ProfileCreationService {
       'name': name,
       'description': description,
       'urlSlug': urlSlug,
-      'type':
-          'Anonymous', // Or use a dynamic value if you want to pass this as a parameter
+      'type': type,
       'images': imagesInput,
     };
 
-    final QueryResult result = await client.mutate(
-      MutationOptions(
-        document: gql(mutation),
-        variables: variables,
-      ),
-    );
+    try {
+      final QueryResult result = await client.mutate(
+        MutationOptions(
+          document: gql(mutation),
+          variables: variables,
+        ),
+      );
 
-    if (result.hasException) {
-      CustomErrorHandler.captureException(result.exception);
-      throw Exception('Failed to create teacher profile');
+      if (result.hasException) {
+        CustomErrorHandler.captureException(result.exception);
+        return result.exception?.graphqlErrors.first.message ??
+            'Error creating teacher profile';
+      } else {
+        return 'success';
+      }
+    } catch (e) {
+      CustomErrorHandler.captureException(e);
+      return 'Error creating teacher profile';
     }
   }
+}
 
-  Future<String> _uploadImage(Uint8List imageBytes,
+class ImageUploadService {
+  Future<String> uploadImage(Uint8List imageBytes,
       {required String path}) async {
     try {
       final Reference storageRef = FirebaseStorage.instance.ref().child(path);

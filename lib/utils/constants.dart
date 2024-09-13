@@ -30,6 +30,7 @@ class AppDimensions {
   static const double avatarSizeMedium = 45;
   static const double eventDashboardSliderWidth = 150;
   static const double eventVerticalScrollCardHeight = 135;
+  static const double eventCreationImageSize = 100;
 }
 
 class AppPaddings {

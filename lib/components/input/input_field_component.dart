@@ -17,10 +17,14 @@ class InputFieldComponent extends StatelessWidget {
   final Widget? suffixIcon;
   final bool? autoFocus;
   final bool? isFootnoteError;
+  final FloatingLabelBehavior? floatingLabelBehavior;
   final void Function()? onEditingComplete;
+  final Widget? leadingIcon;
+  final Color? fillColor;
 
   const InputFieldComponent(
       {super.key,
+      this.leadingIcon,
       this.footnoteText,
       this.obscureText = false,
       this.keyboardType,
@@ -35,7 +39,9 @@ class InputFieldComponent extends StatelessWidget {
       this.autoFocus,
       this.suffixIcon,
       this.isFootnoteError = true,
-      required this.controller})
+      required this.controller,
+      this.floatingLabelBehavior,
+      this.fillColor})
       : super();
 
   @override
@@ -56,12 +62,14 @@ class InputFieldComponent extends StatelessWidget {
           cursorColor: CustomColors.primaryTextColor,
           onFieldSubmitted: onFieldSubmitted,
           decoration: InputDecoration(
+            fillColor: fillColor,
+            focusColor: fillColor,
             suffixIcon: suffixIcon,
+            prefixIcon: leadingIcon,
             labelText: labelText,
             labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
             alignLabelWithHint: true,
-            // floatingLabelBehavior: FloatingLabelBehavior,
-
+            floatingLabelBehavior: floatingLabelBehavior,
             contentPadding:
                 const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
                     .copyWith(bottom: AppPaddings.medium),

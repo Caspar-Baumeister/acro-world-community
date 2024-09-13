@@ -3,6 +3,7 @@ import 'package:acroworld/components/input/custom_option_input_component.dart';
 import 'package:acroworld/components/tiles/event_tiles/class_tile.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/provider/my_events_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
 import 'package:acroworld/screens/modals/base_modal.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -19,31 +20,41 @@ class CreatedEventsByMeSection extends StatelessWidget {
   Widget build(BuildContext context) {
     MyEventsProvider myEventsProvider = Provider.of<MyEventsProvider>(context);
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
         Padding(
-          padding: const EdgeInsets.all(AppPaddings.medium),
+          padding: const EdgeInsets.only(top: AppPaddings.medium),
           child: StandardButton(
               text: "Create New Event",
+              isFilled: true,
               onPressed: () => buildMortal(
                   context, const CreateNewEventFromExistingModal())),
         ),
-        if (myEventsProvider.loading)
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.5,
-            child: const Center(
-              child: CircularProgressIndicator(),
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (myEventsProvider.loading)
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.7,
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                if (!myEventsProvider.loading)
+                  ...List<Widget>.from(
+                      myEventsProvider.myCreatedEvents.map((event) => Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppPaddings.small,
+                                vertical: AppPaddings.tiny),
+                            child: ClassTile(
+                                classObject: event,
+                                onTap: () => onTap(event, context)),
+                          ))),
+              ],
             ),
           ),
-        if (!myEventsProvider.loading)
-          ...List<Widget>.from(
-              myEventsProvider.myCreatedEvents.map((event) => Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: AppPaddings.small,
-                        vertical: AppPaddings.tiny),
-                    child: ClassTile(
-                        classObject: event, onTap: () => onTap(event, context)),
-                  ))),
+        ),
       ],
     );
   }
@@ -110,7 +121,17 @@ class _CreateNewEventFromExistingModalState
               text: currentOption == null || currentOption == "Without template"
                   ? "Continue without template"
                   : "Continue",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(CreateAndEditEventPageRoute(
+                    isEditing: false,
+                    classModel: currentOption == null ||
+                            currentOption == "Without template"
+                        ? null
+                        : Provider.of<MyEventsProvider>(context, listen: false)
+                            .myCreatedEvents
+                            .firstWhere(
+                                (element) => element.name == currentOption)));
+              },
             ),
           ],
         ));

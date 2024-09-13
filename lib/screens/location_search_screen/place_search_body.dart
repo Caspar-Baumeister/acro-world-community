@@ -1,4 +1,4 @@
-import 'package:acroworld/components/buttons/standard_icon_button.dart';
+import 'package:acroworld/components/custom_divider.dart';
 import 'package:acroworld/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/components/loading_widget.dart';
 import 'package:acroworld/components/search_bar_widget.dart';
@@ -9,6 +9,7 @@ import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/screens/location_search_screen/set_to_user_location_widget.dart';
 import 'package:acroworld/services/location_singleton.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -23,8 +24,6 @@ class PlaceQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO create a location service that sets the place and fetches the right place from the place id
-    // and fetches all possible places
     return Query(
       options: QueryOptions(
           document: Queries.getPlace,
@@ -76,23 +75,55 @@ class PlacesQuery extends StatelessWidget {
         if (result.data != null) {
           Map<String, dynamic> data = result.data!;
           if (data.isNotEmpty) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: List<Widget>.from(
-                result.data?['places'].map((place) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0)
-                        .copyWith(bottom: 8),
-                    child: StandardIconButton(
-                      withBorder: false,
-                      text: place['description'],
-                      icon: Icons.location_on,
-                      onPressed: () {
-                        onPlaceIdSet(place['id']);
-                      },
+            return Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
+              margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+              decoration: BoxDecoration(
+                color: CustomColors.backgroundColor,
+                borderRadius: AppBorders.smallRadius,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 2,
+                    offset: const Offset(0, 1),
+                  ),
+                ],
+              ),
+              child: ListView.separated(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: result.data?['places'].length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    const CustomDivider(),
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      onPlaceIdSet(result.data?['places'][index]['id']);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: AppPaddings.medium),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.location_on,
+                            color: CustomColors.primaryColor,
+                          ),
+                          const SizedBox(width: AppPaddings.small),
+                          Flexible(
+                            child: Text(
+                              result.data?['places'][index]['description'],
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
-                }),
+                },
               ),
             );
           } else {
@@ -124,17 +155,20 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         children: [
-          SearchBarWidget(
-            onChanged: (String value) {
-              setState(() {
-                query = value;
-              });
-            },
-            autofocus: true,
+          Row(
+            children: [
+              Flexible(
+                child: SearchBarWidget(
+                  onChanged: (String value) {
+                    setState(() {
+                      query = value;
+                    });
+                  },
+                ),
+              ),
+              const SetToUserLocationWidget(),
+            ],
           ),
-          const SizedBox(height: AppPaddings.medium),
-          const SetToUserLocationWidget(),
-          const SizedBox(height: AppPaddings.medium),
           SingleChildScrollView(
             child: query.isNotEmpty
                 ? placeId.isNotEmpty

@@ -2,6 +2,23 @@ import 'package:acroworld/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getTeachersPageableQuery = gql("""
+  query GetTeachersPageable(\$limit: Int, \$offset: Int, \$where: teachers_bool_exp!) {
+    teachers(limit: \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {
+      id
+      name
+      user_id
+      confirmation_status
+      images {
+        image {
+          url
+        }
+        is_profile_picture
+      }
+    }
+  }
+""");
+
   static final getClasses = gql("""
 query getClasses {
   classes {

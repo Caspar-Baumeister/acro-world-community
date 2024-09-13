@@ -46,6 +46,14 @@ dependencies:
   firebase_storage: ^11.7.7
   image_picker: ^1.1.2
   jwt_decoder: ^2.0.1
+  easy_stepper: ^0.8.5+1
+  html_editor_enhanced: ^2.5.1
+  geocoding: ^3.0.0
+  omni_datetime_picker: ^1.1.0
+  bottom_picker: ^2.8.0
+  numberpicker: ^2.1.2
+  flutter_native_timezone: ^2.0.0
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:

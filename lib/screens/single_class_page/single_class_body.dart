@@ -98,7 +98,9 @@ class SingleClassBody extends StatelessWidget {
                             const SizedBox(width: 10),
                             ClassTeacherChips(
                                 classTeacherList: List<TeacherModel>.from(
-                                    classTeachers.map((e) => e.teacher))),
+                                    classTeachers
+                                        .where((e) => e.teacher != null)
+                                        .map((e) => e.teacher))),
                           ],
                         ),
                       ),

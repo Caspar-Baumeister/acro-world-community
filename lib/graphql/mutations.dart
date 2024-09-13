@@ -1,6 +1,77 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+//   mutation {
+//   insert_classes_one(object: {name: "Yoga for Beginners", description: "A relaxing yoga class suitable for beginners.", image_url: "https://example.com/image.png", event_type: Trainings, location: {type: "Point", coordinates: [1.23456, 2.34567]}, location_name: "Yoga Studio", timezone: "America/New_York", url_slug: "yoga-for-beginners-1", recurring_patterns: {data: [{start_time: "09:00:00", end_time: "10:00:00", start_date: "2024-09-05", end_date: "2024-12-05", is_recurring: true, recurring_every_x_weeks: 2, day_of_week: 4}, {start_time: "10:00:00", end_time: "11:00:00", start_date: "2024-09-07", end_date: "2024-12-07", is_recurring: false, day_of_week: 4}]}}) {
+//     id
+//   }
+// }
+
+// class_owners: {data: {teacher_id: "6d76a0f1-8e33-40f5-a300-505329d30ae0", is_payment_receiver: false}},
+// created_by_id: "8a64f600-b686-4c96-95a1-464cf406571a"
+  static final insertClassWithRecurringPatterns = gql("""
+  mutation InsertClassWithRecurringPatterns(
+    \$name: String!,
+    \$description: String!,
+    \$imageUrl: String!,
+    \$eventType: event_type_enum!,
+    \$location: String!,
+    \$locationName: String!,
+    \$timezone: String!,
+    \$urlSlug: String!,
+    \$recurringPatterns: [recurring_patterns_insert_input!]!,
+    \$classOwners: [class_owners_insert_input!]!
+    \$classTeachers: [class_teachers_insert_input!]!
+    \$createdById: uuid!
+  ) {
+    insert_classes_one(
+      object: {
+        name: \$name,
+        description: \$description,
+        image_url: \$imageUrl,
+        event_type: \$eventType,
+        location: {type: "Point", coordinates: \$location},
+        location_name: \$locationName,
+        timezone: \$timezone,
+        url_slug: \$urlSlug,
+        created_by_id: \$createdById,
+        recurring_patterns: {
+          data: \$recurringPatterns
+        }
+        class_owners: {
+          data: \$classOwners
+        }
+        class_teachers: {
+          data: \$classTeachers
+        }
+      }
+    ) {
+      id
+    }
+  }
+  """);
+
+  // entityType -> "class_teacher"
+  // entityId -> class_id
+  // email can be null if you invite a user that is already registered
+  static final inviteMutation = gql("""
+  mutation Invite(
+    \$entityId: String,
+    \$entityType: String,
+    \$email: String,
+    \$userId: String
+  ) {
+    invite(
+      entity_id: \$entityId,
+      entity: \$entityType,
+      email: \$email,
+      userId: \$userId
+    ) {
+      success
+    }
+  }
+""");
+
   static final createPaymentSheet = gql("""
 mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!) {
   create_payment_sheet(

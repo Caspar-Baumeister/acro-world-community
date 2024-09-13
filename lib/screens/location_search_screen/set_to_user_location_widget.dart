@@ -1,9 +1,9 @@
-import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/models/places/place.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
@@ -77,8 +77,14 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return StandardIconButton(
-      text: "My location",
+    if (loading) {
+      return const SizedBox(
+          height: AppDimensions.iconSizeMedium,
+          width: AppDimensions.iconSizeMedium,
+          child: CircularProgressIndicator());
+    }
+    return IconButton(
+      iconSize: AppDimensions.iconSizeMedium,
       onPressed: () async {
         setState(() {
           loading = true;
@@ -88,8 +94,9 @@ class _SetToUserLocationWidgetState extends State<SetToUserLocationWidget> {
           loading = false;
         });
       },
-      icon: Icons.location_on,
-      loading: loading,
+      icon: const Icon(
+        Icons.my_location_outlined,
+      ),
     );
   }
 }

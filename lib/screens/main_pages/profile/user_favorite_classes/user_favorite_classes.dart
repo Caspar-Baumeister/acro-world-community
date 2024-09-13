@@ -47,7 +47,10 @@ class UserFavoriteClasses extends StatelessWidget {
                     itemCount: favoriteModels.length,
                     itemBuilder: ((context, index) {
                       try {
-                        ClassModel event = favoriteModels[index].classObject!;
+                        ClassModel? event = favoriteModels[index].classObject;
+                        if (event == null) {
+                          return Container();
+                        }
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 8.0, vertical: 4),

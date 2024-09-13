@@ -6,6 +6,7 @@ import 'package:acroworld/components/input/custom_option_input_component.dart';
 import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/create_creator_profile_pages/components/additional_images_picker_component.dart';
 import 'package:acroworld/screens/create_creator_profile_pages/components/profile_image_picker_component.dart';
@@ -81,7 +82,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
 
   Future<void> _handleUploadAndMutation() async {
     final client = GraphQLClientSingleton().client;
-    final profileService = ProfileCreationService(client);
+    final profileService = ProfileCreationService(client, ImageUploadService());
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
 
@@ -113,6 +114,13 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
       return;
     }
 
+    if (_creatorType == null) {
+      setState(() {
+        _errorMessage = 'Please select a creator type.';
+      });
+      return;
+    }
+
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -128,13 +136,23 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
 
       print("Additional Image URLs: $additionalImageUrls");
 
-      await profileService.createTeacherProfile(
+      String createTeacherProfileMessage =
+          await profileService.createTeacherProfile(
         _nameController.text,
         _descriptionController.text,
         _urlSlugController.text,
         profileImageUrl,
         additionalImageUrls,
+        _creatorType!,
+        userProvider.activeUser!.id!,
       );
+
+      if (createTeacherProfileMessage != "success") {
+        setState(() {
+          _errorMessage = createTeacherProfileMessage;
+        });
+        return;
+      }
 
       setState(() {
         _profileImage = null;
@@ -142,6 +160,11 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
       });
 
       showSuccessToast("Teacher profile created successfully");
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        Navigator.of(context).pop();
+        await TokenSingletonService().refreshToken();
+        userProvider.setUserFromToken();
+      });
     } catch (e) {
       setState(() {
         _errorMessage = e.toString();

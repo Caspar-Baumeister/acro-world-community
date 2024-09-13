@@ -86,7 +86,8 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
       required this.setOption,
       this.footnoteText,
       required this.valueIdentifier,
-      this.hintText = "Choose a value"}); // Default hint text
+      this.hintText = "Choose a value",
+      this.beatifyValueFunction}); // Default hint text
 
   final String? footnoteText;
   final QueryOptions query;
@@ -95,6 +96,7 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
   final Function(String? value) setOption;
   final String valueIdentifier;
   final String hintText; // New variable hint text
+  final Function(String)? beatifyValueFunction;
 
   @override
   Widget build(BuildContext context) {
@@ -142,7 +144,9 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                           final String value = e[valueIdentifier] as String;
                           return DropdownMenuItem<String>(
                             value: value,
-                            child: Text(value),
+                            child: Text(beatifyValueFunction != null
+                                ? beatifyValueFunction!(value)
+                                : value),
                           );
                         }).toList(),
                       ),

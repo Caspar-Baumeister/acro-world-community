@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -70,6 +71,8 @@ initMain() async {
       name: "acroworld",
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    tz.initializeTimeZones();
 
     // FIREBASE MESSAGING //
     // initialize the firebase messaging service

@@ -24,7 +24,7 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
             onPressed: () => Navigator.of(context).push(
               MapPageRoute(),
             ),
-            icon: const Icon(Icons.location_on_outlined),
+            icon: const Icon(Icons.map_outlined),
           ),
         ],
       ),

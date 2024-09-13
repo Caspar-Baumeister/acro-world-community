@@ -6,15 +6,20 @@ class CustomTabView extends StatelessWidget {
       {super.key,
       this.aboveTabsWidgets,
       required this.tabTitles,
-      required this.tabViews});
+      required this.tabViews,
+      this.initialIndex,
+      this.onTap});
 
   final List<Widget>? aboveTabsWidgets;
   final List<String> tabTitles;
   final List<Widget> tabViews;
+  final int? initialIndex;
+  final Function(int)? onTap;
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
+      initialIndex: initialIndex ?? 0,
       length: tabTitles.length,
       child: NestedScrollView(
         headerSliverBuilder: (context, _) {
@@ -30,6 +35,7 @@ class CustomTabView extends StatelessWidget {
           children: <Widget>[
             Material(
               child: TabBar(
+                onTap: onTap != null ? (value) => onTap!(value) : null,
                 labelColor: CustomColors.accentColor,
                 unselectedLabelColor: CustomColors.lightestTextColor,
                 indicatorWeight: 1,

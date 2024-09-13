@@ -1,13 +1,11 @@
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/decorators.dart';
+import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:flutter/material.dart';
 
 class SearchBarWidget extends StatefulWidget {
-  const SearchBarWidget(
-      {required this.onChanged, super.key, this.autofocus = false});
+  const SearchBarWidget({required this.onChanged, super.key, this.color});
 
   final ValueChanged<String> onChanged;
-  final bool autofocus;
+  final Color? color;
 
   @override
   SearchBarWidgetState createState() => SearchBarWidgetState();
@@ -20,44 +18,38 @@ class SearchBarWidgetState extends State<SearchBarWidget> {
   void initState() {
     controller = TextEditingController();
     super.initState();
+    controller.addListener(() {
+      widget.onChanged(controller.text);
+    });
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final style = controller.text != ""
-        ? Theme.of(context).textTheme.titleLarge
-        : Theme.of(context).textTheme.titleLarge;
-    return Container(
-      height: INPUTFIELD_HEIGHT,
-      decoration: searchBarDecoration,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: TextField(
-        autofocus: widget.autofocus,
-        textInputAction: TextInputAction.search,
-        controller: controller,
-        decoration: InputDecoration(
-          icon: const Icon(
-            Icons.search,
-          ),
-          suffixIcon: controller.text != ""
-              ? GestureDetector(
-                  child: const Icon(
-                    Icons.close,
-                  ),
-                  onTap: () {
-                    controller.clear();
-                    widget.onChanged('');
-                    //FocusScope.of(context).requestFocus(FocusNode());
-                  },
-                )
-              : null,
-          hintText: "search",
-          hintStyle: style,
-          border: InputBorder.none,
-        ),
-        style: style,
-        onChanged: widget.onChanged,
-      ),
+    return InputFieldComponent(
+      fillColor: widget.color,
+      textInputAction: TextInputAction.search,
+      labelText: "Search...",
+      leadingIcon: const Icon(Icons.search),
+      autoFocus: true,
+      floatingLabelBehavior: FloatingLabelBehavior.never,
+      controller: controller,
+      suffixIcon: controller.text != ""
+          ? GestureDetector(
+              child: const Icon(
+                Icons.close,
+              ),
+              onTap: () {
+                controller.clear();
+                widget.onChanged('');
+              },
+            )
+          : null,
     );
   }
 }

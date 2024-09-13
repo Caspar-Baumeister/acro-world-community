@@ -5,6 +5,7 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/main.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/my_events_provider.dart';
@@ -37,26 +38,34 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     print('App:build');
-    final graphQLClient = GraphQLClientSingleton().client;
+
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => UserProvider()),
-          ChangeNotifierProvider(create: (_) => EventFilterProvider()),
-          ChangeNotifierProvider(create: (_) => EventBusProvider()),
-          ChangeNotifierProvider(create: (_) => CalendarProvider()),
-          ChangeNotifierProvider(create: (_) => MapEventsProvider()),
-          ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
-          ChangeNotifierProvider(create: (_) => PlaceProvider()),
-          ChangeNotifierProvider(create: (_) => MyEventsProvider()),
-        ],
-        child: GraphQLProvider(
-          client: ValueNotifier(graphQLClient),
-          child: MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            theme: MyThemes.lightTheme,
-            home: const AuthWrapper(),
-          ),
-        ));
+      providers: [
+        ChangeNotifierProvider(create: (_) => UserProvider()),
+        ChangeNotifierProvider(create: (_) => EventFilterProvider()),
+        ChangeNotifierProvider(create: (_) => EventBusProvider()),
+        ChangeNotifierProvider(create: (_) => CalendarProvider()),
+        ChangeNotifierProvider(create: (_) => MapEventsProvider()),
+        ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
+        ChangeNotifierProvider(create: (_) => PlaceProvider()),
+        ChangeNotifierProvider(create: (_) => MyEventsProvider()),
+        ChangeNotifierProvider(
+            create: (_) => EventCreationAndEditingProvider()),
+      ],
+      child: ValueListenableBuilder<GraphQLClient>(
+        valueListenable: GraphQLClientSingleton().clientNotifier,
+        builder: (context, client, child) {
+          return GraphQLProvider(
+            client: GraphQLClientSingleton().clientNotifier,
+            child: MaterialApp(
+              navigatorKey: navigatorKey,
+              debugShowCheckedModeBanner: false,
+              theme: MyThemes.lightTheme,
+              home: const AuthWrapper(),
+            ),
+          );
+        },
+      ),
+    );
   }
 }

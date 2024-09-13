@@ -3,8 +3,8 @@ import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/screens/main_pages/activities/components/booking/booking_modal/steps/checkout_step.dart';
 import 'package:acroworld/screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart';
+import 'package:acroworld/screens/main_pages/activities/components/booking/booking_modal/widgets/booking_step_indicator.dart';
 import 'package:acroworld/screens/main_pages/activities/components/booking/booking_modal/widgets/header_section.dart';
-import 'package:acroworld/screens/main_pages/activities/components/booking/booking_modal/widgets/step_indicator.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 

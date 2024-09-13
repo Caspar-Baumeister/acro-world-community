@@ -45,7 +45,6 @@ class AuthWrapper extends StatelessWidget {
   Future<bool> identifyAndSetUser(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final token = await TokenSingletonService().getToken().then((value) {
-      print("here is the token value bevore deeplinking: $value");
       Deeplinking().initialize(context);
       return value;
     });
