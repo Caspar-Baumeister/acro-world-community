@@ -1,5 +1,5 @@
 class Fragments {
-  static const classFragment = """
+  static const classFragmentAllInfo = """
       url_slug
       booking_email
       max_booking_slots
@@ -15,20 +15,16 @@ class Fragments {
         }
       }
       city
-      class_pass_url
       description
       id
       image_url
       location
       location_name
       name
-      pricing
-      requirements
-      usc_url
       website_url
       class_teachers {
         teacher {
-          $teacherFragment
+          $teacherFragmentAllInfo
         }
         is_owner
       }
@@ -40,6 +36,28 @@ class Fragments {
       }
       event_type
 
+""";
+
+  static const classFragmentLazy = """
+      city
+      id
+      image_url
+      location
+      location_name
+      name
+      class_teachers {
+        teacher {
+          $teacherFragmentLazy
+        }
+        is_owner
+      }
+      class_levels {
+        level {
+          name
+          id
+        }
+      }
+      event_type
 """;
 
   static const recurringPatternFragment = """
@@ -107,11 +125,11 @@ class Fragments {
     
     teachers {
       teacher {
-          $teacherFragment
+          $teacherFragmentAllInfo
         }
     }""";
 
-  static const teacherFragment = """
+  static const teacherFragmentAllInfo = """
   created_at
   description
   type
@@ -129,6 +147,18 @@ class Fragments {
     }
   }
   images {
+    image {
+      url
+    }
+    is_profile_picture
+  }
+  """;
+
+  static const teacherFragmentLazy = """
+  id
+  name
+  user_id
+  images (where: {is_profile_picture: {_eq: true}}) {
     image {
       url
     }

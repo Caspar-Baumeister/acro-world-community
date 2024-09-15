@@ -8,8 +8,8 @@ import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/my_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/notification_service.dart';
@@ -48,7 +48,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(create: (_) => MapEventsProvider()),
         ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
         ChangeNotifierProvider(create: (_) => PlaceProvider()),
-        ChangeNotifierProvider(create: (_) => MyEventsProvider()),
+        ChangeNotifierProvider(create: (_) => TeacherEventsProvider()),
         ChangeNotifierProvider(
             create: (_) => EventCreationAndEditingProvider()),
       ],

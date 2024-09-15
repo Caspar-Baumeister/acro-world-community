@@ -1,12 +1,15 @@
 import 'package:acroworld/components/custom_easy_stepper.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/screens/base_page.dart';
 import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/steps/community_step.dart';
 import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
+import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/steps/market_step.dart';
 import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -34,26 +37,37 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
     final List<Widget> pages = [
       // second page
       GeneralEventStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(2);
+        eventCreationAndEditingProvider.setPage(1);
         setState(() {});
       }),
       OccurrenceStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(1);
+        eventCreationAndEditingProvider.setPage(2);
         setState(() {});
-        eventCreationAndEditingProvider
-            .createClass(userProvider.activeUser!.id!);
       }),
       CommunityStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(1);
+        eventCreationAndEditingProvider.setPage(3);
         setState(() {});
       }),
+      MarketStep(onFinished: () async {
+        // create a new event
+        await eventCreationAndEditingProvider
+            .createClass(userProvider.activeUser!.id!);
 
-      Container(
-        color: Colors.blue,
-      ),
+        if (eventCreationAndEditingProvider.errorMessage == null) {
+          showSuccessToast("Event created successfully");
+          // if successful, pop the page
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop();
+            Provider.of<TeacherEventsProvider>(context, listen: false)
+                .fetchMyEvents();
+          });
+        } else {
+          // if not successful, show an error message
+          showErrorToast(eventCreationAndEditingProvider.errorMessage!);
+        }
+      })
     ];
 
-    print("currentPage: ${eventCreationAndEditingProvider.currentPage}");
     return BasePage(
       makeScrollable: false,
       child: Column(

@@ -1,7 +1,7 @@
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
+import 'package:acroworld/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 

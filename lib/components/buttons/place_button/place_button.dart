@@ -1,6 +1,6 @@
 import 'package:acroworld/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/screens/location_search_screen/place_search_screen.dart';
+import 'package:acroworld/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

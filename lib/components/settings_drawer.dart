@@ -3,7 +3,7 @@ import 'package:acroworld/components/send_feedback_button.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/screens/essentials/essentials.dart';
+import 'package:acroworld/screens/user_mode_screens/essentials/essentials.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';

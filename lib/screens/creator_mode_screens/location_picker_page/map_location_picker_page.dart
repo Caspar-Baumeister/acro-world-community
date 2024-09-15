@@ -1,11 +1,14 @@
 import 'package:acroworld/components/search_bar_widget.dart';
-import 'package:acroworld/screens/location_search_screen/place_search_body.dart';
+import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/screens/user_mode_screens/location_search_screen/place_search_body.dart';
 import 'package:acroworld/services/location_search_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
 
 class MapLocationpickerPage extends StatefulWidget {
@@ -55,7 +58,10 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
               onTap: (tapPosition, point) => {
                 setState(() {
                   markerLocation = point;
-                })
+                }),
+                print("location changed to $point"),
+                widget.onLocationSet(markerLocation, "custom location"),
+                showSuccessToast("Set to custom location", isTop: false)
               },
               initialCenter: markerLocation,
               initialZoom: 13,
@@ -122,6 +128,11 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                             ? PlacesQuery(
                                 query: query,
                                 onPlaceIdSet: _onPlaceSet,
+                                selector: "search_by_input_text",
+                                queryOptions: QueryOptions(
+                                    document: Queries.getPlacesIds,
+                                    fetchPolicy: FetchPolicy.networkOnly,
+                                    variables: {'query': query}),
                               )
                             : Container(),
                       ),
@@ -136,7 +147,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
     );
   }
 
-  _onPlaceSet(String placeId) async {
+  _onPlaceSet(String placeId, {String? description}) async {
     Map<String, dynamic>? place =
         await LocationSearchService().getPlaceFromId(placeId);
 
@@ -150,7 +161,8 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
       setState(() {
         query = '';
       });
-      widget.onLocationSet(markerLocation, place["description"] ?? '');
+      widget.onLocationSet(
+          markerLocation, description ?? place["description"] ?? '');
     }
   }
 }

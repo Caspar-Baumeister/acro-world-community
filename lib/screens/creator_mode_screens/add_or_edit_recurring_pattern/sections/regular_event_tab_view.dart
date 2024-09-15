@@ -119,6 +119,7 @@ class RegularEventTabView extends StatelessWidget {
               ),
               const SizedBox(height: AppPaddings.medium),
               Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Flexible(
                     child: FloatingButton(
@@ -140,21 +141,33 @@ class RegularEventTabView extends StatelessWidget {
                   ),
                   const SizedBox(width: AppPaddings.medium),
                   Flexible(
-                    child: FloatingButton(
-                      insideText: recurringPattern.endDate != null
-                          ? formatDateTime(recurringPattern.endDate!)
-                          : "Forever",
-                      headerText: "End of pattern?",
-                      onPressed: () => showDatePickerDialog(
-                          firstDate: DateTime.now(),
-                          lastDate:
-                              DateTime.now().add(const Duration(days: 365)),
-                          initialDate:
-                              recurringPattern.endDate ?? DateTime.now(),
-                          context: context,
-                          setDate: (date) {
-                            editRecurringPattern("endDate", date);
-                          }),
+                    child: Column(
+                      children: [
+                        FloatingButton(
+                          insideText: recurringPattern.endDate != null
+                              ? formatDateTime(recurringPattern.endDate!)
+                              : "",
+                          headerText: "End of pattern?",
+                          onPressed: () => showDatePickerDialog(
+                              firstDate: DateTime.now(),
+                              lastDate:
+                                  DateTime.now().add(const Duration(days: 365)),
+                              initialDate:
+                                  recurringPattern.endDate ?? DateTime.now(),
+                              context: context,
+                              setDate: (date) {
+                                editRecurringPattern("endDate", date);
+                              }),
+                        ),
+                        const SizedBox(height: AppPaddings.medium),
+                        Text(
+                          "You can leave the end date empty and change it later",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(color: Colors.grey),
+                        ),
+                      ],
                     ),
                   ),
                 ],

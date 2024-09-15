@@ -25,6 +25,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   // this prevents the overwriting of the event if the user clicks on create new event again
   final bool _isEventUnderConstruction = false;
 
+  String? _errorMesssage;
+
   // class properties
   String _title = '';
   String _slug = '';
@@ -47,6 +49,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? get locationName => _locationName;
   List<TeacherModel> get pendingInviteTeachers => _pendingInviteTeachers;
   List<RecurringPatternModel> get recurringPatterns => _recurringPatterns;
+  String? get errorMessage => _errorMesssage;
 
   void addRecurringPattern(RecurringPatternModel pattern) {
     _recurringPatterns.add(pattern);
@@ -224,16 +227,18 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
             variables: variables),
       );
 
-      print("mutation ${result.parserFn}");
-
       if (result.hasException) {
         CustomErrorHandler.captureException(
             "Error creating class: ${result.exception.toString()}");
+        // set error message
+        _errorMesssage = result.exception.toString();
       } else {
         print('Class inserted: ${result.data?['insert_classes_one']['id']}');
+        _errorMesssage = null;
       }
     } catch (e) {
       CustomErrorHandler.captureException("Error creating class: $e");
+      _errorMesssage = e.toString();
     }
   }
 

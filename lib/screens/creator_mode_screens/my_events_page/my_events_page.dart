@@ -2,6 +2,7 @@ import 'package:acroworld/components/bottom_navbar/creator_mode/creator_mode_pri
 import 'package:acroworld/components/custom_tab_view.dart';
 import 'package:acroworld/screens/base_page.dart';
 import 'package:acroworld/screens/creator_mode_screens/my_events_page/sections/created_events_by_me_section.dart';
+import 'package:acroworld/screens/creator_mode_screens/my_events_page/sections/participated_events_section.dart';
 import 'package:flutter/material.dart';
 
 class MyEventsPage extends StatelessWidget {
@@ -16,21 +17,8 @@ class MyEventsPage extends StatelessWidget {
         tabTitles: ["From you created", "Your taking part"],
         tabViews: [
           CreatedEventsByMeSection(),
-          TakingPartIn(),
+          ParticipatedEventsSection(),
         ],
-      ),
-    );
-  }
-}
-
-class TakingPartIn extends StatelessWidget {
-  const TakingPartIn({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: const Center(
-        child: Text("Taking Part In"),
       ),
     );
   }

@@ -4,16 +4,13 @@ import 'package:acroworld/models/event_model.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 
 class ClassModel {
-  String? classPassUrl;
   String? description;
   String? id;
   String? imageUrl;
   Location? location;
   String? locationName;
   String? name;
-  String? pricing;
   String? requirements;
-  String? uscUrl;
   String? websiteUrl;
   List<ClassTeachers>? classTeachers;
   List<ClassLevels>? classLevels;
@@ -31,6 +28,7 @@ class ClassModel {
   String? country;
   String? urlSlug;
   List<ClassEvent>? classEvents;
+  int? amountUpcomingEvents;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -45,7 +43,6 @@ class ClassModel {
       {this.bookingEmail,
       this.maxBookingSlots,
       this.classBookingOptions,
-      this.classPassUrl,
       this.description,
       this.id,
       this.urlSlug,
@@ -53,10 +50,8 @@ class ClassModel {
       this.location,
       this.locationName,
       this.name,
-      this.pricing,
       this.isInitiallyFavorized,
       this.requirements,
-      this.uscUrl,
       this.websiteUrl,
       this.classTeachers,
       this.distance,
@@ -67,6 +62,7 @@ class ClassModel {
       this.isInitiallyFlagged,
       this.amountActiveFlaggs,
       this.amountNonActiveFlaggs,
+      this.amountUpcomingEvents,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
@@ -86,7 +82,6 @@ class ClassModel {
             ?.where((flag) => flag['is_active'] == false)
             .length ??
         0;
-    classPassUrl = json['class_pass_url'];
     description = json['description'];
     distance = json['distance'];
     isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
@@ -99,9 +94,7 @@ class ClassModel {
         json['location'] != null ? Location.fromJson(json['location']) : null;
     locationName = json['location_name'];
     name = json['name'];
-    pricing = json['pricing'];
     requirements = json['requirements'];
-    uscUrl = json['usc_url'];
     websiteUrl = json['website_url'];
     bookingEmail = json['booking_email'];
     maxBookingSlots = json['max_booking_slots'];
@@ -129,5 +122,10 @@ class ClassModel {
     eventType = json['event_type'] != null
         ? mapStringToEventType(json['event_type'])
         : null;
+
+    if (json['class_events_aggregate']?['aggregate']?['count'] != null) {
+      amountUpcomingEvents =
+          json['class_events_aggregate']?['aggregate']?['count'] as int;
+    }
   }
 }

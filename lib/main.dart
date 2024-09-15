@@ -3,7 +3,7 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/system_pages/version_to_old_page.dart';
+import 'package:acroworld/screens/user_mode_screens/system_pages/version_to_old_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/notification_service.dart';

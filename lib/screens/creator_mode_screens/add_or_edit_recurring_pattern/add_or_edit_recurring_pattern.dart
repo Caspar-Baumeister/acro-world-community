@@ -80,7 +80,7 @@ class _AddOrEditRecurringPatternPageState
       _recurringPattern = RecurringPatternModel(
         isRecurring: false,
         startDate: DateTime.now(),
-        endDate: DateTime.now(),
+
         // startime is next full hour
         startTime: TimeOfDay(
           hour: TimeOfDay.now().hour + 1,
@@ -153,6 +153,20 @@ class _AddOrEditRecurringPatternPageState
     setState(() {
       _errorMessage = null;
     });
+    if (_recurringPattern.isRecurring == false &&
+        _recurringPattern.endDate == null) {
+      setState(() {
+        _errorMessage = "End date is required for single occurence.";
+      });
+      return;
+    }
+    if (_recurringPattern.endDate != null &&
+        _recurringPattern.startDate!.isAfter(_recurringPattern.endDate!)) {
+      setState(() {
+        _errorMessage = "End date cannot be before start date ";
+      });
+      return;
+    }
     if (_recurringPattern.isRecurring == true) {
       if (_recurringPattern.dayOfWeek == null) {
         setState(() {
@@ -161,7 +175,13 @@ class _AddOrEditRecurringPatternPageState
         return;
       }
     }
-    widget.onFinished(_recurringPattern);
-    Navigator.pop(context);
+    try {
+      widget.onFinished(_recurringPattern);
+      Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        _errorMessage = e.toString();
+      });
+    }
   }
 }

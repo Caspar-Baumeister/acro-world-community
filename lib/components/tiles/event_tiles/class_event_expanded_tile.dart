@@ -4,8 +4,8 @@ import 'package:acroworld/components/tiles/event_tiles/widgets/class_tile_teache
 import 'package:acroworld/components/tiles/event_tiles/widgets/class_tile_title_widget.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_tile_image.dart';
-import 'package:acroworld/screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
+import 'package:acroworld/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';

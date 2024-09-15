@@ -8,26 +8,6 @@ class LocationSearchService {
 
   LocationSearchService();
 
-  Future<bool> getPlacesFromQuery() async {
-    try {
-      final QueryResult result = await client.query(
-        QueryOptions(
-          document: Queries.getPlaces,
-        ),
-      );
-
-      if (result.hasException) {
-        CustomErrorHandler.captureException(result.exception);
-        return false;
-      }
-
-      return result.data!['places'];
-    } catch (e) {
-      CustomErrorHandler.captureException(e);
-      return false;
-    }
-  }
-
   Future<Map<String, dynamic>?> getPlaceFromId(String id) async {
     try {
       final QueryResult result = await client.query(
@@ -44,35 +24,12 @@ class LocationSearchService {
         return null;
       }
 
-      print("Place: ${result.data!['place']}");
-
       return result.data!['place'];
     } catch (e) {
       CustomErrorHandler.captureException(e);
       return null;
     }
   }
-
-  // Future<List<OSMPlace>> searchLocations(String query) async {
-  //   final url =
-  //       'https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(query)}&format=json&addressdetails=1';
-
-  //   final response = await http.get(
-  //     Uri.parse(url),
-  //     headers: {
-  //       'Accept-Charset': 'UTF-8',
-  //       'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-  //       'Accept-Language': 'en-US',
-  //     },
-  //   );
-
-  //   if (response.statusCode == 200) {
-  //     final List<dynamic> data = json.decode(response.body);
-  //     return data.map((item) => OSMPlace.fromJson(item)).toList();
-  //   } else {
-  //     throw Exception('Failed to load locations');
-  //   }
-  // }
 }
 
 class OSMPlace {

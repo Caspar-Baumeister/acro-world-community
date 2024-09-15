@@ -3,9 +3,10 @@ import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/recurrent_pattern_model.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/screens/creator_mode_screens/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart';
+import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
+import 'package:acroworld/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -148,62 +149,6 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                 ),
               )
             : const SizedBox(height: AppPaddings.medium),
-      ],
-    );
-  }
-}
-
-class ReccurringPatternInfo extends StatelessWidget {
-  const ReccurringPatternInfo(this.recurringPattern, {super.key});
-  final RecurringPatternModel recurringPattern;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-            "Repeats every ${recurringPattern.recurringEveryXWeeks == 1 ? "" : "${recurringPattern.recurringEveryXWeeks} "}weeks on ${getDayOfWeek(recurringPattern.dayOfWeek ?? 0)}'s",
-            style: Theme.of(context).textTheme.bodyMedium),
-        const SizedBox(height: AppPaddings.small),
-        Text(
-          "From: ${formatTimeOfDay(recurringPattern.startTime)} to ${formatTimeOfDay(recurringPattern.endTime)}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: AppPaddings.medium),
-        Text(
-          "First occurence: ${formatDateTime(recurringPattern.startDate!)}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: AppPaddings.small),
-        Text(
-          "Repeats until: ${recurringPattern.endDate != null ? formatDateTime(recurringPattern.endDate!) : "forever"}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-      ],
-    );
-  }
-}
-
-class SingleOccurenceInfo extends StatelessWidget {
-  const SingleOccurenceInfo(this.recurringPattern, {super.key});
-  final RecurringPatternModel recurringPattern;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          // start date and time
-          "Start: ${formatDateTime(recurringPattern.startDate!)} ${formatTimeOfDay(recurringPattern.startTime)}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: AppPaddings.small),
-        Text(
-          "End: ${formatDateTime(recurringPattern.endDate!)} ${formatTimeOfDay(recurringPattern.endTime)}",
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
       ],
     );
   }

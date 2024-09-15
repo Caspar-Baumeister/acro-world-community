@@ -6,8 +6,8 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
+import 'package:acroworld/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -163,9 +163,8 @@ class SingleClassBody extends StatelessWidget {
                   ],
                 )
               : Container(),
-          (classe.uscUrl != null && classe.uscUrl != "") ||
-                  (classe.classPassUrl != null && classe.classPassUrl != "") ||
-                  (classe.websiteUrl != null && classe.websiteUrl != "")
+
+          (classe.websiteUrl != null && classe.websiteUrl != "")
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

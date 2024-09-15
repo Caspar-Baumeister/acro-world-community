@@ -22,13 +22,34 @@ class Queries {
   static final getClasses = gql("""
 query getClasses {
   classes {
-    ${Fragments.classFragment}
+    ${Fragments.classFragmentAllInfo}
     class_events(where: {end_date: {_gte: now}}) {
       ${Fragments.classEventFragment}
     }
   }
   classes_aggregate {
     aggregate{
+      count
+    }
+  }
+}
+""");
+
+  static final getClassesLazyAsTeacherUser = gql("""
+query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) {
+   classes(where: \$where, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+    ${Fragments.classFragmentLazy}
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
+      id
+    }
+    class_events_aggregate(where: {end_date: {_gte: now}}) {
+      aggregate {
+        count
+      }
+    }
+  }
+  classes_aggregate (where: \$where) {
+    aggregate {
       count
     }
   }
@@ -87,7 +108,7 @@ query Me {
       id
       created_at
       classes {
-        ${Fragments.classFragment}
+        ${Fragments.classFragmentAllInfo}
       }
       
     }
@@ -112,7 +133,7 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
     distance
     ${Fragments.classEventFragment}
     class {
-      ${Fragments.classFragment}
+      ${Fragments.classFragmentAllInfo}
     }
   }
 }
@@ -125,7 +146,7 @@ query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$dist
     distance
     ${Fragments.classEventFragment}
     class {
-      ${Fragments.classFragment}
+      ${Fragments.classFragmentAllInfo}
     }
   }
 }
@@ -142,7 +163,7 @@ query getEventOccurences {
       ${Fragments.recurringPatternFragment}
     }
     class {
-      ${Fragments.classFragment}
+      ${Fragments.classFragmentAllInfo}
       location_country
       location_city
     }
@@ -197,7 +218,7 @@ query getEventByIdWithBookmark(\$event_id: uuid!, \$user_id: uuid!) {
   static final getClassBySlugWithOutFavorite = gql("""
 query getClassByIdWithFavorite(\$url_slug: String!) {
   classes(where: {url_slug: {_eq: \$url_slug}}){
-     ${Fragments.classFragment}
+     ${Fragments.classFragmentAllInfo}
      
   }
 }
@@ -206,7 +227,7 @@ query getClassByIdWithFavorite(\$url_slug: String!) {
   static final getClassBySlugWithFavorite = gql("""
 query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
   classes(where: {url_slug: {_eq: \$url_slug}}){
-     ${Fragments.classFragment}
+     ${Fragments.classFragmentAllInfo}
      class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
@@ -221,7 +242,7 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
   static final getClassByIdWithFavorite = gql("""
 query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
    classes_by_pk(id: \$class_id){
-     ${Fragments.classFragment}
+     ${Fragments.classFragmentAllInfo}
      class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
@@ -238,7 +259,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   class_events_by_pk(id: \$class_event_id){
     ${Fragments.classEventFragment}
     class {
-      ${Fragments.classFragment}
+      ${Fragments.classFragmentAllInfo}
       class_favorits(where: {user_id: {_eq: \$user_id}}) {
       id
       created_at
@@ -280,9 +301,22 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 }
   """);
 
-  static final getPlaces = gql("""
+  static final getPlacesIdsCity = gql("""
   query GetPlaces(\$query: String!) {
     places(searchQuery: \$query) {
+      id
+      description
+      matched_substrings {
+        length
+        offset
+      }
+    }
+  }
+  """);
+
+  static final getPlacesIds = gql("""
+  query GetPlaces(\$query: String!) {
+    search_by_input_text(searchQuery: \$query) {
       id
       description
       matched_substrings {
@@ -396,7 +430,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       user_likes(where: {user_id: {_eq: \$user_id}}) {
         user_id
       }
-      ${Fragments.teacherFragment}
+      ${Fragments.teacherFragmentAllInfo}
     }
   }
   """);
@@ -407,7 +441,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       user_likes(where: {user_id: {_eq: \$user_id}}) {
         user_id
       }
-      ${Fragments.teacherFragment}
+      ${Fragments.teacherFragmentAllInfo}
     }
   }
   """);
@@ -417,7 +451,7 @@ query getClassEventsByClassId (\$class_id: uuid) {
   class_events(where: {class_id: {_eq: \$class_id}}) {
    ${Fragments.classEventFragment}
    class {
-      ${Fragments.classFragment}
+      ${Fragments.classFragmentAllInfo}
     }
   }
 }
@@ -426,7 +460,7 @@ query getClassEventsByClassId (\$class_id: uuid) {
   static final getClassesByTeacherId = gql("""
 query getClassesByTeacherId(\$teacher_id: uuid) {
   classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
-    ${Fragments.classFragment}
+    ${Fragments.classFragmentAllInfo}
   }
 }""");
 
@@ -470,7 +504,7 @@ query getClassEventParticipants(\$class_event_id: uuid) {
   static final getFollowedTeachers = gql("""
 query getFollowedTeachers(\$user_id: uuid!) {
   teachers(where: {user_likes: {user_id: {_eq: \$user_id}, _and: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
-     ${Fragments.teacherFragment}
+     ${Fragments.teacherFragmentAllInfo}
   }
 }
 """);
