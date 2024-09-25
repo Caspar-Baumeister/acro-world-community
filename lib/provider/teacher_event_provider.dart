@@ -1,9 +1,8 @@
+import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 
 class TeacherEventsProvider extends ChangeNotifier {
   // loads and keeps track of events that are created by me or where I'm taking place in.
@@ -53,7 +52,9 @@ class TeacherEventsProvider extends ChangeNotifier {
       _offsetParticipatingEvent += _limit;
     }
     notifyListeners();
+
     await fetchMyEvents(isRefresh: false, myEvents: myEvents);
+
     myEvents
         ? _isLoadingMyEvents = false
         : _isLoadingParticipatingEvents = false;
@@ -73,13 +74,15 @@ class TeacherEventsProvider extends ChangeNotifier {
       }
     }
 
-    QueryOptions queryOptions = QueryOptions(
-      document: Queries.getClassesLazyAsTeacherUser,
-      fetchPolicy: FetchPolicy.networkOnly,
-      variables: {
-        "limit": _limit,
-        "offset": myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
-        "where": {
+    //  class repository
+    ClassesRepository classesRepository =
+        ClassesRepository(apiService: GraphQLClientSingleton());
+
+    try {
+      final repositoryReturn = await classesRepository.getClassesLazyAsTeacher(
+        _limit,
+        myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
+        {
           "_or": [
             if (myEvents)
               {
@@ -107,49 +110,24 @@ class TeacherEventsProvider extends ChangeNotifier {
               "created_by_id": {"_eq": userId}
             },
         },
-      },
-    );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+      );
 
-      if (result.hasException) {
-        CustomErrorHandler.captureException(result.exception!);
-        // set classevents
-        _loading = false;
-        notifyListeners();
-        return;
-      }
+      myEvents
+          ? _myCreatedEvents
+              .addAll(List<ClassModel>.from(repositoryReturn["classes"]))
+          : _myParticipatingEvents
+              .addAll(List<ClassModel>.from(repositoryReturn["classes"]));
 
-      if (result.data != null && result.data!["classes"] != null) {
-        try {
-          myEvents
-              ? _myCreatedEvents.addAll(List<ClassModel>.from(
-                  result.data!['classes']
-                      .map((json) => ClassModel.fromJson(json)),
-                ))
-              : _myParticipatingEvents.addAll(List<ClassModel>.from(
-                  result.data!['classes']
-                      .map((json) => ClassModel.fromJson(json)),
-                ));
-
-          // set total events
-          myEvents
-              ? _totalMyEvents =
-                  result.data!["classes_aggregate"]["aggregate"]["count"]
-              : _totalParticipatingEvents =
-                  result.data!["classes_aggregate"]["aggregate"]["count"];
-        } catch (e, s) {
-          CustomErrorHandler.captureException(e, stackTrace: s);
-          // set classevents
-          _loading = false;
-          notifyListeners();
-          return;
-        }
-      }
+      // set total events
+      myEvents
+          ? _totalMyEvents = repositoryReturn["totalClasses"]
+          : _totalParticipatingEvents = repositoryReturn["totalClasses"];
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
       // set classevents
+      _loading = false;
+      notifyListeners();
+      return;
     }
 
     // set classevents

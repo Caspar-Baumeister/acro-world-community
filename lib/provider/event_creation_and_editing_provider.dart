@@ -1,15 +1,18 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:acroworld/data/graphql/mutations.dart';
+import 'package:acroworld/data/models/booking_option_model.dart';
+import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/data/models/recurrent_pattern_model.dart';
+import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/models/recurrent_pattern_model.dart';
-import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
+import 'package:acroworld/types_and_extensions/event_type.dart';
+import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 class EventCreationAndEditingProvider extends ChangeNotifier {
@@ -37,7 +40,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _locationName;
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
+  final List<BookingOptionModel> _bookingOptions = [];
   Uint8List? _eventImage;
+  int? maxBookingSlots;
 
   // GETTER
   String get title => _title;
@@ -49,6 +54,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? get locationName => _locationName;
   List<TeacherModel> get pendingInviteTeachers => _pendingInviteTeachers;
   List<RecurringPatternModel> get recurringPatterns => _recurringPatterns;
+  List<BookingOptionModel> get bookingOptions => _bookingOptions;
   String? get errorMessage => _errorMesssage;
 
   void addRecurringPattern(RecurringPatternModel pattern) {
@@ -63,6 +69,21 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
   void removeRecurringPattern(int index) {
     _recurringPatterns.removeAt(index);
+    notifyListeners();
+  }
+
+  void addBookingOption(BookingOptionModel option) {
+    _bookingOptions.add(option);
+    notifyListeners();
+  }
+
+  void editBookingOption(int index, BookingOptionModel option) {
+    _bookingOptions[index] = option;
+    notifyListeners();
+  }
+
+  void removeBookingOption(int index) {
+    _bookingOptions.removeAt(index);
     notifyListeners();
   }
 
@@ -109,6 +130,15 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   void setSlug(String slug) {
     _slug = slug;
     notifyListeners();
+  }
+
+  // get amount of followers from all teachers combined
+  int get amountOfFollowers {
+    int amount = 0;
+    for (var teacher in _pendingInviteTeachers) {
+      amount += (teacher.likes ?? 0).toInt();
+    }
+    return amount;
   }
 
   // get current page
@@ -175,12 +205,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _locationName = null;
     _pendingInviteTeachers.clear();
     _recurringPatterns.clear();
+    _bookingOptions.clear();
     _eventImage = null;
     _currentPage = 0;
     notifyListeners();
   }
 
   Future<void> createClass(String userId) async {
+    print("Creating classfor user: $userId");
     final client = GraphQLClientSingleton().client;
 
     try {
@@ -195,12 +227,19 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> recurringPatternsJson =
           _recurringPatterns.map((pattern) => pattern.toJson()).toList();
 
+      final List<Map<String, dynamic>> bookingOptionsJson =
+          _bookingOptions.map((option) => option.toMap()).toList();
+
       print("recurringPatternsJson: $recurringPatternsJson");
 
       String? imageUrl = await _uploadEventImage();
       // get timezone with default value to germany
       String? timezone = await getTimezone(
           _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
+
+      print("""class_booking_options: {
+          data: $bookingOptionsJson
+        }""");
 
       Map<String, dynamic> variables = {
         'name': _title,
@@ -216,8 +255,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'urlSlug': _slug,
         'createdById': userId,
         'recurringPatterns': recurringPatternsJson,
+        'classBookingOptions': bookingOptionsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
+        'max_booking_slots': maxBookingSlots
       };
 
       // Call the mutation
@@ -251,32 +292,31 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<String> getTimezone(double latitude, double longitude) async {
-    const String username = 'acroworld'; // Your GeoNames username
-    final String url =
-        'http://api.geonames.org/timezoneJSON?lat=$latitude&lng=$longitude&username=$username';
+  setClassFromExisting(ClassModel classModel) async {
+    // pull class data from database
+    ClassesRepository classesRepository =
+        ClassesRepository(apiService: GraphQLClientSingleton());
 
+    ClassModel fromClass = classModel;
     try {
-      final response = await http.get(Uri.parse(url));
+      final repositoryReturnClass =
+          await classesRepository.getClassBySlug(classModel.urlSlug!);
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        if (data.containsKey('timezoneId')) {
-          return data['timezoneId'];
-        } else {
-          print(
-              'Timezone ID not found in the response. Returning default timezone.');
-          return 'Europe/Berlin'; // Default to Germany timezone
-        }
-      } else {
-        print(
-            'Failed to load timezone. Status code: ${response.statusCode}. Returning default timezone.');
-        return 'Europe/Berlin'; // Default to Germany timezone
-      }
+      fromClass = repositoryReturnClass;
     } catch (e) {
-      print('An error occurred: $e. Returning default timezone.');
-      return 'Europe/Berlin'; // Default to Germany timezone
+      CustomErrorHandler.captureException(e);
     }
+
+    _title = fromClass.name ?? '';
+    _slug = "${fromClass.urlSlug ?? ''}-1";
+    _description = fromClass.description ?? '';
+    _eventType = fromClass.eventType != null
+        ? mapEventTypeToString(fromClass.eventType!)
+        : null;
+    _location = fromClass.location?.toLatLng();
+    _locationDescription = _location != null ? fromClass.locationName : null;
+    _locationName = fromClass.locationName;
+    maxBookingSlots = fromClass.maxBookingSlots;
+    notifyListeners();
   }
 }

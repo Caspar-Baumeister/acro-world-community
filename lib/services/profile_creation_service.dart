@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -37,23 +38,6 @@ class ProfileCreationService {
     String type,
     String userId,
   ) async {
-    const String mutation = """
-    mutation CreateTeacher(\$userId: uuid!, \$name: String!, \$description: String!, \$urlSlug: String!, \$type: teacher_type_enum!, \$images: [teacher_images_insert_input!]!) {
-      insert_teachers(
-        objects: {
-          name: \$name,
-          description: \$description,
-          url_slug: \$urlSlug,
-          user_id: \$userId,
-          type: \$type,
-          images: { data: \$images }
-        }
-      ) {
-        affected_rows
-      }
-    }
-  """;
-
     final List<Map<String, dynamic>> imagesInput = [
       {
         'image': {
@@ -79,12 +63,13 @@ class ProfileCreationService {
       'urlSlug': urlSlug,
       'type': type,
       'images': imagesInput,
+      'userId': userId,
     };
 
     try {
       final QueryResult result = await client.mutate(
         MutationOptions(
-          document: gql(mutation),
+          document: Mutations.createTeacher,
           variables: variables,
         ),
       );

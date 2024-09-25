@@ -50,6 +50,7 @@ class LocalStorageService {
   }
 
   static Future<bool> remove(Preferences preference) async {
+    print("removing token: ${preference.toString()}");
     if (_preferences != null &&
         _preferences!.containsKey(preference.toString())) {
       return await _preferences!.remove(preference.toString());

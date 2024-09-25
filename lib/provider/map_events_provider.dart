@@ -1,7 +1,7 @@
+import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:flutter/material.dart';

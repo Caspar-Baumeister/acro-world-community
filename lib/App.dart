@@ -1,9 +1,10 @@
 // ignore_for_file: file_names
 
-import 'package:acroworld/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/main.dart';
+import 'package:acroworld/presentation/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
@@ -51,6 +52,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(create: (_) => TeacherEventsProvider()),
         ChangeNotifierProvider(
             create: (_) => EventCreationAndEditingProvider()),
+        ChangeNotifierProvider(create: (_) => CreatorProvider()),
       ],
       child: ValueListenableBuilder<GraphQLClient>(
         valueListenable: GraphQLClientSingleton().clientNotifier,

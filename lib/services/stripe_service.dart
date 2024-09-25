@@ -1,10 +1,10 @@
 // Stripe Service class for making bookings
 
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/models/booking_option.dart';
-import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';

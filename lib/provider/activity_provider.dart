@@ -1,4 +1,4 @@
-import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:flutter/material.dart';
 
 class ActivityProvider extends ChangeNotifier {

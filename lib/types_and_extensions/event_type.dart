@@ -17,9 +17,29 @@ EventType mapStringToEventType(String eventTypeString) {
   }
 }
 
+// reverse mapping
+String mapEventTypeToString(EventType eventType) {
+  switch (eventType) {
+    case EventType.FestivalsAndCons:
+      return 'FestivalsAndCons';
+    case EventType.Retreats:
+      return 'Retreats';
+    case EventType.Trainings:
+      return 'Trainings';
+    case EventType.Workshops:
+      return 'Workshops';
+    case EventType.Classes:
+      return 'Classes';
+    case EventType.Jams:
+      return 'Jams';
+    default:
+      throw ArgumentError('Invalid event type: $eventType');
+  }
+}
+
 // build an extension on the EventType enum to convert it to a string
 extension EventTypeValue on EventType {
-  String get value {
+  String get getString {
     switch (this) {
       case EventType.FestivalsAndCons:
         return 'Festivals and Conventions';

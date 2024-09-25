@@ -1,9 +1,10 @@
-import 'package:acroworld/graphql/http_api_urls.dart';
+import 'package:acroworld/data/graphql/http_api_urls.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class TokenSingletonService {
+  // TODO - check if token is expired and refresh (in creator mode)
   static final TokenSingletonService _instance =
       TokenSingletonService._internal();
   String? _token;
@@ -58,6 +59,11 @@ class TokenSingletonService {
       // if there is a refresh token, fetch a new token from the backend
       dynamic response =
           await DatabaseService().loginWithRefreshToken(refreshToken);
+
+      print(
+          "token received: ${response["data"]?["loginWithRefreshToken"]?["token"] != null}");
+      print(
+          "refreshtoken received: ${response["data"]?["loginWithRefreshToken"]?["refreshToken"] != null}");
       if (response["data"]?["loginWithRefreshToken"]?["token"] != null) {
         _token = response["data"]["loginWithRefreshToken"]["token"];
         await LocalStorageService.set(Preferences.token, _token);

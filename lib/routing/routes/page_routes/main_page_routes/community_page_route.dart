@@ -1,5 +1,5 @@
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_page.dart';
 import 'package:acroworld/routing/routes/base_route.dart';
-import 'package:acroworld/screens/user_mode_screens/main_pages/community/community_page.dart';
 
 class CommunityPageRoute extends BaseRoute {
   CommunityPageRoute()
