@@ -77,9 +77,9 @@ class TokenSingletonService {
   // LOGIN //
   Future<Map> login(String email, String password) async {
     var response = await DatabaseService().loginApi(email, password);
-    if (response["data"]?["login"]?["token"] != null) {
+    if (response["data"]?["login_v2"]?["token"] != null) {
       print("new token received");
-      String token = response["data"]["login"]["token"];
+      String token = response["data"]["login_v2"]["token"];
       print(token);
       final userCredential =
           await FirebaseAuth.instance.signInWithCustomToken(token);
@@ -88,9 +88,9 @@ class TokenSingletonService {
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
-      if (response["data"]?["login"]?["refreshToken"] != null) {
+      if (response["data"]?["login_v2"]?["refreshToken"] != null) {
         print("new refreshtoken received");
-        String refreshToken = response["data"]["login"]["refreshToken"];
+        String refreshToken = response["data"]["login_v2"]["refreshToken"];
         await LocalStorageService.set(Preferences.refreshToken, refreshToken);
       }
       // add error : false to response to indicate that there is no error

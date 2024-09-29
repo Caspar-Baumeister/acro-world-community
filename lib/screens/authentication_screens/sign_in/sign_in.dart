@@ -2,6 +2,7 @@ import 'package:acroworld/components/buttons/link_button.dart';
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/components/input/input_field_component.dart';
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -231,38 +232,47 @@ class SignInState extends State<SignIn> {
 
     // get the token trough the credentials
     // (invalid credentials) return false
-    await TokenSingletonService()
-        .login(emailController!.text, passwordController!.text)
-        .then((response) {
-      if (response["errors"] != null) {
-        final errorMap = parseGraphQLError(response);
+    try {
+      await TokenSingletonService()
+          .login(emailController!.text, passwordController!.text)
+          .then((response) {
+        if (response["errors"] != null) {
+          final errorMap = parseGraphQLError(response);
 
-        setState(() {
-          errorEmail = errorMap['emailError'] ?? "";
-          errorPassword = errorMap['passwordError'] ?? "";
-          error = errorMap['error'] ?? "";
-        });
-      } else if (response["error"] == false) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUserFromToken().then((value) {
-          if (value) {
-            NotificationService().updateToken();
-            Navigator.of(context).push(
-              DiscoverPageRoute(),
-            );
-          } else {
-            print("failed token");
-            TokenSingletonService().getToken().then((value) => print(value));
-            setState(() {
-              error = 'We could not log you in. Please try again later';
-            });
-          }
-        });
-      } else {
-        setState(() {
-          error = 'An unexpected error occured. Please try again later';
-        });
-      }
-    });
+          setState(() {
+            errorEmail = errorMap['emailError'] ?? "";
+            errorPassword = errorMap['passwordError'] ?? "";
+            error = errorMap['error'] ?? "";
+          });
+        } else if (response["error"] == false) {
+          // TODO: no logic with ui
+          final userProvider =
+              Provider.of<UserProvider>(context, listen: false);
+          userProvider.setUserFromToken().then((value) {
+            if (value) {
+              NotificationService().updateToken();
+              Navigator.of(context).push(
+                DiscoverPageRoute(),
+              );
+            } else {
+              setState(() {
+                error = 'We could not log you in. Please try again later';
+              });
+            }
+          });
+        } else {
+          CustomErrorHandler.captureException(response.toString(),
+              stackTrace: StackTrace.current);
+          setState(() {
+            error = 'An unexpected error occured. Please try again later';
+          });
+        }
+      });
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
+      setState(() {
+        error = 'An unexpected error occured. Please try again later';
+      });
+    }
   }
 }
