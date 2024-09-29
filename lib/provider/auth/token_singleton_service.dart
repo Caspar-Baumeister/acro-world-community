@@ -51,18 +51,18 @@ class TokenSingletonService {
       // if there is a refresh token, fetch a new token from the backend
       dynamic response =
           await DatabaseService().loginWithRefreshToken(refreshToken);
-      if (response["data"]?["loginWithRefreshToken"]?["token"] != null) {
-        _token = response["data"]["loginWithRefreshToken"]["token"];
-        // final userCredential =
-        //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
-        // final jwtToken = await userCredential.user?.getIdToken();
+      if (response["data"]?["loginWithRefreshToken_v2"]?["token"] != null) {
+        String token = response["data"]["loginWithRefreshToken_v2"]["token"];
+        final userCredential =
+            await FirebaseAuth.instance.signInWithCustomToken(token);
+        _token = await userCredential.user?.getIdToken();
         await LocalStorageService.set(Preferences.token, _token);
 
         // if there is a new refresh token, save it in shared preferences
-        if (response["data"]?["loginWithRefreshToken"]?["refreshToken"] !=
+        if (response["data"]?["loginWithRefreshToken_v2"]?["refreshToken"] !=
             null) {
           refreshToken =
-              response["data"]["loginWithRefreshToken"]["refreshToken"];
+              response["data"]["loginWithRefreshToken_v2"]["refreshToken"];
           await LocalStorageService.set(Preferences.refreshToken, refreshToken);
         }
 
@@ -77,19 +77,20 @@ class TokenSingletonService {
   // LOGIN //
   Future<Map> login(String email, String password) async {
     var response = await DatabaseService().loginApi(email, password);
-    if (response["data"]?["login"]?["token"] != null) {
+    if (response["data"]?["login_v2"]?["token"] != null) {
       print("new token received");
-      _token = response["data"]["login"]["token"];
-      // final userCredential =
-      //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
-      // final jwtToken = await userCredential.user?.getIdToken();
-      // print(jwtToken);
+      String token = response["data"]["login_v2"]["token"];
+      print(token);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
+      // print(_token);
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
-      if (response["data"]?["login"]?["refreshToken"] != null) {
+      if (response["data"]?["login_v2"]?["refreshToken"] != null) {
         print("new refreshtoken received");
-        String refreshToken = response["data"]["login"]["refreshToken"];
+        String refreshToken = response["data"]["login_v2"]["refreshToken"];
         await LocalStorageService.set(Preferences.refreshToken, refreshToken);
       }
       // add error : false to response to indicate that there is no error
@@ -106,13 +107,16 @@ class TokenSingletonService {
       {bool? isNewsletterEnabled}) async {
     var response = await DatabaseService().registerApi(email, password, name,
         isNewsletterEnabled: isNewsletterEnabled);
-    if (response["data"]?["register"]?["token"] != null) {
-      _token = response["data"]["register"]["token"];
+    if (response["data"]?["register_v2"]?["token"] != null) {
+      String token = response["data"]["register_v2"]["token"];
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
-      if (response["data"]?["register"]?["refreshToken"] != null) {
-        String refreshToken = response["data"]["register"]["refreshToken"];
+      if (response["data"]?["register_v2"]?["refreshToken"] != null) {
+        String refreshToken = response["data"]["register_v2"]["refreshToken"];
         await LocalStorageService.set(Preferences.refreshToken, refreshToken);
       }
       // add error : false to response to indicate that there is no error
