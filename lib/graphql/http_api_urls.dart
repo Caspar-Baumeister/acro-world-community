@@ -15,7 +15,7 @@ class DatabaseService {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {loginWithRefreshToken(input: {refreshToken: \"$refreshToken\"}){token refreshToken}}"
+                "mutation MyMutation {loginWithRefreshToken_v2(input: {refreshToken: \"$refreshToken\"}){token refreshToken}}"
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {
@@ -33,7 +33,7 @@ class DatabaseService {
           },
           body: json.encode({
             'query':
-                "mutation MyMutation {login(input: {email: \"$email\", password: \"$password\"}){token refreshToken}}"
+                "mutation MyMutation {login_v2(input: {email: \"$email\", password: \"$password\"}){token refreshToken}}"
           }));
 
       return jsonDecode(response.body.toString());
@@ -72,7 +72,7 @@ class DatabaseService {
           },
           body: json.encode({
             'query':
-                """mutation MyMutation {register(input: {email: "$email", password: "$password", name: "$name", isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}}){token refreshToken}}"""
+                """mutation MyMutation {register_v2(input: {email: "$email", password: "$password", name: "$name", isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}}){token refreshToken}}"""
           }));
       return jsonDecode(response.body.toString());
     } catch (e) {

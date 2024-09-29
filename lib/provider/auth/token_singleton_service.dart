@@ -52,10 +52,10 @@ class TokenSingletonService {
       dynamic response =
           await DatabaseService().loginWithRefreshToken(refreshToken);
       if (response["data"]?["loginWithRefreshToken"]?["token"] != null) {
-        _token = response["data"]["loginWithRefreshToken"]["token"];
-        // final userCredential =
-        //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
-        // final jwtToken = await userCredential.user?.getIdToken();
+        String token = response["data"]["loginWithRefreshToken"]["token"];
+        final userCredential =
+            await FirebaseAuth.instance.signInWithCustomToken(token);
+        _token = await userCredential.user?.getIdToken();
         await LocalStorageService.set(Preferences.token, _token);
 
         // if there is a new refresh token, save it in shared preferences
@@ -79,11 +79,12 @@ class TokenSingletonService {
     var response = await DatabaseService().loginApi(email, password);
     if (response["data"]?["login"]?["token"] != null) {
       print("new token received");
-      _token = response["data"]["login"]["token"];
-      // final userCredential =
-      //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
-      // final jwtToken = await userCredential.user?.getIdToken();
-      // print(jwtToken);
+      String token = response["data"]["login"]["token"];
+      print(token);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
+      // print(_token);
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
@@ -107,7 +108,10 @@ class TokenSingletonService {
     var response = await DatabaseService().registerApi(email, password, name,
         isNewsletterEnabled: isNewsletterEnabled);
     if (response["data"]?["register"]?["token"] != null) {
-      _token = response["data"]["register"]["token"];
+      String token = response["data"]["register"]["token"];
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
