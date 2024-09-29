@@ -1,4 +1,4 @@
-const bool isProduction = String.fromEnvironment('app.flavor') == 'prod';
+const bool isProduction = String.fromEnvironment('app.flavor') != 'dev';
 
 class AppEnvironment {
   static const bool enableSentry = isProduction;
