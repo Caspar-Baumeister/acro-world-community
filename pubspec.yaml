@@ -43,6 +43,7 @@ dependencies:
   path_provider: ^2.0.10
   flutter_svg: ^2.0.10+1
   app_links: ^6.1.1
+  firebase_auth: ^4.17.8
 
 dev_dependencies:
   flutter_test:

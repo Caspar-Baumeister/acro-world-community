@@ -1,4 +1,4 @@
-const bool isProduction = bool.fromEnvironment('dart.vm.product');
+const bool isProduction = String.fromEnvironment('app.flavor') == 'prod';
 
 class AppEnvironment {
   static const bool enableSentry = isProduction;

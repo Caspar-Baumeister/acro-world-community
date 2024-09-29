@@ -1,6 +1,7 @@
 import 'package:acroworld/graphql/http_api_urls.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class TokenSingletonService {
@@ -52,6 +53,9 @@ class TokenSingletonService {
           await DatabaseService().loginWithRefreshToken(refreshToken);
       if (response["data"]?["loginWithRefreshToken"]?["token"] != null) {
         _token = response["data"]["loginWithRefreshToken"]["token"];
+        // final userCredential =
+        //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
+        // final jwtToken = await userCredential.user?.getIdToken();
         await LocalStorageService.set(Preferences.token, _token);
 
         // if there is a new refresh token, save it in shared preferences
@@ -76,6 +80,10 @@ class TokenSingletonService {
     if (response["data"]?["login"]?["token"] != null) {
       print("new token received");
       _token = response["data"]["login"]["token"];
+      // final userCredential =
+      //     await FirebaseAuth.instance.signInWithCustomToken(_token!);
+      // final jwtToken = await userCredential.user?.getIdToken();
+      // print(jwtToken);
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences

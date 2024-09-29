@@ -66,10 +66,9 @@ initMain() async {
 
   try {
     // FIREBASE //
-    await Firebase.initializeApp(
-      name: "acroworld",
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
+    await Firebase.initializeApp();
+
+    print("Firebase projectId: ${Firebase.apps[0].options.projectId}");
 
     // FIREBASE MESSAGING //
     // initialize the firebase messaging service
