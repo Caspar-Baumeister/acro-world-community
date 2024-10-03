@@ -74,6 +74,7 @@ class CustomColors {
   static const Color successTextColor = _lightGreen;
 
   static const Color lightTextColor = _grey;
+  static const Color lightestTextColor = _lightGreyColor;
   static const Color disabledTextColor = _grey;
   static const Color linkTextColor = _blue;
   static const Color whiteTextColor = _white;

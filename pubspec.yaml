@@ -44,6 +44,11 @@ dependencies:
   flutter_svg: ^2.0.10+1
   app_links: ^6.1.1
   firebase_auth: ^5.3.1
+  image_picker: ^1.1.2
+  easy_stepper: ^0.8.5+1
+  numberpicker: ^2.1.2
+  firebase_storage: ^12.3.2
+  timezone: ^0.9.4
 
 dev_dependencies:
   flutter_test:

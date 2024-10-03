@@ -1,4 +1,4 @@
-import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/data/models/class_event.dart';
 
 ClassTeachers? findFirstTeacherOrNull(List<ClassTeachers>? classTeachers) {
   for (var teacher in classTeachers ?? []) {

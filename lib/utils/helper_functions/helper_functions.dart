@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 

@@ -19,6 +19,8 @@ class AspectRatios {
 }
 
 class AppDimensions {
+  static const double modalControllerWidth = 40.0;
+  static const double modalControllerHeight = 5.0;
   static const double bottomNavBarHeight = 100.0;
   static const double iconSizeTiny = 14;
   static const double iconSizeSmall = 20;
@@ -28,6 +30,7 @@ class AppDimensions {
   static const double avatarSizeMedium = 45;
   static const double eventDashboardSliderWidth = 150;
   static const double eventVerticalScrollCardHeight = 135;
+  static const double eventCreationImageSize = 100;
 }
 
 class AppPaddings {

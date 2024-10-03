@@ -1,4 +1,4 @@
-const bool isProduction = String.fromEnvironment('app.flavor') != 'dev';
+const bool isProduction = bool.fromEnvironment('dart.vm.product');
 
 class AppEnvironment {
   static const bool enableSentry = isProduction;
@@ -8,6 +8,9 @@ class AppEnvironment {
   static const String dashboardUrl = isProduction
       ? "https://teacher.acroworld.de"
       : "https://admin-dev.acroworld.de";
+
+  static const String websiteUrl =
+      isProduction ? "https://acroworld.net" : "https://dev.acroworld.de";
 
   static const String sentryDsn =
       'https://fb76faf08aa435a6de1ffb468aff6136@o4506325948366848.ingest.sentry.io/4506325953937408';

@@ -1,10 +1,10 @@
 // Stripe Service class for making bookings
 
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/models/booking_option.dart';
-import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -85,7 +85,9 @@ class StripeService {
       variables: {'payment_intent_id': paymentIntentId},
     );
     try {
-      GraphQLClientSingleton().mutate(options);
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      await graphQLClient.mutate(options);
     } catch (e) {
       CustomErrorHandler.captureException(e);
     }
@@ -95,7 +97,9 @@ class StripeService {
   Future<Map<String, dynamic>?> _createPaymentSheet(
       String bookingOptionId, String classEventId) async {
     {
-      QueryResult<Object?> response = await GraphQLClientSingleton().mutate(
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> response = await graphQLClient.mutate(
           MutationOptions(
               fetchPolicy: FetchPolicy.networkOnly,
               document: Mutations.createPaymentSheet,

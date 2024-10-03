@@ -1,6 +1,6 @@
+import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -156,8 +156,9 @@ class DiscoveryProvider extends ChangeNotifier {
             ? FetchPolicy.cacheAndNetwork
             : FetchPolicy.networkOnly);
     try {
-      QueryResult<Object?> result =
-          await GraphQLClientSingleton().query(options);
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> result = await graphQLClient.query(options);
 
       if (result.hasException) {
         CustomErrorHandler.captureException(result.exception);
@@ -230,7 +231,6 @@ class DiscoveryProvider extends ChangeNotifier {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }
 
-    print("length of allEventOccurences: ${_allEventOccurences.length}");
     _loading = false;
     notifyListeners();
   }

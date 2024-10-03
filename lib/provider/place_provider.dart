@@ -1,4 +1,4 @@
-import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';

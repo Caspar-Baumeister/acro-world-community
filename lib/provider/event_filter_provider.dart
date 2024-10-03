@@ -1,5 +1,5 @@
-import 'package:acroworld/models/event_model.dart';
-import 'package:acroworld/models/teacher_model.dart';
+import 'package:acroworld/data/models/event_model.dart';
+import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages

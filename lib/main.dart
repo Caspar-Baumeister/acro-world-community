@@ -3,7 +3,7 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
-import 'package:acroworld/screens/system_pages/version_to_old_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/version_to_old_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/notification_service.dart';
@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
@@ -42,7 +43,7 @@ initMain() async {
   await PlacePreferences.init();
 
   // Initialize the GraphQL client in the client singleton
-  GraphQLClientSingleton graphQLClientSingleton = GraphQLClientSingleton();
+  final graphQLClientSingleton = GraphQLClientSingleton().client;
 
   // WEBSOCKETLINK //
   // used only for subscription
@@ -66,9 +67,12 @@ initMain() async {
 
   try {
     // FIREBASE //
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      name: "acroworld",
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-    print("Firebase projectId: ${Firebase.apps[0].options.projectId}");
+    tz.initializeTimeZones();
 
     // FIREBASE MESSAGING //
     // initialize the firebase messaging service
@@ -87,7 +91,7 @@ initMain() async {
 
   // VERSION CHECK //
   String minVersion =
-      await VersionService.getVersionInfo(graphQLClientSingleton.client);
+      await VersionService.getVersionInfo(graphQLClientSingleton);
   if (minVersion == 'Error') {
     // TODO if there is an error, send the User to the error page
     minVersion = '0.0.0';
