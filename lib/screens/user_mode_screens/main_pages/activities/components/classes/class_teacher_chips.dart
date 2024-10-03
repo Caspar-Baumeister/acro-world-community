@@ -1,5 +1,5 @@
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/user_mode_screens/teacher_profile/single_teacher_query.dart';
+import 'package:acroworld/screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
