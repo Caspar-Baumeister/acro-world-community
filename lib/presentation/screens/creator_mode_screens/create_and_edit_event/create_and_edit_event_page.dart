@@ -7,7 +7,6 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +36,6 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context);
 
-    UserProvider userProvider = Provider.of<UserProvider>(context);
-
     final List<Widget> pages = [
       // second page
       GeneralEventStep(onFinished: () {
@@ -55,8 +52,7 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
       }),
       MarketStep(onFinished: () async {
         // create a new event
-        await eventCreationAndEditingProvider
-            .createClass(userProvider.activeUser!.id!);
+        await eventCreationAndEditingProvider.createClass();
 
         if (eventCreationAndEditingProvider.errorMessage == null) {
           showSuccessToast("Event created successfully");

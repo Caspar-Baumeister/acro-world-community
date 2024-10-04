@@ -211,8 +211,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createClass(String userId) async {
-    print("Creating classfor user: $userId");
+  Future<void> createClass() async {
     final client = GraphQLClientSingleton().client;
 
     try {
@@ -253,7 +252,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'locationName': _locationName,
         'timezone': timezone,
         'urlSlug': _slug,
-        'createdById': userId,
         'recurringPatterns': recurringPatternsJson,
         'classBookingOptions': bookingOptionsJson,
         'classOwners': classOwners,

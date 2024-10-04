@@ -92,7 +92,10 @@ class ImageUploadService {
   Future<String> uploadImage(Uint8List imageBytes,
       {required String path}) async {
     try {
+      print("Uploading image to $path");
       final Reference storageRef = FirebaseStorage.instance.ref().child(path);
+
+      print("reference: $storageRef");
 
       final UploadTask uploadTask = storageRef.putData(
         imageBytes,
@@ -101,7 +104,12 @@ class ImageUploadService {
         ),
       );
 
+      print("uploadTask: $uploadTask");
+      print("uploadTask: ${uploadTask.storage.app.options.storageBucket}");
+
       final TaskSnapshot snapshot = await uploadTask;
+
+      print("snapshot ref: ${snapshot.ref}");
       final String downloadUrl = await snapshot.ref.getDownloadURL();
 
       return downloadUrl;

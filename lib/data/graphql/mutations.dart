@@ -26,7 +26,6 @@ class Mutations {
   """);
 
 // class_owners: {data: {teacher_id: "6d76a0f1-8e33-40f5-a300-505329d30ae0", is_payment_receiver: false}},
-// created_by_id: "8a64f600-b686-4c96-95a1-464cf406571a"
   static final insertClassWithRecurringPatterns = gql("""
   mutation InsertClassWithRecurringPatterns(
     \$name: String!,
@@ -41,9 +40,7 @@ class Mutations {
     \$classBookingOptions: [class_booking_option_insert_input!]!
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
-    \$createdById: uuid!
     \$max_booking_slots: Int
-
   ) {
     insert_classes_one(
       object: {
@@ -55,7 +52,6 @@ class Mutations {
         location_name: \$locationName,
         timezone: \$timezone,
         url_slug: \$urlSlug,
-        created_by_id: \$createdById,
         recurring_patterns: {
           data: \$recurringPatterns
         }
