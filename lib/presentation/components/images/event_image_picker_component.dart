@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/pick_image_function.dart';
@@ -9,11 +10,13 @@ import 'package:image_picker/image_picker.dart';
 class EventImahePickerComponent extends StatefulWidget {
   final Uint8List? currentImage;
   final Function(Uint8List) onImageSelected;
+  final String? existingImageUrl;
 
   const EventImahePickerComponent({
     super.key,
     required this.currentImage,
     required this.onImageSelected,
+    this.existingImageUrl,
   });
 
   @override
@@ -55,11 +58,20 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                         fit: BoxFit.cover,
                       ),
                     )
-                  : const Icon(
-                      Icons.image,
-                      size: AppDimensions.eventCreationImageSize,
-                      color: CustomColors.iconColor,
-                    ),
+                  : widget.existingImageUrl != null
+                      ? ClipRRect(
+                          borderRadius: AppBorders
+                              .defaultRadius, // Ensures the image has rounded corners
+                          child: CustomCachedNetworkImage(
+                            imageUrl: widget.existingImageUrl!,
+                            width: double.infinity,
+                            height: double.infinity,
+                          ))
+                      : const Icon(
+                          Icons.image,
+                          size: AppDimensions.eventCreationImageSize,
+                          color: CustomColors.iconColor,
+                        ),
             ),
             const Positioned(
               bottom: 10,

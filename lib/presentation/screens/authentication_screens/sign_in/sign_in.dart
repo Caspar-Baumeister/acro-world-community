@@ -265,6 +265,8 @@ class SignInState extends State<SignIn> {
             }
           });
         } else {
+          CustomErrorHandler.captureException(response,
+              stackTrace: StackTrace.current);
           setState(() {
             error = 'An unexpected error occured. Please try again later';
           });

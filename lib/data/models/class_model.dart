@@ -1,6 +1,7 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/event_model.dart';
+import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 
 class ClassModel {
@@ -29,6 +30,7 @@ class ClassModel {
   String? urlSlug;
   List<ClassEvent>? classEvents;
   int? amountUpcomingEvents;
+  List<RecurringPatternModel>? recurringPatterns;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -66,6 +68,14 @@ class ClassModel {
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
+    if (json["recurring_patterns"] != null) {
+      recurringPatterns = <RecurringPatternModel>[];
+      json["recurring_patterns"].forEach((v) {
+        RecurringPatternModel newRecurrentPattern =
+            RecurringPatternModel.fromJson(v);
+        recurringPatterns!.add(newRecurrentPattern);
+      });
+    }
     if (json['class_events'] != null) {
       classEvents = <ClassEvent>[];
       json['class_events'].forEach((v) {

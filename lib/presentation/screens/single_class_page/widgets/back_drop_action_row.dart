@@ -1,6 +1,7 @@
 import 'dart:ui';
 
-import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/mutation_wrapper/report_button_mutation_wrapper.dart';
 import 'package:acroworld/presentation/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_icon_button.dart';
@@ -14,7 +15,7 @@ class BackDropActionRow extends StatefulWidget {
     required this.initialFavorized,
     required this.shareEvents,
     required this.isCreator,
-    required this.classEvent,
+    required this.classObject,
     required this.initialReported,
     super.key,
   });
@@ -23,7 +24,7 @@ class BackDropActionRow extends StatefulWidget {
   final String classId;
   final bool? initialFavorized;
   final Function shareEvents;
-  final ClassEvent? classEvent;
+  final ClassModel classObject;
   final bool initialReported;
   final bool isCreator;
 
@@ -50,7 +51,12 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
       ),
     ];
     if (widget.isCreator) {
-      actions.add(const CreatorSettingsActionIconButton());
+      try {
+        actions.add(
+            CreatorSettingsActionIconButton(classModel: widget.classObject));
+      } catch (e, s) {
+        CustomErrorHandler.captureException(e, stackTrace: s);
+      }
     } else {
       if (widget.initialFavorized != null) {
         actions.add(

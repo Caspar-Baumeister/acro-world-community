@@ -82,6 +82,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                   children: [
                     EventImahePickerComponent(
                       currentImage: provider.eventImage,
+                      existingImageUrl: provider.existingImageUrl,
                       onImageSelected: (Uint8List image) {
                         provider.setEventImage(image);
                       },
@@ -203,7 +204,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
     });
     EventCreationAndEditingProvider provider =
         Provider.of<EventCreationAndEditingProvider>(context, listen: false);
-    if (provider.eventImage == null) {
+    if (provider.eventImage == null && provider.existingImageUrl == null) {
       setState(() {
         _errorMessage = 'Please select an image for your event';
       });

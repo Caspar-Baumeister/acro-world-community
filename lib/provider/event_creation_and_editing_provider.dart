@@ -38,6 +38,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   LatLng? _location;
   String? _locationDescription;
   String? _locationName;
+  String? existingImageUrl;
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOptionModel> _bookingOptions = [];
@@ -290,22 +291,24 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  setClassFromExisting(ClassModel classModel) async {
+  setClassFromExisting(String slug) async {
     // pull class data from database
     ClassesRepository classesRepository =
         ClassesRepository(apiService: GraphQLClientSingleton());
 
-    ClassModel fromClass = classModel;
+    ClassModel? fromClass;
     try {
       final repositoryReturnClass =
-          await classesRepository.getClassBySlug(classModel.urlSlug!);
+          await classesRepository.getClassBySlug(slug);
 
       fromClass = repositoryReturnClass;
     } catch (e) {
       CustomErrorHandler.captureException(e);
     }
 
-    _title = fromClass.name ?? '';
+    // set recurrent patterns
+
+    _title = fromClass!.name ?? '';
     _slug = "${fromClass.urlSlug ?? ''}-1";
     _description = fromClass.description ?? '';
     _eventType = fromClass.eventType != null
@@ -315,6 +318,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _locationDescription = _location != null ? fromClass.locationName : null;
     _locationName = fromClass.locationName;
     maxBookingSlots = fromClass.maxBookingSlots;
+    existingImageUrl = fromClass.imageUrl;
+    _recurringPatterns.clear();
+    _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+
     notifyListeners();
   }
 }

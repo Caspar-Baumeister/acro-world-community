@@ -89,7 +89,7 @@ At: ${clas.locationName}
           return BackDropActionRow(
               isCollapsed: percentage > appBarCollapsedThreshold,
               classId: widget.clas.id!,
-              classEvent: widget.classEvent,
+              classObject: widget.clas,
               initialFavorized: widget.clas.isInitiallyFavorized,
               initialReported: widget.clas.isInitiallyFlagged ?? false,
               shareEvents: () => shareEvent(
