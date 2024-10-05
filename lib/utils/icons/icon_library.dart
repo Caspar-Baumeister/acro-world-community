@@ -5,6 +5,8 @@ enum IconLibrary {
   profile,
   community,
   world,
+  invites,
+  dashboard,
 }
 
 extension ImageIconExtension on IconLibrary {
@@ -27,6 +29,10 @@ extension IconDataExtension on IconLibrary {
         return Icons.person;
       case IconLibrary.community:
         return Icons.people;
+      case IconLibrary.dashboard:
+        return Icons.dashboard;
+      case IconLibrary.invites:
+        return Icons.mail;
       default:
         throw Exception("Icon not found");
     }

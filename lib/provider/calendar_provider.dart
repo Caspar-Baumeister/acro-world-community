@@ -1,7 +1,7 @@
+import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/class_event.dart';
-import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -114,8 +114,10 @@ class CalendarProvider extends ChangeNotifier {
     );
     String selector = 'class_events_by_location_v1';
     try {
-      QueryResult<Object?> result =
-          await GraphQLClientSingleton().query(queryOptions);
+      // Correct usage
+      final graphQLClient = GraphQLClientSingleton().client;
+
+      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
       if (result.hasException) {
         CustomErrorHandler.captureException(result.exception!);

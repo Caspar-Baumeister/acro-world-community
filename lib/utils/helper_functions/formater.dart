@@ -1,4 +1,4 @@
-import 'package:acroworld/models/class_event.dart';
+import 'package:acroworld/data/models/class_event.dart';
 //intl
 import 'package:intl/intl.dart';
 

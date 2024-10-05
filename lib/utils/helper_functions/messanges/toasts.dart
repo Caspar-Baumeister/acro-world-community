@@ -4,11 +4,11 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-void showSuccessToast(String message) {
+void showSuccessToast(String message, {bool isTop = true}) {
   Fluttertoast.showToast(
       msg: message,
       toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.TOP,
+      gravity: isTop ? ToastGravity.TOP : ToastGravity.BOTTOM,
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
       backgroundColor: CustomColors.successBgColor,
       textColor: CustomColors.whiteTextColor,

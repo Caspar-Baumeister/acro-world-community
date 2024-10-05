@@ -1,6 +1,6 @@
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/mutations.dart';
-import 'package:acroworld/models/fcm/fcm_event.dart';
+import 'package:acroworld/data/models/fcm/fcm_event.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -35,7 +35,8 @@ class NotificationService {
         return;
       }
       try {
-        GraphQLClientSingleton().mutate(
+        final graphQLClient = GraphQLClientSingleton().client;
+        graphQLClient.mutate(
           MutationOptions(
             document: Mutations.updateFcmToken,
             variables: {

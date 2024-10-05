@@ -1,7 +1,7 @@
+import 'package:acroworld/data/graphql/fragments.dart';
+import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/fragments.dart';
-import 'package:acroworld/graphql/queries.dart';
-import 'package:acroworld/models/user_model.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,9 @@ class UserProvider extends ChangeNotifier {
       },
     );
 
-    final result = await GraphQLClientSingleton().mutate(options);
+    final graphQLClient = GraphQLClientSingleton().client;
+
+    final result = await graphQLClient.mutate(options);
 
     if (result.hasException) {
       CustomErrorHandler.captureException(result.exception.toString(),
@@ -106,8 +108,10 @@ class UserProvider extends ChangeNotifier {
     QueryOptions options = QueryOptions(
         document: Queries.getMe, fetchPolicy: FetchPolicy.networkOnly);
 
+    final graphQLClient = GraphQLClientSingleton().client;
+
     // get the result
-    final result = await GraphQLClientSingleton().query(options);
+    final result = await graphQLClient.query(options);
 
     // if there is an exception, throw it
     if (result.hasException) {
@@ -132,5 +136,10 @@ class UserProvider extends ChangeNotifier {
       CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
       return false;
     }
+  }
+
+  Future<bool> checkEmailVerification() async {
+    return await setUserFromToken()
+        .then((_) => _activeUser?.isEmailVerified ?? false);
   }
 }

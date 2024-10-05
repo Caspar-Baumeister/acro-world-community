@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:acroworld/models/places/place.dart';
+import 'package:acroworld/data/models/places/place.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PlacePreferences {

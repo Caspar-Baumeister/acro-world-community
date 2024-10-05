@@ -1,12 +1,18 @@
+import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/routing/routes/base_route.dart';
-import 'package:acroworld/screens/single_class_page/single_class_query_wrapper.dart';
 
 class SingleEventIdWrapperPageRoute extends BaseRoute<void> {
   SingleEventIdWrapperPageRoute(
-      {String? urlSlug, String? classId, String? classEventId})
+      {String? urlSlug,
+      String? classId,
+      String? classEventId,
+      bool isCreator = false})
       : super(
           SingleEventQueryWrapper(
-              urlSlug: urlSlug, classId: classId, classEventId: classEventId),
+              urlSlug: urlSlug,
+              classId: classId,
+              classEventId: classEventId,
+              isCreator: isCreator),
           guards: [],
         );
 }
