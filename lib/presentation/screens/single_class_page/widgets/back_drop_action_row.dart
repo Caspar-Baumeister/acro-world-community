@@ -3,10 +3,8 @@ import 'dart:ui';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/mutation_wrapper/report_button_mutation_wrapper.dart';
 import 'package:acroworld/presentation/components/wrapper/favorite_class_mutation_widget.dart';
-import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_icon_button.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class BackDropActionRow extends StatefulWidget {
@@ -90,48 +88,6 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
                     // twi gesture detector with star and check icon with color and function depending on isCompleted and isMarked
                     children: actions)),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class CreatorSettingsActionIconButton extends StatelessWidget {
-  const CreatorSettingsActionIconButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: () => buildMortal(context, const CreatorSettingsActionModal()),
-      icon: const Icon(
-        Icons.more_vert_outlined,
-        color: CustomColors.iconColor,
-      ),
-    );
-  }
-}
-
-class CreatorSettingsActionModal extends StatelessWidget {
-  const CreatorSettingsActionModal({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BaseModal(
-      child: Container(
-        color: CustomColors.backgroundColor,
-        child: Column(
-          children: [
-            ListTile(
-              title: const Text("Edit"),
-              leading: const Icon(Icons.edit),
-              onTap: () => Navigator.of(context).pushNamed("/edit"),
-            ),
-            ListTile(
-              title: const Text("Delete"),
-              leading: const Icon(Icons.delete),
-              onTap: () => Navigator.of(context).pushNamed("/delete"),
-            ),
-          ],
         ),
       ),
     );
