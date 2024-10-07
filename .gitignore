@@ -207,7 +207,3 @@ ios/Runner/build/
 
 # Dart tools
 .dart_tool/
-
-# assets
-assets/
-**/assets/
