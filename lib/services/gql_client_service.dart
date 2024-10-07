@@ -1,5 +1,5 @@
-import 'package:acroworld/environment.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
+import 'package:acroworld/core/environment.dart';
+import 'package:acroworld/state/provider/auth/token_singleton_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 // graphql_client_singleton.dart

@@ -1,5 +1,5 @@
-import 'package:acroworld/routing/base_route_guards.dart';
-import 'package:acroworld/routing/transitions.dart';
+import 'package:acroworld/routing/routes/base_route_guards.dart';
+import 'package:acroworld/routing/routes/route_transitions.dart';
 import 'package:flutter/material.dart';
 
 class BaseRoute<T> extends PageRouteBuilder<T> {

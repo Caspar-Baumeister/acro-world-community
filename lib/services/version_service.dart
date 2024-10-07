@@ -1,5 +1,5 @@
-import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/graphql/queries.dart';
+import 'package:acroworld/core/exceptions/error_handler.dart';
+import 'package:acroworld/data/graphql/queries.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 

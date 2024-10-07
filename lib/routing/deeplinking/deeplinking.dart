@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/core/exceptions/error_handler.dart';
 import 'package:acroworld/routing/routes/page_routes/partner_slug_page_route%20copy.dart';
 import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
 //import app_links

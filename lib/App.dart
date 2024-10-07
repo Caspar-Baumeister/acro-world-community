@@ -1,17 +1,17 @@
 // ignore_for_file: file_names
 
-import 'package:acroworld/components/wrapper/auth_wrapper.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/core/utils/theme.dart';
 import 'package:acroworld/main.dart';
-import 'package:acroworld/provider/calendar_provider.dart';
-import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/provider/event_filter_provider.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/presentation/shared_components/wrapper/auth_wrapper.dart';
+import 'package:acroworld/services/fb_notification_service.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/services/notification_service.dart';
-import 'package:acroworld/utils/theme.dart';
+import 'package:acroworld/state/events/event_bus_provider.dart';
+import 'package:acroworld/state/provider/calendar_provider.dart';
+import 'package:acroworld/state/provider/discover_provider.dart';
+import 'package:acroworld/state/provider/event_filter_provider.dart';
+import 'package:acroworld/state/provider/map_events_provider.dart';
+import 'package:acroworld/state/provider/place_provider.dart';
+import 'package:acroworld/state/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';

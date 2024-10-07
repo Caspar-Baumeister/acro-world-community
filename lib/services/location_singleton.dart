@@ -1,5 +1,5 @@
-import 'package:acroworld/models/places/place.dart';
-import 'package:acroworld/preferences/place_preferences.dart';
+import 'package:acroworld/data/models/places/place.dart';
+import 'package:acroworld/data/preferences/place_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 

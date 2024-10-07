@@ -1,4 +1,4 @@
-import 'package:acroworld/types_and_extensions/preferences_extension.dart';
+import 'package:acroworld/data/types_and_extensions/preferences_extension.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
