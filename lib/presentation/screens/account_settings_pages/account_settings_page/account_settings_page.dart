@@ -1,5 +1,5 @@
-import 'package:acroworld/presentation/screens/account_settings/delete_account.dart';
-import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
+import 'package:acroworld/presentation/screens/account_settings_pages/delete_account.dart';
+import 'package:acroworld/presentation/screens/account_settings_pages/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/shared_components/buttons/back_button.dart';
 import 'package:flutter/material.dart';

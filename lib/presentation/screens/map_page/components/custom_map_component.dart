@@ -1,8 +1,8 @@
 import 'package:acroworld/core/utils/constants.dart';
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/screens/map/components/map_app_bar.dart';
-import 'package:acroworld/presentation/screens/map/components/marker_component.dart';
-import 'package:acroworld/presentation/screens/map/components/new_area_component.dart';
+import 'package:acroworld/presentation/screens/map_page/components/map_app_bar.dart';
+import 'package:acroworld/presentation/screens/map_page/components/marker_component.dart';
+import 'package:acroworld/presentation/screens/map_page/components/new_area_component.dart';
 import 'package:acroworld/state/provider/map_events_provider.dart';
 import 'package:acroworld/state/provider/place_provider.dart';
 import 'package:flutter/material.dart';

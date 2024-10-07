@@ -3,7 +3,7 @@ import 'package:acroworld/core/utils/colors.dart';
 import 'package:acroworld/core/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/user_model.dart';
-import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
+import 'package:acroworld/presentation/screens/account_settings_pages/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/shared_components/buttons/custom_button.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/state/events/event_bus_provider.dart';

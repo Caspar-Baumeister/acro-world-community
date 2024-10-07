@@ -1,7 +1,7 @@
 import 'package:acroworld/core/utils/colors.dart';
 import 'package:acroworld/core/utils/constants.dart';
 import 'package:acroworld/presentation/screens/main_pages/activities/components/class_components/class_event_expanded_tile.dart';
-import 'package:acroworld/presentation/screens/map/components/custom_map_component.dart';
+import 'package:acroworld/presentation/screens/map_page/components/custom_map_component.dart';
 import 'package:acroworld/state/provider/map_events_provider.dart';
 import 'package:acroworld/state/provider/place_provider.dart';
 import 'package:flutter/material.dart';

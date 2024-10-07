@@ -2,7 +2,7 @@ import 'package:acroworld/core/environment.dart';
 import 'package:acroworld/core/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/core/utils/helper_functions/logout.dart';
 import 'package:acroworld/data/types_and_extensions/preferences_extension.dart';
-import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
+import 'package:acroworld/presentation/screens/account_settings_pages/account_settings_page/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/essentials/essentials.dart';
 import 'package:acroworld/presentation/shared_components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/shared_components/send_feedback_button.dart';
