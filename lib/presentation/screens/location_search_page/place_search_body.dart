@@ -1,7 +1,7 @@
 import 'package:acroworld/core/utils/constants.dart';
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/places/place.dart';
-import 'package:acroworld/presentation/screens/location_search_screen/set_to_user_location_widget.dart';
+import 'package:acroworld/presentation/screens/location_search_page/set_to_user_location_widget.dart';
 import 'package:acroworld/presentation/shared_components/buttons/standard_icon_button.dart';
 import 'package:acroworld/presentation/shared_components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/presentation/shared_components/loading_widget.dart';

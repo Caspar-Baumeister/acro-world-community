@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'place_search_body.dart';
 
-class PlaceSearchScreen extends StatelessWidget {
-  const PlaceSearchScreen({
+class LocationSearchPage extends StatelessWidget {
+  const LocationSearchPage({
     super.key,
   });
 

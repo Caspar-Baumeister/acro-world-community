@@ -1,5 +1,5 @@
 import 'package:acroworld/core/utils/constants.dart';
-import 'package:acroworld/presentation/screens/location_search_screen/place_search_screen.dart';
+import 'package:acroworld/presentation/screens/location_search_page/location_search_page.dart';
 import 'package:acroworld/presentation/shared_components/buttons/standard_icon_button.dart';
 import 'package:acroworld/state/provider/place_provider.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class PlaceButton extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const PlaceSearchScreen(),
+              builder: (context) => const LocationSearchPage(),
             ),
           );
         },

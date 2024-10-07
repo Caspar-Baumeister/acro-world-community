@@ -74,8 +74,9 @@ class MyThemes {
       brightness: Brightness.light,
       highlightColor: CustomColors.highlightedColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-          surface: CustomColors.backgroundColor,
-          surfaceTint: CustomColors.backgroundColor));
+        surface: CustomColors.backgroundColor,
+        surfaceTint: CustomColors.backgroundColor,
+      ));
 
   // maybe for outdoor
   static final ThemeData darkTheme = ThemeData();
