@@ -24,7 +24,6 @@ class StripeService {
       name: user.name,
     );
 
-    print("Payment sheet response data: $paymentSheetResponseData");
     if (paymentSheetResponseData == null ||
         paymentSheetResponseData["payment_intent"] == null) {
       CustomErrorHandler.captureException(
