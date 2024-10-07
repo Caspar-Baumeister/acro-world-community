@@ -51,45 +51,13 @@ class NotificationService {
     });
   }
 
-  // // add token refresh listener
-  // Future<void> addTokenRefreshListener(GraphQLClient client) async {
-  //   _fcm.onTokenRefresh.listen((fcmToken) {
-  //     print("addTokenRefreshListener fcmToken: $fcmToken");
-  //     // try to save the token on the server
-  //     try {
-  //       client.mutate(
-  //         MutationOptions(
-  //           document: Mutations.updateFcmToken,
-  //           variables: {
-  //             'fcmToken': fcmToken,
-  //           },
-  //         ),
-  //       );
-  //     } catch (e) {
-  //       print("addTokenRefreshListener error (client.mutate)");
-  //       print(e.toString());
-  //     }
-  //     // Note: This callback is fired at each app startup and whenever a new
-  //     // token is generated.
-  //   }).onError((err) {
-  //     print("addTokenRefreshListener error");
-  //     print(err.toString());
-  //     // Error getting token.
-  //   });
-  // }
-
   Future<void> addListeners(BuildContext context) async {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print("message.messageType");
-      print(message.messageType);
-      print("message.data[]");
-      print(message.data["type"]);
-
       switch (message.data["type"]) {
         case "EventCreated":
           try {
             // Show a Snackbar to notify the user about the message
-            final event = FCMEvent.fromJson(message.data);
+            // final event = FCMEvent.fromJson(message.data);
             // ScaffoldMessenger.of(context).showSnackBar(
             //   SnackBar(
             //     behavior: SnackBarBehavior.floating,
@@ -176,14 +144,10 @@ class NotificationService {
     });
 
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      print("message.messageType");
-      print(message.messageType);
-      print("message.data[]");
-      print(message.data["type"]);
       switch (message.data["type"]) {
         case "EventCreated":
           try {
-            final event = FCMEvent.fromJson(message.data);
+            // final event = FCMEvent.fromJson(message.data);
             // Navigator.of(context).push(
             //   MaterialPageRoute(
             //     builder: (context) => SingleEventQueryWrapper(
@@ -209,7 +173,7 @@ class NotificationService {
 
         case "EventUpdated":
           try {
-            final event = FCMEvent.fromJson(message.data);
+            // final event = FCMEvent.fromJson(message.data);
             // navigatorKey.currentState!.push(
             // MaterialPageRoute(
             //   builder: (context) => SingleEventQueryWrapper(

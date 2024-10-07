@@ -2,10 +2,10 @@ import 'package:acroworld/core/utils/constants.dart';
 import 'package:acroworld/core/utils/icons/icon_library.dart';
 import 'package:acroworld/presentation/shared_components/bottom_navbar/base_bottom_navbar.dart';
 import 'package:acroworld/presentation/shared_components/bottom_navbar/primary_bottom_navbar_item.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/calendar_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/community_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/discover_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/profile_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/calendar_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/community_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryBottomNavbar extends StatelessWidget {

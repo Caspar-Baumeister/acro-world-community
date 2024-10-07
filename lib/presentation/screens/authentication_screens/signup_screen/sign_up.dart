@@ -5,7 +5,7 @@ import 'package:acroworld/presentation/screens/authentication_screens/signup_scr
 import 'package:acroworld/presentation/shared_components/buttons/link_button.dart';
 import 'package:acroworld/presentation/shared_components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/shared_components/input/input_field_component.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/discover_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
 import 'package:acroworld/services/fb_notification_service.dart';
 import 'package:acroworld/state/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/state/provider/user_provider.dart';
