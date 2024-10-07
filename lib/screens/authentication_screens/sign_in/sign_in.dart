@@ -6,7 +6,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes_user/discover_page_route.dart';
 import 'package:acroworld/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';

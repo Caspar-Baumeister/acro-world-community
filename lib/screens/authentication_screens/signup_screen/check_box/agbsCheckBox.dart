@@ -1,4 +1,4 @@
-import 'package:acroworld/screens/authentication_screens/signup_screen/widgets/custom_check_widget.dart';
+import 'package:acroworld/screens/authentication_screens/signup_screen/check_box/custom_check_widget.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
