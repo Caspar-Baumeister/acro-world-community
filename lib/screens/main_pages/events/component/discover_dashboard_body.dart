@@ -1,5 +1,5 @@
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/screens/main_pages/events/components/slider_row_dashboard_discovery.dart';
+import 'package:acroworld/screens/main_pages/events/component/slider_row_dashboard_discovery.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';

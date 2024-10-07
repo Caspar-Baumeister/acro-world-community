@@ -1,6 +1,6 @@
 import 'package:acroworld/components/buttons/standart_button.dart';
 import 'package:acroworld/models/booking_option.dart';
-import 'package:acroworld/screens/main_pages/activities/components/booking/widgets/booking_option_widget.dart';
+import 'package:acroworld/screens/main_pages/activities/components/booking_components/widgets/booking_option_widget.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';

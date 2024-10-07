@@ -1,6 +1,6 @@
 import 'package:acroworld/models/teacher_model.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/screens/main_pages/community/widgets/teacher_card.dart';
+import 'package:acroworld/screens/main_pages/community/components/teacher_card.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

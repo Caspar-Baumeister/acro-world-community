@@ -6,7 +6,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/models/class_event.dart';
 import 'package:acroworld/models/class_model.dart';
 import 'package:acroworld/models/teacher_model.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_teacher_chips.dart';
+import 'package:acroworld/screens/main_pages/activities/components/class_components/class_teacher_chips.dart';
 import 'package:acroworld/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';

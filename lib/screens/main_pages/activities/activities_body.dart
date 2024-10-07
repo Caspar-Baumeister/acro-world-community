@@ -1,5 +1,5 @@
 import 'package:acroworld/screens/main_pages/activities/calendar_component.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/classes_view.dart';
+import 'package:acroworld/screens/main_pages/activities/components/class_components/classes_view.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 

@@ -1,5 +1,5 @@
 import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_tile_image.dart';
+import 'package:acroworld/screens/main_pages/activities/components/class_components/class_event_tile_image.dart';
 import 'package:acroworld/screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';

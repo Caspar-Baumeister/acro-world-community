@@ -1,7 +1,7 @@
 import 'package:acroworld/components/appbar/base_appbar.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/filter_page_route.dart';
-import 'package:acroworld/screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
+import 'package:acroworld/screens/main_pages/events/component/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';

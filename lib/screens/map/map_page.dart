@@ -1,6 +1,6 @@
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/screens/main_pages/activities/components/classes/class_event_expanded_tile.dart';
+import 'package:acroworld/screens/main_pages/activities/components/class_components/class_event_expanded_tile.dart';
 import 'package:acroworld/screens/map/components/custom_map_component.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
