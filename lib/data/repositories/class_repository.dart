@@ -132,6 +132,9 @@ class ClassesRepository {
       final graphQLClient = GraphQLClientSingleton().client;
       QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
+      print("result data: ${result.data}");
+      print("result $result");
+
       // Check for a valid response
       if (result.hasException) {
         throw Exception(

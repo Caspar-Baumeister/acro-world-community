@@ -22,16 +22,16 @@ class CreatorSettingsActionModal extends StatelessWidget {
               title: const Text("Edit"),
               leading: const Icon(Icons.edit),
               onTap: () async {
-                Navigator.of(context).pop();
-
+                // Perform the asynchronous operation
                 await Provider.of<EventCreationAndEditingProvider>(context,
                         listen: false)
                     .setClassFromExisting(classModel.urlSlug!);
 
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  Navigator.of(context).push(CreateAndEditEventPageRoute(
-                      isEditing: true, classModel: classModel));
-                });
+                // Now pop the current widget and push the next page safely
+                Navigator.of(context).pop();
+
+                Navigator.of(context).push(CreateAndEditEventPageRoute(
+                    isEditing: true, classModel: classModel));
               },
             ),
             ListTile(

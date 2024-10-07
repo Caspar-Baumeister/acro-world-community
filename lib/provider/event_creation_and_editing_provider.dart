@@ -280,8 +280,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
       final List<Map<String, dynamic>> bookingOptionsJson =
           _bookingOptions.map((option) => option.toMap()).toList();
-
-      String? imageUrl = await _uploadEventImage();
+      String? imageUrl;
+      if (_eventImage == null && existingImageUrl != null) {
+        imageUrl = existingImageUrl;
+      } else if (_eventImage != null) {
+        imageUrl = await _uploadEventImage();
+      } else {
+        throw Exception('No image was provided');
+      }
       // get timezone with default value to germany
       String? timezone = await getTimezone(
           _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
@@ -305,6 +311,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots
       };
+
+      print("variables: $variables");
       ClassesRepository classesRepository =
           ClassesRepository(apiService: GraphQLClientSingleton());
       classesRepository.updateClass(variables);
@@ -323,7 +331,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  setClassFromExisting(String slug) async {
+  Future<void> setClassFromExisting(String slug) async {
+    // clear existing data
+    clear();
     // pull class data from database
     ClassesRepository classesRepository =
         ClassesRepository(apiService: GraphQLClientSingleton());
@@ -334,28 +344,28 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           await classesRepository.getClassBySlug(slug);
 
       fromClass = repositoryReturnClass;
-    } catch (e) {
-      CustomErrorHandler.captureException(e);
+
+      // set recurrent patterns
+
+      _title = fromClass.name ?? '';
+      _slug = "${fromClass.urlSlug ?? ''}-1";
+      _description = fromClass.description ?? '';
+      _eventType = fromClass.eventType != null
+          ? mapEventTypeToString(fromClass.eventType!)
+          : null;
+      _location = fromClass.location?.toLatLng();
+      _locationDescription = _location != null ? fromClass.locationName : null;
+      _locationName = fromClass.locationName;
+      maxBookingSlots = fromClass.maxBookingSlots;
+      existingImageUrl = fromClass.imageUrl;
+      _recurringPatterns.clear();
+      _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+      _pendingInviteTeachers.clear();
+      _pendingInviteTeachers.addAll(fromClass.teachers);
+      _classId = fromClass.id;
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
     }
-
-    // set recurrent patterns
-
-    _title = fromClass!.name ?? '';
-    _slug = "${fromClass.urlSlug ?? ''}-1";
-    _description = fromClass.description ?? '';
-    _eventType = fromClass.eventType != null
-        ? mapEventTypeToString(fromClass.eventType!)
-        : null;
-    _location = fromClass.location?.toLatLng();
-    _locationDescription = _location != null ? fromClass.locationName : null;
-    _locationName = fromClass.locationName;
-    maxBookingSlots = fromClass.maxBookingSlots;
-    existingImageUrl = fromClass.imageUrl;
-    _recurringPatterns.clear();
-    _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
-    _pendingInviteTeachers.clear();
-    _pendingInviteTeachers.addAll(fromClass.teachers);
-    _classId = fromClass.id;
 
     notifyListeners();
   }
