@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/models/booking_option_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
@@ -31,6 +30,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _errorMesssage;
 
   // class properties
+  String? _classId;
   String _title = '';
   String _slug = '';
   String _description = '';
@@ -213,8 +213,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   }
 
   Future<void> createClass() async {
-    final client = GraphQLClientSingleton().client;
-
     try {
       List<Map<String, dynamic>> classTeachers = [];
       List<Map<String, dynamic>> classOwners = [];
@@ -230,16 +228,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> bookingOptionsJson =
           _bookingOptions.map((option) => option.toMap()).toList();
 
-      print("recurringPatternsJson: $recurringPatternsJson");
-
       String? imageUrl = await _uploadEventImage();
       // get timezone with default value to germany
       String? timezone = await getTimezone(
           _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
-
-      print("""class_booking_options: {
-          data: $bookingOptionsJson
-        }""");
 
       Map<String, dynamic> variables = {
         'name': _title,
@@ -259,25 +251,65 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots
       };
-
-      // Call the mutation
-      final QueryResult result = await client.mutate(
-        MutationOptions(
-            document: Mutations.insertClassWithRecurringPatterns,
-            variables: variables),
-      );
-
-      if (result.hasException) {
-        CustomErrorHandler.captureException(
-            "Error creating class: ${result.exception.toString()}");
-        // set error message
-        _errorMesssage = result.exception.toString();
-      } else {
-        print('Class inserted: ${result.data?['insert_classes_one']['id']}');
-        _errorMesssage = null;
-      }
+      ClassesRepository classesRepository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+      classesRepository.createClass(variables);
     } catch (e) {
       CustomErrorHandler.captureException("Error creating class: $e");
+      _errorMesssage = e.toString();
+    }
+  }
+
+  Future<void> updateClass() async {
+    try {
+      List<Map<String, dynamic>> classTeachers = [];
+      List<Map<String, dynamic>> classOwners = [];
+
+      for (var teacher in pendingInviteTeachers) {
+        classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
+      }
+
+      if (_classId == null) {
+        throw Exception(
+            'The class id is missing, delete the class and create a new one');
+      }
+
+      // Convert recurring patterns to JSON format
+      final List<Map<String, dynamic>> recurringPatternsJson =
+          _recurringPatterns.map((pattern) => pattern.toJson()).toList();
+
+      final List<Map<String, dynamic>> bookingOptionsJson =
+          _bookingOptions.map((option) => option.toMap()).toList();
+
+      String? imageUrl = await _uploadEventImage();
+      // get timezone with default value to germany
+      String? timezone = await getTimezone(
+          _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
+
+      Map<String, dynamic> variables = {
+        'id': _classId,
+        'name': _title,
+        'description': _description,
+        'imageUrl': imageUrl,
+        'eventType': _eventType ?? 'Trainings',
+        'location': [
+          _location?.longitude,
+          _location?.latitude,
+        ],
+        'locationName': _locationName,
+        'timezone': timezone,
+        'urlSlug': _slug,
+        'recurringPatterns': recurringPatternsJson,
+        'classBookingOptions': bookingOptionsJson,
+        'classOwners': classOwners,
+        'classTeachers': classTeachers,
+        'max_booking_slots': maxBookingSlots
+      };
+      ClassesRepository classesRepository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+      classesRepository.updateClass(variables);
+    } catch (e) {
+      CustomErrorHandler.captureException("Error updating class: $e");
       _errorMesssage = e.toString();
     }
   }
@@ -321,6 +353,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     existingImageUrl = fromClass.imageUrl;
     _recurringPatterns.clear();
     _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+    _pendingInviteTeachers.clear();
+    _pendingInviteTeachers.addAll(fromClass.teachers);
+    _classId = fromClass.id;
 
     notifyListeners();
   }

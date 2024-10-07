@@ -1,10 +1,10 @@
 import 'package:acroworld/data/graphql/http_api_urls.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 
 class TokenSingletonService {
-  // TODO - check if token is expired and refresh (in creator mode)
   static final TokenSingletonService _instance =
       TokenSingletonService._internal();
   String? _token;
@@ -28,6 +28,31 @@ class TokenSingletonService {
     return false;
   }
 
+  Future<String?> refreshToken() async {
+    _token = null;
+    LocalStorageService.remove(Preferences.token);
+    await _fetchToken();
+
+    return null;
+  }
+
+  // Get user roles //
+  Future<List<String>> getUserRoles() async {
+    if (_token == null) {
+      _token = await LocalStorageService.get(Preferences.token);
+      if (_token == null) {
+        return [];
+      }
+    }
+    Map<String, dynamic> payload = Jwt.parseJwt(_token!);
+    if (payload["https://hasura.io/jwt/claims"]?["x-hasura-allowed-roles"] !=
+        null) {
+      return List<String>.from(
+          payload["https://hasura.io/jwt/claims"]["x-hasura-allowed-roles"]);
+    }
+    return [];
+  }
+
   Future<String?> getToken() async {
     bool isTokenExpired = await _isTokenExpired();
     if (_token == null || isTokenExpired) {
@@ -35,14 +60,6 @@ class TokenSingletonService {
       await _fetchToken();
     }
     return _token;
-  }
-
-  Future<String?> refreshToken() async {
-    _token = null;
-    LocalStorageService.remove(Preferences.token);
-    await _fetchToken();
-
-    return null;
   }
 
   Future<String?> _fetchToken() async {
@@ -59,13 +76,11 @@ class TokenSingletonService {
       // if there is a refresh token, fetch a new token from the backend
       dynamic response =
           await DatabaseService().loginWithRefreshToken(refreshToken);
-
-      print(
-          "token received: ${response["data"]?["loginWithRefreshToken_v2"]?["token"] != null}");
-      print(
-          "refreshtoken received: ${response["data"]?["loginWithRefreshToken_v2"]?["refreshToken"] != null}");
       if (response["data"]?["loginWithRefreshToken_v2"]?["token"] != null) {
-        _token = response["data"]["loginWithRefreshToken_v2"]["token"];
+        String token = response["data"]["loginWithRefreshToken_v2"]["token"];
+        final userCredential =
+            await FirebaseAuth.instance.signInWithCustomToken(token);
+        _token = await userCredential.user?.getIdToken();
         await LocalStorageService.set(Preferences.token, _token);
 
         // if there is a new refresh token, save it in shared preferences
@@ -89,7 +104,12 @@ class TokenSingletonService {
     var response = await DatabaseService().loginApi(email, password);
     if (response["data"]?["login_v2"]?["token"] != null) {
       print("new token received");
-      _token = response["data"]["login_v2"]["token"];
+      String token = response["data"]["login_v2"]["token"];
+      print(token);
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
+      // print(_token);
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
@@ -113,7 +133,10 @@ class TokenSingletonService {
     var response = await DatabaseService().registerApi(email, password, name,
         isNewsletterEnabled: isNewsletterEnabled);
     if (response["data"]?["register_v2"]?["token"] != null) {
-      _token = response["data"]["register_v2"]["token"];
+      String token = response["data"]["register_v2"]["token"];
+      final userCredential =
+          await FirebaseAuth.instance.signInWithCustomToken(token);
+      _token = await userCredential.user?.getIdToken();
       await LocalStorageService.set(Preferences.token, _token);
 
       // if there is a new refresh token, save it in shared preferences
@@ -138,22 +161,5 @@ class TokenSingletonService {
 
     print("this is the refetch token after logout");
     print(await LocalStorageService.get(Preferences.refreshToken));
-  }
-
-  // Get user roles //
-  Future<List<String>> getUserRoles() async {
-    if (_token == null) {
-      _token = await LocalStorageService.get(Preferences.token);
-      if (_token == null) {
-        return [];
-      }
-    }
-    Map<String, dynamic> payload = Jwt.parseJwt(_token!);
-    if (payload["https://hasura.io/jwt/claims"]?["x-hasura-allowed-roles"] !=
-        null) {
-      return List<String>.from(
-          payload["https://hasura.io/jwt/claims"]["x-hasura-allowed-roles"]);
-    }
-    return [];
   }
 }

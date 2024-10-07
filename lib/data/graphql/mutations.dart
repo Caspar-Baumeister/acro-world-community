@@ -72,6 +72,65 @@ class Mutations {
   }
   """);
 
+  static final updateClassWithRecurringPatterns = gql("""
+  mutation UpdateClassWithRecurringPatterns(
+    \$id: uuid!,
+    \$name: String!,
+    \$description: String!,
+    \$imageUrl: String!,
+    \$eventType: event_type_enum!,
+    \$location: String!,
+    \$locationName: String!,
+    \$timezone: String!,
+    \$urlSlug: String!,
+    \$recurringPatterns: [recurring_patterns_insert_input!]!,
+    \$classBookingOptions: [class_booking_option_insert_input!]!
+    \$classOwners: [class_owners_insert_input!]!
+    \$classTeachers: [class_teachers_insert_input!]!
+    \$max_booking_slots: Int
+  ) {
+    # First delete all associated booking options for this class
+    delete_class_booking_option(where: { class_id: { _eq: \$id } }) {
+      affected_rows
+    }
+
+    # Delete the class by id
+    delete_classes_by_pk(id: \$id) {
+      id
+    }
+    
+    # Recreate the class with updated information
+    insert_classes_one(
+      object: {
+        id: \$id,
+        name: \$name,
+        description: \$description,
+        image_url: \$imageUrl,
+        event_type: \$eventType,
+        location: {type: "Point", coordinates: \$location},
+        location_name: \$locationName,
+        timezone: \$timezone,
+        url_slug: \$urlSlug,
+        recurring_patterns: {
+          data: \$recurringPatterns
+        },
+        class_booking_options: {
+          data: \$classBookingOptions
+        },
+        class_owners: {
+          data: \$classOwners
+        },
+        class_teachers: {
+          data: \$classTeachers
+        },
+        max_booking_slots: \$max_booking_slots
+      }
+    ) {
+      id
+    }
+  }
+""");
+
   // entityType -> "class_teacher"
   // entityId -> class_id
   // email can be null if you invite a user that is already registered

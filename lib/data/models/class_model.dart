@@ -2,6 +2,7 @@ import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/event_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
+import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 
 class ClassModel {
@@ -31,6 +32,7 @@ class ClassModel {
   List<ClassEvent>? classEvents;
   int? amountUpcomingEvents;
   List<RecurringPatternModel>? recurringPatterns;
+  // List<ClassTeachers>? invitedTeachers;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassTeachers? get owner {
@@ -39,6 +41,16 @@ class ClassModel {
           orElse: () => classTeachers!.first);
     }
     return null;
+  }
+
+  List<TeacherModel> get teachers {
+    if (classTeachers != null) {
+      return classTeachers!
+          .where((e) => e.teacher != null)
+          .map((e) => e.teacher!)
+          .toList();
+    }
+    return [];
   }
 
   ClassModel(

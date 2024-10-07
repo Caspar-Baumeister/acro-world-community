@@ -52,7 +52,11 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
       }),
       MarketStep(onFinished: () async {
         // create a new event
-        await eventCreationAndEditingProvider.createClass();
+        if (widget.isEditing) {
+          await eventCreationAndEditingProvider.updateClass();
+        } else {
+          await eventCreationAndEditingProvider.createClass();
+        }
 
         if (eventCreationAndEditingProvider.errorMessage == null) {
           showSuccessToast("Event created successfully");
