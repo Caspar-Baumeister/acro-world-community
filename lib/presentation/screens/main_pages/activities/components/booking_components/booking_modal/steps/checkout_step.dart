@@ -6,7 +6,7 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/presentation/screens/account_settings_pages/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/shared_components/buttons/custom_button.dart';
 import 'package:acroworld/services/stripe_service.dart';
-import 'package:acroworld/state/events/event_bus_provider.dart';
+import 'package:acroworld/state/provider/events/event_bus_provider.dart';
 import 'package:acroworld/state/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';

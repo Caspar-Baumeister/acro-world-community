@@ -6,7 +6,7 @@ import 'package:acroworld/presentation/screens/main_pages/activities/components/
 import 'package:acroworld/presentation/screens/main_pages/activities/components/booking_components/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
-import 'package:acroworld/state/events/event_bus_provider.dart';
+import 'package:acroworld/state/provider/events/event_bus_provider.dart';
 import 'package:acroworld/state/provider/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
