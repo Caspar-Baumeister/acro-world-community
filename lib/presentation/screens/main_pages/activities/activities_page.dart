@@ -1,6 +1,6 @@
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/main_pages/activities/activities_body.dart';
-import 'package:acroworld/presentation/screens/main_pages/activities/calendar_app_bar.dart';
+import 'package:acroworld/presentation/screens/main_pages/activities/components/calendar_app_bar.dart';
 import 'package:acroworld/presentation/shared_components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:flutter/material.dart';
 

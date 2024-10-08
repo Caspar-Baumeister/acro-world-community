@@ -14,32 +14,31 @@ class ClassesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Listens to the CalendarProvider to get the class events
     CalendarProvider calendarProvider = Provider.of<CalendarProvider>(context);
+
+    // show loading widget when calendarProvider is loading data
     if (calendarProvider.loading) {
       return const LoadingWidget();
     }
 
+    // show message when there are no activities close to the user
     if (calendarProvider.weekClassEvents.isEmpty) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(
-            child: Column(
-              children: [
-                const Text("There are no activities close to you."),
-                const SizedBox(height: AppPaddings.large),
-                StandardButton(
-                    text: "increase search radius",
-                    onPressed: () => calendarProvider.increaseRadius()),
-              ],
-            ),
-          )
+          const Text("There are no activities close to you."),
+          const SizedBox(height: AppPaddings.large),
+          StandardButton(
+              text: "increase search radius",
+              onPressed: () => calendarProvider.increaseRadius()),
         ],
       );
     }
 
     List<ClassEvent> classEvents = calendarProvider.focusedDayClassEvents;
 
+    // show message when there are no activities on the selected day but there are activities close to the user
     if (classEvents.isEmpty) {
       return const Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -51,15 +50,18 @@ class ClassesView extends StatelessWidget {
       );
     }
 
+    // show the list of activities on the selected day
     return Padding(
-      padding: const EdgeInsets.only(top: 4.0),
+      padding: const EdgeInsets.only(top: AppPaddings.small),
       child: ListView.builder(
         shrinkWrap: true,
         itemCount: classEvents.length,
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(
-                left: 4.0, right: 4, bottom: AppPaddings.small),
+                left: AppPaddings.small,
+                right: AppPaddings.small,
+                bottom: AppPaddings.small),
             child: ClassEventExpandedTile(
               classEvent: classEvents[index],
             ),
