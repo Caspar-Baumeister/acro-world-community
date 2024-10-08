@@ -14,7 +14,7 @@ class ActivitiesBody extends StatelessWidget {
         CalendarComponent(),
         Divider(color: CustomColors.primaryColor),
         // Classes listed in a list view for selected day day
-        Flexible(
+        Expanded(
           child: ClassesView(),
         )
       ],
