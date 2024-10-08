@@ -1,4 +1,4 @@
-import 'package:acroworld/data/graphql/http_api_urls.dart';
+import 'package:acroworld/data/graphql/no_token_apis.dart';
 import 'package:acroworld/data/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/core/utils/colors.dart';
-import 'package:acroworld/data/graphql/http_api_urls.dart';
+import 'package:acroworld/data/graphql/no_token_apis.dart';
 import 'package:acroworld/presentation/shared_components/buttons/standart_button.dart';
 import 'package:flutter/material.dart';
 

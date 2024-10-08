@@ -1,4 +1,4 @@
-import 'package:acroworld/data/graphql/http_api_urls.dart';
+import 'package:acroworld/data/graphql/no_token_apis.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/shared_components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/shared_components/input/input_field_component.dart';
