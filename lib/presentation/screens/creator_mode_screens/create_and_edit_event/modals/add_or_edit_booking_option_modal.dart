@@ -1,10 +1,11 @@
-import 'package:acroworld/data/models/booking_option_model.dart';
+import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/currency_formater.dart';
 import 'package:flutter/material.dart';
 
 class AddOrEditBookingOptionModal extends StatefulWidget {
@@ -12,7 +13,7 @@ class AddOrEditBookingOptionModal extends StatefulWidget {
       {super.key, required this.onFinished, this.bookingOption});
 
   final Function onFinished;
-  final BookingOptionModel? bookingOption;
+  final BookingOption? bookingOption;
 
   @override
   State<AddOrEditBookingOptionModal> createState() =>
@@ -24,7 +25,7 @@ class _AddOrEditBookingOptionModalState
   late TextEditingController _titleController;
   late TextEditingController _subTitleController;
   late TextEditingController _priceController;
-  String? currentOption;
+  CurrencyDetail? currentOption;
   String? _errorMessage;
 
   @override
@@ -38,7 +39,9 @@ class _AddOrEditBookingOptionModalState
     if (widget.bookingOption != null) {
       _titleController.text = widget.bookingOption!.title!;
       _subTitleController.text = widget.bookingOption!.subtitle ?? "";
-      _priceController.text = widget.bookingOption!.price.toString();
+      _priceController.text = widget.bookingOption!.price != null
+          ? (widget.bookingOption!.price! / 100).toString()
+          : "";
       currentOption = widget.bookingOption!.currency;
     }
   }
@@ -53,6 +56,7 @@ class _AddOrEditBookingOptionModalState
 
   @override
   Widget build(BuildContext context) {
+    print("currentOption: $currentOption");
     return BaseModal(
         title: "Create ticket for this event",
         child: Column(
@@ -71,7 +75,7 @@ class _AddOrEditBookingOptionModalState
             Row(
               children: [
                 Flexible(
-                  flex: 2,
+                  flex: 1,
                   child: InputFieldComponent(
                     controller: _priceController,
                     labelText: 'Price',
@@ -82,11 +86,27 @@ class _AddOrEditBookingOptionModalState
                 Flexible(
                   flex: 1,
                   child: CustomOptionInputComponent(
-                    currentOption: currentOption,
-                    options: const ["EUR", "USD", "GBP"],
+                    currentOption: currentOption?.value == null &&
+                            currentOption?.label == null
+                        ? null
+                        : OptionObjects(
+                            currentOption!.value,
+                            currentOption!.label,
+                          ),
+                    options: OptionObjects.getOptionsFromTwoLists(
+                        CurrencyDetail.getCurrencyDetails()
+                            .map(
+                              (e) => e.value,
+                            )
+                            .toList(),
+                        CurrencyDetail.getCurrencyDetails()
+                            .map(
+                              (e) => e.label,
+                            )
+                            .toList()),
                     onOptionSet: (value) {
                       setState(() {
-                        currentOption = value;
+                        currentOption = CurrencyDetail.getCurrencyDetail(value);
                       });
                     },
                     hintText: "Currency",
@@ -138,9 +158,9 @@ class _AddOrEditBookingOptionModalState
       return;
     }
 
-    widget.onFinished(BookingOptionModel(
+    widget.onFinished(BookingOption(
         title: _titleController.text,
-        price: double.parse(_priceController.text),
+        price: 100 * double.parse(_priceController.text),
         currency: currentOption!,
         subtitle: _subTitleController.text));
 

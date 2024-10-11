@@ -14,9 +14,9 @@ class CustomOptionInputComponent extends StatelessWidget {
     this.footnoteText,
   });
 
-  final String? currentOption;
+  final OptionObjects? currentOption;
   final Function(String) onOptionSet;
-  final List<String> options;
+  final List<OptionObjects> options;
   final String hintText;
   final String? footnoteText;
 
@@ -35,7 +35,7 @@ class CustomOptionInputComponent extends StatelessWidget {
           child: SizedBox(
             child: DropdownButtonHideUnderline(
               child: DropdownButton<String>(
-                value: currentOption,
+                value: currentOption?.value,
                 isExpanded: true,
                 hint: Text(hintText),
                 onChanged: (String? newValue) {
@@ -51,10 +51,14 @@ class CustomOptionInputComponent extends StatelessWidget {
                           color: Colors.grey), // Placeholder text color
                     ),
                   ),
-                  ...options.map<DropdownMenuItem<String>>((String value) {
+                  ...options
+                      .map<DropdownMenuItem<String>>((OptionObjects object) {
                     return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
+                      value: object.value,
+                      child: Text(options
+                          .firstWhere(
+                              (element) => element.value == object.value)
+                          .displayValue),
                     );
                   }),
                 ],
@@ -74,6 +78,30 @@ class CustomOptionInputComponent extends StatelessWidget {
             : const SizedBox(height: 0),
       ],
     );
+  }
+}
+
+class OptionObjects {
+  final String value;
+  final String displayValue;
+
+  OptionObjects(this.value, this.displayValue);
+
+  static List<OptionObjects> getOptionsUniqueStringList(List<String> options) {
+    final List<OptionObjects> optionObjects = [];
+    for (final String option in options) {
+      optionObjects.add(OptionObjects(option, option));
+    }
+    return optionObjects;
+  }
+
+  static List<OptionObjects> getOptionsFromTwoLists(
+      List<String> options, List<String> displayOptions) {
+    final List<OptionObjects> optionObjects = [];
+    for (int i = 0; i < options.length; i++) {
+      optionObjects.add(OptionObjects(options[i], displayOptions[i]));
+    }
+    return optionObjects;
   }
 }
 

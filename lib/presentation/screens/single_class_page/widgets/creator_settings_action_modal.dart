@@ -25,7 +25,7 @@ class CreatorSettingsActionModal extends StatelessWidget {
                 // Perform the asynchronous operation
                 await Provider.of<EventCreationAndEditingProvider>(context,
                         listen: false)
-                    .setClassFromExisting(classModel.urlSlug!);
+                    .setClassFromExisting(classModel.urlSlug!, true);
 
                 // Now pop the current widget and push the next page safely
                 Navigator.of(context).pop();

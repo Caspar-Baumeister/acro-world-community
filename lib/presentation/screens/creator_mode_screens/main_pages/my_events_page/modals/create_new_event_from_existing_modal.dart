@@ -20,7 +20,7 @@ class CreateNewEventFromExistingModal extends StatefulWidget {
 
 class _CreateNewEventFromExistingModalState
     extends State<CreateNewEventFromExistingModal> {
-  String? currentOption;
+  OptionObjects? currentOption;
 
   @override
   Widget build(BuildContext context) {
@@ -42,34 +42,39 @@ class _CreateNewEventFromExistingModalState
             const SizedBox(height: AppPaddings.large),
             Consumer<TeacherEventsProvider>(
                 builder: (context, myEventsProvider, child) {
+              var items = myEventsProvider.myCreatedEvents
+                  .where((element) =>
+                      element.urlSlug != null && element.name != null)
+                  .map((event) => OptionObjects(event.urlSlug!, event.name!))
+                  .toList();
+              print("items: $items");
               return CustomOptionInputComponent(
                   currentOption: currentOption,
-                  onOptionSet: (option) =>
-                      setState(() => currentOption = option),
-                  options: ["Without template"] +
-                      myEventsProvider.myCreatedEvents
-                          .map((event) => event.name!)
-                          .toList(),
+                  onOptionSet: (option) {
+                    print("option: $option");
+                    setState(() => currentOption =
+                        items.firstWhere((element) => element.value == option));
+                  },
+                  options: [
+                        OptionObjects("Without template", "Without template")
+                      ] +
+                      items,
                   hintText: "Select event as template");
             }),
             const SizedBox(height: AppPaddings.toLarge),
             StandardButton(
-              text: currentOption == null || currentOption == "Without template"
+              text: currentOption?.value == null ||
+                      currentOption?.value == "Without template"
                   ? "Continue without template"
                   : "Continue",
               onPressed: () async {
                 Navigator.of(context).pop();
                 ClassModel? classModel;
-                if (currentOption != null &&
-                    currentOption != "Without template") {
-                  classModel = Provider.of<TeacherEventsProvider>(context,
-                          listen: false)
-                      .myCreatedEvents
-                      .firstWhere((element) => element.name == currentOption);
-
+                if (currentOption?.value != null &&
+                    currentOption?.value != "Without template") {
                   await Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
-                      .setClassFromExisting(classModel.urlSlug!);
+                      .setClassFromExisting(currentOption!.value, false);
                 }
                 Navigator.of(context).push(CreateAndEditEventPageRoute(
                     isEditing: false, classModel: classModel));

@@ -40,7 +40,13 @@ class SingleOccurenceTabView extends StatelessWidget {
                   onPressed: () => showDatePickerDialog(
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
-                      initialDate: recurringPattern.startDate ?? DateTime.now(),
+                      // if startDate is not null, set it to the later date of now and the startDate
+                      initialDate: recurringPattern.startDate != null
+                          // maximum of the two dates
+                          ? DateTime.now().isAfter(recurringPattern.startDate!)
+                              ? DateTime.now()
+                              : recurringPattern.startDate!
+                          : DateTime.now(),
                       context: context,
                       setDate: (date) {
                         editRecurringPattern("startDate", date);
@@ -77,7 +83,12 @@ class SingleOccurenceTabView extends StatelessWidget {
                   onPressed: () => showDatePickerDialog(
                       firstDate: DateTime.now(),
                       lastDate: DateTime.now().add(const Duration(days: 365)),
-                      initialDate: recurringPattern.endDate ?? DateTime.now(),
+                      initialDate: recurringPattern.endDate != null
+                          // maximum of the two dates
+                          ? DateTime.now().isAfter(recurringPattern.endDate!)
+                              ? DateTime.now()
+                              : recurringPattern.endDate!
+                          : DateTime.now(),
                       context: context,
                       setDate: (date) {
                         editRecurringPattern("endDate", date);

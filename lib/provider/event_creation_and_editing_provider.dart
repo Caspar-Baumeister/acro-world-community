@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/data/models/booking_option_model.dart';
+import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
@@ -41,7 +41,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? existingImageUrl;
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
-  final List<BookingOptionModel> _bookingOptions = [];
+  final List<BookingOption> _bookingOptions = [];
   Uint8List? _eventImage;
   int? maxBookingSlots;
 
@@ -55,7 +55,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? get locationName => _locationName;
   List<TeacherModel> get pendingInviteTeachers => _pendingInviteTeachers;
   List<RecurringPatternModel> get recurringPatterns => _recurringPatterns;
-  List<BookingOptionModel> get bookingOptions => _bookingOptions;
+  List<BookingOption> get bookingOptions => _bookingOptions;
   String? get errorMessage => _errorMesssage;
 
   void addRecurringPattern(RecurringPatternModel pattern) {
@@ -73,12 +73,12 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addBookingOption(BookingOptionModel option) {
+  void addBookingOption(BookingOption option) {
     _bookingOptions.add(option);
     notifyListeners();
   }
 
-  void editBookingOption(int index, BookingOptionModel option) {
+  void editBookingOption(int index, BookingOption option) {
     _bookingOptions[index] = option;
     notifyListeners();
   }
@@ -331,7 +331,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<void> setClassFromExisting(String slug) async {
+  Future<void> setClassFromExisting(String slug, bool isEditing) async {
     // clear existing data
     clear();
     // pull class data from database
@@ -344,11 +344,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           await classesRepository.getClassBySlug(slug);
 
       fromClass = repositoryReturnClass;
-
-      // set recurrent patterns
-
       _title = fromClass.name ?? '';
-      _slug = "${fromClass.urlSlug ?? ''}-1";
+      _slug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
       _eventType = fromClass.eventType != null
           ? mapEventTypeToString(fromClass.eventType!)
@@ -363,6 +360,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;
+      _bookingOptions.clear();
+      _bookingOptions.addAll(fromClass.bookingOptions ?? []);
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }

@@ -20,6 +20,8 @@ class BookingOption {
   String? subtitle;
   String? title;
   CurrencyDetail currency = CurrencyDetail.getCurrencyDetail("");
+  bool? wasUpdated;
+  bool? wasMarkedForDeletion;
 
   double realPriceDiscounted() {
     return (1 - (discount! * 0.01)) * price! * 0.01;
@@ -29,14 +31,17 @@ class BookingOption {
     return price! * 0.01;
   }
 
-  BookingOption(
-      {this.commission,
-      this.discount,
-      this.id,
-      this.price,
-      this.subtitle,
-      required this.currency,
-      this.title});
+  BookingOption({
+    this.commission,
+    this.discount,
+    this.id,
+    this.price,
+    this.subtitle,
+    required this.currency,
+    this.title,
+    this.wasUpdated,
+    this.wasMarkedForDeletion,
+  });
 
   BookingOption.fromJson(Map<String, dynamic> json) {
     commission = json['commission'];
@@ -48,5 +53,21 @@ class BookingOption {
     if (json['currency'] != null) {
       currency = CurrencyDetail.getCurrencyDetail(json['currency']);
     }
+    wasUpdated = json['wasUpdated'] ?? false;
+    wasMarkedForDeletion = json['wasMarkedForDeletion'] ?? false;
+  }
+
+  // Method to convert a BookingOptionModel to a map (e.g. for JSON encoding)
+  Map<String, dynamic> toMap() {
+    return {
+      'booking_option': {
+        'data': {
+          'currency': currency.value,
+          'price': price.toString(),
+          'title': title,
+          'subtitle': subtitle,
+        }
+      }
+    };
   }
 }

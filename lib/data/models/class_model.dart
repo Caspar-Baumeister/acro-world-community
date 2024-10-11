@@ -43,6 +43,16 @@ class ClassModel {
     return null;
   }
 
+  List<BookingOption> get bookingOptions {
+    if (classBookingOptions != null) {
+      return classBookingOptions!
+          .where((e) => e.bookingOption != null)
+          .map((e) => e.bookingOption!)
+          .toList();
+    }
+    return [];
+  }
+
   List<TeacherModel> get teachers {
     if (classTeachers != null) {
       return classTeachers!
