@@ -200,16 +200,20 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
           userProvider.setUserFromToken();
         });
       } else {
+        String teacherId = Provider.of<CreatorProvider>(context, listen: false)
+            .activeTeacher!
+            .id!;
+
         String updateTeacherProfileMessage =
             await profileService.updateTeacherProfile(
-          _nameController.text,
-          _descriptionController.text,
-          _urlSlugController.text,
-          profileImageUrl,
-          additionalImageUrls,
-          _creatorType!,
-          userProvider.activeUser!.id!,
-        );
+                _nameController.text,
+                _descriptionController.text,
+                _urlSlugController.text,
+                profileImageUrl,
+                additionalImageUrls,
+                _creatorType!,
+                userProvider.activeUser!.id!,
+                teacherId);
 
         print("updateTeacherProfileMessage: $updateTeacherProfileMessage");
 

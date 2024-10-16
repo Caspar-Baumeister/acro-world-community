@@ -27,36 +27,28 @@ class Mutations {
 
   static final updateTeacher = gql("""
     mutation UpdateTeacherAsTeacherUser(
-      \$id: uuid!,
+      \$teacherId: uuid!,
       \$userId: uuid!,
       \$name: String!,
       \$description: String!,
-      \$isOrganization: Boolean!,
-      \$instagramName: String!,
       \$urlSlug: String!,
       \$type: teacher_type_enum!,
-      \$stripeId: String!,
-      \$isStripeEnabled: Boolean!,
       \$images: [teacher_images_insert_input!]!
     ) {
-      delete_teachers_by_pk(id: \$id) {
+      delete_teachers_by_pk(id: \$teacherId) {
         id
       }
-      delete_teacher_images(where: { teacher_id: { _eq: \$id } }) {
+      delete_teacher_images(where: { teacher_id: { _eq: \$teacherId } }) {
         affected_rows
       }
       insert_teachers(
         objects: {
-          id: \$id,
+          id: \$teacherId,
           name: \$name,
           description: \$description,
-          instagram_name: \$instagramName,
-          is_organization: \$isOrganization,
-          user_id: \$userId,
           url_slug: \$urlSlug,
+          user_id: \$userId,
           type: \$type,
-          stripe_id: \$stripeId,
-          is_stripe_enabled: \$isStripeEnabled,
           images: { data: \$images }
         }
       ) {

@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/data/graphql/mutations.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -75,15 +74,14 @@ class ProfileCreationService {
       );
 
       if (result.hasException) {
-        CustomErrorHandler.captureException(result.exception);
+        Exception(result.exception);
         return result.exception?.graphqlErrors.first.message ??
             'Error creating teacher profile';
       } else {
         return 'success';
       }
     } catch (e) {
-      CustomErrorHandler.captureException(e);
-      return 'Error creating teacher profile';
+      throw 'Error creating teacher profile';
     }
   } // update creator profile
 
@@ -95,6 +93,7 @@ class ProfileCreationService {
     List<String> additionalImageUrls,
     String type,
     String userId,
+    String teacherId,
   ) async {
     final List<Map<String, dynamic>> imagesInput = [
       {
@@ -122,6 +121,7 @@ class ProfileCreationService {
       'type': type,
       'images': imagesInput,
       'userId': userId,
+      'teacherId': teacherId,
     };
 
     try {
@@ -133,15 +133,14 @@ class ProfileCreationService {
       );
 
       if (result.hasException) {
-        CustomErrorHandler.captureException(result.exception);
+        Exception(result.exception);
         return result.exception?.graphqlErrors.first.message ??
             'Error updating teacher profile';
       } else {
         return 'success';
       }
     } catch (e) {
-      CustomErrorHandler.captureException(e);
-      return 'Error updating teacher profile';
+      throw Exception('Error updating teacher profile');
     }
   }
 }
@@ -150,10 +149,7 @@ class ImageUploadService {
   Future<String> uploadImage(Uint8List imageBytes,
       {required String path}) async {
     try {
-      print("Uploading image to $path");
       final Reference storageRef = FirebaseStorage.instance.ref().child(path);
-
-      print("reference: $storageRef");
 
       final UploadTask uploadTask = storageRef.putData(
         imageBytes,
@@ -162,17 +158,12 @@ class ImageUploadService {
         ),
       );
 
-      print("uploadTask: $uploadTask");
-      print("uploadTask: ${uploadTask.storage.app.options.storageBucket}");
-
       final TaskSnapshot snapshot = await uploadTask;
 
-      print("snapshot ref: ${snapshot.ref}");
       final String downloadUrl = await snapshot.ref.getDownloadURL();
 
       return downloadUrl;
     } catch (e) {
-      CustomErrorHandler.captureException(e);
       throw Exception('Error uploading image: $e');
     }
   }
