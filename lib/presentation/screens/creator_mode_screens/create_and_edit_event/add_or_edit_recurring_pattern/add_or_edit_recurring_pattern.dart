@@ -3,8 +3,8 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/add_or_edit_recurring_pattern/sections/single_occurence_tab_view.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/single_occurence_tab_view.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';

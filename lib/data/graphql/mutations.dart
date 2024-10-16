@@ -25,6 +25,46 @@ class Mutations {
     }
   """);
 
+  static final updateTeacher = gql("""
+    mutation UpdateTeacherAsTeacherUser(
+      \$id: uuid!,
+      \$userId: uuid!,
+      \$name: String!,
+      \$description: String!,
+      \$isOrganization: Boolean!,
+      \$instagramName: String!,
+      \$urlSlug: String!,
+      \$type: teacher_type_enum!,
+      \$stripeId: String!,
+      \$isStripeEnabled: Boolean!,
+      \$images: [teacher_images_insert_input!]!
+    ) {
+      delete_teachers_by_pk(id: \$id) {
+        id
+      }
+      delete_teacher_images(where: { teacher_id: { _eq: \$id } }) {
+        affected_rows
+      }
+      insert_teachers(
+        objects: {
+          id: \$id,
+          name: \$name,
+          description: \$description,
+          instagram_name: \$instagramName,
+          is_organization: \$isOrganization,
+          user_id: \$userId,
+          url_slug: \$urlSlug,
+          type: \$type,
+          stripe_id: \$stripeId,
+          is_stripe_enabled: \$isStripeEnabled,
+          images: { data: \$images }
+        }
+      ) {
+        affected_rows
+      }
+    }
+  """);
+
 // class_owners: {data: {teacher_id: "6d76a0f1-8e33-40f5-a300-505329d30ae0", is_payment_receiver: false}},
   static final insertClassWithRecurringPatterns = gql("""
   mutation InsertClassWithRecurringPatterns(

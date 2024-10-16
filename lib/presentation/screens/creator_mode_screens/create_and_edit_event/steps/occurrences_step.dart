@@ -1,7 +1,7 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';

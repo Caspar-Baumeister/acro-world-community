@@ -10,11 +10,13 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/components/additional_images_picker_component.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/components/profile_image_picker_component.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -23,7 +25,10 @@ import 'package:provider/provider.dart';
 class CreateCreatorProfileBody extends StatefulWidget {
   const CreateCreatorProfileBody({
     super.key,
+    this.isEditing = false,
   });
+
+  final bool isEditing;
 
   @override
   State<CreateCreatorProfileBody> createState() =>
@@ -38,6 +43,8 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
   bool? _isSlugAvailable;
   bool? _isSlugValid;
   String? _creatorType;
+  String? _currentImage;
+  List<String> _currentAdditionalImages = [];
 
   late TextEditingController _nameController;
   final TextEditingController _descriptionController = TextEditingController();
@@ -46,15 +53,33 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
   @override
   void initState() {
     super.initState();
-    User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
 
-    _nameController = TextEditingController(text: user?.name);
-    setUrlSlug(user != null ? user.name! : '');
+    if (!widget.isEditing) {
+      User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
 
-    // Add listener to the _nameController to update UI whenever the name changes
-    _nameController.addListener(() {
-      setState(() {});
-    });
+      _nameController = TextEditingController(text: user?.name);
+      setUrlSlug(user != null ? user.name! : '');
+
+      // Add listener to the _nameController to update UI whenever the name changes
+      _nameController.addListener(() {
+        setState(() {});
+      });
+    } else {
+      // get the creator provider
+      final creatorProvider =
+          Provider.of<CreatorProvider>(context, listen: false);
+
+      // set the values of the controllers to the values of the creator
+      _nameController =
+          TextEditingController(text: creatorProvider.activeTeacher?.name);
+      _descriptionController.text =
+          creatorProvider.activeTeacher?.description ?? '';
+      _urlSlugController.text = creatorProvider.activeTeacher?.slug ?? '';
+      _currentImage = creatorProvider.activeTeacher?.profilImgUrl;
+      _creatorType = creatorProvider.activeTeacher?.type;
+      _currentAdditionalImages =
+          creatorProvider.activeTeacher?.nonProfileImages() ?? [];
+    }
 
     // Add listener to the _urlSlugController to check slug availability
     _urlSlugController.addListener(() {
@@ -94,7 +119,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
       return;
     }
 
-    if (_profileImage == null) {
+    if (_profileImage == null && !widget.isEditing) {
       setState(() {
         _errorMessage = 'Please select a profile image.';
       });
@@ -128,46 +153,85 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
     });
 
     try {
-      final String profileImageUrl =
-          await profileService.uploadProfileImage(_profileImage!);
-
-      print("Profile Image URL: $profileImageUrl");
-      final List<String> additionalImageUrls =
-          await profileService.uploadAdditionalImages(_additionalImages);
-
-      print("Additional Image URLs: $additionalImageUrls");
-
-      String createTeacherProfileMessage =
-          await profileService.createTeacherProfile(
-        _nameController.text,
-        _descriptionController.text,
-        _urlSlugController.text,
-        profileImageUrl,
-        additionalImageUrls,
-        _creatorType!,
-        userProvider.activeUser!.id!,
-      );
-
-      print("createTeacherProfileMessage: $createTeacherProfileMessage");
-
-      if (createTeacherProfileMessage != "success") {
-        setState(() {
-          _errorMessage = createTeacherProfileMessage;
-        });
-        return;
+      final String profileImageUrl;
+      if (_profileImage != null) {
+        profileImageUrl =
+            await profileService.uploadProfileImage(_profileImage!);
+      } else {
+        profileImageUrl = _currentImage!;
       }
+      final List<String> additionalImageUrls = [];
+      if (_additionalImages.isNotEmpty) {
+        additionalImageUrls.addAll(
+            await profileService.uploadAdditionalImages(_additionalImages));
+      }
+      additionalImageUrls.addAll(_currentAdditionalImages);
 
-      setState(() {
-        _profileImage = null;
-        _additionalImages.clear();
-      });
+      if (!widget.isEditing) {
+        String createTeacherProfileMessage =
+            await profileService.createTeacherProfile(
+          _nameController.text,
+          _descriptionController.text,
+          _urlSlugController.text,
+          profileImageUrl,
+          additionalImageUrls,
+          _creatorType!,
+          userProvider.activeUser!.id!,
+        );
 
-      showSuccessToast("Teacher profile created successfully");
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        Navigator.of(context).pop();
-        await TokenSingletonService().refreshToken();
-        userProvider.setUserFromToken();
-      });
+        print("createTeacherProfileMessage: $createTeacherProfileMessage");
+
+        if (createTeacherProfileMessage != "success") {
+          setState(() {
+            _errorMessage = createTeacherProfileMessage;
+          });
+          return;
+        }
+
+        setState(() {
+          _profileImage = null;
+          _additionalImages.clear();
+        });
+
+        showSuccessToast("Teacher profile created successfully");
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          Navigator.of(context).pop();
+          await TokenSingletonService().refreshToken();
+          userProvider.setUserFromToken();
+        });
+      } else {
+        String updateTeacherProfileMessage =
+            await profileService.updateTeacherProfile(
+          _nameController.text,
+          _descriptionController.text,
+          _urlSlugController.text,
+          profileImageUrl,
+          additionalImageUrls,
+          _creatorType!,
+          userProvider.activeUser!.id!,
+        );
+
+        print("updateTeacherProfileMessage: $updateTeacherProfileMessage");
+
+        if (updateTeacherProfileMessage != "success") {
+          setState(() {
+            _errorMessage = updateTeacherProfileMessage;
+          });
+          return;
+        }
+
+        setState(() {
+          _profileImage = null;
+          _additionalImages.clear();
+        });
+
+        showSuccessToast("Teacher profile updated successfully");
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          Navigator.of(context).pop();
+          await TokenSingletonService().refreshToken();
+          userProvider.setUserFromToken();
+        });
+      }
     } catch (e, s) {
       setState(() {
         _errorMessage = e.toString();
@@ -184,6 +248,16 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
     setState(() {
       _isSlugValid = true;
     });
+
+    if (widget.isEditing &&
+        slug.toLowerCase() ==
+            Provider.of<CreatorProvider>(context, listen: false)
+                .activeTeacher
+                ?.slug
+                ?.toLowerCase()) {
+      return;
+    }
+
     if (slug.isEmpty || slug.contains(RegExp(r'[^a-z0-9-]'))) {
       setState(() {
         _isSlugValid = false;
@@ -235,6 +309,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   ProfileImagePickerComponent(
+                    currentImage: _currentImage,
                     profileImage: _profileImage,
                     onImageSelected: _handleProfileImageSelected,
                   ),
@@ -248,13 +323,22 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
                   ),
                   const SizedBox(height: AppPaddings.small),
                   Center(
-                    child: Text(
-                      "${AppEnvironment.websiteUrl}/partner/${_urlSlugController.text}",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodySmall!
-                          .copyWith(color: CustomColors.linkTextColor),
-                      textAlign: TextAlign.center,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (_urlSlugController.text.isNotEmpty &&
+                            widget.isEditing) {
+                          customLaunch(
+                              "${AppEnvironment.websiteUrl}/partner/${_urlSlugController.text}");
+                        }
+                      },
+                      child: Text(
+                        "${AppEnvironment.websiteUrl}/partner/${_urlSlugController.text}",
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodySmall!
+                            .copyWith(color: CustomColors.linkTextColor),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
                   const SizedBox(height: AppPaddings.medium),
@@ -323,11 +407,14 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
                   AdditionalImagePickerComponent(
                     additionalImages: _additionalImages,
                     onImagesSelected: _handleAdditionalImagesSelected,
+                    currentImages: _currentAdditionalImages,
                   ),
                   const SizedBox(height: AppPaddings.large),
                   StandardButton(
                       onPressed: _handleUploadAndMutation,
-                      text: 'Create Teacher Profile',
+                      text: widget.isEditing
+                          ? 'Save Changes'
+                          : 'Create Teacher Profile',
                       loading: _isLoading),
                   const SizedBox(height: AppPaddings.small),
                   if (_errorMessage != null)

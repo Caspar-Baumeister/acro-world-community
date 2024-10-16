@@ -2,6 +2,7 @@ import 'package:acroworld/presentation/components/buttons/floating_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,9 @@ class CreatorProfileBody extends StatelessWidget {
                 padding:
                     const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
                 child: FloatingButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(EditCreatorProfilePageRoute());
+                  },
                   insideWidget: Row(
                     children: [
                       CustomAvatarCachedNetworkImage(

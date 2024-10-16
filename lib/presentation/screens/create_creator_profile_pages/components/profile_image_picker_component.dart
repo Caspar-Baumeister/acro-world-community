@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -8,12 +9,14 @@ import 'package:image_picker/image_picker.dart';
 
 class ProfileImagePickerComponent extends StatefulWidget {
   final Uint8List? profileImage;
+  final String? currentImage;
   final Function(Uint8List) onImageSelected;
 
   const ProfileImagePickerComponent({
     super.key,
     required this.profileImage,
     required this.onImageSelected,
+    this.currentImage,
   });
 
   @override
@@ -59,18 +62,23 @@ class ProfileImagePickerComponentState
                   width: 2.0, // Adjust the width of the border as needed
                 ),
               ),
-              child: CircleAvatar(
-                backgroundColor: CustomColors.backgroundColor,
-                radius: AppDimensions.avatarSizeMedium,
-                backgroundImage: widget.profileImage != null
-                    ? MemoryImage(widget.profileImage!)
-                    : null,
-                child: widget.profileImage == null
-                    ? const Icon(Icons.person,
-                        size: AppDimensions.avatarSizeMedium,
-                        color: CustomColors.iconColor)
-                    : null,
-              ),
+              child: widget.currentImage != null
+                  ? CustomAvatarCachedNetworkImage(
+                      imageUrl: widget.currentImage!,
+                      radius: AppDimensions.avatarSizeMedium,
+                    )
+                  : CircleAvatar(
+                      backgroundColor: CustomColors.backgroundColor,
+                      radius: AppDimensions.avatarSizeMedium,
+                      backgroundImage: widget.profileImage != null
+                          ? MemoryImage(widget.profileImage!)
+                          : null,
+                      child: widget.profileImage == null
+                          ? const Icon(Icons.person,
+                              size: AppDimensions.avatarSizeMedium,
+                              color: CustomColors.iconColor)
+                          : null,
+                    ),
             ),
             const Positioned(
               bottom: 0,

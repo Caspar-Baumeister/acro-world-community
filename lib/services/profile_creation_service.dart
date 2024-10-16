@@ -85,6 +85,64 @@ class ProfileCreationService {
       CustomErrorHandler.captureException(e);
       return 'Error creating teacher profile';
     }
+  } // update creator profile
+
+  Future<String> updateTeacherProfile(
+    String name,
+    String description,
+    String urlSlug,
+    String profileImageUrl,
+    List<String> additionalImageUrls,
+    String type,
+    String userId,
+  ) async {
+    final List<Map<String, dynamic>> imagesInput = [
+      {
+        'image': {
+          'data': {
+            'url': profileImageUrl,
+          },
+        },
+        'is_profile_picture': true,
+      },
+      ...additionalImageUrls.map((url) => {
+            'image': {
+              'data': {
+                'url': url,
+              },
+            },
+            'is_profile_picture': false,
+          }),
+    ];
+
+    final Map<String, dynamic> variables = {
+      'name': name,
+      'description': description,
+      'urlSlug': urlSlug,
+      'type': type,
+      'images': imagesInput,
+      'userId': userId,
+    };
+
+    try {
+      final QueryResult result = await client.mutate(
+        MutationOptions(
+          document: Mutations.updateTeacher,
+          variables: variables,
+        ),
+      );
+
+      if (result.hasException) {
+        CustomErrorHandler.captureException(result.exception);
+        return result.exception?.graphqlErrors.first.message ??
+            'Error updating teacher profile';
+      } else {
+        return 'success';
+      }
+    } catch (e) {
+      CustomErrorHandler.captureException(e);
+      return 'Error updating teacher profile';
+    }
   }
 }
 

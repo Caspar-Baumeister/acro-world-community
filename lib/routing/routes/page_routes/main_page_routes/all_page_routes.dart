@@ -13,6 +13,12 @@ class CreateCreatorProfilePageRoute extends BaseRoute {
             guards: [], transitionsBuilderFunction: Transitions.slideBottom);
 }
 
+class EditCreatorProfilePageRoute extends BaseRoute {
+  EditCreatorProfilePageRoute()
+      : super(const CreateCreatorProfilePage(isEditing: true),
+            guards: [], transitionsBuilderFunction: Transitions.slideLeft);
+}
+
 class ConfirmEmailPageRoute extends BaseRoute {
   ConfirmEmailPageRoute()
       : super(

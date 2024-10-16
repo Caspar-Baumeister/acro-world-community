@@ -4,12 +4,18 @@ import 'package:acroworld/presentation/screens/create_creator_profile_pages/crea
 import 'package:flutter/material.dart';
 
 class CreateCreatorProfilePage extends StatelessWidget {
-  const CreateCreatorProfilePage({super.key});
+  const CreateCreatorProfilePage({super.key, this.isEditing = false});
+
+  final bool isEditing;
 
   @override
   Widget build(BuildContext context) {
-    return const BasePage(
-        appBar: CustomAppbarSimple(title: "Create Partner Account"),
-        child: CreateCreatorProfileBody());
+    return BasePage(
+        appBar: CustomAppbarSimple(
+            title:
+                isEditing ? "Edit Partner Account" : "Create Partner Account"),
+        child: CreateCreatorProfileBody(
+          isEditing: isEditing,
+        ));
   }
 }

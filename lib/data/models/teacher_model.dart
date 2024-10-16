@@ -2,6 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 
 class TeacherModel {
   String? id;
+  String? slug;
   String? name;
   String? confirmationStatus;
   bool? isOrganization;
@@ -29,6 +30,18 @@ class TeacherModel {
     return null;
   }
 
+  List<String> nonProfileImages() {
+    List<String> urls = [];
+    if (images != null) {
+      for (Images image in images!) {
+        if (image.isProfilePicture == false) {
+          urls.add(image.image!.url!);
+        }
+      }
+    }
+    return urls;
+  }
+
   TeacherModel(
       {this.id,
       this.name,
@@ -39,6 +52,7 @@ class TeacherModel {
       this.instagramName,
       this.type,
       this.locationName,
+      this.slug,
       this.images,
       this.userId,
       this.isStripeEnabled,
@@ -49,6 +63,7 @@ class TeacherModel {
     id = json['id'];
     type = json['type'];
     name = json['name'];
+    slug = json['url_slug'];
     confirmationStatus = json['confirmation_status'];
     isOrganization = json['is_organization'];
     createdAt = json['created_at'];

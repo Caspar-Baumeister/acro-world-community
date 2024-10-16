@@ -132,6 +132,7 @@ class Fragments {
 
   static const teacherFragmentAllInfo = """
   created_at
+  url_slug
   description
   type
   id

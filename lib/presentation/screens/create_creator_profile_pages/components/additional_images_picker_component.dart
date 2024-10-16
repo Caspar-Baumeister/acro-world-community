@@ -9,11 +9,13 @@ import 'package:image_picker/image_picker.dart';
 class AdditionalImagePickerComponent extends StatefulWidget {
   final List<Uint8List> additionalImages;
   final Function(List<Uint8List>) onImagesSelected;
+  final List<String> currentImages;
 
   const AdditionalImagePickerComponent({
     super.key,
     required this.additionalImages,
     required this.onImagesSelected,
+    required this.currentImages,
   });
 
   @override
@@ -24,6 +26,7 @@ class AdditionalImagePickerComponent extends StatefulWidget {
 class AdditionalImagePickerComponentState
     extends State<AdditionalImagePickerComponent> {
   final ImagePicker _picker = ImagePicker();
+  final additionalImageRowController = ScrollController();
 
   Future<void> _pickImages() async {
     try {
@@ -33,6 +36,12 @@ class AdditionalImagePickerComponentState
           pickedFiles.map((file) => file.readAsBytes()),
         );
         widget.onImagesSelected(images);
+        await Future.delayed(const Duration(milliseconds: 300));
+        additionalImageRowController.animateTo(
+          additionalImageRowController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 500),
+          curve: Curves.easeOut,
+        );
       }
     } catch (e) {
       showErrorToast('Error picking additional images: $e');
@@ -59,7 +68,7 @@ class AdditionalImagePickerComponentState
               IconButton(onPressed: _pickImages, icon: const Icon(Icons.add)),
             ],
           ),
-          widget.additionalImages.isEmpty
+          widget.additionalImages.isEmpty && widget.currentImages.isEmpty
               ? Center(
                   child: Text('No additional images selected',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -68,12 +77,35 @@ class AdditionalImagePickerComponentState
                 )
               : SizedBox(
                   height: 150,
-                  child: ListView.builder(
+                  child: SingleChildScrollView(
+                    controller: additionalImageRowController,
                     scrollDirection: Axis.horizontal,
-                    itemCount: widget.additionalImages.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.memory(widget.additionalImages[index]),
+                    child: Row(
+                      children: [
+                        if (widget.currentImages.isNotEmpty)
+                          ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: widget.currentImages.length,
+                            itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Image.network(widget.currentImages[index]),
+                            ),
+                          ),
+                        if (widget.additionalImages.isNotEmpty)
+                          ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            physics: NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: widget.additionalImages.length,
+                            itemBuilder: (context, index) => Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child:
+                                  Image.memory(widget.additionalImages[index]),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),
