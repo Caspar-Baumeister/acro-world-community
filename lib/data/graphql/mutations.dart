@@ -1,6 +1,14 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  static final createStripeUser = gql("""
+mutation createStripeUser {
+  create_stripe_user {
+    url
+  }
+}
+""");
+
   static final createTeacher = gql("""
     mutation CreateTeacher(
     \$userId: uuid!, 

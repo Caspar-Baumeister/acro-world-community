@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -24,6 +25,30 @@ class CreatorProvider extends ChangeNotifier {
 
   bool get isLoading {
     return _isLoading;
+  }
+
+  // get stripe login link
+  Future<String?> getStripeLoginLink() async {
+    try {
+      StripeRepository stripeRepository =
+          StripeRepository(apiService: GraphQLClientSingleton());
+      return await stripeRepository.getStripeLoginLink();
+    } catch (e) {
+      CustomErrorHandler.captureException(e.toString());
+      return null;
+    }
+  }
+
+  // create stripe user
+  Future<String?> createStripeUser() async {
+    try {
+      StripeRepository stripeRepository =
+          StripeRepository(apiService: GraphQLClientSingleton());
+      return await stripeRepository.createStripeUser();
+    } catch (e) {
+      CustomErrorHandler.captureException(e.toString());
+      return null;
+    }
   }
 
   // delete active creator

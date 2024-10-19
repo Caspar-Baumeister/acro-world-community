@@ -6,6 +6,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
@@ -73,7 +74,7 @@ class ProfileBody extends StatelessWidget {
                                     print("Switch to Creator Mode");
                                     // Switch to creator mode
                                     Navigator.of(context)
-                                        .push(MyEventsPageRoute());
+                                        .push(CreatorProfilePageRoute());
                                   })
                               : StandardButton(
                                   text: "Creater Mode",

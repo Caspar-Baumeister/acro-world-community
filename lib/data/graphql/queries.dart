@@ -2,6 +2,12 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  static final getStripeLoginLink = gql("""
+  query GetStripeLoginLink {
+    stripe_login_link
+  }
+""");
+
   static final getTeachersPageableQuery = gql("""
   query GetTeachersPageable(\$limit: Int, \$offset: Int, \$where: teachers_bool_exp!) {
     teachers(limit: \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {

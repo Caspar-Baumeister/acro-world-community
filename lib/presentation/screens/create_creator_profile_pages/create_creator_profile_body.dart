@@ -111,7 +111,10 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
     final profileService = ProfileCreationService(client, ImageUploadService());
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
+    final creatorProvider =
+        Provider.of<CreatorProvider>(context, listen: false);
 
+    String? teacherId = creatorProvider.activeTeacher?.id;
     if (userProvider.activeUser?.id == null) {
       setState(() {
         _errorMessage = 'User ID not found';
@@ -200,9 +203,12 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
           userProvider.setUserFromToken();
         });
       } else {
-        String teacherId = Provider.of<CreatorProvider>(context, listen: false)
-            .activeTeacher!
-            .id!;
+        if (teacherId == null) {
+          setState(() {
+            _errorMessage = 'Teacher ID not found';
+          });
+          return;
+        }
 
         String updateTeacherProfileMessage =
             await profileService.updateTeacherProfile(
@@ -232,8 +238,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
         showSuccessToast("Teacher profile updated successfully");
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           Navigator.of(context).pop();
-          await TokenSingletonService().refreshToken();
-          userProvider.setUserFromToken();
+          creatorProvider.setCreatorFromToken();
         });
       }
     } catch (e, s) {

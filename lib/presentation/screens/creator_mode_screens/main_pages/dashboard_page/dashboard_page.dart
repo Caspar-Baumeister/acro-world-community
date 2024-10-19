@@ -10,7 +10,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage(
         appBar: const CustomAppbarSimple(
-          title: "Dashboard",
+          title: "Bookings",
           isBackButton: false,
         ),
         makeScrollable: false,

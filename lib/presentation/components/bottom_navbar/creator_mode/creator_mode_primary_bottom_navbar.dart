@@ -21,7 +21,7 @@ class CreatorModePrimaryBottomNavbar extends StatelessWidget {
       PrimaryBottomNavbarItem(
         icon: IconLibrary.dashboard.icon,
         isSelected: selectedIndex == 0,
-        label: 'Dashboard',
+        label: 'Bookings',
         onPressed: () {
           // navigate to home page
           Navigator.of(context).push(DashboardPageRoute());
