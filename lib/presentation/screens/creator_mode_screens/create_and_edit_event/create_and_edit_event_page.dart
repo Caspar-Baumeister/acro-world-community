@@ -7,6 +7,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -50,27 +51,30 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
         eventCreationAndEditingProvider.setPage(3);
         setState(() {});
       }),
-      MarketStep(onFinished: () async {
-        // create a new event
-        if (widget.isEditing) {
-          await eventCreationAndEditingProvider.updateClass();
-        } else {
-          await eventCreationAndEditingProvider.createClass();
-        }
+      MarketStep(
+          isEditing: widget.isEditing,
+          onFinished: () async {
+            // create a new event
+            if (widget.isEditing) {
+              await eventCreationAndEditingProvider.updateClass();
+            } else {
+              await eventCreationAndEditingProvider.createClass();
+            }
 
-        if (eventCreationAndEditingProvider.errorMessage == null) {
-          showSuccessToast("Event created successfully");
-          // if successful, pop the page
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).pop();
-            Provider.of<TeacherEventsProvider>(context, listen: false)
-                .fetchMyEvents();
-          });
-        } else {
-          // if not successful, show an error message
-          showErrorToast(eventCreationAndEditingProvider.errorMessage!);
-        }
-      })
+            if (eventCreationAndEditingProvider.errorMessage == null) {
+              showSuccessToast(
+                  "Event ${widget.isEditing ? "updated" : "created"} successfully");
+              // if successful, pop the page
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                Navigator.of(context).pushReplacement(MyEventsPageRoute());
+                Provider.of<TeacherEventsProvider>(context, listen: false)
+                    .fetchMyEvents();
+              });
+            } else {
+              // if not successful, show an error message
+              showErrorToast(eventCreationAndEditingProvider.errorMessage!);
+            }
+          })
     ];
 
     return BasePage(

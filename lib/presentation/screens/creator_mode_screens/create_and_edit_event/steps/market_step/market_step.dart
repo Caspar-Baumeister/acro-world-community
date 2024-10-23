@@ -10,8 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MarketStep extends StatefulWidget {
-  const MarketStep({super.key, required this.onFinished});
+  const MarketStep(
+      {super.key, required this.onFinished, required this.isEditing});
   final Function onFinished;
+  final bool isEditing;
 
   @override
   State<MarketStep> createState() => _MarketStepState();
@@ -72,7 +74,7 @@ class _MarketStepState extends State<MarketStep> {
         const SizedBox(height: AppPaddings.medium),
         StandardButton(
           onPressed: _onNext,
-          text: 'Create Event',
+          text: widget.isEditing ? "Update Event" : "Create Event",
           loading: isLoading,
         ),
         const SizedBox(height: AppPaddings.large),

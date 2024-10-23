@@ -68,6 +68,8 @@ class TeacherEventsProvider extends ChangeNotifier {
       if (myEvents) {
         _offsetMyEvent = 0;
         _myCreatedEvents.clear();
+        print("clearing my events");
+        print(_myCreatedEvents);
       } else {
         _offsetParticipatingEvent = 0;
         _myParticipatingEvents.clear();

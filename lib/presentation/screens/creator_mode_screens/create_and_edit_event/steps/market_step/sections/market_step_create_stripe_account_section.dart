@@ -7,21 +7,24 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(AppPaddings.medium),
-      child: Column(
-        children: [
-          Text(
-            "To directly sell tickets in the app, you need to connect a Stripe account.",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          const SizedBox(height: AppPaddings.medium),
-          StandardButton(
-            onPressed: () {},
-            text: 'Connect Stripe Account',
-          ),
-        ],
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(AppPaddings.medium),
+        child: Column(
+          children: [
+            Text(
+              "To directly sell tickets in the app, you need to connect a Stripe account.",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: AppPaddings.medium),
+            StandardButton(
+              onPressed: () {},
+              text: 'Connect Stripe Account',
+            ),
+            Spacer(),
+          ],
+        ),
       ),
     );
   }

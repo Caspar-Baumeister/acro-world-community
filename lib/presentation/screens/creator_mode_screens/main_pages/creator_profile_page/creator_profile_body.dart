@@ -88,12 +88,20 @@ class CreatorProfileBody extends StatelessWidget {
           content: creatorProvider.activeTeacher?.stripeId != null
               ? creatorProvider.activeTeacher?.isStripeEnabled == true
                   ? "View Stripe dashboard"
-                  : "Refresh Stripe status"
+                  : "Continue Stripe setup"
               : "Connect to Stripe",
           onPressed: () async {
             if (creatorProvider.activeTeacher?.stripeId != null &&
                 creatorProvider.activeTeacher?.isStripeEnabled != true) {
               // stripe id is set but not enabled
+              await creatorProvider.createStripeUser().then((value) {
+                if (value != null) {
+                  // open stripe dashboard
+                  customLaunch(value);
+                } else {
+                  showErrorToast("Failed to open stripe dashboard");
+                }
+              });
             } else if (creatorProvider.activeTeacher?.isStripeEnabled == true &&
                 creatorProvider.activeTeacher?.stripeId != null) {
               // open stripe dashboard
