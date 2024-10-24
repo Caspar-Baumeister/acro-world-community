@@ -2,6 +2,52 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+// get class event bookings for creator dashboard page
+  static final getClassEventBookings =
+      gql("""query getClassEventBookings(\$id: uuid!) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
+    id
+    user {
+      id
+      name
+      acro_role {
+        name
+        id
+      }
+      email
+      image_url
+      level {
+        name
+        id
+      }
+    }
+    class_event {
+      id
+      start_date
+      class {
+        id
+        name
+      }
+    }
+    booking_option {
+      commission
+      currency
+      discount
+      id
+      price
+      subtitle
+      title
+      updated_at
+    }
+    amount
+    status
+    currency
+    payment_intent_id
+  }
+}
+
+""");
+
   static final getStripeLoginLink = gql("""
   query GetStripeLoginLink {
     stripe_login_link
