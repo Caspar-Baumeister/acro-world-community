@@ -35,3 +35,20 @@ String getDateStringMonthDay(DateTime start) {
   var timeFormatter = DateFormat('HH.mm');
   return '${dayFormatter.format(start)} ${monthFormatter.format(start)} ${timeFormatter.format(start)}';
 }
+
+String getDatedMMHHmm(DateTime start) {
+  // get the start day, month and time
+  var dayFormatter = DateFormat('d');
+  var monthFormatter = DateFormat('MM');
+  // timeformatter as 4.00pm or similar
+  var timeFormatter = DateFormat('hh:mm a');
+  return '${dayFormatter.format(start)}.${monthFormatter.format(start)} - ${timeFormatter.format(start)}';
+}
+
+String getDatedMMYY(DateTime start) {
+  // get the start day, month and time
+  var dayFormatter = DateFormat('d');
+  var monthFormatter = DateFormat('MM');
+  var yearFormatter = DateFormat('yy');
+  return '${dayFormatter.format(start)}.${monthFormatter.format(start)}.${yearFormatter.format(start)}';
+}

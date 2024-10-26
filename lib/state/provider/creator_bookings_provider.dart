@@ -1,5 +1,6 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
 
@@ -8,17 +9,37 @@ class CreatorBookingsProvider extends ChangeNotifier {
   final List<ClassEventBooking> _bookings = [];
   final int _limit = 3;
   int _offset = 0;
-  final int _totalBookings = 0;
+  int _totalBookings = 0;
   bool _isLoading = false;
-  String? creatorId;
+  String? creatorUserId;
 
   bool get loading => _loading;
   List<ClassEventBooking> get bookings => _bookings;
   bool get isLoading => _isLoading;
   bool get canFetchMore => _bookings.length < _totalBookings;
 
+  // get total amount of bookings
+  int get totalBookings => _totalBookings;
+
   CreatorBookingsProvider() {
     _loading = true;
+    notifyListeners();
+  }
+
+  // get the getClassEventBookingsAggregate
+  Future<void> getClassEventBookingsAggregate() async {
+    BookingsRepository bookingsRepository =
+        BookingsRepository(apiService: GraphQLClientSingleton());
+    if (creatorUserId == null) {
+      return;
+    }
+    try {
+      final int totalBookings = await bookingsRepository
+          .getClassEventBookingsAggregate(creatorUserId!);
+      _totalBookings = totalBookings;
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
+    }
     notifyListeners();
   }
 
@@ -34,7 +55,7 @@ class CreatorBookingsProvider extends ChangeNotifier {
   Future<void> fetchBookings({bool isRefresh = false}) async {
     BookingsRepository bookingsRepository =
         BookingsRepository(apiService: GraphQLClientSingleton());
-    if (creatorId == null) {
+    if (creatorUserId == null) {
       return;
     }
     if (isRefresh) {
@@ -43,9 +64,11 @@ class CreatorBookingsProvider extends ChangeNotifier {
     }
     try {
       final List<ClassEventBooking> newBookings = await bookingsRepository
-          .getCreatorsClassEventBookings(creatorId!, _limit, _offset);
+          .getCreatorsClassEventBookings(creatorUserId!, _limit, _offset);
       _bookings.addAll(newBookings);
-    } catch (e) {}
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
+    }
 
     _loading = false;
     notifyListeners();

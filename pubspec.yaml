@@ -49,6 +49,7 @@ dependencies:
   numberpicker: ^2.1.2
   firebase_storage: ^12.3.2
   timezone: ^0.9.4
+  fl_chart: ^0.69.0
 
 dev_dependencies:
   flutter_test:

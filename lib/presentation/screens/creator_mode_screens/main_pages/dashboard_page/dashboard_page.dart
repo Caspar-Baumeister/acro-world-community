@@ -1,9 +1,10 @@
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/bottom_navbar/creator_mode/creator_mode_primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboad_bookings_statistics.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_booking_view.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/state/provider/creator_bookings_provider.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -35,36 +36,32 @@ class _DashboardBodyState extends State<DashboardBody> {
   @override
   void initState() {
     super.initState();
+    // initialises the bookings provider with the creator id from the creator provider
     CreatorBookingsProvider creatorBookingsProvider =
         Provider.of<CreatorBookingsProvider>(context, listen: false);
     if (creatorBookingsProvider.bookings.isEmpty) {
-      creatorBookingsProvider.creatorId =
-          Provider.of<CreatorProvider>(context, listen: false)
-              .activeTeacher!
-              .id!;
+      creatorBookingsProvider.creatorUserId =
+          Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
       creatorBookingsProvider.fetchBookings();
+      creatorBookingsProvider.getClassEventBookingsAggregate();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    // get the bookings from the provider
+    final creatorBookingsProvider =
+        Provider.of<CreatorBookingsProvider>(context);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const DashboadBookingsStatistics(),
-        const SizedBox(height: AppPaddings.medium),
-        Expanded(child: DashboardBookingView())
+        DashboadBookingsStatistics(
+            totalAmountBookings: creatorBookingsProvider.totalBookings),
+        if (creatorBookingsProvider.bookings.isNotEmpty)
+          Expanded(
+              child: DashboardBookingView(
+                  bookings: creatorBookingsProvider.bookings))
       ],
     );
-  }
-}
-
-class DashboadBookingsStatistics extends StatelessWidget {
-  const DashboadBookingsStatistics({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    CreatorBookingsProvider creatorBookingsProvider =
-        Provider.of<CreatorBookingsProvider>(context);
-    return const Placeholder();
   }
 }

@@ -6,46 +6,32 @@ class Queries {
   static final getClassEventBookings =
       gql("""query getClassEventBookings(\$id: uuid!) {
   class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
-    id
-    user {
-      id
-      name
-      acro_role {
-        name
-        id
-      }
-      email
-      image_url
-      level {
-        name
-        id
-      }
-    }
-    class_event {
-      id
-      start_date
-      class {
-        id
-        name
-      }
-    }
-    booking_option {
-      commission
-      currency
-      discount
-      id
-      price
-      subtitle
-      title
-      updated_at
-    }
-    amount
-    status
-    currency
-    payment_intent_id
+    ${Fragments.classEventBookingFragment}
   }
 }
 
+""");
+
+  //fetches all classeventbookings of a creator with a specific class event id
+  static final getClassEventBookingsByClassEventId = gql(
+      """query getClassEventBookingsByClassSlug(\$class_event_id: uuid!, \$created_by_id: uuid!) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}}) {
+    ${Fragments.classEventBookingFragment}
+  }
+}
+  
+  
+  """);
+
+//class_event_bookings_aggregate
+  static final getClassEventBookingsAggregate =
+      gql("""query getClassEventBookingsAggregate(\$id: uuid!) {
+class_event_bookings_aggregate(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
+    aggregate {
+      count
+    }
+  }
+}
 """);
 
   static final getStripeLoginLink = gql("""

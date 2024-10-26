@@ -1,17 +1,58 @@
 class Fragments {
+  static const classEventBookingFragment = """
+    id
+    created_at
+    amount
+    status
+    currency
+    payment_intent_id
+    user {
+      id
+      name
+      acro_role {
+        name
+        id
+      }
+      email
+      image_url
+      level {
+        name
+        id
+      }
+    }
+    class_event {
+      id
+      start_date
+      class {
+        url_slug
+        id
+        name
+        image_url
+      }
+    }
+    booking_option {
+      $bookingOptionFragment
+    }
+""";
+
+  static const bookingOptionFragment = """
+    commission
+    currency
+    discount
+    id
+    price
+    subtitle
+    title
+    updated_at
+    """;
+
   static const classFragmentAllInfo = """
       url_slug
       booking_email
       max_booking_slots
       class_booking_options {
         booking_option {
-          commission
-          discount
-          id
-          price
-          subtitle
-          title
-          currency
+          $bookingOptionFragment
         }
       }
       city

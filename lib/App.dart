@@ -14,6 +14,7 @@ import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/notification_service.dart';
+import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:acroworld/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -50,6 +51,7 @@ class _AppState extends State<App> {
         ChangeNotifierProvider(create: (_) => DiscoveryProvider()),
         ChangeNotifierProvider(create: (_) => PlaceProvider()),
         ChangeNotifierProvider(create: (_) => TeacherEventsProvider()),
+        ChangeNotifierProvider(create: (_) => CreatorBookingsProvider()),
         ChangeNotifierProvider(
             create: (_) => EventCreationAndEditingProvider()),
         ChangeNotifierProvider(create: (_) => CreatorProvider()),
