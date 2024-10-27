@@ -96,7 +96,8 @@ At: ${clas.locationName}
                     widget.classEvent,
                     widget.clas,
                   ),
-              isCreator: widget.isCreator);
+              isCreator: widget.isCreator,
+              classEventId: widget.classEvent?.id);
         },
       ),
     );

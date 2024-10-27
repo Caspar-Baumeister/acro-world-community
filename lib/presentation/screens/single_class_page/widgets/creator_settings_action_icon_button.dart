@@ -5,15 +5,19 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class CreatorSettingsActionIconButton extends StatelessWidget {
-  const CreatorSettingsActionIconButton({super.key, required this.classModel});
+  const CreatorSettingsActionIconButton(
+      {super.key, required this.classModel, required this.classEventId});
 
   final ClassModel classModel;
+  final String? classEventId;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: () => buildMortal(
-          context, CreatorSettingsActionModal(classModel: classModel)),
+          context,
+          CreatorSettingsActionModal(
+              classModel: classModel, classEventId: classEventId)),
       icon: const Icon(
         Icons.more_vert_outlined,
         color: CustomColors.iconColor,

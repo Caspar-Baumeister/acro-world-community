@@ -1,15 +1,18 @@
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreatorSettingsActionModal extends StatelessWidget {
-  const CreatorSettingsActionModal({super.key, required this.classModel});
+  const CreatorSettingsActionModal(
+      {super.key, required this.classModel, required this.classEventId});
 
   final ClassModel classModel;
+  final String? classEventId;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +45,14 @@ class CreatorSettingsActionModal extends StatelessWidget {
             ListTile(
               title: const Text("Bookings"),
               leading: const Icon(Icons.delete),
-              onTap: () {},
+              onTap: () {
+                if (classEventId == null) {
+                  Navigator.of(context).push(DashboardPageRoute());
+                } else {
+                  Navigator.of(context).push(ClassBookingSummaryPageRoute(
+                      classEventId: classEventId!));
+                }
+              },
             ),
             ListTile(
               title: const Text("Occurences (for cancel classes)"),

@@ -17,6 +17,7 @@ class BackDropActionRow extends StatefulWidget {
     required this.isCreator,
     required this.classObject,
     required this.initialReported,
+    required this.classEventId,
     super.key,
   });
 
@@ -27,6 +28,7 @@ class BackDropActionRow extends StatefulWidget {
   final ClassModel classObject;
   final bool initialReported;
   final bool isCreator;
+  final String? classEventId;
 
   @override
   State<BackDropActionRow> createState() => _BackDropActionRowState();
@@ -52,8 +54,8 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
     ];
     if (widget.isCreator) {
       try {
-        actions.add(
-            CreatorSettingsActionIconButton(classModel: widget.classObject));
+        actions.add(CreatorSettingsActionIconButton(
+            classModel: widget.classObject, classEventId: widget.classEventId));
       } catch (e, s) {
         CustomErrorHandler.captureException(e, stackTrace: s);
       }
