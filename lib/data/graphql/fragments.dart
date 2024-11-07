@@ -120,6 +120,7 @@ class Fragments {
     available_booking_slots
     max_booking_slots
     start_date
+    is_cancelled
     participants_aggregate {
       aggregate {
         count
@@ -134,42 +135,6 @@ class Fragments {
     }
     
 """;
-
-  static const eventFragment = """created_at
-    created_by_id
-    description
-    end_date
-    end_date_tz
-    event_source
-    event_type
-    id
-    is_highlighted
-    links
-    location
-    location_city
-    location_country
-    location_name
-    main_image_url
-    name
-    origin_creator_name
-    pricing
-    start_date
-    start_date_tz
-    updated_at
-    url
-    pretix_name
-    origin_location_name
-    user_participants {
-      event_id
-      id
-      user_id
-    }
-    
-    teachers {
-      teacher {
-          $teacherFragmentAllInfo
-        }
-    }""";
 
   static const teacherFragmentAllInfo = """
   created_at

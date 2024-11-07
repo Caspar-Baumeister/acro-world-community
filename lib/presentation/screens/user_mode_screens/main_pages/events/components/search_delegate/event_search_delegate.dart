@@ -1,8 +1,8 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/month_string_widget.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
-import 'package:acroworld/presentation/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,12 +46,15 @@ class EventSearchDelegate extends SearchDelegate {
     if (eventSuggestions.length == 1) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SingleClassPage(
-              classEvent: eventSuggestions[0],
-              clas: eventSuggestions[0].classModel!,
-            ),
-          ),
+          // MaterialPageRoute(
+          //   builder: (context) => SingleClassPage(
+          //     classEvent: eventSuggestions[0],
+          //     clas: eventSuggestions[0].classModel!,
+          //   ),
+          // ),
+          SingleEventPageRoute(
+              classModel: eventSuggestions[0].classModel!,
+              classEvent: eventSuggestions[0]),
         );
       });
       query = "";

@@ -4,9 +4,16 @@ import 'package:acroworld/presentation/screens/single_class_page/single_class_pa
 import 'package:acroworld/routing/routes/base_route.dart';
 
 class SingleEventPageRoute extends BaseRoute<void> {
-  SingleEventPageRoute({required ClassModel classModel, ClassEvent? classEvent})
+  SingleEventPageRoute(
+      {required ClassModel classModel,
+      ClassEvent? classEvent,
+      bool isCreator = false})
       : super(
-          SingleClassPage(clas: classModel, classEvent: classEvent),
+          SingleClassPage(
+            clas: classModel,
+            classEvent: classEvent,
+            isCreator: isCreator,
+          ),
           guards: [],
         );
 }

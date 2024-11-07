@@ -10,7 +10,7 @@ class TeacherEventsProvider extends ChangeNotifier {
   bool _loading = true;
   final List<ClassModel> _myCreatedEvents = [];
   final List<ClassModel> _myParticipatingEvents = [];
-  final int _limit = 3;
+  final int _limit = 30;
   int _offsetMyEvent = 0;
   int _offsetParticipatingEvent = 0;
 
@@ -64,6 +64,8 @@ class TeacherEventsProvider extends ChangeNotifier {
   // fetch classevents from the backend in a certain radius of the location
   Future<void> fetchMyEvents(
       {bool isRefresh = true, bool myEvents = true}) async {
+    _loading = true;
+    notifyListeners();
     if (isRefresh) {
       if (myEvents) {
         _offsetMyEvent = 0;

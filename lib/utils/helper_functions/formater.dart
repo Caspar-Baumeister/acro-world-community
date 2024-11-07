@@ -2,6 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 //intl
 import 'package:intl/intl.dart';
 
+// get the date in the format of Thursday, 10.23 - 12.00
 String formatDateRangeForInstructor(DateTime start, DateTime end) {
   var dayFormatter = DateFormat('EEEE');
   var timeFormatter = DateFormat('HH.mm');
@@ -28,6 +29,7 @@ String formatInstructors(List<ClassTeachers>? teachers) {
   }
 }
 
+// get the date in the format of 10 December 2021
 String getDateStringMonthDay(DateTime start) {
   // get the start day, month and time
   var dayFormatter = DateFormat('d');
@@ -36,6 +38,7 @@ String getDateStringMonthDay(DateTime start) {
   return '${dayFormatter.format(start)} ${monthFormatter.format(start)} ${timeFormatter.format(start)}';
 }
 
+// get the date in the format of 10.12 - 4.00pm
 String getDatedMMHHmm(DateTime start) {
   // get the start day, month and time
   var dayFormatter = DateFormat('d');
@@ -45,10 +48,35 @@ String getDatedMMHHmm(DateTime start) {
   return '${dayFormatter.format(start)}.${monthFormatter.format(start)} - ${timeFormatter.format(start)}';
 }
 
+// get the date in the format of 10.12.21
 String getDatedMMYY(DateTime start) {
   // get the start day, month and time
   var dayFormatter = DateFormat('d');
   var monthFormatter = DateFormat('MM');
   var yearFormatter = DateFormat('yy');
   return '${dayFormatter.format(start)}.${monthFormatter.format(start)}.${yearFormatter.format(start)}';
+}
+
+// get the date in the format of: Thursday, 10.December 2021 1pm - 2pm or
+// Thursday, 10.December 2021 1pm - 12.January 2022 2pm
+// depending on start and end date
+String getFormattedDateRange(DateTime start, DateTime end) {
+  // get the start day, month and time
+  var dayFormatter = DateFormat('EEEE');
+  var dayFormatterShort = DateFormat('d');
+  var monthFormatter = DateFormat('MMMM');
+  var yearFormatter = DateFormat('yyyy');
+  var timeFormatter = DateFormat('HH.mm');
+  // get the end day, month and time
+  var endDayFormatterShort = DateFormat('d');
+  var endMonthFormatter = DateFormat('MMMM');
+  var endTimeFormatter = DateFormat('HH.mm');
+  // check if the start and end date are the same
+  if (start.day == end.day &&
+      start.month == end.month &&
+      start.year == end.year) {
+    return '${dayFormatter.format(start)}, ${dayFormatterShort.format(start)}.${monthFormatter.format(start)} ${yearFormatter.format(start)} ${timeFormatter.format(start)} - ${endTimeFormatter.format(end)}';
+  } else {
+    return '${dayFormatter.format(start)}, ${dayFormatterShort.format(start)}.${monthFormatter.format(start)} ${yearFormatter.format(start)} ${timeFormatter.format(start)} - ${endDayFormatterShort.format(end)}.${endMonthFormatter.format(end)} ${yearFormatter.format(end)} ${endTimeFormatter.format(end)}';
+  }
 }

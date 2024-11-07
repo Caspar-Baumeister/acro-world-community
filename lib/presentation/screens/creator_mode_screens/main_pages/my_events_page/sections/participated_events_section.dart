@@ -27,7 +27,7 @@ class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
     if (teacherEventsProvider.myParticipatingEvents.isEmpty) {
       teacherEventsProvider.userId =
           Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-      teacherEventsProvider.fetchMyEvents(myEvents: false);
+      teacherEventsProvider.fetchMyEvents(myEvents: false, isRefresh: true);
     }
   }
 

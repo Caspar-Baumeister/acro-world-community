@@ -2,6 +2,7 @@ import 'package:acroworld/presentation/components/buttons/floating_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -66,7 +67,8 @@ class CreatorProfileBody extends StatelessWidget {
               onPressed: () {
                 final graphQLSingleton = GraphQLClientSingleton();
                 graphQLSingleton.updateClient(false);
-                // Switch to
+                Provider.of<UserRoleProvider>(context, listen: false)
+                    .setIsCreator(false);
                 print("Switch to User Mode");
                 // Switch to creator mode
                 Navigator.of(context).push(ProfilePageRoute());

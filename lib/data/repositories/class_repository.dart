@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -97,27 +98,24 @@ class ClassesRepository {
       fetchPolicy: FetchPolicy.networkOnly,
       variables: variables,
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to create class. Status code: ${result.exception?.raw.toString()}');
-      }
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      if (result.data != null && result.data!["insert_classes_one"] != null) {
-        try {
-          return ClassModel.fromJson(result.data!['insert_classes_one']);
-        } catch (e) {
-          throw Exception('Failed to parse class: $e');
-        }
-      } else {
-        throw Exception('Failed to create class');
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to create class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["insert_classes_one"] != null) {
+      try {
+        return ClassModel.fromJson(result.data!['insert_classes_one']);
+      } catch (e) {
+        throw Exception('Failed to parse class: $e');
       }
-    } catch (e) {
-      throw Exception('Failed to create class: $e');
+    } else {
+      throw Exception('Failed to create class');
     }
   }
 
@@ -152,6 +150,108 @@ class ClassesRepository {
       }
     } catch (e) {
       throw Exception('Failed to update class: $e');
+    }
+  }
+
+  // delete class
+  Future<bool> deleteClass(String id) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.deleteClassById,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "id": id,
+      },
+    );
+    try {
+      final graphQLClient = GraphQLClientSingleton().client;
+      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'result has Exaption: ${result.exception?.raw.toString()}');
+      }
+
+      if (result.data != null && result.data!["delete_classes_by_pk"] != null) {
+        return true;
+      } else {
+        throw Exception(
+            'result data delete_classes_by_pk is null ${result.data}');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete class: $e');
+    }
+  }
+
+  //getUpcomingClassEventsById
+  Future<List<ClassEvent>> getUpcomingClassEventsById(
+      String classId, bool showPastEvents) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: showPastEvents
+          ? Queries.getClassEventsById
+          : Queries.getUpcomingClassEventsById,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "classId": classId,
+      },
+    );
+    try {
+      final graphQLClient = GraphQLClientSingleton().client;
+      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'Failed to load class events. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      List<ClassEvent> classEvents = [];
+
+      if (result.data != null && result.data!["class_events"] != null) {
+        try {
+          classEvents = List<ClassEvent>.from(
+            result.data!['class_events']
+                .map((json) => ClassEvent.fromJson(json)),
+          );
+          return classEvents;
+        } catch (e) {
+          throw Exception('Failed to parse class events: $e');
+        }
+      } else {
+        throw Exception('Failed to load class events');
+      }
+    } catch (e) {
+      throw Exception('Failed to load class events: $e');
+    }
+  }
+
+  // cancel class event
+  Future<bool> cancelClassEvent(String id) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.cancelClassEvent,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "id": id,
+      },
+    );
+    try {
+      final graphQLClient = GraphQLClientSingleton().client;
+      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'Failed to cancel class event. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      if (result.data != null &&
+          result.data!["update_class_events_by_pk"] != null) {
+        return true;
+      } else {
+        throw Exception('Failed to cancel class event');
+      }
+    } catch (e) {
+      throw Exception('Failed to cancel class event: $e');
     }
   }
 }

@@ -43,6 +43,7 @@ const Color DARK_GREY = Color.fromARGB(255, 79, 79, 79);
 // const Color _whiteGreen = Color.fromARGB(255, 255, 255, 255);
 const Color _highlight_green = Color.fromARGB(255, 237, 255, 237);
 const Color _lightGreen = Color(0xFF588157);
+const Color _lightGreenSecond = Color.fromARGB(150, 88, 129, 87);
 const Color _darkGreen = Color(0xFF1D2E28);
 const Color _blackGreen = Color.fromARGB(255, 0, 30, 10);
 const Color _lightGreyColor = Color.fromARGB(255, 200, 200, 200);
@@ -61,6 +62,7 @@ class CustomColors {
 
 // BACKGROUND COLORS //
   static const Color successBgColor = _lightGreen;
+  static const Color successBgColorSec = _lightGreenSecond;
   static const Color infoBgColor = _grey;
   static const Color backgroundColor = _white;
   static const Color secondaryBackgroundColor = _lightGreyColor;

@@ -5,6 +5,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_favorite_classes/user_favorite_classes.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -70,6 +71,9 @@ class ProfileBody extends StatelessWidget {
                                     final graphQLSingleton =
                                         GraphQLClientSingleton();
                                     graphQLSingleton.updateClient(true);
+                                    Provider.of<UserRoleProvider>(context,
+                                            listen: false)
+                                        .setIsCreator(true);
                                     // Switch to
                                     print("Switch to Creator Mode");
                                     // Switch to creator mode

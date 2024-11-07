@@ -32,7 +32,7 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
       try {
         myEventsProvider.userId =
             Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-        myEventsProvider.fetchMyEvents();
+        myEventsProvider.fetchMyEvents(isRefresh: true);
       } catch (e, s) {
         CustomErrorHandler.captureException(e, stackTrace: s);
       }
@@ -56,7 +56,7 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {
-              await myEventsProvider.fetchMyEvents();
+              await myEventsProvider.fetchMyEvents(isRefresh: true);
             },
             child: SingleChildScrollView(
               child: Column(
@@ -128,7 +128,8 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
                             StandardButton(
                               text: "Refresh",
                               onPressed: () async {
-                                await myEventsProvider.fetchMyEvents();
+                                await myEventsProvider.fetchMyEvents(
+                                    isRefresh: true);
                               },
                             ),
                           ],

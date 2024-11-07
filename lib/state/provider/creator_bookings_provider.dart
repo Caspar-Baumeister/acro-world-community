@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 class CreatorBookingsProvider extends ChangeNotifier {
   bool _loading = true;
   final List<ClassEventBooking> _bookings = [];
-  final int _limit = 3;
+  final int _limit = 30;
   int _offset = 0;
   int _totalBookings = 0;
   bool _isLoading = false;

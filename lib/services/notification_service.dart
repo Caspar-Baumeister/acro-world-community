@@ -1,6 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/data/models/fcm/fcm_event.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -31,6 +31,7 @@ class NotificationService {
   // updateToken function with userprovider
   Future<void> updateToken() async {
     getToken().then((value) {
+      print("updateToken fcmToken: $value");
       if (value == null) {
         return;
       }

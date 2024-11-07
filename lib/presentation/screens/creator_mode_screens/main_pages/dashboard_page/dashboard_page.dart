@@ -52,16 +52,22 @@ class _DashboardBodyState extends State<DashboardBody> {
     // get the bookings from the provider
     final creatorBookingsProvider =
         Provider.of<CreatorBookingsProvider>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        DashboadBookingsStatistics(
-            totalAmountBookings: creatorBookingsProvider.totalBookings),
-        if (creatorBookingsProvider.bookings.isNotEmpty)
-          Expanded(
-              child: DashboardBookingView(
-                  bookings: creatorBookingsProvider.bookings))
-      ],
+    return RefreshIndicator(
+      onRefresh: () async {
+        await creatorBookingsProvider.fetchBookings(isRefresh: true);
+        await creatorBookingsProvider.getClassEventBookingsAggregate();
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DashboadBookingsStatistics(
+              totalAmountBookings: creatorBookingsProvider.totalBookings),
+          if (creatorBookingsProvider.bookings.isNotEmpty)
+            Expanded(
+                child: DashboardBookingView(
+                    bookings: creatorBookingsProvider.bookings))
+        ],
+      ),
     );
   }
 }

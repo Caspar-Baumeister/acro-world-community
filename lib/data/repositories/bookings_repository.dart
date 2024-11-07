@@ -20,6 +20,8 @@ class BookingsRepository {
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
         "id": creatorId,
+        "limit": limit,
+        "offset": offset,
       },
     );
     try {
@@ -33,8 +35,7 @@ class BookingsRepository {
             'Failed to load class event bookings. Status code: ${result.exception?.raw.toString()}');
       }
 
-      if (result.data != null &&
-          result.data!["class_event_bookings"].length > 0) {
+      if (result.data != null && result.data!["class_event_bookings"] != null) {
         try {
           return List<ClassEventBooking>.from(result
               .data!['class_event_bookings']
@@ -108,12 +109,13 @@ class BookingsRepository {
 
       // Check for a valid response
       if (result.hasException) {
+        print('GraphQL Exception: ${result.exception.toString()}');
+        print('GraphQL Raw Exception: ${result.exception?.raw}');
         throw Exception(
             'Failed to load class event bookings. Status code: ${result.exception?.raw.toString()}');
       }
 
-      if (result.data != null &&
-          result.data!["class_event_bookings"].length > 0) {
+      if (result.data != null && result.data!["class_event_bookings"] != null) {
         try {
           return List<ClassEventBooking>.from(result
               .data!['class_event_bookings']
@@ -125,8 +127,9 @@ class BookingsRepository {
       } else {
         throw Exception('Failed to load class event bookings: $result');
       }
-    } catch (e) {
-      throw Exception('Failed to load class event bookings: $e');
+    } catch (e, s) {
+      throw Exception(
+          'Failed to load class event bookings: $e\nStackTrace: $s');
     }
   }
 }

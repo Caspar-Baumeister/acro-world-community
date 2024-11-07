@@ -1,6 +1,36 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  /// CLASSES ///
+
+  // cancel a class event
+  static final cancelClassEvent = gql(r"""
+  mutation CancelClassEvent($id: uuid!) {
+    update_class_events_by_pk(_set: {is_cancelled: true}, pk_columns: {id: $id}) {
+      id
+    }
+  }
+""");
+
+  // delete a class
+  static final deleteClassById = gql(r"""
+    mutation DeleteClass($id: uuid!) {
+      delete_recurring_patterns(where: { class_id: { _eq: $id } }) {
+        affected_rows
+      }
+      delete_class_events(where: { class_id: { _eq: $id } }) {
+        affected_rows
+      }
+      delete_class_booking_option(where: { class_id: { _eq: $id } }) { 
+        affected_rows
+      }
+      delete_classes_by_pk(id: $id) {
+        id
+      }
+    }
+  """);
+
+  /// STRIPE ///
   static final createStripeUser = gql("""
 mutation createStripeUser {
   create_stripe_user {

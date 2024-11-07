@@ -99,9 +99,6 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
               itemCount: value.length,
               itemBuilder: (context, index) {
                 return ClassEventExpandedTile(classEvent: value[index]);
-                // ClassEventParticipantQuery(
-                //   classEvent: value[index],
-                // );
               },
             );
           },

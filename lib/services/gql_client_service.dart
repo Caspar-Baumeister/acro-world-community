@@ -47,6 +47,12 @@ class GraphQLClientSingleton {
     return GraphQLClient(
       link: link,
       cache: GraphQLCache(store: HiveStore()),
+      defaultPolicies: DefaultPolicies(
+        query: Policies(
+          fetch: FetchPolicy.networkOnly,
+          error: ErrorPolicy.all,
+        ),
+      ),
     );
   }
 

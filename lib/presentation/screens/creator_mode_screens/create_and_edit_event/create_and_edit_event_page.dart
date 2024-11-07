@@ -68,7 +68,7 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).pushReplacement(MyEventsPageRoute());
                 Provider.of<TeacherEventsProvider>(context, listen: false)
-                    .fetchMyEvents();
+                    .fetchMyEvents(isRefresh: true);
               });
             } else {
               // if not successful, show an error message

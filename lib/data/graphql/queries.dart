@@ -2,10 +2,28 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  //getUpcomingClassEventsById
+  static final getUpcomingClassEventsById = gql("""
+query getUpcomingClassEventsById(\$classId: uuid!) {
+  class_events(where: {class_id: {_eq: \$classId}, start_date: {_gte: now}}, order_by: {start_date: asc}) {
+    ${Fragments.classEventFragment}
+  }
+}
+""");
+
+  //getUpcomingClassEventsById
+  static final getClassEventsById = gql("""
+query getUpcomingClassEventsById(\$classId: uuid!) {
+  class_events(where: {class_id: {_eq: \$classId}}, order_by: {start_date: asc}) {
+    ${Fragments.classEventFragment}
+  }
+}
+""");
+
 // get class event bookings for creator dashboard page
-  static final getClassEventBookings =
-      gql("""query getClassEventBookings(\$id: uuid!) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
+  static final getClassEventBookings = gql(
+      """query getClassEventBookings(\$id: uuid!, \$limit: Int, \$offset: Int) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
     ${Fragments.classEventBookingFragment}
   }
 }
@@ -99,20 +117,6 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
   }
 }
 """);
-
-  static final userBookmarks = gql("""
-query Me {
-  me {
-    bookmarks (where: {event: {end_date_tz: {_gte: now}}}) {
-      id
-      created_at
-      event {
-        ${Fragments.eventFragment}
-      }
-      
-    }
-  }
-}""");
 
   static final userBookings = gql("""
 query userBookings {

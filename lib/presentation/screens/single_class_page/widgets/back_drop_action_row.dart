@@ -5,8 +5,10 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/mutation_wrapper/report_button_mutation_wrapper.dart';
 import 'package:acroworld/presentation/components/wrapper/favorite_class_mutation_widget.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_icon_button.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BackDropActionRow extends StatefulWidget {
   const BackDropActionRow({
@@ -42,6 +44,7 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
 
   @override
   Widget build(BuildContext context) {
+    UserRoleProvider userRoleProvider = Provider.of<UserRoleProvider>(context);
     double blurFactor = widget.isCollapsed ? 0 : 4;
     List<Widget> actions = [
       IconButton(
@@ -52,7 +55,7 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
         ),
       ),
     ];
-    if (widget.isCreator) {
+    if (userRoleProvider.isCreator) {
       try {
         actions.add(CreatorSettingsActionIconButton(
             classModel: widget.classObject, classEventId: widget.classEventId));
