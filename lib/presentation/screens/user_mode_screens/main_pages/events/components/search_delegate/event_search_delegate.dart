@@ -1,8 +1,8 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/components/month_string_widget.dart';
-import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,15 +43,12 @@ class EventSearchDelegate extends SearchDelegate {
                 .toLowerCase()
                 .contains(query.toLowerCase())));
 
+    eventSuggestions.sort((a, b) => a.startDate!.compareTo(b.startDate!));
+
     if (eventSuggestions.length == 1) {
+      // if you press enter and there is only one suggestion, navigate to it
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         Navigator.of(context).push(
-          // MaterialPageRoute(
-          //   builder: (context) => SingleClassPage(
-          //     classEvent: eventSuggestions[0],
-          //     clas: eventSuggestions[0].classModel!,
-          //   ),
-          // ),
           SingleEventPageRoute(
               classModel: eventSuggestions[0].classModel!,
               classEvent: eventSuggestions[0]),
@@ -59,62 +56,9 @@ class EventSearchDelegate extends SearchDelegate {
       });
       query = "";
     }
-    return ListView.builder(
-      itemCount: eventSuggestions.length,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          // Always show the first item
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: MonthStringWidget(
-                    date: DateTime.parse(eventSuggestions[0].startDate!)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: ClassEventExpandedTile(
-                  classEvent: eventSuggestions[index],
-                  showFullDate: true,
-                ),
-              ),
-            ],
-          );
-        }
-
-        final previousItem = eventSuggestions[index - 1];
-        final currentItem = eventSuggestions[index];
-
-        if (DateTime.parse(previousItem.startDate!).month ==
-            DateTime.parse(currentItem.startDate!).month) {
-          // Same date, just display the item
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: ClassEventExpandedTile(
-              classEvent: currentItem,
-              showFullDate: true,
-            ),
-          );
-        } else {
-          // Different date, display a date separator and the item
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15, top: 15),
-                child: MonthStringWidget(
-                    date: DateTime.parse(currentItem.startDate!)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: ClassEventExpandedTile(
-                  classEvent: currentItem,
-                  showFullDate: true,
-                ),
-              ),
-            ],
-          );
-        }
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: AppPaddings.medium),
+      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
     );
   }
 
@@ -130,62 +74,11 @@ class EventSearchDelegate extends SearchDelegate {
                 .toLowerCase()
                 .contains(query.toLowerCase())));
 
-    return ListView.builder(
-      itemCount: eventSuggestions.length,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          // Always show the first item
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15),
-                child: MonthStringWidget(
-                    date: DateTime.parse(eventSuggestions[0].startDate!)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: ClassEventExpandedTile(
-                  classEvent: eventSuggestions[index],
-                  showFullDate: true,
-                ),
-              ),
-            ],
-          );
-        }
+    eventSuggestions.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
-        final previousItem = eventSuggestions[index - 1];
-        final currentItem = eventSuggestions[index];
-
-        if (DateTime.parse(previousItem.startDate!).month ==
-            DateTime.parse(currentItem.startDate!).month) {
-          // Same date, just display the item
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            child: ClassEventExpandedTile(
-              classEvent: currentItem,
-              showFullDate: true,
-            ),
-          );
-        } else {
-          // Different date, display a date separator and the item
-          return Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 15, top: 15),
-                child: MonthStringWidget(
-                    date: DateTime.parse(currentItem.startDate!)),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                child: ClassEventExpandedTile(
-                  classEvent: currentItem,
-                  showFullDate: true,
-                ),
-              ),
-            ],
-          );
-        }
-      },
+    return Padding(
+      padding: const EdgeInsets.only(left: AppPaddings.medium),
+      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
     );
   }
 }

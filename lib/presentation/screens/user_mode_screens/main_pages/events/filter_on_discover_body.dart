@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/month_string_widget.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -18,11 +17,6 @@ class FilterOnDiscoveryBody extends StatelessWidget {
 
     List<ClassEvent> activeEvents = discoveryProvider.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
-    print("_________________________");
-    for (var event in activeEvents) {
-      print(event.startDate);
-    }
-    print("_________________________");
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
@@ -51,68 +45,7 @@ class FilterOnDiscoveryBody extends StatelessWidget {
                 ],
               ),
             )
-          : ListView.builder(
-              itemCount: activeEvents.length,
-              itemBuilder: (BuildContext context, int index) {
-                if (index == 0) {
-                  // Always show the first item
-                  return Column(
-                    children: [
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppPaddings.small),
-                        child: MonthStringWidget(
-                            date: DateTime.parse(activeEvents[0].startDate!)),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppPaddings.small),
-                        child: ClassEventExpandedTile(
-                          classEvent: activeEvents[index],
-                          showFullDate: true,
-                        ),
-                      ),
-                    ],
-                  );
-                }
-
-                final previousItem = activeEvents[index - 1];
-                final currentItem = activeEvents[index];
-
-                if (DateTime.parse(previousItem.startDate!).month ==
-                    DateTime.parse(currentItem.startDate!).month) {
-                  // Same date, just display the item
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: AppPaddings.small),
-                    child: ClassEventExpandedTile(
-                      classEvent: currentItem,
-                      showFullDate: true,
-                    ),
-                  );
-                } else {
-                  // Different date, display a date separator and the item
-                  return Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: AppPaddings.medium,
-                            top: AppPaddings.medium),
-                        child: MonthStringWidget(
-                            date: DateTime.parse(currentItem.startDate!)),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppPaddings.small),
-                        child: ClassEventExpandedTile(
-                          classEvent: currentItem,
-                          showFullDate: true,
-                        ),
-                      ),
-                    ],
-                  );
-                }
-              },
-            ),
+          : EventOccurenceMonthlySortedView(sortedEvents: activeEvents),
     );
   }
 }
