@@ -204,7 +204,7 @@ query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$dist
 // get all classes and for every class event
   static final getEventOccurences = gql("""
 query getEventOccurences {
-  class_events(where: {end_date: {_gte: "now"}}) {
+  class_events(where: {end_date: {_gte: "now"}, class: {id: {_is_null: false}}}) {
     ${Fragments.classEventFragment}
     is_highlighted
     recurring_pattern {

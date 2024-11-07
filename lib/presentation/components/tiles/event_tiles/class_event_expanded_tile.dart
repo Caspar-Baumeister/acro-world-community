@@ -19,6 +19,9 @@ class ClassEventExpandedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (classEvent.classModel == null) {
+      return const SizedBox();
+    }
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: classEvent.classModel?.urlSlug != null ||

@@ -1,10 +1,10 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/month_string_widget.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 // This page body has only one downwards scroll with full with cards
@@ -18,6 +18,11 @@ class FilterOnDiscoveryBody extends StatelessWidget {
 
     List<ClassEvent> activeEvents = discoveryProvider.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
+    print("_________________________");
+    for (var event in activeEvents) {
+      print(event.startDate);
+    }
+    print("_________________________");
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
@@ -108,41 +113,6 @@ class FilterOnDiscoveryBody extends StatelessWidget {
                 }
               },
             ),
-    );
-  }
-}
-
-class MonthStringWidget extends StatelessWidget {
-  const MonthStringWidget({super.key, required this.date});
-  final DateTime date;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Expanded(
-            child: Divider(
-              height: 2,
-              thickness: 2,
-              color: Colors.black,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: Text(DateFormat.yMMMM().format(date)),
-          ),
-          const Expanded(
-            child: Divider(
-              height: 2,
-              thickness: 2,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
