@@ -8,7 +8,6 @@ import 'package:acroworld/presentation/screens/authentication_screens/forgot_pas
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
-import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -250,7 +249,7 @@ class SignInState extends State<SignIn> {
               Provider.of<UserProvider>(context, listen: false);
           userProvider.setUserFromToken().then((value) {
             if (value) {
-              NotificationService().updateToken();
+              // NotificationService().updateToken();
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.of(context).push(
                   DiscoverPageRoute(),

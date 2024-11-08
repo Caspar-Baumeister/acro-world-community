@@ -5,7 +5,6 @@ import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/version_to_old_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
-import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -44,24 +43,6 @@ initMain() async {
   // Initialize the GraphQL client in the client singleton
   final graphQLClientSingleton = GraphQLClientSingleton().client;
 
-  // WEBSOCKETLINK //
-  // used only for subscription
-  // final WebSocketLink websocketLink = WebSocketLink(
-  //   'wss://${AppEnvironment.backendHost}/hasura/v1/graphql',
-  //   config: SocketClientConfig(
-  //     autoReconnect: true,
-  //     inactivityTimeout: const Duration(seconds: 30),
-  //     initialPayload: () async {
-  //       String? token = await AuthProvider().getToken();
-  //       return {
-  //         'headers': token == null || token == ""
-  //             ? {}
-  //             : {'Authorization': 'Bearer $token'}
-  //       };
-  //     },
-  //   ),
-  // );
-
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
@@ -75,8 +56,8 @@ initMain() async {
 
     // FIREBASE MESSAGING //
     // initialize the firebase messaging service
-    NotificationService notificationService = NotificationService();
-    await notificationService.initialize();
+    // NotificationService notificationService = NotificationService();
+    // await notificationService.initialize();
     // notificationService.getToken();
 
     // STRIPE //
