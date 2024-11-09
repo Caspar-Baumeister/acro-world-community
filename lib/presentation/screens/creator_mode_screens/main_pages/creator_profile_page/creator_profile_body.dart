@@ -49,7 +49,7 @@ class CreatorProfileBody extends StatelessWidget {
                               creatorProvider.activeTeacher!.name.toString(),
                               style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            const Text("View profile"),
+                            const Text("Edit profile"),
                           ],
                         ),
                       ),

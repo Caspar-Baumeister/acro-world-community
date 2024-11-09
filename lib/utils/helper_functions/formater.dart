@@ -43,9 +43,10 @@ String getDatedMMHHmm(DateTime start) {
   // get the start day, month and time
   var dayFormatter = DateFormat('d');
   var monthFormatter = DateFormat('MM');
+  var yearFormatter = DateFormat('yy');
   // timeformatter as 4.00pm or similar
   var timeFormatter = DateFormat('hh:mm a');
-  return '${dayFormatter.format(start)}.${monthFormatter.format(start)} - ${timeFormatter.format(start)}';
+  return '${dayFormatter.format(start)}.${monthFormatter.format(start)}.${yearFormatter.format(start)} - ${timeFormatter.format(start)}';
 }
 
 // get the date in the format of 10.12.21

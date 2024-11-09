@@ -2,6 +2,51 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  /// INVITES ///
+
+  // check if email is already invited or registered
+  static final checkInvitePossible = gql("""
+    query CheckEmail(\$email: String!) {
+      users(where: {email: {_eq: \$email}}) {
+        id
+      }
+      created_invites(where: {email: {_eq: \$email}}) {
+        id
+      }
+    }
+  """);
+
+  // getInvites
+  static final getCreatedInvitesPageableQuery = gql("""
+query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
+  created_invites(
+    limit: \$limit
+    offset: \$offset
+    order_by: { created_at: desc }
+  ) {
+    id
+    email
+    confirmation_status
+    entity
+    created_at
+    invited_user {
+      name
+    }
+    class {
+      name
+    }
+    event {
+      name
+    }
+  }
+  created_invites_aggregate {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
   //getUpcomingClassEventsById
   static final getUpcomingClassEventsById = gql("""
 query getUpcomingClassEventsById(\$classId: uuid!) {
@@ -102,7 +147,7 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
     ${Fragments.classFragmentLazy}
     class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
       id
-       start_date
+      start_date
     }
     class_events_aggregate(where: {end_date: {_gte: now}}) {
       aggregate {

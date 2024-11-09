@@ -23,7 +23,10 @@ class ClassBookingSummaryBookingView extends StatelessWidget {
               right: AppPaddings.medium,
               top: AppPaddings.medium),
           child: DashboardSingleBookingCard(
-              booking: booking, isClassBookingSummary: true),
+            booking: booking,
+            isClassBookingSummary: true,
+            showBookingOption: true,
+          ),
         );
       },
     );

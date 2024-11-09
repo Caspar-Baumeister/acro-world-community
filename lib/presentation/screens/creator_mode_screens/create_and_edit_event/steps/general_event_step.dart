@@ -4,8 +4,8 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/location_picker_page/map_location_picker_page.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -49,7 +49,6 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
     });
 
     _locationNameController.addListener(() {
-      print("location name changed");
       provider.setLocationName(_locationNameController.text);
     });
   }
@@ -262,61 +261,5 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
     provider.setDescription(_descriptionController.text);
     provider.setLocationName(_locationNameController.text);
     widget.onFinished();
-  }
-}
-
-class CustomLocationInputComponent extends StatelessWidget {
-  const CustomLocationInputComponent(
-      {super.key,
-      required this.currentLocation,
-      required this.onLocationSelected,
-      this.currentLoactionDescription});
-
-  final LatLng? currentLocation;
-  final String? currentLoactionDescription;
-  final Function onLocationSelected;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => MapLocationpickerPage(
-            onLocationSet: (LatLng location, String? locationDescription) {
-              onLocationSelected(location, locationDescription);
-            },
-            initialLocation: currentLocation,
-          ),
-        ),
-      ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppPaddings.small),
-        padding: const EdgeInsets.all(AppPaddings.small),
-        decoration: BoxDecoration(
-          color: CustomColors.backgroundColor,
-          borderRadius: AppBorders.smallRadius,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            const Icon(Icons.location_on),
-            const SizedBox(width: AppPaddings.small),
-            Flexible(
-              child: Text(
-                currentLoactionDescription ?? 'Select a location',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

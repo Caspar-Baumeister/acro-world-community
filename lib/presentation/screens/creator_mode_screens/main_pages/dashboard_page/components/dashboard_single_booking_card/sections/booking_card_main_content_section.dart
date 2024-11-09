@@ -8,9 +8,11 @@ class BookingCardMainContentSection extends StatelessWidget {
   const BookingCardMainContentSection({
     super.key,
     required this.booking,
+    this.showBookingOption,
   });
 
   final ClassEventBooking booking;
+  final bool? showBookingOption;
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +26,19 @@ class BookingCardMainContentSection extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleMedium),
           const SizedBox(height: AppPaddings.tiny),
-          Text(
-            "${booking.classEvent.classModel?.name ?? "Unknown Class"} \n- ${getDatedMMYY(booking.classEvent.startDateDT)}",
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium!
-                .copyWith(fontWeight: FontWeight.bold),
-          ),
+          if (showBookingOption != null && showBookingOption!)
+            Text(
+              "${booking.bookingOption?.title}",
+              style: Theme.of(context).textTheme.labelMedium,
+            ),
+          if (showBookingOption == null || !showBookingOption!)
+            Text(
+              "${booking.classEvent.classModel?.name ?? "Unknown Class"} \n- ${getDatedMMYY(booking.classEvent.startDateDT)}",
+              style: Theme.of(context)
+                  .textTheme
+                  .labelMedium!
+                  .copyWith(fontWeight: FontWeight.bold),
+            ),
           const Spacer(),
           Text(
             "Booked at:",

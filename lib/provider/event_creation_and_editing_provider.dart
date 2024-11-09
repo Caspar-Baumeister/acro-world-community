@@ -163,6 +163,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   Future<void> checkSlugAvailability() async {
     isSlugAvailable = true;
     isSlugValid = true;
+
+    // check if slug is valid format
     if (slug.isEmpty || slug.contains(RegExp(r'[^a-z0-9-]'))) {
       isSlugValid = false;
       notifyListeners();
@@ -171,28 +173,36 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
     final client = GraphQLClientSingleton().client;
 
-    const String query = """
+    try {
+      const String query = """
     query CheckSlugAvailability(\$url_slug: String!) {
-      is_event_slug_available(url_slug: \$url_slug)
+      is_class_slug_available(url_slug: \$url_slug)
     }
     """;
 
-    final QueryResult result = await client.query(
-      QueryOptions(
-        document: gql(query),
-        variables: {'url_slug': slug},
-      ),
-    );
+      final QueryResult result = await client.query(
+        QueryOptions(
+          document: gql(query),
+          variables: {'url_slug': slug},
+        ),
+      );
 
-    if (result.hasException) {
+      if (result.hasException) {
+        isSlugAvailable = false;
+        notifyListeners();
+        return;
+      }
+
+      final bool isAvailable = result.data?['is_class_slug_available'] ?? false;
+
+      print("checkt slug availability: $isAvailable");
+
+      isSlugAvailable = isAvailable;
+    } catch (e) {
+      CustomErrorHandler.captureException(
+          "Error checking slug availability: $e");
       isSlugAvailable = false;
-      notifyListeners();
-      return;
     }
-
-    final bool isAvailable = result.data?['is_event_slug_available'] ?? false;
-
-    isSlugAvailable = isAvailable;
     notifyListeners();
   }
 

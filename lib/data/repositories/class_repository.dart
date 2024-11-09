@@ -19,27 +19,24 @@ class ClassesRepository {
         "url_slug": slug,
       },
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to load class. Status code: ${result.exception?.raw.toString()}');
-      }
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
-      if (result.data != null && result.data!["classes"].length > 0) {
-        try {
-          return ClassModel.fromJson(result.data!['classes'][0]);
-        } catch (e) {
-          throw Exception('Failed to parse class: $e');
-        }
-      } else {
-        throw Exception('Failed to load class');
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to load class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["classes"].length > 0) {
+      try {
+        return ClassModel.fromJson(result.data!['classes'][0]);
+      } catch (e) {
+        throw Exception('Failed to parse class: $e');
       }
-    } catch (e) {
-      throw Exception('Failed to load class: $e');
+    } else {
+      throw Exception('Failed to load class, no data, with result $result');
     }
   }
 
@@ -55,39 +52,35 @@ class ClassesRepository {
         "where": where,
       },
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to load classes. Status code: ${result.exception?.raw.toString()}');
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    // Check for a valid response
+    if (result.hasException == true) {
+      throw Exception(
+          'Failed to load classes. result: ${result.exception?.raw ?? result}');
+    }
+
+    List<ClassModel> classes = [];
+    int? totalClasses;
+
+    if (result.data != null && result.data!["classes"] != null) {
+      try {
+        classes = List<ClassModel>.from(
+          result.data!['classes'].map((json) => ClassModel.fromJson(json)),
+        );
+        totalClasses = result.data!["classes_aggregate"]["aggregate"]["count"];
+
+        return {
+          "classes": classes,
+          "totalClasses": totalClasses,
+        };
+      } catch (e) {
+        throw Exception('Failed to parse classes: $e');
       }
-
-      List<ClassModel> classes = [];
-      int? totalClasses;
-
-      if (result.data != null && result.data!["classes"] != null) {
-        try {
-          classes = List<ClassModel>.from(
-            result.data!['classes'].map((json) => ClassModel.fromJson(json)),
-          );
-          totalClasses =
-              result.data!["classes_aggregate"]["aggregate"]["count"];
-
-          return {
-            "classes": classes,
-            "totalClasses": totalClasses,
-          };
-        } catch (e) {
-          throw Exception('Failed to parse classes: $e');
-        }
-      } else {
-        throw Exception('Failed to load classes');
-      }
-    } catch (e) {
-      throw Exception('Failed to load classes: $e');
+    } else {
+      throw Exception('Failed to load classes, no data, with result $result');
     }
   }
 
@@ -126,30 +119,24 @@ class ClassesRepository {
       fetchPolicy: FetchPolicy.networkOnly,
       variables: variables,
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      print("result data: ${result.data}");
-      print("result $result");
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to update class. Status code: ${result.exception?.raw.toString()}');
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to update class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["update_classes_by_pk"] != null) {
+      try {
+        return ClassModel.fromJson(result.data!['update_classes_by_pk']);
+      } catch (e) {
+        throw Exception('Failed to parse class: $e');
       }
-
-      if (result.data != null && result.data!["update_classes_by_pk"] != null) {
-        try {
-          return ClassModel.fromJson(result.data!['update_classes_by_pk']);
-        } catch (e) {
-          throw Exception('Failed to parse class: $e');
-        }
-      } else {
-        throw Exception('Failed to update class');
-      }
-    } catch (e) {
-      throw Exception('Failed to update class: $e');
+    } else {
+      throw Exception('Failed to update class');
     }
   }
 
@@ -162,24 +149,21 @@ class ClassesRepository {
         "id": id,
       },
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'result has Exaption: ${result.exception?.raw.toString()}');
-      }
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      if (result.data != null && result.data!["delete_classes_by_pk"] != null) {
-        return true;
-      } else {
-        throw Exception(
-            'result data delete_classes_by_pk is null ${result.data}');
-      }
-    } catch (e) {
-      throw Exception('Failed to delete class: $e');
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'result has Exaption: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["delete_classes_by_pk"] != null) {
+      return true;
+    } else {
+      throw Exception(
+          'result data delete_classes_by_pk is null ${result.data}');
     }
   }
 
@@ -195,33 +179,29 @@ class ClassesRepository {
         "classId": classId,
       },
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to load class events. Status code: ${result.exception?.raw.toString()}');
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to load class events. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    List<ClassEvent> classEvents = [];
+
+    if (result.data != null && result.data!["class_events"] != null) {
+      try {
+        classEvents = List<ClassEvent>.from(
+          result.data!['class_events'].map((json) => ClassEvent.fromJson(json)),
+        );
+        return classEvents;
+      } catch (e) {
+        throw Exception('Failed to parse class events: $e');
       }
-
-      List<ClassEvent> classEvents = [];
-
-      if (result.data != null && result.data!["class_events"] != null) {
-        try {
-          classEvents = List<ClassEvent>.from(
-            result.data!['class_events']
-                .map((json) => ClassEvent.fromJson(json)),
-          );
-          return classEvents;
-        } catch (e) {
-          throw Exception('Failed to parse class events: $e');
-        }
-      } else {
-        throw Exception('Failed to load class events');
-      }
-    } catch (e) {
-      throw Exception('Failed to load class events: $e');
+    } else {
+      throw Exception('Failed to load class events');
     }
   }
 
@@ -234,24 +214,21 @@ class ClassesRepository {
         "id": id,
       },
     );
-    try {
-      final graphQLClient = GraphQLClientSingleton().client;
-      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      // Check for a valid response
-      if (result.hasException) {
-        throw Exception(
-            'Failed to cancel class event. Status code: ${result.exception?.raw.toString()}');
-      }
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-      if (result.data != null &&
-          result.data!["update_class_events_by_pk"] != null) {
-        return true;
-      } else {
-        throw Exception('Failed to cancel class event');
-      }
-    } catch (e) {
-      throw Exception('Failed to cancel class event: $e');
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to cancel class event. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null &&
+        result.data!["update_class_events_by_pk"] != null) {
+      return true;
+    } else {
+      throw Exception('Failed to cancel class event');
     }
   }
 }

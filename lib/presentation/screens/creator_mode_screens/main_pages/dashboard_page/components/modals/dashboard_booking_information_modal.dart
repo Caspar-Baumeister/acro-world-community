@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
+import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/commission_information_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
@@ -51,6 +52,24 @@ class DashboardBookingInformationModal extends StatelessWidget {
           ],
         ),
         SizedBox(height: AppPaddings.large),
+
+        // refund button
+        LinkButtonComponent(
+            text: "Refund ticket",
+            textColor: CustomColors.errorBorderColor,
+            onPressed: () {
+              // TODO open stripe dashboard for now
+            }),
+        SizedBox(height: AppPaddings.medium),
+        // report user button
+        LinkButtonComponent(
+            text: "Report user",
+            textColor: CustomColors.errorBorderColor,
+            onPressed: () {
+              // TODO  write message to info@acroworld
+            }),
+
+        SizedBox(height: AppPaddings.medium),
         // see all bookings of this class event button
         if (!isClassBookingSummary)
           Padding(
@@ -69,25 +88,6 @@ class DashboardBookingInformationModal extends StatelessWidget {
                 }),
           ),
 
-        // refund button
-        StandardButton(
-            text: "Refund ticket",
-            isFilled: true,
-            buttonFillColor: CustomColors.errorBorderColor,
-            onPressed: () {
-              // TODO open stripe dashboard for now
-            }),
-        SizedBox(height: AppPaddings.medium),
-        // report user button
-        StandardButton(
-            text: "Report user",
-            isFilled: true,
-            buttonFillColor: CustomColors.errorBorderColor,
-            onPressed: () {
-              // write message to info@acroworld
-            }),
-        SizedBox(height: AppPaddings.medium),
-        // cancel booking button
         StandardButton(
             text: "Back",
             onPressed: () {

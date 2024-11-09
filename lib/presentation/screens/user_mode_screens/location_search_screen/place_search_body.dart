@@ -79,7 +79,8 @@ class PlacesQuery extends StatelessWidget {
         }
         if (result.hasException) {
           CustomErrorHandler.captureException(
-              Exception("Error while transforming places to objects"),
+              Exception("Error while transforming places to objects, "
+                  "error: $result"),
               stackTrace: StackTrace.current);
           return ErrorWidget(result.exception.toString());
         }

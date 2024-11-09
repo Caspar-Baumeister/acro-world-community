@@ -32,7 +32,9 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
       try {
         myEventsProvider.userId =
             Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-        myEventsProvider.fetchMyEvents(isRefresh: true);
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          await myEventsProvider.fetchMyEvents(isRefresh: true);
+        });
       } catch (e, s) {
         CustomErrorHandler.captureException(e, stackTrace: s);
       }

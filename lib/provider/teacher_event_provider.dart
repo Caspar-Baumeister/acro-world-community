@@ -10,7 +10,7 @@ class TeacherEventsProvider extends ChangeNotifier {
   bool _loading = true;
   final List<ClassModel> _myCreatedEvents = [];
   final List<ClassModel> _myParticipatingEvents = [];
-  final int _limit = 30;
+  final int _limit = 10;
   int _offsetMyEvent = 0;
   int _offsetParticipatingEvent = 0;
 
@@ -70,8 +70,6 @@ class TeacherEventsProvider extends ChangeNotifier {
       if (myEvents) {
         _offsetMyEvent = 0;
         _myCreatedEvents.clear();
-        print("clearing my events");
-        print(_myCreatedEvents);
       } else {
         _offsetParticipatingEvent = 0;
         _myParticipatingEvents.clear();

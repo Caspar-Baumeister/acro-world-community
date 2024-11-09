@@ -180,7 +180,7 @@ class SingleClassBody extends StatelessWidget {
                             alignment: Alignment.centerLeft,
                             padding:
                                 const EdgeInsets.only(top: AppPaddings.medium),
-                            child: LinkButton(
+                            child: SmallStandartButtonWithLink(
                                 text: "Website", link: classe.websiteUrl!),
                           )
                         : Container(),

@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:acroworld/data/repositories/invitation_repository.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/main.dart';
 import 'package:acroworld/presentation/components/wrapper/auth_wrapper.dart';
@@ -14,8 +15,8 @@ import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/services/notification_service.dart';
 import 'package:acroworld/state/provider/creator_bookings_provider.dart';
+import 'package:acroworld/state/provider/invites_provider.dart';
 import 'package:acroworld/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -29,14 +30,14 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  final NotificationService notificationService = NotificationService();
+  // final NotificationService notificationService = NotificationService();
 
-  @override
-  void initState() {
-    super.initState();
-    // add listeners to the notification service to handle notifications with context
-    notificationService.addListeners(context);
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // add listeners to the notification service to handle notifications with context
+  //   notificationService.addListeners(context);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +58,10 @@ class _AppState extends State<App> {
             create: (_) => EventCreationAndEditingProvider()),
         ChangeNotifierProvider(create: (_) => CreatorProvider()),
         ChangeNotifierProvider(create: (_) => UserRoleProvider()),
+        ChangeNotifierProvider(
+            create: (_) => InvitesProvider(
+                invitationRepository: InvitationRepository(
+                    apiService: GraphQLClientSingleton()))),
       ],
       child: ValueListenableBuilder<GraphQLClient>(
         valueListenable: GraphQLClientSingleton().clientNotifier,

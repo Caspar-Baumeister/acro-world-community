@@ -12,10 +12,12 @@ class DashboardSingleBookingCard extends StatelessWidget {
     super.key,
     required this.booking,
     this.isClassBookingSummary = false,
+    this.showBookingOption,
   });
 
   final ClassEventBooking booking;
   final bool isClassBookingSummary;
+  final bool? showBookingOption;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,8 @@ class DashboardSingleBookingCard extends StatelessWidget {
             // image with round corners
             BookingCardImageSection(booking: booking),
             Expanded(
-              child: BookingCardMainContentSection(booking: booking),
+              child: BookingCardMainContentSection(
+                  booking: booking, showBookingOption: showBookingOption),
             ),
             BookingCardRevenueSection(booking: booking),
           ],

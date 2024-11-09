@@ -1,8 +1,18 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
-  /// CLASSES ///
+  /// INVITATIONS ///
 
+  // invite a user by email
+  static final inviteByEmail = gql("""
+    mutation InviteByEmail(\$email: String!) {
+      invite(email: \$email) {
+        success
+      }
+    }
+  """);
+
+  /// CLASSES ///
   // cancel a class event
   static final cancelClassEvent = gql(r"""
   mutation CancelClassEvent($id: uuid!) {
