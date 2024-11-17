@@ -28,8 +28,10 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
 
     TeacherEventsProvider myEventsProvider =
         Provider.of<TeacherEventsProvider>(context, listen: false);
-    if (myEventsProvider.myCreatedEvents.isEmpty) {
+    if (myEventsProvider.myCreatedEvents.isEmpty &&
+        !myEventsProvider.isInitialized) {
       try {
+        print("initial fetch events");
         myEventsProvider.userId =
             Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
         WidgetsBinding.instance.addPostFrameCallback((_) async {

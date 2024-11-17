@@ -32,7 +32,9 @@ class CreatorProvider extends ChangeNotifier {
     try {
       StripeRepository stripeRepository =
           StripeRepository(apiService: GraphQLClientSingleton());
-      return await stripeRepository.getStripeLoginLink();
+      String? stripeLoginLink = await stripeRepository.getStripeLoginLink();
+      print("stripeLoginLink: $stripeLoginLink");
+      return stripeLoginLink;
     } catch (e) {
       CustomErrorHandler.captureException(e.toString());
       return null;
@@ -44,7 +46,9 @@ class CreatorProvider extends ChangeNotifier {
     try {
       StripeRepository stripeRepository =
           StripeRepository(apiService: GraphQLClientSingleton());
-      return await stripeRepository.createStripeUser();
+      String? stripeLoginLink = await stripeRepository.createStripeUser();
+      print("stripeLoginLink: $stripeLoginLink");
+      return stripeLoginLink;
     } catch (e) {
       CustomErrorHandler.captureException(e.toString());
       return null;
@@ -58,7 +62,9 @@ class CreatorProvider extends ChangeNotifier {
   }
 
   Future<bool> setCreatorFromToken() async {
+    print("setting creator from token");
     if (await TokenSingletonService().getToken() == null) {
+      print("no token");
       _activeTeacher = null;
       notifyListeners();
       return false;
@@ -84,7 +90,8 @@ class CreatorProvider extends ChangeNotifier {
       notifyListeners();
       return false;
     } else if (result.data!["me"] == null || result.data!["me"].isEmpty) {
-      print("no me found");
+      CustomErrorHandler.captureException("no me found in creator",
+          stackTrace: StackTrace.current);
       _activeTeacher = null;
       _isLoading = false;
       notifyListeners();
@@ -95,12 +102,16 @@ class CreatorProvider extends ChangeNotifier {
       _isLoading = false;
       _activeTeacher =
           TeacherModel.fromJson(result.data!["me"][0]["teacher_profile"]);
+
       notifyListeners();
       return true;
     } catch (e, stackTrace) {
       _activeTeacher = null;
       _isLoading = false;
-      CustomErrorHandler.captureException(e.toString(), stackTrace: stackTrace);
+      CustomErrorHandler.captureException(
+          "Error in setting creator from token, $e ${result.data!["me"][0]}",
+          stackTrace: stackTrace);
+      notifyListeners();
       return false;
     }
   }

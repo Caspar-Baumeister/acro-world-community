@@ -19,11 +19,8 @@ class CommunityStepSearchTeacherInputField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<UserProvider>(
       builder: (context, userProvider, child) {
-        print("activeUser: ${userProvider.activeUser?.id}");
         for (var element
-            in eventCreationAndEditingProvider.pendingInviteTeachers) {
-          print("pendingInviteTeachers: ${element.userId}");
-        }
+            in eventCreationAndEditingProvider.pendingInviteTeachers) {}
         return InputFieldComponent(
           controller: teacherQueryController,
           labelText: 'Search for teachers',

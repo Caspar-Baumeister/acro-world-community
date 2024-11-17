@@ -93,7 +93,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                'We have sent you an email to ${userProvider.activeUser?.email.toString()}. Click on the confirmation link in the email to continue.',
+                'We have sent you an email to ${userProvider.activeUser?.email.toString()}. Click on the confirmation link in the email to continue. You need to confirm the email before you can create events.',
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
@@ -103,7 +103,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
               const Spacer(),
               if (_isResendDisabled)
                 Text(
-                  'Wait $_timer seconds before resending the email.',
+                  'Wait $_timer seconds before you can resend the email.',
                   style:
                       const TextStyle(color: CustomColors.secondaryTextColor),
                 ),

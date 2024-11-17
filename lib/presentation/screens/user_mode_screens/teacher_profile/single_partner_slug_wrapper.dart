@@ -32,7 +32,7 @@ class PartnerSlugWrapper extends StatelessWidget {
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         if (result.hasException) {
           print("error in TeacherProfileQueryWrapper query");
-          print(result.exception);
+          CustomErrorHandler.captureException(result?.exception.toString());
           return ErrorPage(error: result.exception.toString());
         } else if (userProvider.activeUser?.id == null) {
           return const ErrorPage(error: "no active user");

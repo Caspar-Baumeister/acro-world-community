@@ -6,9 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ClassEventCalendar extends StatefulWidget {
-  const ClassEventCalendar({required this.kEvents, super.key});
+  const ClassEventCalendar(
+      {required this.kEvents, this.isCreator = false, super.key});
 
   final Map<DateTime, List<ClassEvent>> kEvents;
+  final bool isCreator;
 
   @override
   ClassEventCalendarState createState() => ClassEventCalendarState();
@@ -98,7 +100,8 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
               shrinkWrap: true,
               itemCount: value.length,
               itemBuilder: (context, index) {
-                return ClassEventExpandedTile(classEvent: value[index]);
+                return ClassEventExpandedTile(
+                    classEvent: value[index], isCreator: widget.isCreator);
               },
             );
           },

@@ -50,10 +50,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
             options: MapOptions(
               onPositionChanged: (position, hasGesture) {
                 //set controller to position
-                if (position.center != null) {
-                  mapController.move(
-                      position.center!, mapController.camera.zoom);
-                }
+                mapController.move(position.center, mapController.camera.zoom);
               },
               onTap: (tapPosition, point) => {
                 setState(() {

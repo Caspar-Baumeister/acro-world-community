@@ -1,5 +1,6 @@
 import 'package:acroworld/data/models/event_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -87,9 +88,9 @@ class EventFilterProvider extends ChangeNotifier {
             initialDates.add(newDate);
           }
         }
-      } catch (e) {
+      } catch (e, s) {
         // ignore: avoid_print
-        print(e.toString());
+        CustomErrorHandler.captureException(e.toString(), stackTrace: s);
       }
     }
     initialEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));

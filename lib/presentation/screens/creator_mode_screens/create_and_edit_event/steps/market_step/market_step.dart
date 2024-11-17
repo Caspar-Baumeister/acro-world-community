@@ -30,11 +30,15 @@ class _MarketStepState extends State<MarketStep> {
         Provider.of<EventCreationAndEditingProvider>(context, listen: false);
     // add listener to update provider
     _maxAmountTicketController = TextEditingController(
-        text: eventCreationProvider.maxBookingSlots.toString());
+        text: eventCreationProvider.maxBookingSlots == null
+            ? "20"
+            : eventCreationProvider.maxBookingSlots.toString());
 
     _maxAmountTicketController.addListener(() {
-      eventCreationProvider.maxBookingSlots =
-          int.parse(_maxAmountTicketController.text);
+      if (_maxAmountTicketController.text != "") {
+        eventCreationProvider.maxBookingSlots =
+            int.parse(_maxAmountTicketController.text);
+      }
     });
 
     final creatorProvider =

@@ -1,18 +1,18 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/user_model.dart';
+import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:provider/provider.dart';
-
-// TODO create a stripe service that handles all stripe related stuff
 
 class CheckoutStep extends StatefulWidget {
   const CheckoutStep(
@@ -275,7 +275,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
 
   Future<void> attemptToPresentPaymentSheet(String paymentIntentId) async {
     try {
-      await StripeService()
+      await StripeService(
+              stripeRepository:
+                  StripeRepository(apiService: GraphQLClientSingleton()))
           .attemptToPresentPaymentSheet(paymentIntentId)
           .then((value) {
         Navigator.of(context).pop();
@@ -304,7 +306,9 @@ class _CheckoutStepState extends State<CheckoutStep> {
         return;
       }
 
-      StripeService()
+      StripeService(
+              stripeRepository:
+                  StripeRepository(apiService: GraphQLClientSingleton()))
           .initPaymentSheet(user, widget.bookingOption, classEventId)
           .then((paymentIntent) {
         if (paymentIntent != null) {

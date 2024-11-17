@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/screens/authentication_screens/email_veri
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/my_events_page.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
 import 'package:acroworld/routing/routes/base_route.dart';
 import 'package:acroworld/routing/transitions.dart';
 
@@ -33,6 +34,16 @@ class EmailVerificationPageRoute extends BaseRoute {
   EmailVerificationPageRoute({this.code})
       : super(
           EmailVerificationPage(code: code),
+          guards: [],
+        );
+}
+
+class StripeCallbackPageRoute extends BaseRoute {
+  final String? stripeId;
+
+  StripeCallbackPageRoute({this.stripeId})
+      : super(
+          StripeCallbackPage(stripeId: stripeId),
           guards: [],
         );
 }

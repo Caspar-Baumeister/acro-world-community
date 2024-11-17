@@ -1,7 +1,9 @@
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/modals/stripe_highlight_modal.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
@@ -17,10 +19,14 @@ import 'package:provider/provider.dart';
 
 class CreatorSettingsActionModal extends StatelessWidget {
   const CreatorSettingsActionModal(
-      {super.key, required this.classModel, required this.classEventId});
+      {super.key,
+      required this.classModel,
+      required this.classEventId,
+      required this.classEvent});
 
   final ClassModel classModel;
   final String? classEventId;
+  final ClassEvent? classEvent;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +63,21 @@ class CreatorSettingsActionModal extends StatelessWidget {
                 }
               },
             ),
+            // Highlight the event
+            classEvent == null
+                ? const SizedBox()
+                : ListTile(
+                    title: const Text("Highlight Event"),
+                    leading: const Icon(Icons.star_border),
+                    onTap: () {
+                      // Show modal
+                      buildMortal(
+                          context,
+                          StripeHighlightModal(
+                              classEventId: classEventId!,
+                              startDate: classEvent!.startDateDT));
+                    },
+                  ),
             ListTile(
               title:
                   Text(classEventId == null ? "Occurences" : "All Occurences"),
@@ -124,6 +145,7 @@ class DeleteClassModal extends StatelessWidget {
                       .then((value) {
                     if (value) {
                       showSuccessToast("Class deleted");
+
                       Provider.of<TeacherEventsProvider>(context, listen: false)
                           .fetchMyEvents(isRefresh: true);
                       Navigator.of(context).pushAndRemoveUntil(

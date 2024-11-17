@@ -1,4 +1,5 @@
 import 'package:acroworld/data/graphql/mutations.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class _ReportButtonMutationWrapperState
             QueryResult<dynamic>? result) {
           if (result == null || result.hasException) {
             // ignore: avoid_print
-            print(result?.exception.toString());
+            CustomErrorHandler.captureException(result?.exception.toString());
             return Container();
           }
           if (result.isLoading) {

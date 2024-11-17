@@ -13,12 +13,18 @@ import 'package:flutter/material.dart';
 
 class ClassEventExpandedTile extends StatelessWidget {
   const ClassEventExpandedTile(
-      {super.key, required this.classEvent, this.showFullDate});
+      {super.key,
+      required this.classEvent,
+      this.showFullDate,
+      this.isCreator = false});
   final ClassEvent classEvent;
   final bool? showFullDate;
+  final bool isCreator;
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "classevent id: ${classEvent.id}, classslug: ${classEvent.classModel?.urlSlug}, classid: ${classEvent.classModel?.id}");
     if (classEvent.classModel == null) {
       return const SizedBox();
     }
@@ -29,10 +35,10 @@ class ClassEventExpandedTile extends StatelessWidget {
               classEvent.id != null
           ? () => Navigator.of(context).push(
                 SingleEventIdWrapperPageRoute(
-                  urlSlug: classEvent.classModel?.urlSlug,
-                  classId: classEvent.classModel?.id,
-                  classEventId: classEvent.id,
-                ),
+                    urlSlug: classEvent.classModel?.urlSlug,
+                    classId: classEvent.classModel?.id,
+                    classEventId: classEvent.id,
+                    isCreator: isCreator),
               )
           : () => showErrorToast("This class is not available anymore"),
       child: Padding(

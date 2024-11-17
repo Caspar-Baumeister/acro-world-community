@@ -49,6 +49,7 @@ class User {
         ? TeacherModel.fromJson(json['teacher_profile'])
         : null;
     imageUrl = json['image_url'];
+    isEmailVerified = json['is_email_verified'];
   }
 }
 

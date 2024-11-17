@@ -37,7 +37,7 @@ class ClassSection extends StatelessWidget {
             try {
               refetch!();
             } catch (e) {
-              print(e.toString());
+              CustomErrorHandler.captureException(e.toString());
             }
           });
 

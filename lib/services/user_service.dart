@@ -31,7 +31,7 @@ class UserService {
   }
 
   // verify code
-  Future<bool> verifyCode(String code) async {
+  Future<bool?> verifyCode(String code) async {
     const String mutation = """
     mutation verifyCode(\$code: String!) {
       verify_email(code: \$code)
@@ -48,8 +48,8 @@ class UserService {
     );
 
     if (result.hasException) {
-      CustomErrorHandler.captureException(result.exception);
-      return false;
+      throw Exception(
+          'Failed to verify email. Status code: ${result.exception?.raw.toString()}');
     }
 
     return result.data!['verify_email'];

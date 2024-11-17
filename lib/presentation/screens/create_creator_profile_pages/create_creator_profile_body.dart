@@ -12,6 +12,7 @@ import 'package:acroworld/presentation/screens/create_creator_profile_pages/comp
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -111,10 +112,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
     final profileService = ProfileCreationService(client, ImageUploadService());
     final UserProvider userProvider =
         Provider.of<UserProvider>(context, listen: false);
-    final creatorProvider =
-        Provider.of<CreatorProvider>(context, listen: false);
 
-    String? teacherId = creatorProvider.activeTeacher?.id;
     if (userProvider.activeUser?.id == null) {
       setState(() {
         _errorMessage = 'User ID not found';
@@ -198,11 +196,15 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
 
         showSuccessToast("Teacher profile created successfully");
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          Navigator.of(context).pop();
           await TokenSingletonService().refreshToken();
           userProvider.setUserFromToken();
+          Navigator.of(context).pushReplacement(CreatorProfilePageRoute());
         });
       } else {
+        final creatorProvider =
+            Provider.of<CreatorProvider>(context, listen: false);
+
+        String? teacherId = creatorProvider.activeTeacher?.id;
         if (teacherId == null) {
           setState(() {
             _errorMessage = 'Teacher ID not found';

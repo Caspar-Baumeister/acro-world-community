@@ -36,7 +36,6 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
   }
 
   void _callRefetch() {
-    print("Refetching booking query");
     if (_refetch != null) {
       _refetch!();
     }
@@ -66,7 +65,6 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
                       ?["count"] ??
                   0;
           // clean out the bookedUserJson where the status is not success
-
           if (isBookedByUser != 0) {
             return CustomBottomHoverButton(
                 content: const Text(

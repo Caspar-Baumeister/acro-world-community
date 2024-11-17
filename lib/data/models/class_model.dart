@@ -32,13 +32,15 @@ class ClassModel {
   List<ClassEvent>? classEvents;
   int? amountUpcomingEvents;
   List<RecurringPatternModel>? recurringPatterns;
+  List<ClassOwner>? classOwner;
   // List<ClassTeachers>? invitedTeachers;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
-  ClassTeachers? get owner {
-    if (classTeachers != null) {
-      return classTeachers!.firstWhere((element) => element.isOwner == true,
-          orElse: () => classTeachers!.first);
+  ClassOwner? get owner {
+    if (classOwner != null) {
+      return classOwner!.firstWhere(
+          (element) => element.isPaymentReceiver == true,
+          orElse: () => classOwner!.first);
     }
     return null;
   }
@@ -142,6 +144,12 @@ class ClassModel {
       classTeachers = <ClassTeachers>[];
       json['class_teachers'].forEach((v) {
         classTeachers!.add(ClassTeachers.fromJson(v));
+      });
+    }
+    if (json['class_owners'] != null) {
+      classOwner = <ClassOwner>[];
+      json['class_owners'].forEach((v) {
+        classOwner!.add(ClassOwner.fromJson(v));
       });
     }
     if (json['class_levels'] != null) {

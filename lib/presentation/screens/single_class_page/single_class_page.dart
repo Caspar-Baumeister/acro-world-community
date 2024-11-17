@@ -7,7 +7,6 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/booking
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/find_billing_teacher.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -77,8 +76,8 @@ At: ${clas.locationName}
 
   @override
   Widget build(BuildContext context) {
-    final ClassTeachers? billingTeacher =
-        findFirstTeacherOrNull(widget.clas.classTeachers);
+    ClassOwner? billingTeacher =
+        widget.clas.owner?.teacher?.stripeId != null ? widget.clas.owner : null;
 
     List<Widget> actions = [];
 
@@ -97,13 +96,16 @@ At: ${clas.locationName}
                     widget.clas,
                   ),
               isCreator: widget.isCreator,
+              classEvent: widget.classEvent,
               classEventId: widget.classEvent?.id);
         },
       ),
     );
 
     return Scaffold(
-      bottomNavigationBar: _buildBottomHoverButton(context, billingTeacher),
+      bottomNavigationBar: widget.isCreator != true
+          ? _buildBottomHoverButton(context, billingTeacher)
+          : null,
       body: CustomScrollView(
         controller: _scrollController,
         slivers: <Widget>[
@@ -126,7 +128,7 @@ At: ${clas.locationName}
   }
 
   BottomAppBar? _buildBottomHoverButton(
-      BuildContext context, ClassTeachers? billingTeacher) {
+      BuildContext context, ClassOwner? billingTeacher) {
     if (widget.classEvent != null &&
         widget.classEvent!.classModel?.classBookingOptions != null &&
         widget.classEvent!.classModel!.classBookingOptions!.isNotEmpty &&
@@ -151,8 +153,8 @@ At: ${clas.locationName}
           color: Colors.white,
         ),
       ),
-      onPressed: () =>
-          buildMortal(context, CalenderModal(classId: widget.clas.id!)),
+      onPressed: () => buildMortal(context,
+          CalenderModal(classId: widget.clas.id!, isCreator: widget.isCreator)),
     );
   }
 }

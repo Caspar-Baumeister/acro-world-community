@@ -268,6 +268,9 @@ query getEventOccurences {
 query Config {
   config {
     min_version
+    booking_commission_rate
+    fixed_booking_commission
+    daily_highlight_commission
   }
 }
 """);

@@ -1,7 +1,7 @@
 import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:acroworld/data/graphql/queries.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/data/models/user_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
@@ -129,6 +129,8 @@ class UserProvider extends ChangeNotifier {
     // creates a User object from the result
     try {
       _activeUser = User.fromJson(result.data!["me"][0]);
+      print("active user: ${_activeUser!.name}");
+      print("isEMailVerified: ${_activeUser!.isEmailVerified}");
       notifyListeners();
       return true;
     } catch (e, stackTrace) {

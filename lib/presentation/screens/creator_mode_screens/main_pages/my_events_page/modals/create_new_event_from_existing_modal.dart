@@ -24,6 +24,12 @@ class _CreateNewEventFromExistingModalState
 
   @override
   Widget build(BuildContext context) {
+    TeacherEventsProvider teacherEventsProvider =
+        Provider.of<TeacherEventsProvider>(context);
+    var items = teacherEventsProvider.myCreatedEvents
+        .where((element) => element.urlSlug != null && element.name != null)
+        .map((event) => OptionObjects(event.urlSlug!, event.name!))
+        .toList();
     return BaseModal(
         title: "Create New Event",
         child: Column(
@@ -32,41 +38,40 @@ class _CreateNewEventFromExistingModalState
               padding:
                   const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
               child: Text(
-                'Do you want to use an existing event as a template for your new event?',
+                items.isEmpty
+                    ? 'You have no events to use as a template for your new event. Create your first event now'
+                    : 'Do you want to use an existing event as a template for your new event?',
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
                     .copyWith(color: CustomColors.secondaryTextColor),
               ),
             ),
-            const SizedBox(height: AppPaddings.large),
-            Consumer<TeacherEventsProvider>(
-                builder: (context, myEventsProvider, child) {
-              var items = myEventsProvider.myCreatedEvents
-                  .where((element) =>
-                      element.urlSlug != null && element.name != null)
-                  .map((event) => OptionObjects(event.urlSlug!, event.name!))
-                  .toList();
-              print("items: $items");
-              return CustomOptionInputComponent(
-                  currentOption: currentOption,
-                  onOptionSet: (option) {
-                    print("option: $option");
-                    setState(() => currentOption =
-                        items.firstWhere((element) => element.value == option));
-                  },
-                  options: [
-                        OptionObjects("Without template", "Without template")
-                      ] +
-                      items,
-                  hintText: "Select event as template");
-            }),
+            items.isEmpty
+                ? const SizedBox()
+                : Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.large),
+                    child: CustomOptionInputComponent(
+                        currentOption: currentOption,
+                        onOptionSet: (option) {
+                          setState(() => currentOption = items.firstWhere(
+                              (element) => element.value == option));
+                        },
+                        options: [
+                              OptionObjects(
+                                  "Without template", "Without template")
+                            ] +
+                            items,
+                        hintText: "Select event as template"),
+                  ),
             const SizedBox(height: AppPaddings.toLarge),
             StandardButton(
-              text: currentOption?.value == null ||
-                      currentOption?.value == "Without template"
-                  ? "Continue without template"
-                  : "Continue",
+              text: items.isEmpty
+                  ? "Create your first event"
+                  : (currentOption?.value == null ||
+                          currentOption?.value == "Without template"
+                      ? "Continue without template"
+                      : "Continue"),
               onPressed: () async {
                 Navigator.of(context).pop();
                 ClassModel? classModel;

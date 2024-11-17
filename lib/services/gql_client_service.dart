@@ -97,8 +97,6 @@ class CustomAuthLink extends Link {
       final allowedRoles = decodedToken["https://hasura.io/jwt/claims"]
           ["x-hasura-allowed-roles"] as List<dynamic>;
 
-      print("User Roles: $allowedRoles");
-
       final roleWithHighestPrivileges = allowedRoles.contains('AdminUser')
           ? 'AdminUser'
           : allowedRoles.contains('TeacherUser')

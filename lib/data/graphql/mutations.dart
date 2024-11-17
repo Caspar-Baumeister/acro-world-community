@@ -1,6 +1,25 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  /// STRIPE ///
+
+  // verifyStripeAccount
+
+  static final verifyStripeAccount = gql("""
+    mutation {verify_stripe_account}
+  """);
+
+  // Create a payment sheet for highlighting through the backend with create_direct_charge_payment_sheet
+  static final createDirectChargePaymentSheet = gql("""
+mutation CreateDirectChargePaymentSheet(\$classEventId: String!, \$amount: Float!) {
+  create_direct_charge_payment_sheet(class_event_id: \$classEventId, amount: \$amount) {
+    payment_intent
+    ephemeral_key
+    customer_id
+  }
+}
+""");
+
   /// INVITATIONS ///
 
   // invite a user by email
@@ -207,6 +226,9 @@ mutation createStripeUser {
       }
     ) {
       id
+      class_owners {
+        teacher_id
+      }
     }
   }
 """);

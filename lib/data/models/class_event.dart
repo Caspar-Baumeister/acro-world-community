@@ -2,6 +2,8 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 
+enum ClassEventBookingStatus { notEnabled, openSlots, full, empty, canceled }
+
 class ClassEvent {
   String? classId;
   String? createdAt;
@@ -19,6 +21,22 @@ class ClassEvent {
 
   DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
+
+  ClassEventBookingStatus get bookingStatus {
+    if (isCancelled!) {
+      return ClassEventBookingStatus.canceled;
+    }
+    if (maxBookingSlots == 0) {
+      return ClassEventBookingStatus.notEnabled;
+    }
+    if (availableBookingSlots == 0) {
+      return ClassEventBookingStatus.full;
+    }
+    if (availableBookingSlots == maxBookingSlots) {
+      return ClassEventBookingStatus.empty;
+    }
+    return ClassEventBookingStatus.openSlots;
+  }
 
   ClassEvent(
       {this.classId,
@@ -122,6 +140,19 @@ class Aggregate {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['count'] = count;
     return data;
+  }
+}
+
+class ClassOwner {
+  TeacherModel? teacher;
+  bool? isPaymentReceiver;
+
+  ClassOwner({this.teacher, this.isPaymentReceiver});
+
+  ClassOwner.fromJson(Map<String, dynamic> json) {
+    teacher =
+        json['teacher'] != null ? TeacherModel.fromJson(json['teacher']) : null;
+    isPaymentReceiver = json['is_payment_receiver'];
   }
 }
 

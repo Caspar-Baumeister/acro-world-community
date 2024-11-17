@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class TeacherEventsProvider extends ChangeNotifier {
   // loads and keeps track of events that are created by me or where I'm taking place in.
-  // Will
+
   bool _loading = true;
   final List<ClassModel> _myCreatedEvents = [];
   final List<ClassModel> _myParticipatingEvents = [];
@@ -20,6 +20,9 @@ class TeacherEventsProvider extends ChangeNotifier {
   bool _isLoadingMyEvents = false;
   bool _isLoadingParticipatingEvents = false;
   String? userId;
+
+  bool _isInitialized = false;
+  bool get isInitialized => _isInitialized;
 
   // getter for loading
   bool get loading => _loading;
@@ -64,8 +67,8 @@ class TeacherEventsProvider extends ChangeNotifier {
   // fetch classevents from the backend in a certain radius of the location
   Future<void> fetchMyEvents(
       {bool isRefresh = true, bool myEvents = true}) async {
+    _isInitialized = true;
     _loading = true;
-    notifyListeners();
     if (isRefresh) {
       if (myEvents) {
         _offsetMyEvent = 0;
@@ -75,6 +78,8 @@ class TeacherEventsProvider extends ChangeNotifier {
         _myParticipatingEvents.clear();
       }
     }
+
+    notifyListeners();
 
     //  class repository
     ClassesRepository classesRepository =

@@ -69,7 +69,7 @@ class NotificationService {
   //       );
   //     } catch (e) {
   //       print("addTokenRefreshListener error (client.mutate)");
-  //       print(e.toString());
+  //       CustomErrorHandler.captureException(e.toString());
   //     }
   //     // Note: This callback is fired at each app startup and whenever a new
   //     // token is generated.
@@ -123,7 +123,7 @@ class NotificationService {
               "We could not redirect you to the relevant event",
             );
             print("onMessage error");
-            print(e.toString());
+            CustomErrorHandler.captureException(e.toString());
           }
 
           break;
@@ -169,7 +169,7 @@ class NotificationService {
               "We could not redirect you to the relevant event",
             );
             print("onMessage error");
-            print(e.toString());
+            CustomErrorHandler.captureException(e.toString());
           }
           break;
 
@@ -205,7 +205,7 @@ class NotificationService {
               "We could not redirect you to the relevant event",
             );
             print("onMessageOpenedApp error");
-            print(e.toString());
+            CustomErrorHandler.captureException(e.toString());
           }
           break;
 
@@ -224,7 +224,7 @@ class NotificationService {
               "We could not redirect you to the relevant event",
             );
             print("onMessageOpenedApp error");
-            print(e.toString());
+            CustomErrorHandler.captureException(e.toString());
           }
           break;
         default:

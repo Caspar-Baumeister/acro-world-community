@@ -2,6 +2,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/gender_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
@@ -197,7 +198,7 @@ class ChooseGenderInput extends StatelessWidget {
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
             // ignore: avoid_print
-            print(result.exception.toString());
+            CustomErrorHandler.captureException(result.exception.toString());
             return SizedBox(
                 height: 50,
                 child: Center(child: Text(result.exception.toString())));
@@ -274,7 +275,7 @@ class ChooseLevelInput extends StatelessWidget {
             {VoidCallback? refetch, FetchMore? fetchMore}) {
           if (result.hasException) {
             // ignore: avoid_print
-            print(result.exception.toString());
+            CustomErrorHandler.captureException(result.exception.toString());
             return SizedBox(
                 height: 50,
                 child: Center(child: Text(result.exception.toString())));

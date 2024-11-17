@@ -1,3 +1,4 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -24,6 +25,9 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
   void initState() {
     super.initState();
     // Check for code and verify
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      verifyCode();
+    });
   }
 
   //verifyCode
@@ -35,22 +39,34 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       Navigator.of(context).push(ProfilePageRoute());
       return;
     }
-    UserService().verifyCode(widget.code!).then((value) {
-      if (!value) {
-        // error toast
-        showErrorToast("Error verifying email");
-        // Send to confirmation page
+    try {
+      UserService().verifyCode(widget.code!).then((value) {
+        if (value == null || value == false) {
+          // error toast
+          showErrorToast("Error verifying email");
+          // Send to confirmation page
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).push(ConfirmEmailPageRoute());
+          });
+        } else {
+          // success toast
+          showSuccessToast("Email verified successfully");
+          // Send to profile page
+          Navigator.of(context).push(ProfilePageRoute());
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<UserProvider>(context, listen: false)
+                .setUserFromToken();
+          });
+        }
+      });
+    } catch (e) {
+      CustomErrorHandler.captureException(e.toString());
+      showErrorToast("Error verifying email");
+      // Send to confirmation page
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.of(context).push(ConfirmEmailPageRoute());
-      } else {
-        // success toast
-        showSuccessToast("Email verified successfully");
-        // Send to profile page
-        Navigator.of(context).push(ProfilePageRoute());
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          Provider.of<UserProvider>(context, listen: false).setUserFromToken();
-        });
-      }
-    });
+      });
+    }
   }
 
   @override
@@ -59,6 +75,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         appBar: const CustomAppbarSimple(
           title: "Email Verification",
         ),
+        makeScrollable: false,
         child: Center(
           child: RefreshIndicator(
             onRefresh: verifyCode,

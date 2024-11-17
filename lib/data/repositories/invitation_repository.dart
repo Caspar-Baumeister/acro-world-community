@@ -77,8 +77,6 @@ class InvitationRepository {
       throw Exception(
           'Failed to check invite possibility. Status code: ${result.exception?.raw.toString()}');
     }
-    print("Result: $result");
-
     if (result.data == null) {
       throw Exception('Failed to check invite possibility');
     } else {

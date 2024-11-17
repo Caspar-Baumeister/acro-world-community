@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_body.dart';
 import 'package:acroworld/provider/user_provider.dart';
@@ -65,8 +66,8 @@ class _TeacherQueryState extends State<TeacherQuery> {
         VoidCallback runRefetch = (() {
           try {
             refetch!();
-          } catch (e) {
-            print(e.toString());
+          } catch (e, s) {
+            CustomErrorHandler.captureException(e.toString(), stackTrace: s);
           }
         });
         if (result.isLoading) {

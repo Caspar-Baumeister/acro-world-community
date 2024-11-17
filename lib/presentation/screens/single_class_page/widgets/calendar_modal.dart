@@ -4,9 +4,11 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CalenderModal extends StatelessWidget {
-  const CalenderModal({super.key, required this.classId});
+  const CalenderModal(
+      {super.key, required this.classId, this.isCreator = false});
 
   final String classId;
+  final bool isCreator;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,8 @@ class CalenderModal extends StatelessWidget {
             const SizedBox(height: 12.0),
             Container(
                 constraints: const BoxConstraints(minHeight: 300),
-                child: ClassEventCalenderQuery(classId: classId)),
+                child: ClassEventCalenderQuery(
+                    classId: classId, isCreator: isCreator)),
             const SizedBox(height: 20),
             StandardButton(
                 text: "Close", onPressed: () => Navigator.of(context).pop()),

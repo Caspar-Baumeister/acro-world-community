@@ -51,6 +51,44 @@ class DashboardBookingInformationModal extends StatelessWidget {
             ),
           ],
         ),
+        SizedBox(
+          height: AppPaddings.medium,
+        ),
+
+        // User informations (gender and level)
+        Container(
+          decoration: BoxDecoration(
+              border: Border.all(color: CustomColors.inactiveBorderColor),
+              borderRadius: AppBorders.smallRadius),
+          padding: const EdgeInsets.all(AppPaddings.medium),
+          child: SizedBox(
+            width: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("User informations",
+                    style: Theme.of(context).textTheme.headlineMedium),
+                SizedBox(height: AppPaddings.small),
+                booking.user.gender?.name != null
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: AppPaddings.small),
+                        child: Text(
+                            "Prefered position: ${booking.user.gender?.name}"),
+                      )
+                    : SizedBox(),
+                booking.user.level?.name != null
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.only(bottom: AppPaddings.small),
+                        child: Text("Level: ${booking.user.level?.name}"),
+                      )
+                    : SizedBox(),
+              ],
+            ),
+          ),
+        ),
+
         SizedBox(height: AppPaddings.large),
 
         // refund button
@@ -75,7 +113,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: AppPaddings.medium),
             child: StandardButton(
-                text: "Bookings of this occurence",
+                text: "Event bookings",
                 isFilled: true,
                 onPressed: () {
                   // navigate to bookings of class

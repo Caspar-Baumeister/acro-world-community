@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -15,8 +16,8 @@ String getCurrecySymbol(String currency) {
   try {
     var format = NumberFormat.simpleCurrency(name: currency);
     return format.currencySymbol;
-  } catch (e) {
-    print(e.toString());
+  } catch (e, s) {
+    CustomErrorHandler.captureException(e.toString(), stackTrace: s);
     return "";
   }
 }

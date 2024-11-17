@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:http/http.dart' as http;
 
 class DatabaseService {
@@ -18,9 +19,9 @@ class DatabaseService {
                 "mutation MyMutation {loginWithRefreshToken_v2(input: {refreshToken: \"$refreshToken\"}){token refreshToken}}"
           }));
       return jsonDecode(response.body.toString());
-    } catch (e) {
+    } catch (e, s) {
       // ignore: avoid_print
-      print(e.toString());
+      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
     }
     return {};
   }
@@ -37,9 +38,9 @@ class DatabaseService {
           }));
 
       return jsonDecode(response.body.toString());
-    } catch (e) {
+    } catch (e, s) {
       // ignore: avoid_print
-      print(e.toString());
+      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
       return {"error": true, "message": e.toString()};
     }
   }
@@ -56,9 +57,9 @@ class DatabaseService {
           }));
 
       return jsonDecode(response.body.toString());
-    } catch (e) {
+    } catch (e, s) {
       // ignore: avoid_print
-      print(e.toString());
+      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
     }
     return null;
   }
@@ -75,9 +76,9 @@ class DatabaseService {
                 """mutation MyMutation {register_v2(input: {email: "$email", password: "$password", name: "$name", isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}}){token refreshToken}}"""
           }));
       return jsonDecode(response.body.toString());
-    } catch (e) {
+    } catch (e, s) {
       // ignore: avoid_print
-      print(e.toString());
+      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
     }
     return null;
   }

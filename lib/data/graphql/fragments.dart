@@ -69,6 +69,12 @@ class Fragments {
         }
         is_owner
       }
+      class_owners {
+        teacher {
+          $teacherFragmentAllInfo
+        }
+        is_payment_receiver
+      }
       class_levels {
         level {
           name
@@ -92,6 +98,12 @@ class Fragments {
           $teacherFragmentLazy
         }
         is_owner
+      }
+      class_owners {
+        teacher {
+          $teacherFragmentLazy
+        }
+        is_payment_receiver
       }
       class_levels {
         level {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/mutation_wrapper/report_button_mutation_wrapper.dart';
@@ -21,6 +22,7 @@ class BackDropActionRow extends StatefulWidget {
     required this.initialReported,
     required this.classEventId,
     super.key,
+    this.classEvent,
   });
 
   final bool isCollapsed;
@@ -31,6 +33,7 @@ class BackDropActionRow extends StatefulWidget {
   final bool initialReported;
   final bool isCreator;
   final String? classEventId;
+  final ClassEvent? classEvent;
 
   @override
   State<BackDropActionRow> createState() => _BackDropActionRowState();
@@ -58,7 +61,9 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
     if (userRoleProvider.isCreator) {
       try {
         actions.add(CreatorSettingsActionIconButton(
-            classModel: widget.classObject, classEventId: widget.classEventId));
+            classModel: widget.classObject,
+            classEventId: widget.classEventId,
+            classEvent: widget.classEvent));
       } catch (e, s) {
         CustomErrorHandler.captureException(e, stackTrace: s);
       }

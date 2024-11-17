@@ -5,6 +5,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
@@ -54,11 +55,25 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {
+            final creatorProvider =
+                Provider.of<CreatorProvider>(context, listen: false);
+
+            if (creatorProvider.activeTeacher == null ||
+                creatorProvider.activeTeacher!.id == null) {
+              await creatorProvider.setCreatorFromToken().then((success) {
+                if (!success) {
+                  showErrorToast("Session Expired, refreshing session");
+                  return;
+                }
+              });
+            }
             // create a new event
             if (widget.isEditing) {
-              await eventCreationAndEditingProvider.updateClass();
+              await eventCreationAndEditingProvider
+                  .updateClass(creatorProvider.activeTeacher!.id!);
             } else {
-              await eventCreationAndEditingProvider.createClass();
+              await eventCreationAndEditingProvider
+                  .createClass(creatorProvider.activeTeacher!.id!);
             }
 
             if (eventCreationAndEditingProvider.errorMessage == null) {

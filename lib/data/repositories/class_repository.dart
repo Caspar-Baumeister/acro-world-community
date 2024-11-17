@@ -86,6 +86,7 @@ class ClassesRepository {
 
   // creates a new class
   Future<ClassModel> createClass(Map<String, dynamic> variables) async {
+    print("urlSlug: ${variables["urlSlug"]}");
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertClassWithRecurringPatterns,
       fetchPolicy: FetchPolicy.networkOnly,
@@ -97,6 +98,7 @@ class ClassesRepository {
 
     // Check for a valid response
     if (result.hasException) {
+      print("exeption result $result");
       throw Exception(
           'Failed to create class. Status code: ${result.exception?.raw.toString()}');
     }
@@ -129,14 +131,14 @@ class ClassesRepository {
           'Failed to update class. Status code: ${result.exception?.raw.toString()}');
     }
 
-    if (result.data != null && result.data!["update_classes_by_pk"] != null) {
+    if (result.data != null && result.data!["insert_classes_one"] != null) {
       try {
-        return ClassModel.fromJson(result.data!['update_classes_by_pk']);
+        return ClassModel.fromJson(result.data!['insert_classes_one']);
       } catch (e) {
         throw Exception('Failed to parse class: $e');
       }
     } else {
-      throw Exception('Failed to update class');
+      throw Exception('Failed to update class ${result.data ?? result}');
     }
   }
 

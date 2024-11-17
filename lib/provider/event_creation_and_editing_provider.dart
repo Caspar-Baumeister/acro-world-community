@@ -43,7 +43,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOption> _bookingOptions = [];
   Uint8List? _eventImage;
-  int? maxBookingSlots;
+  int? maxBookingSlots = 20;
 
   // GETTER
   String get title => _title;
@@ -222,13 +222,18 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createClass() async {
+  Future<void> createClass(String creatorId) async {
     try {
       List<Map<String, dynamic>> classTeachers = [];
       List<Map<String, dynamic>> classOwners = [];
 
       for (var teacher in pendingInviteTeachers) {
         classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
+      }
+
+      // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
+      if (maxBookingSlots != null) {
+        classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
       }
 
       // Convert recurring patterns to JSON format
@@ -238,7 +243,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> bookingOptionsJson =
           _bookingOptions.map((option) => option.toMap()).toList();
 
-      String? imageUrl = await _uploadEventImage();
+      String? imageUrl;
+      if (_eventImage == null && existingImageUrl != null) {
+        imageUrl = existingImageUrl;
+      } else if (_eventImage != null) {
+        imageUrl = await _uploadEventImage();
+      } else {
+        throw Exception('No image was provided');
+      }
       // get timezone with default value to germany
       String? timezone = await getTimezone(
           _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
@@ -270,13 +282,18 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> updateClass() async {
+  Future<void> updateClass(String creatorId) async {
     try {
       List<Map<String, dynamic>> classTeachers = [];
       List<Map<String, dynamic>> classOwners = [];
 
       for (var teacher in pendingInviteTeachers) {
         classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
+      }
+
+      // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
+      if (maxBookingSlots != null) {
+        classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
       }
 
       if (_classId == null) {
@@ -291,6 +308,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> bookingOptionsJson =
           _bookingOptions.map((option) => option.toMap()).toList();
       String? imageUrl;
+      print("existingImageUrl: $existingImageUrl");
       if (_eventImage == null && existingImageUrl != null) {
         imageUrl = existingImageUrl;
       } else if (_eventImage != null) {

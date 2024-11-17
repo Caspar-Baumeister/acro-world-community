@@ -84,9 +84,14 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
     if (data?["signup_as_teacher"]?["success"] == true) {
       // reset token from refresh token
       await TokenSingletonService().refreshToken();
-      // close the modal
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // close the modal
         Navigator.of(context).pop();
+
+        // use the teacher role for the creation of a creator profile
+        final graphQLSingleton = GraphQLClientSingleton();
+        graphQLSingleton.updateClient(true);
+        // navigate to the create creator profile page
         Navigator.of(context).push(CreateCreatorProfilePageRoute());
       });
     } else {
