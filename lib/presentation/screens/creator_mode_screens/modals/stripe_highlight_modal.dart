@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
+import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -9,6 +10,7 @@ import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 // This modal will be shown after the user creates a new class (when the user selcted an event to be highlighted)
 // or when the user clicks on the highlight your event button
@@ -55,11 +57,12 @@ class BuyHighlightStripeButton extends StatelessWidget {
     return StandardButton(
         text: "Buy Highlight",
         onPressed: () {
-          initPaymentSheet(classEventId, price);
+          initPaymentSheet(context, classEventId, price);
         });
   }
 
-  Future<void> initPaymentSheet(String classEventId, double amount) async {
+  Future<void> initPaymentSheet(
+      BuildContext context, String classEventId, double amount) async {
     try {
       final stripeRepository =
           StripeRepository(apiService: GraphQLClientSingleton());
@@ -99,6 +102,18 @@ class BuyHighlightStripeButton extends StatelessWidget {
 
       // 4. confirm the payment intent
       await stripeRepository.confirmPayment(data['payment_intent']);
+
+      // 5. Fire the refetch event for booking query
+      print("Fire refetch event for booking query");
+      var eventBusProvider =
+          Provider.of<EventBusProvider>(context, listen: false);
+      // Fire the refetch event for booking query
+      eventBusProvider.fireRefetchEventHighlightsQuery();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.of(context).pop();
+        Navigator.of(context).pop();
+        showSuccessToast("Payment successful");
+      });
     } catch (e) {
       showErrorToast("Failed to initialize payment. Please contact support");
       rethrow;

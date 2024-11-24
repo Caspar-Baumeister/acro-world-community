@@ -10,13 +10,20 @@ class EventBusProvider extends ChangeNotifier {
     eventBus.fire(RefetchBookingQuery());
   }
 
-  // Add more methods for different refetch events as needed
+  // highlight refetch
+  void fireRefetchEventHighlightsQuery() {
+    eventBus.fire(RefetchEventHighlightsQuery);
+  }
 
   void listenToRefetchBookingQuery(void Function(RefetchBookingQuery) onEvent) {
     eventBus.on<RefetchBookingQuery>().listen(onEvent);
   }
 
-  // Add more listening methods for different refetch events as needed
+  // highlight refetch
+  void listenToRefetchEventHighlightsQuery(
+      void Function(RefetchEventHighlightsQuery) onEvent) {
+    eventBus.on<RefetchEventHighlightsQuery>().listen(onEvent);
+  }
 }
 
 class RefetchEvent {
@@ -26,3 +33,5 @@ class RefetchEvent {
 // Define specific refetch events
 class RefetchBookingQuery extends RefetchEvent {}
 // Add more events as needed for different parts of your app
+
+class RefetchEventHighlightsQuery extends RefetchEvent {}

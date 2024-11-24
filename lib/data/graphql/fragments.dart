@@ -132,7 +132,7 @@ class Fragments {
     available_booking_slots
     max_booking_slots
     start_date
-    is_cancelled
+    is_highlighted
     participants_aggregate {
       aggregate {
         count

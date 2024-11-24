@@ -77,6 +77,7 @@ class _ClassOccurenceBodyState extends State<ClassOccurenceBody> {
                   classEvents: snapshot.data!,
                   refetch: () {
                     setState(() {});
+                    print("setting state");
                   });
             }
           },

@@ -23,12 +23,14 @@ class ClassOccurenceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        buildMortal(
-            context,
-            OccurenceCasrModal(
-                classEvent: classEvent,
-                onCancel: onCancel,
-                onViewBookings: onViewBookings));
+        if (classEvent.isCancelled == false) {
+          buildMortal(
+              context,
+              OccurenceCasrModal(
+                  classEvent: classEvent,
+                  onCancel: onCancel,
+                  onViewBookings: onViewBookings));
+        }
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
@@ -53,7 +55,6 @@ class ClassOccurenceCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
                 horizontal: AppPaddings.medium, vertical: AppPaddings.small),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(right: AppPaddings.medium),
@@ -100,13 +101,12 @@ class ClassOccurenceCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Icon(
+                // if the event is not canceled, show the more icon
+                if (classEvent.isCancelled == false)
+                  Icon(
                     Icons.more_vert_outlined,
                     color: CustomColors.accentColor,
                   ),
-                ),
               ],
             ),
           ),
@@ -201,7 +201,9 @@ class OccurenceCasrModal extends StatelessWidget {
 
           // View bookings
           classEvent.bookingStatus == ClassEventBookingStatus.empty ||
-                  classEvent.bookingStatus == ClassEventBookingStatus.notEnabled
+                  classEvent.bookingStatus ==
+                      ClassEventBookingStatus.notEnabled ||
+                  classEvent.bookingStatus == ClassEventBookingStatus.canceled
               ? const SizedBox.shrink()
               : ListTile(
                   title: const Text("View Bookings"),

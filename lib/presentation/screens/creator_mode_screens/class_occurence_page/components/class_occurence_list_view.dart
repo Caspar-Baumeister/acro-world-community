@@ -1,13 +1,15 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
+import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_card.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class ClassOccurenceListView extends StatelessWidget {
+class ClassOccurenceListView extends StatefulWidget {
   const ClassOccurenceListView({
     super.key,
     required this.classEvents,
@@ -18,27 +20,52 @@ class ClassOccurenceListView extends StatelessWidget {
   final VoidCallback refetch;
 
   @override
+  State<ClassOccurenceListView> createState() => _ClassOccurenceListViewState();
+}
+
+class _ClassOccurenceListViewState extends State<ClassOccurenceListView> {
+  @override
+  void initState() {
+    super.initState();
+    // Listen to the specific refetch event
+    Provider.of<EventBusProvider>(context, listen: false)
+        .listenToRefetchEventHighlightsQuery((event) {
+      _callRefetch();
+      // Call your refetch logic here
+    });
+  }
+
+  void _callRefetch() {
+    try {
+      widget.refetch();
+      print("Refetching class occurences");
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: classEvents.isEmpty
+      child: widget.classEvents.isEmpty
           ? const Center(
               child: Text("No occurences found"),
             )
           : RefreshIndicator(
               onRefresh: () async {
-                refetch();
+                widget.refetch();
               },
               child: ListView.builder(
-                  itemCount: classEvents.length,
+                  itemCount: widget.classEvents.length,
                   itemBuilder: (context, index) {
-                    final classEvent = classEvents[index];
+                    final classEvent = widget.classEvents[index];
                     return ClassOccurenceCard(
                       classEvent: classEvent,
                       onViewBookings: () {
                         Navigator.of(context).push(ClassBookingSummaryPageRoute(
                             classEventId: classEvent.id!));
                       },
-                      onCancel: () {
+                      onCancel: () async {
                         // cancel class event
                         showDialog(
                           context: context,
@@ -69,14 +96,21 @@ class ClassOccurenceListView extends StatelessWidget {
                                           showErrorToast(
                                               "Failed to cancel event");
                                         }
-                                        refetch();
+                                        widget.refetch();
                                       });
-
-                                      Navigator.of(context).pop();
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) async {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                      });
                                     } catch (e, s) {
                                       CustomErrorHandler.captureException(e,
                                           stackTrace: s);
-                                      Navigator.of(context).pop();
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) async {
+                                        Navigator.of(context).pop();
+                                        Navigator.of(context).pop();
+                                      });
                                     }
                                   },
                                   child: const Text("Yes"),

@@ -148,6 +148,7 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
     class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
       id
       start_date
+      is_highlighted
     }
     class_events_aggregate(where: {end_date: {_gte: now}}) {
       aggregate {
