@@ -10,12 +10,15 @@ class AdditionalImagePickerComponent extends StatefulWidget {
   final List<Uint8List> additionalImages;
   final Function(List<Uint8List>) onImagesSelected;
   final List<String> currentImages;
+  // remove images from the list
+  final Function(int, bool) onImageRemoved;
 
   const AdditionalImagePickerComponent({
     super.key,
     required this.additionalImages,
     required this.onImagesSelected,
     required this.currentImages,
+    required this.onImageRemoved,
   });
 
   @override
@@ -89,8 +92,13 @@ class AdditionalImagePickerComponentState
                             shrinkWrap: true,
                             itemCount: widget.currentImages.length,
                             itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Image.network(widget.currentImages[index]),
+                              padding: const EdgeInsets.all(AppPaddings.small),
+                              child: ImageCard(
+                                imageUrl: widget.currentImages[index],
+                                onImageRemoved: () {
+                                  widget.onImageRemoved(index, true);
+                                },
+                              ),
                             ),
                           ),
                         if (widget.additionalImages.isNotEmpty)
@@ -100,9 +108,12 @@ class AdditionalImagePickerComponentState
                             shrinkWrap: true,
                             itemCount: widget.additionalImages.length,
                             itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child:
-                                  Image.memory(widget.additionalImages[index]),
+                              padding: const EdgeInsets.all(AppPaddings.small),
+                              child: ImageCard(
+                                  imageBytes: widget.additionalImages[index],
+                                  onImageRemoved: () {
+                                    widget.onImageRemoved(index, false);
+                                  }),
                             ),
                           ),
                       ],
@@ -111,6 +122,55 @@ class AdditionalImagePickerComponentState
                 ),
         ],
       ),
+    );
+  }
+}
+
+class ImageCard extends StatelessWidget {
+  const ImageCard(
+      {super.key,
+      required this.onImageRemoved,
+      this.imageUrl,
+      this.imageBytes});
+
+  final Function onImageRemoved;
+  final String? imageUrl;
+  final Uint8List? imageBytes;
+
+  @override
+  Widget build(BuildContext context) {
+    if (imageUrl == null && imageBytes == null) {
+      return const SizedBox();
+    }
+    return Stack(
+      children: [
+        imageUrl != null
+            ? Image.network(
+                imageUrl!,
+              )
+            : Image.memory(imageBytes!),
+        Positioned(
+          top: 5,
+          right: 5,
+          child: GestureDetector(
+            onTap: () => onImageRemoved(),
+            child: Container(
+              // circle around the close icon
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: CustomColors.backgroundColor.withOpacity(0.5),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(AppPaddings.tiny),
+                child: const Icon(
+                  Icons.close,
+                  color: CustomColors.errorTextColor,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

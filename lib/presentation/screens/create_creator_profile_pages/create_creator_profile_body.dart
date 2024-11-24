@@ -419,6 +419,15 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
                     additionalImages: _additionalImages,
                     onImagesSelected: _handleAdditionalImagesSelected,
                     currentImages: _currentAdditionalImages,
+                    onImageRemoved: (int index, bool isCurrent) {
+                      setState(() {
+                        if (isCurrent) {
+                          _currentAdditionalImages.removeAt(index);
+                        } else {
+                          _additionalImages.removeAt(index);
+                        }
+                      });
+                    },
                   ),
                   const SizedBox(height: AppPaddings.large),
                   StandardButton(
