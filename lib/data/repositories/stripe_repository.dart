@@ -70,10 +70,12 @@ class StripeRepository {
 
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    print("result: ${result.data}");
     // Check for a valid response
     if (result.hasException) {
       throw Exception(
-          'Failed to create stripe user. Status code: ${result.exception?.raw.toString()}');
+          'Failed to create stripe user. result: ${result.data}. Status code: ${result.exception?.raw.toString()}');
     }
 
     return result.data!['create_stripe_user']['url'];
@@ -109,6 +111,8 @@ class StripeRepository {
         document: Mutations.verifyStripeAccount,
       ),
     );
+
+    print("response: ${response.data}");
 
     if (response.hasException) {
       throw Exception(

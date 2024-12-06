@@ -5,11 +5,14 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/d
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class DashboardBookingInformationModal extends StatelessWidget {
   const DashboardBookingInformationModal(
@@ -20,6 +23,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
     return BaseModal(
         child: Column(
       children: [
@@ -88,27 +92,43 @@ class DashboardBookingInformationModal extends StatelessWidget {
             ),
           ),
         ),
-
         SizedBox(height: AppPaddings.large),
 
-        // refund button
-        LinkButtonComponent(
-            text: "Refund ticket",
-            textColor: CustomColors.errorBorderColor,
-            onPressed: () {
-              // TODO open stripe dashboard for now
-            }),
-        SizedBox(height: AppPaddings.medium),
-        // report user button
-        LinkButtonComponent(
-            text: "Report user",
-            textColor: CustomColors.errorBorderColor,
-            onPressed: () {
-              // TODO  write message to info@acroworld
-            }),
+        // refund button only if stripe is enabled, ticket was paid and not refunded
+        Consumer<CreatorProvider>(
+          builder: (context, creatorProvider, child) {
+            print("Stripe id: ${creatorProvider.activeTeacher?.stripeId}");
+            print(
+                "Stripe enabled: ${creatorProvider.activeTeacher?.isStripeEnabled}");
+            print("Booking status: ${booking.status}");
+            if (creatorProvider.activeTeacher?.stripeId != null &&
+                creatorProvider.activeTeacher?.isStripeEnabled == true &&
+                booking.status == "Confirmed") {
+              return Padding(
+                padding: const EdgeInsets.only(bottom: AppPaddings.medium),
+                child: LinkButtonComponent(
+                    text: "Refund ticket",
+                    textColor: CustomColors.errorBorderColor,
+                    onPressed: () async {
+                      await creatorProvider.getStripeLoginLink().then((value) {
+                        if (value != null) {
+                          // open stripe dashboard
+                          customLaunch(value);
+                        } else {
+                          // refresh Stripe status
+                          // TODO: refresh stripe status
+                          // TODO: take the link from before and open it
+                          showErrorToast("not implemented yet");
+                        }
+                      });
+                    }),
+              );
+            } else {
+              return SizedBox();
+            }
+          },
+        ),
 
-        SizedBox(height: AppPaddings.medium),
-        // see all bookings of this class event button
         if (!isClassBookingSummary)
           Padding(
             padding: const EdgeInsets.only(bottom: AppPaddings.medium),

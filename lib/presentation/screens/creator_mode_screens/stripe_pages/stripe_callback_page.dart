@@ -39,8 +39,8 @@ class _StripeCallbackPageState extends State<StripeCallbackPage> {
           .then((value) {
         if (value == false) {
           // error toast
-          showErrorToast(
-              "Error verifying stripe account, please contact support");
+
+          showInfoToast("Stripe account set up aborted");
           // Send to confirmation page
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).push(CreatorProfilePageRoute());
@@ -77,6 +77,7 @@ class _StripeCallbackPageState extends State<StripeCallbackPage> {
             onRefresh: verifyStripeAccount,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircularProgressIndicator(),
                 SizedBox(height: 20),
@@ -84,7 +85,9 @@ class _StripeCallbackPageState extends State<StripeCallbackPage> {
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppPaddings.extraLarge),
                   child: Text(
-                      "Verifying Stripe account for id ${widget.stripeId}"),
+                    "Verifying Stripe account for id ${widget.stripeId}",
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ],
             ),

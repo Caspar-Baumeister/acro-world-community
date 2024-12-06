@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
@@ -10,6 +12,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ConfirmEmailPage extends StatefulWidget {
@@ -24,6 +27,10 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   Timer? _countdownTimer;
   bool _isResendDisabled = false;
   bool isRefreshingStatusLoading = false;
+
+  bool isLoaded = false;
+
+  TextEditingController codeController = TextEditingController();
 
   @override
   void initState() {
@@ -100,7 +107,56 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                     .copyWith(color: CustomColors.secondaryTextColor),
                 textAlign: TextAlign.center,
               ),
-              const Spacer(),
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // inputfield for code
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: InputFieldComponent(
+                              controller: codeController,
+                              footnoteText: "Enter the code from the email",
+                              isFootnoteError: false,
+                            ),
+                          ),
+                          SizedBox(width: AppPaddings.small),
+                          // button with paste icon to paste code from clipboard
+                          IconButton(
+                            icon: const Icon(Icons.paste),
+                            onPressed: () async {
+                              codeController.text =
+                                  await Clipboard.getData('text/plain')
+                                      .then((value) => value?.text ?? "");
+                            },
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      // button to confirm email with code
+                      StandardButton(
+                        text: "Confirm email",
+                        isFilled: true,
+                        onPressed: () async {
+                          setState(() {
+                            isLoaded = true;
+                          });
+                          await verifyCode();
+                          setState(() {
+                            isLoaded = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               if (_isResendDisabled)
                 Text(
                   'Wait $_timer seconds before you can resend the email.',
@@ -143,5 +199,33 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
   void dispose() {
     _countdownTimer?.cancel();
     super.dispose();
+  }
+
+  // function when verification code is entered
+  Future<void> verifyCode() async {
+    if (codeController.text.isEmpty) {
+      showErrorToast("Please enter the code from the email");
+      return;
+    }
+    try {
+      UserService().verifyCode(codeController.text).then((value) {
+        if (value == null || value == false) {
+          // error toast
+          showErrorToast("Wrong verification code");
+        } else {
+          // success toast
+          showSuccessToast("Email verified successfully");
+          // Send to profile page
+          Navigator.of(context).push(ProfilePageRoute());
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Provider.of<UserProvider>(context, listen: false)
+                .setUserFromToken();
+          });
+        }
+      });
+    } catch (e) {
+      CustomErrorHandler.captureException(e.toString());
+      showErrorToast("Error verifying email");
+    }
   }
 }
