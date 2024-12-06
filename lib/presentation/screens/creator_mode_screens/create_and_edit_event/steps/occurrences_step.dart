@@ -114,7 +114,29 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
               }),
         ),
         const SizedBox(height: AppPaddings.medium),
-        StandardButton(onPressed: _onNext, text: 'Next'),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Consumer<EventCreationAndEditingProvider>(
+                builder: (context, provider, child) {
+              return StandardButton(
+                onPressed: () {
+                  provider.setPage(0);
+                  setState(() {});
+                },
+                text: "Cancel",
+                width: MediaQuery.of(context).size.width * 0.3,
+              );
+            }),
+            const SizedBox(width: AppPaddings.medium),
+            StandardButton(
+              onPressed: _onNext,
+              text: "Next",
+              isFilled: true,
+              width: MediaQuery.of(context).size.width * 0.5,
+            ),
+          ],
+        ),
         const SizedBox(height: AppPaddings.large),
       ],
     );

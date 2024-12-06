@@ -80,7 +80,28 @@ class _CommunityStepState extends State<CommunityStep> {
           ),
           CommunityStepAmountNotifiesComponent(
               eventCreationAndEditingProvider: eventCreationAndEditingProvider),
-          Center(child: StandardButton(onPressed: _onNext, text: 'Next')),
+          Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StandardButton(
+                  onPressed: () {
+                    eventCreationAndEditingProvider.setPage(1);
+                    setState(() {});
+                  },
+                  text: "Previous",
+                  width: MediaQuery.of(context).size.width * 0.3,
+                ),
+                const SizedBox(width: AppPaddings.medium),
+                StandardButton(
+                  onPressed: _onNext,
+                  text: "Next",
+                  isFilled: true,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: AppPaddings.small),
           DisplayErrorMessageComponent(errorMessage: _errorMessage)
           // wrap the invited teachers

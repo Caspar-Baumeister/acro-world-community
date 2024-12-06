@@ -40,7 +40,6 @@ class FilterOnDiscoveryBody extends StatelessWidget {
                     onPressed: () {
                       discoveryProvider.resetFilter();
                     },
-                    width: STANDART_BUTTON_WIDTH,
                   ),
                 ],
               ),

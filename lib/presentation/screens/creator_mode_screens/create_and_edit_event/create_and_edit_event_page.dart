@@ -40,18 +40,24 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
 
     final List<Widget> pages = [
       // second page
-      GeneralEventStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(1);
-        setState(() {});
-      }),
-      OccurrenceStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(2);
-        setState(() {});
-      }),
-      CommunityStep(onFinished: () {
-        eventCreationAndEditingProvider.setPage(3);
-        setState(() {});
-      }),
+      GeneralEventStep(
+        onFinished: () {
+          eventCreationAndEditingProvider.setPage(1);
+          setState(() {});
+        },
+      ),
+      OccurrenceStep(
+        onFinished: () {
+          eventCreationAndEditingProvider.setPage(2);
+          setState(() {});
+        },
+      ),
+      CommunityStep(
+        onFinished: () {
+          eventCreationAndEditingProvider.setPage(3);
+          setState(() {});
+        },
+      ),
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {

@@ -431,6 +431,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
                   ),
                   const SizedBox(height: AppPaddings.large),
                   StandardButton(
+                      isFilled: true,
                       onPressed: _handleUploadAndMutation,
                       text: widget.isEditing
                           ? 'Save Changes'

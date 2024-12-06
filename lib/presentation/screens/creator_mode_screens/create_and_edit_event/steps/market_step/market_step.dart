@@ -10,8 +10,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class MarketStep extends StatefulWidget {
-  const MarketStep(
-      {super.key, required this.onFinished, required this.isEditing});
+  const MarketStep({
+    super.key,
+    required this.onFinished,
+    required this.isEditing,
+  });
   final Function onFinished;
   final bool isEditing;
 
@@ -76,10 +79,26 @@ class _MarketStepState extends State<MarketStep> {
                     maxAmountTickets: _maxAmountTicketController)
                 : const MarketStepCreateStripeAccountSection(),
         const SizedBox(height: AppPaddings.medium),
-        StandardButton(
-          onPressed: _onNext,
-          text: widget.isEditing ? "Update Event" : "Create Event",
-          loading: isLoading,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            StandardButton(
+              onPressed: () {
+                eventCreationAndEditingProvider.setPage(2);
+                setState(() {});
+              },
+              text: "Previous",
+              width: MediaQuery.of(context).size.width * 0.3,
+            ),
+            const SizedBox(width: AppPaddings.medium),
+            StandardButton(
+              onPressed: _onNext,
+              text: widget.isEditing ? "Update Event" : "Create Event",
+              loading: isLoading,
+              isFilled: true,
+              width: MediaQuery.of(context).size.width * 0.5,
+            ),
+          ],
         ),
         const SizedBox(height: AppPaddings.large),
       ],

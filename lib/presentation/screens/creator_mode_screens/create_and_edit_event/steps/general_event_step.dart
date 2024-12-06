@@ -189,7 +189,28 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
             ),
           ),
           const SizedBox(height: AppPaddings.large),
-          StandardButton(onPressed: _onNext, text: 'Next'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Consumer<EventCreationAndEditingProvider>(
+                  builder: (context, provider, child) {
+                return StandardButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  text: "Previous",
+                  width: MediaQuery.of(context).size.width * 0.3,
+                );
+              }),
+              const SizedBox(width: AppPaddings.medium),
+              StandardButton(
+                onPressed: _onNext,
+                text: "Next",
+                isFilled: true,
+                width: MediaQuery.of(context).size.width * 0.5,
+              ),
+            ],
+          ),
           const SizedBox(height: AppPaddings.small),
           DisplayErrorMessageComponent(errorMessage: _errorMessage),
         ],

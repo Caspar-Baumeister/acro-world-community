@@ -43,7 +43,6 @@ class FilterBottomNavbar extends StatelessWidget {
 
                     Navigator.of(context).pop();
                   },
-                  width: buttonWidth,
                 ),
                 StandardButton(
                   text: "Close",
@@ -51,7 +50,6 @@ class FilterBottomNavbar extends StatelessWidget {
                     Navigator.of(context).pop();
                   },
                   isFilled: true,
-                  width: buttonWidth,
                 ),
               ],
             ),

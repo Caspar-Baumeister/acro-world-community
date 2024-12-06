@@ -66,6 +66,7 @@ class _CreateNewEventFromExistingModalState
                   ),
             const SizedBox(height: AppPaddings.toLarge),
             StandardButton(
+              isFilled: true,
               text: items.isEmpty
                   ? "Create your first event"
                   : (currentOption?.value == null ||
