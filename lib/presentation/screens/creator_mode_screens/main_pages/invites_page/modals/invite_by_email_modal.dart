@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/state/provider/invites_provider.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -18,11 +19,11 @@ class InviteByEmailModal extends StatelessWidget {
           const SizedBox(height: AppPaddings.medium),
           const Text("Enter the email of the user you want to invite"),
           const SizedBox(height: AppPaddings.medium),
-          TextField(
+          InputFieldComponent(
             controller: emailController,
-            decoration: const InputDecoration(
-              labelText: "Email",
-            ),
+            labelText: "Email",
+            keyboardType: TextInputType.emailAddress,
+            textInputAction: TextInputAction.done,
           ),
           const SizedBox(height: AppPaddings.medium),
           StandardButton(
