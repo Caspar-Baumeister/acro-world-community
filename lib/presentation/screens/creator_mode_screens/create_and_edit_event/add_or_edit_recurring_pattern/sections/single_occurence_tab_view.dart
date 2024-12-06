@@ -50,6 +50,9 @@ class SingleOccurenceTabView extends StatelessWidget {
                       context: context,
                       setDate: (date) {
                         editRecurringPattern("startDate", date);
+                        if (recurringPattern.endDate == null) {
+                          editRecurringPattern("endDate", date);
+                        }
                       }),
                 ),
               ),

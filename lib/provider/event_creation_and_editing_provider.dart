@@ -308,7 +308,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> bookingOptionsJson =
           _bookingOptions.map((option) => option.toMap()).toList();
       String? imageUrl;
-      print("existingImageUrl: $existingImageUrl");
       if (_eventImage == null && existingImageUrl != null) {
         imageUrl = existingImageUrl;
       } else if (_eventImage != null) {
@@ -340,7 +339,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'max_booking_slots': maxBookingSlots
       };
 
-      print("variables: $variables");
       ClassesRepository classesRepository =
           ClassesRepository(apiService: GraphQLClientSingleton());
       classesRepository.updateClass(variables);

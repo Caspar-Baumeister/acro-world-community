@@ -108,12 +108,10 @@ class BuyHighlightStripeButton extends StatelessWidget {
       var eventBusProvider =
           Provider.of<EventBusProvider>(context, listen: false);
       // Fire the refetch event for booking query
+      Navigator.of(context).pop();
+      Navigator.of(context).pop();
+      showSuccessToast("Payment successful");
       eventBusProvider.fireRefetchEventHighlightsQuery();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).pop();
-        Navigator.of(context).pop();
-        showSuccessToast("Payment successful");
-      });
     } catch (e) {
       showErrorToast("Failed to initialize payment. Please contact support");
       rethrow;

@@ -22,6 +22,7 @@ class EventBusProvider extends ChangeNotifier {
   // highlight refetch
   void listenToRefetchEventHighlightsQuery(
       void Function(RefetchEventHighlightsQuery) onEvent) {
+    print("Firing RefetchEventHighlightsQuery event inside");
     eventBus.on<RefetchEventHighlightsQuery>().listen(onEvent);
   }
 }

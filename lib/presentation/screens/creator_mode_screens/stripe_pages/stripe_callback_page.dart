@@ -3,6 +3,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -37,12 +38,16 @@ class _StripeCallbackPageState extends State<StripeCallbackPage> {
       StripeRepository(apiService: GraphQLClientSingleton())
           .verifyStripeAccount()
           .then((value) {
+        final graphQLSingleton = GraphQLClientSingleton();
         if (value == false) {
           // error toast
 
           showInfoToast("Stripe account set up aborted");
           // Send to confirmation page
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            graphQLSingleton.updateClient(true);
+            Provider.of<UserRoleProvider>(context, listen: false)
+                .setIsCreator(true);
             Navigator.of(context).push(CreatorProfilePageRoute());
           });
         } else {
@@ -50,6 +55,9 @@ class _StripeCallbackPageState extends State<StripeCallbackPage> {
           showSuccessToast("Your stripe account has been verified");
           // Send to profile page
           WidgetsBinding.instance.addPostFrameCallback((_) {
+            graphQLSingleton.updateClient(true);
+            Provider.of<UserRoleProvider>(context, listen: false)
+                .setIsCreator(true);
             Navigator.of(context).push(CreatorProfilePageRoute());
             Provider.of<UserProvider>(context, listen: false)
                 .setUserFromToken();

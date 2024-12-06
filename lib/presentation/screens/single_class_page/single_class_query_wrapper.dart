@@ -41,9 +41,7 @@ class SingleEventQueryWrapper extends StatelessWidget {
     Map<String, dynamic> variables = {};
     DocumentNode query;
     String? queryName;
-    print("classEventId: $classEventId");
-    print("classId: $classId");
-    print("urlSlug: $urlSlug");
+
     if (isCreator) {
       query = Queries.getClassBySlugWithOutFavorite;
       variables["url_slug"] = urlSlug;

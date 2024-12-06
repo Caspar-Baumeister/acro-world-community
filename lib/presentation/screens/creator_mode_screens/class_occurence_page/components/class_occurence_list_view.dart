@@ -37,8 +37,8 @@ class _ClassOccurenceListViewState extends State<ClassOccurenceListView> {
 
   void _callRefetch() {
     try {
-      widget.refetch();
       print("Refetching class occurences");
+      widget.refetch();
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }
