@@ -1,10 +1,18 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  /// Question Form ///
+  //insertQuestions questions: [questions_insert_input!]!
+  static final insertQuestions = gql("""
+    mutation InsertQuestions(\$questions: [questions_insert_input!]!) {
+      insert_questions(objects: \$questions) {
+        affected_rows
+      }
+    }
+  """);
+
   /// STRIPE ///
-
   // verifyStripeAccount
-
   static final verifyStripeAccount = gql("""
     mutation {verify_stripe_account}
   """);

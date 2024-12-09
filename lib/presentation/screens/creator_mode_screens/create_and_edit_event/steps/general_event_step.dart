@@ -6,7 +6,9 @@ import 'package:acroworld/presentation/components/input/custom_option_input_comp
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
@@ -181,6 +183,14 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                         if (value != null) {
                           provider.setEventType(value);
                         }
+                      },
+                    ),
+                    const SizedBox(height: AppPaddings.medium),
+                    CustomSettingComponent(
+                      title: 'Questions',
+                      content: "${provider.questions.length} questions",
+                      onPressed: () {
+                        Navigator.of(context).push(QuestionPageRoute());
                       },
                     ),
                   ],

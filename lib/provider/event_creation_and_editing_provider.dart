@@ -2,9 +2,11 @@ import 'dart:typed_data';
 
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
+import 'package:acroworld/data/repositories/event_forms_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
@@ -42,6 +44,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOption> _bookingOptions = [];
+  final List<QuestionModel> oldQuestions = [];
+  final List<QuestionModel> _questions = [];
   Uint8List? _eventImage;
   int? maxBookingSlots = 20;
 
@@ -57,6 +61,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   List<RecurringPatternModel> get recurringPatterns => _recurringPatterns;
   List<BookingOption> get bookingOptions => _bookingOptions;
   String? get errorMessage => _errorMesssage;
+  List<QuestionModel> get questions => _questions;
+
+  // SETTER //
 
   void addRecurringPattern(RecurringPatternModel pattern) {
     _recurringPatterns.add(pattern);
@@ -130,6 +137,33 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
   void setSlug(String slug) {
     _slug = slug;
+    notifyListeners();
+  }
+
+  // add question to list
+  void addQuestion(QuestionModel question) {
+    _questions.add(question);
+    notifyListeners();
+  }
+
+  // remove question from list
+  void removeQuestion(int index) {
+    _questions.removeAt(index);
+    notifyListeners();
+  }
+
+  // edit question in list
+  void editQuestion(String id, QuestionModel question) {
+    int index = _questions.indexWhere((question) => question.id == id);
+    _questions[index] = question;
+    notifyListeners();
+  }
+
+  // reorderQuestions oldIndex to newIndex
+  void reorderQuestions(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex -= 1;
+    final item = _questions.removeAt(oldIndex);
+    _questions.insert(newIndex, item);
     notifyListeners();
   }
 
@@ -273,9 +307,26 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots
       };
+
       ClassesRepository classesRepository =
           ClassesRepository(apiService: GraphQLClientSingleton());
-      classesRepository.createClass(variables);
+      final createdClass = await classesRepository.createClass(variables);
+
+      // if successful, add the questions
+      if (_questions.isNotEmpty) {
+        try {
+          EventFormsRepository eventFormsRepository =
+              EventFormsRepository(apiService: GraphQLClientSingleton());
+          // convert questions to JSON format and add the event id from the created class
+          List<Map<String, dynamic>> questionsJson = _questions
+              .map((question) => question.toJson(
+                  createdClass.id!, _questions.indexOf(question)))
+              .toList();
+          await eventFormsRepository.createQuestiosForEvent(questionsJson);
+        } catch (e) {
+          CustomErrorHandler.captureException("Error creating questions: $e");
+        }
+      }
     } catch (e) {
       CustomErrorHandler.captureException("Error creating class: $e");
       _errorMesssage = e.toString();
@@ -342,6 +393,20 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       ClassesRepository classesRepository =
           ClassesRepository(apiService: GraphQLClientSingleton());
       classesRepository.updateClass(variables);
+
+      // if successful, update the questions
+      try {
+        EventFormsRepository eventFormsRepository =
+            EventFormsRepository(apiService: GraphQLClientSingleton());
+        // convert questions to JSON format and add the event id from the created class
+        List<Map<String, dynamic>> newQuestionsJson = _questions
+            .map((question) =>
+                question.toJson(_classId!, _questions.indexOf(question)))
+            .toList();
+        await eventFormsRepository.updateQuestions(newQuestionsJson);
+      } catch (e) {
+        CustomErrorHandler.captureException("Error updating questions: $e");
+      }
     } catch (e) {
       CustomErrorHandler.captureException("Error updating class: $e");
       _errorMesssage = e.toString();
@@ -363,6 +428,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     // pull class data from database
     ClassesRepository classesRepository =
         ClassesRepository(apiService: GraphQLClientSingleton());
+
+    // get the question repo
+    EventFormsRepository eventFormsRepository =
+        EventFormsRepository(apiService: GraphQLClientSingleton());
 
     ClassModel? fromClass;
     try {
@@ -388,6 +457,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _classId = fromClass.id;
       _bookingOptions.clear();
       _bookingOptions.addAll(fromClass.bookingOptions ?? []);
+
+      // get questions and save them in old and new questions
+      eventFormsRepository
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }
