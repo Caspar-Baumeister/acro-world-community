@@ -12,10 +12,10 @@ class Mutations {
   """);
 
   // updateQuestions questions: [questions_insert_input!]!
-  static final updateQuestions = gql("""
-    mutation UpdateQuestions(\$questions: [questions_insert_input!]!) {
-      update_questions(objects: \$questions) {
-        affected_rows
+  static final updateQuestionByPk = gql("""
+    mutation UpdateQuestionByPk(\$id: uuid!, \$updates: questions_set_input!) {
+      update_questions_by_pk(pk_columns: {id: \$id}, _set: \$updates) {
+       id
       }
     }
   """);

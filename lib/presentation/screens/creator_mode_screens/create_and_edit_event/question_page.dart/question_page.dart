@@ -168,6 +168,9 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
 
   @override
   Widget build(BuildContext context) {
+    // get the new position when adding a new question
+    final int newPosition =
+        Provider.of<EventCreationAndEditingProvider>(context).questions.length;
     return BaseModal(
         child: Column(
       children: [
@@ -237,6 +240,7 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
                         question: _questionController.text,
                         title: _titleController.text,
                         isRequired: _isRequired,
+                        position: newPosition,
                         // generate a random id using uuid package
 
                         id: Uuid().v4()));

@@ -75,7 +75,7 @@ class EventFormsRepository {
 
   // updateQuestions
   Future<dynamic> identifyQuestionUpdates(List<QuestionModel> newQuestions,
-      List<QuestionModel> oldQuestions) async {
+      List<QuestionModel> oldQuestions, String eventId) async {
     // then compare the questions and update the ones that are different
     List<QuestionModel> questionsToUpdate = [];
     List<QuestionModel> questionsToInsert = [];
@@ -100,11 +100,11 @@ class EventFormsRepository {
           orElse: () => QuestionModel());
 
       if (newQuestion.eventId != null && newQuestion.position != null) {
-        //skip loop if the question does not have its event id and position
+        //go to next item in loop
         continue;
       }
       // do an insert for the new questions
-      if (oldQuestion.id == null) {
+      else if (oldQuestion.id == null) {
         questionsToInsert.add(newQuestion);
       } else {
         if (oldQuestion != newQuestion) {
@@ -116,13 +116,15 @@ class EventFormsRepository {
     // do the inserts
     if (questionsToInsert.isNotEmpty) {
       await insertQuestions(questionsToInsert
-          .map((e) => e.toJson(e.eventId!, e.position!))
+          .map((e) => e.toJson(eventId, newQuestions.indexOf(e)))
           .toList());
     }
 
     // do the updates
     if (questionsToUpdate.isNotEmpty) {
-      await updateQuestions(questionsToUpdate);
+      await updateQuestions(questionsToUpdate
+          .map((e) => e.toJson(eventId, newQuestions.indexOf(e)))
+          .toList());
     }
 
     // do the deletes
@@ -133,18 +135,21 @@ class EventFormsRepository {
 
   // delete questions
   Future<dynamic> deleteQuestions(List<QuestionModel> questions) async {
-    List<String> questionsMap = questions.map((e) => e.id!).toList();
+    List<String> questionsMap = [];
+    try {
+      questionsMap = questions.map((e) => e.id!).toList();
+    } catch (e) {
+      throw Exception('Failed to parse in deleteQuestions: $e');
+    }
 
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.deleteQuestions,
       fetchPolicy: FetchPolicy.networkOnly,
-      variables: {"questions": questionsMap},
+      variables: {"questionIds": questionsMap},
     );
 
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
-
-    print("questionresult $result");
 
     // Check for a valid response
     if (result.hasException) {
@@ -163,35 +168,44 @@ class EventFormsRepository {
     }
   }
 
-  // update questions
-  Future<dynamic> updateQuestions(List<QuestionModel> questions) async {
-    List<Map<String, dynamic>> questionsMap =
-        questions.map((e) => e.toJson(e.eventId!, e.position!)).toList();
-    MutationOptions mutationOptions = MutationOptions(
-      document: Mutations.updateQuestions,
-      fetchPolicy: FetchPolicy.networkOnly,
-      variables: {"questions": questionsMap},
-    );
-
+// update questions using a loop with pk
+  Future<void> updateQuestions(List<Map<String, dynamic>> questions) async {
     final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-    print("questionresult $result");
-
-    // Check for a valid response
-    if (result.hasException) {
-      throw Exception(
-          'Failed to update questions. Status code: ${result.exception?.raw.toString()}');
-    }
-
-    if (result.data != null && result.data!["update_questions"] != null) {
-      try {
-        return result.data!['update_questions']['affected_rows'];
-      } catch (e) {
-        throw Exception('Failed to parse class: $e');
+    for (var question in questions) {
+      final id = question["id"];
+      if (id == null) {
+        throw Exception('Question ID is required for update.');
       }
-    } else {
-      throw Exception('Failed to update class');
+
+      MutationOptions mutationOptions = MutationOptions(
+        document: Mutations.updateQuestionByPk,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: {
+          "id": id,
+          "updates": question,
+        },
+      );
+
+      try {
+        QueryResult<Object?> result =
+            await graphQLClient.mutate(mutationOptions);
+
+        if (result.hasException) {
+          throw Exception(
+              'Failed to update question with ID $id. Error: ${result.exception?.raw.toString()}');
+        }
+
+        if (result.data == null ||
+            result.data!["update_questions_by_pk"] == null) {
+          throw Exception('Failed to update question with ID $id.');
+        }
+
+        print('Updated Question ID: $id');
+      } catch (e) {
+        print('Error updating question with ID $id: $e');
+        rethrow; // Optionally rethrow to stop on the first error
+      }
     }
   }
 }

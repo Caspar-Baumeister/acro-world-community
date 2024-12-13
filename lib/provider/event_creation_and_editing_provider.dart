@@ -401,9 +401,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         // convert questions to JSON format and add the event id from the created class
 
         await eventFormsRepository.identifyQuestionUpdates(
-            _questions, oldQuestions);
-      } catch (e) {
-        CustomErrorHandler.captureException("Error updating questions: $e");
+            _questions, oldQuestions, _classId!);
+      } catch (e, s) {
+        CustomErrorHandler.captureException("Error updating questions: $e",
+            stackTrace: s);
       }
     } catch (e) {
       CustomErrorHandler.captureException("Error updating class: $e");
