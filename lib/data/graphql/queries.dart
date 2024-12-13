@@ -2,15 +2,29 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  /// Questions ///
+
+  static final getQuestionsForEvent = gql("""
+query getQuestionsForEvent(\$eventId: uuid!) {
+  questions(where: {event_id: {_eq: \$eventId}}, order_by: {position: asc}) {
+    id
+    question
+    title
+    position
+    is_required
+  }
+}
+""");
+
   /// INVITES ///
 
   // check if email is already invited or registered
   static final checkInvitePossible = gql("""
     query CheckEmail(\$email: String!) {
-      users(where: {email: {_eq: \$email}}) {
+      users(where = {email: {_eq: \$email}}) {
         id
       }
-      created_invites(where: {email: {_eq: \$email}}) {
+      created_invites(where = {email: {_eq: \$email}}) {
         id
       }
     }
@@ -20,16 +34,16 @@ class Queries {
   static final getCreatedInvitesPageableQuery = gql("""
 query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
   created_invites(
-    limit: \$limit
-    offset: \$offset
-    order_by: { created_at: desc }
+    limit = \$limit
+    offset = \$offset
+    order_by = { created_at: desc }
   ) {
     id
     email
     confirmation_status
     entity
     created_at
-    invited_user {
+    invitedUser {
       name
     }
     class {
@@ -50,7 +64,7 @@ query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
   //getUpcomingClassEventsById
   static final getUpcomingClassEventsById = gql("""
 query getUpcomingClassEventsById(\$classId: uuid!) {
-  class_events(where: {class_id: {_eq: \$classId}, start_date: {_gte: now}}, order_by: {start_date: asc}) {
+  class_events(where = {class_id: {_eq: \$classId}, start_date: {_gte: now}}, order_by = {start_date: asc}) {
     ${Fragments.classEventFragment}
   }
 }
@@ -59,7 +73,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
   //getUpcomingClassEventsById
   static final getClassEventsById = gql("""
 query getUpcomingClassEventsById(\$classId: uuid!) {
-  class_events(where: {class_id: {_eq: \$classId}}, order_by: {start_date: asc}) {
+  class_events(where = {class_id: {_eq: \$classId}}, order_by = {start_date: asc}) {
     ${Fragments.classEventFragment}
   }
 }
@@ -68,7 +82,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 // get class event bookings for creator dashboard page
   static final getClassEventBookings = gql(
       """query getClassEventBookings(\$id: uuid!, \$limit: Int, \$offset: Int) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+  class_event_bookings(where = {class_event: {class: {created_by_id: {_eq: \$id}}}}, limit = \$limit, offset: \$offset, order_by: {created_at: desc}) {
     ${Fragments.classEventBookingFragment}
   }
 }
@@ -78,7 +92,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
   //fetches all classeventbookings of a creator with a specific class event id
   static final getClassEventBookingsByClassEventId = gql(
       """query getClassEventBookingsByClassSlug(\$class_event_id: uuid!, \$created_by_id: uuid!) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}}) {
+  class_event_bookings(where = {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}}) {
     ${Fragments.classEventBookingFragment}
   }
 }
@@ -89,7 +103,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 //class_event_bookings_aggregate
   static final getClassEventBookingsAggregate =
       gql("""query getClassEventBookingsAggregate(\$id: uuid!) {
-class_event_bookings_aggregate(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
+class_event_bookings_aggregate(where = {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
     aggregate {
       count
     }
@@ -105,11 +119,11 @@ class_event_bookings_aggregate(where: {class_event: {class: {created_by_id: {_eq
 
   static final getTeachersPageableQuery = gql("""
   query GetTeachersPageable(\$limit: Int, \$offset: Int, \$where: teachers_bool_exp!) {
-    teachers(limit: \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {
+    teachers(limit = \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {
       id
       name
       user_id
-      confirmation_status
+      confirmationStatus
       user_likes_aggregate {
         aggregate {
           count
@@ -129,7 +143,7 @@ class_event_bookings_aggregate(where: {class_event: {class: {created_by_id: {_eq
 query getClasses {
   classes {
     ${Fragments.classFragmentAllInfo}
-    class_events(where: {end_date: {_gte: now}}) {
+    class_events(where = {end_date: {_gte: now}}) {
       ${Fragments.classEventFragment}
     }
   }
@@ -143,20 +157,20 @@ query getClasses {
 
   static final getClassesLazyAsTeacherUser = gql("""
 query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) {
-   classes(where: \$where, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+   classes(where = \$where, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
     ${Fragments.classFragmentLazy}
-    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
+    class_events(where = {end_date: {_gte: now}}, order_by = {start_date: asc}, limit = 1) {
       id
-      start_date
+      startDate
       is_highlighted
     }
-    class_events_aggregate(where: {end_date: {_gte: now}}) {
+    class_events_aggregate(where = {end_date: {_gte: now}}) {
       aggregate {
         count
       }
     }
   }
-  classes_aggregate (where: \$where) {
+  classes_aggregate (where = \$where) {
     aggregate {
       count
     }
@@ -167,17 +181,17 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
   static final userBookings = gql("""
 query userBookings {
   me {
-    bookings(where: {status: {_eq: Confirmed}}, order_by: {class_event: {start_date: asc}}) {
+    bookings(where = {status: {_eq: Confirmed}}, order_by = {class_event: {start_date: asc}}) {
       created_at
-      updated_at
+      updatedAt
       booking_option{
         id
         title
       }
       status
-      class_event {
+      classEvent {
         id
-        start_date
+        startDate
         end_date
         class {
           url_slug
@@ -211,7 +225,7 @@ query Me {
 
   static final isClassEventBooked = gql("""
 query isClassEventBooked(\$class_event_id: uuid) {
-    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}) {
+    class_event_bookings_aggregate(where = {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}) {
       aggregate {
         count
       }
@@ -223,7 +237,7 @@ query isClassEventBooked(\$class_event_id: uuid) {
 // this is for the calendar widget with date filter for a specific week
   static final getClassEventsFromToLocationWithClass = gql("""
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){
-  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {end_date: {_gte: \$from}, start_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
+  class_events_by_location_v1(args = {lat: \$latitude, lng: \$longitude}, order_by = {distance: asc}, where = {end_date: {_gte: \$from}, start_date: {_lte: \$to} , distance: {_lte: \$distance}}) {
     distance
     ${Fragments.classEventFragment}
     class {
@@ -236,7 +250,7 @@ query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestam
 // this is for the map widget without any date filter
   static final getClassEventsByDistance = gql("""
 query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$distance: float8){
-  class_events_by_location_v1(args: {lat: \$latitude, lng: \$longitude}, order_by: {distance: asc}, where: {start_date: {_gte: now}, distance: {_lte: \$distance}}) {
+  class_events_by_location_v1(args = {lat: \$latitude, lng: \$longitude}, order_by = {distance: asc}, where = {start_date: {_gte: now}, distance: {_lte: \$distance}}) {
     distance
     ${Fragments.classEventFragment}
     class {
@@ -250,16 +264,16 @@ query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$dist
 // get all classes and for every class event
   static final getEventOccurences = gql("""
 query getEventOccurences {
-  class_events(where: {end_date: {_gte: "now"}, class: {id: {_is_null: false}}}) {
+  class_events(where = {end_date: {_gte: "now"}, class: {id: {_is_null: false}}}) {
     ${Fragments.classEventFragment}
     is_highlighted
-    recurring_pattern {
+    recurringPattern {
       ${Fragments.recurringPatternFragment}
     }
     class {
       ${Fragments.classFragmentAllInfo}
       location_country
-      location_city
+      locationCity
     }
   }
 }
@@ -278,17 +292,17 @@ query Config {
 
   static final getClassBySlugWithOutFavorite = gql("""
 query getClassByIdWithFavorite(\$url_slug: String!) {
-  classes(where: {url_slug: {_eq: \$url_slug}}){
+  classes(where = {url_slug: {_eq: \$url_slug}}){
      ${Fragments.classFragmentAllInfo}
       recurring_patterns {
       day_of_week
-      end_date
+      endDate
       end_time
-      is_recurring
+      isRecurring
       id
-      recurring_every_x_weeks
+      recurringEveryXWeeks
       start_date
-      start_time
+      startTime
       class_id
     }
   }
@@ -297,13 +311,13 @@ query getClassByIdWithFavorite(\$url_slug: String!) {
 
   static final getClassBySlugWithFavorite = gql("""
 query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
-  classes(where: {url_slug: {_eq: \$url_slug}}){
+  classes(where = {url_slug: {_eq: \$url_slug}}){
      ${Fragments.classFragmentAllInfo}
-     class_favorits(where: {user_id: {_eq: \$user_id}}) {
+     class_favorits(where = {user_id: {_eq: \$user_id}}) {
       id
-      created_at
+      createdAt
     }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
+     class_flags(where = {user_id: {_eq: \$user_id}}) {
       id
       }
   }
@@ -312,13 +326,13 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
 
   static final getClassByIdWithFavorite = gql("""
 query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
-   classes_by_pk(id: \$class_id){
+   classes_by_pk(id = \$class_id){
      ${Fragments.classFragmentAllInfo}
-     class_favorits(where: {user_id: {_eq: \$user_id}}) {
+     class_favorits(where = {user_id: {_eq: \$user_id}}) {
       id
-      created_at
+      createdAt
      }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
+     class_flags(where = {user_id: {_eq: \$user_id}}) {
       id
       }
   }
@@ -327,15 +341,15 @@ query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
 
   static final getClassEventWithClasByIdWithFavorite = gql("""
 query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: uuid!) {
-  class_events_by_pk(id: \$class_event_id){
+  class_events_by_pk(id = \$class_event_id){
     ${Fragments.classEventFragment}
     class {
       ${Fragments.classFragmentAllInfo}
-      class_favorits(where: {user_id: {_eq: \$user_id}}) {
+      class_favorits(where = {user_id: {_eq: \$user_id}}) {
       id
-      created_at
+      createdAt
       }
-      class_flags(where: {user_id: {_eq: \$user_id}}) {
+      class_flags(where = {user_id: {_eq: \$user_id}}) {
         id
       }
     }
@@ -363,7 +377,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getPlacesIdsCity = gql("""
   query GetPlaces(\$query: String!) {
-    places(searchQuery: \$query) {
+    places(searchQuery = \$query) {
       id
       description
       matched_substrings {
@@ -376,7 +390,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getPlacesIds = gql("""
   query GetPlaces(\$query: String!) {
-    search_by_input_text(searchQuery: \$query) {
+    search_by_input_text(searchQuery = \$query) {
       id
       description
       matched_substrings {
@@ -389,7 +403,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getPlace = gql("""
   query GetPlaces(\$id: String!) {
-    place(id: \$id) {
+    place(id = \$id) {
       description
       id
       latitude
@@ -419,19 +433,19 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getTeacherForList = gql("""
     query getTeacherForList(\$user_id: uuid, \$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+      teachers(order_by = {user_likes_aggregate: {count: desc}}, where = {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
         id
-        location_name
+        locationName
         name
         type
-        images(where: {is_profile_picture: {_eq: true}}) {
+        images(where = {is_profile_picture: {_eq: true}}) {
           image {
             url
           }
           is_profile_picture
         }
         is_organization
-        user_likes(where: {user_id: {_eq: \$user_id}}) {
+        user_likes(where = {user_id: {_eq: \$user_id}}) {
           user_id
         }
         user_likes_aggregate {
@@ -444,12 +458,12 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getTeacherForListWithoutUserID = gql("""
     query getTeacherForList(\$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+      teachers(order_by = {user_likes_aggregate: {count: desc}}, where = {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
         id
-        location_name
+        locationName
         name
         type
-        images(where: {is_profile_picture: {_eq: true}}) {
+        images(where = {is_profile_picture: {_eq: true}}) {
           image {
             url
           }
@@ -457,7 +471,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
         }
         is_organization
        
-        user_likes_aggregate {
+        userLikesAggregate {
           aggregate {
             count
           }
@@ -468,20 +482,20 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getFollowedTeacherForList = gql("""
   query getTeacherForList(\$user_id: uuid, \$search: String!) {
   me {
-    followed_teacher(order_by: {created_at: desc}, where: {teacher: {confirmation_status: {_eq: Confirmed}}, _and: {teacher: {name: {_ilike: \$search}}}}) {
+    followed_teacher(order_by = {created_at: desc}, where = {teacher: {confirmation_status: {_eq: Confirmed}}, _and: {teacher: {name: {_ilike: \$search}}}}) {
       teacher {
         id
-        location_name
+        locationName
         name
         type
-        images(where: {is_profile_picture: {_eq: true}}) {
+        images(where = {is_profile_picture: {_eq: true}}) {
           image {
             url
           }
           is_profile_picture
         }
         is_organization
-        user_likes(where: {user_id: {_eq: \$user_id}}) {
+        user_likes(where = {user_id: {_eq: \$user_id}}) {
           user_id
         }
         user_likes_aggregate {
@@ -496,8 +510,8 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getTeacherById = gql("""
   query getTeacherById(\$teacher_id: uuid!, \$user_id: uuid) {
-    teachers_by_pk(id: \$teacher_id) {
-      user_likes(where: {user_id: {_eq: \$user_id}}) {
+    teachers_by_pk(id = \$teacher_id) {
+      user_likes(where = {user_id: {_eq: \$user_id}}) {
         user_id
       }
       ${Fragments.teacherFragmentAllInfo}
@@ -507,8 +521,8 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getTeacherBySlug = gql("""
   query getTeacherById(\$teacher_slug: String!, \$user_id: uuid) {
-    teachers(where: {url_slug: {_eq: \$teacher_slug}}) {
-      user_likes(where: {user_id: {_eq: \$user_id}}) {
+    teachers(where = {url_slug: {_eq: \$teacher_slug}}) {
+      user_likes(where = {user_id: {_eq: \$user_id}}) {
         user_id
       }
       ${Fragments.teacherFragmentAllInfo}
@@ -518,7 +532,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
 
   static final getClassEventsByClassId = gql("""
 query getClassEventsByClassId (\$class_id: uuid) {
-  class_events(where: {class_id: {_eq: \$class_id}}) {
+  class_events(where = {class_id: {_eq: \$class_id}}) {
    ${Fragments.classEventFragment}
    class {
       ${Fragments.classFragmentAllInfo}
@@ -529,14 +543,14 @@ query getClassEventsByClassId (\$class_id: uuid) {
 
   static final getClassesByTeacherId = gql("""
 query getClassesByTeacherId(\$teacher_id: uuid) {
-  classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
+  classes(where = {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
     ${Fragments.classFragmentAllInfo}
   }
 }""");
 
   static final getClassEventParticipants = gql("""
 query getClassEventParticipants(\$class_event_id: uuid) {
-  class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
+  class_events_participants(where = {class_event_id: {_eq: \$class_event_id}}) {
     user {
       ${Fragments.userFragment}
     }
@@ -546,7 +560,7 @@ query getClassEventParticipants(\$class_event_id: uuid) {
 
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
-      users(limit: \$limit, offset: \$offset) {
+      users(limit = \$limit, offset: \$offset) {
         ${Fragments.userFragment}
       }
     }
@@ -554,17 +568,17 @@ query getClassEventParticipants(\$class_event_id: uuid) {
 
   static final getAcroRoleAggregatesFromClassEvent =
       gql("""query GetAcroRoleAggregates(\$class_event_id: uuid!) {
-  total_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
+  total_aggregate: class_events_participants_aggregate(where = {class_event_id: {_eq: \$class_event_id}}) {
     aggregate {
       count
     }
   }
-  base_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
+  base_aggregate: class_events_participants_aggregate(where = {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
     aggregate {
       count
     }
   }
-  flyer_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
+  flyer_aggregate: class_events_participants_aggregate(where = {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
     aggregate {
       count
     }
@@ -573,7 +587,7 @@ query getClassEventParticipants(\$class_event_id: uuid) {
 
   static final getFollowedTeachers = gql("""
 query getFollowedTeachers(\$user_id: uuid!) {
-  teachers(where: {user_likes: {user_id: {_eq: \$user_id}, _and: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
+  teachers(where = {user_likes: {user_id: {_eq: \$user_id}, _and: {teacher: {confirmation_status: {_eq: Confirmed}}}}}) {
      ${Fragments.teacherFragmentAllInfo}
   }
 }
@@ -581,17 +595,17 @@ query getFollowedTeachers(\$user_id: uuid!) {
 
   static final getAcroRoleAggregatesFromJam =
       gql("""query getAcroRoleAggregatesFromJam(\$jam_id: uuid!) {
-  total_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}}) {
+  total_aggregate: jam_participants_aggregate(where = {jam_id: {_eq: \$jam_id}}) {
     aggregate {
       count
     }
   }
-  base_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
+  base_aggregate: jam_participants_aggregate(where = {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
     aggregate {
       count
     }
   }
-  flyer_aggregate: jam_participants_aggregate(where: {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
+  flyer_aggregate: jam_participants_aggregate(where = {jam_id: {_eq: \$jam_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
     aggregate {
       count
     }
@@ -600,10 +614,10 @@ query getFollowedTeachers(\$user_id: uuid!) {
 
   static final getClassParticipants = gql("""
     query getCommunityUsers(\$class_event_id: uuid!, \$limit: Int, \$offset: Int) {
-      users(where: {
+      users(where = {
         class_event_participations: {
           class_event_id: {_eq: \$class_event_id}}}, 
-          limit: \$limit, 
+          limit = \$limit, 
           offset: \$offset) {
         ${Fragments.userFragment}
       }

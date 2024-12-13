@@ -322,7 +322,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
               .map((question) => question.toJson(
                   createdClass.id!, _questions.indexOf(question)))
               .toList();
-          await eventFormsRepository.createQuestiosForEvent(questionsJson);
+          await eventFormsRepository.insertQuestions(questionsJson);
         } catch (e) {
           CustomErrorHandler.captureException("Error creating questions: $e");
         }
@@ -399,11 +399,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         EventFormsRepository eventFormsRepository =
             EventFormsRepository(apiService: GraphQLClientSingleton());
         // convert questions to JSON format and add the event id from the created class
-        List<Map<String, dynamic>> newQuestionsJson = _questions
-            .map((question) =>
-                question.toJson(_classId!, _questions.indexOf(question)))
-            .toList();
-        await eventFormsRepository.updateQuestions(newQuestionsJson);
+
+        await eventFormsRepository.identifyQuestionUpdates(
+            _questions, oldQuestions);
       } catch (e) {
         CustomErrorHandler.captureException("Error updating questions: $e");
       }
@@ -459,7 +457,12 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _bookingOptions.addAll(fromClass.bookingOptions ?? []);
 
       // get questions and save them in old and new questions
-      eventFormsRepository
+      oldQuestions.clear();
+      _questions.clear();
+      final questions =
+          await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
+      oldQuestions.addAll(questions);
+      _questions.addAll(questions);
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }

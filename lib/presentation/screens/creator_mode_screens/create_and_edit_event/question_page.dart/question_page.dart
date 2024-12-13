@@ -24,30 +24,27 @@ class QuestionPage extends StatelessWidget {
         child: Column(
           children: [
             Expanded(child: CurrentQuestionSection()),
-            Consumer<EventCreationAndEditingProvider>(
-                builder: (context, provider, child) {
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  StandardButton(
-                    text: "Done",
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    width: MediaQuery.of(context).size.width * 0.3,
-                  ),
-                  SizedBox(width: AppPaddings.small),
-                  StandardButton(
-                    text: "Add Question",
-                    onPressed: () {
-                      buildMortal(context, AskQuestionModal());
-                    },
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    isFilled: true,
-                  ),
-                ],
-              );
-            })
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StandardButton(
+                  text: "Done",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  width: MediaQuery.of(context).size.width * 0.3,
+                ),
+                SizedBox(width: AppPaddings.small),
+                StandardButton(
+                  text: "Add Question",
+                  onPressed: () {
+                    buildMortal(context, AskQuestionModal());
+                  },
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  isFilled: true,
+                ),
+              ],
+            ),
           ],
         ));
   }

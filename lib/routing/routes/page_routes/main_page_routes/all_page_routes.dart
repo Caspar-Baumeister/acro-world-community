@@ -6,6 +6,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/my_events_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/routing/routes/base_route.dart';
 import 'package:acroworld/routing/transitions.dart';
 
@@ -72,6 +73,18 @@ class QuestionPageRoute extends BaseRoute {
   QuestionPageRoute()
       : super(
           const QuestionPage(),
+          guards: [],
+        );
+}
+
+//UserAnswerPage
+class UserAnswerPageRoute extends BaseRoute {
+  final String userId;
+  final String classEventId;
+
+  UserAnswerPageRoute({required this.userId, required this.classEventId})
+      : super(
+          UserAnswerPage(userId: userId, classEventId: classEventId),
           guards: [],
         );
 }

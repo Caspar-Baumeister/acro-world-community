@@ -15,6 +15,16 @@ class QuestionModel {
   int? position;
   bool? isRequired;
 
+  // overwrite is same to say its not same if question,title, isrequired or position is different
+  @override
+  bool operator ==(Object other) {
+    return (other is QuestionModel &&
+        other.question == question &&
+        other.title == title &&
+        other.isRequired == isRequired &&
+        other.position == position);
+  }
+
   QuestionModel(
       {this.id,
       this.eventId,

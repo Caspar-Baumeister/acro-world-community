@@ -11,6 +11,24 @@ class Mutations {
     }
   """);
 
+  // updateQuestions questions: [questions_insert_input!]!
+  static final updateQuestions = gql("""
+    mutation UpdateQuestions(\$questions: [questions_insert_input!]!) {
+      update_questions(objects: \$questions) {
+        affected_rows
+      }
+    }
+  """);
+
+  // deleteQuestions questionIds: [uuid!]!
+  static final deleteQuestions = gql("""
+    mutation DeleteQuestions(\$questionIds: [uuid!]!) {
+      delete_questions(where: {id: {_in: \$questionIds}}) {
+        affected_rows
+      }
+    }
+  """);
+
   /// STRIPE ///
   // verifyStripeAccount
   static final verifyStripeAccount = gql("""

@@ -7,6 +7,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/d
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
+import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -60,38 +61,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
         ),
 
         // User informations (gender and level)
-        Container(
-          decoration: BoxDecoration(
-              border: Border.all(color: CustomColors.inactiveBorderColor),
-              borderRadius: AppBorders.smallRadius),
-          padding: const EdgeInsets.all(AppPaddings.medium),
-          child: SizedBox(
-            width: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("User informations",
-                    style: Theme.of(context).textTheme.headlineMedium),
-                SizedBox(height: AppPaddings.small),
-                booking.user.gender?.name != null
-                    ? Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppPaddings.small),
-                        child: Text(
-                            "Prefered position: ${booking.user.gender?.name}"),
-                      )
-                    : SizedBox(),
-                booking.user.level?.name != null
-                    ? Padding(
-                        padding:
-                            const EdgeInsets.only(bottom: AppPaddings.small),
-                        child: Text("Level: ${booking.user.level?.name}"),
-                      )
-                    : SizedBox(),
-              ],
-            ),
-          ),
-        ),
+        UserInformationWidget(booking: booking),
         SizedBox(height: AppPaddings.large),
 
         // refund button only if stripe is enabled, ticket was paid and not refunded
@@ -153,5 +123,63 @@ class DashboardBookingInformationModal extends StatelessWidget {
             }),
       ],
     ));
+  }
+}
+
+class UserInformationWidget extends StatelessWidget {
+  const UserInformationWidget({
+    super.key,
+    required this.booking,
+  });
+
+  final ClassEventBooking booking;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        if (booking.classEvent.id == null || booking.user.id == null) {
+          showErrorToast("User or class event not found");
+          return;
+        }
+        Navigator.of(context).push(UserAnswerPageRoute(
+            classEventId: booking.classEvent.id!, userId: booking.user.id!));
+      },
+      child: Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: CustomColors.inactiveBorderColor),
+            borderRadius: AppBorders.smallRadius),
+        padding: const EdgeInsets.all(AppPaddings.medium),
+        child: SizedBox(
+          width: double.infinity,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("User informations",
+                  style: Theme.of(context).textTheme.headlineMedium),
+              SizedBox(height: AppPaddings.small),
+              booking.user.gender?.name != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                      child: Text(
+                          "Prefered position: ${booking.user.gender?.name}"),
+                    )
+                  : SizedBox(),
+              booking.user.level?.name != null
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                      child: Text("Level: ${booking.user.level?.name}"),
+                    )
+                  : SizedBox(),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text("View user answers >",
+                    style: Theme.of(context).textTheme.bodyMedium),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
