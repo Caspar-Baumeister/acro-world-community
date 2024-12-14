@@ -1,4 +1,21 @@
 class Fragments {
+  static const questionFragment = """
+        id
+        question
+        title
+        position
+        is_required 
+        """;
+
+  //answer fragment
+  static const answerFragment = """
+        id
+        answer
+        question_id
+        user_id
+        event_occurence
+        """;
+
   static const classEventBookingFragment = """
     id
     created_at
@@ -82,6 +99,10 @@ class Fragments {
         }
       }
       event_type
+      created_by_id
+      questions {
+        ${Fragments.questionFragment}
+      }
 
 """;
 

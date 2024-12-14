@@ -20,6 +20,7 @@ class BookingCardMainContentSection extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
           horizontal: AppPaddings.small, vertical: AppPaddings.tiny),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(booking.user.name ?? "Unknown User",
@@ -39,7 +40,7 @@ class BookingCardMainContentSection extends StatelessWidget {
                   .labelMedium!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
-          const Spacer(),
+          const SizedBox(height: AppPaddings.small),
           Text(
             "Booked at:",
             style: Theme.of(context).textTheme.labelMedium,

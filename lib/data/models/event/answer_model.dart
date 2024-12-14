@@ -24,6 +24,15 @@ class AnswerModel {
       this.createdAt,
       this.updatedAt});
 
+  // overwrite equality operator to compare objects only after their answers
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is AnswerModel && other.answer == answer;
+  }
+
   factory AnswerModel.fromJson(Map<String, dynamic> json) {
     return AnswerModel(
       id: json['id'],
@@ -37,14 +46,15 @@ class AnswerModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
+    Map<String, dynamic> answerJson = {
       'question_id': questionId,
       'user_id': userId,
       'event_occurence': eventOccurence,
       'answer': answer,
-      'created_at': createdAt,
-      'updated_at': updatedAt,
     };
+    if (id != null) {
+      answerJson['id'] = id;
+    }
+    return answerJson;
   }
 }

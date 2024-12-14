@@ -21,6 +21,7 @@ class BookingCardImageSection extends StatelessWidget {
           child: CustomCachedNetworkImage(
             imageUrl: booking.classEvent.classModel?.imageUrl,
             width: BOOKING_CARD_HEIGHT,
+            height: BOOKING_CARD_HEIGHT,
           ),
         ),
         Positioned(

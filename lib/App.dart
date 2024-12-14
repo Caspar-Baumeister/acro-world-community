@@ -7,6 +7,7 @@ import 'package:acroworld/presentation/components/wrapper/auth_wrapper.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/event_answers_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
@@ -58,6 +59,7 @@ class _AppState extends State<App> {
             create: (_) => EventCreationAndEditingProvider()),
         ChangeNotifierProvider(create: (_) => CreatorProvider()),
         ChangeNotifierProvider(create: (_) => UserRoleProvider()),
+        ChangeNotifierProvider(create: (_) => EventAnswerProvider()),
         ChangeNotifierProvider(
             create: (_) => InvitesProvider(
                 invitationRepository: InvitationRepository(

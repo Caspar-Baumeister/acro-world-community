@@ -1,5 +1,6 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/event_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
@@ -33,11 +34,12 @@ class ClassModel {
   int? amountUpcomingEvents;
   List<RecurringPatternModel>? recurringPatterns;
   List<ClassOwner>? classOwner;
+  List<QuestionModel> questions = [];
   // List<ClassTeachers>? invitedTeachers;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassOwner? get owner {
-    if (classOwner != null) {
+    if (classOwner != null && classOwner!.isNotEmpty) {
       return classOwner!.firstWhere(
           (element) => element.isPaymentReceiver == true,
           orElse: () => classOwner!.first);
@@ -89,6 +91,7 @@ class ClassModel {
       this.amountActiveFlaggs,
       this.amountNonActiveFlaggs,
       this.amountUpcomingEvents,
+      required this.questions,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
@@ -108,6 +111,16 @@ class ClassModel {
         classEvents!.add(newClassEvent);
       });
     }
+
+    questions = <QuestionModel>[];
+    if (json['questions'] != null) {
+      json['questions'].forEach(
+        (v) {
+          questions.add(QuestionModel.fromJson(v));
+        },
+      );
+    }
+
     amountActiveFlaggs = json['class_flags']
             ?.where((flag) => flag['is_active'] == true)
             .length ??

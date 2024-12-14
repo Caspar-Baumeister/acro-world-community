@@ -1,3 +1,5 @@
+import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
+import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:flutter/material.dart';
 
 class UserAnswerPage extends StatelessWidget {
@@ -9,6 +11,6 @@ class UserAnswerPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return BasePage(appBar: CustomAppbarSimple(), child: Container());
   }
 }

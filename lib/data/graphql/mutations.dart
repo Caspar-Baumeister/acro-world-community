@@ -29,6 +29,35 @@ class Mutations {
     }
   """);
 
+  /// answers ///
+
+  //insert
+  static final insertAnswers = gql("""
+    mutation InsertAnswers(\$answers: [answers_insert_input!]!) {
+      insert_answers(objects: \$answers) {
+        affected_rows
+      }
+    }
+  """);
+
+  //update
+  static final updateAnswerByPk = gql("""
+    mutation UpdateAnswerByPk(\$id: uuid!, \$updates: answers_set_input!) {
+      update_answers_by_pk(pk_columns: {id: \$id}, _set: \$updates) {
+        id
+      }
+    }
+  """);
+
+  //delete
+  static final deleteAnswers = gql("""
+    mutation DeleteAnswers(\$answerIds: [uuid!]!) {
+      delete_answers(where: {id: {_in: \$answerIds}}) {
+        affected_rows
+      }
+    }
+  """);
+
   /// STRIPE ///
   // verifyStripeAccount
   static final verifyStripeAccount = gql("""

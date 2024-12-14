@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
+import 'package:acroworld/data/models/event/answer_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -31,8 +32,8 @@ class EventFormsRepository {
     if (result.data != null && result.data!["insert_questions"] != null) {
       try {
         return result.data!['insert_questions']['affected_rows'];
-      } catch (e) {
-        throw Exception('Failed to parse class: $e');
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
       }
     } else {
       throw Exception('Failed to create class');
@@ -65,8 +66,8 @@ class EventFormsRepository {
           questions.add(QuestionModel.fromJson(question));
         }
         return questions;
-      } catch (e) {
-        throw Exception('Failed to parse class: $e');
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
       }
     } else {
       throw Exception('Failed to get questions');
@@ -138,8 +139,9 @@ class EventFormsRepository {
     List<String> questionsMap = [];
     try {
       questionsMap = questions.map((e) => e.id!).toList();
-    } catch (e) {
-      throw Exception('Failed to parse in deleteQuestions: $e');
+    } catch (e, s) {
+      throw Exception(
+          'Failed to parse in deleteQuestions: $e \n Stacktrace: $s');
     }
 
     MutationOptions mutationOptions = MutationOptions(
@@ -160,11 +162,11 @@ class EventFormsRepository {
     if (result.data != null && result.data!["delete_questions"] != null) {
       try {
         return result.data!['delete_questions']['affected_rows'];
-      } catch (e) {
-        throw Exception('Failed to parse class: $e');
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
       }
     } else {
-      throw Exception('Failed to delete class');
+      throw Exception('Failed to delete question');
     }
   }
 
@@ -202,10 +204,207 @@ class EventFormsRepository {
         }
 
         print('Updated Question ID: $id');
-      } catch (e) {
-        print('Error updating question with ID $id: $e');
-        rethrow; // Optionally rethrow to stop on the first error
+      } catch (e, s) {
+        throw Exception(
+            'Failed to update question with ID $id. Error: $e \n Stacktrace: $s');
       }
+    }
+  }
+
+  /// Answers ///
+
+  // get all answers for a user and event
+  Future<List<AnswerModel>> getAnswersForUserAndEvent(
+      String userId, String eventOccurenceId) async {
+    QueryOptions options = QueryOptions(
+      document: Queries.getAnswersOfUserAndEventOccurence,
+      variables: {
+        'user_id': userId,
+        'event_occurence_id': eventOccurenceId,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+
+    try {
+      final result = await graphQLClient.query(options);
+
+      if (result.hasException) {
+        throw Exception(
+            'Failed to get answers. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      // create a list of AnswerModel from the result
+      final List<AnswerModel> answers = (result.data!['answers'] as List)
+          .map((e) => AnswerModel.fromJson(e))
+          .toList();
+
+      return answers;
+    } catch (e, s) {
+      throw Exception('Failed to get answers: $e \n Stacktrace: $s');
+    }
+  }
+
+  // same as for questions, check for updates and insert or update
+  Future<void> identifyAnswerUpdates(
+      List<AnswerModel> newAnswers, List<AnswerModel> oldAnswers) async {
+    // then compare the questions and update the ones that are different
+    List<AnswerModel> answersToUpdate = [];
+    List<AnswerModel> answersToInsert = [];
+    List<AnswerModel> answersToDelete = [];
+    // for all ids that are not in the new list, do a delete
+    for (var oldAnswer in oldAnswers) {
+      var newAnswer = newAnswers.firstWhere(
+          (element) => element.id == oldAnswer.id,
+          orElse: () => AnswerModel());
+
+      if (newAnswer.id == null) {
+        answersToDelete.add(oldAnswer);
+      }
+    }
+
+    // for all ids that do not exist, do an insert
+    // for all ids that exist, do an update
+    for (var newAnswer in newAnswers) {
+      // find the question in the old list if it exists else insert
+      var oldAnswer = oldAnswers.firstWhere(
+          (element) => element.id == newAnswer.id,
+          orElse: () => AnswerModel());
+
+      // do an insert for the new questions if no old answer exists with that id (or the id was null)
+      if (oldAnswer.id == null) {
+        answersToInsert.add(newAnswer);
+      }
+      // do an update if the old answer was found and is different from the new answer
+      else if (oldAnswer != newAnswer) {
+        answersToUpdate.add(newAnswer);
+      }
+    }
+
+    // do the inserts
+    if (answersToInsert.isNotEmpty) {
+      await insertAnswers(answersToInsert.map((e) => e.toJson()).toList());
+    }
+
+    // do the updates
+    if (answersToUpdate.isNotEmpty) {
+      await updateAnswers(answersToUpdate.map((e) => e.toJson()).toList());
+    }
+
+    // do the deletes
+    if (answersToDelete.isNotEmpty) {
+      await deleteAnswers(answersToDelete);
+    }
+  }
+
+  // insert answers
+  Future<dynamic> insertAnswers(List<Map<String, dynamic>> answers) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.insertAnswers,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"answers": answers},
+    );
+
+    print("answers $answers");
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    print("answerresult $result");
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to create answers. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["insert_answers"] != null) {
+      try {
+        return result.data!['insert_answers']['affected_rows'];
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+      }
+    } else {
+      throw Exception('Failed to create class');
+    }
+  }
+
+  // update answers
+  Future<void> updateAnswers(List<Map<String, dynamic>> answers) async {
+    final graphQLClient = GraphQLClientSingleton().client;
+
+    for (var answer in answers) {
+      final id = answer["id"];
+      if (id == null) {
+        throw Exception('Answer ID is required for update.');
+      }
+
+      print("update answer $answer");
+
+      MutationOptions mutationOptions = MutationOptions(
+        document: Mutations.updateAnswerByPk,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: {
+          "id": id,
+          "updates": answer,
+        },
+      );
+
+      try {
+        QueryResult<Object?> result =
+            await graphQLClient.mutate(mutationOptions);
+
+        if (result.hasException) {
+          throw Exception(
+              'Failed to update answer with ID $id. Error: ${result.exception?.raw.toString()}');
+        }
+
+        if (result.data == null ||
+            result.data!["update_answers_by_pk"] == null) {
+          throw Exception('Failed to update answer with ID $id.');
+        }
+
+        print('Updated Answer ID: $id');
+      } catch (e, s) {
+        throw Exception(
+            'Failed to update answer with ID $id. Error: $e \n Stacktrace: $s');
+      }
+    }
+  }
+
+  // delete answers
+  Future<dynamic> deleteAnswers(List<AnswerModel> answers) async {
+    List<String> answersMap = [];
+
+    answersMap = answers.map((e) => e.id!).toList();
+
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.deleteAnswers,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"answerIds": answersMap},
+    );
+
+    try {
+      final graphQLClient = GraphQLClientSingleton().client;
+      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'Failed to delete answers. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      if (result.data != null && result.data!["delete_answers"] != null) {
+        try {
+          return result.data!['delete_answers']['affected_rows'];
+        } catch (e, s) {
+          throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+        }
+      } else {
+        throw Exception('Failed to delete answer');
+      }
+    } catch (e, s) {
+      throw Exception('Failed to delete answers: $e \n Stacktrace: $s');
     }
   }
 }

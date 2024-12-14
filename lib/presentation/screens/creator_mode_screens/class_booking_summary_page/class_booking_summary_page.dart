@@ -13,8 +13,7 @@ class ClassBookingSummaryPage extends StatelessWidget {
     return BasePage(
         makeScrollable: false,
         appBar: const CustomAppbarSimple(
-          title: "Bookings for Occurence",
-          isBackButton: true,
+          title: "Bookings Summary",
         ),
         child: ClassBookingSummaryBody(classEventId: classEventId));
   }

@@ -2,16 +2,20 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
-  /// Questions ///
+  /// Questions and Answers ///
 
   static final getQuestionsForEvent = gql("""
 query getQuestionsForEvent(\$eventId: uuid!) {
   questions(where: {event_id: {_eq: \$eventId}}, order_by: {position: asc}) {
-    id
-    question
-    title
-    position
-    is_required
+    ${Fragments.questionFragment}
+  }
+}
+""");
+
+  static final getAnswersOfUserAndEventOccurence = gql("""
+query getAnswersOfUserAndEventOccurence(\$user_id: uuid!, \$event_occurence_id: uuid!) {
+  answers(where: {user_id: {_eq: \$user_id}, event_occurence: {_eq: \$event_occurence_id}}) {
+    ${Fragments.answerFragment}
   }
 }
 """);
@@ -305,6 +309,7 @@ query getClassByIdWithFavorite(\$url_slug: String!) {
       start_time
       class_id
     }
+    
   }
 }
  """);
@@ -320,6 +325,7 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
      class_flags(where: {user_id: {_eq: \$user_id}}) {
       id
       }
+      
   }
 }
  """);
@@ -335,6 +341,7 @@ query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
      class_flags(where: {user_id: {_eq: \$user_id}}) {
       id
       }
+      
   }
 }
  """);
@@ -352,6 +359,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       class_flags(where: {user_id: {_eq: \$user_id}}) {
         id
       }
+      
     }
   }
 }

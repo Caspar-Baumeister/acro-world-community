@@ -3,7 +3,6 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/d
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_revenue_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/modals/dashboard_booking_information_modal.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
@@ -32,9 +31,8 @@ class DashboardSingleBookingCard extends StatelessWidget {
                 isClassBookingSummary: isClassBookingSummary));
       },
       child: SizedBox(
-        height: BOOKING_CARD_HEIGHT,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // image with round corners
             BookingCardImageSection(booking: booking),

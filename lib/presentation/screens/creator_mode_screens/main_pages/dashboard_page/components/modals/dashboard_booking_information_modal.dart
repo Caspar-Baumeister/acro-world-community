@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/commission_information_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
@@ -10,7 +10,6 @@ import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,17 +28,14 @@ class DashboardBookingInformationModal extends StatelessWidget {
         child: Column(
       children: [
         // detailed infirmation section
-        SizedBox(
-          height: BOOKING_CARD_HEIGHT,
-          child: Row(
-            children: [
-              // image with round corners
-              BookingCardImageSection(booking: booking),
-              Expanded(
-                child: BookingCardMainContentSection(booking: booking),
-              ),
-            ],
-          ),
+        Row(
+          children: [
+            // image with round corners
+            BookingCardImageSection(booking: booking),
+            Expanded(
+              child: BookingCardMainContentSection(booking: booking),
+            ),
+          ],
         ),
         // booking options section
         SizedBox(height: AppPaddings.small),
@@ -64,46 +60,11 @@ class DashboardBookingInformationModal extends StatelessWidget {
         UserInformationWidget(booking: booking),
         SizedBox(height: AppPaddings.large),
 
-        // refund button only if stripe is enabled, ticket was paid and not refunded
-        Consumer<CreatorProvider>(
-          builder: (context, creatorProvider, child) {
-            print("Stripe id: ${creatorProvider.activeTeacher?.stripeId}");
-            print(
-                "Stripe enabled: ${creatorProvider.activeTeacher?.isStripeEnabled}");
-            print("Booking status: ${booking.status}");
-            if (creatorProvider.activeTeacher?.stripeId != null &&
-                creatorProvider.activeTeacher?.isStripeEnabled == true &&
-                booking.status == "Confirmed") {
-              return Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.medium),
-                child: LinkButtonComponent(
-                    text: "Refund ticket",
-                    textColor: CustomColors.errorBorderColor,
-                    onPressed: () async {
-                      await creatorProvider.getStripeLoginLink().then((value) {
-                        if (value != null) {
-                          // open stripe dashboard
-                          customLaunch(value);
-                        } else {
-                          // refresh Stripe status
-                          // TODO: refresh stripe status
-                          // TODO: take the link from before and open it
-                          showErrorToast("not implemented yet");
-                        }
-                      });
-                    }),
-              );
-            } else {
-              return SizedBox();
-            }
-          },
-        ),
-
         if (!isClassBookingSummary)
           Padding(
             padding: const EdgeInsets.only(bottom: AppPaddings.medium),
             child: StandardButton(
-                text: "Event bookings",
+                text: "All bookings of this event",
                 isFilled: true,
                 onPressed: () {
                   // navigate to bookings of class
@@ -117,7 +78,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
           ),
 
         StandardButton(
-            text: "Back",
+            text: "Close",
             onPressed: () {
               Navigator.of(context).pop();
             }),
@@ -171,10 +132,14 @@ class UserInformationWidget extends StatelessWidget {
                       child: Text("Level: ${booking.user.level?.name}"),
                     )
                   : SizedBox(),
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Text("View user answers >",
-                    style: Theme.of(context).textTheme.bodyMedium),
+              CustomDivider(),
+              Row(
+                children: [
+                  Text("View user answers",
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  Spacer(),
+                  Icon(Icons.arrow_forward_ios)
+                ],
               )
             ],
           ),
