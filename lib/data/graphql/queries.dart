@@ -12,6 +12,14 @@ query getQuestionsForEvent(\$eventId: uuid!) {
 }
 """);
 
+  static final getQuestionsForEventOccurence = gql("""
+query getQuestionsForEvent(\$eventOccurenceId: uuid!) {
+  questions(where: {event: {class_events: {id: {_eq: \$eventOccurenceId}}}}, order_by: {position: asc}) {
+    ${Fragments.questionFragment}
+  }
+}
+""");
+
   static final getAnswersOfUserAndEventOccurence = gql("""
 query getAnswersOfUserAndEventOccurence(\$user_id: uuid!, \$event_occurence_id: uuid!) {
   answers(where: {user_id: {_eq: \$user_id}, event_occurence: {_eq: \$event_occurence_id}}) {
@@ -107,7 +115,8 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 //class_event_bookings_aggregate
   static final getClassEventBookingsAggregate =
       gql("""query getClassEventBookingsAggregate(\$id: uuid!) {
-class_event_bookings_aggregate(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}) {
+class_event_bookings_aggregate(where: {status: {_eq: "Confirmed"}, class_event: {class: {created_by_id: {_eq: \$id}}}}
+) {
     aggregate {
       count
     }
@@ -569,6 +578,14 @@ query getClassEventParticipants(\$class_event_id: uuid) {
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
       users(limit: \$limit, offset: \$offset) {
+        ${Fragments.userFragment}
+      }
+    }
+      """);
+
+  static final getUserById = gql("""
+    query getUserById(\$userId: uuid!) {
+      users_by_pk(id: \$userId) {
         ${Fragments.userFragment}
       }
     }

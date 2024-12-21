@@ -55,28 +55,40 @@ class CurrentQuestionSection extends StatelessWidget {
     final provider = Provider.of<EventCreationAndEditingProvider>(context);
     return Container(
       padding: EdgeInsets.all(AppPaddings.small),
-      child: ReorderableListView(
-        padding: const EdgeInsets.all(AppPaddings.small),
-        onReorder: (oldIndex, newIndex) {
-          provider.reorderQuestions(oldIndex, newIndex);
-        },
-        children: List.generate(provider.questions.length, (index) {
-          final item = provider.questions[index];
-          return Dismissible(
-            key: ValueKey(item.id), // Ensure the key is unique and stable.
-            direction: DismissDirection.endToStart,
-            onDismissed: (direction) => provider.removeQuestion(index),
-            background: Container(
-              alignment: Alignment.centerRight,
-              color: CustomColors.errorBorderColor,
-              padding: EdgeInsets.symmetric(
-                  vertical: AppPaddings.medium, horizontal: AppPaddings.large),
-              child: Icon(Icons.delete, color: Colors.white),
+      child: provider.questions.isEmpty
+          ? Center(
+              child: Padding(
+                padding: const EdgeInsets.all(AppPaddings.extraLarge),
+                child: Text(
+                  "No questions added yet, click on the button below to add a question",
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : ReorderableListView(
+              padding: const EdgeInsets.all(AppPaddings.small),
+              onReorder: (oldIndex, newIndex) {
+                provider.reorderQuestions(oldIndex, newIndex);
+              },
+              children: List.generate(provider.questions.length, (index) {
+                final item = provider.questions[index];
+                return Dismissible(
+                  key:
+                      ValueKey(item.id), // Ensure the key is unique and stable.
+                  direction: DismissDirection.endToStart,
+                  onDismissed: (direction) => provider.removeQuestion(index),
+                  background: Container(
+                    alignment: Alignment.centerRight,
+                    color: CustomColors.errorBorderColor,
+                    padding: EdgeInsets.symmetric(
+                        vertical: AppPaddings.medium,
+                        horizontal: AppPaddings.large),
+                    child: Icon(Icons.delete, color: Colors.white),
+                  ),
+                  child: QuestionCard(question: item),
+                );
+              }),
             ),
-            child: QuestionCard(question: item),
-          );
-        }),
-      ),
     );
   }
 }

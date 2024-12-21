@@ -141,4 +141,19 @@ class TeacherEventsProvider extends ChangeNotifier {
     _loading = false;
     notifyListeners();
   }
+
+  // clean up provider
+  void cleanUp() {
+    _loading = true;
+    _myCreatedEvents.clear();
+    _myParticipatingEvents.clear();
+    _offsetMyEvent = 0;
+    _offsetParticipatingEvent = 0;
+    _totalMyEvents = 0;
+    _totalParticipatingEvents = 0;
+    _isLoadingMyEvents = false;
+    _isLoadingParticipatingEvents = false;
+    _isInitialized = false;
+    notifyListeners();
+  }
 }

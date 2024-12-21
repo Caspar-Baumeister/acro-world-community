@@ -433,6 +433,9 @@ class AnswerSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (question.isEmpty) {
+      return Container();
+    }
     return CheckoutSectionContainer(
       child: Container(
         constraints:
@@ -444,7 +447,9 @@ class AnswerSection extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: AppPaddings.medium, top: AppPaddings.medium),
+                    left: AppPaddings.medium,
+                    top: AppPaddings.medium,
+                    right: AppPaddings.medium),
                 child: Text(
                   "Questions from the organizer",
                   style: Theme.of(context).textTheme.titleLarge,

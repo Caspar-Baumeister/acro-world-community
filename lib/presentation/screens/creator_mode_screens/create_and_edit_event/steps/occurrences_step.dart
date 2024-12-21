@@ -124,7 +124,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                   provider.setPage(0);
                   setState(() {});
                 },
-                text: "Cancel",
+                text: "Previous",
                 width: MediaQuery.of(context).size.width * 0.3,
               );
             }),

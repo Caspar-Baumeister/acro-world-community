@@ -14,10 +14,11 @@ class CreatorBookingsProvider extends ChangeNotifier {
   String? creatorUserId;
 
   bool get loading => _loading;
-  List<ClassEventBooking> get bookings => _bookings;
   bool get isLoading => _isLoading;
   bool get canFetchMore => _bookings.length < _totalBookings;
 
+  List<ClassEventBooking> get confirmedBookings =>
+      _bookings.where((booking) => booking.status == "Confirmed").toList();
   // get total amount of bookings
   int get totalBookings => _totalBookings;
 

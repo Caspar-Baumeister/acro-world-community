@@ -39,7 +39,7 @@ class _DashboardBodyState extends State<DashboardBody> {
     // initialises the bookings provider with the creator id from the creator provider
     CreatorBookingsProvider creatorBookingsProvider =
         Provider.of<CreatorBookingsProvider>(context, listen: false);
-    if (creatorBookingsProvider.bookings.isEmpty) {
+    if (creatorBookingsProvider.confirmedBookings.isEmpty) {
       creatorBookingsProvider.creatorUserId =
           Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
       creatorBookingsProvider.fetchBookings();
@@ -62,10 +62,10 @@ class _DashboardBodyState extends State<DashboardBody> {
         children: [
           DashboadBookingsStatistics(
               totalAmountBookings: creatorBookingsProvider.totalBookings),
-          if (creatorBookingsProvider.bookings.isNotEmpty)
+          if (creatorBookingsProvider.confirmedBookings.isNotEmpty)
             Expanded(
                 child: DashboardBookingView(
-                    bookings: creatorBookingsProvider.bookings))
+                    bookings: creatorBookingsProvider.confirmedBookings))
         ],
       ),
     );

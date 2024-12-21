@@ -28,6 +28,7 @@ class AppDimensions {
   static const double iconSizeMedium = 24.0;
   static const double iconSizeLarge = 36.0;
   static const double avatarSizeMedium = 45;
+  static const double avatarSizeLarge = 80;
   static const double eventDashboardSliderWidth = 150;
   static const double eventVerticalScrollCardHeight = 135;
   static const double eventCreationImageSize = 100;

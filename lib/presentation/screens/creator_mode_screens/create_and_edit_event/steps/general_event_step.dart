@@ -208,7 +208,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  text: "Previous",
+                  text: "Cancel",
                   width: MediaQuery.of(context).size.width * 0.3,
                 );
               }),

@@ -15,6 +15,7 @@ import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 class EventCreationAndEditingProvider extends ChangeNotifier {
   // the eventCreationAndEditingProvider keeps track of the data entered by the user
@@ -462,6 +463,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _questions.clear();
       final questions =
           await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
+      // for all questions, change the ids to random ids
+      for (var question in questions) {
+        question.id = Uuid().v4();
+      }
       oldQuestions.addAll(questions);
       _questions.addAll(questions);
     } catch (e, s) {

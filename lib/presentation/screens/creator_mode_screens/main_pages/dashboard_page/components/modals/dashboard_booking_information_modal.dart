@@ -135,7 +135,7 @@ class UserInformationWidget extends StatelessWidget {
               CustomDivider(),
               Row(
                 children: [
-                  Text("View user answers",
+                  Text("View answers",
                       style: Theme.of(context).textTheme.bodyMedium),
                   Spacer(),
                   Icon(Icons.arrow_forward_ios)

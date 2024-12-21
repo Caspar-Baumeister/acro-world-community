@@ -1,3 +1,5 @@
+import 'package:acroworld/data/graphql/queries.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -53,5 +55,31 @@ class UserService {
     }
 
     return result.data!['verify_email'];
+  }
+
+  // get user by id
+  Future<User> getUserById(String userId) async {
+    try {
+      final QueryResult result = await client.query(
+        QueryOptions(
+          document: Queries.getUserById,
+          variables: {
+            'userId': userId,
+          },
+        ),
+      );
+
+      print("getUserById: ${result.data!['users_by_pk']}");
+
+      if (result.hasException) {
+        CustomErrorHandler.captureException(result.exception);
+        throw Exception(
+            'Failed to get user by id. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      return User.fromJson(result.data!['users_by_pk']);
+    } catch (e) {
+      throw Exception('Failed to get user by id. Status code: ${e.toString()}');
+    }
   }
 }

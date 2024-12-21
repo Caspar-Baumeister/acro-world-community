@@ -48,10 +48,10 @@ class QuestionModel {
     );
   }
 
-  Map<String, dynamic> toJson(String eventId, int position) {
+  Map<String, dynamic> toJson(String insertedEventId, int position) {
     return {
       'id': id,
-      'event_id': eventId,
+      'event_id': insertedEventId,
       'question': question,
       'title': title,
       'position': position,

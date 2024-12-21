@@ -115,4 +115,11 @@ class CreatorProvider extends ChangeNotifier {
       return false;
     }
   }
+
+  // clean up the creator
+  void cleanUp() {
+    _activeTeacher = null;
+    _isLoading = false;
+    notifyListeners();
+  }
 }

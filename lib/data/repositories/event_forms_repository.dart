@@ -21,7 +21,7 @@ class EventFormsRepository {
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-    print("questionresult $result");
+    print("insertQuestionResult $result");
 
     // Check for a valid response
     if (result.hasException) {
@@ -46,6 +46,42 @@ class EventFormsRepository {
       document: Queries.getQuestionsForEvent,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {"eventId": eventId},
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    print("questionresult $result");
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to get questions. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["questions"] != null) {
+      try {
+        List<QuestionModel> questions = [];
+        for (var question in result.data!["questions"]) {
+          questions.add(QuestionModel.fromJson(question));
+        }
+        return questions;
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+      }
+    } else {
+      throw Exception('Failed to get questions');
+    }
+  }
+
+  //
+  // get all questions from an event
+  Future<List<QuestionModel>> getQuestionsForEventOccurence(
+      String eventOccurenceId) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: Queries.getQuestionsForEventOccurence,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"eventOccurenceId": eventOccurenceId},
     );
 
     final graphQLClient = GraphQLClientSingleton().client;
@@ -406,5 +442,23 @@ class EventFormsRepository {
     } catch (e, s) {
       throw Exception('Failed to delete answers: $e \n Stacktrace: $s');
     }
+  }
+
+  // get all questions and answers for a user and class event
+  Future<Map<String, dynamic>> getQuestionsAndAnswersForUserAndClassEvent(
+      {required String userId, required String classEventId}) async {
+    // get all questions
+    List<QuestionModel> questions =
+        await getQuestionsForEventOccurence(classEventId).catchError((e) {
+      throw Exception('Failed to get questions: $e');
+    });
+
+    // get all answers
+    List<AnswerModel> answers =
+        await getAnswersForUserAndEvent(userId, classEventId).catchError((e) {
+      throw Exception('Failed to get answers: $e');
+    });
+
+    return {"questions": questions, "answers": answers};
   }
 }
