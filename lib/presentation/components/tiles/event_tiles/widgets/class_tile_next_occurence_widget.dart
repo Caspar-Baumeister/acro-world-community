@@ -14,9 +14,6 @@ class ClassTileNextOccurenceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print("classObject.classEvents: ${classObject.classEvents}");
-    print(
-        "classObject.amountUpcomingEvents: ${classObject.amountUpcomingEvents}");
     if (classObject.classEvents == null ||
         classObject.amountUpcomingEvents == null ||
         classObject.classEvents?.isEmpty == true) {

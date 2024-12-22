@@ -10,10 +10,14 @@ import 'package:flutter/material.dart';
 
 class AddOrEditBookingOptionModal extends StatefulWidget {
   const AddOrEditBookingOptionModal(
-      {super.key, required this.onFinished, this.bookingOption});
+      {super.key,
+      required this.onFinished,
+      this.bookingOption,
+      required this.categoryID});
 
   final Function onFinished;
   final BookingOption? bookingOption;
+  final String categoryID;
 
   @override
   State<AddOrEditBookingOptionModal> createState() =>
@@ -162,6 +166,7 @@ class _AddOrEditBookingOptionModalState
         title: _titleController.text,
         price: 100 * double.parse(_priceController.text),
         currency: currentOption!,
+        bookingCategoryId: widget.categoryID,
         subtitle: _subTitleController.text));
 
     Navigator.of(context).pop();

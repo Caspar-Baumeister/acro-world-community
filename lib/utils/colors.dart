@@ -52,6 +52,7 @@ const Color _white = Color(0xFFFFFFFF);
 const Color _red = Color(0xFFAD3B3B);
 const Color _grey = Color(0xFF707070);
 const Color _blue = Color.fromARGB(255, 0, 54, 98);
+const Color _lightestGreen = Color(0xFFd4ded5);
 
 class CustomColors {
   // COLOR SCHEME //
@@ -65,7 +66,7 @@ class CustomColors {
   static const Color successBgColorSec = _lightGreenSecond;
   static const Color infoBgColor = _grey;
   static const Color backgroundColor = _white;
-  static const Color secondaryBackgroundColor = _lightGreyColor;
+  static const Color secondaryBackgroundColor = _lightestGreen;
 // BORDER COLORS //
   static const Color inactiveBorderColor = _grey;
   static const Color activeBorderColor = _darkGreen;

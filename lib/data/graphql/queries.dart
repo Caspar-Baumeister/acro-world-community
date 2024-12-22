@@ -2,6 +2,19 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
+  /// CATHEGORIES ///
+
+  static final getBookingCategories = gql("""
+query getBookingCategories(\$classId: uuid!) {
+  booking_category(where: {class_id: {_eq: \$classId}}) {
+    id
+    name
+    description
+    contingent
+  }
+}
+""");
+
   /// Questions and Answers ///
 
   static final getQuestionsForEvent = gql("""

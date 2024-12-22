@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
+import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -231,6 +232,211 @@ class ClassesRepository {
       return true;
     } else {
       throw Exception('Failed to cancel class event');
+    }
+  }
+
+  Future<bool> insertBookingCategories(
+      List<Map<String, dynamic>> categories) async {
+    print("categories: $categories");
+    final mutationOptions = MutationOptions(
+      document: Mutations.insertCategories,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        'categories': categories,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    final result = await graphQLClient.mutate(mutationOptions);
+
+    if (result.hasException) {
+      throw Exception(
+        'Failed to insert booking categories. '
+        'Status code: ${result.exception?.raw.toString()}',
+      );
+    }
+
+    if (result.data != null &&
+        result.data!["insert_booking_category"] != null) {
+      return true;
+    } else {
+      throw Exception('Failed to insert booking categories');
+    }
+  }
+
+  // update booking category
+  Future<bool> updateBookingCategory(Map<String, dynamic> variables) async {
+    MutationOptions mutationOptions = MutationOptions(
+        document: Mutations.updateCategory,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: {
+          "id": variables["id"],
+          "category": {
+            "contingent": variables["category"]["contingent"],
+            "name": variables["category"]["name"],
+            "description": variables["category"]["description"],
+          },
+        });
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to update booking category. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null &&
+        result.data!["update_booking_category_by_pk"] != null) {
+      return true;
+    } else {
+      print("updateBookingCategory result: ${result.data}");
+      throw Exception('Failed to update booking category');
+    }
+  }
+
+  // delete booking category
+  Future<bool> deleteBookingCategory(String id) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.deleteCategory,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "id": id,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to delete booking category. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null &&
+        result.data!["delete_booking_category_by_pk"] != null) {
+      return true;
+    } else {
+      throw Exception('Failed to delete booking category ${result.data}');
+    }
+  }
+
+  //getBookingCategoriesForEvent
+  Future<List<BookingCategoryModel>> getBookingCategoriesForEvent(
+      String eventId) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: Queries.getBookingCategories,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "classId": eventId,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to load booking categories. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    List<BookingCategoryModel> bookingCategories = [];
+
+    if (result.data != null && result.data!["booking_category"] != null) {
+      try {
+        bookingCategories = List<BookingCategoryModel>.from(
+          result.data!['booking_category']
+              .map((json) => BookingCategoryModel.fromJson(json)),
+        );
+        return bookingCategories;
+      } catch (e) {
+        throw Exception('Failed to parse booking categories: $e');
+      }
+    } else {
+      throw Exception('Failed to load booking categories');
+    }
+  }
+
+  // identifyCategoryUpdates
+  Future<void> identifyBookingCategoryUpdates(
+    List<BookingCategoryModel> newCategories,
+    List<BookingCategoryModel> oldCategories,
+    String eventId,
+  ) async {
+    // Lists to keep track of which categories need which operation
+    List<BookingCategoryModel> categoriesToInsert = [];
+    List<BookingCategoryModel> categoriesToUpdate = [];
+    List<BookingCategoryModel> categoriesToDelete = [];
+
+    // 1. Identify categories to DELETE
+    //    (Categories that exist in old but not in the new list)
+    for (var oldCategory in oldCategories) {
+      var matchingNewCategory = newCategories.firstWhere(
+        (nc) => nc.id == oldCategory.id,
+        orElse: () => BookingCategoryModel.empty(), // or null in Dart <3.0
+      );
+
+      // If we didn't find a matching category (id) in the new list, we need to delete it
+      if (matchingNewCategory.id == null) {
+        categoriesToDelete.add(oldCategory);
+      }
+    }
+
+    // 2. Identify categories to INSERT or UPDATE
+    //    (Categories that exist in new but not in old => INSERT;
+    //     Categories that exist in both but differ => UPDATE)
+    for (var newCategory in newCategories) {
+      var matchingOldCategory = oldCategories.firstWhere(
+        (oc) => oc.id == newCategory.id,
+        orElse: () => BookingCategoryModel.empty(), // or null in Dart <3.0
+      );
+
+      // If the old category wasn't found, this is a new insert
+      if (matchingOldCategory.id == null) {
+        categoriesToInsert.add(newCategory);
+      } else {
+        // If the category exists in both but is different, add to update list
+        if (matchingOldCategory != newCategory) {
+          categoriesToUpdate.add(newCategory);
+        }
+      }
+    }
+
+    // 3. Perform the operations
+    //    Insert
+    if (categoriesToInsert.isNotEmpty) {
+      await insertBookingCategories(
+        categoriesToInsert
+            .map(
+              (cat) => cat.toJson(eventId),
+            )
+            .toList(),
+      );
+    }
+
+    //    Update
+    if (categoriesToUpdate.isNotEmpty) {
+      // You can either:
+      // (1) do one-by-one update with `updateBookingCategory`
+      // (2) create a bulk update mutation (like you did for questions)
+      // Below does a loop, similar to how you did for questions:
+      for (var category in categoriesToUpdate) {
+        final categoryJson = category.toJson(eventId);
+        await updateBookingCategory({
+          "id": category.id,
+          "category": categoryJson,
+        });
+      }
+    }
+
+    //    Delete
+    if (categoriesToDelete.isNotEmpty) {
+      for (var category in categoriesToDelete) {
+        await deleteBookingCategory(category.id!);
+      }
     }
   }
 }

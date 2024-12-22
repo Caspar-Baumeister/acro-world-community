@@ -1,6 +1,40 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  /// CATEGORY ///
+  // insertCategory
+//   mutation {
+//   insert_booking_category(objects: {}) {
+//     affected_rows
+//   }
+// }
+
+  static final insertCategories = gql("""
+  mutation InsertCategories(\$categories: [booking_category_insert_input!]!) {
+    insert_booking_category(objects: \$categories) {
+      affected_rows
+    }
+  }
+""");
+
+  // updateCategory
+  static final updateCategory = gql("""
+    mutation UpdateCategory(\$id: uuid!, \$category: booking_category_set_input!) {
+      update_booking_category_by_pk(pk_columns: {id: \$id}, _set: \$category) {
+        id
+      }
+    }
+  """);
+
+  // deleteCategory
+  static final deleteCategory = gql("""
+    mutation DeleteCategory(\$id: uuid!) {
+      delete_booking_category_by_pk(id: \$id) {
+        id
+      }
+    }
+  """);
+
   /// Question Form ///
   //insertQuestions questions: [questions_insert_input!]!
   static final insertQuestions = gql("""

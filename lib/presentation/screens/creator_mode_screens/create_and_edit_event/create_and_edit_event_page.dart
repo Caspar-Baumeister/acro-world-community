@@ -73,6 +73,7 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
                 }
               });
             }
+
             // create a new event
             if (widget.isEditing) {
               await eventCreationAndEditingProvider

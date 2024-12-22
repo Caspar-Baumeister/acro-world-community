@@ -22,6 +22,7 @@ class BookingOption {
   CurrencyDetail currency = CurrencyDetail.getCurrencyDetail("");
   bool? wasUpdated;
   bool? wasMarkedForDeletion;
+  String? bookingCategoryId;
 
   double realPriceDiscounted() {
     return (1 - (discount! * 0.01)) * price! * 0.01;
@@ -41,6 +42,7 @@ class BookingOption {
     this.title,
     this.wasUpdated,
     this.wasMarkedForDeletion,
+    this.bookingCategoryId,
   });
 
   BookingOption.fromJson(Map<String, dynamic> json) {
@@ -55,6 +57,7 @@ class BookingOption {
     }
     wasUpdated = json['wasUpdated'] ?? false;
     wasMarkedForDeletion = json['wasMarkedForDeletion'] ?? false;
+    bookingCategoryId = json['category_id'];
   }
 
   // Method to convert a BookingOptionModel to a map (e.g. for JSON encoding)
@@ -66,6 +69,7 @@ class BookingOption {
           'price': price.toString(),
           'title': title,
           'subtitle': subtitle,
+          'category_id': bookingCategoryId,
         }
       }
     };

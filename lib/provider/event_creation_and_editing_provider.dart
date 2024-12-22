@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
@@ -45,6 +46,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOption> _bookingOptions = [];
+  final List<BookingCategoryModel> bookingCategories = [];
+  final List<BookingCategoryModel> oldBookingCategories = [];
   final List<QuestionModel> oldQuestions = [];
   final List<QuestionModel> _questions = [];
   Uint8List? _eventImage;
@@ -93,6 +96,21 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
   void removeBookingOption(int index) {
     _bookingOptions.removeAt(index);
+    notifyListeners();
+  }
+
+  void addCategory(BookingCategoryModel category) {
+    bookingCategories.add(category);
+    notifyListeners();
+  }
+
+  void removeCategory(int index) {
+    bookingCategories.removeAt(index);
+    notifyListeners();
+  }
+
+  void editCategory(int index, BookingCategoryModel category) {
+    bookingCategories[index] = category;
     notifyListeners();
   }
 
@@ -252,6 +270,12 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _pendingInviteTeachers.clear();
     _recurringPatterns.clear();
     _bookingOptions.clear();
+    _questions.clear();
+    _classId = null;
+    existingImageUrl = null;
+    _errorMesssage = null;
+    bookingCategories.clear();
+    oldBookingCategories.clear();
     _eventImage = null;
     _currentPage = 0;
     notifyListeners();
@@ -313,6 +337,21 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           ClassesRepository(apiService: GraphQLClientSingleton());
       final createdClass = await classesRepository.createClass(variables);
 
+      // create the categories
+      if (bookingCategories.isNotEmpty) {
+        try {
+          ClassesRepository classesRepository =
+              ClassesRepository(apiService: GraphQLClientSingleton());
+          // convert questions to JSON format and add the event id from the created class
+          List<Map<String, dynamic>> categoriesJson = bookingCategories
+              .map((category) => category.toJson(createdClass.id!))
+              .toList();
+          await classesRepository.insertBookingCategories(categoriesJson);
+        } catch (e) {
+          CustomErrorHandler.captureException("Error creating categories: $e");
+        }
+      }
+
       // if successful, add the questions
       if (_questions.isNotEmpty) {
         try {
@@ -328,6 +367,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           CustomErrorHandler.captureException("Error creating questions: $e");
         }
       }
+      clear();
     } catch (e) {
       CustomErrorHandler.captureException("Error creating class: $e");
       _errorMesssage = e.toString();
@@ -407,6 +447,19 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         CustomErrorHandler.captureException("Error updating questions: $e",
             stackTrace: s);
       }
+
+      // if successful, update the categories
+      try {
+        ClassesRepository classesRepository =
+            ClassesRepository(apiService: GraphQLClientSingleton());
+
+        await classesRepository.identifyBookingCategoryUpdates(
+            bookingCategories, oldBookingCategories, _classId!);
+      } catch (e) {
+        CustomErrorHandler.captureException("Error updating categories: $e");
+      }
+
+      clear();
     } catch (e) {
       CustomErrorHandler.captureException("Error updating class: $e");
       _errorMesssage = e.toString();
@@ -432,12 +485,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     // get the question repo
     EventFormsRepository eventFormsRepository =
         EventFormsRepository(apiService: GraphQLClientSingleton());
-
     ClassModel? fromClass;
     try {
       final repositoryReturnClass =
           await classesRepository.getClassBySlug(slug);
-
       fromClass = repositoryReturnClass;
       _title = fromClass.name ?? '';
       _slug = isEditing ? fromClass.urlSlug ?? '' : '';
@@ -469,6 +520,15 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       }
       oldQuestions.addAll(questions);
       _questions.addAll(questions);
+
+      // get categories and save them in old and new categories
+      oldBookingCategories.clear();
+      bookingCategories.clear();
+      final categories =
+          await classesRepository.getBookingCategoriesForEvent(fromClass.id!);
+
+      oldBookingCategories.addAll(categories);
+      bookingCategories.addAll(categories);
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }

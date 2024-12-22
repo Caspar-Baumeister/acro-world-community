@@ -61,6 +61,7 @@ class Fragments {
     subtitle
     title
     updated_at
+    category_id
     """;
 
   static const classFragmentAllInfo = """
@@ -103,6 +104,7 @@ class Fragments {
       questions {
         ${Fragments.questionFragment}
       }
+     
 
 """;
 
