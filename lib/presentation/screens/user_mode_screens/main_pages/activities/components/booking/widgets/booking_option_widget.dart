@@ -3,8 +3,8 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-class BookOption extends StatelessWidget {
-  const BookOption(
+class BookOptionComponent extends StatelessWidget {
+  const BookOptionComponent(
       {super.key,
       required this.bookingOption,
       required this.onChanged,

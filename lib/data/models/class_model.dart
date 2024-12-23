@@ -1,3 +1,4 @@
+import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
@@ -35,7 +36,7 @@ class ClassModel {
   List<RecurringPatternModel>? recurringPatterns;
   List<ClassOwner>? classOwner;
   List<QuestionModel> questions = [];
-  // List<ClassTeachers>? invitedTeachers;
+  List<BookingCategoryModel>? bookingCategories;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassOwner? get owner {
@@ -92,6 +93,7 @@ class ClassModel {
       this.amountNonActiveFlaggs,
       this.amountUpcomingEvents,
       required this.questions,
+      this.bookingCategories,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
@@ -169,6 +171,13 @@ class ClassModel {
       classLevels = <ClassLevels>[];
       json['class_levels'].forEach((v) {
         classLevels!.add(ClassLevels.fromJson(v));
+      });
+    }
+
+    if (json['booking_categories'] != null) {
+      bookingCategories = <BookingCategoryModel>[];
+      json['booking_categories'].forEach((v) {
+        bookingCategories!.add(BookingCategoryModel.fromJson(v));
       });
     }
 

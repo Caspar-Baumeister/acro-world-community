@@ -119,11 +119,6 @@ class CategoryCreationCard extends StatelessWidget {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context);
 
-    // for eventCreationAndEditingProvider.bookingOptions print category id
-    for (var bookingOption in eventCreationAndEditingProvider.bookingOptions) {
-      print(
-          "bookingOption.bookingCategoryId: ${bookingOption.bookingCategoryId}");
-    }
     return Container(
         padding: const EdgeInsets.all(AppPaddings.medium),
         decoration: BoxDecoration(

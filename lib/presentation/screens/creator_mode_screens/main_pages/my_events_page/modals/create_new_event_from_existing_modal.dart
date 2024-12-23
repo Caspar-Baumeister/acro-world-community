@@ -81,6 +81,10 @@ class _CreateNewEventFromExistingModalState
                   await Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
                       .setClassFromExisting(currentOption!.value, false);
+                } else {
+                  Provider.of<EventCreationAndEditingProvider>(context,
+                          listen: false)
+                      .clear();
                 }
                 Navigator.of(context).push(CreateAndEditEventPageRoute(
                     isEditing: false, classModel: classModel));

@@ -89,6 +89,7 @@ class _BookingModalState extends State<BookingModal> {
                         className: clas.name!,
                         classDate: widget.classEvent.startDateDT,
                         classBookingOptions: clas.classBookingOptions ?? [],
+                        bookingCategories: clas.bookingCategories ?? [],
                         placesLeft: widget.classEvent.availableBookingSlots,
                         onOptionSelected: (p0) => setCurrentOption(p0),
                         currentOption: currentOption,

@@ -6,6 +6,8 @@
 // name- text
 // description- text
 
+import 'package:acroworld/data/models/booking_option.dart';
+
 class BookingCategoryModel {
   String? id;
 
@@ -13,6 +15,7 @@ class BookingCategoryModel {
   String? classId;
   String name;
   String? description;
+  List<BookingOption>? bookingOptions;
 
   BookingCategoryModel({
     this.id,
@@ -20,6 +23,7 @@ class BookingCategoryModel {
     this.classId,
     required this.name,
     this.description,
+    this.bookingOptions,
   });
 
   factory BookingCategoryModel.fromJson(Map<String, dynamic> json) {
@@ -30,6 +34,11 @@ class BookingCategoryModel {
       classId: json['class_id'],
       name: json['name'],
       description: json['description'],
+      // loop trough booking options and map them to the model
+      bookingOptions: json['booking_options'] != null
+          ? List<BookingOption>.from(
+              json['booking_options'].map((e) => BookingOption.fromJson(e)))
+          : [],
     );
   }
 

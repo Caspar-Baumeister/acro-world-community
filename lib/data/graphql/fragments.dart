@@ -104,6 +104,15 @@ class Fragments {
       questions {
         ${Fragments.questionFragment}
       }
+      booking_categories {
+        id
+        name
+        description
+        contingent
+        booking_options {
+          ${Fragments.bookingOptionFragment}
+        }
+      }
      
 
 """;
