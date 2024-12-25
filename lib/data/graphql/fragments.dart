@@ -68,11 +68,6 @@ class Fragments {
       url_slug
       booking_email
       max_booking_slots
-      class_booking_options {
-        booking_option {
-          $bookingOptionFragment
-        }
-      }
       city
       description
       id

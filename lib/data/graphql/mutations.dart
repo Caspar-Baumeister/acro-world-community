@@ -1,13 +1,40 @@
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
+  // ----------------------------------
+  // Insert Booking Options
+  // ----------------------------------
+  static final insertBookingOptions = gql("""
+    mutation InsertBookingOptions(\$options: [booking_option_insert_input!]!) {
+      insert_booking_option(objects: \$options) {
+        affected_rows
+      }
+    }
+  """);
+
+  // ----------------------------------
+  // Update Booking Option
+  // ----------------------------------
+  static final updateBookingOption = gql("""
+    mutation UpdateBookingOption(\$id: uuid!, \$option: booking_option_set_input!) {
+      update_booking_option_by_pk(pk_columns: {id: \$id}, _set: \$option) {
+        id
+      }
+    }
+  """);
+
+  // ----------------------------------
+  // Delete Booking Option
+  // ----------------------------------
+  static final deleteBookingOption = gql("""
+    mutation DeleteBookingOption(\$id: uuid!) {
+      delete_booking_option_by_pk(id: \$id) {
+        id
+      }
+    }
+  """);
+
   /// CATEGORY ///
-  // insertCategory
-//   mutation {
-//   insert_booking_category(objects: {}) {
-//     affected_rows
-//   }
-// }
 
   static final insertCategories = gql("""
   mutation InsertCategories(\$categories: [booking_category_insert_input!]!) {
@@ -225,7 +252,6 @@ mutation createStripeUser {
     \$timezone: String!,
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
-    \$classBookingOptions: [class_booking_option_insert_input!]!
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
@@ -243,9 +269,7 @@ mutation createStripeUser {
         recurring_patterns: {
           data: \$recurringPatterns
         }
-        class_booking_options: {
-          data: \$classBookingOptions
-        }
+   
         class_owners: {
           data: \$classOwners
         }
@@ -272,15 +296,10 @@ mutation createStripeUser {
     \$timezone: String!,
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
-    \$classBookingOptions: [class_booking_option_insert_input!]!
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
   ) {
-    # First delete all associated booking options for this class
-    delete_class_booking_option(where: { class_id: { _eq: \$id } }) {
-      affected_rows
-    }
 
     # Delete the class by id
     delete_classes_by_pk(id: \$id) {
@@ -302,9 +321,7 @@ mutation createStripeUser {
         recurring_patterns: {
           data: \$recurringPatterns
         },
-        class_booking_options: {
-          data: \$classBookingOptions
-        },
+       
         class_owners: {
           data: \$classOwners
         },

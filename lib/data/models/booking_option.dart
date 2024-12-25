@@ -1,17 +1,5 @@
 import 'package:acroworld/utils/helper_functions/currency_formater.dart';
 
-class ClassBookingOptions {
-  BookingOption? bookingOption;
-
-  ClassBookingOptions({this.bookingOption});
-
-  ClassBookingOptions.fromJson(Map<String, dynamic> json) {
-    bookingOption = json['booking_option'] != null
-        ? BookingOption.fromJson(json['booking_option'])
-        : null;
-  }
-}
-
 class BookingOption {
   num? commission;
   num? discount;
@@ -20,17 +8,7 @@ class BookingOption {
   String? subtitle;
   String? title;
   CurrencyDetail currency = CurrencyDetail.getCurrencyDetail("");
-  bool? wasUpdated;
-  bool? wasMarkedForDeletion;
   String? bookingCategoryId;
-
-  double realPriceDiscounted() {
-    return (1 - (discount! * 0.01)) * price! * 0.01;
-  }
-
-  double originalPrice() {
-    return price! * 0.01;
-  }
 
   BookingOption({
     this.commission,
@@ -40,8 +18,6 @@ class BookingOption {
     this.subtitle,
     required this.currency,
     this.title,
-    this.wasUpdated,
-    this.wasMarkedForDeletion,
     this.bookingCategoryId,
   });
 
@@ -55,23 +31,32 @@ class BookingOption {
     if (json['currency'] != null) {
       currency = CurrencyDetail.getCurrencyDetail(json['currency']);
     }
-    wasUpdated = json['wasUpdated'] ?? false;
-    wasMarkedForDeletion = json['wasMarkedForDeletion'] ?? false;
     bookingCategoryId = json['category_id'];
   }
 
-  // Method to convert a BookingOptionModel to a map (e.g. for JSON encoding)
-  Map<String, dynamic> toMap() {
+  /// Converts a [BookingOption] into the JSON map needed by your GraphQL mutation
+  Map<String, dynamic> toJson() {
+    print("object: ${toString()}");
     return {
-      'booking_option': {
-        'data': {
-          'currency': currency.value,
-          'price': price.toString(),
-          'title': title,
-          'subtitle': subtitle,
-          'category_id': bookingCategoryId,
-        }
-      }
+      'price': price,
+      'subtitle': subtitle,
+      'title': title,
+      'currency': currency.value,
+      'category_id': bookingCategoryId,
     };
+  }
+
+  double realPriceDiscounted() {
+    return (1 - (discount! * 0.01)) * price! * 0.01;
+  }
+
+  double originalPrice() {
+    return price! * 0.01;
+  }
+
+  // tostring
+  @override
+  String toString() {
+    return 'BookingOption{id: $id, price: $price, subtitle: $subtitle, title: $title, currency: $currency, bookingCategoryId: $bookingCategoryId}';
   }
 }

@@ -12,7 +12,6 @@ class OptionChoosingStep extends StatelessWidget {
       {super.key,
       required this.className,
       required this.classDate,
-      required this.classBookingOptions,
       required this.onOptionSelected,
       required this.placesLeft,
       required this.currentOption,
@@ -21,7 +20,6 @@ class OptionChoosingStep extends StatelessWidget {
       this.maxPlaces});
   final String className;
   final DateTime classDate;
-  final List<ClassBookingOptions> classBookingOptions;
   final void Function(String) onOptionSelected;
   final num? placesLeft;
   final num? maxPlaces;

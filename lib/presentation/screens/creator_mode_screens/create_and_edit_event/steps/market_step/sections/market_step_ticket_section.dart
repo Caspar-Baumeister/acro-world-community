@@ -164,39 +164,39 @@ class CategoryCreationCard extends StatelessWidget {
             // a line
             const CustomDivider(),
             // show Booking options of provider with category id
-            ...eventCreationAndEditingProvider.bookingOptions
-                .where((element) =>
-                    element.bookingCategoryId == bookingCategory.id)
-                .map((BookingOption e) => Padding(
-                      padding:
-                          const EdgeInsets.only(bottom: AppPaddings.medium),
-                      child: BookingOptionCreationCard(
-                        bookingOption: e,
-                        onEdit: () {
-                          buildMortal(
-                              context,
-                              AddOrEditBookingOptionModal(
-                                onFinished: (BookingOption bookingOption) {
-                                  eventCreationAndEditingProvider
-                                      .editBookingOption(
-                                    eventCreationAndEditingProvider
-                                        .bookingOptions
-                                        .indexOf(e),
-                                    bookingOption,
-                                  );
-                                },
-                                bookingOption: e,
-                                categoryID: bookingCategory.id!,
-                              ));
-                        },
-                        onDelete: () {
-                          eventCreationAndEditingProvider.removeBookingOption(
-                            eventCreationAndEditingProvider.bookingOptions
-                                .indexOf(e),
-                          );
-                        },
-                      ),
-                    )),
+            ...eventCreationAndEditingProvider.bookingOptions.where((option) {
+              return option.bookingCategoryId == bookingCategory.id;
+            }).map(
+              (BookingOption e) {
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: AppPaddings.medium),
+                  child: BookingOptionCreationCard(
+                    bookingOption: e,
+                    onEdit: () {
+                      buildMortal(
+                          context,
+                          AddOrEditBookingOptionModal(
+                            onFinished: (BookingOption bookingOption) {
+                              eventCreationAndEditingProvider.editBookingOption(
+                                eventCreationAndEditingProvider.bookingOptions
+                                    .indexOf(e),
+                                bookingOption,
+                              );
+                            },
+                            bookingOption: e,
+                            categoryID: bookingCategory.id!,
+                          ));
+                    },
+                    onDelete: () {
+                      eventCreationAndEditingProvider.removeBookingOption(
+                        eventCreationAndEditingProvider.bookingOptions
+                            .indexOf(e),
+                      );
+                    },
+                  ),
+                );
+              },
+            ),
 
             SizedBox(height: AppPaddings.medium),
             // show button to add booking option

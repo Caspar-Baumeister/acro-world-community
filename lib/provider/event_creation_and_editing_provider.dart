@@ -6,6 +6,7 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/data/repositories/event_forms_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
@@ -16,7 +17,6 @@ import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:uuid/uuid.dart';
 
 class EventCreationAndEditingProvider extends ChangeNotifier {
   // the eventCreationAndEditingProvider keeps track of the data entered by the user
@@ -46,6 +46,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<TeacherModel> _pendingInviteTeachers = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOption> _bookingOptions = [];
+  final List<BookingOption> oldBookingOptions = [];
   final List<BookingCategoryModel> bookingCategories = [];
   final List<BookingCategoryModel> oldBookingCategories = [];
   final List<QuestionModel> oldQuestions = [];
@@ -299,9 +300,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> recurringPatternsJson =
           _recurringPatterns.map((pattern) => pattern.toJson()).toList();
 
-      final List<Map<String, dynamic>> bookingOptionsJson =
-          _bookingOptions.map((option) => option.toMap()).toList();
-
       String? imageUrl;
       if (_eventImage == null && existingImageUrl != null) {
         imageUrl = existingImageUrl;
@@ -327,7 +325,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'timezone': timezone,
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
-        'classBookingOptions': bookingOptionsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots
@@ -397,8 +394,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final List<Map<String, dynamic>> recurringPatternsJson =
           _recurringPatterns.map((pattern) => pattern.toJson()).toList();
 
-      final List<Map<String, dynamic>> bookingOptionsJson =
-          _bookingOptions.map((option) => option.toMap()).toList();
       String? imageUrl;
       if (_eventImage == null && existingImageUrl != null) {
         imageUrl = existingImageUrl;
@@ -425,7 +420,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'timezone': timezone,
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
-        'classBookingOptions': bookingOptionsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots
@@ -457,6 +451,17 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
             bookingCategories, oldBookingCategories, _classId!);
       } catch (e) {
         CustomErrorHandler.captureException("Error updating categories: $e");
+      }
+
+      // if successful, update the booing options
+      try {
+        BookingsRepository bookingsRepository =
+            BookingsRepository(apiService: GraphQLClientSingleton());
+        await bookingsRepository.identifyBookingOptionUpdates(
+            _bookingOptions, oldBookingOptions);
+      } catch (e) {
+        CustomErrorHandler.captureException(
+            "Error updating booking options: $e");
       }
 
       clear();
@@ -507,17 +512,13 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;
       _bookingOptions.clear();
-      _bookingOptions.addAll(fromClass.bookingOptions ?? []);
 
       // get questions and save them in old and new questions
       oldQuestions.clear();
       _questions.clear();
       final questions =
           await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
-      // for all questions, change the ids to random ids
-      for (var question in questions) {
-        question.id = Uuid().v4();
-      }
+
       oldQuestions.addAll(questions);
       _questions.addAll(questions);
 
@@ -529,6 +530,12 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
       oldBookingCategories.addAll(categories);
       bookingCategories.addAll(categories);
+      for (var category in categories) {
+        _bookingOptions.addAll(category.bookingOptions ?? []);
+        oldBookingOptions.addAll(category.bookingOptions ?? []);
+      }
+
+      print("booking options length: ${_bookingOptions.length}");
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }

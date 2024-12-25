@@ -130,8 +130,8 @@ At: ${clas.locationName}
   BottomAppBar? _buildBottomHoverButton(
       BuildContext context, ClassOwner? billingTeacher) {
     if (widget.classEvent != null &&
-        widget.classEvent!.classModel?.classBookingOptions != null &&
-        widget.classEvent!.classModel!.classBookingOptions!.isNotEmpty &&
+        widget.classEvent!.classModel?.bookingOptions != null &&
+        widget.classEvent!.classModel!.bookingOptions.isNotEmpty &&
         billingTeacher != null) {
       return BottomAppBar(
           elevation: 0,

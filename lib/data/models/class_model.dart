@@ -21,7 +21,6 @@ class ClassModel {
   num? distance;
   String? bookingEmail;
   int? maxBookingSlots;
-  List<ClassBookingOptions>? classBookingOptions;
   bool? isInitiallyFavorized;
   bool? isInitiallyFlagged;
   num? amountActiveFlaggs;
@@ -49,10 +48,10 @@ class ClassModel {
   }
 
   List<BookingOption> get bookingOptions {
-    if (classBookingOptions != null) {
-      return classBookingOptions!
-          .where((e) => e.bookingOption != null)
-          .map((e) => e.bookingOption!)
+    if (bookingCategories != null) {
+      return bookingCategories!
+          .expand((element) => element.bookingOptions ?? [])
+          .cast<BookingOption>()
           .toList();
     }
     return [];
@@ -71,7 +70,6 @@ class ClassModel {
   ClassModel(
       {this.bookingEmail,
       this.maxBookingSlots,
-      this.classBookingOptions,
       this.description,
       this.id,
       this.urlSlug,
@@ -149,12 +147,6 @@ class ClassModel {
     maxBookingSlots = json['max_booking_slots'];
     city = json['location_city'];
     country = json['location_country'];
-    if (json['class_booking_options'] != null) {
-      classBookingOptions = <ClassBookingOptions>[];
-      json['class_booking_options'].forEach((v) {
-        classBookingOptions!.add(ClassBookingOptions.fromJson(v));
-      });
-    }
     if (json['class_teachers'] != null) {
       classTeachers = <ClassTeachers>[];
       json['class_teachers'].forEach((v) {

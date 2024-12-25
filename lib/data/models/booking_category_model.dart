@@ -27,7 +27,6 @@ class BookingCategoryModel {
   });
 
   factory BookingCategoryModel.fromJson(Map<String, dynamic> json) {
-    print("BookingCategoryModel.fromJson: $json");
     return BookingCategoryModel(
       id: json['id'],
       contingent: json['contingent'],

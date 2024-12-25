@@ -11,6 +11,9 @@ query getBookingCategories(\$classId: uuid!) {
     name
     description
     contingent
+    booking_options {
+      ${Fragments.bookingOptionFragment}
+    }
   }
 }
 """);

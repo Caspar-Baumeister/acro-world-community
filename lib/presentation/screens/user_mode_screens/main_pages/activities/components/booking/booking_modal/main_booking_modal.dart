@@ -26,8 +26,9 @@ class _BookingModalState extends State<BookingModal> {
   @override
   void initState() {
     super.initState();
-    currentOption =
-        widget.classEvent.classModel?.classBookingOptions?[0].bookingOption?.id;
+    if (widget.classEvent.classModel?.bookingOptions[0].id != null) {
+      currentOption = widget.classEvent.classModel!.bookingOptions[0].id!;
+    }
   }
 
   // set current option to the selected option
@@ -45,9 +46,8 @@ class _BookingModalState extends State<BookingModal> {
 
     BookingOption? currentOptionObject;
     if (currentOption != null) {
-      currentOptionObject = clas.classBookingOptions!
-          .firstWhere((e) => e.bookingOption?.id == currentOption)
-          .bookingOption!;
+      currentOptionObject =
+          clas.bookingOptions.firstWhere((e) => e.id == currentOption);
     }
 
     String? teacherStripeId = clas.owner?.teacher?.stripeId;
@@ -88,7 +88,6 @@ class _BookingModalState extends State<BookingModal> {
                     ? OptionChoosingStep(
                         className: clas.name!,
                         classDate: widget.classEvent.startDateDT,
-                        classBookingOptions: clas.classBookingOptions ?? [],
                         bookingCategories: clas.bookingCategories ?? [],
                         placesLeft: widget.classEvent.availableBookingSlots,
                         onOptionSelected: (p0) => setCurrentOption(p0),

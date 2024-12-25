@@ -98,8 +98,8 @@ class DiscoveryProvider extends ChangeNotifier {
           .where((event) =>
               event.maxBookingSlots != null &&
               event.availableBookingSlots != null &&
-              event.classModel?.classBookingOptions != null &&
-              event.classModel!.classBookingOptions!.isNotEmpty &&
+              event.classModel?.bookingOptions != null &&
+              event.classModel!.bookingOptions.isNotEmpty &&
               event.availableBookingSlots! > 0)
           .toList();
     }
@@ -132,8 +132,8 @@ class DiscoveryProvider extends ChangeNotifier {
         .where((event) =>
             event.maxBookingSlots != null &&
             event.availableBookingSlots != null &&
-            event.classModel?.classBookingOptions != null &&
-            event.classModel!.classBookingOptions!.isNotEmpty &&
+            event.classModel?.bookingOptions != null &&
+            event.classModel!.bookingOptions.isNotEmpty &&
             event.availableBookingSlots! > 0)
         .toList();
   }
