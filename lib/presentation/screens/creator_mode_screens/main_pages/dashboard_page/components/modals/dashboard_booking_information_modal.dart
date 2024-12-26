@@ -42,8 +42,17 @@ class DashboardBookingInformationModal extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: Text(
-                  "Booking option: ${booking.bookingOption?.title} - ${booking.bookingPriceString}"),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (booking.bookingOption?.bookingCategory?.name != null)
+                    Text(
+                        "Category: ${booking.bookingOption?.bookingCategory?.name}"),
+                  Text(
+                      "Booking option: ${booking.bookingOption?.title} - ${booking.bookingPriceString}"),
+                ],
+              ),
             ),
             CommissionInformationButton(
               symbol:

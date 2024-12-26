@@ -49,6 +49,11 @@ class Fragments {
     }
     booking_option {
       $bookingOptionFragment
+      category {
+        id
+        name
+        contingent
+      }
     }
 """;
 

@@ -164,59 +164,67 @@ class BookingOptionSelectionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        decoration: BoxDecoration(
-          borderRadius: AppBorders.defaultRadius,
-          border: Border.all(color: CustomColors.primaryTextColor, width: 1),
-        ),
-        padding: const EdgeInsets.all(AppPaddings.small),
-        child: Row(
-          children: [
-            SizedBox(
-              height: 24.0,
-              width: 24.0,
-              child: Checkbox(
-                activeColor: CustomColors.successTextColor,
-                value: value,
-                onChanged: (_) => onChanged(bookingOption.id!),
-              ),
-            ),
-            VerticalDivider(
-              color: CustomColors.primaryTextColor,
-              thickness: 1,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    bookingOption.title!,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: CustomColors.primaryColor),
-                    maxLines: 2,
+    return GestureDetector(
+      onTap: () {
+        onChanged(bookingOption.id!);
+      },
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: AppBorders.defaultRadius,
+            border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+          ),
+          padding: const EdgeInsets.all(AppPaddings.small),
+          child: Row(
+            children: [
+              SizedBox(
+                height: 24.0,
+                width: 24.0,
+                child: IgnorePointer(
+                  child: Checkbox(
+                    activeColor: CustomColors.successTextColor,
+                    value: value,
+                    onChanged: (_) => onChanged(bookingOption.id!),
                   ),
-                  bookingOption.subtitle != null &&
-                          bookingOption.subtitle!.isNotEmpty
-                      ? Padding(
-                          padding:
-                              const EdgeInsets.only(top: AppPaddings.small),
-                          child: Text(
-                            bookingOption.subtitle!,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        )
-                      : Container(),
-                ],
+                ),
               ),
-            ),
-            Text(
-              '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  color: CustomColors.accentColor, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ));
+              VerticalDivider(
+                color: CustomColors.primaryTextColor,
+                thickness: 1,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      bookingOption.title!,
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: CustomColors.primaryColor),
+                      maxLines: 2,
+                    ),
+                    bookingOption.subtitle != null &&
+                            bookingOption.subtitle!.isNotEmpty
+                        ? Padding(
+                            padding:
+                                const EdgeInsets.only(top: AppPaddings.small),
+                            child: Text(
+                              bookingOption.subtitle!,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          )
+                        : Container(),
+                  ],
+                ),
+              ),
+              Text(
+                '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: CustomColors.accentColor,
+                    fontWeight: FontWeight.bold),
+              ),
+            ],
+          )),
+    );
   }
 }

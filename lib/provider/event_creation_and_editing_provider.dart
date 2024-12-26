@@ -331,7 +331,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
-        'max_booking_slots': maxBookingSlots
+        'max_booking_slots': maxBookingSlots,
       };
 
       ClassesRepository classesRepository =
@@ -345,7 +345,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
               ClassesRepository(apiService: GraphQLClientSingleton());
           // convert questions to JSON format and add the event id from the created class
           List<Map<String, dynamic>> categoriesJson = bookingCategories
-              .map((category) => category.toJson(createdClass.id!))
+              .map((BookingCategoryModel category) =>
+                  category.toJson(createdClass.id!))
               .toList();
           await classesRepository.insertBookingCategories(categoriesJson);
         } catch (e) {

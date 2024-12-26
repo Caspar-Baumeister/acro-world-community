@@ -6,6 +6,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/class_bookin
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/participants_statistics.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,9 +47,14 @@ class ClassBookingSummaryBody extends StatelessWidget {
           return Column(
             children: [
               if (snapshot.data![0].classEvent.classModel?.name != null)
-                Text(
-                    "${snapshot.data![0].classEvent.classModel!.name!} - ${getDatedMMYY(snapshot.data![0].classEvent.startDateDT)}",
-                    style: Theme.of(context).textTheme.headlineMedium),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppPaddings.medium),
+                  child: Text(
+                      "${snapshot.data![0].classEvent.classModel!.name!}\n${getDatedMMYY(snapshot.data![0].classEvent.startDateDT)}",
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.titleLarge),
+                ),
               SizedBox(
                   height: 200,
                   child: ParticipantsStatistics(bookings: snapshot.data!)),
