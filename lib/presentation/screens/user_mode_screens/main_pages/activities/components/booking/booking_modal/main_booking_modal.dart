@@ -86,6 +86,7 @@ class _BookingModalState extends State<BookingModal> {
                 ? const Text("This teacher is not yet connected to Stripe")
                 : step == 0
                     ? OptionChoosingStep(
+                        classEventId: widget.classEvent.id!,
                         className: clas.name!,
                         classDate: widget.classEvent.startDateDT,
                         bookingCategories: clas.bookingCategories ?? [],

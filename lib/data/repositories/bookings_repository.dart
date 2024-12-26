@@ -11,6 +11,47 @@ class BookingsRepository {
 
   BookingsRepository({required this.apiService});
 
+  // getConfirmedBookingsForCategoryAggregate and classEventId
+  Future<int?> getConfirmedBookingsForCategoryAggregate(
+    String categoryId,
+    String classEventId,
+  ) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: Queries.getConfirmedBookingsForCategoryAggregate,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "category_id": categoryId,
+        "class_event_id": classEventId,
+      },
+    );
+    try {
+      final graphQLClient = GraphQLClientSingleton().client;
+      QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'Failed to load confirmed bookings. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      if (result.data != null && result.data!["class_event_bookings"] != null) {
+        // return aggregate count or throw exception
+        try {
+          return result.data!['class_event_bookings_aggregate']['aggregate']
+              ['count'];
+        } catch (e, s) {
+          throw Exception(
+              'Error parsing ClassEventBooking: $e\nStackTrace: $s');
+        }
+      } else {
+        throw Exception(
+            'Failed to load confirmed bookings: $result\n${StackTrace.current}');
+      }
+    } catch (e, s) {
+      throw Exception('Failed to load confirmed bookings: $e\nStackTrace: $s');
+    }
+  }
+
 // fetches all classeventbooking of a creator
   Future<List<ClassEventBooking>> getCreatorsClassEventBookings(
     String creatorId,

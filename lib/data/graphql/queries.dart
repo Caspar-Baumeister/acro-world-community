@@ -4,6 +4,25 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 class Queries {
   /// CATHEGORIES ///
 
+// getConfirmedBookingsForCategory
+// {
+//   class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: "123"}}, _and: {class_event_id: {_eq: ""}}}) {
+//     aggregate {
+//       count
+//     }
+//   }
+// }
+
+  static final getConfirmedBookingsForCategoryAggregate = gql("""
+query getConfirmedBookingsForCategory(\$category_id: uuid!, \$class_event_id: uuid!) {
+  class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: \$category_id}}, _and: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
   static final getBookingCategories = gql("""
 query getBookingCategories(\$classId: uuid!) {
   booking_category(where: {class_id: {_eq: \$classId}}) {

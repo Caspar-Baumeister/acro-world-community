@@ -1,7 +1,9 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -12,6 +14,7 @@ class OptionChoosingStep extends StatelessWidget {
       {super.key,
       required this.className,
       required this.classDate,
+      required this.classEventId,
       required this.onOptionSelected,
       required this.placesLeft,
       required this.currentOption,
@@ -26,6 +29,7 @@ class OptionChoosingStep extends StatelessWidget {
   final String? currentOption;
   final Function nextStep;
   final List<BookingCategoryModel> bookingCategories;
+  final String classEventId;
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,7 @@ class OptionChoosingStep extends StatelessWidget {
                       child: BookingCategorySelectionComponent(
                         bookingCategory: bookingCategory,
                         currentId: currentOption,
+                        classEventId: classEventId,
                         onChanged: (id) {
                           onOptionSelected(id);
                         },
@@ -99,9 +104,11 @@ class BookingCategorySelectionComponent extends StatelessWidget {
     required this.bookingCategory,
     this.currentId,
     required this.onChanged,
+    required this.classEventId,
   });
 
   final BookingCategoryModel bookingCategory;
+  final String classEventId;
   final String? currentId;
   final Function(String) onChanged;
 
@@ -113,41 +120,81 @@ class BookingCategorySelectionComponent extends StatelessWidget {
           color: CustomColors.secondaryBackgroundColor,
           borderRadius: AppBorders.defaultRadius,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // show header with title and description, contingent and edit button
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: FutureBuilder<int?>(
+          future: getConfirmedBookingsAggregate(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            if (snapshot.hasError) {
+              return Text("Error: ${snapshot.error}");
+            }
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Flexible(
-                  child: Text(bookingCategory.name,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor)),
+                // show header with title and description, contingent and edit button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Text(bookingCategory.name,
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: CustomColors.primaryColor)),
+                    ),
+                    Text(
+                        "Amount tickets:  ${snapshot.data != null ? "${snapshot.data}/" : ""}${bookingCategory.contingent}",
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ],
                 ),
-                Text("Amount tickets: ${bookingCategory.contingent}",
+                SizedBox(height: AppPaddings.small),
+                Text(bookingCategory.description ?? "",
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
                     style: Theme.of(context).textTheme.bodyMedium),
-              ],
-            ),
-            SizedBox(height: AppPaddings.small),
-            Text(bookingCategory.description ?? "",
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-                style: Theme.of(context).textTheme.bodyMedium),
-            // a line
-            const CustomDivider(),
-            // show Booking options of provider with category id
-            ...bookingCategory.bookingOptions!.map((BookingOption e) => Padding(
-                  padding: const EdgeInsets.only(bottom: AppPaddings.medium),
-                  child: BookingOptionSelectionCard(
-                    bookingOption: e,
-                    value: currentId == e.id,
-                    onChanged: onChanged,
+                // a line
+                const CustomDivider(),
+                if (snapshot.data != null &&
+                    snapshot.data! >= bookingCategory.contingent)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    child: Text(
+                      "No more places left",
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: CustomColors.errorTextColor,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                )),
-          ],
+                if (snapshot.data == null ||
+                    snapshot.data! < bookingCategory.contingent)
+                  // show Booking options of provider with category id
+                  ...bookingCategory.bookingOptions!
+                      .map((BookingOption e) => Padding(
+                            padding: const EdgeInsets.only(
+                                bottom: AppPaddings.medium),
+                            child: BookingOptionSelectionCard(
+                              bookingOption: e,
+                              value: currentId == e.id,
+                              onChanged: onChanged,
+                            ),
+                          )),
+              ],
+            );
+          },
         ));
+  }
+
+  // get aggregate of all confirmed bookings for this category
+  Future<int?> getConfirmedBookingsAggregate() async {
+    BookingsRepository bookingsRepository =
+        BookingsRepository(apiService: GraphQLClientSingleton());
+
+    // get all confirmed bookings for this category
+    return bookingsRepository.getConfirmedBookingsForCategoryAggregate(
+        bookingCategory.id!, classEventId);
   }
 }
 
