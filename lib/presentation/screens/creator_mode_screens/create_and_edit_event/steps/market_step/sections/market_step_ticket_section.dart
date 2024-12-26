@@ -153,11 +153,52 @@ class CategoryCreationCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: AppPaddings.small),
-                  child: CustomIconButton(
-                      icon: Icons.edit,
-                      onPressed: () {
-                        onEdit();
-                      }),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CustomIconButton(
+                          icon: Icons.edit,
+                          onPressed: () {
+                            onEdit();
+                          }),
+                      SizedBox(width: AppPaddings.small),
+                      CustomIconButton(
+                          icon: Icons.delete,
+                          onPressed: () {
+                            // open warning dialog if there are booking options
+                            if (eventCreationAndEditingProvider.bookingOptions
+                                .any((element) =>
+                                    element.bookingCategoryId ==
+                                    bookingCategory.id)) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                  title: Text('Warning'),
+                                  content: Text(
+                                      'You are about to delete a ticket category that has tickets associated with it. Are you sure you want to proceed?'),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Cancel'),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        onDelete();
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Text('Delete'),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              onDelete();
+                            }
+                          }),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -188,10 +229,15 @@ class CategoryCreationCard extends StatelessWidget {
                           ));
                     },
                     onDelete: () {
+                      print("before delete");
+                      print(eventCreationAndEditingProvider
+                          .bookingOptions.length);
                       eventCreationAndEditingProvider.removeBookingOption(
                         eventCreationAndEditingProvider.bookingOptions
                             .indexOf(e),
                       );
+                      print(eventCreationAndEditingProvider
+                          .bookingOptions.length);
                     },
                   ),
                 );

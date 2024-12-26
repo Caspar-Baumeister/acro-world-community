@@ -36,7 +36,6 @@ class BookingOption {
 
   /// Converts a [BookingOption] into the JSON map needed by your GraphQL mutation
   Map<String, dynamic> toJson() {
-    print("object: ${toString()}");
     return {
       'price': price,
       'subtitle': subtitle,
@@ -58,5 +57,18 @@ class BookingOption {
   @override
   String toString() {
     return 'BookingOption{id: $id, price: $price, subtitle: $subtitle, title: $title, currency: $currency, bookingCategoryId: $bookingCategoryId}';
+  }
+
+  // equals
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is BookingOption &&
+        other.price == price &&
+        other.subtitle == subtitle &&
+        other.title == title &&
+        other.currency == currency &&
+        other.bookingCategoryId == bookingCategoryId;
   }
 }

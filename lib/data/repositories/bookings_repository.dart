@@ -169,7 +169,6 @@ class BookingsRepository {
         "id": variables["id"],
         "option": {
           "commission": variables["option"]["commission"],
-          "discount": variables["option"]["discount"],
           "price": variables["option"]["price"],
           "subtitle": variables["option"]["subtitle"],
           "title": variables["option"]["title"],
@@ -192,7 +191,8 @@ class BookingsRepository {
         result.data!["update_booking_option_by_pk"] != null) {
       return true;
     } else {
-      throw Exception('Failed to update booking option');
+      throw Exception(
+          'Failed to update booking option with variables: $variables');
     }
   }
 
@@ -218,7 +218,8 @@ class BookingsRepository {
         result.data!["delete_booking_option_by_pk"] != null) {
       return true;
     } else {
-      throw Exception('Failed to delete booking option');
+      throw Exception(
+          'Failed to delete booking option with id: $id and result: $result');
     }
   }
 
@@ -245,6 +246,8 @@ class BookingsRepository {
         optionsToDelete.add(oldOption);
       }
     }
+
+    print("Options to delete: ${optionsToDelete.length}");
 
     // 2. Identify options to INSERT or UPDATE
     for (var newOption in newOptions) {

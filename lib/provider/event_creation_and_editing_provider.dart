@@ -261,6 +261,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   }
 
   void clear() {
+    _classId = null;
     _title = '';
     _slug = '';
     _description = '';
@@ -270,15 +271,18 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _locationName = null;
     _pendingInviteTeachers.clear();
     _recurringPatterns.clear();
-    _bookingOptions.clear();
-    _questions.clear();
-    _classId = null;
     existingImageUrl = null;
     _errorMesssage = null;
-    bookingCategories.clear();
-    oldBookingCategories.clear();
+    _recurringPatterns.clear();
     _eventImage = null;
     _currentPage = 0;
+    bookingCategories.clear();
+    oldBookingCategories.clear();
+    _questions.clear();
+    oldQuestions.clear();
+    _bookingOptions.clear();
+    oldBookingOptions.clear();
+
     notifyListeners();
   }
 
@@ -453,6 +457,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         CustomErrorHandler.captureException("Error updating categories: $e");
       }
 
+      print("class id: $_classId");
+
       // if successful, update the booing options
       try {
         BookingsRepository bookingsRepository =
@@ -511,11 +517,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;
-      _bookingOptions.clear();
 
       // get questions and save them in old and new questions
-      oldQuestions.clear();
-      _questions.clear();
       final questions =
           await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
 
@@ -523,8 +526,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _questions.addAll(questions);
 
       // get categories and save them in old and new categories
-      oldBookingCategories.clear();
-      bookingCategories.clear();
       final categories =
           await classesRepository.getBookingCategoriesForEvent(fromClass.id!);
 
@@ -534,8 +535,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         _bookingOptions.addAll(category.bookingOptions ?? []);
         oldBookingOptions.addAll(category.bookingOptions ?? []);
       }
-
-      print("booking options length: ${_bookingOptions.length}");
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
     }

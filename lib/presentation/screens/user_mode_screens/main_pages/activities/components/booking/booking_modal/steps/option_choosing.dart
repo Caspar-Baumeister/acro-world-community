@@ -33,7 +33,8 @@ class OptionChoosingStep extends StatelessWidget {
       children: [
         // show all categories
         Container(
-          constraints: BoxConstraints(maxHeight: 400),
+          constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.45),
           child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -113,6 +114,7 @@ class BookingCategorySelectionComponent extends StatelessWidget {
           borderRadius: AppBorders.defaultRadius,
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // show header with title and description, contingent and edit button
             Row(

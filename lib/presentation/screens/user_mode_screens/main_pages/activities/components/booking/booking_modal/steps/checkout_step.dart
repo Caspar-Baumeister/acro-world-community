@@ -228,10 +228,8 @@ class BookingSummarySection extends StatelessWidget {
                 // Title of the booking summary
                 Flexible(
                   child: Text(
-                    "Booking summary for ${widget.className}",
+                    "Booking summary",
                     style: Theme.of(context).textTheme.titleLarge,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
                 IconButton(
