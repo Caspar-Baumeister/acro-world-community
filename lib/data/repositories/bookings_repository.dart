@@ -28,13 +28,16 @@ class BookingsRepository {
       final graphQLClient = GraphQLClientSingleton().client;
       QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
+      print("result: ${result.data}");
+
       // Check for a valid response
       if (result.hasException) {
         throw Exception(
             'Failed to load confirmed bookings. Status code: ${result.exception?.raw.toString()}');
       }
 
-      if (result.data != null && result.data!["class_event_bookings"] != null) {
+      if (result.data != null &&
+          result.data!["class_event_bookings_aggregate"] != null) {
         // return aggregate count or throw exception
         try {
           return result.data!['class_event_bookings_aggregate']['aggregate']
@@ -44,6 +47,7 @@ class BookingsRepository {
               'Error parsing ClassEventBooking: $e\nStackTrace: $s');
         }
       } else {
+        print("reuqest data: ${result.data}");
         throw Exception(
             'Failed to load confirmed bookings: $result\n${StackTrace.current}');
       }

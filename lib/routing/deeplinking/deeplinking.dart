@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/main.dart'; // contains navigatorKey
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
@@ -13,119 +14,154 @@ import 'package:app_links/app_links.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Deeplinking {
-  StreamSubscription? _linkSubscription;
+class DeepLinkService {
+  StreamSubscription<Uri?>? _linkSubscription;
+  Uri? _initialLink;
 
-  void terminate() {
-    _linkSubscription?.cancel();
-  }
+  /// Call this once, typically from your top-level widget's [initState].
+  Future<void> initDeepLinks(BuildContext context) async {
+    final appLinks = AppLinks(
+        // Optionally specify custom configurations if needed:
+        // onAppLink: (Uri uri, String stringUri) {
+        //   debugPrint('onAppLink: $uri');
+        // },
+        );
 
-  Future<void> initialize(BuildContext context) async {
-    final appLinks = AppLinks();
-
+    // 1) Handle the initial link (cold start) but DO NOT navigate yet.
+    //    Store it in `_initialLink`.
     try {
-      await appLinks.getInitialLink().then(
-            (Uri? initialLink) => initialLink != null
-                ? _handleDeepLink(context, initialLink)
-                : null,
-          );
+      _initialLink = await appLinks.getInitialLink();
     } catch (e, s) {
-      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
+      CustomErrorHandler.captureException(e, stackTrace: s);
     }
 
+    // 2) Listen for any subsequent links while the app is running.
     _linkSubscription = appLinks.uriLinkStream.listen(
-      (link) => _handleDeepLink(context, link),
+      (Uri? uri) {
+        if (uri != null) {
+          // Immediately handle new link (runtime)
+          _handleDeepLink(context, uri, isInitial: false);
+        }
+      },
       onError: (err) {
         CustomErrorHandler.captureException(err.toString());
       },
     );
+
+    // 3) Defer handling the initial link until after the first frame is rendered.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_initialLink != null) {
+        _handleDeepLink(context, _initialLink!, isInitial: true);
+        _initialLink = null;
+      }
+    });
   }
 
-  void _handleDeepLink(BuildContext context, Uri uri) {
-    print("Deep link: $uri");
+  /// Clean up the listener when you don't need it anymore
+  void dispose() {
+    _linkSubscription?.cancel();
+  }
 
-    // /app/classes/93afc2e6-ccbf-49cf-9120-9c8bbf1e7174/events/85c97f92-b7d0-4a07-b584-9805b65662a4/bookings
-    // to navigate to the booking page of this event
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Main Deep Link dispatcher
+  // ─────────────────────────────────────────────────────────────────────────────
+  void _handleDeepLink(BuildContext context, Uri uri,
+      {bool isInitial = false}) {
+    debugPrint("Deep link: $uri, isInitial=$isInitial");
 
+    // Parse your paths
     if (uri.path.contains("/stripe-callback")) {
-      String? stripeId = uri.queryParameters["stripeId"];
-      _navigateToStripeCallbackPage(context, stripeId);
+      final stripeId = uri.queryParameters["stripeId"];
+      _navigateToStripeCallbackPage(stripeId);
     } else if (uri.path.contains("/email-verification-callback")) {
-      String? code = uri.queryParameters["code"];
-      _navigateToEmailVerificationPage(context, code);
-    } else if (uri.path.contains("/event/")) {
-      String? urlSlug = uri.pathSegments[1];
-      String? classEventId =
-          uri.pathSegments.length > 2 ? uri.pathSegments[2] : null;
-      _navigateToSingleEventIdWrapperPage(context, urlSlug, classEventId);
+      final code = uri.queryParameters["code"];
+      _navigateToEmailVerificationPage(code);
+    } else if (uri.pathSegments.contains("event")) {
+      // e.g. https://acroworld.net/app/event/<slug>/<classEventId>
+      final urlSlug =
+          (uri.pathSegments.length >= 2) ? uri.pathSegments[1] : null;
+      final classEventId =
+          (uri.pathSegments.length >= 3) ? uri.pathSegments[2] : null;
+      _navigateToSingleEventIdWrapperPage(urlSlug, classEventId);
     } else if (uri.path.contains("/partner/")) {
-      String? partnerSlug = uri.pathSegments[1];
-      _navigateToPartnerSlugPage(context, partnerSlug);
+      final partnerSlug =
+          (uri.pathSegments.length >= 2) ? uri.pathSegments[1] : null;
+      _navigateToPartnerSlugPage(partnerSlug);
     } else if (uri.path.contains("/app/classes/") &&
         uri.path.contains("/events/") &&
         uri.path.contains("/bookings")) {
-      // navigate to the booking page of this event
-      String? eventId = uri.pathSegments[4];
+      final eventId =
+          (uri.pathSegments.length >= 5) ? uri.pathSegments[4] : null;
       _navigateToBookingPage(context, eventId);
     }
   }
 
-  void _navigateToStripeCallbackPage(BuildContext context, String? stripeId) {
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Navigation methods using the global navigatorKey
+  // ─────────────────────────────────────────────────────────────────────────────
+  void _navigateToStripeCallbackPage(String? stripeId) {
+    final nav = navigatorKey.currentState;
+    if (nav != null && nav.canPop()) {
+      nav.pop();
     }
-    Navigator.of(context).push(StripeCallbackPageRoute(stripeId: stripeId));
+    nav?.push(StripeCallbackPageRoute(stripeId: stripeId));
   }
 
-  void _navigateToEmailVerificationPage(BuildContext context, String? code) {
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+  void _navigateToEmailVerificationPage(String? code) {
+    print("Navigating to EmailVerificationPageRoute with code: $code");
+    final nav = navigatorKey.currentState;
+    print("Navigator: $nav");
+    if (nav != null && nav.canPop()) {
+      nav.pop();
     }
-    Navigator.of(context).push(EmailVerificationPageRoute(code: code));
+    nav?.push(EmailVerificationPageRoute(code: code));
   }
 
   void _navigateToSingleEventIdWrapperPage(
-      BuildContext context, String? urlSlug, String? classEventId) {
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+      String? urlSlug, String? classEventId) {
+    final nav = navigatorKey.currentState;
+    if (nav != null && nav.canPop()) {
+      nav.pop();
     }
-    Navigator.of(context).push(SingleEventIdWrapperPageRoute(
-        urlSlug: urlSlug, classEventId: classEventId));
+    nav?.push(SingleEventIdWrapperPageRoute(
+      urlSlug: urlSlug,
+      classEventId: classEventId,
+    ));
   }
 
-  void _navigateToPartnerSlugPage(BuildContext context, String? partnerSlug) {
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+  void _navigateToPartnerSlugPage(String? partnerSlug) {
+    final nav = navigatorKey.currentState;
+    if (nav != null && nav.canPop()) {
+      nav.pop();
     }
-    if (partnerSlug != null) {
-      Navigator.of(context).push(PartnerSlugPageRoute(urlSlug: partnerSlug));
+    if (partnerSlug != null && nav != null) {
+      nav.push(PartnerSlugPageRoute(urlSlug: partnerSlug));
     }
   }
 
   void _navigateToBookingPage(BuildContext context, String? eventId) async {
-    print("Navigating to booking page with eventId: $eventId");
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+    final nav = navigatorKey.currentState;
+    if (nav != null && nav.canPop()) {
+      nav.pop();
     }
-    if (eventId != null) {
-      // check if teacher role is active
 
-      // if not, try to switch to teacher role
+    if (eventId != null && nav != null) {
       try {
+        // Switch GraphQL to "creator mode" if needed
         final graphQLSingleton = GraphQLClientSingleton();
         graphQLSingleton.updateClient(true);
 
-        // if successful, navigate to the booking page
-        Navigator.of(context).push(CreatorProfilePageRoute());
-        Navigator.of(context)
-            .push(ClassBookingSummaryPageRoute(classEventId: eventId));
+        // Navigate to Creator Profile, then to Booking Summary
+        nav.push(CreatorProfilePageRoute());
+        nav.push(ClassBookingSummaryPageRoute(classEventId: eventId));
+
+        // Switch provider role AFTER navigation is done
         WidgetsBinding.instance.addPostFrameCallback((_) {
           Provider.of<UserRoleProvider>(context, listen: false)
               .setIsCreator(true);
         });
       } catch (e) {
-        // if not successful, show error toast
-        showErrorToast("could not switch to creator mode");
+        showErrorToast("Could not switch to creator mode");
       }
     }
   }

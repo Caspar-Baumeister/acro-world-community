@@ -34,6 +34,7 @@ class UserService {
 
   // verify code
   Future<bool?> verifyCode(String code) async {
+    print("verifyCode: $code");
     const String mutation = """
     mutation verifyCode(\$code: String!) {
       verify_email(code: \$code)
@@ -48,6 +49,8 @@ class UserService {
         },
       ),
     );
+
+    print("verifyCode: ${result.data}");
 
     if (result.hasException) {
       throw Exception(

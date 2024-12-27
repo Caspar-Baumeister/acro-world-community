@@ -272,14 +272,13 @@ query Me {
 }""");
 
   static final isClassEventBooked = gql("""
-query isClassEventBooked(\$class_event_id: uuid) {
-    class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}) {
-      aggregate {
-        count
-      }
+query isClassEventBooked(\$class_event_id: uuid, \$user_id: uuid) {
+   class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}, status: {_eq: "Confirmed"}}) {
+    aggregate {
+      count
     }
 }
-
+}
 """);
 
 // this is for the calendar widget with date filter for a specific week

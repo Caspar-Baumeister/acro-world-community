@@ -9,14 +9,32 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // tries to identify the user and sets the user provider active user
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // TODO make an route guard out of this for deeplinking later
-    // TODO or we make the app usable without login
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
 
+class _AuthWrapperState extends State<AuthWrapper> {
+  final deepLinkService = DeepLinkService();
+
+  @override
+  void initState() {
+    super.initState();
+    // IMPORTANT: initDeepLinks *after* the widget is created,
+    // so we have a valid BuildContext.
+    deepLinkService.initDeepLinks(context);
+  }
+
+  @override
+  void dispose() {
+    deepLinkService.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FutureBuilder(
       future: identifyAndSetUser(context),
       builder: (context, snapshot) {
@@ -44,7 +62,6 @@ class AuthWrapper extends StatelessWidget {
   Future<bool> identifyAndSetUser(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final token = await TokenSingletonService().getToken().then((value) {
-      Deeplinking().initialize(context);
       return value;
     });
 

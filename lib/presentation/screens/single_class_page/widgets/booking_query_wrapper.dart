@@ -44,12 +44,17 @@ class _BookingQueryHoverButtonState extends State<BookingQueryHoverButton> {
   // This widget is a wrapper for the booking button
   @override
   Widget build(BuildContext context) {
+    // Userprovider
+    final userProvider = Provider.of<UserProvider>(context, listen: true);
     // query for all bookings that where made for the given class event the user ids
     return Query(
       options: QueryOptions(
           document: Queries.isClassEventBooked,
           fetchPolicy: FetchPolicy.networkOnly,
-          variables: {'class_event_id': widget.classEvent.id}),
+          variables: {
+            'class_event_id': widget.classEvent.id,
+            'user_id': userProvider.activeUser!.id
+          }),
       builder: (QueryResult queryResult,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
         _refetch = refetch;

@@ -1,6 +1,7 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -98,7 +99,7 @@ class OptionChoosingStep extends StatelessWidget {
   }
 }
 
-class BookingCategorySelectionComponent extends StatelessWidget {
+class BookingCategorySelectionComponent extends StatefulWidget {
   const BookingCategorySelectionComponent({
     super.key,
     required this.bookingCategory,
@@ -113,6 +114,21 @@ class BookingCategorySelectionComponent extends StatelessWidget {
   final Function(String) onChanged;
 
   @override
+  State<BookingCategorySelectionComponent> createState() =>
+      _BookingCategorySelectionComponentState();
+}
+
+class _BookingCategorySelectionComponentState
+    extends State<BookingCategorySelectionComponent> {
+  late Future<int?> _confirmedBookingsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _confirmedBookingsFuture = getConfirmedBookingsAggregate();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(AppPaddings.medium),
@@ -121,12 +137,14 @@ class BookingCategorySelectionComponent extends StatelessWidget {
           borderRadius: AppBorders.defaultRadius,
         ),
         child: FutureBuilder<int?>(
-          future: getConfirmedBookingsAggregate(),
+          future: _confirmedBookingsFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             }
             if (snapshot.hasError) {
+              CustomErrorHandler.captureException(snapshot.error,
+                  stackTrace: StackTrace.current);
               return Text("Error: ${snapshot.error}");
             }
             return Column(
@@ -137,28 +155,29 @@ class BookingCategorySelectionComponent extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(
-                      child: Text(bookingCategory.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .titleLarge!
-                              .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: CustomColors.primaryColor)),
+                      child: Text(
+                        widget.bookingCategory.name,
+                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: CustomColors.primaryColor,
+                            ),
+                      ),
                     ),
                     Text(
-                        "Amount tickets:  ${snapshot.data != null ? "${snapshot.data}/" : ""}${bookingCategory.contingent}",
-                        style: Theme.of(context).textTheme.bodyMedium),
+                      "Available tickets:  ${snapshot.data != null ? "${widget.bookingCategory.contingent - snapshot.data!}/" : ""}${widget.bookingCategory.contingent}",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
                   ],
                 ),
                 SizedBox(height: AppPaddings.small),
-                Text(bookingCategory.description ?? "",
+                Text(widget.bookingCategory.description ?? "",
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                     style: Theme.of(context).textTheme.bodyMedium),
                 // a line
                 const CustomDivider(),
                 if (snapshot.data != null &&
-                    snapshot.data! >= bookingCategory.contingent)
+                    snapshot.data! >= widget.bookingCategory.contingent)
                   Padding(
                     padding: const EdgeInsets.only(top: AppPaddings.small),
                     child: Text(
@@ -169,16 +188,16 @@ class BookingCategorySelectionComponent extends StatelessWidget {
                     ),
                   ),
                 if (snapshot.data == null ||
-                    snapshot.data! < bookingCategory.contingent)
+                    snapshot.data! < widget.bookingCategory.contingent)
                   // show Booking options of provider with category id
-                  ...bookingCategory.bookingOptions!
+                  ...widget.bookingCategory.bookingOptions!
                       .map((BookingOption e) => Padding(
                             padding: const EdgeInsets.only(
                                 bottom: AppPaddings.medium),
                             child: BookingOptionSelectionCard(
                               bookingOption: e,
-                              value: currentId == e.id,
-                              onChanged: onChanged,
+                              value: widget.currentId == e.id,
+                              onChanged: widget.onChanged,
                             ),
                           )),
               ],
@@ -194,7 +213,7 @@ class BookingCategorySelectionComponent extends StatelessWidget {
 
     // get all confirmed bookings for this category
     return bookingsRepository.getConfirmedBookingsForCategoryAggregate(
-        bookingCategory.id!, classEventId);
+        widget.bookingCategory.id!, widget.classEventId);
   }
 }
 
