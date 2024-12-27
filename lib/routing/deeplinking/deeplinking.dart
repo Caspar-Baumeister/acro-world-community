@@ -72,6 +72,7 @@ class DeepLinkService {
     // Parse your paths
     if (uri.path.contains("/stripe-callback")) {
       final stripeId = uri.queryParameters["stripeId"];
+      print("stripe deeplinking called with stripeId: $stripeId");
       _navigateToStripeCallbackPage(stripeId);
     } else if (uri.path.contains("/email-verification-callback")) {
       final code = uri.queryParameters["code"];

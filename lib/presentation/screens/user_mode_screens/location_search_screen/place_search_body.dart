@@ -64,53 +64,60 @@ class PlacesQuery extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Query(
-      options: queryOptions ??
-          QueryOptions(
-              document: Queries.getPlacesIdsCity,
-              fetchPolicy: FetchPolicy.networkOnly,
-              variables: {'query': query}),
-      builder: (QueryResult result,
-          {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (result.isLoading) {
-          return SizedBox(
-              height: MediaQuery.of(context).size.height / 2,
-              child: const LoadingIndicator());
-        }
-        if (result.hasException) {
-          CustomErrorHandler.captureException(
-              Exception("Error while transforming places to objects, "
-                  "error: $result"),
-              stackTrace: StackTrace.current);
-          return ErrorWidget(result.exception.toString());
-        }
-        if (result.data != null) {
-          Map<String, dynamic> data = result.data!;
-          if (data.isEmpty ||
-              data[selector] == null ||
-              data[selector].isEmpty) {
-            return const Center(
-              child: Text("No places found"),
+    return Container(
+      padding: const EdgeInsets.symmetric(
+          horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
+      margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+      decoration: BoxDecoration(
+        color: CustomColors.backgroundColor,
+        borderRadius: AppBorders.smallRadius,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 1,
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
+      ),
+      child: Query(
+        options: queryOptions ??
+            QueryOptions(
+                document: Queries.getPlacesIdsCity,
+                fetchPolicy: FetchPolicy.networkOnly,
+                variables: {'query': query}),
+        builder: (QueryResult result,
+            {VoidCallback? refetch, FetchMore? fetchMore}) {
+          if (result.isLoading) {
+            return SizedBox(
+                height: MediaQuery.of(context).size.height / 2,
+                child: const LoadingIndicator());
+          }
+          if (result.hasException) {
+            CustomErrorHandler.captureException(
+                Exception("Error while transforming places to objects, "
+                    "error: $result"),
+                stackTrace: StackTrace.current);
+            return Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(AppPaddings.medium),
+              child: Text(
+                  "Something went wrong, just click anywhere in the map and finish the event creation, we will fix it afterwards. Please contact the support"),
             );
           }
+          if (result.data != null) {
+            Map<String, dynamic> data = result.data!;
+            if (data.isEmpty ||
+                data[selector] == null ||
+                data[selector].isEmpty) {
+              return Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(AppPaddings.medium),
+                child: Text("No places found"),
+              );
+            }
 
-          return Container(
-            padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
-            margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
-            decoration: BoxDecoration(
-              color: CustomColors.backgroundColor,
-              borderRadius: AppBorders.smallRadius,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5),
-                  spreadRadius: 1,
-                  blurRadius: 2,
-                  offset: const Offset(0, 1),
-                ),
-              ],
-            ),
-            child: ListView.separated(
+            return ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: result.data?[selector].length,
@@ -145,11 +152,11 @@ class PlacesQuery extends StatelessWidget {
                   ),
                 );
               },
-            ),
-          );
-        }
-        return Container();
-      },
+            );
+          }
+          return Container();
+        },
+      ),
     );
   }
 }
