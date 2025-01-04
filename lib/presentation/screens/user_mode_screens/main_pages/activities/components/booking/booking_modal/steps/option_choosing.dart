@@ -147,6 +147,39 @@ class _BookingCategorySelectionComponentState
                   stackTrace: StackTrace.current);
               return Text("Error: ${snapshot.error}");
             }
+            // if the booked places are at least as many as the contingent, show a booked out message
+            if (snapshot.data != null &&
+                snapshot.data! >= widget.bookingCategory.contingent) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // show header with title and description, contingent
+                  Text(
+                    widget.bookingCategory.name,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: CustomColors.primaryColor,
+                        ),
+                  ),
+                  SizedBox(height: AppPaddings.small),
+                  Text(widget.bookingCategory.description ?? "",
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: Theme.of(context).textTheme.bodyMedium),
+                  // a line
+                  const CustomDivider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    child: Text(
+                      "No more places left",
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                          color: CustomColors.errorTextColor,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              );
+            }
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

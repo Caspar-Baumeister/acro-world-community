@@ -129,8 +129,9 @@ class UserProvider extends ChangeNotifier {
     // creates a User object from the result
     try {
       _activeUser = User.fromJson(result.data!["me"][0]);
+
       print("active user: ${_activeUser!.name}");
-      print("isEMailVerified: ${_activeUser!.isEmailVerified}");
+      print("user id: ${_activeUser!.id}");
       notifyListeners();
       return true;
     } catch (e, stackTrace) {

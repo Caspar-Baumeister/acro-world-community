@@ -39,9 +39,12 @@ class DatabaseService {
 
       return jsonDecode(response.body.toString());
     } catch (e, s) {
-      // ignore: avoid_print
       CustomErrorHandler.captureException(e.toString(), stackTrace: s);
-      return {"error": true, "message": e.toString()};
+      return {
+        "error": true,
+        "message": e.toString(),
+        "errors": [e.toString()]
+      };
     }
   }
 

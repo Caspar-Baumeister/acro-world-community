@@ -3,6 +3,7 @@ enum GraphQLErrorCode {
   MISSING_PASSWORD,
   INVALID_PASSWORD,
   EMAIL_NOT_FOUND,
+  DEFAULT_ERROR
 }
 
 Map<String, String> parseGraphQLError(dynamic response) {
@@ -57,7 +58,7 @@ GraphQLErrorCode _getCodeFromError(Map<String, dynamic> error) {
       (e) =>
           e.toString().split('.').last.toUpperCase() ==
           codeString.toUpperCase(),
-      orElse: () => GraphQLErrorCode.INVALID_EMAIL, // Default error code
+      orElse: () => GraphQLErrorCode.DEFAULT_ERROR, // Default error code
     );
   }
   return GraphQLErrorCode.INVALID_EMAIL;

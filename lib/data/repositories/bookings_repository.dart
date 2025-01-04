@@ -16,6 +16,8 @@ class BookingsRepository {
     String categoryId,
     String classEventId,
   ) async {
+    print("categoryId: $categoryId");
+    print("classEventId: $classEventId");
     QueryOptions queryOptions = QueryOptions(
       document: Queries.getConfirmedBookingsForCategoryAggregate,
       fetchPolicy: FetchPolicy.networkOnly,
@@ -28,7 +30,7 @@ class BookingsRepository {
       final graphQLClient = GraphQLClientSingleton().client;
       QueryResult<Object?> result = await graphQLClient.query(queryOptions);
 
-      print("result: ${result.data}");
+      print(" booking aggregate result: ${result.data}");
 
       // Check for a valid response
       if (result.hasException) {

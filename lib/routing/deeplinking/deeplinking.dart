@@ -39,12 +39,14 @@ class DeepLinkService {
     _linkSubscription = appLinks.uriLinkStream.listen(
       (Uri? uri) {
         if (uri != null) {
+          print("Deep linkSubscription: $uri");
           // Immediately handle new link (runtime)
           _handleDeepLink(context, uri, isInitial: false);
         }
       },
       onError: (err) {
-        CustomErrorHandler.captureException(err.toString());
+        CustomErrorHandler.captureException(err.toString(),
+            stackTrace: StackTrace.current);
       },
     );
 
