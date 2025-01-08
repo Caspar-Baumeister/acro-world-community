@@ -218,11 +218,7 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
       }
     }
   }
-  classes_aggregate (where: \$where) {
-    aggregate {
-      count
-    }
-  }
+ 
 }
 """);
 

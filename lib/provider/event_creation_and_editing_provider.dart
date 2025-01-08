@@ -17,6 +17,7 @@ import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:uuid/uuid.dart';
 
 class EventCreationAndEditingProvider extends ChangeNotifier {
   // the eventCreationAndEditingProvider keeps track of the data entered by the user
@@ -52,7 +53,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<QuestionModel> oldQuestions = [];
   final List<QuestionModel> _questions = [];
   Uint8List? _eventImage;
-  int? maxBookingSlots = 20;
+  int? maxBookingSlots = 0;
 
   // GETTER
   String get title => _title;
@@ -295,9 +296,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
       }
 
+      int maxBookingSlots = 0;
       // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
-      if (maxBookingSlots != null) {
+      if (bookingCategories.isNotEmpty) {
         classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
+        // set max booking slots to the combined number of continguents of the categories
+        for (var category in bookingCategories) {
+          maxBookingSlots += category.contingent;
+        }
       }
 
       // Convert recurring patterns to JSON format
@@ -331,7 +337,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
-        'max_booking_slots': maxBookingSlots,
+        'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
       };
 
       ClassesRepository classesRepository =
@@ -351,6 +357,22 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           await classesRepository.insertBookingCategories(categoriesJson);
         } catch (e) {
           CustomErrorHandler.captureException("Error creating categories: $e");
+        }
+      }
+
+      // create the booking options
+      if (_bookingOptions.isNotEmpty) {
+        try {
+          BookingsRepository bookingsRepository =
+              BookingsRepository(apiService: GraphQLClientSingleton());
+          // convert questions to JSON format and add the event id from the created class
+          List<Map<String, dynamic>> bookingOptionsJson = _bookingOptions
+              .map((BookingOption bookingOption) => bookingOption.toJson())
+              .toList();
+          await bookingsRepository.insertBookingOptions(bookingOptionsJson);
+        } catch (e) {
+          CustomErrorHandler.captureException(
+              "Error creating booking options: $e");
         }
       }
 
@@ -385,9 +407,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
       }
 
+      int maxBookingSlots = 0;
       // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
-      if (maxBookingSlots != null) {
+      if (bookingCategories.isNotEmpty) {
         classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
+        // set max booking slots to the combined number of continguents of the categories
+        for (var category in bookingCategories) {
+          maxBookingSlots += category.contingent;
+        }
       }
 
       if (_classId == null) {
@@ -427,7 +454,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
-        'max_booking_slots': maxBookingSlots
+        'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
       };
 
       ClassesRepository classesRepository =
@@ -523,12 +550,30 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final questions =
           await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
 
+      if (!isEditing) {
+        for (var question in questions) {
+          question.id = Uuid().v4();
+        }
+      }
+
       oldQuestions.addAll(questions);
       _questions.addAll(questions);
 
       // get categories and save them in old and new categories
       final categories =
           await classesRepository.getBookingCategoriesForEvent(fromClass.id!);
+
+      if (!isEditing) {
+        for (var category in categories) {
+          final newCategoryId = Uuid().v4();
+          category.id = newCategoryId;
+          category.classId = null;
+          for (BookingOption option in category.bookingOptions ?? []) {
+            option.id = Uuid().v4();
+            option.bookingCategoryId = newCategoryId;
+          }
+        }
+      }
 
       oldBookingCategories.addAll(categories);
       bookingCategories.addAll(categories);

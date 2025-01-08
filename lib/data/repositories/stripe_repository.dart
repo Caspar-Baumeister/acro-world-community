@@ -112,7 +112,7 @@ class StripeRepository {
       ),
     );
 
-    print("response: ${response.data}");
+    print("stripe response: ${response.data}");
 
     if (response.hasException) {
       throw Exception(

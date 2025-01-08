@@ -1,3 +1,4 @@
+// Replace with your actual imports
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
@@ -9,85 +10,115 @@ import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+/// A page that verifies a user's email using a provided [code].
 class EmailVerificationPage extends StatefulWidget {
-  const EmailVerificationPage({super.key, required this.code});
-
   final String? code;
+
+  const EmailVerificationPage({
+    super.key,
+    required this.code,
+  });
 
   @override
   State<EmailVerificationPage> createState() => _EmailVerificationPageState();
 }
 
 class _EmailVerificationPageState extends State<EmailVerificationPage> {
-  // Add initstate to check for code and verify. Then send to either confirmation page or profile
+  /// Indicates if the email verification is currently in progress
+  bool _isVerifying = false;
 
   @override
   void initState() {
     super.initState();
-    // Check for code and verify
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      verifyCode();
-    });
+    _verifyCode();
   }
 
-  //verifyCode
-  Future<void> verifyCode() async {
-    if (widget.code == null) {
-      // error toast
+  /// Verifies the user's email via [UserService].
+  /// If verification succeeds, navigates to ProfilePage.
+  /// Otherwise, navigates to ConfirmEmailPage for re-attempt or guidance.
+  Future<void> _verifyCode() async {
+    // If already verifying, skip
+    print(
+        "Verifying email with code: ${widget.code}, isVerifying: $_isVerifying");
+    if (_isVerifying) return;
+
+    setState(() => _isVerifying = true);
+
+    // If no code is provided, immediately fail and navigate
+    if (widget.code == null || widget.code!.isEmpty) {
       showErrorToast("Invalid verification code");
-      // Send to profile page
-      Navigator.of(context).push(ProfilePageRoute());
+      if (mounted) {
+        Navigator.of(context).pushReplacement(ProfilePageRoute());
+      }
+      setState(() => _isVerifying = false);
       return;
     }
+
     try {
-      UserService().verifyCode(widget.code!).then((value) {
-        if (value == null || value == false) {
-          // error toast
-          showErrorToast("Error verifying email");
-          // Send to confirmation page
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Navigator.of(context).push(ConfirmEmailPageRoute());
-          });
-        } else {
-          // success toast
-          showSuccessToast("Email verified successfully");
-          // Send to profile page
-          Navigator.of(context).push(ProfilePageRoute());
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            Provider.of<UserProvider>(context, listen: false)
-                .setUserFromToken();
-          });
+      final verified = await UserService().verifyCode(widget.code!);
+      print("Email verification result: $verified");
+      if (verified == null || verified == false) {
+        // Verification failed
+        showErrorToast("Error verifying email");
+        if (mounted) {
+          Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
         }
-      });
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
+      } else {
+        // Verification success
+        showSuccessToast("Email verified successfully");
+        if (mounted) {
+          // Update the user data after successful verification
+          Provider.of<UserProvider>(context, listen: false).setUserFromToken();
+          Navigator.of(context).pushReplacement(ProfilePageRoute());
+        }
+      }
+    } catch (e, stackTrace) {
+      // Log the error for further inspection
+      CustomErrorHandler.captureException(e, stackTrace: stackTrace);
+
+      // Show user-friendly error
       showErrorToast("Error verifying email");
-      // Send to confirmation page
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).push(ConfirmEmailPageRoute());
-      });
+      if (mounted) {
+        Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isVerifying = false);
+      }
     }
   }
+
+  /// Allows the user to re-trigger the verification via pull-to-refresh.
+  Future<void> _onRefresh() => _verifyCode();
 
   @override
   Widget build(BuildContext context) {
     return BasePage(
-        appBar: const CustomAppbarSimple(
-          title: "Email Verification",
-        ),
-        makeScrollable: false,
-        child: Center(
-          child: RefreshIndicator(
-            onRefresh: verifyCode,
-            child: const Column(
+      appBar: const CustomAppbarSimple(title: "Email Verification"),
+      makeScrollable: false,
+      child: RefreshIndicator(
+        onRefresh: _onRefresh,
+        // Wrapping in a scroll view so that pull-to-refresh works
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          // Force at least full screen height so pull-to-refresh always works
+          child: Container(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(),
-                SizedBox(height: 20),
-                Text("Verifying email..."),
+              children: [
+                if (_isVerifying) const CircularProgressIndicator(),
+                const SizedBox(height: 20),
+                const Text("Verifying email..."),
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }

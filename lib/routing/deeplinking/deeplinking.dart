@@ -78,6 +78,7 @@ class DeepLinkService {
       _navigateToStripeCallbackPage(stripeId);
     } else if (uri.path.contains("/email-verification-callback")) {
       final code = uri.queryParameters["code"];
+      print("email verification deeplinking called with code: $code");
       _navigateToEmailVerificationPage(code);
     } else if (uri.pathSegments.contains("event")) {
       // e.g. https://acroworld.net/app/event/<slug>/<classEventId>
@@ -107,13 +108,14 @@ class DeepLinkService {
     if (nav != null && nav.canPop()) {
       nav.pop();
     }
+    print("Navigating to StripeCallbackPageRoute with stripeId: $stripeId");
+    print("navigatorKey: $nav");
     nav?.push(StripeCallbackPageRoute(stripeId: stripeId));
   }
 
   void _navigateToEmailVerificationPage(String? code) {
-    print("Navigating to EmailVerificationPageRoute with code: $code");
     final nav = navigatorKey.currentState;
-    print("Navigator: $nav");
+    print("Navigator in email verifying deeplink: $nav");
     if (nav != null && nav.canPop()) {
       nav.pop();
     }

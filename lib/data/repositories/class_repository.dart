@@ -64,18 +64,15 @@ class ClassesRepository {
     }
 
     List<ClassModel> classes = [];
-    int? totalClasses;
 
     if (result.data != null && result.data!["classes"] != null) {
       try {
         classes = List<ClassModel>.from(
           result.data!['classes'].map((json) => ClassModel.fromJson(json)),
         );
-        totalClasses = result.data!["classes_aggregate"]["aggregate"]["count"];
 
         return {
           "classes": classes,
-          "totalClasses": totalClasses,
         };
       } catch (e) {
         throw Exception('Failed to parse classes: $e');

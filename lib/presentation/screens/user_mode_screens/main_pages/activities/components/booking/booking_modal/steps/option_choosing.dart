@@ -202,11 +202,15 @@ class _BookingCategorySelectionComponentState
                     ),
                   ],
                 ),
-                SizedBox(height: AppPaddings.small),
-                Text(widget.bookingCategory.description ?? "",
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                    style: Theme.of(context).textTheme.bodyMedium),
+                if (widget.bookingCategory.description != null &&
+                    widget.bookingCategory.description!.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    child: Text(widget.bookingCategory.description ?? "",
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: Theme.of(context).textTheme.bodyMedium),
+                  ),
                 // a line
                 const CustomDivider(),
                 if (snapshot.data != null &&

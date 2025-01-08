@@ -76,7 +76,7 @@ class _MarketStepState extends State<MarketStep> {
                 ? MarketStepTicketSection(
                     eventCreationAndEditingProvider:
                         eventCreationAndEditingProvider,
-                    maxAmountTickets: _maxAmountTicketController)
+                  )
                 : const MarketStepCreateStripeAccountSection(),
         const SizedBox(height: AppPaddings.medium),
         Row(

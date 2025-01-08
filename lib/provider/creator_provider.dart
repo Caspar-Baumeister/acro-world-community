@@ -49,8 +49,8 @@ class CreatorProvider extends ChangeNotifier {
       String? stripeLoginLink = await stripeRepository.createStripeUser();
       print("stripeLoginLink: $stripeLoginLink");
       return stripeLoginLink;
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: s);
       return null;
     }
   }

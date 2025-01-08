@@ -131,12 +131,6 @@ class Fragments {
         }
         is_owner
       }
-      class_owners {
-        teacher {
-          $teacherFragmentLazy
-        }
-        is_payment_receiver
-      }
       class_levels {
         level {
           name

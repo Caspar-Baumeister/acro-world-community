@@ -14,9 +14,6 @@ class TeacherEventsProvider extends ChangeNotifier {
   int _offsetMyEvent = 0;
   int _offsetParticipatingEvent = 0;
 
-  int _totalMyEvents = 0;
-  int _totalParticipatingEvents = 0;
-
   bool _isLoadingMyEvents = false;
   bool _isLoadingParticipatingEvents = false;
   String? userId;
@@ -34,10 +31,8 @@ class TeacherEventsProvider extends ChangeNotifier {
   bool get isLoadingParticipatingEvents => _isLoadingParticipatingEvents;
 
   // can fetch more classes
-  bool get canFetchMoreMyEvents => _myCreatedEvents.length < _totalMyEvents;
-
-  bool get canFetchMoreParticipatingEvents =>
-      _myParticipatingEvents.length < _totalParticipatingEvents;
+  bool canFetchMoreMyEvents = true;
+  bool canFetchMoreParticipatingEvents = true;
 
   // fetch data init
   TeacherEventsProvider() {
@@ -72,9 +67,11 @@ class TeacherEventsProvider extends ChangeNotifier {
     if (isRefresh) {
       if (myEvents) {
         _offsetMyEvent = 0;
+        canFetchMoreMyEvents = true;
         _myCreatedEvents.clear();
       } else {
         _offsetParticipatingEvent = 0;
+        canFetchMoreParticipatingEvents = true;
         _myParticipatingEvents.clear();
       }
     }
@@ -125,10 +122,17 @@ class TeacherEventsProvider extends ChangeNotifier {
           : _myParticipatingEvents
               .addAll(List<ClassModel>.from(repositoryReturn["classes"]));
 
-      // set total events
-      myEvents
-          ? _totalMyEvents = repositoryReturn["totalClasses"]
-          : _totalParticipatingEvents = repositoryReturn["totalClasses"];
+      // if offset and limit align with the length of the fetched events, there are no more events to fetch
+      if (myEvents) {
+        if (_myCreatedEvents.length < _offsetMyEvent + _limit) {
+          canFetchMoreMyEvents = false;
+        }
+      } else {
+        if (_myParticipatingEvents.length <
+            _offsetParticipatingEvent + _limit) {
+          canFetchMoreParticipatingEvents = false;
+        }
+      }
     } catch (e, s) {
       CustomErrorHandler.captureException(e, stackTrace: s);
       // set classevents
@@ -149,8 +153,8 @@ class TeacherEventsProvider extends ChangeNotifier {
     _myParticipatingEvents.clear();
     _offsetMyEvent = 0;
     _offsetParticipatingEvent = 0;
-    _totalMyEvents = 0;
-    _totalParticipatingEvents = 0;
+    canFetchMoreMyEvents = true;
+    canFetchMoreParticipatingEvents = true;
     _isLoadingMyEvents = false;
     _isLoadingParticipatingEvents = false;
     _isInitialized = false;

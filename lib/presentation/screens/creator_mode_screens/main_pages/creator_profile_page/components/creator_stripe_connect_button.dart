@@ -53,6 +53,7 @@ class CreatorStripeConnectButton extends StatelessWidget {
             }
           });
         } else {
+          print("Creating completely new stripe user");
           // connect to stripe
           await creatorProvider.createStripeUser().then((value) {
             if (value != null) {
