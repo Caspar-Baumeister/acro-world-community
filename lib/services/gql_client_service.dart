@@ -2,9 +2,9 @@ import 'package:acroworld/environment.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:http/http.dart'
+    as http; // Add this package for custom HTTP client
 import 'package:jwt_decode/jwt_decode.dart'; // Add this package to decode JWT
-
-// graphql_client_singleton.dart
 
 class GraphQLClientSingleton {
   static final GraphQLClientSingleton _instance =
@@ -38,8 +38,12 @@ class GraphQLClientSingleton {
       );
     }
 
-    final HttpLink httpLink = HttpLink(
+    // Custom HTTP client with timeout
+    final httpLink = HttpLink(
       'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
+      httpClient: TimeoutClient(
+        timeout: const Duration(seconds: 30), // Set timeout here
+      ),
     );
 
     final Link link = authLink.concat(httpLink);
@@ -72,6 +76,21 @@ class GraphQLClientSingleton {
 
   GraphQLClient get client => _clientNotifier.value;
   ValueNotifier<GraphQLClient> get clientNotifier => _clientNotifier;
+}
+
+class TimeoutClient extends http.BaseClient {
+  final Duration timeout;
+  final http.Client _inner;
+
+  TimeoutClient({
+    required this.timeout,
+    http.Client? client,
+  }) : _inner = client ?? http.Client();
+
+  @override
+  Future<http.StreamedResponse> send(http.BaseRequest request) {
+    return _inner.send(request).timeout(timeout);
+  }
 }
 
 class CustomAuthLink extends Link {
