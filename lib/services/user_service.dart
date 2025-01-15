@@ -12,7 +12,7 @@ class UserService {
   Future<bool> sendEmailVerification() async {
     const String mutation = """
     mutation {
-      send_verification_email {
+      resend_verification_email {
         success
       }
     }
@@ -29,7 +29,7 @@ class UserService {
       return false;
     }
 
-    return result.data!['send_verification_email']['success'];
+    return result.data!['resend_verification_email']['success'];
   }
 
   // verify code
