@@ -1,4 +1,3 @@
-import 'package:acroworld/environment.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -7,7 +6,6 @@ import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -224,11 +222,6 @@ class SignUpState extends State<SignUp> {
                       text: "Login",
                       onPressed: () => widget.toggleView(),
                     ),
-                    const SizedBox(height: 10),
-                    LinkButtonComponent(
-                        text: "Partner Dashboard",
-                        onPressed: () async =>
-                            await customLaunch(AppEnvironment.dashboardUrl)),
                     const SizedBox(
                       height: 40,
                     )

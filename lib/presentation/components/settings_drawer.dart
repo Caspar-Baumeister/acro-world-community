@@ -1,12 +1,6 @@
-import 'package:acroworld/environment.dart';
-import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/services/local_storage_service.dart';
-import 'package:acroworld/types_and_extensions/preferences_extension.dart';
-import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/logout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -89,30 +83,6 @@ class SettingsDrawer extends StatelessWidget {
                 )),
               ),
               const Divider(color: Colors.grey, height: 1),
-              Expanded(
-                  child: Container(
-                padding: const EdgeInsets.all(18),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // const AcronycWidget(),
-
-                    const Spacer(),
-                    CustomButton("Creator Dashboard", () async {
-                      final token = await TokenSingletonService().getToken();
-                      final refreshToken =
-                          LocalStorageService.get(Preferences.refreshToken);
-
-                      if (refreshToken != null) {
-                        customLaunch(
-                            "${AppEnvironment.dashboardUrl}/token-callback?jwtToken=$token&refreshToken=$refreshToken");
-                      } else {
-                        customLaunch(AppEnvironment.dashboardUrl);
-                      }
-                    }),
-                  ],
-                ),
-              )),
               buildMenuItem(
                   text: "Log out",
                   icon: Icons.logout,

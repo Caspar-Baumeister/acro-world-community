@@ -5,9 +5,6 @@ class AppEnvironment {
   static const bool isProdBuild = isProduction;
   static const String backendHost =
       isProduction ? "bro-devs.com" : "dev.acroworld.de";
-  static const String dashboardUrl = isProduction
-      ? "https://teacher.acroworld.de"
-      : "https://admin-dev.acroworld.de";
 
   static const String websiteUrl =
       isProduction ? "https://acroworld.net" : "https://dev.acroworld.de";

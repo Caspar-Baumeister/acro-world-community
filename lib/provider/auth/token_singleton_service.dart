@@ -79,6 +79,7 @@ class TokenSingletonService {
           await DatabaseService().loginWithRefreshToken(refreshToken);
       if (response["data"]?["loginWithRefreshToken_v2"]?["token"] != null) {
         String token = response["data"]["loginWithRefreshToken_v2"]["token"];
+
         final userCredential =
             await FirebaseAuth.instance.signInWithCustomToken(token);
         _token = await userCredential.user?.getIdToken();
