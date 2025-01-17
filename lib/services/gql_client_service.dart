@@ -42,13 +42,14 @@ class GraphQLClientSingleton {
     final httpLink = HttpLink(
       'https://${AppEnvironment.backendHost}/hasura/v1/graphql',
       httpClient: TimeoutClient(
-        timeout: const Duration(seconds: 30), // Set timeout here
+        timeout: const Duration(seconds: 60), // Set timeout here
       ),
     );
 
     final Link link = authLink.concat(httpLink);
 
     return GraphQLClient(
+      queryRequestTimeout: Duration(seconds: 60), // Set timeout here
       link: link,
       cache: GraphQLCache(store: HiveStore()),
       defaultPolicies: DefaultPolicies(

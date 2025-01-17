@@ -20,12 +20,11 @@ class DeepLinkService {
 
   /// Call this once, typically from your top-level widget's [initState].
   Future<void> initDeepLinks(BuildContext context) async {
-    final appLinks = AppLinks(
-        // Optionally specify custom configurations if needed:
-        // onAppLink: (Uri uri, String stringUri) {
-        //   debugPrint('onAppLink: $uri');
-        // },
-        );
+    final appLinks = AppLinks();
+
+    appLinks.getLatestLinkString().then((value) {
+      print("Deep link latest: $value");
+    });
 
     // 1) Handle the initial link (cold start) but DO NOT navigate yet.
     //    Store it in `_initialLink`.
