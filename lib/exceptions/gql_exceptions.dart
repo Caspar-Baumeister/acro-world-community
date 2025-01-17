@@ -61,5 +61,5 @@ GraphQLErrorCode _getCodeFromError(Map<String, dynamic> error) {
       orElse: () => GraphQLErrorCode.DEFAULT_ERROR, // Default error code
     );
   }
-  return GraphQLErrorCode.INVALID_EMAIL;
+  return GraphQLErrorCode.DEFAULT_ERROR;
 }
