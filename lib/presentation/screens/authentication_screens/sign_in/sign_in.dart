@@ -196,11 +196,6 @@ class SignInState extends State<SignIn> {
                         text: "Register",
                         onPressed: () => widget.toggleView(),
                       ),
-                      // const SizedBox(height: 10),
-                      // LinkButtonComponent(
-                      //     text: "Partner Dashboard",
-                      //     onPressed: () async =>
-                      //         await customLaunch(AppEnvironment.dashboardUrl)),
                       const SizedBox(
                         height: 40,
                       )
