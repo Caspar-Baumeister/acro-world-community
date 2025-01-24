@@ -52,6 +52,11 @@ initMain() async {
         // options: DefaultFirebaseOptions.currentPlatform,
         );
 
+    FirebaseOptions options = Firebase.app().options;
+    String projectId = options.projectId;
+
+    print('Firebase Project ID: $projectId');
+
     tz.initializeTimeZones();
 
     // FIREBASE MESSAGING //

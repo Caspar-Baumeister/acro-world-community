@@ -1,13 +1,13 @@
 name: acroworld
 description: A new Flutter project.
-publish_to: "none" # Remove this line if you wish to publish to pub.dev
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 ######### VERSION ##########
 version: 1.4.16+124
 ############################
 
 environment:
-  sdk: ">=2.19.4 <3.0.0"
+  sdk: '>=2.19.4 <3.0.0'
 
 dependencies:
   flutter:
@@ -58,7 +58,7 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter_icons:
-  image_path: "assets/logo/play_store_512.png"
+  image_path: 'assets/logo/play_store_512.png'
   ios: true
   android: true
   remove_alpha_ios: true
@@ -75,6 +75,8 @@ scripts:
   run-prod: flutter run --flavor prod --dart-define=app.flavor=prod
   build-prod: flutter build api --flavor prod --dart-define=app.flavor=prod
 
+  run-android-prod: flutter run --dart-define=app.flavor=prod --release
+
 flutter:
   uses-material-design: true
   assets:
@@ -82,7 +84,7 @@ flutter:
     - assets/logo/
     - assets/icons/
 flutter_native_splash:
-  color: "#ffffff"
-  image: "assets/muscleup_drawing.png"
+  color: '#ffffff'
+  image: 'assets/muscleup_drawing.png'
   android: true
   ios: true
