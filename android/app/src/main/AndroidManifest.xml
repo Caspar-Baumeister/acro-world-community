@@ -28,15 +28,12 @@
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
 
-                <!-- Match root domain (no path) -->
-                <data android:scheme="https" android:host="acroworld.net" android:path="/" />
-
-                <!-- Match partner/* -->
-                <data android:scheme="https" android:host="acroworld.net" android:pathPrefix="/partner/" />
-
-                <!-- Match events/* -->
-                <data android:scheme="https" android:host="acroworld.net" android:pathPrefix="/events/" />
-            </intent-filter>
+                <!-- Catch all subpaths of acroworld.net -->
+                <data android:scheme="https" android:host="acroworld.net" android:pathPrefix="/"/>
+                <data android:scheme="https"
+                    android:host="acroworld.net"
+                    android:pathPattern=".*" />
+            </intent-filter>            
 
             <!-- Launcher Intent -->
             <intent-filter>
