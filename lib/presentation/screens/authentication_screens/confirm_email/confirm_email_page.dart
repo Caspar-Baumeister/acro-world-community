@@ -46,6 +46,14 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
     return success;
   }
 
+  Future<bool> resendVerificationEmail() async {
+    bool success = await UserService().resendEmailVerification();
+    if (success) {
+      startTimer();
+    }
+    return success;
+  }
+
   void startTimer() {
     setState(() {
       _timer = 10;
@@ -172,7 +180,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
                     ? () => showErrorToast(
                         "Please wait $_timer more seconds before sending another verification email")
                     : () async {
-                        bool success = await sendVerificationEmail();
+                        bool success = await resendVerificationEmail();
                         if (!success) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(

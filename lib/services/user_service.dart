@@ -12,6 +12,29 @@ class UserService {
   Future<bool> sendEmailVerification() async {
     const String mutation = """
     mutation {
+      send_verification_email {
+        success
+      }
+    }
+  """;
+
+    final QueryResult result = await client.mutate(
+      MutationOptions(
+        document: gql(mutation),
+      ),
+    );
+
+    if (result.hasException) {
+      CustomErrorHandler.captureException(result.exception);
+      return false;
+    }
+
+    return result.data!['send_verification_email']['success'];
+  }
+
+  Future<bool> resendEmailVerification() async {
+    const String mutation = """
+    mutation {
       resend_verification_email {
         success
       }
