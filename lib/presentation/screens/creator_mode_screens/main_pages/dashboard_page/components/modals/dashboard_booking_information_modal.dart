@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/commission_information_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
@@ -53,11 +52,6 @@ class DashboardBookingInformationModal extends StatelessWidget {
                       "Booking option: ${booking.bookingOption?.title} - ${booking.bookingPriceString}"),
                 ],
               ),
-            ),
-            CommissionInformationButton(
-              symbol:
-                  booking.bookingOption?.currency.symbol ?? booking.currency,
-              price: booking.amount,
             ),
           ],
         ),
