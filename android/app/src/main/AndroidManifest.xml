@@ -29,7 +29,6 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
 
                 <!-- Catch all subpaths of acroworld.net -->
-                <data android:scheme="https" android:host="acroworld.net" android:pathPrefix="/"/>
                 <data android:scheme="https"
                     android:host="acroworld.net"
                     android:pathPattern=".*" />
