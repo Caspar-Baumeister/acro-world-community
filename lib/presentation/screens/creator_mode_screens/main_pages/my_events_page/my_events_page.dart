@@ -14,7 +14,7 @@ class MyEventsPage extends StatelessWidget {
       makeScrollable: false,
       bottomNavigationBar: CreatorModePrimaryBottomNavbar(selectedIndex: 1),
       child: CustomTabView(
-        tabTitles: ["From you created", "Your taking part"],
+        tabTitles: ["From you created", "You're taking part"],
         tabViews: [
           CreatedEventsByMeSection(),
           ParticipatedEventsSection(),
