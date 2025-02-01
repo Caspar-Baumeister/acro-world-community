@@ -21,10 +21,10 @@ class FilterBottomNavbar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
-            padding: const EdgeInsets.all(AppPaddings.medium),
+            padding: const EdgeInsets.all(AppPaddings.small).copyWith(top: 5),
             child: Center(
               child: Text(
-                "${discoveryProvider.filteredEventOccurencesLength.toString()} results",
+                "This filter will show ${discoveryProvider.filteredEventOccurencesLength.toString()} results",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -37,6 +37,7 @@ class FilterBottomNavbar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StandardButton(
+                  width: MediaQuery.of(context).size.width * 0.4,
                   text: "Reset",
                   onPressed: () {
                     discoveryProvider.resetFilter();
@@ -45,7 +46,8 @@ class FilterBottomNavbar extends StatelessWidget {
                   },
                 ),
                 StandardButton(
-                  text: "Close",
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  text: "Continue",
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
