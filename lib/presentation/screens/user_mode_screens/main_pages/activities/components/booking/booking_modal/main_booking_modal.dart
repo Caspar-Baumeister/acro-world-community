@@ -67,7 +67,11 @@ class _BookingModalState extends State<BookingModal> {
             const SizedBox(height: 12.0),
             BookingHeader(
               className: clas.name,
-              teacherName: clas.classTeachers?[0].teacher?.name,
+              teacherName: (clas.classTeachers != null &&
+                      clas.classTeachers!.isNotEmpty &&
+                      clas.classTeachers![0].teacher?.name != null)
+                  ? clas.classTeachers![0].teacher!.name
+                  : null,
               startDate: widget.classEvent.startDateDT,
               endDate: widget.classEvent.endDateDT,
               currentStep: step,
