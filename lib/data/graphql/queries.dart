@@ -139,7 +139,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
   //fetches all classeventbookings of a creator with a specific class event id
   static final getClassEventBookingsByClassEventId = gql(
       """query getClassEventBookingsByClassSlug(\$class_event_id: uuid!, \$created_by_id: uuid!) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}}) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}, status: {_eq: "Confirmed"}}) {
     ${Fragments.classEventBookingFragment}
   }
 }
