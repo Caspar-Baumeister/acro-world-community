@@ -26,7 +26,7 @@ class SignUpState extends State<SignUp> {
   String errorPasswordConfirm = "";
 
   bool isAgb = false;
-  bool isNewsletter = false;
+  bool isNewsletter = true;
 
   void setNewsletter(bool b) {
     setState(() {
