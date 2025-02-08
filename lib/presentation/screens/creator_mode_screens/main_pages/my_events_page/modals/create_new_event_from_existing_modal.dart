@@ -73,21 +73,24 @@ class _CreateNewEventFromExistingModalState
                           currentOption?.value == "Without template"
                       ? "Continue without template"
                       : "Continue"),
-              onPressed: () async {
+              onPressed: () {
                 Navigator.of(context).pop();
                 ClassModel? classModel;
                 if (currentOption?.value != null &&
                     currentOption?.value != "Without template") {
-                  await Provider.of<EventCreationAndEditingProvider>(context,
+                  Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
-                      .setClassFromExisting(currentOption!.value, false);
+                      .setClassFromExisting(currentOption!.value, false)
+                      .then((_) => Navigator.of(context).push(
+                          CreateAndEditEventPageRoute(
+                              isEditing: false, classModel: classModel)));
                 } else {
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
                       .clear();
+                  Navigator.of(context).push(CreateAndEditEventPageRoute(
+                      isEditing: false, classModel: classModel));
                 }
-                Navigator.of(context).push(CreateAndEditEventPageRoute(
-                    isEditing: false, classModel: classModel));
               },
             ),
           ],
