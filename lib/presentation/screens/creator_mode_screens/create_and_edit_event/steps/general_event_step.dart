@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/presentation/components/buttons/standard_icon_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
@@ -16,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 
 class GeneralEventStep extends StatefulWidget {
   const GeneralEventStep({super.key, required this.onFinished});
@@ -33,6 +36,19 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
   late TextEditingController _locationNameController;
   String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
+  final QuillEditorController _controller = QuillEditorController();
+  final customToolBarList = [
+    ToolBarStyle.bold,
+    ToolBarStyle.italic,
+    ToolBarStyle.align,
+    ToolBarStyle.color,
+    ToolBarStyle.background,
+    ToolBarStyle.listBullet,
+    ToolBarStyle.listOrdered,
+    ToolBarStyle.clean,
+    ToolBarStyle.addTable,
+    ToolBarStyle.editTable,
+  ];
 
   @override
   void initState() {
@@ -61,6 +77,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
     _slugController.dispose();
     _descriptionController.dispose();
     _locationNameController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
@@ -135,14 +152,22 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                                   color: CustomColors.successTextColor),
                     ),
                     const SizedBox(height: AppPaddings.medium),
-                    InputFieldComponent(
-                      controller: _descriptionController,
-                      labelText: 'Description',
-                      maxLines: 5,
-                      minLines: 2,
-                      isFootnoteError: false,
-                      footnoteText:
-                          "Tip: You can use inline HTML to format your description",
+                    StandardIconButton(
+                      text: "Edit Class description",
+                      icon: Icons.location_on,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditClassDescription(
+                              initialText: provider.description,
+                              onTextUpdated: (String text) {
+                                _descriptionController.text = text;
+                              },
+                            ),
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: AppPaddings.medium),
                     InputFieldComponent(
