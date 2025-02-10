@@ -46,8 +46,8 @@ class CreatorSettingsActionModal extends StatelessWidget {
                 // Now pop the current widget and push the next page safely
                 Navigator.of(context).pop();
 
-                Navigator.of(context).push(CreateAndEditEventPageRoute(
-                    isEditing: true, classModel: classModel));
+                Navigator.of(context)
+                    .push(CreateAndEditEventPageRoute(isEditing: true));
               },
             ),
             ListTile(

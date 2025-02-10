@@ -1,4 +1,3 @@
-import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
@@ -61,9 +60,9 @@ class MyEventsPageRoute extends BaseRoute {
 
 //CreateAndEditEventPage
 class CreateAndEditEventPageRoute extends BaseRoute {
-  CreateAndEditEventPageRoute({required bool isEditing, ClassModel? classModel})
+  CreateAndEditEventPageRoute({required bool isEditing})
       : super(
-          CreateAndEditEventPage(isEditing: isEditing, classModel: classModel),
+          CreateAndEditEventPage(isEditing: isEditing),
           guards: [],
         );
 }

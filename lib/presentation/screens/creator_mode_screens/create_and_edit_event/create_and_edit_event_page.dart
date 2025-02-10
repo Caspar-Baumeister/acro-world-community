@@ -1,4 +1,3 @@
-import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/custom_easy_stepper.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/community_step.dart';
@@ -15,11 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class CreateAndEditEventPage extends StatefulWidget {
-  const CreateAndEditEventPage(
-      {super.key, this.classModel, required this.isEditing});
+  const CreateAndEditEventPage({super.key, required this.isEditing});
 
-  // can take an existing event as an argument or not
-  final ClassModel? classModel;
   // can either edit the existing event or use it as a template to create a new event
   final bool isEditing;
 

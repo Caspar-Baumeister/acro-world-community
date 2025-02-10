@@ -1,4 +1,3 @@
-import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
@@ -73,21 +72,23 @@ class _CreateNewEventFromExistingModalState
                           currentOption?.value == "Without template"
                       ? "Continue without template"
                       : "Continue"),
-              onPressed: () async {
+              onPressed: () {
                 Navigator.of(context).pop();
-                ClassModel? classModel;
                 if (currentOption?.value != null &&
                     currentOption?.value != "Without template") {
-                  await Provider.of<EventCreationAndEditingProvider>(context,
+                  Navigator.of(context).push(
+                    CreateAndEditEventPageRoute(isEditing: false),
+                  );
+                  Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
                       .setClassFromExisting(currentOption!.value, false);
                 } else {
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
                       .clear();
+                  Navigator.of(context)
+                      .push(CreateAndEditEventPageRoute(isEditing: false));
                 }
-                Navigator.of(context).push(CreateAndEditEventPageRoute(
-                    isEditing: false, classModel: classModel));
               },
             ),
           ],
