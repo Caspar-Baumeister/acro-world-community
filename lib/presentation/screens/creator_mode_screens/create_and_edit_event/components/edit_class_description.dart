@@ -1,22 +1,24 @@
-import 'package:acroworld/presentation/components/buttons/standard_icon_button.dart';
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 
-class EditClassDescription extends StatefulWidget {
+class EditClassDescriptionPage extends StatefulWidget {
   final String initialText;
   final Function(String text) onTextUpdated;
 
-  const EditClassDescription({
+  const EditClassDescriptionPage({
     super.key,
     required this.initialText,
     required this.onTextUpdated,
   });
 
   @override
-  _EditClassDescriptionState createState() => _EditClassDescriptionState();
+  EditClassDescriptionPageState createState() =>
+      EditClassDescriptionPageState();
 }
 
-class _EditClassDescriptionState extends State<EditClassDescription> {
+class EditClassDescriptionPageState extends State<EditClassDescriptionPage> {
   final QuillEditorController _controller = QuillEditorController();
   final customToolBarList = [
     ToolBarStyle.bold,
@@ -47,11 +49,12 @@ class _EditClassDescriptionState extends State<EditClassDescription> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return BasePage(
+      makeScrollable: false,
       appBar: AppBar(
         title: Text('Edit Class Description'),
       ),
-      body: Padding(
+      child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
@@ -62,17 +65,16 @@ class _EditClassDescriptionState extends State<EditClassDescription> {
             SizedBox(height: 16),
             Expanded(
               child: QuillHtmlEditor(
-                text: widget.initialText,
-                controller: _controller,
-                minHeight: 300,
-              ),
+                  text: widget.initialText,
+                  controller: _controller,
+                  minHeight: 300,
+                  inputAction: InputAction.newline),
             ),
             SizedBox(height: 16),
-            StandardIconButton(
-              width: 50,
-              text: "Save",
-              icon: Icons.save,
+            StandardButton(
+              text: 'SAVE',
               onPressed: _applyChanges,
+              isFilled: true,
             ),
           ],
         ),
