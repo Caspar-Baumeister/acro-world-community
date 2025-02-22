@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:acroworld/presentation/components/images/fullscreen_image_wrapper.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -11,12 +12,14 @@ class CustomSliverAppBar extends StatelessWidget {
     required ValueNotifier<double> percentageCollapsed,
     required this.headerText,
     required this.imgUrl,
+    this.tag,
   }) : _percentageCollapsed = percentageCollapsed;
 
   final List<Widget> actions;
   final ValueNotifier<double> _percentageCollapsed;
   final String headerText;
   final String imgUrl;
+  final String? tag;
 
   @override
   Widget build(BuildContext context) {
@@ -52,21 +55,40 @@ class CustomSliverAppBar extends StatelessWidget {
         ],
         // title: Text(clas.name ?? "",
         //     maxLines: 3, style: HEADER_1_TEXT_STYLE),
-        background: CachedNetworkImage(
-          fit: BoxFit.cover,
-          height: 52.0,
-          placeholder: (context, url) => Container(
-            color: Colors.black12,
-          ),
-          errorWidget: (context, url, error) => Container(
-            color: Colors.black12,
-            child: const Icon(
-              Icons.error,
-              color: Colors.red,
-            ),
-          ),
-          imageUrl: imgUrl,
-        ),
+        background: (tag != null)
+            ? FullscreenImageWrapper(
+                imgChild: CachedNetworkImage(
+                  fit: BoxFit.cover,
+                  height: 52.0,
+                  placeholder: (context, url) => Container(
+                    color: Colors.black12,
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    color: Colors.black12,
+                    child: const Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                  ),
+                  imageUrl: imgUrl,
+                ),
+                tag: tag!,
+                imgUrl: imgUrl)
+            : CachedNetworkImage(
+                fit: BoxFit.cover,
+                height: 52.0,
+                placeholder: (context, url) => Container(
+                  color: Colors.black12,
+                ),
+                errorWidget: (context, url, error) => Container(
+                  color: Colors.black12,
+                  child: const Icon(
+                    Icons.error,
+                    color: Colors.red,
+                  ),
+                ),
+                imageUrl: imgUrl,
+              ),
       ),
     );
   }
