@@ -110,10 +110,12 @@ At: ${clas.locationName}
         controller: _scrollController,
         slivers: <Widget>[
           CustomSliverAppBar(
-              actions: actions,
-              percentageCollapsed: _percentageCollapsed,
-              headerText: widget.clas.name ?? "",
-              imgUrl: widget.clas.imageUrl ?? "")
+            actions: actions,
+            percentageCollapsed: _percentageCollapsed,
+            headerText: widget.clas.name ?? "",
+            imgUrl: widget.clas.imageUrl ?? "",
+            tag: widget.clas.imageUrl,
+          )
           // _buildSliverAppBar(context, _percentageCollapsed.value),
           ,
           SliverToBoxAdapter(
