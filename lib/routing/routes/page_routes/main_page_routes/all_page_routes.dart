@@ -1,6 +1,7 @@
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/my_events_page.dart';
@@ -72,6 +73,22 @@ class QuestionPageRoute extends BaseRoute {
   QuestionPageRoute()
       : super(
           const QuestionPage(),
+          guards: [],
+        );
+}
+
+// EditDescriptionPageRoute
+class EditDescriptionPageRoute extends BaseRoute {
+  final String initialText;
+  final Function(String) onTextUpdated;
+
+  EditDescriptionPageRoute(
+      {required this.initialText, required this.onTextUpdated})
+      : super(
+          EditClassDescriptionPage(
+            initialText: initialText,
+            onTextUpdated: onTextUpdated,
+          ),
           guards: [],
         );
 }
