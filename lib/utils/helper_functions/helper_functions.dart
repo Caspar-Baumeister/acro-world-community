@@ -7,7 +7,9 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 Future<void> customLaunch(String url) async {
-  if (!await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication)) {
+  final uri = Uri.parse(url);
+  if (!await launchUrl(uri.hasScheme ? uri : Uri.https(url),
+      mode: LaunchMode.externalApplication)) {
     throw Exception('Could not launch $url');
   }
 }
