@@ -16,19 +16,41 @@ class FullScreenImageView extends StatelessWidget {
         onTap: () {
           Navigator.pop(context);
         },
-        child: Center(
-          child: Hero(
-            tag: tag,
-            child: PhotoViewGallery(
-              pageOptions: <PhotoViewGalleryPageOptions>[
-                PhotoViewGalleryPageOptions(
-                  imageProvider: CachedNetworkImageProvider(url),
-                  minScale: PhotoViewComputedScale.contained,
-                  maxScale: PhotoViewComputedScale.covered * 2,
+        child: Stack(
+          children: [
+            Container(
+              alignment: Alignment.center,
+              color: Colors.white,
+              child: Hero(
+                tag: tag,
+                child: PhotoViewGallery(
+                  backgroundDecoration: BoxDecoration(color: Colors.white),
+                  pageOptions: <PhotoViewGalleryPageOptions>[
+                    PhotoViewGalleryPageOptions(
+                      imageProvider: CachedNetworkImageProvider(url),
+                      minScale: PhotoViewComputedScale.contained,
+                      maxScale: PhotoViewComputedScale.covered * 2,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            // Backbutton
+            SafeArea(
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

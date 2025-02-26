@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
@@ -135,14 +136,19 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                                   color: CustomColors.successTextColor),
                     ),
                     const SizedBox(height: AppPaddings.medium),
-                    InputFieldComponent(
-                      controller: _descriptionController,
-                      labelText: 'Description',
-                      maxLines: 5,
-                      minLines: 2,
-                      isFootnoteError: false,
-                      footnoteText:
-                          "Tip: You can use inline HTML to format your description",
+                    CustomButton(
+                      "Edit event description",
+                      () {
+                        Navigator.push(
+                          context,
+                          EditDescriptionPageRoute(
+                            initialText: provider.description,
+                            onTextUpdated: (String text) {
+                              _descriptionController.text = text;
+                            },
+                          ),
+                        );
+                      },
                     ),
                     const SizedBox(height: AppPaddings.medium),
                     InputFieldComponent(

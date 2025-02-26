@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 ######### VERSION ##########
-version: 2.1.5+131
+version: 2.1.6+132
 ############################
 
 environment:
@@ -51,6 +51,7 @@ dependencies:
   timezone: ^0.9.4
   fl_chart: ^0.69.0
   uuid: ^4.5.1
+  quill_html_editor: ^2.2.8
 
 dev_dependencies:
   flutter_test:
