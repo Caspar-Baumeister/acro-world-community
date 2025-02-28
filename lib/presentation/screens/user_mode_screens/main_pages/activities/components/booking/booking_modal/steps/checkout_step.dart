@@ -43,7 +43,8 @@ class CheckoutStep extends StatefulWidget {
 }
 
 class _CheckoutStepState extends State<CheckoutStep> {
-  bool _ready = false;
+  bool _isInitAnswersReady = false;
+  bool _isPaymentIntentInitialized = false;
   String? paymentIntentId;
 
   @override
@@ -62,7 +63,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
       initPaymentSheet(widget.bookingOption.id!, widget.classEventId!, user)
           .then((value) {
         setState(() {
-          _ready = false;
+          _isInitAnswersReady = false;
         });
         User? user =
             Provider.of<UserProvider>(context, listen: false).activeUser;
@@ -72,7 +73,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
               .then(
             (value) {
               setState(() {
-                _ready = true;
+                _isInitAnswersReady = true;
               });
             },
           );
@@ -136,7 +137,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
                     });
                   }
                 },
-                loading: !_ready,
+                loading: !_isInitAnswersReady || !_isPaymentIntentInitialized,
                 width: double.infinity,
               )
             ],
@@ -185,7 +186,7 @@ class _CheckoutStepState extends State<CheckoutStep> {
           .then((paymentIntent) {
         if (paymentIntent != null) {
           return setState(() {
-            _ready = true;
+            _isPaymentIntentInitialized = true;
             paymentIntentId = paymentIntent;
           });
         } else {

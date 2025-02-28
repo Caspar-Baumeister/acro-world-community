@@ -42,6 +42,7 @@ class StripeService {
       // Configuring the payment sheet using response data and Stripe documentation parameters.
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
+          returnURL: 'https://acroworld.net',
           merchantDisplayName: "AcroWorld",
           paymentIntentClientSecret: paymentSheetResponseData['payment_intent'],
           customerEphemeralKeySecret: paymentSheetResponseData['ephemeral_key'],
