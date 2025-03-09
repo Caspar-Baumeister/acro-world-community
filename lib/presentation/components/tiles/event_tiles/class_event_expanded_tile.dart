@@ -23,8 +23,6 @@ class ClassEventExpandedTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(
-        "classevent id: ${classEvent.id}, classslug: ${classEvent.classModel?.urlSlug}, classid: ${classEvent.classModel?.id}");
     if (classEvent.classModel == null) {
       return const SizedBox();
     }

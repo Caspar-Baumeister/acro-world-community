@@ -74,7 +74,7 @@ class RegularEventTabView extends StatelessWidget {
                 : "Pick weekday",
             onPressed: () => showWeekdayPicker(
               context: context,
-              onDaySelected: (p0) => editRecurringPattern("dayOfWeek", p0),
+              onDaySelected: (p0) => editRecurringPattern("dayOfWeek", p0 + 1),
             ),
           ),
           const SizedBox(height: AppPaddings.medium),
