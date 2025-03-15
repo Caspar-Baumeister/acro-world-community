@@ -6,10 +6,12 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/back_dr
 import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
+import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 class SingleClassPage extends StatefulWidget {
@@ -76,6 +78,8 @@ At: ${clas.locationName}
 
   @override
   Widget build(BuildContext context) {
+    // get the current user userid
+    String? userId = Provider.of<UserProvider>(context).activeUser?.id;
     ClassOwner? billingTeacher =
         widget.clas.owner?.teacher?.stripeId != null ? widget.clas.owner : null;
 
@@ -90,7 +94,8 @@ At: ${clas.locationName}
               classId: widget.clas.id!,
               classObject: widget.clas,
               initialFavorized: widget.clas.isInitiallyFavorized,
-              initialReported: widget.clas.isInitiallyFlagged ?? false,
+              initialReported: widget.clas.flaggedByUser(userId!),
+              initialInActive: widget.clas.inActiveFlaggsByUser(userId),
               shareEvents: () => shareEvent(
                     widget.classEvent,
                     widget.clas,

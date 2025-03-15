@@ -1,6 +1,7 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/user_model.dart';
+import 'package:acroworld/utils/helper_functions/currency_formater.dart';
 
 class ClassEventBooking {
   final String id;
@@ -26,7 +27,17 @@ class ClassEventBooking {
   });
 
   String get bookingPriceString {
-    return "${(amount / 100).toStringAsFixed(2)}${bookingOption?.currency.symbol ?? currency}";
+    String symbol;
+    if (bookingOption?.currency.symbol != null) {
+      symbol = bookingOption!.currency.symbol;
+    } else {
+      try {
+        symbol = CurrencyDetail.getCurrencyDetail(currency).symbol;
+      } catch (e) {
+        symbol = currency;
+      }
+    }
+    return "${(amount / 100).toStringAsFixed(2)}$symbol";
   }
 
   factory ClassEventBooking.fromJson(Map<String, dynamic> json) {

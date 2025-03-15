@@ -2,6 +2,24 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
   // ----------------------------------
+  // Class flags
+  // ----------------------------------
+
+  static final resolveAllClassFlags = gql("""
+    mutation ResolveAllClassFlags(\$classId: uuid!) {
+  
+  update_class_flag(where: {class_id: {_eq: \$classId}}, _set: {is_active: false}) {
+    affected_rows
+    returning {
+      user_id
+    }
+  }
+}
+
+
+  """);
+
+  // ----------------------------------
   // Insert Booking Options
   // ----------------------------------
   static final insertBookingOptions = gql("""
@@ -462,6 +480,15 @@ mutation confirmPayment(\$payment_intent_id : uuid!) {
   }
 }
 
+""");
+
+// activate flag by userid and class id
+  static final activateFlag = gql("""
+  mutation activateFlag(\$class_id: uuid!, \$user_id: uuid!) {
+  update_class_flag(where: {class_id: {_eq: \$class_id}, user_id: {_eq: \$user_id}}, _set: {is_active: true}) {
+    affected_rows
+  }
+}
 """);
 
   static final likeTeacher = gql("""

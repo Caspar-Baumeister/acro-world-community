@@ -22,6 +22,8 @@ class SingleClassBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    int amountActiveFlags = classe.amountActiveFlaggs?.toInt() ?? 0;
+
     List<ClassTeachers> classTeachers = [];
 
     if (classe.classTeachers != null) {
@@ -40,24 +42,31 @@ class SingleClassBody extends StatelessWidget {
           Text(classe.name ?? "",
               maxLines: 3, style: Theme.of(context).textTheme.headlineLarge),
           const SizedBox(height: 20),
-          classEvent != null &&
-                  classEvent!.startDate != null &&
-                  classEvent!.endDate != null
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        DateTimeService.getDateString(
-                            classEvent!.startDate!, classEvent!.endDate!),
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: CustomColors.accentColor)
-                            .copyWith(letterSpacing: -0.5)),
-                    const CustomDivider()
-                  ],
-                )
-              : Container(),
+          if (classEvent != null &&
+              classEvent!.startDate != null &&
+              classEvent!.endDate != null) ...[
+            Text(
+                DateTimeService.getDateString(
+                    classEvent!.startDate!, classEvent!.endDate!),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: CustomColors.accentColor)
+                    .copyWith(letterSpacing: -0.5)),
+            const CustomDivider()
+          ],
+
+          if (amountActiveFlags > 2) ...[
+            if (amountActiveFlags < 5)
+              // a orange box with a warning, that this class might not happen
+              FlagsWarningBox(amountActiveFlags: amountActiveFlags)
+            else
+              // a red box with a warning, that this class will most likely not happen
+              FlagsWarningBox(
+                  amountActiveFlags: amountActiveFlags,
+                  flagWarningLevel: FlagWarningLevel.hard),
+            const SizedBox(height: 10),
+          ],
           classe.description != null
               ? Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -192,5 +201,111 @@ class SingleClassBody extends StatelessWidget {
         ],
       ),
     ));
+  }
+}
+
+enum FlagWarningLevel { light, hard }
+
+class FlagsWarningBox extends StatelessWidget {
+  const FlagsWarningBox({
+    super.key,
+    required this.amountActiveFlags,
+    this.flagWarningLevel = FlagWarningLevel.light,
+  });
+
+  final int amountActiveFlags;
+  final FlagWarningLevel flagWarningLevel;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => _showFlagDialog(context),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: flagWarningLevel == FlagWarningLevel.light
+              ? CustomColors.warningColor.withOpacity(0.9)
+              : CustomColors.errorBorderColor.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            const Icon(Icons.warning_amber_rounded,
+                color: Colors.white, size: 28),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                "This class has $amountActiveFlags active flags and ${flagWarningLevel == FlagWarningLevel.light ? "might not happen" : "will most likely not happen"}",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyMedium!
+                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+              ),
+            ),
+            const SizedBox(width: 12),
+            const Icon(Icons.info_outline, color: Colors.white, size: 24),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showFlagDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.flag, color: Colors.redAccent, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  "Event Flag",
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Flags help the community keep the platform updated. If a class gets 5 or more active flags, it will be removed.",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "If you believe this class is inactive, you can flag it in the right top corner to notify the organizers.",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("Close",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

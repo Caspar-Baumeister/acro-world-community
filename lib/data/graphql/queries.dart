@@ -217,6 +217,11 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
         count
       }
     }
+   class_flags {
+      id
+      is_active
+      user_id
+    }
   }
  
 }

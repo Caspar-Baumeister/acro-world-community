@@ -436,4 +436,32 @@ class ClassesRepository {
       }
     }
   }
+
+  // resolve all clas flags for a class
+  Future<bool> resolveAllClassFlags(String classId) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.resolveAllClassFlags,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "classId": classId,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    print("classflags result: ${result.data}");
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to resolve all class flags. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["update_class_flag"] != null) {
+      return true;
+    } else {
+      throw Exception('Failed to resolve all class flags');
+    }
+  }
 }

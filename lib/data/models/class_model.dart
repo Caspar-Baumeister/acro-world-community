@@ -36,6 +36,7 @@ class ClassModel {
   List<ClassOwner>? classOwner;
   List<QuestionModel> questions = [];
   List<BookingCategoryModel>? bookingCategories;
+  List<ClassFlagsModel>? classFlags;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassOwner? get owner {
@@ -55,6 +56,18 @@ class ClassModel {
           .toList();
     }
     return [];
+  }
+
+  bool flaggedByUser(String userId) {
+    return classFlags?.any((element) =>
+            element.userId == userId && element.isActive == true) ??
+        false;
+  }
+
+  bool inActiveFlaggsByUser(String userId) {
+    return classFlags?.any((element) =>
+            element.userId == userId && element.isActive == false) ??
+        true;
   }
 
   List<TeacherModel> get teachers {
@@ -90,6 +103,7 @@ class ClassModel {
       this.amountActiveFlaggs,
       this.amountNonActiveFlaggs,
       this.amountUpcomingEvents,
+      this.classFlags,
       required this.questions,
       this.bookingCategories,
       this.classLevels});
@@ -121,6 +135,8 @@ class ClassModel {
       );
     }
 
+    // print("this class ${json['name']} has ${json['class_flags']} flaggs");
+
     amountActiveFlaggs = json['class_flags']
             ?.where((flag) => flag['is_active'] == true)
             .length ??
@@ -129,10 +145,15 @@ class ClassModel {
             ?.where((flag) => flag['is_active'] == false)
             .length ??
         0;
+    classFlags = <ClassFlagsModel>[];
+    if (json['class_flags'] != null) {
+      json['class_flags'].forEach((v) {
+        classFlags!.add(ClassFlagsModel.fromJson(v));
+      });
+    }
     description = json['description'];
     distance = json['distance'];
     isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
-    isInitiallyFlagged = json['class_flags']?.isNotEmpty;
 
     id = json['id'];
     urlSlug = json['url_slug'];
@@ -181,5 +202,19 @@ class ClassModel {
       amountUpcomingEvents =
           json['class_events_aggregate']?['aggregate']?['count'] as int;
     }
+  }
+}
+
+class ClassFlagsModel {
+  String? id;
+  bool? isActive;
+  String? userId;
+
+  ClassFlagsModel({this.id, this.isActive, this.userId});
+
+  ClassFlagsModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    isActive = json['is_active'];
+    userId = json['user_id'];
   }
 }

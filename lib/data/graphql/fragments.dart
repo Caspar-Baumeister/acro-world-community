@@ -113,6 +113,12 @@ class Fragments {
           ${Fragments.bookingOptionFragment}
         }
       }
+      class_flags {
+        id
+        is_active
+        user_id
+        
+      }
      
 
 """;
