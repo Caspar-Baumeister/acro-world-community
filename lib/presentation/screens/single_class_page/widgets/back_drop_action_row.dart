@@ -20,6 +20,7 @@ class BackDropActionRow extends StatefulWidget {
     required this.isCreator,
     required this.classObject,
     required this.initialReported,
+    required this.initialInActive,
     required this.classEventId,
     super.key,
     this.classEvent,
@@ -31,6 +32,7 @@ class BackDropActionRow extends StatefulWidget {
   final Function shareEvents;
   final ClassModel classObject;
   final bool initialReported;
+  final bool initialInActive;
   final bool isCreator;
   final String? classEventId;
   final ClassEvent? classEvent;
@@ -79,9 +81,9 @@ class _BackDropActionRowState extends State<BackDropActionRow> {
 
       actions.add(
         ReportButtonMutationWrapper(
-          classId: widget.classId,
-          initialReported: widget.initialReported,
-        ),
+            classId: widget.classId,
+            initialReported: widget.initialReported,
+            initiallyInActive: widget.initialInActive),
       );
     }
     return ClipOval(

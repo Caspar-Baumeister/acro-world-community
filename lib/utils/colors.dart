@@ -53,6 +53,7 @@ const Color _red = Color(0xFFAD3B3B);
 const Color _grey = Color(0xFF707070);
 const Color _blue = Color.fromARGB(255, 0, 54, 98);
 const Color _lightestGreen = Color(0xFFd4ded5);
+const Color _lightOrgange = Color(0xFFfb8b24);
 
 class CustomColors {
   // COLOR SCHEME //
@@ -71,6 +72,7 @@ class CustomColors {
   static const Color inactiveBorderColor = _grey;
   static const Color activeBorderColor = _darkGreen;
   static const Color errorBorderColor = _red;
+  static const Color warningColor = _lightOrgange;
 
 // TEXT COLORS //
   static const Color errorTextColor = _red;

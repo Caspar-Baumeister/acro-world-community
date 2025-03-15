@@ -71,6 +71,19 @@ class CreatorSettingsActionModal extends StatelessWidget {
                     .push(ClassOccurencePageRoute(classModel: classModel));
               },
             ),
+            if (classModel.amountActiveFlaggs != null &&
+                classModel.amountActiveFlaggs! > 0)
+              ListTile(
+                title: Text("Resolve flags",
+                    style: Theme.of(context).textTheme.bodyMedium),
+                leading: const Icon(
+                  Icons.flag_circle_outlined,
+                ),
+                onTap: () {
+                  // Show modal
+                  _showFlagDialog(context);
+                },
+              ),
             ListTile(
               title: Text("Delete",
                   style: Theme.of(context)
@@ -93,6 +106,80 @@ class CreatorSettingsActionModal extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  void _showFlagDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          backgroundColor: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.flag_circle_outlined,
+                    color: Colors.redAccent, size: 48),
+                const SizedBox(height: 16),
+                Text(
+                  "Resolve Flags",
+                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Flags help the community keep the platform updated. If a class gets 5 or more active flags, it will be removed.",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 12),
+                const Text(
+                  "Are you sure, that this class is still happening and you want to resolve the flags?",
+                  style: TextStyle(color: Colors.black54),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Text("Close",
+                          style: TextStyle(color: Colors.grey)),
+                    ),
+                    StandardButton(
+                      text: "Resolve Flags",
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      isFilled: true,
+                      onPressed: () {
+                        // Resolve flags
+                        ClassesRepository(apiService: GraphQLClientSingleton())
+                            .resolveAllClassFlags(classModel.id!)
+                            .then((value) {
+                          if (value) {
+                            showSuccessToast("Flags resolved, reload page");
+                            Provider.of<TeacherEventsProvider>(context,
+                                    listen: false)
+                                .fetchMyEvents(isRefresh: true);
+                            Navigator.of(context).pop();
+                          } else {
+                            throw Exception("value not true");
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
