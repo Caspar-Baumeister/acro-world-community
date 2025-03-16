@@ -42,11 +42,15 @@ class CreatorProvider extends ChangeNotifier {
   }
 
   // create stripe user
-  Future<String?> createStripeUser() async {
+  Future<String?> createStripeUser({
+    String? countryCode,
+    String? defaultCurrency,
+  }) async {
     try {
       StripeRepository stripeRepository =
           StripeRepository(apiService: GraphQLClientSingleton());
-      String? stripeLoginLink = await stripeRepository.createStripeUser();
+      String? stripeLoginLink = await stripeRepository.createStripeUser(
+          countryCode: countryCode, defaultCurrency: defaultCurrency);
       print("stripeLoginLink: $stripeLoginLink");
       return stripeLoginLink;
     } catch (e, s) {

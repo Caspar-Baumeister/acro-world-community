@@ -62,12 +62,21 @@ class StripeRepository {
   }
 
   //createStripeUser
-  Future<String?> createStripeUser() async {
+  Future<String?> createStripeUser(
+      {String? countryCode, String? defaultCurrency}) async {
+    Map<String, dynamic> variables = {};
+    if (countryCode != null) {
+      variables["countryCode"] = countryCode;
+    }
+    if (defaultCurrency != null) {
+      variables["defaultCurrency"] = defaultCurrency;
+    }
+
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.createStripeUser,
       fetchPolicy: FetchPolicy.networkOnly,
+      variables: variables, // Only include the key when not null
     );
-
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
