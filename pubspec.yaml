@@ -76,6 +76,8 @@ scripts:
   run-dev: flutter run --flavor dev --dart-define=app.flavor=dev
   run-prod: flutter run --flavor prod --dart-define=app.flavor=prod
   build-prod: flutter build api --flavor prod --dart-define=app.flavor=prod
+  run-web-dev: flutter run -d chrome --dart-define=app.flavor=dev
+  run-web-prod: flutter run -d chrome --dart-define=app.flavor=prod
 
   run-android-prod: flutter run --dart-define=app.flavor=prod --release
 
