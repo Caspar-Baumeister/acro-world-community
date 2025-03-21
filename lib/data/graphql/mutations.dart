@@ -196,7 +196,7 @@ mutation CreateDirectChargePaymentSheet(\$classEventId: String!, \$amount: Float
   /// STRIPE ///
 
   static final createStripeUser = gql("""
-mutation createStripeUser(\$countryCode: String!, \$defaultCurrency: String!) {
+mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
   create_stripe_user(country_code: \$countryCode, default_currency: \$defaultCurrency) {
     url
   }
