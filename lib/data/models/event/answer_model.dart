@@ -6,6 +6,19 @@
 // updated_at- timestamp with time zone, default: now()
 // answer- text
 
+// id
+//       answer
+//       question_id
+//       user_id
+//       event_occurence
+//        multiple_choice_answers {
+//         is_correct
+//         id
+//         multiple_choice_option_id
+//         user_id
+//         answer_id
+//       }
+
 class AnswerModel {
   String? id;
   String? questionId;
@@ -14,6 +27,7 @@ class AnswerModel {
   String? answer;
   String? createdAt;
   String? updatedAt;
+  List<MultipleChoiceAnswerModel>? multipleChoiceAnswers;
 
   AnswerModel(
       {this.id,
@@ -22,6 +36,7 @@ class AnswerModel {
       this.eventOccurence,
       this.answer,
       this.createdAt,
+      this.multipleChoiceAnswers,
       this.updatedAt});
 
   // overwrite equality operator to compare objects only after their answers
@@ -42,6 +57,10 @@ class AnswerModel {
       answer: json['answer'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      multipleChoiceAnswers: json['multiple_choice_answers'] != null
+          ? List<MultipleChoiceAnswerModel>.from(json['multiple_choice_answers']
+              .map((x) => MultipleChoiceAnswerModel.fromJson(x)))
+          : null,
     );
   }
 
@@ -56,5 +75,43 @@ class AnswerModel {
       answerJson['id'] = id;
     }
     return answerJson;
+  }
+}
+
+class MultipleChoiceAnswerModel {
+  String? id;
+  String? multipleChoiceOptionId;
+  String? userId;
+  String? answerId;
+  bool? isCorrect;
+
+  MultipleChoiceAnswerModel(
+      {this.id,
+      this.multipleChoiceOptionId,
+      this.userId,
+      this.answerId,
+      this.isCorrect});
+
+  factory MultipleChoiceAnswerModel.fromJson(Map<String, dynamic> json) {
+    return MultipleChoiceAnswerModel(
+      id: json['id'],
+      multipleChoiceOptionId: json['multiple_choice_option_id'],
+      userId: json['user_id'],
+      answerId: json['answer_id'],
+      isCorrect: json['is_correct'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> multipleChoiceAnswerJson = {
+      'multiple_choice_option_id': multipleChoiceOptionId,
+      'user_id': userId,
+      'answer_id': answerId,
+      'is_correct': isCorrect,
+    };
+    if (id != null) {
+      multipleChoiceAnswerJson['id'] = id;
+    }
+    return multipleChoiceAnswerJson;
   }
 }

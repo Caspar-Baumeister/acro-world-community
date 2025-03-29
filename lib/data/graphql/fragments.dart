@@ -5,6 +5,14 @@ class Fragments {
         title
         position
         is_required 
+        allow_multiple_answers
+        question_type
+        multiple_choice_options {
+          id
+          question_id
+          option_text
+          position
+        }
         """;
 
   //answer fragment
@@ -14,6 +22,13 @@ class Fragments {
         question_id
         user_id
         event_occurence
+         multiple_choice_answers {
+          is_correct
+          id
+          multiple_choice_option_id
+          user_id
+          answer_id
+        }
         """;
 
   static const classEventBookingFragment = """

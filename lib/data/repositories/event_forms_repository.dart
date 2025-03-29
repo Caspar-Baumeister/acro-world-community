@@ -11,32 +11,51 @@ class EventFormsRepository {
   EventFormsRepository({required this.apiService});
 
   // creates questions for an event
-  Future<dynamic> insertQuestions(List<Map<String, dynamic>> questions) async {
-    MutationOptions mutationOptions = MutationOptions(
-      document: Mutations.insertQuestions,
-      fetchPolicy: FetchPolicy.networkOnly,
-      variables: {"questions": questions},
-    );
 
-    final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+  Future<void> insertQuestionsWithOptions(
+      List<QuestionModel> questions, String eventId) async {
+    final client = GraphQLClientSingleton().client;
 
-    print("insertQuestionResult $result");
+    for (int i = 0; i < questions.length; i++) {
+      final q = questions[i];
+      final questionJson = q.toJson(eventId, i);
 
-    // Check for a valid response
-    if (result.hasException) {
-      throw Exception(
-          'Failed to create questions. Status code: ${result.exception?.raw.toString()}');
-    }
+      // Insert single question
+      final questionResult = await client.mutate(MutationOptions(
+        document: Mutations.insertSingleQuestion,
+        variables: {"question": questionJson},
+      ));
 
-    if (result.data != null && result.data!["insert_questions"] != null) {
-      try {
-        return result.data!['insert_questions']['affected_rows'];
-      } catch (e, s) {
-        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+      if (questionResult.hasException) {
+        throw Exception(
+            "Failed to insert question: ${questionResult.exception.toString()}");
       }
-    } else {
-      throw Exception('Failed to create class');
+
+      final questionId = questionResult.data?["insert_questions_one"]["id"];
+      if (questionId == null) throw Exception("No question ID returned");
+
+      // If it's a multiple choice question, insert its options
+      if (q.type == QuestionType.multipleChoice &&
+          q.choices != null &&
+          q.choices!.isNotEmpty) {
+        final options = q.choices!.asMap().entries.map((entry) {
+          return {
+            "question_id": questionId,
+            "option_text": entry.value.optionText,
+            "position": entry.key,
+          };
+        }).toList();
+
+        final optionsResult = await client.mutate(MutationOptions(
+          document: Mutations.insertMultipleChoiceOptions,
+          variables: {"options": options},
+        ));
+
+        if (optionsResult.hasException) {
+          throw Exception(
+              "Failed to insert options: ${optionsResult.exception.toString()}");
+        }
+      }
     }
   }
 
@@ -152,9 +171,7 @@ class EventFormsRepository {
 
     // do the inserts
     if (questionsToInsert.isNotEmpty) {
-      await insertQuestions(questionsToInsert
-          .map((e) => e.toJson(eventId, newQuestions.indexOf(e)))
-          .toList());
+      await insertQuestionsWithOptions(questionsToInsert, eventId);
     }
 
     // do the updates
@@ -281,14 +298,13 @@ class EventFormsRepository {
     }
   }
 
-  // same as for questions, check for updates and insert or update
   Future<void> identifyAnswerUpdates(
       List<AnswerModel> newAnswers, List<AnswerModel> oldAnswers) async {
-    // then compare the questions and update the ones that are different
-    List<AnswerModel> answersToUpdate = [];
-    List<AnswerModel> answersToInsert = [];
-    List<AnswerModel> answersToDelete = [];
-    // for all ids that are not in the new list, do a delete
+    final List<AnswerModel> answersToUpdate = [];
+    final List<AnswerModel> answersToInsert = [];
+    final List<AnswerModel> answersToDelete = [];
+
+    // Step 1: find deletions
     for (var oldAnswer in oldAnswers) {
       var newAnswer = newAnswers.firstWhere(
           (element) => element.id == oldAnswer.id,
@@ -299,42 +315,137 @@ class EventFormsRepository {
       }
     }
 
-    // for all ids that do not exist, do an insert
-    // for all ids that exist, do an update
+    // Step 2: find inserts and updates
     for (var newAnswer in newAnswers) {
-      // find the question in the old list if it exists else insert
       var oldAnswer = oldAnswers.firstWhere(
           (element) => element.id == newAnswer.id,
           orElse: () => AnswerModel());
 
-      // do an insert for the new questions if no old answer exists with that id (or the id was null)
       if (oldAnswer.id == null) {
         answersToInsert.add(newAnswer);
-      }
-      // do an update if the old answer was found and is different from the new answer
-      else if (oldAnswer != newAnswer) {
+      } else if (oldAnswer != newAnswer) {
         answersToUpdate.add(newAnswer);
       }
     }
 
-    // do the inserts
+    // Step 3: Insert and store returned IDs
     if (answersToInsert.isNotEmpty) {
-      await insertAnswers(answersToInsert.map((e) => e.toJson()).toList());
+      final insertedAnswerResults = await insertAnswersReturnIds(
+          answersToInsert.map((e) => e.toJson()).toList());
+
+      for (int i = 0; i < insertedAnswerResults.length; i++) {
+        final answerId = insertedAnswerResults[i]["id"];
+        answersToInsert[i].id = answerId;
+      }
     }
 
-    // do the updates
+    // Step 4: Insert Multiple Choice Options (for new or updated answers)
+    final List<MultipleChoiceAnswerModel> newMCAs = [];
+    for (final a in [...answersToInsert, ...answersToUpdate]) {
+      if (a.multipleChoiceAnswers == null) continue;
+
+      for (final mca in a.multipleChoiceAnswers!) {
+        mca.answerId ??= a.id;
+        newMCAs.add(mca);
+      }
+    }
+
+    if (newMCAs.isNotEmpty) {
+      await insertMultipleChoiceAnswers(
+          newMCAs.map((e) => e.toJson()).toList());
+    }
+
+    // Step 5: Delete Multiple Choice options removed from updated answers
+    for (final updated in answersToUpdate) {
+      final old = oldAnswers.firstWhere((e) => e.id == updated.id);
+
+      final oldOptionIds =
+          old.multipleChoiceAnswers?.map((e) => e.id!).toSet() ?? {};
+      final newOptionIds =
+          updated.multipleChoiceAnswers?.map((e) => e.id!).toSet() ?? {};
+
+      final removed = oldOptionIds.difference(newOptionIds);
+
+      if (removed.isNotEmpty) {
+        await deleteMultipleChoiceAnswersByOptionIds(
+            optionIds: removed.toList());
+      }
+    }
+
+    // Step 6: Update textual answers
     if (answersToUpdate.isNotEmpty) {
       await updateAnswers(answersToUpdate.map((e) => e.toJson()).toList());
     }
 
-    // do the deletes
+    // Step 7: Delete full answers
     if (answersToDelete.isNotEmpty) {
       await deleteAnswers(answersToDelete);
     }
   }
 
+  // delete multiple choice answers by option ids one by one trough deleteMultipleChoiceAnswerByPk
+  Future<void> deleteMultipleChoiceAnswersByOptionIds(
+      {required List<String> optionIds}) async {
+    final graphQLClient = GraphQLClientSingleton().client;
+
+    for (final optionId in optionIds) {
+      final options = {
+        "id": optionId,
+      };
+
+      final mutationOptions = MutationOptions(
+        document: Mutations.deleteMultipleChoiceAnswerByPk,
+        fetchPolicy: FetchPolicy.networkOnly,
+        variables: options,
+      );
+
+      final result = await graphQLClient.mutate(mutationOptions);
+
+      if (result.hasException) {
+        throw Exception(
+            'Failed to delete multiple choice answer. Status code: ${result.exception?.raw.toString()}');
+      }
+
+      if (result.data == null ||
+          result.data!["delete_multiple_choice_answer_by_pk"] == null) {
+        throw Exception('Failed to delete multiple choice answer');
+      }
+    }
+  }
+
+  // insert multiple choice answers
+  Future<void> insertMultipleChoiceAnswers(
+      List<Map<String, dynamic>> multipleChoiceAnswers) async {
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.insertMultipleChoiceAnswers,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"multipleChoiceAnswers": multipleChoiceAnswers},
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to create multiple choice answers. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null &&
+        result.data!["insert_multiple_choice_answer"] != null) {
+      try {
+        return result.data!['insert_multiple_choice_answer']['affected_rows'];
+      } catch (e, s) {
+        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+      }
+    } else {
+      throw Exception('Failed to create multiple choice answers');
+    }
+  }
+
   // insert answers
-  Future<dynamic> insertAnswers(List<Map<String, dynamic>> answers) async {
+  Future<List<Map<String, dynamic>>> insertAnswersReturnIds(
+      List<Map<String, dynamic>> answers) async {
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertAnswers,
       fetchPolicy: FetchPolicy.networkOnly,
@@ -356,7 +467,7 @@ class EventFormsRepository {
 
     if (result.data != null && result.data!["insert_answers"] != null) {
       try {
-        return result.data!['insert_answers']['affected_rows'];
+        return result.data!['insert_answers']['returning'];
       } catch (e, s) {
         throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
       }

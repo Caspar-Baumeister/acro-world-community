@@ -86,9 +86,28 @@ class Mutations {
     mutation InsertQuestions(\$questions: [questions_insert_input!]!) {
       insert_questions(objects: \$questions) {
         affected_rows
+         returning {
+          id
+        }
       }
     }
   """);
+
+  static final insertSingleQuestion = gql("""
+  mutation InsertQuestion(\$question: questions_insert_input!) {
+    insert_questions_one(object: \$question) {
+      id
+    }
+  }
+""");
+
+  static final insertMultipleChoiceOptions = gql("""
+  mutation InsertMultipleChoiceOptions(\$options: [multiple_choice_option_insert_input!]!) {
+    insert_multiple_choice_option(objects: \$options) {
+      affected_rows
+    }
+  }
+""");
 
   // updateQuestions questions: [questions_insert_input!]!
   static final updateQuestionByPk = gql("""
@@ -109,12 +128,13 @@ class Mutations {
   """);
 
   /// answers ///
-
   //insert
   static final insertAnswers = gql("""
     mutation InsertAnswers(\$answers: [answers_insert_input!]!) {
       insert_answers(objects: \$answers) {
-        affected_rows
+        returning {
+          id
+        }
       }
     }
   """);
@@ -133,6 +153,27 @@ class Mutations {
     mutation DeleteAnswers(\$answerIds: [uuid!]!) {
       delete_answers(where: {id: {_in: \$answerIds}}) {
         affected_rows
+      }
+    }
+  """);
+
+  /// Multiple Choice Answers ///
+  /// insert
+
+  static final insertMultipleChoiceAnswers = gql("""
+    mutation InsertMultipleChoiceAnswers(\$answers: [multiple_choice_answer_insert_input!]!) {
+      insert_multiple_choice_answer(objects: \$answers) {
+        affected_rows
+      }
+    }
+  """);
+
+  /// delete
+  /// delete_multiple_choice_answer_by_pk
+  static final deleteMultipleChoiceAnswerByPk = gql("""
+    mutation DeleteMultipleChoiceAnswerByPk(\$id: uuid!) {
+      delete_multiple_choice_answer_by_pk(id: \$id) {
+        id
       }
     }
   """);
