@@ -43,7 +43,6 @@ class RecurringPatternModel {
       'recurring_every_x_weeks': recurringEveryXWeeks,
       'day_of_week': dayOfWeek ?? 0,
     };
-    print('id $id');
     if (id != null) json['id'] = id;
 
     return json;
