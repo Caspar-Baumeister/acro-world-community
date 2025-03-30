@@ -514,7 +514,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<void> setClassFromExisting(String slug, bool isEditing) async {
+  Future<void> setClassFromExisting(
+      String slug, bool isEditing, bool setFromTemplate) async {
     // clear existing data
     clear();
     // pull class data from database
@@ -542,6 +543,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       existingImageUrl = fromClass.imageUrl;
       _recurringPatterns.clear();
       _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+      if (setFromTemplate) {
+        for (var recurringPattern in _recurringPatterns) {
+          recurringPattern.id = null;
+        }
+      }
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;
