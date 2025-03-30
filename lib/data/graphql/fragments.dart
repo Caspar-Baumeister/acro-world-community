@@ -22,7 +22,8 @@ class Fragments {
         question_id
         user_id
         event_occurence
-         multiple_choice_answers {
+        country_dial_code
+        multiple_choice_answers {
           is_correct
           id
           multiple_choice_option_id

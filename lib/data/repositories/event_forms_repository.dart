@@ -287,6 +287,8 @@ class EventFormsRepository {
             'Failed to get answers. Status code: ${result.exception?.raw.toString()}');
       }
 
+      print("result.data ${result.data}");
+
       // create a list of AnswerModel from the result
       final List<AnswerModel> answers = (result.data!['answers'] as List)
           .map((e) => AnswerModel.fromJson(e))
@@ -339,7 +341,7 @@ class EventFormsRepository {
       }
     }
 
-    // Step 4: Insert Multiple Choice Options (for new or updated answers)
+    // Step 4: Insert Multiple Choice Option answers (for new or updated answers)
     final List<MultipleChoiceAnswerModel> newMCAs = [];
     for (final a in [...answersToInsert, ...answersToUpdate]) {
       if (a.multipleChoiceAnswers == null) continue;
@@ -349,6 +351,8 @@ class EventFormsRepository {
         newMCAs.add(mca);
       }
     }
+
+    print("newMCAs lenght ${newMCAs.length}");
 
     if (newMCAs.isNotEmpty) {
       await insertMultipleChoiceAnswers(
@@ -419,32 +423,41 @@ class EventFormsRepository {
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertMultipleChoiceAnswers,
       fetchPolicy: FetchPolicy.networkOnly,
-      variables: {"multipleChoiceAnswers": multipleChoiceAnswers},
+      variables: {"answers": multipleChoiceAnswers},
     );
 
+    print("answers $multipleChoiceAnswers");
     final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-    // Check for a valid response
-    if (result.hasException) {
-      throw Exception(
-          'Failed to create multiple choice answers. Status code: ${result.exception?.raw.toString()}');
-    }
+    try {
+      QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-    if (result.data != null &&
-        result.data!["insert_multiple_choice_answer"] != null) {
-      try {
-        return result.data!['insert_multiple_choice_answer']['affected_rows'];
-      } catch (e, s) {
-        throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+      print("insertMultipleChoiceAnswers result $result");
+
+      // Check for a valid response
+      if (result.hasException) {
+        throw Exception(
+            'Failed to create multiple choice answers. Status code: ${result.exception?.raw.toString()}');
       }
-    } else {
-      throw Exception('Failed to create multiple choice answers');
+
+      if (result.data != null &&
+          result.data!["insert_multiple_choice_answer"] != null) {
+        try {
+          return result.data!['insert_multiple_choice_answer']['affected_rows'];
+        } catch (e, s) {
+          throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
+        }
+      } else {
+        throw Exception('Failed to create multiple choice answers');
+      }
+    } catch (e, s) {
+      throw Exception(
+          'Failed to create multiple choice answers: $e \n Stacktrace: $s');
     }
   }
 
   // insert answers
-  Future<List<Map<String, dynamic>>> insertAnswersReturnIds(
+  Future<dynamic> insertAnswersReturnIds(
       List<Map<String, dynamic>> answers) async {
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertAnswers,
@@ -467,7 +480,9 @@ class EventFormsRepository {
 
     if (result.data != null && result.data!["insert_answers"] != null) {
       try {
-        return result.data!['insert_answers']['returning'];
+        print(
+            "result.data!['insert_answers']!['returning'] ${result.data!['insert_answers']!['returning']} with type: ${result.data!['insert_answers']!['returning'].runtimeType}");
+        return result.data!['insert_answers']!['returning'] as List<dynamic>;
       } catch (e, s) {
         throw Exception('Failed to parse class: $e \n  Stacktrace: $s');
       }

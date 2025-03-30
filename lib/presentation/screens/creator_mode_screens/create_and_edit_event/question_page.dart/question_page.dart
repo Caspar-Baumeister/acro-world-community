@@ -170,7 +170,7 @@ class QuestionCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: question.choices!.map((choice) {
-                        return Text("• $choice",
+                        return Text("• ${choice.optionText}",
                             style: Theme.of(context).textTheme.bodySmall);
                       }).toList(),
                     ),

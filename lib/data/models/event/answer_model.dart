@@ -28,6 +28,7 @@ class AnswerModel {
   String? createdAt;
   String? updatedAt;
   List<MultipleChoiceAnswerModel>? multipleChoiceAnswers;
+  String? countryDialCode;
 
   AnswerModel(
       {this.id,
@@ -37,10 +38,16 @@ class AnswerModel {
       this.answer,
       this.createdAt,
       this.multipleChoiceAnswers,
-      this.updatedAt});
+      this.updatedAt,
+      this.countryDialCode});
+
+  // to string method to print the answer
+  @override
+  String toString() {
+    return 'AnswerModel{id: $id, questionId: $questionId, userId: $userId, eventOccurence: $eventOccurence, answer: $answer, createdAt: $createdAt, updatedAt: $updatedAt, multipleChoiceAnswers: ${multipleChoiceAnswers?.map((e) => e.multipleChoiceOptionId)}}';
+  }
 
   // overwrite equality operator to compare objects only after their answers
-
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
@@ -57,6 +64,7 @@ class AnswerModel {
       answer: json['answer'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      countryDialCode: json['country_dial_code'],
       multipleChoiceAnswers: json['multiple_choice_answers'] != null
           ? List<MultipleChoiceAnswerModel>.from(json['multiple_choice_answers']
               .map((x) => MultipleChoiceAnswerModel.fromJson(x)))
@@ -70,6 +78,7 @@ class AnswerModel {
       'user_id': userId,
       'event_occurence': eventOccurence,
       'answer': answer,
+      'country_dial_code': countryDialCode,
     };
     if (id != null) {
       answerJson['id'] = id;

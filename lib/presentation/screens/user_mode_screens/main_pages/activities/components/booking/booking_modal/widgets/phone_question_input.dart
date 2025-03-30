@@ -4,8 +4,10 @@ import 'package:flutter/services.dart';
 
 class PhoneQuestionInput extends StatefulWidget {
   final TextEditingController controller;
+  final TextEditingController prefixController;
 
-  const PhoneQuestionInput({super.key, required this.controller});
+  const PhoneQuestionInput(
+      {super.key, required this.controller, required this.prefixController});
 
   @override
   State<PhoneQuestionInput> createState() => _PhoneQuestionInputState();
@@ -111,6 +113,17 @@ class _PhoneQuestionInputState extends State<PhoneQuestionInput> {
   String _selectedCountry = "DE";
 
   @override
+  void initState() {
+    super.initState();
+    if (widget.prefixController.text.isNotEmpty) {
+      _selectedCountry = _countryDialCodes.entries
+          .firstWhere(
+              (element) => element.value == widget.prefixController.text)
+          .key;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final dialCode = _countryDialCodes[_selectedCountry] ?? "";
 
@@ -128,6 +141,7 @@ class _PhoneQuestionInputState extends State<PhoneQuestionInput> {
               onChanged: (value) {
                 if (value != null) {
                   setState(() => _selectedCountry = value);
+                  widget.prefixController.text = _countryDialCodes[value] ?? "";
                 }
               },
               items: sortedCountryCodes.map((code) {
