@@ -168,6 +168,23 @@ class UserInfoHeader extends StatelessWidget {
                     )
                   ]),
                 ),
+              if (user.email != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppPaddings.small),
+                  child: Wrap(spacing: 8, runSpacing: 4, children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: CustomColors.secondaryBackgroundColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        user.email ?? "",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ]),
+                ),
             ],
           ),
         ),
