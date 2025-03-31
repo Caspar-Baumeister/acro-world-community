@@ -34,7 +34,7 @@ class RecurringPatternModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final json = {
       'start_time': _timeStringFromTimeOfDay(startTime),
       'end_time': _timeStringFromTimeOfDay(endTime),
       'start_date': startDate?.toIso8601String(),
@@ -43,9 +43,13 @@ class RecurringPatternModel {
       'recurring_every_x_weeks': recurringEveryXWeeks,
       'day_of_week': dayOfWeek ?? 0,
     };
+    if (id != null) json['id'] = id;
+
+    return json;
   }
 
   factory RecurringPatternModel.fromJson(Map<String, dynamic> json) {
+    print(json);
     return RecurringPatternModel(
       id: json['id'],
       classId: json['class_id'],
