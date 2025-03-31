@@ -47,6 +47,8 @@ class EventAnswerProvider extends ChangeNotifier {
 
   // add answer to the list
   void addAnswer(AnswerModel answer) {
+    print(
+        "adding answer with multiple choice answers: ${answer.multipleChoiceAnswers}");
     _answers.add(answer);
     notifyListeners();
   }

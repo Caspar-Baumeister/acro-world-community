@@ -381,12 +381,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         try {
           EventFormsRepository eventFormsRepository =
               EventFormsRepository(apiService: GraphQLClientSingleton());
-          // convert questions to JSON format and add the event id from the created class
-          List<Map<String, dynamic>> questionsJson = _questions
-              .map((question) => question.toJson(
-                  createdClass.id!, _questions.indexOf(question)))
-              .toList();
-          await eventFormsRepository.insertQuestions(questionsJson);
+
+          await eventFormsRepository.insertQuestionsWithOptions(
+              _questions, createdClass.id!);
         } catch (e) {
           CustomErrorHandler.captureException("Error creating questions: $e");
         }
