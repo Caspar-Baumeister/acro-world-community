@@ -400,9 +400,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       id
       created_at
       }
-      class_flags(where: {user_id: {_eq: \$user_id}}) {
-        id
-      }
+      
       
     }
   }
