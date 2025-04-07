@@ -366,9 +366,7 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
       id
       created_at
     }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
-      id
-      }
+   
       
   }
 }
@@ -382,9 +380,7 @@ query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
       id
       created_at
      }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
-      id
-      }
+   
       
   }
 }
