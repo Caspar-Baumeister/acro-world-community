@@ -102,10 +102,9 @@ class QuestionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => buildMortal(
-          context,
-          AskQuestionModal(
-            editQuestion: question,
-          )),
+        context,
+        AskQuestionModal(editQuestion: question),
+      ),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: AppPaddings.medium,
@@ -119,7 +118,7 @@ class QuestionCard extends StatelessWidget {
               color: Colors.black.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 5,
-              offset: Offset(0, 3), // Shadow position
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -129,19 +128,59 @@ class QuestionCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    question.title ?? "",
-                    style: Theme.of(context).textTheme.titleMedium,
+                  /// Title
+                  Row(
+                    children: [
+                      if (question.isRequired ?? false)
+                        Text("* ",
+                            style: Theme.of(context).textTheme.titleMedium),
+                      Expanded(
+                        child: Text(
+                          question.title ?? "",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: AppPaddings.small),
+                  const SizedBox(height: 4),
+
+                  /// Question text
+                  if (question.question != null &&
+                      question.question!.isNotEmpty)
+                    Text(
+                      question.question!,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  const SizedBox(height: 6),
+
+                  /// Type
                   Text(
-                    question.question ?? "",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    "Type: ${question.type?.name ?? ""}",
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.grey[700]),
                   ),
+
+                  /// Choices (for multiple choice only)
+                  if (question.type == QuestionType.multipleChoice &&
+                      question.choices != null &&
+                      question.choices!.isNotEmpty) ...[
+                    const SizedBox(height: 6),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: question.choices!.map((choice) {
+                        return Text("• ${choice.optionText}",
+                            style: Theme.of(context).textTheme.bodySmall);
+                      }).toList(),
+                    ),
+                  ],
                 ],
               ),
             ),
-            Center(
+
+            /// Drag handle icon
+            const Center(
               child: Icon(Icons.drag_handle),
             )
           ],

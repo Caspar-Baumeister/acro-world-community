@@ -11,6 +11,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class DashboardBookingInformationModal extends StatelessWidget {
@@ -133,6 +134,39 @@ class UserInformationWidget extends StatelessWidget {
                   ? Padding(
                       padding: const EdgeInsets.only(bottom: AppPaddings.small),
                       child: Text("Level: ${booking.user.level?.name}"),
+                    )
+                  : SizedBox(),
+              booking.user.email != null
+                  ? Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: CustomColors.secondaryBackgroundColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            booking.user.email ?? "",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(
+                                  text: booking.user.email ?? ""));
+                              showInfoToast("Email copied");
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: AppPaddings.small),
+                              child: Icon(
+                                Icons.copy,
+                                size: 16,
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     )
                   : SizedBox(),
               CustomDivider(),

@@ -81,7 +81,7 @@ class _CreateNewEventFromExistingModalState
                   );
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
-                      .setClassFromExisting(currentOption!.value, false);
+                      .setClassFromExisting(currentOption!.value, false, true);
                 } else {
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)

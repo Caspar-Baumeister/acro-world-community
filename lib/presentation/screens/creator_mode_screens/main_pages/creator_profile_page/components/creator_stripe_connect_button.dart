@@ -1,12 +1,14 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 
-class CreatorStripeConnectButton extends StatelessWidget {
+class CreatorStripeConnectButton extends StatefulWidget {
   const CreatorStripeConnectButton({
     super.key,
     required this.creatorProvider,
@@ -15,7 +17,40 @@ class CreatorStripeConnectButton extends StatelessWidget {
   final CreatorProvider creatorProvider;
 
   @override
+  State<CreatorStripeConnectButton> createState() =>
+      _CreatorStripeConnectButtonState();
+}
+
+class _CreatorStripeConnectButtonState
+    extends State<CreatorStripeConnectButton> {
+  bool loading = false;
+  @override
   Widget build(BuildContext context) {
+    if (loading) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppPaddings.medium, vertical: AppPaddings.small),
+        child: Container(
+            padding: const EdgeInsets.all(AppPaddings.medium),
+            decoration: BoxDecoration(
+              color: CustomColors.backgroundColor,
+              borderRadius: AppBorders.smallRadius,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.5),
+                  spreadRadius: 1,
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Container(
+                width: double.infinity,
+                alignment: Alignment.center,
+                child: CircularProgressIndicator())),
+      );
+    }
+
     return CustomSettingComponent(
       title: "Payment",
       content: _getButtonText(),
@@ -25,10 +60,10 @@ class CreatorStripeConnectButton extends StatelessWidget {
 
   /// Determines the appropriate button text based on the Stripe connection status.
   String _getButtonText() {
-    if (creatorProvider.activeTeacher?.stripeId == null) {
+    if (widget.creatorProvider.activeTeacher?.stripeId == null) {
       return "Connect to Stripe";
     }
-    if (creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
       return "View Stripe dashboard";
     }
     return "Continue Stripe setup";
@@ -37,16 +72,17 @@ class CreatorStripeConnectButton extends StatelessWidget {
   /// Handles the logic for connecting or logging into Stripe.
   Future<void> _handleStripeConnection(BuildContext context) async {
     print("Stripe connect button pressed");
-    print("Stripe ID: ${creatorProvider.activeTeacher?.stripeId}");
-    print("Stripe enabled: ${creatorProvider.activeTeacher?.isStripeEnabled}");
+    print("Stripe ID: ${widget.creatorProvider.activeTeacher?.stripeId}");
+    print(
+        "Stripe enabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
 
-    if (creatorProvider.activeTeacher?.stripeId != null &&
-        creatorProvider.activeTeacher?.isStripeEnabled != true) {
+    if (widget.creatorProvider.activeTeacher?.stripeId != null &&
+        widget.creatorProvider.activeTeacher?.isStripeEnabled != true) {
       await _createStripeUser();
       return;
     }
 
-    if (creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
       await _openStripeDashboard();
       return;
     }
@@ -67,7 +103,7 @@ class CreatorStripeConnectButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Text(
-                "You're about to create a Stripe account. Set the country where your business is located or where you usually charge.",
+                "You're about to create a Stripe account. This is completly free. \nSet the country and currency of your business or where you usually charge.",
               ),
               const SizedBox(height: 10),
               DropdownButtonFormField<String>(
@@ -95,13 +131,19 @@ class CreatorStripeConnectButton extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             StandardButton(
-              onPressed: () {
+              onPressed: () async {
                 if (selectedCountry != null && selectedCurrency != null) {
+                  setState(() {
+                    loading = true;
+                  });
                   Navigator.pop(context);
-                  _createStripeUser(
+                  await _createStripeUser(
                     countryCode: selectedCountry,
                     defaultCurrency: selectedCurrency,
                   );
+                  setState(() {
+                    loading = false;
+                  });
                 } else {
                   showErrorToast("Please select both country and currency");
                 }
@@ -215,7 +257,7 @@ class CreatorStripeConnectButton extends StatelessWidget {
   /// Creates a new Stripe user and opens the Stripe dashboard link if successful.
   Future<void> _createStripeUser(
       {String? countryCode, String? defaultCurrency}) async {
-    final stripeUrl = await creatorProvider.createStripeUser(
+    final stripeUrl = await widget.creatorProvider.createStripeUser(
         countryCode: countryCode, defaultCurrency: defaultCurrency);
     if (stripeUrl != null) {
       customLaunch(stripeUrl);
@@ -226,7 +268,7 @@ class CreatorStripeConnectButton extends StatelessWidget {
 
   /// Retrieves and opens the Stripe login link, or shows an error if unavailable.
   Future<void> _openStripeDashboard() async {
-    final loginUrl = await creatorProvider.getStripeLoginLink();
+    final loginUrl = await widget.creatorProvider.getStripeLoginLink();
     if (loginUrl != null) {
       customLaunch(loginUrl);
     } else {

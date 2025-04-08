@@ -381,12 +381,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         try {
           EventFormsRepository eventFormsRepository =
               EventFormsRepository(apiService: GraphQLClientSingleton());
-          // convert questions to JSON format and add the event id from the created class
-          List<Map<String, dynamic>> questionsJson = _questions
-              .map((question) => question.toJson(
-                  createdClass.id!, _questions.indexOf(question)))
-              .toList();
-          await eventFormsRepository.insertQuestions(questionsJson);
+
+          await eventFormsRepository.insertQuestionsWithOptions(
+              _questions, createdClass.id!);
         } catch (e) {
           CustomErrorHandler.captureException("Error creating questions: $e");
         }
@@ -514,7 +511,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<void> setClassFromExisting(String slug, bool isEditing) async {
+  Future<void> setClassFromExisting(
+      String slug, bool isEditing, bool setFromTemplate) async {
     // clear existing data
     clear();
     // pull class data from database
@@ -542,6 +540,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       existingImageUrl = fromClass.imageUrl;
       _recurringPatterns.clear();
       _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+      if (setFromTemplate) {
+        for (var recurringPattern in _recurringPatterns) {
+          recurringPattern.id = null;
+        }
+      }
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;
