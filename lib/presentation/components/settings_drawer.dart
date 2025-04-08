@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/essentials/esse
 import 'package:acroworld/utils/helper_functions/logout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsDrawer extends StatelessWidget {
   const SettingsDrawer({super.key});
@@ -88,7 +89,9 @@ class SettingsDrawer extends StatelessWidget {
                   icon: Icons.logout,
                   onPressed: () async {
                     await logOut(context);
-                  })
+                  }),
+              Spacer(),
+              VersionDisplay()
             ],
           ),
         ),
@@ -106,6 +109,34 @@ class SettingsDrawer extends StatelessWidget {
         text,
       ),
       onTap: onPressed,
+    );
+  }
+}
+
+class VersionDisplay extends StatelessWidget {
+  const VersionDisplay({super.key});
+
+  Future<String> _getAppVersion() async {
+    final info = await PackageInfo.fromPlatform();
+    return info.version;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<String>(
+      future: _getAppVersion(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Text('Loading version...');
+        } else if (snapshot.hasError) {
+          return const Text('Version unavailable');
+        } else {
+          return Text(
+            'Version: ${snapshot.data}',
+            style: const TextStyle(fontSize: 12, color: Colors.grey),
+          );
+        }
+      },
     );
   }
 }
