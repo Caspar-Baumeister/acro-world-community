@@ -1,4 +1,5 @@
 import 'package:acroworld/environment.dart';
+import 'package:acroworld/exceptions/error_handler.dart'; // Import your error handler
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -22,9 +23,10 @@ class GraphQLClientSingleton {
   GraphQLClient _initClient({bool asTeacher = false}) {
     Link authLink;
     if (asTeacher) {
-      print("reinit as teacher");
+      print("Reinitializing client as teacher");
       authLink = CustomAuthLink(
         getToken: () async {
+          // Returns the raw token.
           String? token = await TokenSingletonService().getToken();
           return token;
         },
@@ -33,7 +35,9 @@ class GraphQLClientSingleton {
       authLink = AuthLink(
         getToken: () async {
           String? token = await TokenSingletonService().getToken();
-          return token != null ? 'Bearer $token' : '';
+          // Return null if no token is available so that no malformed header is sent.
+          if (token == null || token.isEmpty) return null;
+          return 'Bearer $token';
         },
       );
     }
@@ -105,32 +109,45 @@ class CustomAuthLink extends Link {
       request.context.entry<HttpLinkHeaders>()?.headers ?? {},
     );
 
-    // Exempt certain operations from adding headers
+    // Exempt certain operations from adding headers (e.g., refreshing tokens)
     if (request.operation.operationName == "LoginWithRefreshToken") {
       yield* forward!(request);
       return;
     }
 
     final token = await getToken?.call();
-    if (token != null) {
-      final decodedToken = Jwt.parseJwt(token);
-      final allowedRoles = decodedToken["https://hasura.io/jwt/claims"]
-          ["x-hasura-allowed-roles"] as List<dynamic>;
-
-      final roleWithHighestPrivileges = allowedRoles.contains('AdminUser')
-          ? 'AdminUser'
-          : allowedRoles.contains('TeacherUser')
-              ? 'TeacherUser'
-              : 'User';
-
-      headers['authorization'] = 'Bearer $token';
-      headers['x-hasura-role'] = roleWithHighestPrivileges;
+    if (token != null && token.isNotEmpty) {
+      try {
+        final decodedToken = Jwt.parseJwt(token);
+        final claims = decodedToken["https://hasura.io/jwt/claims"];
+        String roleWithHighestPrivileges = 'User'; // default role
+        if (claims is Map &&
+            claims["x-hasura-allowed-roles"] is List<dynamic>) {
+          final allowedRoles =
+              claims["x-hasura-allowed-roles"] as List<dynamic>;
+          if (allowedRoles.contains('AdminUser')) {
+            roleWithHighestPrivileges = 'AdminUser';
+          } else if (allowedRoles.contains('TeacherUser')) {
+            roleWithHighestPrivileges = 'TeacherUser';
+          }
+        } else {
+          CustomErrorHandler.captureException(
+            "CustomAuthLink: Missing or invalid JWT claims in token.",
+          );
+        }
+        headers['authorization'] = 'Bearer $token';
+        headers['x-hasura-role'] = roleWithHighestPrivileges;
+      } catch (e, stackTrace) {
+        await CustomErrorHandler.captureException(e, stackTrace: stackTrace);
+      }
+    } else {
+      print("CustomAuthLink: No token provided.");
     }
 
     final updatedRequest = request.updateContextEntry<HttpLinkHeaders>(
       (HttpLinkHeaders? previous) => HttpLinkHeaders(
         headers: {
-          ...previous?.headers ?? {},
+          ...?previous?.headers,
           ...headers,
         },
       ),
