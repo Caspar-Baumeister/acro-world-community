@@ -35,6 +35,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _errorMesssage;
 
   // class properties
+  String? country;
   String? _classId;
   String _title = '';
   String _slug = '';
@@ -156,6 +157,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCountry(String? country) {
+    this.country = country;
+    notifyListeners();
+  }
+
   void setSlug(String slug) {
     _slug = slug;
     notifyListeners();
@@ -266,6 +272,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _title = '';
     _slug = '';
     _description = '';
+    country = null;
     _eventType = null;
     _location = null;
     _locationDescription = null;
@@ -336,6 +343,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
+        'location_country': country,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
       };
@@ -447,6 +455,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         ],
         'locationName': _locationName,
         'timezone': timezone,
+        'location_country': country,
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
@@ -530,6 +539,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _title = fromClass.name ?? '';
       _slug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
+      country = fromClass.country;
       _eventType = fromClass.eventType != null
           ? mapEventTypeToString(fromClass.eventType!)
           : null;

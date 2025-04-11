@@ -320,7 +320,7 @@ query getEventOccurences {
     }
     class {
       ${Fragments.classFragmentAllInfo}
-      location_country
+     
       location_city
     }
   }

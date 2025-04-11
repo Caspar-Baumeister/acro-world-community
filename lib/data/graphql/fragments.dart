@@ -96,6 +96,7 @@ class Fragments {
       location
       location_name
       name
+      location_country
       website_url
       class_teachers {
         teacher {

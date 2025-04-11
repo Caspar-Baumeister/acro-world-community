@@ -7,6 +7,7 @@ import 'package:acroworld/presentation/components/input/custom_option_input_comp
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
@@ -169,6 +170,15 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                             .setLocationDescription(locationDescription ?? '');
                       },
                     ),
+                    const SizedBox(height: AppPaddings.medium),
+                    // choose from country
+                    CustomCountryDropdown(
+                      currentlySelected: provider.country,
+                      onCountrySelected: (String? country) {
+                        provider.setCountry(country);
+                      },
+                    ),
+
                     const SizedBox(height: AppPaddings.medium),
                     CustomQueryOptionInputComponent(
                       hintText: 'What kind of event is it?',

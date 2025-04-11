@@ -315,12 +315,14 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
+    \$location_country: String
   ) {
     insert_classes_one(
       object: {
         name: \$name,
         description: \$description,
         image_url: \$imageUrl,
+        location_country: \$location_country,
         event_type: \$eventType,
         location: {type: "Point", coordinates: \$location},
         location_name: \$locationName,
@@ -354,6 +356,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$location: String!,
     \$locationName: String!,
     \$timezone: String!,
+    \$location_country: String,
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
     \$classOwners: [class_owners_insert_input!]!
@@ -378,6 +381,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         location_name: \$locationName,
         timezone: \$timezone,
         url_slug: \$urlSlug,
+        location_country: \$location_country,
         recurring_patterns: {
           data: \$recurringPatterns
         },
