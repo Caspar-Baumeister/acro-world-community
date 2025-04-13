@@ -35,6 +35,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _errorMesssage;
 
   // class properties
+  String? country;
   String? _classId;
   String _title = '';
   String _slug = '';
@@ -156,6 +157,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCountry(String? country) {
+    this.country = country;
+    notifyListeners();
+  }
+
   void setSlug(String slug) {
     _slug = slug;
     notifyListeners();
@@ -266,6 +272,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _title = '';
     _slug = '';
     _description = '';
+    country = null;
     _eventType = null;
     _location = null;
     _locationDescription = null;
@@ -336,6 +343,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
+        'location_country': country,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
       };
@@ -381,12 +389,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         try {
           EventFormsRepository eventFormsRepository =
               EventFormsRepository(apiService: GraphQLClientSingleton());
-          // convert questions to JSON format and add the event id from the created class
-          List<Map<String, dynamic>> questionsJson = _questions
-              .map((question) => question.toJson(
-                  createdClass.id!, _questions.indexOf(question)))
-              .toList();
-          await eventFormsRepository.insertQuestions(questionsJson);
+
+          await eventFormsRepository.insertQuestionsWithOptions(
+              _questions, createdClass.id!);
         } catch (e) {
           CustomErrorHandler.captureException("Error creating questions: $e");
         }
@@ -450,6 +455,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         ],
         'locationName': _locationName,
         'timezone': timezone,
+        'location_country': country,
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
@@ -514,7 +520,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<void> setClassFromExisting(String slug, bool isEditing) async {
+  Future<void> setClassFromExisting(
+      String slug, bool isEditing, bool setFromTemplate) async {
     // clear existing data
     clear();
     // pull class data from database
@@ -532,6 +539,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _title = fromClass.name ?? '';
       _slug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
+      country = fromClass.country;
       _eventType = fromClass.eventType != null
           ? mapEventTypeToString(fromClass.eventType!)
           : null;
@@ -542,6 +550,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       existingImageUrl = fromClass.imageUrl;
       _recurringPatterns.clear();
       _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+      if (setFromTemplate) {
+        for (var recurringPattern in _recurringPatterns) {
+          recurringPattern.id = null;
+        }
+      }
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
       _classId = fromClass.id;

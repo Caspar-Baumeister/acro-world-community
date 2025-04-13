@@ -47,16 +47,19 @@ class SingleEventQueryWrapper extends StatelessWidget {
       variables["url_slug"] = urlSlug;
       queryName = "classes";
     } else if (classEventId != null) {
+      print("getClassEventWithClasByIdWithFavorite");
       query = Queries.getClassEventWithClasByIdWithFavorite;
       variables["class_event_id"] = classEventId;
       variables["user_id"] = userProvider.activeUser!.id;
       queryName = "class_events_by_pk";
     } else if (classId != null && urlSlug == null) {
+      print("getClassByIdWithFavorite");
       query = Queries.getClassByIdWithFavorite;
       variables["class_id"] = classId;
       variables["user_id"] = userProvider.activeUser!.id;
       queryName = "classes_by_pk";
     } else {
+      print("getClassBySlugWithFavorite");
       query = Queries.getClassBySlugWithFavorite;
       variables["url_slug"] = urlSlug;
       variables["user_id"] = userProvider.activeUser!.id;

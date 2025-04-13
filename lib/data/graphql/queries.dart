@@ -320,7 +320,7 @@ query getEventOccurences {
     }
     class {
       ${Fragments.classFragmentAllInfo}
-      location_country
+     
       location_city
     }
   }
@@ -331,8 +331,6 @@ query getEventOccurences {
 query Config {
   config {
     min_version
-    booking_commission_rate
-    fixed_booking_commission
     daily_highlight_commission
   }
 }
@@ -366,9 +364,7 @@ query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
       id
       created_at
     }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
-      id
-      }
+   
       
   }
 }
@@ -382,9 +378,7 @@ query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
       id
       created_at
      }
-     class_flags(where: {user_id: {_eq: \$user_id}}) {
-      id
-      }
+   
       
   }
 }
@@ -400,9 +394,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
       id
       created_at
       }
-      class_flags(where: {user_id: {_eq: \$user_id}}) {
-        id
-      }
+      
       
     }
   }

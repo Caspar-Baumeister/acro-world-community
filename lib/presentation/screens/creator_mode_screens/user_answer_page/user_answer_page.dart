@@ -3,13 +3,13 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/event_forms_repository.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class UserAnswerPage extends StatelessWidget {
   const UserAnswerPage(
@@ -132,18 +132,13 @@ class UserInfoHeader extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CustomAvatarCachedNetworkImage(
-          radius: AppDimensions.avatarSizeLarge,
-          imageUrl: user.imageUrl,
-        ),
-        SizedBox(width: AppPaddings.large),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 user.name ?? "Unknown User",
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
               if (user.gender != null && user.level != null)
                 Padding(
@@ -173,6 +168,23 @@ class UserInfoHeader extends StatelessWidget {
                     )
                   ]),
                 ),
+              if (user.email != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: AppPaddings.small),
+                  child: Wrap(spacing: 8, runSpacing: 4, children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: CustomColors.secondaryBackgroundColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        user.email ?? "",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ]),
+                ),
             ],
           ),
         ),
@@ -190,6 +202,8 @@ class AnswerQuestionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(" answer.multipleChoiceAnswers: ${answer.multipleChoiceAnswers}");
+    print(" question.choices: ${question.choices}");
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(AppPaddings.medium),
@@ -203,8 +217,10 @@ class AnswerQuestionCard extends StatelessWidget {
                         (question.isRequired == true ? " *" : ""))
                     : "No topic specified",
                 style: Theme.of(context).textTheme.headlineMedium),
-            SizedBox(height: AppPaddings.small),
-            ShowMoreText(text: question.question ?? ""),
+            if (question.question != null && question.question!.isNotEmpty) ...[
+              SizedBox(height: AppPaddings.small),
+              ShowMoreText(text: question.question ?? ""),
+            ],
             if (answer.answer != null && answer.answer!.isNotEmpty) ...[
               SizedBox(height: AppPaddings.small),
               Container(
@@ -214,12 +230,64 @@ class AnswerQuestionCard extends StatelessWidget {
                           color: CustomColors.secondaryBackgroundColor),
                       color: CustomColors.secondaryBackgroundColor,
                       borderRadius: AppBorders.smallRadius),
-                  child: Text(answer.answer!)),
-            ] else
-              Padding(
-                padding: const EdgeInsets.all(AppPaddings.small),
-                child: Text("No answer provided"),
-              ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (question.type == QuestionType.phoneNumber) ...[
+                        Text(answer.countryDialCode ?? ""),
+                        SizedBox(width: AppPaddings.small),
+                      ],
+                      Flexible(child: Text(answer.answer!)),
+                      if (question.type == QuestionType.phoneNumber) ...[
+                        // copy number to clipboard
+                        GestureDetector(
+                          onTap: () {
+                            Clipboard.setData(ClipboardData(
+                                text: (answer.countryDialCode ?? "") +
+                                    answer.answer!));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text("Copied to clipboard"),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(left: AppPaddings.small),
+                            child: Icon(
+                              Icons.copy,
+                              size: 16,
+                            ),
+                          ),
+                        )
+                      ]
+                    ],
+                  )),
+            ],
+            if (question.type == QuestionType.multipleChoice &&
+                question.choices != null &&
+                question.choices!.isNotEmpty &&
+                answer.multipleChoiceAnswers != null &&
+                answer.multipleChoiceAnswers!.isNotEmpty) ...[
+              SizedBox(height: AppPaddings.small),
+              for (int i = 0; i < question.choices!.length; i++)
+                if (answer.multipleChoiceAnswers!.any((element) =>
+                    element.multipleChoiceOptionId == question.choices![i].id))
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check_circle,
+                          color: CustomColors.secondaryBackgroundColor,
+                        ),
+                        SizedBox(width: AppPaddings.small),
+                        Expanded(
+                            child: Text(question.choices![i].optionText ?? "")),
+                      ],
+                    ),
+                  ),
+            ],
           ],
         ),
       ),
