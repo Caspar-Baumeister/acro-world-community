@@ -8,6 +8,7 @@ import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -73,7 +74,7 @@ initMain() async {
 
     // STRIPE //
     Stripe.publishableKey = AppEnvironment.stripePublishableKey;
-    Stripe.merchantIdentifier = 'merchant.de.acroworld';
+    if (!kIsWeb) Stripe.merchantIdentifier = 'merchant.de.acroworld';
     Stripe.urlScheme = 'acroworld';
     await Stripe.instance.applySettings();
   } catch (exception, stackTrace) {

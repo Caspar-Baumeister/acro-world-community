@@ -101,7 +101,9 @@ class BuyHighlightStripeButton extends StatelessWidget {
       await Stripe.instance.presentPaymentSheet();
 
       // 4. confirm the payment intent
-      await stripeRepository.confirmPayment(data['payment_intent']);
+      await stripeRepository.confirmPayment(
+        data['payment_intent'],
+      );
 
       // 5. Fire the refetch event for booking query
       print("Fire refetch event for booking query");
