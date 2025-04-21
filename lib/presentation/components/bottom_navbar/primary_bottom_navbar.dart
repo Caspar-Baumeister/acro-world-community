@@ -1,12 +1,10 @@
 import 'package:acroworld/presentation/components/bottom_navbar/base_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar_item.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/calendar_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/community_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PrimaryBottomNavbar extends StatelessWidget {
   const PrimaryBottomNavbar({
@@ -25,7 +23,8 @@ class PrimaryBottomNavbar extends StatelessWidget {
         label: 'Events',
         onPressed: () {
           // navigate to home page
-          Navigator.of(context).push(DiscoverPageRoute());
+          // Navigator.of(context).push(DiscoverPageRoute());
+          context.goNamed(discoverRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -34,7 +33,8 @@ class PrimaryBottomNavbar extends StatelessWidget {
         label: 'Around me',
         onPressed: () {
           // navigate to club page
-          Navigator.of(context).push(CalendarPageRoute());
+          // Navigator.of(context).push(CalendarPageRoute());
+          context.goNamed(activitiesRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -44,7 +44,8 @@ class PrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          Navigator.of(context).push(CommunityPageRoute());
+          // Navigator.of(context).push(CommunityPageRoute());
+          context.goNamed(communityRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -54,7 +55,8 @@ class PrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          Navigator.of(context).push(ProfilePageRoute());
+          // Navigator.of(context).push(ProfilePageRoute());
+          context.goNamed(profileRoute);
         },
       ),
     ];

@@ -10,6 +10,7 @@ import 'package:acroworld/services/version_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -95,7 +96,7 @@ initMain() async {
       currentVersion: currentVersion, minVersion: minVersion);
 
   runApp(isValid
-      ? const App()
+      ? ProviderScope(child: const App())
       : VersionToOldPage(
           currentVersion: currentVersion, minVersion: minVersion));
 }

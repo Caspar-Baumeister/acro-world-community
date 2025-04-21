@@ -4,34 +4,12 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/er
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/deeplinking/deeplinking.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 // tries to identify the user and sets the user provider active user
-class AuthWrapper extends StatefulWidget {
+class AuthWrapper extends StatelessWidget {
   const AuthWrapper({super.key});
-
-  @override
-  State<AuthWrapper> createState() => _AuthWrapperState();
-}
-
-class _AuthWrapperState extends State<AuthWrapper> {
-  final deepLinkService = DeepLinkService();
-
-  @override
-  void initState() {
-    super.initState();
-    // IMPORTANT: initDeepLinks *after* the widget is created,
-    // so we have a valid BuildContext.
-    deepLinkService.initDeepLinks(context);
-  }
-
-  @override
-  void dispose() {
-    deepLinkService.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {

@@ -5,7 +5,11 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+
+final userProvider =
+    ChangeNotifierProvider<UserProvider>((ref) => UserProvider());
 
 class UserProvider extends ChangeNotifier {
   User? _activeUser;
