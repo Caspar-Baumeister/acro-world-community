@@ -8,6 +8,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/lo
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,6 +19,14 @@ final authCheckProvider = FutureProvider<bool>(
     return ref.read(userProvider.notifier).setUserFromToken();
   },
 );
+
+class GoRouterRefreshNotifier extends ChangeNotifier {
+  GoRouterRefreshNotifier(this.ref) {
+    ref.listen(authCheckProvider, (_, __) => notifyListeners());
+  }
+
+  final Ref ref;
+}
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
