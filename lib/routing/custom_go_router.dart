@@ -20,9 +20,29 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+<<<<<<< HEAD
+=======
+final authCheckProvider = FutureProvider<bool>(
+  (ref) async {
+    final token = await TokenSingletonService().getToken();
+    if (token == null) return false;
+    return ref.read(userProvider.notifier).setUserFromToken();
+  },
+);
+
+class GoRouterRefreshNotifier extends ChangeNotifier {
+  GoRouterRefreshNotifier(this.ref) {
+    ref.listen(authCheckProvider, (_, __) => notifyListeners());
+  }
+
+  final Ref ref;
+}
+
+>>>>>>> 8dfe1a349f458341d69e96feff27262d998a9177
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/auth',
