@@ -1,5 +1,6 @@
 // lib/routing/app_router.dart
 
+import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
@@ -8,10 +9,12 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/creator_profile_page.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/invites_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/my_events_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/activities_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/discover_page.dart';
@@ -20,29 +23,25 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-<<<<<<< HEAD
-=======
-final authCheckProvider = FutureProvider<bool>(
-  (ref) async {
-    final token = await TokenSingletonService().getToken();
-    if (token == null) return false;
-    return ref.read(userProvider.notifier).setUserFromToken();
-  },
-);
+// final authCheckProvider = FutureProvider<bool>(
+//   (ref) async {
+//     final token = await TokenSingletonService().getToken();
+//     if (token == null) return false;
+//     return ref.read(userProvider.notifier).setUserFromToken();
+//   },
+// );
 
-class GoRouterRefreshNotifier extends ChangeNotifier {
-  GoRouterRefreshNotifier(this.ref) {
-    ref.listen(authCheckProvider, (_, __) => notifyListeners());
-  }
+// class GoRouterRefreshNotifier extends ChangeNotifier {
+//   GoRouterRefreshNotifier(this.ref) {
+//     ref.listen(authCheckProvider, (_, __) => notifyListeners());
+//   }
 
-  final Ref ref;
-}
+//   final Ref ref;
+// }
 
->>>>>>> 8dfe1a349f458341d69e96feff27262d998a9177
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/auth',
@@ -104,11 +103,24 @@ final routerProvider = Provider<GoRouter>((ref) {
             NoTransitionPage(child: const TeacherPage()),
       ),
       GoRoute(
-        path: '/profile',
-        name: profileRoute,
-        pageBuilder: (ctx, state) =>
-            NoTransitionPage(child: const ProfilePage()),
-      ),
+          path: '/profile',
+          name: profileRoute,
+          pageBuilder: (ctx, state) =>
+              NoTransitionPage(child: const ProfilePage()),
+          routes: [
+            GoRoute(
+              path: '/account-settings',
+              name: accountSettingsRoute,
+              pageBuilder: (ctx, state) =>
+                  NoTransitionPage(child: const AccountSettingsPage()),
+            ),
+            GoRoute(
+              path: '/essentials',
+              name: essentialsRoute,
+              pageBuilder: (ctx, state) =>
+                  NoTransitionPage(child: const EssentialsPage()),
+            ),
+          ]),
 
       /// PARTNER / TEACHER PROFILE BY SLUG
       GoRoute(
@@ -148,7 +160,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
       ),
 
-      /// CREATOR MODE
+      ////////////////////
+      /// CREATOR MODE ///
+      ////////////////////
+
+      GoRoute(
+        path: '/creator-profile',
+        name: creatorProfileRoute,
+        pageBuilder: (ctx, state) => NoTransitionPage(
+          child: const CreatorProfilePage(),
+        ),
+      ),
       GoRoute(
           path: '/creator-dashboard',
           name: creatorDashboardRoute,
@@ -163,7 +185,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                   const CreateCreatorProfilePage(isEditing: true),
             ),
           ]),
-
+      // invitePage
+      GoRoute(
+        path: '/invite',
+        name: invitesRoute,
+        builder: (ctx, state) => InvitesPage(),
+      ),
       GoRoute(
         path: '/my-events',
         name: myEventsRoute,

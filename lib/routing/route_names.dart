@@ -11,6 +11,9 @@ const String profileRoute = 'profile';
 const String partnerSlugRoute = 'partner-slug';
 const String singleEventWrapperRoute = 'single-event-wrapper';
 const String singleEventPageRoute = 'single-event';
+const String accountSettingsRoute = 'account-settings';
+//essentials
+const String essentialsRoute = 'essentials';
 
 /// AUTHENTICATION ROUTES
 const String authRoute = 'auth';
@@ -27,3 +30,5 @@ const String createEditEventRoute = 'create-edit-event';
 const String questionRoute = 'question';
 const String editDescriptionRoute = 'edit-description';
 const String userAnswerRoute = 'user-answer';
+const String invitesRoute = 'invites';
+const String creatorProfileRoute = 'creator-profile';
