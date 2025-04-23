@@ -23,7 +23,6 @@ class PrimaryBottomNavbar extends StatelessWidget {
         label: 'Events',
         onPressed: () {
           // navigate to home page
-          // Navigator.of(context).push(DiscoverPageRoute());
           context.goNamed(discoverRoute);
         },
       ),
@@ -33,7 +32,6 @@ class PrimaryBottomNavbar extends StatelessWidget {
         label: 'Around me',
         onPressed: () {
           // navigate to club page
-          // Navigator.of(context).push(CalendarPageRoute());
           context.goNamed(activitiesRoute);
         },
       ),
@@ -44,7 +42,6 @@ class PrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          // Navigator.of(context).push(CommunityPageRoute());
           context.goNamed(communityRoute);
         },
       ),
@@ -55,7 +52,6 @@ class PrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          // Navigator.of(context).push(ProfilePageRoute());
           context.goNamed(profileRoute);
         },
       ),

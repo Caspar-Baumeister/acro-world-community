@@ -1,11 +1,10 @@
 import 'package:acroworld/presentation/components/bottom_navbar/base_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar_item.dart';
-import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CreatorModePrimaryBottomNavbar extends StatelessWidget {
   const CreatorModePrimaryBottomNavbar({
@@ -24,7 +23,7 @@ class CreatorModePrimaryBottomNavbar extends StatelessWidget {
         label: 'Bookings',
         onPressed: () {
           // navigate to home page
-          Navigator.of(context).push(DashboardPageRoute());
+          context.goNamed(creatorDashboardRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -33,7 +32,7 @@ class CreatorModePrimaryBottomNavbar extends StatelessWidget {
         label: 'My Events',
         onPressed: () {
           // navigate to club page
-          Navigator.of(context).push(MyEventsPageRoute());
+          context.goNamed(myEventsRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -43,7 +42,7 @@ class CreatorModePrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          Navigator.of(context).push(InvitesPageRoute());
+          context.goNamed(invitesRoute);
         },
       ),
       PrimaryBottomNavbarItem(
@@ -53,7 +52,7 @@ class CreatorModePrimaryBottomNavbar extends StatelessWidget {
         onPressed: () {
           // open end drawer
 
-          Navigator.of(context).push(CreatorProfilePageRoute());
+          context.goNamed(creatorProfileRoute);
         },
       ),
     ];

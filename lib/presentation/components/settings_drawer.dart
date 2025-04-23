@@ -1,9 +1,9 @@
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
-import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/helper_functions/logout.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -19,10 +19,8 @@ class SettingsDrawer extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AccountSettingsPage(),
-                  ),
+                onTap: () => context.goNamed(
+                  accountSettingsRoute,
                 ),
                 child: ListTile(
                     leading: Row(
@@ -41,10 +39,8 @@ class SettingsDrawer extends StatelessWidget {
               ),
               const Divider(color: Colors.grey, height: 1),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const EssentialsPage(),
-                  ),
+                onTap: () => context.goNamed(
+                  essentialsRoute,
                 ),
                 child: ListTile(
                     leading: Row(
