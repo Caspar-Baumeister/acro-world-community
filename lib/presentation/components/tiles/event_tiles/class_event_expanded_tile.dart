@@ -34,7 +34,6 @@ class ClassEventExpandedTile extends StatelessWidget {
           ? () => Navigator.of(context).push(
                 SingleEventIdWrapperPageRoute(
                     urlSlug: classEvent.classModel?.urlSlug,
-                    classId: classEvent.classModel?.id,
                     classEventId: classEvent.id,
                     isCreator: isCreator),
               )

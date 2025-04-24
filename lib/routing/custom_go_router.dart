@@ -4,6 +4,8 @@ import 'package:acroworld/presentation/screens/account_settings/account_settings
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
+import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
+import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
@@ -58,10 +60,24 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (ctx, state) => const ConfirmEmailPage(),
       ),
       GoRoute(
-        path: '/email-verification',
+        path: '/email-verification/:code',
         name: emailVerificationRoute,
         builder: (ctx, state) => EmailVerificationPage(
           code: state.pathParameters['code'],
+        ),
+      ),
+      // ForgotPassword
+      GoRoute(
+          path: '/forgot-password/:email',
+          name: forgotPasswordRoute,
+          builder: (ctx, state) => ForgotPassword(
+                initialEmail: state.pathParameters['email'],
+              )),
+      GoRoute(
+        path: '/forgot-password-success/:email',
+        name: forgotPasswordSuccessRoute,
+        builder: (ctx, state) => ForgotPasswordSuccess(
+          email: state.pathParameters['email']!,
         ),
       ),
 
@@ -134,14 +150,12 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       /// SINGLE CLASS / EVENT WRAPPER
       GoRoute(
-        path: '/event/:classId/:classEventId',
+        path: '/event/:urlSlug/:classEventId',
         name: singleEventWrapperRoute,
         builder: (ctx, state) {
           return SingleEventQueryWrapper(
-            urlSlug: null,
-            classId: state.pathParameters['classId'],
+            urlSlug: state.pathParameters['urlSlug'],
             classEventId: state.pathParameters['classEventId'],
-            isCreator: false,
           );
         },
       ),
@@ -239,10 +253,6 @@ final routerProvider = Provider<GoRouter>((ref) {
     ],
   );
 });
-
-
-
-
 
 // final authCheckProvider = FutureProvider<bool>(
 //   (ref) async {

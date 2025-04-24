@@ -12,7 +12,7 @@ import 'package:acroworld/presentation/screens/create_creator_profile_pages/comp
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/creator_profile_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -20,6 +20,7 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -198,7 +199,7 @@ class _CreateCreatorProfileBodyState extends State<CreateCreatorProfileBody> {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           await TokenSingletonService().refreshToken();
           userProvider.setUserFromToken();
-          Navigator.of(context).pushReplacement(CreatorProfilePageRoute());
+          context.goNamed(creatorProfileRoute);
         });
       } else {
         final creatorProvider =
