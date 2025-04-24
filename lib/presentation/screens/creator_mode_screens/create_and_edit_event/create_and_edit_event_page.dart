@@ -7,10 +7,11 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CreateAndEditEventPage extends StatefulWidget {
@@ -84,7 +85,7 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(MyEventsPageRoute());
+                context.goNamed(myEventsRoute);
                 Provider.of<TeacherEventsProvider>(context, listen: false)
                     .fetchMyEvents(isRefresh: true);
               });

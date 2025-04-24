@@ -24,6 +24,7 @@ class SingleEventQueryWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: find out if user is creator or not with some provider
+    final isCreator = false;
 
     UserProvider userProvider = Provider.of<UserProvider>(context);
     if (userProvider.activeUser == null) {
@@ -51,12 +52,12 @@ class SingleEventQueryWrapper extends StatelessWidget {
       variables["class_event_id"] = classEventId;
       variables["user_id"] = userProvider.activeUser!.id;
       queryName = "class_events_by_pk";
-    } else if (classId != null && urlSlug == null) {
-      print("getClassByIdWithFavorite");
-      query = Queries.getClassByIdWithFavorite;
-      variables["class_id"] = classId;
-      variables["user_id"] = userProvider.activeUser!.id;
-      queryName = "classes_by_pk";
+      // } else if (classId != null && urlSlug == null) {
+      //   print("getClassByIdWithFavorite");
+      //   query = Queries.getClassByIdWithFavorite;
+      //   variables["class_id"] = classId;
+      //   variables["user_id"] = userProvider.activeUser!.id;
+      //   queryName = "classes_by_pk";
     } else {
       print("getClassBySlugWithFavorite");
       query = Queries.getClassBySlugWithFavorite;
