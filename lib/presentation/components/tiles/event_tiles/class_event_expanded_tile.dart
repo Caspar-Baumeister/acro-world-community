@@ -5,11 +5,12 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/clas
 import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/class_tile_title_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
-import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ClassEventExpandedTile extends StatelessWidget {
   const ClassEventExpandedTile(
@@ -31,12 +32,12 @@ class ClassEventExpandedTile extends StatelessWidget {
       onTap: classEvent.classModel?.urlSlug != null ||
               classEvent.classModel?.id != null ||
               classEvent.id != null
-          ? () => Navigator.of(context).push(
-                SingleEventIdWrapperPageRoute(
-                    urlSlug: classEvent.classModel?.urlSlug,
-                    classId: classEvent.classModel?.id,
-                    classEventId: classEvent.id,
-                    isCreator: isCreator),
+          ? () => context.goNamed(
+                singleEventWrapperRoute,
+                pathParameters: {
+                  "urlSlug": classEvent.classModel?.urlSlug ?? "",
+                  "classEventId": classEvent.id ?? "",
+                },
               )
           : () => showErrorToast("This class is not available anymore"),
       child: Padding(

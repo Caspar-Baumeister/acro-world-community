@@ -3,11 +3,11 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 /// A page that verifies a user's email using a provided [code].
@@ -48,7 +48,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
     if (widget.code == null || widget.code!.isEmpty) {
       showErrorToast("Invalid verification code");
       if (mounted) {
-        Navigator.of(context).pushReplacement(ProfilePageRoute());
+        context.goNamed(profileRoute);
       }
       setState(() => _isVerifying = false);
       return;
@@ -61,7 +61,8 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         // Verification failed
         showErrorToast("Error verifying email");
         if (mounted) {
-          Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
+          // Navigate to ConfirmEmailPage for re-attempt
+          context.goNamed(confirmEmailRoute);
         }
       } else {
         // Verification success
@@ -69,7 +70,8 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
         if (mounted) {
           // Update the user data after successful verification
           Provider.of<UserProvider>(context, listen: false).setUserFromToken();
-          Navigator.of(context).pushReplacement(ProfilePageRoute());
+          // Navigate to ProfilePage
+          context.goNamed(profileRoute);
         }
       }
     } catch (e, stackTrace) {
@@ -79,7 +81,7 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       // Show user-friendly error
       showErrorToast("Error verifying email");
       if (mounted) {
-        Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
+        context.goNamed(confirmEmailRoute);
       }
     } finally {
       if (mounted) {

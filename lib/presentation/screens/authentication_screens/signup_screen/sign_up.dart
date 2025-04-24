@@ -4,9 +4,10 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class SignUp extends StatefulWidget {
@@ -302,10 +303,9 @@ class SignUpState extends State<SignUp> {
         final userProvider = Provider.of<UserProvider>(context, listen: false);
         userProvider.setUserFromToken().then((value) {
           if (value) {
-            // NotificationService().updateToken();
-            Navigator.of(context).push(
-              DiscoverPageRoute(),
-            );
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.goNamed(discoverRoute);
+            });
           } else {
             setState(() {
               error = 'An unexpected error occured. Please try again later';

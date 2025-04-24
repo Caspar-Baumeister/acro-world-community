@@ -5,11 +5,12 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.d
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class CreatedEventsByMeSection extends StatefulWidget {
@@ -151,12 +152,19 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
 
   void onTap(ClassModel classObject, BuildContext context) {
     if (classObject.urlSlug != null || classObject.id != null) {
-      Navigator.of(context).push(
-        SingleEventIdWrapperPageRoute(
-          urlSlug: classObject.urlSlug,
-          classId: classObject.id,
-          isCreator: true,
-        ),
+      // Navigator.of(context).push(
+      //   SingleEventIdWrapperPageRoute(
+      //     urlSlug: classObject.urlSlug,
+      //     classId: classObject.id,
+      //     isCreator: true,
+      //   ),
+      // );
+      context.goNamed(
+        singleEventWrapperRoute,
+        pathParameters: {
+          "urlSlug": classObject.urlSlug ?? "",
+          "classEventId": classObject.id ?? "",
+        },
       );
     } else {
       showErrorToast("This event is not available anymore");

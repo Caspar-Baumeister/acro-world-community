@@ -3,7 +3,6 @@ import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
-import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -174,12 +173,10 @@ class SignInState extends State<SignIn> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => ForgotPassword(
-                                            initialEmail: emailController?.text,
-                                          )),
-                                );
+                                context.goNamed(forgotPasswordRoute,
+                                    pathParameters: {
+                                      "email": emailController!.text
+                                    });
                               },
                               child: Text(
                                 "Forgot password",

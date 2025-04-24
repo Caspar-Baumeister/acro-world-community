@@ -6,13 +6,14 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ConfirmEmailPage extends StatefulWidget {
@@ -78,10 +79,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
     });
     userProvider.checkEmailVerification().then((value) {
       if (value == true) {
-        return Navigator.of(context).pushAndRemoveUntil(
-          ProfilePageRoute(),
-          (Route<dynamic> route) => false,
-        );
+        return context.goNamed(profileRoute);
       }
     }).then((value) {
       setState(() {
@@ -224,7 +222,7 @@ class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
           // success toast
           showSuccessToast("Email verified successfully");
           // Send to profile page
-          Navigator.of(context).push(ProfilePageRoute());
+          context.goNamed(profileRoute);
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Provider.of<UserProvider>(context, listen: false)
                 .setUserFromToken();

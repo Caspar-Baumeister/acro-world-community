@@ -12,27 +12,27 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SingleEventQueryWrapper extends StatelessWidget {
-  const SingleEventQueryWrapper(
-      {super.key,
-      this.urlSlug,
-      this.classId,
-      this.classEventId,
-      required this.isCreator});
+  const SingleEventQueryWrapper({
+    super.key,
+    this.urlSlug,
+    this.classEventId,
+  });
 
   final String? urlSlug;
-  final String? classId;
   final String? classEventId;
-  final bool isCreator;
 
   @override
   Widget build(BuildContext context) {
+    // TODO: find out if user is creator or not with some provider
+    final isCreator = false;
+
     UserProvider userProvider = Provider.of<UserProvider>(context);
     if (userProvider.activeUser == null) {
       return const ErrorPage(
         error: "You need to be logged in to view this page.",
       );
     }
-    if (urlSlug == null && classId == null && classEventId == null) {
+    if (urlSlug == null && classEventId == null) {
       return const ErrorPage(
         error: "No id or slug provided.",
       );
@@ -52,12 +52,12 @@ class SingleEventQueryWrapper extends StatelessWidget {
       variables["class_event_id"] = classEventId;
       variables["user_id"] = userProvider.activeUser!.id;
       queryName = "class_events_by_pk";
-    } else if (classId != null && urlSlug == null) {
-      print("getClassByIdWithFavorite");
-      query = Queries.getClassByIdWithFavorite;
-      variables["class_id"] = classId;
-      variables["user_id"] = userProvider.activeUser!.id;
-      queryName = "classes_by_pk";
+      // } else if (classId != null && urlSlug == null) {
+      //   print("getClassByIdWithFavorite");
+      //   query = Queries.getClassByIdWithFavorite;
+      //   variables["class_id"] = classId;
+      //   variables["user_id"] = userProvider.activeUser!.id;
+      //   queryName = "classes_by_pk";
     } else {
       print("getClassBySlugWithFavorite");
       query = Queries.getClassBySlugWithFavorite;

@@ -19,6 +19,8 @@ const String essentialsRoute = 'essentials';
 const String authRoute = 'auth';
 const String confirmEmailRoute = 'confirm-email';
 const String emailVerificationRoute = 'email-verification';
+const String forgotPasswordSuccessRoute = 'forgot-password-success';
+const String forgotPasswordRoute = 'forgot-password';
 
 /// CREATOR ROUTES
 const String creatorDashboardRoute = 'creator-dashboard';
