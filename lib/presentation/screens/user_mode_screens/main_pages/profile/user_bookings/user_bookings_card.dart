@@ -1,9 +1,10 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
-import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 
 class UserBookingsCard extends StatelessWidget {
@@ -20,11 +21,12 @@ class UserBookingsCard extends StatelessWidget {
           behavior: HitTestBehavior.opaque,
           onTap: () =>
               userBooking.classId != null || userBooking.urlSlug != null
-                  ? Navigator.of(context).push(
-                      SingleEventIdWrapperPageRoute(
-                          classId: userBooking.classId,
-                          classEventId: userBooking.classEventId,
-                          urlSlug: userBooking.urlSlug),
+                  ? context.goNamed(
+                      singleEventWrapperRoute,
+                      pathParameters: {
+                        "urlSlug": userBooking.urlSlug ?? "",
+                        "classEventId": userBooking.classId ?? "",
+                      },
                     )
                   : null,
           child: SizedBox(
