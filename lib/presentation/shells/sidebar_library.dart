@@ -10,19 +10,19 @@ class ShellSideNavigationBar extends ConsumerWidget {
     return Column(
       children: [
         ListTile(
-          title: const Text("Home"),
+          title: const Text("Discover"),
           leading: const Icon(Icons.home),
-          onTap: () => context.go('/home'),
+          onTap: () => context.go('/discover'),
+        ),
+        ListTile(
+          title: const Text("Activity"),
+          leading: const Icon(Icons.person),
+          onTap: () => context.go('/activity'),
         ),
         ListTile(
           title: const Text("Profile"),
-          leading: const Icon(Icons.person),
-          onTap: () => context.go('/profile'),
-        ),
-        ListTile(
-          title: const Text("Settings"),
           leading: const Icon(Icons.settings),
-          onTap: () => context.go('/settings'),
+          onTap: () => context.go('/profile'),
         ),
         // Add more items as needed
       ],
