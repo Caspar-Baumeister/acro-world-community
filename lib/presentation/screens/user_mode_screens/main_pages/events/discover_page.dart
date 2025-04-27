@@ -14,9 +14,6 @@ class DiscoverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const BasePage(
       appBar: DiscoveryAppBar(),
-      // bottomNavigationBar: PrimaryBottomNavbar(
-      //   selectedIndex: 0,
-      // ),
       makeScrollable: false,
       child: DiscoverBody(),
     );

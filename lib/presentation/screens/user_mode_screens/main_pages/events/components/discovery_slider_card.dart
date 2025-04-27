@@ -1,10 +1,11 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_card_image_section.dart';
-import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class DiscoverySliderCard extends StatelessWidget {
   const DiscoverySliderCard({required this.classEvent, super.key});
@@ -16,11 +17,18 @@ class DiscoverySliderCard extends StatelessWidget {
     String? imageUrl = classEvent.classModel?.imageUrl;
     String? location = LocationParser.parseLocation(
         classEvent.classModel?.country, classEvent.classModel?.city);
+
     return GestureDetector(
-      onTap: () => classEvent.classModel != null
-          ? Navigator.of(context).push(SingleEventPageRoute(
-              classModel: classEvent.classModel!, classEvent: classEvent))
-          : null,
+      onTap: () =>
+          classEvent.classModel?.urlSlug != null && classEvent.id != null
+              ? context.pushNamed(
+                  singleEventWrapperRoute,
+                  pathParameters: {
+                    "urlSlug": classEvent.classModel!.urlSlug!,
+                    "classEventId": classEvent.id!
+                  },
+                )
+              : null,
       child: SizedBox(
         width: AppDimensions.eventDashboardSliderWidth,
         child: Column(
