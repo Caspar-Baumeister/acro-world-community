@@ -16,23 +16,31 @@ class BBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(left: 30, right: 30, top: 5, bottom: 5),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: items.map((item) {
-          var index = items.indexOf(item);
-          return _NavigationItem(
-            item: item,
-            dimension: 52,
-            isSelected: selectedIndex == index,
-            isDisabled: item.disabled,
-            onTap: () {
-              onItemSelected(index);
-            },
-          );
-        }).toList(),
+    return SafeArea(
+      bottom: true,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 16,
+          right: 16,
+          bottom: additionalBottomPadding + 8,
+          top: 8,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: items.asMap().entries.map((entry) {
+            final index = entry.key;
+            final item = entry.value;
+            return Expanded(
+              child: _NavigationItem(
+                item: item,
+                isSelected: selectedIndex == index,
+                isDisabled: item.disabled,
+                onTap: () => onItemSelected(index),
+                iconDimension: 24,
+              ),
+            );
+          }).toList(),
+        ),
       ),
     );
   }
@@ -56,14 +64,15 @@ class _NavigationItem extends StatefulWidget {
     required this.isSelected,
     required this.isDisabled,
     required this.onTap,
-    this.dimension = 50,
+    this.iconDimension = 24,
   });
 
   final UiNavigationBarItem item;
   final bool isSelected;
   final bool isDisabled;
-  final void Function() onTap;
-  final double dimension;
+  final VoidCallback onTap;
+  final double iconDimension;
+
   @override
   State<_NavigationItem> createState() => _NavigationItemState();
 }
@@ -74,69 +83,66 @@ class _NavigationItemState extends State<_NavigationItem> {
 
   @override
   Widget build(BuildContext context) {
-    Color? iconColor;
-    if (widget.isSelected || isHovered) {
-      iconColor = Theme.of(context).bottomNavigationBarTheme.selectedItemColor;
-    } else if (widget.isDisabled) {
-      iconColor = Theme.of(context)
-          .bottomNavigationBarTheme
-          .unselectedItemColor
-          ?.withAlpha(100);
-    } else {
-      iconColor =
-          Theme.of(context).bottomNavigationBarTheme.unselectedItemColor;
-    }
+    final theme = Theme.of(context).bottomNavigationBarTheme;
+    final iconColor = widget.isDisabled
+        ? theme.unselectedItemColor?.withAlpha(100)
+        : (widget.isSelected || isHovered
+            ? theme.selectedItemColor
+            : theme.unselectedItemColor);
+    final labelStyle = (widget.isSelected
+            ? theme.selectedLabelStyle
+            : theme.unselectedLabelStyle) ??
+        TextStyle(color: iconColor, fontSize: 12);
 
     return Semantics(
       container: true,
       selected: widget.isSelected,
       child: MouseRegion(
-        onEnter: (event) {
-          setState(() {
-            isHovered = true;
-          });
-        },
-        onExit: (event) {
-          setState(() {
-            isHovered = false;
-          });
-        },
+        onEnter: (_) => setState(() => isHovered = true),
+        onExit: (_) => setState(() => isHovered = false),
         cursor: SystemMouseCursors.click,
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
-          onTap: () {
-            if (!widget.isDisabled) widget.onTap();
-
-            setState(() {
-              isPressed = true;
-            });
-            Future.delayed(const Duration(milliseconds: 50), () {
-              setState(() {
-                isPressed = false;
-              });
-            });
-          },
+          onTap: widget.isDisabled
+              ? null
+              : () {
+                  widget.onTap();
+                  setState(() => isPressed = true);
+                  Future.delayed(const Duration(milliseconds: 50), () {
+                    setState(() => isPressed = false);
+                  });
+                },
           onTapDown: (_) => setState(() => isPressed = true),
           onTapUp: (_) => setState(() => isPressed = false),
-          child: Container(
-            padding: const EdgeInsets.all(10),
-            width: widget.dimension,
-            height: widget.dimension,
-            child: AnimatedScale(
-              duration: const Duration(milliseconds: 100),
-              //padding: EdgeInsets.all(10),
-              scale: isPressed ? 0.9 : 1,
-              child: AnimatedTheme(
-                data: ThemeData(
-                  iconTheme: IconThemeData(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AnimatedScale(
+                duration: const Duration(milliseconds: 100),
+                scale: isPressed ? 0.9 : 1,
+                child: IconTheme(
+                  data: IconThemeData(
                     color: iconColor,
+                    size: widget.iconDimension,
                   ),
-                ),
-                child: FittedBox(
                   child: widget.item.icon,
                 ),
               ),
-            ),
+              const SizedBox(height: 4),
+              // Wrap title in Expanded to avoid wrapping on narrow layouts
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: DefaultTextStyle(
+                  style: labelStyle.copyWith(
+                    color: widget.isSelected
+                        ? theme.selectedLabelStyle?.color
+                        : theme.unselectedLabelStyle?.color,
+                  ),
+                  child: widget.item.title,
+                ),
+              ),
+            ],
           ),
         ),
       ),

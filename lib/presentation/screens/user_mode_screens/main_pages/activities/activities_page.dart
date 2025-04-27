@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/activities_body.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/calendar_app_bar.dart';
@@ -12,7 +11,7 @@ class ActivitiesPage extends StatelessWidget {
     return const BasePage(
       makeScrollable: false,
       appBar: CalendarAppBar(),
-      bottomNavigationBar: PrimaryBottomNavbar(selectedIndex: 1),
+      // bottomNavigationBar: PrimaryBottomNavbar(selectedIndex: 1),
       child: ActivitiesBody(),
     );
   }
