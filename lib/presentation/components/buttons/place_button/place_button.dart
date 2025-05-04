@@ -1,8 +1,9 @@
 import 'package:acroworld/presentation/components/buttons/standard_icon_button.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class PlaceButton extends StatelessWidget {
@@ -21,11 +22,8 @@ class PlaceButton extends StatelessWidget {
         text: calendarProvider.locationSingelton.place.description,
         icon: Icons.location_on,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const PlaceSearchScreen(),
-            ),
+          context.pushNamed(
+            placeSearchRoute,
           );
         },
       ),

@@ -14,6 +14,7 @@ const String singleEventPageRoute = 'single-event';
 const String accountSettingsRoute = 'account-settings';
 //essentials
 const String essentialsRoute = 'essentials';
+const String placeSearchRoute = 'place-search';
 
 /// AUTHENTICATION ROUTES
 const String authRoute = 'auth';

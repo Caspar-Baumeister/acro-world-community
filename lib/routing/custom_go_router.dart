@@ -17,6 +17,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages
 import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/activities_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/discover_page.dart';
@@ -45,13 +46,27 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (ctx, state) => NoTransitionPage(
               child: const DiscoverPage(),
             ),
+            routes: [
+              //filter
+              GoRoute(
+                builder: (context, state) => const FilterPage(),
+                path: '/filter',
+                name: filterRoute,
+              ),
+            ],
           ),
           GoRoute(
-            path: '/activity',
-            name: activitiesRoute,
-            pageBuilder: (ctx, state) =>
-                NoTransitionPage(child: const ActivitiesPage()),
-          ),
+              path: '/activity',
+              name: activitiesRoute,
+              pageBuilder: (ctx, state) =>
+                  NoTransitionPage(child: const ActivitiesPage()),
+              routes: [
+                GoRoute(
+                  path: '/place-search',
+                  name: placeSearchRoute,
+                  builder: (context, state) => const PlaceSearchScreen(),
+                )
+              ]),
           GoRoute(
             path: '/community',
             name: communityRoute,
@@ -82,11 +97,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       name: mapRoute,
       pageBuilder: (ctx, state) => NoTransitionPage(child: const MapPage()),
     ),
-    GoRoute(
-      path: '/filter',
-      name: filterRoute,
-      builder: (ctx, state) => const FilterPage(),
-    ),
+
     GoRoute(
       path: '/auth',
       name: authRoute,
