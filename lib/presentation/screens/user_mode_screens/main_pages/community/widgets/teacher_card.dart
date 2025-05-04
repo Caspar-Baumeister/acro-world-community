@@ -1,11 +1,12 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_teacher_query.dart';
 import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -34,11 +35,19 @@ class _TeacherCardState extends State<TeacherCard> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) =>
-                  SingleTeacherQuery(teacherId: widget.teacher.id ?? "")),
-        ),
+        // onTap: () => Navigator.of(context).push(
+        //   MaterialPageRoute(
+        //       builder: (context) =>
+        //           SingleTeacherQuery(teacherId: widget.teacher.id ?? "")),
+        // ),
+        onTap: widget.teacher.slug != null
+            ? () => context.pushNamed(
+                  partnerSlugRoute,
+                  pathParameters: {
+                    "teacherSlug": widget.teacher.slug!,
+                  },
+                )
+            : null,
         child: ListTile(
           leading: CustomAvatarCachedNetworkImage(
             imageUrl: widget.teacher.profilImgUrl ?? "",

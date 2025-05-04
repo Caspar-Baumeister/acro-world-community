@@ -8,7 +8,6 @@ class FilterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double buttonWidth = MediaQuery.of(context).size.width * 0.4;
     return BasePage(
         appBar: const FilterPageAppBar(), child: const FilterPageView());
   }

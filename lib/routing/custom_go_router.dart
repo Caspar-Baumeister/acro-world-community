@@ -86,6 +86,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       pageBuilder: (ctx, state) =>
           NoTransitionPage(child: const AccountSettingsPage()),
     ),
+
     GoRoute(
       path: '/essentials',
       name: essentialsRoute,
