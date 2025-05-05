@@ -60,10 +60,8 @@ class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ? CustomColors.accentColor
                   : CustomColors.inactiveBorderColor),
           onPressed: () {
-            // Navigator.of(context).push(FilterPageRoute());
             context.pushNamed(
               filterRoute,
-              extra: discoveryProvider,
             );
           },
         ),
