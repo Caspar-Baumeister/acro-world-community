@@ -61,9 +61,7 @@ class _DashboardBodyState extends State<DashboardBody> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DashboadBookingsStatistics(
-            totalAmountBookings:
-                creatorBookingsProvider.confirmedBookings.length,
-          ),
+              totalAmountBookings: creatorBookingsProvider.totalBookings),
           if (creatorBookingsProvider.confirmedBookings.isNotEmpty)
             Expanded(
                 child: DashboardBookingView(
