@@ -32,7 +32,7 @@ class ClassEventExpandedTile extends StatelessWidget {
       onTap: classEvent.classModel?.urlSlug != null ||
               classEvent.classModel?.id != null ||
               classEvent.id != null
-          ? () => context.goNamed(
+          ? () => context.pushNamed(
                 singleEventWrapperRoute,
                 pathParameters: {
                   "urlSlug": classEvent.classModel?.urlSlug ?? "",

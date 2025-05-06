@@ -1,9 +1,10 @@
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/account_settings/delete_account.dart';
-import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class AccountSettingsPage extends StatelessWidget {
   const AccountSettingsPage({super.key});
@@ -38,14 +39,7 @@ class AccountSettingsPage extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              onTap: () => // route to EditUserdata
-                  Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const EditUserdataPage(),
-                  // EditUserdata(),
-                ),
-              ),
+              onTap: () => context.pushNamed(editUserDataRoute),
             ),
           ),
 

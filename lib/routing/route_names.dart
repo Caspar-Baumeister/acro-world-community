@@ -12,7 +12,7 @@ const String partnerSlugRoute = 'partner-slug';
 const String singleEventWrapperRoute = 'single-event-wrapper';
 const String singleEventPageRoute = 'single-event';
 const String accountSettingsRoute = 'account-settings';
-//essentials
+const String editUserDataRoute = 'edit-userdata';
 const String essentialsRoute = 'essentials';
 const String placeSearchRoute = 'place-search';
 
@@ -35,3 +35,4 @@ const String editDescriptionRoute = 'edit-description';
 const String userAnswerRoute = 'user-answer';
 const String invitesRoute = 'invites';
 const String creatorProfileRoute = 'creator-profile';
+const String classBookingSummaryRoute = 'class-booking-summary';

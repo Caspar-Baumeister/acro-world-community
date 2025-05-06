@@ -1,12 +1,14 @@
 // lib/routing/app_router.dart
 
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
+import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/class_booking_summary_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
@@ -46,14 +48,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             pageBuilder: (ctx, state) => NoTransitionPage(
               child: const DiscoverPage(),
             ),
-            routes: [
-              //filter
-              GoRoute(
-                builder: (context, state) => const FilterPage(),
-                path: '/filter',
-                name: filterRoute,
-              ),
-            ],
           ),
           GoRoute(
               path: '/activity',
@@ -74,12 +68,23 @@ final routerProvider = Provider<GoRouter>((ref) {
                 NoTransitionPage(child: const TeacherPage()),
           ),
           GoRoute(
-            path: '/profile',
-            name: profileRoute,
-            pageBuilder: (ctx, state) =>
-                NoTransitionPage(child: const ProfilePage()),
-          ),
+              path: '/profile',
+              name: profileRoute,
+              pageBuilder: (ctx, state) =>
+                  NoTransitionPage(child: const ProfilePage()),
+              routes: [
+                GoRoute(
+                  path: '/edit-userdata',
+                  name: editUserDataRoute,
+                  builder: (context, state) => const EditUserdataPage(),
+                ),
+              ]),
         ]),
+    GoRoute(
+      builder: (context, state) => const FilterPage(),
+      path: '/filter',
+      name: filterRoute,
+    ),
     GoRoute(
       path: '/account-settings',
       name: accountSettingsRoute,
@@ -180,6 +185,15 @@ final routerProvider = Provider<GoRouter>((ref) {
       name: creatorProfileRoute,
       pageBuilder: (ctx, state) => NoTransitionPage(
         child: const CreatorProfilePage(),
+      ),
+    ),
+    GoRoute(
+      path: "/class-booking-summary/:classEventId",
+      name: classBookingSummaryRoute,
+      pageBuilder: (ctx, state) => NoTransitionPage(
+        child: ClassBookingSummaryPage(
+          classEventId: state.pathParameters['classEventId']!,
+        ),
       ),
     ),
     GoRoute(
