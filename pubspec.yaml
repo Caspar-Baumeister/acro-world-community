@@ -52,6 +52,8 @@ dependencies:
   fl_chart: ^0.69.0
   uuid: ^4.5.1
   quill_html_editor: ^2.2.8
+  # for quill_html_editor to work:
+  webview_flutter_wkwebview: ^3.18.1
   flag: ^7.0.0
 
 dev_dependencies:
