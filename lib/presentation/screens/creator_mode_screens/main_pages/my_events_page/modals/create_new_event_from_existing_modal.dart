@@ -54,7 +54,9 @@ class _CreateNewEventFromExistingModalState
                         currentOption: currentOption,
                         onOptionSet: (option) {
                           setState(() => currentOption = items.firstWhere(
-                              (element) => element.value == option));
+                              (element) => element.value == option,
+                              orElse: () => OptionObjects(
+                                  "Without template", "Without template")));
                         },
                         options: [
                               OptionObjects(
