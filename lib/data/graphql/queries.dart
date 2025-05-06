@@ -129,7 +129,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 // get class event bookings for creator dashboard page
   static final getClassEventBookings = gql(
       """query getClassEventBookings(\$id: uuid!, \$limit: Int, \$offset: Int) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}, _and: {status: {_eq: "Confirmed"}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
     ${Fragments.classEventBookingFragment}
   }
 }
