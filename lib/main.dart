@@ -16,9 +16,10 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
 
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
+  ////////////
   // Sentry //
+  ////////////
   if (AppEnvironment.enableSentry) {
     await SentryFlutter.init(
       (options) {
@@ -42,15 +43,13 @@ initMain() async {
   await initHiveForFlutter();
   await LocalStorageService.init();
   await PlacePreferences.init();
-
-  // Initialize the GraphQL client in the client singleton
-  final graphQLClientSingleton = GraphQLClientSingleton().client;
-
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
 
   try {
+    //////////////
     // FIREBASE //
-
+    //////////////
     const bool isWeb = bool.fromEnvironment('dart.library.js_util');
     if (isWeb) {
       await Firebase.initializeApp(
@@ -59,21 +58,22 @@ initMain() async {
     } else {
       await Firebase.initializeApp();
     }
-
     FirebaseOptions options = Firebase.app().options;
     String projectId = options.projectId;
 
     print('Firebase Project ID: $projectId');
 
-    tz.initializeTimeZones();
-
+    ////////////////////////
     // FIREBASE MESSAGING //
+    ////////////////////////
     // initialize the firebase messaging service
     // NotificationService notificationService = NotificationService();
     // await notificationService.initialize();
     // notificationService.getToken();
 
+    ////////////
     // STRIPE //
+    ////////////
     Stripe.publishableKey = AppEnvironment.stripePublishableKey;
     if (!kIsWeb) Stripe.merchantIdentifier = 'merchant.de.acroworld';
     Stripe.urlScheme = 'acroworld';
@@ -82,7 +82,11 @@ initMain() async {
     CustomErrorHandler.captureException(exception, stackTrace: stackTrace);
   }
 
+  ///////////////////
   // VERSION CHECK //
+  ///////////////////
+  // Initialize the GraphQL client in the client singleton
+  final graphQLClientSingleton = GraphQLClientSingleton().client;
   String minVersion =
       await VersionService.getVersionInfo(graphQLClientSingleton);
   if (minVersion == 'Error') {
