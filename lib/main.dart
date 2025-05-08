@@ -99,7 +99,7 @@ initMain() async {
   bool isValid = VersionService.verifyVersionString(
       currentVersion: currentVersion, minVersion: minVersion);
 
-  runApp(isValid
+  runApp(isValid || kIsWeb
       ? ProviderScope(child: const App())
       : VersionToOldPage(
           currentVersion: currentVersion, minVersion: minVersion));
