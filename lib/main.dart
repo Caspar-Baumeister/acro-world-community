@@ -86,20 +86,23 @@ initMain() async {
   // VERSION CHECK //
   ///////////////////
   // Initialize the GraphQL client in the client singleton
-  final graphQLClientSingleton = GraphQLClientSingleton().client;
-  String minVersion =
-      await VersionService.getVersionInfo(graphQLClientSingleton);
-  if (minVersion == 'Error') {
-    // TODO if there is an error, send the User to the error page
-    minVersion = '0.0.0';
-    CustomErrorHandler.captureException(
-        "error in receiving version info from backend");
+  bool isValid = true;
+  String currentVersion = '0.0.0';
+  String minVersion = '0.0.0';
+  if (!kIsWeb) {
+    final graphQLClientSingleton = GraphQLClientSingleton().client;
+    minVersion = await VersionService.getVersionInfo(graphQLClientSingleton);
+    if (minVersion == 'Error') {
+      // TODO if there is an error, send the User to the error page
+      minVersion = '0.0.0';
+      CustomErrorHandler.captureException(
+          "error in receiving version info from backend");
+    }
+    currentVersion = await VersionService.getCurrentAppVersion();
+    isValid = VersionService.verifyVersionString(
+        currentVersion: currentVersion, minVersion: minVersion);
   }
-  String currentVersion = await VersionService.getCurrentAppVersion();
-  bool isValid = VersionService.verifyVersionString(
-      currentVersion: currentVersion, minVersion: minVersion);
-
-  runApp(isValid || kIsWeb
+  runApp(isValid
       ? ProviderScope(child: const App())
       : VersionToOldPage(
           currentVersion: currentVersion, minVersion: minVersion));
