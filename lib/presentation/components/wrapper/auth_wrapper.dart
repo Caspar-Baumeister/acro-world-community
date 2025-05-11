@@ -39,9 +39,7 @@ class AuthWrapper extends StatelessWidget {
 
   Future<bool> identifyAndSetUser(BuildContext context) async {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final token = await TokenSingletonService().getToken().then((value) {
-      return value;
-    });
+    final token = await TokenSingletonService().getToken();
 
     if (token != null) {
       // TODO decide if this maybe only happens if neccesarry to safe loading time
