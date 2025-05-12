@@ -1,4 +1,5 @@
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 enum AuthStatus { loading, authenticated, unauthenticated }
@@ -29,8 +30,19 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   Future<void> signOut() async {
     // show loading while we clear
     state = const AsyncValue.loading();
+
+    // Invalidate any user-profile providers that watch auth
+    ref.invalidate(userRiverpodProvider);
+    ref.invalidate(userNotifierProvider);
+
+    // remove token
     await TokenSingletonService().logout();
     state = const AsyncValue.data(AuthState.unauthenticated());
+  }
+
+  Future<void> authenticate(String token) async {
+    // show loading while we clear
+    state = AsyncValue.data(AuthState.authenticated(token));
   }
 }
 

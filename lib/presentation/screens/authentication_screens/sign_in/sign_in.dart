@@ -3,23 +3,25 @@ import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
+import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class SignIn extends StatefulWidget {
+class SignIn extends ConsumerStatefulWidget {
   const SignIn({required this.toggleView, super.key});
   final Function toggleView;
 
   @override
-  SignInState createState() => SignInState();
+  ConsumerState<SignIn> createState() => _SignInState();
 }
 
-class SignInState extends State<SignIn> {
+class _SignInState extends ConsumerState<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
   String errorEmail = "";
@@ -38,6 +40,13 @@ class SignInState extends State<SignIn> {
 
     emailController = TextEditingController();
     passwordController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    emailController?.dispose();
+    passwordController?.dispose();
+    super.dispose();
   }
 
   @override
@@ -236,13 +245,19 @@ class SignInState extends State<SignIn> {
           });
         } else if (response["error"] == false) {
           final userProvider =
-              Provider.of<UserProvider>(context, listen: false);
+              provider.Provider.of<UserProvider>(context, listen: false);
           userProvider.setUserFromToken().then((value) {
             if (value) {
-              // NotificationService().updateToken();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.goNamed(discoverRoute);
-              });
+              print(response["token"]);
+              ref
+                  .read(authProvider.notifier)
+                  .authenticate(response["token"])
+                  .then(
+                (_) {
+                  print("now pushing named route");
+                  context.pushNamed(discoverRoute);
+                },
+              );
             } else {
               print("failed token");
               TokenSingletonService().getToken().then((value) => print(value));

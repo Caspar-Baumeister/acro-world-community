@@ -1,3 +1,4 @@
+import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
@@ -446,13 +447,15 @@ mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!)
 }
 """);
 
-//   static final setGender = gql("""
-// mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
-//   update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
-//     id
-//   }
-// }
-// """);
+  /// USER ///
+
+  static final updateUser = '''
+      mutation updateUser(\$id: uuid!, \$changes: users_set_input!) {
+        update_users_by_pk(pk_columns: {id: \$id}, _set: \$changes) {
+          ${Fragments.userFragment}
+        }
+      }
+    ''';
 
   static final setUserLevel = gql("""
 mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {
