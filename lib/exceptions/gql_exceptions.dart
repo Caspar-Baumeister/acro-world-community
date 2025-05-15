@@ -86,3 +86,25 @@ GraphQLErrorCode _mapStringToErrorCode(String codeString) {
     orElse: () => GraphQLErrorCode.DEFAULT_ERROR,
   );
 }
+
+/// lib/exceptions/auth_exception.dart
+
+class AuthException implements Exception {
+  /// Per-field error messages, e.g. `{ 'email': 'Email not found', 'password': '' }`
+  final Map<String, String> fieldErrors;
+
+  /// A top-level error message (if any), e.g. “An unexpected error occurred”
+  final String globalError;
+
+  AuthException({
+    required this.fieldErrors,
+    required this.globalError,
+  });
+
+  @override
+  String toString() {
+    // If you want something concise when logging:
+    if (globalError.isNotEmpty) return globalError;
+    return fieldErrors.values.where((e) => e.isNotEmpty).join('; ');
+  }
+}

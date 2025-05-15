@@ -1,69 +1,134 @@
+import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class SignUp extends StatefulWidget {
+class SignUp extends ConsumerStatefulWidget {
   const SignUp({required this.toggleView, super.key});
-  final Function toggleView;
+  final VoidCallback toggleView;
 
   @override
-  SignUpState createState() => SignUpState();
+  ConsumerState<SignUp> createState() => _SignUpState();
 }
 
-class SignUpState extends State<SignUp> {
+class _SignUpState extends ConsumerState<SignUp> {
   final _formKey = GlobalKey<FormState>();
+
   String error = '';
-  String errorName = "";
-  String errorEmail = "";
-  String errorPassword = "";
-  String errorPasswordConfirm = "";
+  String errorName = '';
+  String errorEmail = '';
+  String errorPassword = '';
+  String errorPasswordConfirm = '';
 
   bool isAgb = false;
   bool isNewsletter = false;
 
-  void setNewsletter(bool b) {
-    setState(() {
-      isNewsletter = b;
-    });
-  }
-
-  void setAgb(bool b) {
-    setState(() {
-      isAgb = b;
-    });
-  }
-
-  bool loading = false;
-
   bool passwordObscure = true;
   bool passwordConfirmObscure = true;
 
-  TextEditingController? nameController;
-  TextEditingController? emailController;
-  TextEditingController? passwordController;
-  TextEditingController? passwordConfirmController;
+  late final TextEditingController nameController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  late final TextEditingController passwordConfirmController;
 
   @override
   void initState() {
     super.initState();
-
     nameController = TextEditingController();
-    passwordController = TextEditingController();
     emailController = TextEditingController();
+    passwordController = TextEditingController();
     passwordConfirmController = TextEditingController();
+
+    // On successful registration (authenticated), navigate to discover
+    ref.listen<AsyncValue<AuthState>>(authProvider, (prev, next) {
+      next.when(
+        data: (auth) {
+          if (auth.status == AuthStatus.authenticated) {
+            context.pushNamed(discoverRoute);
+          }
+        },
+        loading: () {},
+        error: (_, __) {},
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    nameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    passwordConfirmController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _onRegister() async {
+    // Dismiss keyboard
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    // Clear previous errors
+    setState(() {
+      error = '';
+      errorName = '';
+      errorEmail = '';
+      errorPassword = '';
+      errorPasswordConfirm = '';
+    });
+
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (passwordController.text != passwordConfirmController.text) {
+      setState(() {
+        errorPasswordConfirm = 'Passwords do not match';
+      });
+      return;
+    }
+
+    if (!isAgb) {
+      setState(() {
+        error = 'Please accept the terms and conditions';
+      });
+      return;
+    }
+
+    try {
+      await ref.read(authProvider.notifier).register(
+            name: nameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text,
+            isNewsletter: isNewsletter,
+          );
+      // On success, navigation happens via ref.listen above
+    } on AuthException catch (e) {
+      setState(() {
+        errorName = e.fieldErrors['name'] ?? '';
+        errorEmail = e.fieldErrors['email'] ?? '';
+        errorPassword = e.fieldErrors['password'] ?? '';
+        error = e.globalError;
+      });
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+      setState(() {
+        error = 'An unexpected error occurred. Please try again later.';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+    final authAsync = ref.watch(authProvider);
+    final isLoading = authAsync.isLoading;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
 
     return Scaffold(
       body: SafeArea(
@@ -89,143 +154,169 @@ class SignUpState extends State<SignUp> {
                         height: 100,
                       ),
                     ),
+
+                    // Name
                     InputFieldComponent(
-                        controller: nameController!,
-                        autoFocus: true,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.name,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'Name'),
-                    errorName != ""
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 8.0, left: 10),
-                            child: Text(
-                              errorName,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          )
-                        : Container(),
+                      controller: nameController,
+                      autofillHints: const [AutofillHints.name],
+                      keyboardType: TextInputType.name,
+                      textInputAction: TextInputAction.next,
+                      labelText: 'Name',
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter your name'
+                          : null,
+                    ),
+                    if (errorName.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            errorName,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                        ),
+                      ),
+
                     const SizedBox(height: 20.0),
+
+                    // Email
                     InputFieldComponent(
-                        controller: emailController!,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'Email'),
-                    errorEmail != ""
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 8.0, left: 10),
-                            child: Text(
-                              errorEmail,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          )
-                        : Container(),
+                      controller: emailController,
+                      autofillHints: const [AutofillHints.email],
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      labelText: 'Email',
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter an email'
+                          : null,
+                    ),
+                    if (errorEmail.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            errorEmail,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                        ),
+                      ),
+
                     const SizedBox(height: 20.0),
+
+                    // Password
                     InputFieldComponent(
-                      controller: passwordController!,
-                      textInputAction: TextInputAction.done,
-                      autofillHints: const [AutofillHints.password],
+                      controller: passwordController,
                       obscureText: passwordObscure,
                       labelText: 'Password',
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          // Based on passwordVisible state choose the icon
-                          passwordObscure
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {
-                          // Update the state i.e. toogle the state of passwordVisible variable
-                          setState(() {
-                            passwordObscure = !passwordObscure;
-                          });
-                        },
-                      ),
-                    ),
-                    errorPassword != ""
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 12.0, left: 10),
-                            child: Text(
-                              errorPassword,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          )
-                        : Container(),
-                    const SizedBox(height: 20.0),
-                    InputFieldComponent(
-                      controller: passwordConfirmController!,
-                      textInputAction: TextInputAction.done,
                       autofillHints: const [AutofillHints.password],
+                      textInputAction: TextInputAction.next,
+                      suffixIcon: IconButton(
+                        icon: Icon(passwordObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () =>
+                            setState(() => passwordObscure = !passwordObscure),
+                      ),
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter a password'
+                          : null,
+                    ),
+                    if (errorPassword.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            errorPassword,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(height: 20.0),
+
+                    // Confirm Password
+                    InputFieldComponent(
+                      controller: passwordConfirmController,
                       obscureText: passwordConfirmObscure,
                       labelText: 'Confirm password',
+                      textInputAction: TextInputAction.done,
                       suffixIcon: IconButton(
-                        icon: Icon(
-                          // Based on passwordVisible state choose the icon
-                          passwordConfirmObscure
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.black,
-                        ),
-                        onPressed: () {
-                          // Update the state i.e. toogle the state of passwordVisible variable
-                          setState(() {
-                            passwordConfirmObscure = !passwordConfirmObscure;
-                          });
-                        },
+                        icon: Icon(passwordConfirmObscure
+                            ? Icons.visibility
+                            : Icons.visibility_off),
+                        onPressed: () => setState(() =>
+                            passwordConfirmObscure = !passwordConfirmObscure),
                       ),
-                      onFieldSubmitted: (_) => loading ? null : onRegister(),
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Re-enter your password'
+                          : null,
                     ),
-                    errorPasswordConfirm != ""
-                        ? Container(
-                            alignment: Alignment.centerLeft,
-                            padding: const EdgeInsets.only(top: 12.0, left: 10),
-                            child: Text(
-                              errorPasswordConfirm,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          )
-                        : Container(),
+                    if (errorPasswordConfirm.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            errorPasswordConfirm,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                        ),
+                      ),
+
                     const SizedBox(height: 20.0),
-                    AGBCheckbox(isAgb: isAgb, setAgb: setAgb),
+
+                    // AGB checkbox
+                    AGBCheckbox(
+                      isAgb: isAgb,
+                      setAgb: (val) => setState(() => isAgb = val),
+                    ),
+
                     const SizedBox(height: 20.0),
+
+                    // Newsletter checkbox
                     NewsletterCheckbox(
-                        isNewsletter: isNewsletter,
-                        setNewsletter: setNewsletter),
+                      isNewsletter: isNewsletter,
+                      setNewsletter: (val) =>
+                          setState(() => isNewsletter = val),
+                    ),
+
                     const SizedBox(height: 20.0),
+
+                    // Register button
                     StandardButton(
                       text: "Register",
-                      onPressed: () => onRegister(),
-                      loading: loading,
+                      onPressed: isLoading ? () {} : _onRegister,
+                      loading: isLoading,
                       isFilled: true,
                       buttonFillColor: CustomColors.primaryColor,
                     ),
-                    error != ""
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 12.0, left: 10),
-                            child: Text(
-                              error,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          )
-                        : Container(),
+
+                    if (error.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          error,
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 14.0),
+                        ),
+                      ),
+
                     const SizedBox(height: 20),
+
+                    // Toggle to login
                     LinkButtonComponent(
                       text: "Login",
-                      onPressed: () => widget.toggleView(),
+                      onPressed: widget.toggleView,
                     ),
-                    const SizedBox(
-                      height: 40,
-                    )
+
+                    const SizedBox(height: 40),
                   ],
                 ),
               ),
@@ -234,93 +325,5 @@ class SignUpState extends State<SignUp> {
         ),
       ),
     );
-  }
-
-  onRegister() async {
-    FocusManager.instance.primaryFocus?.unfocus();
-    setState(() {
-      error = '';
-      errorEmail = '';
-      errorPassword = '';
-      errorName = '';
-      errorPasswordConfirm = '';
-      loading = true;
-    });
-
-    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      setState(() {
-        loading = false;
-      });
-      return;
-    }
-    // check if password and password confirm are the same
-    if (passwordController?.text != passwordConfirmController?.text) {
-      print("yes this happend");
-      setState(() {
-        errorPasswordConfirm = "Passwords are not the same";
-        loading = false;
-      });
-      return;
-    }
-
-    // check if agb is checked
-    if (!isAgb) {
-      setState(() {
-        error = "Please accept the terms and conditions";
-        loading = false;
-      });
-      return;
-    }
-
-    // check if emaailcontroller, passwordcontroller and namecontroller are not null
-    if (emailController?.text == null ||
-        passwordController?.text == null ||
-        nameController?.text == null) {
-      setState(() {
-        error = "We're sorry there are some problems in the controller";
-        loading = false;
-      });
-      return;
-    }
-
-    await TokenSingletonService()
-        .register(emailController!.text, passwordController!.text,
-            nameController!.text,
-            isNewsletterEnabled: isNewsletter)
-        .then((response) {
-      if (response["errors"]?[0]["extensions"]?["exception"]?["errorInfo"]
-              ?["message"] !=
-          null) {
-        setState(() {
-          error = response["errors"]?[0]["extensions"]?["exception"]
-              ?["errorInfo"]?["message"];
-        });
-      } else if (response["errors"]?[0]["message"] != null) {
-        setState(() {
-          error = response["errors"]?[0]["message"];
-        });
-      } else if (response["error"] == false) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        userProvider.setUserFromToken().then((value) {
-          if (value) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              context.goNamed(discoverRoute);
-            });
-          } else {
-            setState(() {
-              error = 'An unexpected error occured. Please try again later';
-            });
-          }
-        });
-      } else {
-        setState(() {
-          error = 'An unexpected error occured. Please try again later';
-        });
-      }
-    });
-
-    setState(() {
-      loading = false;
-    });
   }
 }

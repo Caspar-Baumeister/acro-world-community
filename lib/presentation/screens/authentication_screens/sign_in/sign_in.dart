@@ -4,18 +4,15 @@ import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
 
 class SignIn extends ConsumerStatefulWidget {
   const SignIn({required this.toggleView, super.key});
-  final Function toggleView;
+  final VoidCallback toggleView;
 
   @override
   ConsumerState<SignIn> createState() => _SignInState();
@@ -24,34 +21,76 @@ class SignIn extends ConsumerStatefulWidget {
 class _SignInState extends ConsumerState<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
-  String errorEmail = "";
-  String errorPassword = "";
-
-  bool loading = false;
-
+  String errorEmail = '';
+  String errorPassword = '';
   bool isObscure = true;
 
-  TextEditingController? emailController;
-  TextEditingController? passwordController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
-
     emailController = TextEditingController();
     passwordController = TextEditingController();
+
+    // Navigate when authProvider becomes authenticated
+    ref.listen<AsyncValue<AuthState>>(authProvider, (prev, next) {
+      next.when(
+        data: (auth) {
+          if (auth.status == AuthStatus.authenticated) {
+            context.pushNamed(discoverRoute);
+          }
+        },
+        loading: () {},
+        error: (_, __) {},
+      );
+    });
   }
 
   @override
   void dispose() {
-    emailController?.dispose();
-    passwordController?.dispose();
+    emailController.dispose();
+    passwordController.dispose();
     super.dispose();
+  }
+
+  Future<void> onSignin() async {
+    // Clear previous errors
+    setState(() {
+      error = '';
+      errorEmail = '';
+      errorPassword = '';
+    });
+
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      // Delegate login to your AuthNotifier.signIn
+      await ref
+          .read(authProvider.notifier)
+          .signIn(emailController.text, passwordController.text);
+      // Redirect will happen in the ref.listen above
+    } on AuthException catch (e) {
+      // Show field & global errors
+      setState(() {
+        errorEmail = e.fieldErrors['email'] ?? '';
+        errorPassword = e.fieldErrors['password'] ?? '';
+        error = e.globalError;
+      });
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+      setState(() {
+        error = 'An unexpected error occurred. Please try again later.';
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+    final authAsync = ref.watch(authProvider);
+    final isLoading = authAsync.isLoading;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
 
     return Scaffold(
       body: SafeArea(
@@ -74,12 +113,16 @@ class _SignInState extends ConsumerState<SignIn> {
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 40.0),
                         child: Image(
-                          image: AssetImage('assets/logo/logo_transparent.png'),
+                          image: AssetImage(
+                            'assets/logo/logo_transparent.png',
+                          ),
                           height: 100,
                         ),
                       ),
+
+                      // Email field
                       InputFieldComponent(
-                        controller: emailController!,
+                        controller: emailController,
                         autofillHints: const [AutofillHints.email],
                         keyboardType: TextInputType.emailAddress,
                         textInputAction: TextInputAction.next,
@@ -89,123 +132,104 @@ class _SignInState extends ConsumerState<SignIn> {
                             ? 'Enter an email'
                             : null,
                       ),
-                      errorEmail != ""
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.only(top: 8.0, left: 10),
-                              child: Text(
-                                errorEmail,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
-                      const SizedBox(height: 20.0),
-                      InputFieldComponent(
-                          controller: passwordController!,
-                          textInputAction: TextInputAction.done,
-                          autofillHints: const [AutofillHints.password],
-                          obscureText: isObscure,
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              isObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.black,
+                      if (errorEmail.isNotEmpty)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: Text(
+                              errorEmail,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
                             ),
-                            onPressed: () {
-                              // Update the state i.e. toogle the state of passwordVisible variable
-                              setState(() {
-                                isObscure = !isObscure;
-                              });
-                            },
                           ),
-                          onFieldSubmitted: (_) async {
-                            if (loading == false) {
-                              setState(() {
-                                loading = true;
-                              });
+                        ),
 
-                              await onSignin();
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                          }),
-                      errorPassword != ""
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.only(top: 12.0, left: 10),
-                              child: Text(
-                                errorPassword,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
                       const SizedBox(height: 20.0),
+
+                      // Password field
+                      InputFieldComponent(
+                        controller: passwordController,
+                        textInputAction: TextInputAction.done,
+                        autofillHints: const [AutofillHints.password],
+                        obscureText: isObscure,
+                        labelText: 'Password',
+                        suffixIcon: IconButton(
+                          icon: Icon(isObscure
+                              ? Icons.visibility
+                              : Icons.visibility_off),
+                          onPressed: () =>
+                              setState(() => isObscure = !isObscure),
+                        ),
+                        onFieldSubmitted: (_) {
+                          if (!isLoading) onSignin();
+                        },
+                      ),
+                      if (errorPassword.isNotEmpty)
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: Text(
+                              errorPassword,
+                              style: const TextStyle(
+                                  color: Colors.red, fontSize: 14.0),
+                            ),
+                          ),
+                        ),
+
+                      const SizedBox(height: 20.0),
+
+                      // Login button
                       StandardButton(
                         text: "Login",
-                        onPressed: () async {
-                          setState(() {
-                            loading = true;
-                          });
-                          await onSignin();
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                        loading: loading,
+                        onPressed: isLoading ? () {} : onSignin,
+                        loading: isLoading,
                         isFilled: true,
                         buttonFillColor: CustomColors.primaryColor,
                       ),
-                      error != ""
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 12.0, left: 10),
-                              child: Text(
-                                error,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
+
+                      if (error.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12),
+                          child: Text(
+                            error,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
+                        ),
+
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0)
-                            .copyWith(top: 8, bottom: 20),
+                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 20)
+                            .copyWith(bottom: 20),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             GestureDetector(
-                              onTap: () {
-                                context.goNamed(forgotPasswordRoute,
-                                    pathParameters: {
-                                      "email": emailController!.text
-                                    });
-                              },
+                              onTap: () => context.goNamed(
+                                forgotPasswordRoute,
+                                pathParameters: {"email": emailController.text},
+                              ),
                               child: Text(
                                 "Forgot password",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
+                                    .bodyLarge
+                                    ?.copyWith(
                                         color: CustomColors.linkTextColor),
                               ),
                             ),
                           ],
                         ),
                       ),
+
+                      // Register link
                       LinkButtonComponent(
                         text: "Register",
-                        onPressed: () => widget.toggleView(),
+                        onPressed: widget.toggleView,
                       ),
-                      const SizedBox(
-                        height: 40,
-                      )
+
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
@@ -215,70 +239,5 @@ class _SignInState extends ConsumerState<SignIn> {
         ),
       ),
     );
-  }
-
-  // triggert when login is pressed
-  Future<void> onSignin() async {
-    setState(() {
-      error = '';
-      errorEmail = '';
-      errorPassword = '';
-    });
-
-    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // get the token trough the credentials
-    // (invalid credentials) return false
-    try {
-      await TokenSingletonService()
-          .login(emailController!.text, passwordController!.text)
-          .then((response) {
-        if (response["errors"] != null) {
-          final errorMap = parseGraphQLError(response);
-
-          setState(() {
-            errorEmail = errorMap['emailError'] ?? "";
-            errorPassword = errorMap['passwordError'] ?? "";
-            error = errorMap['error'] ?? "";
-          });
-        } else if (response["error"] == false) {
-          final userProvider =
-              provider.Provider.of<UserProvider>(context, listen: false);
-          userProvider.setUserFromToken().then((value) {
-            if (value) {
-              print(response["token"]);
-              ref
-                  .read(authProvider.notifier)
-                  .authenticate(response["token"])
-                  .then(
-                (_) {
-                  print("now pushing named route");
-                  context.pushNamed(discoverRoute);
-                },
-              );
-            } else {
-              print("failed token");
-              TokenSingletonService().getToken().then((value) => print(value));
-              setState(() {
-                error = 'We could not log you in. Please try again later';
-              });
-            }
-          });
-        } else {
-          CustomErrorHandler.captureException(response,
-              stackTrace: StackTrace.current);
-          setState(() {
-            error = 'An unexpected error occured. Please try again later';
-          });
-        }
-      });
-    } catch (e, s) {
-      CustomErrorHandler.captureException(e, stackTrace: s);
-      setState(() {
-        error = 'An unexpected error occured. Please try again later';
-      });
-    }
   }
 }

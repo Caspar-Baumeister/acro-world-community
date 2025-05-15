@@ -89,9 +89,9 @@ class SettingsDrawer extends StatelessWidget {
                   onTap: () async {
                     await ref.read(authProvider.notifier).signOut();
                     // we don't need to route since the router listens to authentification changes
-                    // WidgetsBinding.instance.addPostFrameCallback((_) {
-                    //   context.goNamed('auth');
-                    // });
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      context.goNamed('auth');
+                    });
                   },
                 );
               }),
