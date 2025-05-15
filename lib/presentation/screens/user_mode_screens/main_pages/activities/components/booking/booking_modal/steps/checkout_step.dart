@@ -8,7 +8,7 @@ import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
 import 'package:acroworld/provider/event_answers_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -16,33 +16,35 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class CheckoutStep extends StatefulWidget {
-  const CheckoutStep(
-      {super.key,
-      required this.className,
-      required this.classDate,
-      required this.bookingOption,
-      required this.previousStep,
-      required this.teacherStripeId,
-      required this.questions,
-      this.classEventId});
+class CheckoutStep extends ConsumerStatefulWidget {
+  const CheckoutStep({
+    super.key,
+    required this.className,
+    required this.classDate,
+    required this.bookingOption,
+    required this.previousStep,
+    required this.teacherStripeId,
+    required this.questions,
+    this.classEventId,
+  });
 
   final String className;
   final DateTime classDate;
   final String teacherStripeId;
   final BookingOption bookingOption;
-  final Function previousStep;
+  final VoidCallback previousStep;
   final String? classEventId;
   final List<QuestionModel> questions;
 
   @override
-  State<CheckoutStep> createState() => _CheckoutStepState();
+  ConsumerState<CheckoutStep> createState() => _CheckoutStepState();
 }
 
-class _CheckoutStepState extends State<CheckoutStep> {
+class _CheckoutStepState extends ConsumerState<CheckoutStep> {
   bool _isInitAnswersReady = false;
   bool _isPaymentIntentInitialized = false;
   String? paymentIntentId;
@@ -51,158 +53,153 @@ class _CheckoutStepState extends State<CheckoutStep> {
   void initState() {
     super.initState();
     if (widget.bookingOption.id != null && widget.classEventId != null) {
-      User? user = Provider.of<UserProvider>(context, listen: false).activeUser;
-
-      if (user == null || user.id == null) {
-        showErrorToast(
-          "Please redo the login process and try again",
-        );
-        Navigator.pop(context);
-        return;
-      }
-      initPaymentSheet(widget.bookingOption.id!, widget.classEventId!, user)
-          .then((value) {
-        setState(() {
-          _isInitAnswersReady = false;
-        });
-        User? user =
-            Provider.of<UserProvider>(context, listen: false).activeUser;
-        if (user != null) {
-          Provider.of<EventAnswerProvider>(context, listen: false)
-              .initAnswers(user.id!, widget.classEventId!)
-              .then(
-            (value) {
-              setState(() {
-                _isInitAnswersReady = true;
-              });
-            },
-          );
+      // load the current user from Riverpod
+      ref.read(userRiverpodProvider.future).then((user) {
+        if (user?.id == null) {
+          showErrorToast("Please redo the login process and try again");
+          Navigator.pop(context);
+          return;
         }
+        initPaymentSheet(
+          widget.bookingOption.id!,
+          widget.classEventId!,
+          user!,
+        ).then((_) {
+          provider.Provider.of<EventAnswerProvider>(context, listen: false)
+              .initAnswers(user.id!, widget.classEventId!)
+              .then((_) {
+            setState(() {
+              _isInitAnswersReady = true;
+            });
+          });
+        });
       });
     } else {
       CustomErrorHandler.captureException(
-          Exception(
-              "Booking option id or class event id is null when trying to book a class"),
-          stackTrace: StackTrace.current);
+        Exception(
+          "Booking option id or class event id is null when trying to book a class",
+        ),
+        stackTrace: StackTrace.current,
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    User user = Provider.of<UserProvider>(context).activeUser!;
-    EventAnswerProvider eventAnswerProvider =
-        Provider.of<EventAnswerProvider>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Column(
-            children: [
-              BookingSummarySection(widget: widget),
-              const SizedBox(height: 20.0),
-              // the same container with information about the user (name, email)
-              YourInformationSection(user: user),
-              const SizedBox(height: 20.0),
-              AnswerSection(
-                  question: widget.questions,
-                  eventOccurence: widget.classEventId!),
-              SizedBox(height: 20.0),
+    return ref.watch(userRiverpodProvider).when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (_, __) => const Center(child: Text("Error loading user")),
+          data: (user) {
+            if (user?.id == null) {
+              return const Center(child: Text("Please log in to continue"));
+            }
+            final eventAnswerProvider =
+                provider.Provider.of<EventAnswerProvider>(context);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Column(
+                    children: [
+                      BookingSummarySection(widget: widget),
+                      const SizedBox(height: 20.0),
+                      YourInformationSection(user: user!),
+                      const SizedBox(height: 20.0),
+                      AnswerSection(
+                        question: widget.questions,
+                        eventOccurence: widget.classEventId!,
+                      ),
+                      const SizedBox(height: 20.0),
+                      CustomButton(
+                        "Continue to payment",
+                        () async {
+                          if (!areRequiredQuestionsAnswered(
+                              eventAnswerProvider)) {
+                            showErrorToast(
+                              "Please answer all required questions",
+                            );
+                            return;
+                          }
+                          if (paymentIntentId == null) {
+                            showErrorToast(
+                              "Something went wrong. Try again later or contact support",
+                            );
+                            return;
+                          }
+                          await attemptToPresentPaymentSheet(paymentIntentId!);
+                          eventAnswerProvider.mutateAnswers().then((ok) {
+                            if (!ok) {
+                              showErrorToast(
+                                "Error saving answers, please notify support",
+                              );
+                            }
+                          });
+                        },
+                        loading: !_isInitAnswersReady ||
+                            !_isPaymentIntentInitialized,
+                        width: double.infinity,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+  }
 
-              CustomButton(
-                "Continue to payment",
-                () async {
-                  if (!areRequiredQuestionsAnswered(eventAnswerProvider)) {
-                    showErrorToast(
-                      "Please answer all required questions",
-                    );
-                    return;
-                  }
-                  if (paymentIntentId == null) {
-                    showErrorToast(
-                      "Something went wrong. Try again later or contact the support",
-                    );
-                  } else {
-                    print("pressed pay");
-                    await attemptToPresentPaymentSheet(paymentIntentId!);
-                    // mutate the questions trough the eventAnswerProvider
-                    eventAnswerProvider.mutateAnswers().then((value) {
-                      if (value) {
-                        print("Answers mutated");
-                      } else {
-                        showErrorToast(
-                          "Error saving answers, please notify support",
-                        );
-                      }
-                    });
-                  }
-                },
-                loading: !_isInitAnswersReady || !_isPaymentIntentInitialized,
-                width: double.infinity,
-              )
-            ],
-          ),
-        ),
-      ],
+  bool areRequiredQuestionsAnswered(EventAnswerProvider eventAnswerProvider) {
+    return eventAnswerProvider.doAllQuestionsHaveAnswers(
+      widget.questions
+          .where((q) => q.isRequired == true && q.id != null)
+          .map((q) => q.id!)
+          .toList(),
     );
   }
 
-  // check if required questions are answered
-  bool areRequiredQuestionsAnswered(EventAnswerProvider eventAnswerProvider) {
-    return eventAnswerProvider.doAllQuestionsHaveAnswers(widget.questions
-        .where((element) => element.isRequired == true && element.id != null)
-        .map((e) => e.id!)
-        .toList());
-  }
-
-  Future<void> attemptToPresentPaymentSheet(String paymentIntentId) async {
+  Future<void> attemptToPresentPaymentSheet(String pi) async {
     try {
       await StripeService(
               stripeRepository:
                   StripeRepository(apiService: GraphQLClientSingleton()))
-          .attemptToPresentPaymentSheet(paymentIntentId)
-          .then(
-        (value) {
-          Navigator.of(context).pop();
-          // Access the EventBusProvider
-          var eventBusProvider =
-              Provider.of<EventBusProvider>(context, listen: false);
-          // Fire the refetch event for booking query
-          eventBusProvider.fireRefetchBookingQuery();
-        },
-      );
+          .attemptToPresentPaymentSheet(pi)
+          .then((_) {
+        Navigator.of(context).pop();
+        provider.Provider.of<EventBusProvider>(context, listen: false)
+            .fireRefetchBookingQuery();
+      });
     } on StripeException catch (e) {
-      CustomErrorHandler.captureException(e, stackTrace: StackTrace.current);
+      CustomErrorHandler.captureException(
+        e,
+        stackTrace: StackTrace.current,
+      );
     }
   }
 
   Future<void> initPaymentSheet(
       String bookingOptionId, String classEventId, User user) async {
     try {
-      StripeService(
+      final pi = await StripeService(
               stripeRepository:
                   StripeRepository(apiService: GraphQLClientSingleton()))
-          .initPaymentSheet(user, widget.bookingOption, classEventId)
-          .then((paymentIntent) {
-        if (paymentIntent != null) {
-          return setState(() {
-            _isPaymentIntentInitialized = true;
-            paymentIntentId = paymentIntent;
-          });
-        } else {
-          Navigator.pop(context);
-          showErrorToast(
-            "Error initializing payment, try again later or contact support",
-          );
-        }
-      });
-    } catch (e, stackTrace) {
-      // show flutter toast with error
+          .initPaymentSheet(user, widget.bookingOption, classEventId);
+      if (pi != null) {
+        setState(() {
+          _isPaymentIntentInitialized = true;
+          paymentIntentId = pi;
+        });
+      } else {
+        Navigator.pop(context);
+        showErrorToast(
+          "Error initializing payment, try again later or contact support",
+        );
+      }
+    } catch (e, st) {
       showErrorToast(
         "Error initializing payment, try again later or contact support",
       );
-
-      CustomErrorHandler.captureException(e, stackTrace: stackTrace);
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
     }
   }
 }
@@ -467,91 +464,104 @@ class AnswerSection extends StatelessWidget {
   }
 }
 
-class QuestionCard extends StatelessWidget {
+class QuestionCard extends ConsumerWidget {
+  const QuestionCard({
+    super.key,
+    required this.question,
+    required this.eventOccurence,
+  });
+
   final QuestionModel question;
   final String eventOccurence;
 
-  const QuestionCard(
-      {super.key, required this.question, required this.eventOccurence});
-
   @override
-  Widget build(BuildContext context) {
-    EventAnswerProvider eventAnswerProvider =
-        Provider.of<EventAnswerProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the current user
+    final userAsync = ref.watch(userRiverpodProvider);
 
-    User? user = Provider.of<UserProvider>(context).activeUser;
+    return userAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (user) {
+        final userId = user?.id;
+        if (userId == null) {
+          // Not logged in or no user ID
+          return const SizedBox.shrink();
+        }
 
-    if (user?.id == null) {
-      return Container();
-    }
+        // The answers provider remains the same
+        final eventAnswerProvider =
+            provider.Provider.of<EventAnswerProvider>(context);
 
-    bool hasAnswer = question.id != null
-        ? eventAnswerProvider.doesQuestionIdHaveAnswer(question.id!)
-        : false;
-    return GestureDetector(
-      onTap: () {
-        buildMortal(
-          context,
-          AnswerQuestionModal(
-              question: question,
-              userId: user!.id!,
-              eventOccurence: eventOccurence),
-        );
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium,
-          vertical: AppPaddings.small,
-        ),
-        // error border left and bottom if the question is not answered
-        decoration: BoxDecoration(
-          border: Border(
-            left: BorderSide(
-              color: hasAnswer || question.isRequired == false
-                  ? CustomColors.secondaryBackgroundColor
-                  : CustomColors.errorBorderColor,
-              width: 4.0,
+        final hasAnswer = question.id != null
+            ? eventAnswerProvider.doesQuestionIdHaveAnswer(question.id!)
+            : false;
+
+        return GestureDetector(
+          onTap: () {
+            buildMortal(
+              context,
+              AnswerQuestionModal(
+                question: question,
+                userId: userId,
+                eventOccurence: eventOccurence,
+              ),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppPaddings.medium,
+              vertical: AppPaddings.small,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                left: BorderSide(
+                  color: hasAnswer || !(question.isRequired == true)
+                      ? CustomColors.secondaryBackgroundColor
+                      : CustomColors.errorBorderColor,
+                  width: 4.0,
+                ),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          question.title ?? "",
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (question.isRequired == true) ...[
+                        const SizedBox(width: AppPaddings.small),
+                        Text(
+                          "(required)",
+                          style:
+                              Theme.of(context).textTheme.bodySmall!.copyWith(
+                                    color: hasAnswer
+                                        ? CustomColors.successBgColor
+                                        : CustomColors.errorBorderColor,
+                                  ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(width: AppPaddings.medium),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: AppDimensions.iconSizeSmall,
+                ),
+              ],
             ),
           ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Flexible(
-                    child: Text(
-                      question.title ?? "",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (question.isRequired == true) ...[
-                    SizedBox(width: AppPaddings.small),
-                    Text(
-                      "(required)",
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: hasAnswer
-                                ? CustomColors.successBgColor
-                                : CustomColors.errorBorderColor,
-                          ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-            SizedBox(width: AppPaddings.medium),
-            Center(
-              child: Icon(
-                Icons.arrow_forward_ios,
-                size: AppDimensions.iconSizeSmall,
-              ),
-            )
-          ],
-        ),
-      ),
+        );
+      },
     );
   }
 }

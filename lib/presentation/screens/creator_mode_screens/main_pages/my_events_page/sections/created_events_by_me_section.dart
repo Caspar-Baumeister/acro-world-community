@@ -3,60 +3,67 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class CreatedEventsByMeSection extends StatefulWidget {
+class CreatedEventsByMeSection extends ConsumerStatefulWidget {
   const CreatedEventsByMeSection({super.key});
 
   @override
-  State<CreatedEventsByMeSection> createState() =>
+  ConsumerState<CreatedEventsByMeSection> createState() =>
       _CreatedEventsByMeSectionState();
 }
 
-class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
-  // initialize MyEventsProvider
+class _CreatedEventsByMeSectionState
+    extends ConsumerState<CreatedEventsByMeSection> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Read the current user ID from Riverpod
+      final userId = ref.read(userRiverpodProvider).value?.id;
+      if (userId == null) return;
 
-    TeacherEventsProvider myEventsProvider =
-        Provider.of<TeacherEventsProvider>(context, listen: false);
-    if (myEventsProvider.myCreatedEvents.isEmpty &&
-        !myEventsProvider.isInitialized) {
-      try {
-        print("initial fetch events");
-        myEventsProvider.userId =
-            Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          await myEventsProvider.fetchMyEvents(isRefresh: true);
-        });
-      } catch (e, s) {
-        CustomErrorHandler.captureException(e, stackTrace: s);
+      final myEventsProvider =
+          provider.Provider.of<TeacherEventsProvider>(context, listen: false);
+
+      if (myEventsProvider.myCreatedEvents.isEmpty &&
+          !myEventsProvider.isInitialized) {
+        try {
+          myEventsProvider.userId = userId;
+          myEventsProvider.fetchMyEvents(isRefresh: true);
+        } catch (e, s) {
+          CustomErrorHandler.captureException(e, stackTrace: s);
+        }
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    TeacherEventsProvider myEventsProvider =
-        Provider.of<TeacherEventsProvider>(context);
+    final myEventsProvider =
+        provider.Provider.of<TeacherEventsProvider>(context);
+
     return Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(top: AppPaddings.medium),
           child: StandartButton(
-              text: "Create New Event",
-              isFilled: true,
-              onPressed: () => buildMortal(
-                  context, const CreateNewEventFromExistingModal())),
+            text: "Create New Event",
+            isFilled: true,
+            onPressed: () => buildMortal(
+              context,
+              const CreateNewEventFromExistingModal(),
+            ),
+          ),
         ),
         Expanded(
           child: RefreshIndicator(
@@ -79,22 +86,27 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
                     Column(
                       children: [
                         ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: AppPaddings.small,
-                                    vertical: AppPaddings.tiny),
-                                child: ClassTile(
-                                    classObject:
-                                        myEventsProvider.myCreatedEvents[index],
-                                    onTap: () => onTap(
-                                        myEventsProvider.myCreatedEvents[index],
-                                        context)),
-                              );
-                            },
-                            itemCount: myEventsProvider.myCreatedEvents.length),
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: myEventsProvider.myCreatedEvents.length,
+                          itemBuilder: (context, index) {
+                            final classObject =
+                                myEventsProvider.myCreatedEvents[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: AppPaddings.small,
+                                vertical: AppPaddings.tiny,
+                              ),
+                              child: ClassTile(
+                                classObject: classObject,
+                                onTap: () => _onTap(
+                                  classObject,
+                                  context,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
                         if (myEventsProvider.canFetchMoreMyEvents)
                           GestureDetector(
                             onTap: () async {
@@ -102,18 +114,18 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
                             },
                             child: const Padding(
                               padding: EdgeInsets.symmetric(
-                                  horizontal: AppPaddings.small,
-                                  vertical: AppPaddings.tiny),
-                              child: Text(
-                                "Load more",
+                                horizontal: AppPaddings.small,
+                                vertical: AppPaddings.tiny,
                               ),
+                              child: Text("Load more"),
                             ),
                           ),
                         if (myEventsProvider.isLoadingMyEvents)
                           const Padding(
                             padding: EdgeInsets.symmetric(
-                                horizontal: AppPaddings.small,
-                                vertical: AppPaddings.tiny),
+                              horizontal: AppPaddings.small,
+                              vertical: AppPaddings.tiny,
+                            ),
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -128,7 +140,9 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("You have not created any events yet"),
+                            const Text(
+                              "You have not created any events yet",
+                            ),
                             const SizedBox(height: AppPaddings.medium),
                             StandartButton(
                               text: "Refresh",
@@ -150,15 +164,8 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
     );
   }
 
-  void onTap(ClassModel classObject, BuildContext context) {
+  void _onTap(ClassModel classObject, BuildContext context) {
     if (classObject.urlSlug != null || classObject.id != null) {
-      // Navigator.of(context).push(
-      //   SingleEventIdWrapperPageRoute(
-      //     urlSlug: classObject.urlSlug,
-      //     classId: classObject.id,
-      //     isCreator: true,
-      //   ),
-      // );
       context.goNamed(
         singleEventWrapperRoute,
         pathParameters: {

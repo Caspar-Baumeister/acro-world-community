@@ -11,7 +11,6 @@ import 'package:acroworld/provider/event_filter_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/router_app.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -30,7 +29,6 @@ class App extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => UserProvider()),
         ChangeNotifierProvider(create: (_) => EventFilterProvider()),
         ChangeNotifierProvider(create: (_) => EventBusProvider()),
         ChangeNotifierProvider(create: (_) => CalendarProvider()),

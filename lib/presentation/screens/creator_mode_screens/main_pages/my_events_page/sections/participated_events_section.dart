@@ -1,43 +1,50 @@
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class ParticipatedEventsSection extends StatefulWidget {
+class ParticipatedEventsSection extends ConsumerStatefulWidget {
   const ParticipatedEventsSection({super.key});
 
   @override
-  State<ParticipatedEventsSection> createState() =>
+  ConsumerState<ParticipatedEventsSection> createState() =>
       _ParticipatedEventsSectionState();
 }
 
-class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
-  // initialize teacherEventsProvider
+class _ParticipatedEventsSectionState
+    extends ConsumerState<ParticipatedEventsSection> {
   @override
   void initState() {
     super.initState();
-    TeacherEventsProvider teacherEventsProvider =
-        Provider.of<TeacherEventsProvider>(context, listen: false);
-    if (teacherEventsProvider.myParticipatingEvents.isEmpty) {
-      teacherEventsProvider.userId =
-          Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        teacherEventsProvider.fetchMyEvents(myEvents: false, isRefresh: true);
-      });
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userId = ref.read(userRiverpodProvider).value?.id;
+      if (userId == null) return;
+
+      final teacherEventsProvider =
+          provider.Provider.of<TeacherEventsProvider>(context, listen: false);
+      if (teacherEventsProvider.myParticipatingEvents.isEmpty) {
+        teacherEventsProvider.userId = userId;
+        teacherEventsProvider.fetchMyEvents(
+          myEvents: false,
+          isRefresh: true,
+        );
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    TeacherEventsProvider teacherEventsProvider =
-        Provider.of<TeacherEventsProvider>(context);
+    final teacherEventsProvider =
+        provider.Provider.of<TeacherEventsProvider>(context);
+
     return RefreshIndicator(
       onRefresh: () async {
         await teacherEventsProvider.fetchMyEvents(myEvents: false);
@@ -58,24 +65,25 @@ class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
               Column(
                 children: [
                   ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppPaddings.small,
-                              vertical: AppPaddings.tiny),
-                          child: ClassTile(
-                              classObject: teacherEventsProvider
-                                  .myParticipatingEvents[index],
-                              onTap: () => onTap(
-                                  teacherEventsProvider
-                                      .myParticipatingEvents[index],
-                                  context)),
-                        );
-                      },
-                      itemCount:
-                          teacherEventsProvider.myParticipatingEvents.length),
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount:
+                        teacherEventsProvider.myParticipatingEvents.length,
+                    itemBuilder: (context, index) {
+                      final classObject =
+                          teacherEventsProvider.myParticipatingEvents[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppPaddings.small,
+                          vertical: AppPaddings.tiny,
+                        ),
+                        child: ClassTile(
+                          classObject: classObject,
+                          onTap: () => _onTap(classObject, context),
+                        ),
+                      );
+                    },
+                  ),
                   if (teacherEventsProvider.canFetchMoreParticipatingEvents)
                     GestureDetector(
                       onTap: () async {
@@ -83,18 +91,18 @@ class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
-                            horizontal: AppPaddings.small,
-                            vertical: AppPaddings.tiny),
-                        child: Text(
-                          "Load more",
+                          horizontal: AppPaddings.small,
+                          vertical: AppPaddings.tiny,
                         ),
+                        child: Text("Load more"),
                       ),
                     ),
                   if (teacherEventsProvider.isLoadingParticipatingEvents)
                     const Padding(
                       padding: EdgeInsets.symmetric(
-                          horizontal: AppPaddings.small,
-                          vertical: AppPaddings.tiny),
+                        horizontal: AppPaddings.small,
+                        vertical: AppPaddings.tiny,
+                      ),
                       child: Center(
                         child: CircularProgressIndicator(),
                       ),
@@ -128,7 +136,7 @@ class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
     );
   }
 
-  void onTap(ClassModel classObject, BuildContext context) {
+  void _onTap(ClassModel classObject, BuildContext context) {
     if (classObject.urlSlug != null || classObject.id != null) {
       context.goNamed(
         singleEventWrapperRoute,

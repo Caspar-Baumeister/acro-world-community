@@ -3,191 +3,186 @@ import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/class_section.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/profile_header_widget.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
-class ProfileBaseScreen extends StatefulWidget {
-  const ProfileBaseScreen(
-      {super.key, required this.teacher, required this.userId});
+class ProfileBaseScreen extends ConsumerStatefulWidget {
+  const ProfileBaseScreen({
+    super.key,
+    required this.teacher,
+    required this.userId,
+  });
 
   final TeacherModel teacher;
   final String userId;
+
   @override
-  ProfileBaseScreenState createState() => ProfileBaseScreenState();
+  ConsumerState<ProfileBaseScreen> createState() => _ProfileBaseScreenState();
 }
 
-class ProfileBaseScreenState extends State<ProfileBaseScreen> {
+class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
   late bool isLikedState;
   bool loading = false;
 
   @override
   void initState() {
     super.initState();
-    isLikedState = widget.teacher.likedByUser ??
-        false; // set the initial state of the like
+    isLikedState = widget.teacher.likedByUser ?? false;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(40),
-        child: Container(
-          decoration: const BoxDecoration(
-            border: Border(
-              bottom: BorderSide(
-                color: Color.fromARGB(255, 238, 238, 238),
-              ),
-            ),
+    return ref.watch(userRiverpodProvider).when(
+          loading: () => const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
           ),
-          child: AppBar(
-            backgroundColor: Colors.white,
-            title: Text(
-              widget.teacher.name ?? "Unknown",
-              style: const TextStyle(
-                  color: Colors.black, fontWeight: FontWeight.w600),
-            ),
-            centerTitle: false,
-            elevation: 0,
-            actions: [
-              Padding(
-                padding: const EdgeInsets.only(right: 20.0, top: 5, bottom: 5),
-                child: Mutation(
-                    options: MutationOptions(
-                        document: isLikedState
-                            ? Mutations.unlikeTeacher
-                            : Mutations.likeTeacher),
-                    builder: (MultiSourceResult<dynamic> Function(
-                                Map<String, dynamic>,
-                                {Object? optimisticResult})
-                            runMutation,
-                        QueryResult<dynamic>? result) {
-                      return GestureDetector(
-                          onTap: () async {
-                            setState(() {
-                              loading = true;
-                            });
+          error: (e, st) => Scaffold(
+            body: Center(child: Text('Error loading user')),
+          ),
+          data: (currentUser) {
+            final myUserId = currentUser?.id;
+            return Scaffold(
+              appBar: PreferredSize(
+                preferredSize: const Size.fromHeight(40),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(
+                      bottom:
+                          BorderSide(color: Color.fromARGB(255, 238, 238, 238)),
+                    ),
+                  ),
+                  child: AppBar(
+                    backgroundColor: Colors.white,
+                    title: Text(
+                      widget.teacher.name ?? "Unknown",
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                    ),
+                    elevation: 0,
+                    actions: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            right: 20.0, top: 5, bottom: 5),
+                        child: Mutation(
+                          options: MutationOptions(
+                              document: isLikedState
+                                  ? Mutations.unlikeTeacher
+                                  : Mutations.likeTeacher),
+                          builder: (runMutation, result) {
+                            return GestureDetector(
+                              onTap: () {
+                                if (myUserId == null) {
+                                  showErrorToast(
+                                      "You need to be logged in to follow teachers");
+                                  return;
+                                }
+                                setState(() => loading = true);
 
-                            isLikedState
-                                ? runMutation({
-                                    'teacher_id': widget.teacher.id,
-                                    'user_id': Provider.of<UserProvider>(
-                                            context,
-                                            listen: false)
-                                        .activeUser!
-                                        .id!
-                                  })
-                                : runMutation({
-                                    'teacher_id': widget.teacher.id,
+                                final vars = <String, dynamic>{
+                                  'teacher_id': widget.teacher.id,
+                                  if (isLikedState) 'user_id': myUserId,
+                                };
+                                runMutation(vars);
+                                Future.delayed(
+                                    const Duration(milliseconds: 200), () {
+                                  setState(() {
+                                    isLikedState = !isLikedState;
+                                    loading = false;
                                   });
-
-                            Future.delayed(const Duration(seconds: 0), () {
-                              setState(() {
-                                isLikedState = !isLikedState;
-                                loading = false;
-                              });
-                            });
-                          },
-                          child: Container(
-                              decoration: BoxDecoration(
-                                color: isLikedState
-                                    ? CustomColors.primaryColor
-                                    : Colors.white,
-                                border: Border.all(
-                                    color: CustomColors.primaryColor),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              height: 35,
-                              width: 100,
-                              child: Center(
+                                });
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: isLikedState
+                                      ? CustomColors.primaryColor
+                                      : Colors.white,
+                                  border: Border.all(
+                                      color: CustomColors.primaryColor),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                height: 35,
+                                width: 100,
+                                alignment: Alignment.center,
                                 child: loading
-                                    ? Container(
+                                    ? SizedBox(
                                         height: 25,
                                         width: 25,
-                                        padding: const EdgeInsets.all(5),
-                                        child: CircularProgressIndicator(
-                                          color: isLikedState == true
-                                              ? Colors.white
-                                              : CustomColors.primaryColor,
-                                        ))
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5),
+                                          child: CircularProgressIndicator(
+                                            color: isLikedState
+                                                ? Colors.white
+                                                : CustomColors.primaryColor,
+                                            strokeWidth: 2,
+                                          ),
+                                        ),
+                                      )
                                     : Text(
                                         isLikedState ? "Followed" : "Follow",
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodySmall!
                                             .copyWith(
-                                              color: !isLikedState
-                                                  ? CustomColors.primaryColor
-                                                  : Colors.white,
+                                              color: isLikedState
+                                                  ? Colors.white
+                                                  : CustomColors.primaryColor,
                                             ),
-                                        textAlign: TextAlign.center,
                                       ),
-                              )));
-                    }),
-              ),
-            ],
-          ),
-        ),
-      ),
-      body: DefaultTabController(
-        length: 2,
-        child: NestedScrollView(
-          headerSliverBuilder: (context, _) {
-            return [
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    ProfileHeaderWidget(
-                      teacher: widget.teacher,
-                      isLiked: isLikedState,
-                    ),
-                  ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ];
+              body: DefaultTabController(
+                length: 2,
+                child: NestedScrollView(
+                  headerSliverBuilder: (ctx, _) => [
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        ProfileHeaderWidget(
+                          teacher: widget.teacher,
+                          isLiked: isLikedState,
+                        ),
+                      ]),
+                    ),
+                  ],
+                  body: Column(
+                    children: [
+                      Material(
+                        color: Colors.white,
+                        child: TabBar(
+                          labelColor: Colors.black,
+                          unselectedLabelColor: Colors.grey[400],
+                          indicatorWeight: 1,
+                          indicatorColor: Colors.black,
+                          tabs: const [
+                            Tab(icon: Icon(Icons.festival_outlined)),
+                            Tab(icon: Icon(Icons.grid_on_sharp)),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: TabBarView(
+                          children: [
+                            ClassSection(teacherId: widget.teacher.id!),
+                            Gallery(images: widget.teacher.images),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
           },
-          body: Column(
-            children: <Widget>[
-              Material(
-                color: Colors.white,
-                child: TabBar(
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.grey[400],
-                  indicatorWeight: 1,
-                  indicatorColor: Colors.black,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  tabs: const [
-                    Tab(
-                      icon: Icon(
-                        Icons.festival_outlined,
-                        color: Colors.black,
-                      ),
-                    ),
-                    Tab(
-                      icon: Icon(
-                        Icons.grid_on_sharp,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    ClassSection(teacherId: widget.teacher.id!),
-                    // EventSection(teacherId: widget.teacher.id!),
-                    Gallery(images: widget.teacher.images),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+        );
   }
 }
