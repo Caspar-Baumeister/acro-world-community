@@ -35,7 +35,7 @@ class FilterOnDiscoveryBody extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  StandardButton(
+                  StandartButton(
                     text: "Reset Filter",
                     onPressed: () {
                       discoveryProvider.resetFilter();

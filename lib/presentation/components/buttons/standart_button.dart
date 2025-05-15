@@ -2,8 +2,8 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-class StandardButton extends StatelessWidget {
-  const StandardButton(
+class StandartButton extends StatelessWidget {
+  const StandartButton(
       {super.key,
       required this.text,
       required this.onPressed,

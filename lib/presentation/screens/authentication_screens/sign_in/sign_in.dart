@@ -181,7 +181,7 @@ class _SignInState extends ConsumerState<SignIn> {
                       const SizedBox(height: 20.0),
 
                       // Login button
-                      StandardButton(
+                      StandartButton(
                         text: "Login",
                         onPressed: isLoading ? () {} : onSignin,
                         loading: isLoading,

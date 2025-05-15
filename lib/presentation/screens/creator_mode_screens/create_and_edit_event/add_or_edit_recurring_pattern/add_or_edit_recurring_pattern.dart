@@ -139,7 +139,7 @@ class _AddOrEditRecurringPatternPageState
             )
           else
             const SizedBox(height: AppPaddings.medium),
-          StandardButton(
+          StandartButton(
               text: "Save",
               onPressed: () {
                 _onNext();

@@ -54,7 +54,7 @@ class BuyHighlightStripeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StandardButton(
+    return StandartButton(
         text: "Buy Highlight",
         onPressed: () {
           initPaymentSheet(context, classEventId, price);

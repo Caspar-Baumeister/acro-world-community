@@ -98,7 +98,7 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
             ),
           ),
           const SizedBox(height: 15.0),
-          StandardButton(
+          StandartButton(
             text: "send new email",
             onPressed: () {
               onForgotPassword();

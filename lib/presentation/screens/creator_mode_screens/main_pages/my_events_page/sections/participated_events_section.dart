@@ -111,7 +111,7 @@ class _ParticipatedEventsSectionState extends State<ParticipatedEventsSection> {
                     children: [
                       const Text("You have not created any events yet"),
                       const SizedBox(height: AppPaddings.medium),
-                      StandardButton(
+                      StandartButton(
                         text: "Refresh",
                         onPressed: () async {
                           await teacherEventsProvider.fetchMyEvents(

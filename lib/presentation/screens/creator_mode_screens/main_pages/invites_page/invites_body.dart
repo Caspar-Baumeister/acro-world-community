@@ -190,7 +190,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                           children: [
                             const Text("No invites found"),
                             const SizedBox(height: AppPaddings.medium),
-                            StandardButton(
+                            StandartButton(
                               text: "Refresh",
                               onPressed: () async {
                                 await invitesProvider.getInvitations(
@@ -207,7 +207,7 @@ class _InvitesBodyState extends State<InvitesBody> {
           ),
         ),
         SizedBox(height: AppPaddings.small),
-        StandardButton(
+        StandartButton(
             text: "Invite by Email",
             isFilled: true,
             onPressed: () => buildMortal(context, const InviteByEmailModal())),

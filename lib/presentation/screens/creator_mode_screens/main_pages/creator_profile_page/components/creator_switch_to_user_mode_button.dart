@@ -13,7 +13,7 @@ class CreatorSwitchToUserModeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StandardButton(
+    return StandartButton(
       text: "User Mode",
       onPressed: () {
         final graphQLSingleton = GraphQLClientSingleton();

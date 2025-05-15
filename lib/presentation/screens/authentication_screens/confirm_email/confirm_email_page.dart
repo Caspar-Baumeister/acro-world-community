@@ -183,7 +183,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                     ],
                   ),
                   const SizedBox(height: AppPaddings.medium),
-                  StandardButton(
+                  StandartButton(
                     text: "Confirm email",
                     isFilled: true,
                     loading: _isRefreshing,
@@ -197,7 +197,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                           color: CustomColors.secondaryTextColor),
                     ),
                   const SizedBox(height: AppPaddings.small),
-                  StandardButton(
+                  StandartButton(
                     text: "Resend email",
                     onPressed: _isResendDisabled
                         ? () => showErrorToast(
@@ -205,7 +205,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                         : _resendVerificationEmail,
                   ),
                   const SizedBox(height: AppPaddings.small),
-                  StandardButton(
+                  StandartButton(
                     text: "Refresh status",
                     loading: _isRefreshing,
                     onPressed: _refreshStatus,

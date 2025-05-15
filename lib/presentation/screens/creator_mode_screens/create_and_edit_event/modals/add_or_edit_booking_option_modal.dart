@@ -130,7 +130,7 @@ class _AddOrEditBookingOptionModalState
           const SizedBox(height: AppPaddings.toLarge),
 
           // Create/Update button
-          StandardButton(
+          StandartButton(
             text: widget.bookingOption == null ? "Create" : "Update",
             onPressed: _onNext,
           ),

@@ -52,7 +52,7 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
       children: [
         Padding(
           padding: const EdgeInsets.only(top: AppPaddings.medium),
-          child: StandardButton(
+          child: StandartButton(
               text: "Create New Event",
               isFilled: true,
               onPressed: () => buildMortal(
@@ -130,7 +130,7 @@ class _CreatedEventsByMeSectionState extends State<CreatedEventsByMeSection> {
                           children: [
                             const Text("You have not created any events yet"),
                             const SizedBox(height: AppPaddings.medium),
-                            StandardButton(
+                            StandartButton(
                               text: "Refresh",
                               onPressed: () async {
                                 await myEventsProvider.fetchMyEvents(

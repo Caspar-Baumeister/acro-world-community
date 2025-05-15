@@ -58,7 +58,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
               onFieldSubmitted: (value) => onForgotPassword(),
             ),
             const SizedBox(height: 20.0),
-            StandardButton(
+            StandartButton(
               text: "Send email",
               onPressed: () {
                 onForgotPassword();

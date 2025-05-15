@@ -88,7 +88,7 @@ class FilterPageView extends StatelessWidget {
             height: 20,
           ),
           Center(
-            child: StandardButton(
+            child: StandartButton(
               text: "Continue",
               onPressed: () {
                 Navigator.of(context).pop();
@@ -100,7 +100,7 @@ class FilterPageView extends StatelessWidget {
             height: 20,
           ),
           Center(
-            child: StandardButton(
+            child: StandartButton(
               text: "Reset",
               onPressed: () {
                 discoveryProvider.resetFilter();

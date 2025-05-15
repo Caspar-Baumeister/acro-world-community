@@ -73,7 +73,7 @@ class _AddOrEditBookingCategoryModalState
               isNumberInput: true,
             ),
             const SizedBox(height: AppPaddings.toLarge),
-            StandardButton(
+            StandartButton(
               text: widget.bookingCategory == null ? "Create" : "Update",
               onPressed: () {
                 _onNext();

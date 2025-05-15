@@ -141,7 +141,7 @@ class _ReportButtonMutationWrapperState
                       child: const Text("Close",
                           style: TextStyle(color: Colors.grey)),
                     ),
-                    StandardButton(
+                    StandartButton(
                       text: "Report Event",
                       width: MediaQuery.of(context).size.width * 0.3,
                       isFilled: true,

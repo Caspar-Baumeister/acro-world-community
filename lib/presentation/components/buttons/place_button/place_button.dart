@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standard_icon_button.dart';
+import 'package:acroworld/presentation/components/buttons/standart_icon_button.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -18,7 +18,7 @@ class PlaceButton extends StatelessWidget {
       height: INPUTFIELD_HEIGHT,
       padding: const EdgeInsets.symmetric(horizontal: 10.0)
           .copyWith(right: rightPadding ? 10 : 0),
-      child: StandardIconButton(
+      child: StandartIconButton(
         text: calendarProvider.locationSingelton.place.description,
         icon: Icons.location_on,
         onPressed: () {

@@ -51,7 +51,7 @@ in the AcroWorld app
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            StandardButton(
+            StandartButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
               isFilled: true,

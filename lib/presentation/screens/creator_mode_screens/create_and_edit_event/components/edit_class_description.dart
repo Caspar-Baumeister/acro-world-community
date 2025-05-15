@@ -71,7 +71,7 @@ class EditClassDescriptionPageState extends State<EditClassDescriptionPage> {
                   inputAction: InputAction.newline),
             ),
             SizedBox(height: 16),
-            StandardButton(
+            StandartButton(
               text: 'SAVE',
               onPressed: _applyChanges,
               isFilled: true,

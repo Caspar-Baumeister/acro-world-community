@@ -220,7 +220,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
             children: [
               Consumer<EventCreationAndEditingProvider>(
                   builder: (context, provider, child) {
-                return StandardButton(
+                return StandartButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -229,7 +229,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 );
               }),
               const SizedBox(width: AppPaddings.medium),
-              StandardButton(
+              StandartButton(
                 onPressed: _onNext,
                 text: "Next",
                 isFilled: true,

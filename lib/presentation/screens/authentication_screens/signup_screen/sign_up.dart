@@ -290,7 +290,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                     const SizedBox(height: 20.0),
 
                     // Register button
-                    StandardButton(
+                    StandartButton(
                       text: "Register",
                       onPressed: isLoading ? () {} : _onRegister,
                       loading: isLoading,

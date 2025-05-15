@@ -152,7 +152,7 @@ class CreatorSettingsActionModal extends StatelessWidget {
                       child: const Text("Close",
                           style: TextStyle(color: Colors.grey)),
                     ),
-                    StandardButton(
+                    StandartButton(
                       text: "Resolve Flags",
                       width: MediaQuery.of(context).size.width * 0.3,
                       isFilled: true,
@@ -206,7 +206,7 @@ class DeleteClassModal extends StatelessWidget {
           // open bookings
           // TODO add open bookings
           // delete button
-          StandardButton(
+          StandartButton(
               text: "Delete",
               onPressed: () {
                 try {

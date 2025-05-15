@@ -82,7 +82,7 @@ class _MarketStepState extends State<MarketStep> {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            StandardButton(
+            StandartButton(
               onPressed: () {
                 eventCreationAndEditingProvider.setPage(2);
                 setState(() {});
@@ -91,7 +91,7 @@ class _MarketStepState extends State<MarketStep> {
               width: MediaQuery.of(context).size.width * 0.3,
             ),
             const SizedBox(width: AppPaddings.medium),
-            StandardButton(
+            StandartButton(
               onPressed: _onNext,
               text: widget.isEditing ? "Update Event" : "Create Event",
               loading: isLoading,
