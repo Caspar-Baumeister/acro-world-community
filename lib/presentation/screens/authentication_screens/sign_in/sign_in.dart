@@ -4,7 +4,6 @@ import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -59,8 +58,6 @@ class _SignInState extends ConsumerState<SignIn> {
       await ref
           .read(authProvider.notifier)
           .signIn(emailController.text, passwordController.text);
-      ref.invalidate(userRiverpodProvider);
-      ref.invalidate(userNotifierProvider);
       // Redirect happens in the ref.listen below
     } on AuthException catch (e) {
       if (!mounted) return;

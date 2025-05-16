@@ -5,7 +5,6 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -96,8 +95,7 @@ class _SignUpState extends ConsumerState<SignUp> {
             password: passwordController.text,
             isNewsletter: isNewsletter,
           );
-      ref.invalidate(userRiverpodProvider);
-      ref.invalidate(userNotifierProvider);
+
       // On success, navigation happens via ref.listen above
     } on AuthException catch (e) {
       setState(() {

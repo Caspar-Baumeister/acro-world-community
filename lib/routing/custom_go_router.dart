@@ -68,10 +68,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                 err.toString(),
                 stackTrace: st,
               );
+              // TODO: Handle error state
               return '/loading';
             },
             data: (auth) {
               print("auth status: ${auth.status}");
+              print("routing to ${state.uri}");
               if (auth.status == AuthStatus.unauthenticated &&
                   state.uri.toString() != '/auth') {
                 return '/auth';

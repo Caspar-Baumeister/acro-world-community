@@ -3,7 +3,6 @@
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,8 +42,6 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
 
     try {
       await ref.read(authProvider.notifier).deleteAccount();
-      ref.invalidate(userRiverpodProvider);
-      ref.invalidate(userNotifierProvider);
       showSuccessToast("Your account was deleted");
       // GoRouter redirect to /auth will happen automatically via authProvider
     } on AuthException catch (e) {
