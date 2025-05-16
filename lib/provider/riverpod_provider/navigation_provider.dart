@@ -18,7 +18,7 @@ class CreatorNavigationNotifier extends Notifier<int> {
   CreatorNavigationNotifier();
 
   @override
-  int build() => 0; // Initial index is 0
+  int build() => 3; // Initial index is 3
 
   void setIndex(int index) => state = index;
 }

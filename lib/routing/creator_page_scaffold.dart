@@ -12,10 +12,10 @@ class CreatorPageScaffold extends StatelessWidget {
 
   // your top‐level tab destinations:
   static const _paths = [
-    '/creator-profile',
     '/creator-dashboard',
-    '/invite',
     '/my-events',
+    '/invite',
+    '/creator-profile',
   ];
 
   @override
