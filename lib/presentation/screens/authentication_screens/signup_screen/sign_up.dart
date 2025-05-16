@@ -47,19 +47,6 @@ class _SignUpState extends ConsumerState<SignUp> {
     emailController = TextEditingController();
     passwordController = TextEditingController();
     passwordConfirmController = TextEditingController();
-
-    // On successful registration (authenticated), navigate to discover
-    ref.listen<AsyncValue<AuthState>>(authProvider, (prev, next) {
-      next.when(
-        data: (auth) {
-          if (auth.status == AuthStatus.authenticated) {
-            context.pushNamed(discoverRoute);
-          }
-        },
-        loading: () {},
-        error: (_, __) {},
-      );
-    });
   }
 
   @override
@@ -132,6 +119,19 @@ class _SignUpState extends ConsumerState<SignUp> {
     final authAsync = ref.watch(authProvider);
     final isLoading = authAsync.isLoading;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
+    // On successful registration (authenticated), navigate to discover
+    ref.listen<AsyncValue<AuthState>>(authProvider, (prev, next) {
+      next.when(
+        data: (auth) {
+          if (auth.status == AuthStatus.authenticated) {
+            context.pushNamed(discoverRoute);
+          }
+        },
+        loading: () {},
+        error: (_, __) {},
+      );
+    });
 
     return Scaffold(
       body: SafeArea(

@@ -24,6 +24,14 @@ class MyThemes {
       ),
       indicatorColor: CustomColors.primaryColor,
       dividerColor: CustomColors.inactiveBorderColor,
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: CustomColors.backgroundColor,
+        selectedItemColor: CustomColors.primaryTextColor,
+        unselectedItemColor: CustomColors.secondaryTextColor,
+        selectedIconTheme: IconThemeData(color: CustomColors.primaryTextColor),
+        unselectedIconTheme:
+            IconThemeData(color: CustomColors.secondaryTextColor),
+      ),
       dividerTheme:
           const DividerThemeData(color: CustomColors.inactiveBorderColor),
       scaffoldBackgroundColor: CustomColors.backgroundColor,
@@ -97,7 +105,7 @@ class MyThemes {
       brightness: Brightness.light,
       highlightColor: CustomColors.highlightedColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: CustomColors.backgroundColor,
+          surface: CustomColors.backgroundColor,
           surfaceTint: CustomColors.backgroundColor));
 
   // maybe for outdoor
