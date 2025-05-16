@@ -1,5 +1,6 @@
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +89,8 @@ class SettingsDrawer extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineSmall),
                   onTap: () async {
                     await ref.read(authProvider.notifier).signOut();
+                    ref.invalidate(userRiverpodProvider);
+                    ref.invalidate(userNotifierProvider);
                     // we don't need to route since the router listens to authentification changes
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       context.goNamed('auth');

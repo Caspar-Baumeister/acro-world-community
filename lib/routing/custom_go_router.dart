@@ -1,5 +1,6 @@
 // lib/routing/app_router.dart
 
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
@@ -60,7 +61,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       initialLocation: '/discover',
       redirect: (_, state) => authAsync.when<String?>(
             loading: () => '/loading',
-            error: (_, __) => '/auth',
+            error: (err, st) {
+              CustomErrorHandler.captureException(
+                err.toString(),
+                stackTrace: st,
+              );
+              return '/loading';
+            },
             data: (auth) {
               print("auth status: ${auth.status}");
               if (auth.status == AuthStatus.unauthenticated &&

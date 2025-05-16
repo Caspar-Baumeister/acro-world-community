@@ -1,7 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/exceptions/gql_exceptions.dart'; // defines AuthException
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart'; // userRiverpodProvider, userNotifierProvider
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -58,10 +57,6 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
           throw Exception('Login succeeded but no token was saved.');
         }
 
-        // 5) Invalidate user providers so they refetch with the new token
-        ref.invalidate(userRiverpodProvider);
-        ref.invalidate(userNotifierProvider);
-
         // 6) update our auth state
         state = AsyncValue.data(AuthState.authenticated(tok));
       } else {
@@ -108,10 +103,6 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
         final tok = await TokenSingletonService().getToken();
         if (tok == null) throw Exception('No token after register');
 
-        // clear any user cache so it refetches
-        ref.invalidate(userRiverpodProvider);
-        ref.invalidate(userNotifierProvider);
-
         state = AsyncValue.data(AuthState.authenticated(tok));
       } else {
         throw AuthException(
@@ -130,9 +121,6 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
     // clear token
     await TokenSingletonService().logout();
-    // invalidate downstream user providers
-    ref.invalidate(userRiverpodProvider);
-    ref.invalidate(userNotifierProvider);
 
     // flip to unauthenticated
     state = const AsyncValue.data(AuthState.unauthenticated());
@@ -167,8 +155,6 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
       // 3) clear token & invalidate user
       await TokenSingletonService().logout();
-      ref.invalidate(userRiverpodProvider);
-      ref.invalidate(userNotifierProvider);
 
       // 4) flip to unauthenticated
       state = const AsyncValue.data(AuthState.unauthenticated());

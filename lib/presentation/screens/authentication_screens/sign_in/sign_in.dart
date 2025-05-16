@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:go_router/go_router.dart';
 
 class SignIn extends ConsumerStatefulWidget {
   const SignIn({required this.toggleView, super.key});
+
   final VoidCallback toggleView;
 
   @override
@@ -33,19 +35,6 @@ class _SignInState extends ConsumerState<SignIn> {
     super.initState();
     emailController = TextEditingController();
     passwordController = TextEditingController();
-
-    // Navigate when authProvider becomes authenticated
-    ref.listen<AsyncValue<AuthState>>(authProvider, (prev, next) {
-      next.when(
-        data: (auth) {
-          if (auth.status == AuthStatus.authenticated) {
-            context.pushNamed(discoverRoute);
-          }
-        },
-        loading: () {},
-        error: (_, __) {},
-      );
-    });
   }
 
   @override
@@ -57,6 +46,7 @@ class _SignInState extends ConsumerState<SignIn> {
 
   Future<void> onSignin() async {
     // Clear previous errors
+    if (!mounted) return;
     setState(() {
       error = '';
       errorEmail = '';
@@ -66,13 +56,14 @@ class _SignInState extends ConsumerState<SignIn> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
-      // Delegate login to your AuthNotifier.signIn
       await ref
           .read(authProvider.notifier)
           .signIn(emailController.text, passwordController.text);
-      // Redirect will happen in the ref.listen above
+      ref.invalidate(userRiverpodProvider);
+      ref.invalidate(userNotifierProvider);
+      // Redirect happens in the ref.listen below
     } on AuthException catch (e) {
-      // Show field & global errors
+      if (!mounted) return;
       setState(() {
         errorEmail = e.fieldErrors['email'] ?? '';
         errorPassword = e.fieldErrors['password'] ?? '';
@@ -80,6 +71,7 @@ class _SignInState extends ConsumerState<SignIn> {
       });
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+      if (!mounted) return;
       setState(() {
         error = 'An unexpected error occurred. Please try again later.';
       });
@@ -91,6 +83,19 @@ class _SignInState extends ConsumerState<SignIn> {
     final authAsync = ref.watch(authProvider);
     final isLoading = authAsync.isLoading;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+
+    // Listen for authentication success and redirect
+    ref.listen<AsyncValue<AuthState>>(authProvider, (_, next) {
+      next.when(
+        data: (auth) {
+          if (auth.status == AuthStatus.authenticated && mounted) {
+            context.pushNamed(discoverRoute);
+          }
+        },
+        loading: () {},
+        error: (_, __) {},
+      );
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -113,9 +118,7 @@ class _SignInState extends ConsumerState<SignIn> {
                       const Padding(
                         padding: EdgeInsets.symmetric(vertical: 40.0),
                         child: Image(
-                          image: AssetImage(
-                            'assets/logo/logo_transparent.png',
-                          ),
+                          image: AssetImage('assets/logo/logo_transparent.png'),
                           height: 100,
                         ),
                       ),
@@ -136,7 +139,7 @@ class _SignInState extends ConsumerState<SignIn> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: Text(
                               errorEmail,
                               style: const TextStyle(
@@ -155,9 +158,9 @@ class _SignInState extends ConsumerState<SignIn> {
                         obscureText: isObscure,
                         labelText: 'Password',
                         suffixIcon: IconButton(
-                          icon: Icon(isObscure
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          icon: Icon(
+                            isObscure ? Icons.visibility : Icons.visibility_off,
+                          ),
                           onPressed: () =>
                               setState(() => isObscure = !isObscure),
                         ),
@@ -169,7 +172,7 @@ class _SignInState extends ConsumerState<SignIn> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 12),
+                            padding: const EdgeInsets.only(top: 12.0),
                             child: Text(
                               errorPassword,
                               style: const TextStyle(
@@ -188,10 +191,9 @@ class _SignInState extends ConsumerState<SignIn> {
                         isFilled: true,
                         buttonFillColor: CustomColors.primaryColor,
                       ),
-
                       if (error.isNotEmpty)
                         Padding(
-                          padding: const EdgeInsets.only(top: 12),
+                          padding: const EdgeInsets.only(top: 12.0),
                           child: Text(
                             error,
                             style: const TextStyle(
@@ -199,6 +201,7 @@ class _SignInState extends ConsumerState<SignIn> {
                           ),
                         ),
 
+                      // Forgot password link
                       Padding(
                         padding: const EdgeInsets.fromLTRB(8, 8, 8, 20)
                             .copyWith(bottom: 20),
