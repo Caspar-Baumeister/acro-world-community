@@ -30,6 +30,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.da
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/routing/creator_page_scaffold.dart';
 import 'package:acroworld/routing/main_page_scaffold.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -224,14 +225,77 @@ final routerProvider = Provider<GoRouter>((ref) {
         ////////////////////
         /// CREATOR MODE ///
         ////////////////////
+        ShellRoute(
+            builder: (ctx, state, child) {
+              return CreatorPageScaffold(child: child);
+            },
+            routes: [
+              GoRoute(
+                path: '/creator-profile',
+                name: creatorProfileRoute,
+                pageBuilder: (ctx, state) => NoTransitionPage(
+                  child: const CreatorProfilePage(),
+                ),
+              ),
+              GoRoute(
+                  path: '/creator-dashboard',
+                  name: creatorDashboardRoute,
+                  pageBuilder: (ctx, state) => NoTransitionPage(
+                        child: const CreatorProfilePage(),
+                      ),
+                  routes: [
+                    GoRoute(
+                      path: '/edit-creator-profile',
+                      name: editCreatorProfileRoute,
+                      builder: (ctx, state) =>
+                          const CreateCreatorProfilePage(isEditing: true),
+                    ),
+                  ]),
+              // invitePage
+              GoRoute(
+                path: '/invite',
+                name: invitesRoute,
+                builder: (ctx, state) => InvitesPage(),
+              ),
+              GoRoute(
+                path: '/my-events',
+                name: myEventsRoute,
+                builder: (ctx, state) => const MyEventsPage(),
+                routes: [
+                  GoRoute(
+                    path: '/create-edit-event',
+                    name: createEditEventRoute,
+                    builder: (ctx, state) {
+                      // default to create; to edit, pass isEditing=true in queryParams
+                      final isEditing =
+                          state.pathParameters['isEditing'] == 'true';
+                      return CreateAndEditEventPage(isEditing: isEditing);
+                    },
+                    routes: [
+                      GoRoute(
+                        path: '/edit-description',
+                        name: editDescriptionRoute,
+                        builder: (ctx, state) {
+                          final initialText =
+                              state.pathParameters['initialText'] ?? '';
+                          // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
+                          return EditClassDescriptionPage(
+                            initialText: initialText,
+                            onTextUpdated: (newText) {/* … */},
+                          );
+                        },
+                      ),
+                      GoRoute(
+                        path: '/question',
+                        name: questionRoute,
+                        builder: (ctx, state) => const QuestionPage(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ]),
 
-        GoRoute(
-          path: '/creator-profile',
-          name: creatorProfileRoute,
-          pageBuilder: (ctx, state) => NoTransitionPage(
-            child: const CreatorProfilePage(),
-          ),
-        ),
         GoRoute(
           path: "/class-booking-summary/:classEventId",
           name: classBookingSummaryRoute,
@@ -240,62 +304,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               classEventId: state.pathParameters['classEventId']!,
             ),
           ),
-        ),
-        GoRoute(
-            path: '/creator-dashboard',
-            name: creatorDashboardRoute,
-            pageBuilder: (ctx, state) => NoTransitionPage(
-                  child: const CreatorProfilePage(),
-                ),
-            routes: [
-              GoRoute(
-                path: '/edit-creator-profile',
-                name: editCreatorProfileRoute,
-                builder: (ctx, state) =>
-                    const CreateCreatorProfilePage(isEditing: true),
-              ),
-            ]),
-        // invitePage
-        GoRoute(
-          path: '/invite',
-          name: invitesRoute,
-          builder: (ctx, state) => InvitesPage(),
-        ),
-        GoRoute(
-          path: '/my-events',
-          name: myEventsRoute,
-          builder: (ctx, state) => const MyEventsPage(),
-          routes: [
-            GoRoute(
-              path: '/create-edit-event',
-              name: createEditEventRoute,
-              builder: (ctx, state) {
-                // default to create; to edit, pass isEditing=true in queryParams
-                final isEditing = state.pathParameters['isEditing'] == 'true';
-                return CreateAndEditEventPage(isEditing: isEditing);
-              },
-              routes: [
-                GoRoute(
-                  path: '/edit-description',
-                  name: editDescriptionRoute,
-                  builder: (ctx, state) {
-                    final initialText =
-                        state.pathParameters['initialText'] ?? '';
-                    // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
-                    return EditClassDescriptionPage(
-                      initialText: initialText,
-                      onTextUpdated: (newText) {/* … */},
-                    );
-                  },
-                ),
-                GoRoute(
-                  path: '/question',
-                  name: questionRoute,
-                  builder: (ctx, state) => const QuestionPage(),
-                ),
-              ],
-            ),
-          ],
         ),
 
         GoRoute(
