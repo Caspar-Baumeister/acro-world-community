@@ -76,7 +76,7 @@ class ProfileBody extends ConsumerWidget {
                           if (!isEmailVerified) {
                             showInfoToast(
                                 "You need to verify your email before switching to creator mode");
-                            Navigator.of(context).push(ConfirmEmailPageRoute());
+                            context.pushNamed(verifyEmailRoute);
                           } else if (hasTeacherProfile) {
                             GraphQLClientSingleton().updateClient(true);
                             provider.Provider.of<UserRoleProvider>(context,

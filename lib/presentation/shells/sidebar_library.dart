@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class ShellSideNavigationBar extends ConsumerWidget {
+class ShellSideNavigationBar extends StatelessWidget {
   const ShellSideNavigationBar({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
+    //  '/discover',
+    // '/activity',
+    // '/community',
+    // '/profile',
     return Column(
       children: [
         ListTile(
@@ -20,11 +23,15 @@ class ShellSideNavigationBar extends ConsumerWidget {
           onTap: () => context.go('/activity'),
         ),
         ListTile(
+          title: const Text("Community"),
+          leading: const Icon(Icons.group),
+          onTap: () => context.go('/community'),
+        ),
+        ListTile(
           title: const Text("Profile"),
           leading: const Icon(Icons.settings),
           onTap: () => context.go('/profile'),
         ),
-        // Add more items as needed
       ],
     );
   }

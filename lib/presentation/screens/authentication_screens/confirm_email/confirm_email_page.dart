@@ -94,8 +94,9 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
       if (ok == true) {
         showSuccessToast("Email verified successfully");
         // Invalidate so new "verified" user is fetched downstream
-        context.goNamed(profileRoute);
+
         WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pop(context);
           ref.invalidate(userRiverpodProvider);
           ref.invalidate(userNotifierProvider);
         });

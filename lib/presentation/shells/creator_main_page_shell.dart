@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 
 /// Wraps your shell and keeps track of which tab is active by
 /// inspecting the current GoRouter location.
-class CreatorPageScaffold extends StatelessWidget {
+class CreatorMainPageShell extends StatelessWidget {
   final Widget child;
-  const CreatorPageScaffold({super.key, required this.child});
+  const CreatorMainPageShell({super.key, required this.child});
 
   // your top‐level tab destinations:
   static const _paths = [

@@ -15,6 +15,7 @@ const String accountSettingsRoute = 'account-settings';
 const String editUserDataRoute = 'edit-userdata';
 const String essentialsRoute = 'essentials';
 const String placeSearchRoute = 'place-search';
+const String verifyEmailRoute = 'verify-email';
 
 /// AUTHENTICATION ROUTES
 const String authRoute = 'auth';
