@@ -39,14 +39,14 @@ class _TeacherCardState extends ConsumerState<TeacherCard> {
     // Read current user once; .value may be null if not authenticated
     final currentUser = ref.watch(userRiverpodProvider).value;
     final userId = currentUser?.id;
-
+    print('user slug: ${widget.teacher.slug}');
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: GestureDetector(
         onTap: widget.teacher.slug != null
             ? () => context.pushNamed(
                   partnerSlugRoute,
-                  pathParameters: {"teacherSlug": widget.teacher.slug!},
+                  pathParameters: {"slug": widget.teacher.slug!},
                 )
             : null,
         child: ListTile(

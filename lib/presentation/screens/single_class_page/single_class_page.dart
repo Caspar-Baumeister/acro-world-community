@@ -8,6 +8,7 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/calenda
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
@@ -136,9 +137,16 @@ At: ${clas.locationName}
                 tag: widget.clas.imageUrl,
               ),
               SliverToBoxAdapter(
-                child: SingleClassBody(
-                  classe: widget.clas,
-                  classEvent: widget.classEvent,
+                child: Padding(
+                  padding: Responsive.isDesktop(context)
+                      ? const EdgeInsets.symmetric(
+                          horizontal: AppPaddings.large,
+                        )
+                      : EdgeInsets.all(0),
+                  child: SingleClassBody(
+                    classe: widget.clas,
+                    classEvent: widget.classEvent,
+                  ),
                 ),
               ),
             ],

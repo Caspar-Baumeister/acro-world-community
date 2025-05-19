@@ -12,6 +12,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -102,6 +103,8 @@ initMain() async {
     isValid = VersionService.verifyVersionString(
         currentVersion: currentVersion, minVersion: minVersion);
   }
+
+  usePathUrlStrategy();
   runApp(isValid
       ? ProviderScope(child: const App())
       : VersionToOldPage(

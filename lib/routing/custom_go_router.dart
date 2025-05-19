@@ -58,6 +58,7 @@ final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
 final routerProvider = Provider<GoRouter>((ref) {
   final authAsync = ref.watch(authProvider);
   return GoRouter(
+      navigatorKey: rootNavigatorKey,
       refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: '/discover',
       redirect: (_, state) => authAsync.when<String?>(
@@ -77,10 +78,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   state.uri.toString() != '/auth') {
                 return '/auth';
               }
-              // if (auth.status == AuthStatus.authenticated &&
-              //     state.uri.toString() == '/auth') {
-              //   return '/';
-              // }
+
               return null;
             },
           ),
@@ -272,6 +270,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
         /// PARTNER / TEACHER PROFILE BY SLUG
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/partner/:slug',
           name: partnerSlugRoute,
           builder: (ctx, state) {
@@ -282,6 +281,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
         /// SINGLE CLASS / EVENT WRAPPER
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/event/:urlSlug/:classEventId',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {

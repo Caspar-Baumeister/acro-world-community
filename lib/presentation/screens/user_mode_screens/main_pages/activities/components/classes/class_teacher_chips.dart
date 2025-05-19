@@ -33,7 +33,7 @@ class ClassTeacherChips extends StatelessWidget {
                           ? context.pushNamed(
                               partnerSlugRoute,
                               pathParameters: {
-                                "teacherSlug": teacher.slug!,
+                                "slug": teacher.slug!,
                               },
                             )
                           : null,

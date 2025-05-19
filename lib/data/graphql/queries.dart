@@ -168,21 +168,13 @@ class_event_bookings_aggregate(where: {status: {_eq: "Confirmed"}, class_event: 
   static final getTeachersPageableQuery = gql("""
   query GetTeachersPageable(\$limit: Int, \$offset: Int, \$where: teachers_bool_exp!) {
     teachers(limit: \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {
-      id
-      name
-      user_id
-      confirmation_status
+      
       user_likes_aggregate {
         aggregate {
           count
         }
       }
-      images {
-        image {
-          url
-        }
-        is_profile_picture
-      }
+       ${Fragments.teacherFragmentAllInfo}
     }
   }
 """);
@@ -478,17 +470,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getTeacherForList = gql("""
     query getTeacherForList(\$user_id: uuid, \$search: String!) {
       teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
+        ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
         }
@@ -503,18 +485,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getTeacherForListWithoutUserID = gql("""
     query getTeacherForList(\$search: String!) {
       teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
-       
+         ${Fragments.teacherFragmentAllInfo}
         user_likes_aggregate {
           aggregate {
             count
@@ -528,17 +499,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   me {
     followed_teacher(order_by: {created_at: desc}, where: {teacher: {confirmation_status: {_eq: Confirmed}}, _and: {teacher: {name: {_ilike: \$search}}}}) {
       teacher {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
+        ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
         }
