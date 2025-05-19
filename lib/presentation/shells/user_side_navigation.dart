@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ShellSideNavigationBar extends StatelessWidget {
-  const ShellSideNavigationBar({super.key});
+class UserDestopSideNavigationBar extends StatelessWidget {
+  const UserDestopSideNavigationBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //  '/discover',
-    // '/activity',
-    // '/community',
-    // '/profile',
     return Column(
       children: [
         ListTile(

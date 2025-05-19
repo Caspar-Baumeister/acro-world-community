@@ -30,8 +30,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
-import 'package:acroworld/presentation/shells/creator_main_page_shell.dart';
-import 'package:acroworld/presentation/shells/user_main_page_shell.dart';
+import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +87,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       routes: [
         ShellRoute(
             builder: (ctx, state, child) {
-              return UserMainPageShell(child: child);
+              return MainPageShell(child: child);
             },
             routes: [
               GoRoute(
@@ -139,7 +138,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ////////////////////
         ShellRoute(
             builder: (ctx, state, child) {
-              return CreatorMainPageShell(child: child);
+              return MainPageShell(child: child);
             },
             routes: [
               GoRoute(

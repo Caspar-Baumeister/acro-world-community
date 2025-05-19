@@ -1,9 +1,12 @@
-import 'package:acroworld/presentation/shells/sidebar_library.dart';
+import 'package:acroworld/presentation/shells/creator_side_navigation.dart';
+import 'package:acroworld/presentation/shells/user_side_navigation.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ShellSideBar extends StatelessWidget {
-  const ShellSideBar({super.key});
+  const ShellSideBar({super.key, required this.isCreator});
+
+  final bool isCreator;
 
   @override
   Widget build(BuildContext context) {
@@ -11,16 +14,15 @@ class ShellSideBar extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 22, right: 22, top: 40),
+          const SizedBox(height: 50),
+          Center(
             child: Image(
               image: AssetImage("assets/muscleup_drawing.png"),
               height: 80,
               fit: BoxFit.contain,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 22, right: 22, top: 40),
+          Center(
             child: Text(
               "ACROWORLD".toUpperCase(),
               style: Theme.of(context)
@@ -30,9 +32,11 @@ class ShellSideBar extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 50),
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
-                child: Material(child: ShellSideNavigationBar())),
+                child: isCreator
+                    ? const CreatorDestopSideNavigationBar()
+                    : const UserDestopSideNavigationBar()),
           ),
           const SizedBox(height: 50),
         ],
