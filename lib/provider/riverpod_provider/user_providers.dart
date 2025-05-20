@@ -44,6 +44,7 @@ final userRiverpodProvider = FutureProvider.autoDispose<User?>((ref) async {
     }
 
     // 3️⃣ Parse and return the User
+
     return User.fromJson(list.first as Map<String, dynamic>);
   } catch (e, st) {
     CustomErrorHandler.captureException(e.toString(), stackTrace: st);

@@ -17,7 +17,7 @@ class StandartButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final Color buttonFillColor;
-  final double width;
+  final double? width;
   final bool disabled;
   final bool loading;
   final bool isFilled;
@@ -50,11 +50,13 @@ class StandartButton extends StatelessWidget {
                           isFilled ? Colors.white : CustomColors.primaryColor,
                     ))
                 : Row(
+                    mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       icon ?? Container(),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10.0, horizontal: 10),
                         child: Text(
                           text,
                           style: Theme.of(context)

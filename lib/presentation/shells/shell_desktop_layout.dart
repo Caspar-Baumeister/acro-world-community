@@ -14,7 +14,7 @@ class ShellDesktopLayout extends StatelessWidget {
       body: Row(
         children: [
           SizedBox(
-            width: 300,
+            width: 200,
             child: ShellSideBar(
               isCreator: isCreator,
             ),
