@@ -4,7 +4,7 @@ import 'package:acroworld/data/models/gender_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/custom_button.dart';
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -286,15 +286,16 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                   const Spacer(),
 
                   // — Save button —
-                  CustomButton(
-                    "Save",
-                    isSaving
+                  StandartButton(
+                    text: "Save",
+                    onPressed: isSaving
                         ? () {}
                         : () async {
                             final ok = await _onSave(user);
                             if (ok) context.pop();
                           },
                     loading: isSaving,
+                    isFilled: true,
                   ),
                 ],
               ),

@@ -4,7 +4,7 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/custom_button.dart';
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
 import 'package:acroworld/provider/event_answers_provider.dart';
@@ -111,9 +111,9 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                         eventOccurence: widget.classEventId!,
                       ),
                       const SizedBox(height: 20.0),
-                      CustomButton(
-                        "Continue to payment",
-                        () async {
+                      StandartButton(
+                        text: "Continue to payment",
+                        onPressed: () async {
                           if (!areRequiredQuestionsAnswered(
                               eventAnswerProvider)) {
                             showErrorToast(
@@ -139,6 +139,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                         loading: !_isInitAnswersReady ||
                             !_isPaymentIntentInitialized,
                         width: double.infinity,
+                        isFilled: true,
                       ),
                     ],
                   ),

@@ -60,13 +60,15 @@ class StandartButton extends StatelessWidget {
                         icon!,
                         const SizedBox(width: 8),
                       ],
-                      Text(
-                        text,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineSmall!
-                            .copyWith(color: textColor),
-                        textAlign: TextAlign.center,
+                      Flexible(
+                        child: Text(
+                          text,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(color: textColor),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ],
                   ),
