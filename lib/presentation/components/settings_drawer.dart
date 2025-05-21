@@ -21,7 +21,7 @@ class SettingsDrawer extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () => context.goNamed(
+                onTap: () => context.pushNamed(
                   accountSettingsRoute,
                 ),
                 child: ListTile(

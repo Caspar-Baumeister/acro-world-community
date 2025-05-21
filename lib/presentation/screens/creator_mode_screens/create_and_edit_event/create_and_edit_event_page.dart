@@ -4,9 +4,11 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -76,6 +78,11 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
               await eventCreationAndEditingProvider
                   .updateClass(creatorProvider.activeTeacher!.id!);
             } else {
+              // print the current user role
+              print(
+                  "Current user role: ${Provider.of<UserRoleProvider>(context, listen: false).isCreator}");
+              print(
+                  "Tokensigleton is creator: ${TokenSingletonService().getUserRoles()}");
               await eventCreationAndEditingProvider
                   .createClass(creatorProvider.activeTeacher!.id!);
             }

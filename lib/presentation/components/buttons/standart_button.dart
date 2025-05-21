@@ -3,16 +3,17 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class StandartButton extends StatelessWidget {
-  const StandartButton(
-      {super.key,
-      required this.text,
-      required this.onPressed,
-      this.icon,
-      this.buttonFillColor = CustomColors.primaryColor,
-      this.width = STANDART_BUTTON_WIDTH,
-      this.disabled = false,
-      this.loading = false,
-      this.isFilled = false});
+  const StandartButton({
+    super.key,
+    required this.text,
+    required this.onPressed,
+    this.icon,
+    this.buttonFillColor = CustomColors.primaryColor,
+    this.width = STANDART_BUTTON_WIDTH,
+    this.disabled = false,
+    this.loading = false,
+    this.isFilled = false,
+  });
 
   final String text;
   final VoidCallback onPressed;
@@ -25,54 +26,53 @@ class StandartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final backgroundColor = isFilled ? buttonFillColor : Colors.white;
+    final borderColor = buttonFillColor;
+    final textColor = isFilled ? Colors.white : buttonFillColor;
+
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: disabled || loading
-          ? null
-          // if authentication is not neccesary, return onPressed
-
-          : onPressed,
+      onTap: disabled || loading ? null : onPressed,
       child: Container(
-          decoration: BoxDecoration(
-            color: isFilled ? buttonFillColor : Colors.white,
-            border: Border.all(color: buttonFillColor),
-            borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
-          ),
-          width: width,
-          child: Center(
+        width: width,
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          border: Border.all(color: borderColor),
+          borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 10),
             child: loading
-                ? Container(
-                    height: 40,
-                    width: 40,
-                    padding: const EdgeInsets.all(10),
+                ? SizedBox(
+                    height: 24,
+                    width: 24,
                     child: CircularProgressIndicator(
-                      color:
-                          isFilled ? Colors.white : CustomColors.primaryColor,
-                    ))
+                      strokeWidth: 2,
+                      color: textColor,
+                    ),
+                  )
                 : Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      icon ?? Container(),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 10.0, horizontal: 10),
-                        child: Text(
-                          text,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                color: !isFilled
-                                    ? CustomColors.primaryColor
-                                    : Colors.white,
-                              ),
-                          textAlign: TextAlign.center,
-                        ),
+                      if (icon != null) ...[
+                        icon!,
+                        const SizedBox(width: 8),
+                      ],
+                      Text(
+                        text,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall!
+                            .copyWith(color: textColor),
+                        textAlign: TextAlign.center,
                       ),
                     ],
                   ),
-          )),
+          ),
+        ),
+      ),
     );
   }
 }

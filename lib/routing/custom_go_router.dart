@@ -154,10 +154,14 @@ final routerProvider = Provider<GoRouter>((ref) {
                       ),
                   routes: [
                     GoRoute(
+                      // add queryParams to the path with ?isEditing
                       path: '/edit-creator-profile',
                       name: editCreatorProfileRoute,
-                      builder: (ctx, state) =>
-                          const CreateCreatorProfilePage(isEditing: true),
+                      builder: (ctx, state) {
+                        final isEditing =
+                            state.uri.queryParameters['isEditing'] == 'true';
+                        return CreateCreatorProfilePage(isEditing: isEditing);
+                      },
                     ),
                   ]),
               // invitePage

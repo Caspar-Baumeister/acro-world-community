@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button_small.dart';
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -26,7 +26,7 @@ class NewAreaComponent extends StatelessWidget {
         padding: const EdgeInsets.only(top: AppPaddings.small),
         child: SizedBox(
           width: 200,
-          child: StandardButtonSmall(
+          child: StandartButton(
               onPressed: () {
                 placeProvider.updatePlaceByLaTLang(center);
                 // update MapEventsProvider
