@@ -25,7 +25,9 @@ class DiscoverySliderCard extends StatelessWidget {
                   singleEventWrapperRoute,
                   pathParameters: {
                     "urlSlug": classEvent.classModel!.urlSlug!,
-                    "classEventId": classEvent.id!
+                  },
+                  queryParameters: {
+                    "event": classEvent.id!,
                   },
                 )
               : null,

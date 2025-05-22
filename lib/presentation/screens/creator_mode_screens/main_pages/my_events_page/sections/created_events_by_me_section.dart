@@ -166,11 +166,13 @@ class _CreatedEventsByMeSectionState
 
   void _onTap(ClassModel classObject, BuildContext context) {
     if (classObject.urlSlug != null || classObject.id != null) {
-      context.goNamed(
+      context.pushNamed(
         singleEventWrapperRoute,
         pathParameters: {
           "urlSlug": classObject.urlSlug ?? "",
-          "classEventId": classObject.id ?? "",
+        },
+        queryParameters: {
+          "event": classObject.id,
         },
       );
     } else {

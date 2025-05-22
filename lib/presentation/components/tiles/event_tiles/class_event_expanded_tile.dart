@@ -32,13 +32,11 @@ class ClassEventExpandedTile extends StatelessWidget {
       onTap: classEvent.classModel?.urlSlug != null ||
               classEvent.classModel?.id != null ||
               classEvent.id != null
-          ? () => context.pushNamed(
-                singleEventWrapperRoute,
-                pathParameters: {
-                  "urlSlug": classEvent.classModel!.urlSlug!,
-                  "classEventId": classEvent.id!,
-                },
-              )
+          ? () => context.pushNamed(singleEventWrapperRoute, pathParameters: {
+                "urlSlug": classEvent.classModel!.urlSlug!,
+              }, queryParameters: {
+                "event": classEvent.id!,
+              })
           : () => showErrorToast("This class is not available anymore"),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),

@@ -25,7 +25,9 @@ class UserBookingsCard extends StatelessWidget {
                       singleEventWrapperRoute,
                       pathParameters: {
                         "urlSlug": userBooking.urlSlug ?? "",
-                        "classEventId": userBooking.classId ?? "",
+                      },
+                      queryParameters: {
+                        "event": userBooking.classEventId ?? "",
                       },
                     )
                   : null,

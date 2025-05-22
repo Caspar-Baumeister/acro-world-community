@@ -22,11 +22,8 @@ class ClassTemplateCard extends StatelessWidget {
               if (indexClass.urlSlug != null) {
                 pathParameters["urlSlug"] = indexClass.urlSlug!;
               }
-              if (indexClass.id != null) {
-                pathParameters["classId"] = indexClass.id!;
-              }
 
-              return context.goNamed(singleEventWrapperRoute,
+              context.pushNamed(singleEventWrapperRoute,
                   pathParameters: pathParameters);
             }
           : () => showErrorToast("This class is not available anymore"),

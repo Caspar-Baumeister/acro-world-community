@@ -286,12 +286,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         /// SINGLE CLASS / EVENT WRAPPER
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
-          path: '/event/:urlSlug/:classEventId',
+          path: '/event/:urlSlug',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {
+            final slug = state.pathParameters['urlSlug']!;
+            final classEventId = state.uri.queryParameters['event'];
             return SingleEventQueryWrapper(
-              urlSlug: state.pathParameters['urlSlug'],
-              classEventId: state.pathParameters['classEventId'],
+              urlSlug: slug,
+              classEventId: classEventId,
             );
           },
         ),
