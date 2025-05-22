@@ -41,7 +41,7 @@ class SettingsDrawer extends StatelessWidget {
               ),
               const Divider(color: Colors.grey, height: 1),
               GestureDetector(
-                onTap: () => context.goNamed(
+                onTap: () => context.pushNamed(
                   essentialsRoute,
                 ),
                 child: ListTile(

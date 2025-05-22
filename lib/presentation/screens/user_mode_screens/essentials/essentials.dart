@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/appbar/standard_app_bar/standard_app_bar.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -10,12 +11,8 @@ class EssentialsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0.0,
-        centerTitle: false,
-        titleSpacing: 20.0,
-        title: const Text('Essentials'),
+      appBar: StandardAppBar(
+        title: "Essentials",
       ),
       body: const SafeArea(
           child: SingleChildScrollView(

@@ -28,6 +28,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
@@ -68,8 +69,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 err.toString(),
                 stackTrace: st,
               );
-              // TODO: Handle error state
-              return '/loading';
+              return '/auth-error';
             },
             data: (auth) {
               print("auth status: ${auth.status}");
@@ -114,22 +114,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                     NoTransitionPage(child: const TeacherPage()),
               ),
               GoRoute(
-                  path: '/profile',
-                  name: profileRoute,
-                  pageBuilder: (ctx, state) =>
-                      NoTransitionPage(child: const ProfilePage()),
-                  routes: [
-                    GoRoute(
-                      path: '/edit-userdata',
-                      name: editUserDataRoute,
-                      builder: (context, state) => const EditUserdataPage(),
-                    ),
-                    GoRoute(
-                      path: '/verify-email',
-                      name: verifyEmailRoute,
-                      builder: (context, state) => const ConfirmEmailPage(),
-                    ),
-                  ]),
+                path: '/profile',
+                name: profileRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const ProfilePage()),
+              ),
             ]),
         ////////////////////
         /// CREATOR MODE ///
@@ -222,6 +211,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           name: accountSettingsRoute,
           pageBuilder: (ctx, state) =>
               NoTransitionPage(child: const AccountSettingsPage()),
+        ),
+
+        GoRoute(
+          path: '/edit-userdata',
+          name: editUserDataRoute,
+          builder: (context, state) => const EditUserdataPage(),
+        ),
+        GoRoute(
+          path: '/verify-email',
+          name: verifyEmailRoute,
+          builder: (context, state) => const ConfirmEmailPage(),
         ),
 
         GoRoute(
@@ -336,6 +336,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/loading',
             name: loadingRoute,
             builder: (ctx, state) => LoadingPage()),
+
+        // error page
+        GoRoute(
+          path: '/auth-error',
+          name: errorRoute,
+          builder: (ctx, state) => ErrorPage(error: authAsync.error.toString()),
+        ),
       ]);
 });
 

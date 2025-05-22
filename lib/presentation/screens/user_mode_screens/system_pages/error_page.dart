@@ -12,7 +12,7 @@ class ErrorPage extends StatelessWidget {
       backgroundColor: CustomColors.backgroundColor,
       body: Center(
         child: Text(
-          "An unexpected error occured. Consider updating your current app version. Error: $error",
+          "An error occured. Consider updating your current app version. Error: $error",
           textAlign: TextAlign.center,
         ),
       ),

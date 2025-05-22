@@ -39,7 +39,9 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
 
       // 3) GraphQL‐level errors?
       if (response['errors'] != null) {
+        print('GraphQL errors: ${response['errors']}');
         final errs = parseGraphQLError(response);
+        state = const AsyncValue.data(AuthState.unauthenticated());
         throw AuthException(
           fieldErrors: {
             'email': errs['emailError']!,
@@ -60,6 +62,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
         // 6) update our auth state
         state = AsyncValue.data(AuthState.authenticated(tok));
       } else {
+        state = const AsyncValue.data(AuthState.unauthenticated());
         throw AuthException(
           fieldErrors: const {'email': '', 'password': ''},
           globalError: 'Login failed. Please try again.',
