@@ -90,9 +90,10 @@ class ForgotPasswordState extends State<ForgotPassword> {
     );
 
     if (response?["data"]["reset_password"]?["success"] == true) {
+      print("Success: ${response?["data"]}");
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.goNamed(forgotPasswordSuccessRoute,
-            pathParameters: {"email": emailController.text});
+        context.pushReplacementNamed(forgotPasswordSuccessRoute,
+            queryParameters: {"email": emailController.text});
       });
     } else {
       setState(() {

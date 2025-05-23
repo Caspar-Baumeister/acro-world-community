@@ -63,7 +63,7 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
   void _shareEvent(ClassEvent? classEvent, ClassModel clas) {
     String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
     if (classEvent?.id != null) {
-      deeplinkUrl += "/${classEvent!.id!}";
+      deeplinkUrl += "?event=${classEvent!.id!}";
     }
     String content = '''
 Hi, I just found this event on AcroWorld:

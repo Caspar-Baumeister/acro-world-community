@@ -206,10 +206,15 @@ class _SignInState extends ConsumerState<SignIn> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             GestureDetector(
-                              onTap: () => context.goNamed(
-                                forgotPasswordRoute,
-                                pathParameters: {"email": emailController.text},
-                              ),
+                              onTap: () {
+                                print("email:${emailController.text}");
+                                context.pushNamed(
+                                  forgotPasswordRoute,
+                                  queryParameters: {
+                                    "email": emailController.text,
+                                  },
+                                );
+                              },
                               child: Text(
                                 "Forgot password",
                                 style: Theme.of(context)

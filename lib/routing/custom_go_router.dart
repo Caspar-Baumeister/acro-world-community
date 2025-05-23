@@ -75,7 +75,8 @@ final routerProvider = Provider<GoRouter>((ref) {
               print("auth status: ${auth.status}");
               print("routing to ${state.uri}");
               if (auth.status == AuthStatus.unauthenticated &&
-                  state.uri.toString() != '/auth') {
+                  state.uri.toString() != '/auth' &&
+                  !state.uri.toString().startsWith('/forgot-password')) {
                 return '/auth';
               }
 
@@ -259,16 +260,18 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
         // ForgotPassword
         GoRoute(
-            path: '/forgot-password/:email',
-            name: forgotPasswordRoute,
-            builder: (ctx, state) => ForgotPassword(
-                  initialEmail: state.pathParameters['email'],
-                )),
+          path: '/forgot-password',
+          name: forgotPasswordRoute,
+          builder: (ctx, state) {
+            final email = state.uri.queryParameters['email'];
+            return ForgotPassword(initialEmail: email);
+          },
+        ),
         GoRoute(
-          path: '/forgot-password-success/:email',
+          path: '/forgot-password-success',
           name: forgotPasswordSuccessRoute,
           builder: (ctx, state) => ForgotPasswordSuccess(
-            email: state.pathParameters['email']!,
+            email: state.uri.queryParameters['email'] ?? '',
           ),
         ),
 
