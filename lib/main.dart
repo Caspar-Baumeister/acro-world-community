@@ -15,6 +15,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timezone/data/latest.dart' as tz;
+import 'package:url_strategy/url_strategy.dart';
 
 void main() async {
   ////////////
@@ -101,6 +102,10 @@ initMain() async {
     currentVersion = await VersionService.getCurrentAppVersion();
     isValid = VersionService.verifyVersionString(
         currentVersion: currentVersion, minVersion: minVersion);
+  }
+
+  if (kIsWeb) {
+    setPathUrlStrategy();
   }
 
   runApp(isValid
