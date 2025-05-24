@@ -12,7 +12,9 @@ import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -160,6 +162,24 @@ At: ${clas.locationName}
     if (widget.classEvent != null &&
         widget.classEvent!.classModel!.bookingOptions.isNotEmpty &&
         billingTeacher != null) {
+      if (kIsWeb) {
+        return BottomAppBar(
+          elevation: 0,
+          child: CustomBottomHoverButton(
+              content: const Text(
+                "Booking only possible on mobile",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () => showErrorToast(
+                    "Booking is currently only possible on mobile devices. Please use the AcroWorld app.",
+                  )),
+        );
+      }
+
       return BottomAppBar(
         elevation: 0,
         child: BookingQueryHoverButton(

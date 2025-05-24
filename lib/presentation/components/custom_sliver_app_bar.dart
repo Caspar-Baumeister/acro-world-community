@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/components/images/fullscreen_image_wrappe
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   const CustomSliverAppBar({
@@ -105,7 +106,15 @@ class BlurIconButton extends StatelessWidget {
 
     return ClipOval(
       child: GestureDetector(
-        onTap: () => Navigator.pop(context),
+        onTap: () {
+          if (!Navigator.canPop(context)) {
+            // nothing to pop
+            context.go('/discover');
+          } else {
+            // pop the current screen
+            context.pop();
+          }
+        },
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white.withOpacity(0.2), // Subdued color

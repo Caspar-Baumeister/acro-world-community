@@ -3,6 +3,7 @@ import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -11,9 +12,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class SignIn extends ConsumerStatefulWidget {
-  const SignIn({required this.toggleView, super.key});
+  const SignIn({required this.toggleView, this.redirectAfter, super.key});
 
   final VoidCallback toggleView;
+  final String? redirectAfter;
 
   @override
   ConsumerState<SignIn> createState() => _SignInState();
@@ -44,7 +46,6 @@ class _SignInState extends ConsumerState<SignIn> {
   }
 
   Future<void> onSignin() async {
-    // Clear previous errors
     if (!mounted) return;
     setState(() {
       error = '';
@@ -58,7 +59,6 @@ class _SignInState extends ConsumerState<SignIn> {
       await ref
           .read(authProvider.notifier)
           .signIn(emailController.text, passwordController.text);
-      // Redirect happens in the ref.listen below
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -75,169 +75,163 @@ class _SignInState extends ConsumerState<SignIn> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget _form(BuildContext context) {
     final authAsync = ref.watch(authProvider);
     final isLoading = authAsync.isLoading;
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
-
-    // Listen for authentication success and redirect
-    ref.listen<AsyncValue<AuthState>>(authProvider, (_, next) {
-      next.when(
-        data: (auth) {
-          if (auth.status == AuthStatus.authenticated && mounted) {
-            context.pushNamed(discoverRoute);
-          }
-        },
-        loading: () {},
-        error: (_, __) {},
-      );
-    });
-
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: AutofillGroup(
-                  child: Column(
-                    mainAxisAlignment: isKeyboardOpen
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40.0),
-                        child: Image(
-                          image: AssetImage('assets/logo/logo_transparent.png'),
-                          height: 100,
-                        ),
+    return SafeArea(
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: Responsive.isMobile(context)
+                ? BoxConstraints(
+                    minHeight:
+                        isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
+                  )
+                : BoxConstraints(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: AutofillGroup(
+                child: Column(
+                  mainAxisAlignment: isKeyboardOpen
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Image(
+                        image: AssetImage('assets/logo/logo_transparent.png'),
+                        height: 100,
                       ),
-
-                      // Email field
-                      InputFieldComponent(
-                        controller: emailController,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'Email',
-                        autoFocus: true,
-                        validator: (val) => (val == null || val.isEmpty)
-                            ? 'Enter an email'
-                            : null,
-                      ),
-                      if (errorEmail.isNotEmpty)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              errorEmail,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          ),
-                        ),
-
-                      const SizedBox(height: 20.0),
-
-                      // Password field
-                      InputFieldComponent(
-                        controller: passwordController,
-                        textInputAction: TextInputAction.done,
-                        autofillHints: const [AutofillHints.password],
-                        obscureText: isObscure,
-                        labelText: 'Password',
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            isObscure ? Icons.visibility : Icons.visibility_off,
-                          ),
-                          onPressed: () =>
-                              setState(() => isObscure = !isObscure),
-                        ),
-                        onFieldSubmitted: (_) {
-                          if (!isLoading) onSignin();
-                        },
-                      ),
-                      if (errorPassword.isNotEmpty)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 12.0),
-                            child: Text(
-                              errorPassword,
-                              style: const TextStyle(
-                                  color: Colors.red, fontSize: 14.0),
-                            ),
-                          ),
-                        ),
-
-                      const SizedBox(height: 20.0),
-
-                      // Login button
-                      StandartButton(
-                        text: "Login",
-                        onPressed: isLoading ? () {} : onSignin,
-                        loading: isLoading,
-                        isFilled: true,
-                        buttonFillColor: CustomColors.primaryColor,
-                      ),
-                      if (error.isNotEmpty)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
+                    ),
+                    InputFieldComponent(
+                      controller: emailController,
+                      autofillHints: const [AutofillHints.email],
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      labelText: 'Email',
+                      autoFocus: true,
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter an email'
+                          : null,
+                    ),
+                    if (errorEmail.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
                           child: Text(
-                            error,
+                            errorEmail,
                             style: const TextStyle(
                                 color: Colors.red, fontSize: 14.0),
                           ),
                         ),
-
-                      // Forgot password link
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(8, 8, 8, 20)
-                            .copyWith(bottom: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                print("email:${emailController.text}");
-                                context.pushNamed(
-                                  forgotPasswordRoute,
-                                  queryParameters: {
-                                    "email": emailController.text,
-                                  },
-                                );
-                              },
-                              child: Text(
-                                "Forgot password",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                        color: CustomColors.linkTextColor),
-                              ),
-                            ),
-                          ],
+                      ),
+                    const SizedBox(height: 20.0),
+                    InputFieldComponent(
+                      controller: passwordController,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
+                      obscureText: isObscure,
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isObscure ? Icons.visibility : Icons.visibility_off,
+                        ),
+                        onPressed: () => setState(() => isObscure = !isObscure),
+                      ),
+                      onFieldSubmitted: (_) {
+                        if (!isLoading) onSignin();
+                      },
+                    ),
+                    if (errorPassword.isNotEmpty)
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Text(
+                            errorPassword,
+                            style: const TextStyle(
+                                color: Colors.red, fontSize: 14.0),
+                          ),
                         ),
                       ),
-
-                      // Register link
-                      LinkButtonComponent(
-                        text: "Register",
-                        onPressed: widget.toggleView,
+                    const SizedBox(height: 20.0),
+                    StandartButton(
+                      text: "Login",
+                      onPressed: isLoading ? () {} : onSignin,
+                      loading: isLoading,
+                      isFilled: true,
+                      buttonFillColor: CustomColors.primaryColor,
+                    ),
+                    if (error.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          error,
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 14.0),
+                        ),
                       ),
-
-                      const SizedBox(height: 40),
-                    ],
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 20)
+                          .copyWith(bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                forgotPasswordRoute,
+                                queryParameters: {
+                                  "email": emailController.text,
+                                },
+                              );
+                            },
+                            child: Text(
+                              "Forgot password",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: CustomColors.linkTextColor),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    LinkButtonComponent(
+                      text: "Register",
+                      onPressed: widget.toggleView,
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Responsive(
+        mobile: _form(context),
+        desktop: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 700),
+            padding: const EdgeInsets.all(32.0),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 40.0, horizontal: 32.0),
+                child: _form(context),
               ),
             ),
           ),

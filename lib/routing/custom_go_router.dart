@@ -1,6 +1,5 @@
 // lib/routing/app_router.dart
 
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
@@ -57,32 +56,39 @@ final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
 );
 
 final routerProvider = Provider<GoRouter>((ref) {
-  final authAsync = ref.watch(authProvider);
   return GoRouter(
       navigatorKey: rootNavigatorKey,
       refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: '/discover',
-      redirect: (_, state) => authAsync.when<String?>(
-            loading: () => '/loading',
-            error: (err, st) {
-              CustomErrorHandler.captureException(
-                err.toString(),
-                stackTrace: st,
-              );
-              return '/auth-error';
-            },
-            data: (auth) {
-              print("auth status: ${auth.status}");
-              print("routing to ${state.uri}");
-              if (auth.status == AuthStatus.unauthenticated &&
-                  state.uri.toString() != '/auth' &&
-                  !state.uri.toString().startsWith('/forgot-password')) {
-                return '/auth';
-              }
+      redirect: (BuildContext _, GoRouterState state) {
+        final auth = ref.read(authProvider);
+        final loc = state.matchedLocation; // the “clean” path, no query
+        final from =
+            state.uri.queryParameters['from']; // maybe “…?from=/event/…”
 
-              return null;
-            },
-          ),
+        final loggingIn = loc == '/auth';
+
+        return auth.when(
+          loading: () => null,
+          error: (_, __) => '/auth-error',
+          data: (authState) {
+            // 1) Not logged in → guard all non-/auth, non-/forgot routes
+            if (authState.status == AuthStatus.unauthenticated &&
+                !loggingIn &&
+                !loc.startsWith('/forgot-password')) {
+              final encoded = Uri.encodeComponent('$loc?${state.uri.query}');
+              print("encoded: $encoded");
+              return '/auth?from=$encoded';
+            }
+            // 2) Just logged in and you’re on the “/auth” page → go back to `from` or to discover
+            if (authState.status == AuthStatus.authenticated && loggingIn) {
+              return from != null ? Uri.decodeComponent(from) : '/discover';
+            }
+            // 3) No redirect
+            return null;
+          },
+        );
+      },
       routes: [
         ShellRoute(
             builder: (ctx, state, child) {
@@ -240,7 +246,13 @@ final routerProvider = Provider<GoRouter>((ref) {
         GoRoute(
           path: '/auth',
           name: authRoute,
-          builder: (ctx, state) => const Authenticate(),
+          builder: (ctx, state) {
+            final from = state.uri.queryParameters['from'];
+            return Authenticate(
+              initShowSignIn: true,
+              redirectAfter: from, // ← pass it in
+            );
+          },
         ),
 
         /// AUTHENTICATION
@@ -342,10 +354,14 @@ final routerProvider = Provider<GoRouter>((ref) {
 
         // error page
         GoRoute(
-          path: '/auth-error',
-          name: errorRoute,
-          builder: (ctx, state) => ErrorPage(error: authAsync.error.toString()),
-        ),
+            path: '/auth-error',
+            name: errorRoute,
+            builder: (ctx, state) {
+              final error = state.uri.queryParameters['error'];
+              return ErrorPage(
+                error: error ?? 'An unknown error occurred.',
+              );
+            }),
       ]);
 });
 

@@ -553,16 +553,6 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   }
 }""");
 
-  static final getClassEventParticipants = gql("""
-query getClassEventParticipants(\$class_event_id: uuid) {
-  class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
-    user {
-      ${Fragments.userFragment}
-    }
-  }
-}
-  """);
-
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
       users(limit: \$limit, offset: \$offset) {
@@ -578,25 +568,6 @@ query getClassEventParticipants(\$class_event_id: uuid) {
       }
     }
       """);
-
-  static final getAcroRoleAggregatesFromClassEvent =
-      gql("""query GetAcroRoleAggregates(\$class_event_id: uuid!) {
-  total_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
-    aggregate {
-      count
-    }
-  }
-  base_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
-    aggregate {
-      count
-    }
-  }
-  flyer_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
-    aggregate {
-      count
-    }
-  }
-}""");
 
   static final getFollowedTeachers = gql("""
 query getFollowedTeachers(\$user_id: uuid!) {

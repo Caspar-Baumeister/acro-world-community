@@ -8,6 +8,7 @@ import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class ProfileBaseScreen extends ConsumerStatefulWidget {
@@ -56,6 +57,19 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                     ),
                   ),
                   child: AppBar(
+                    // leading backbutton
+                    leading: IconButton(
+                      icon: const Icon(Icons.arrow_back, color: Colors.black),
+                      onPressed: () {
+                        if (!GoRouter.of(context).canPop()) {
+                          // nothing to pop
+                          context.go('/community');
+                        } else {
+                          // pop the current screen
+                          GoRouter.of(context).pop();
+                        }
+                      },
+                    ),
                     backgroundColor: Colors.white,
                     title: Text(
                       widget.teacher.name ?? "Unknown",
