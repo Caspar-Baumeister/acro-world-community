@@ -130,7 +130,7 @@ class _CreatorStripeConnectButtonState
               onPressed: () => Navigator.pop(context),
               child: const Text("Cancel"),
             ),
-            StandardButton(
+            StandartButton(
               onPressed: () async {
                 if (selectedCountry != null && selectedCurrency != null) {
                   setState(() {

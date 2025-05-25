@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/bottom_navbar/creator_mode/creator_mode_primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/sections/created_events_by_me_section.dart';
@@ -12,7 +11,6 @@ class MyEventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const BasePage(
       makeScrollable: false,
-      bottomNavigationBar: CreatorModePrimaryBottomNavbar(selectedIndex: 1),
       child: CustomTabView(
         tabTitles: ["From you created", "You're taking part"],
         tabViews: [

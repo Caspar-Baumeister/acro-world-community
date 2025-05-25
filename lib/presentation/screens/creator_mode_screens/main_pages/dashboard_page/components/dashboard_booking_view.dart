@@ -27,7 +27,7 @@ class DashboardBookingView extends StatelessWidget {
                   top: AppPaddings.medium,
                   bottom: AppPaddings.medium),
               child: Center(
-                child: StandardButton(
+                child: StandartButton(
                     text: "Load more",
                     onPressed: () {
                       // fetch more bookings

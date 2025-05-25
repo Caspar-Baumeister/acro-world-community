@@ -17,11 +17,17 @@ class BookingInformationModal extends StatelessWidget {
   final String userId;
 
   void shareEvent(ClassEvent classEvent, ClassModel clas) {
+    String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
+    if (classEvent.id != null) {
+      deeplinkUrl += "?event=${classEvent.id!}";
+    }
     final String content = '''
 Hi, 
 I just booked ${clas.name} 
 on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)} 
 in the AcroWorld app
+
+You can join me here: $deeplinkUrl
 ''';
 
     Share.share(content);
@@ -51,7 +57,7 @@ in the AcroWorld app
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
-            StandardButton(
+            StandartButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
               isFilled: true,

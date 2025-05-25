@@ -1,12 +1,12 @@
 import 'package:acroworld/data/graphql/mutations.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
-class FavoriteClassMutationWidget extends StatefulWidget {
+class FavoriteClassMutationWidget extends ConsumerStatefulWidget {
   const FavoriteClassMutationWidget({
     super.key,
     required this.classId,
@@ -17,72 +17,80 @@ class FavoriteClassMutationWidget extends StatefulWidget {
   final bool initialFavorized;
 
   @override
-  State<FavoriteClassMutationWidget> createState() =>
+  ConsumerState<FavoriteClassMutationWidget> createState() =>
       _FavoriteClassMutationWidgetState();
 }
 
 class _FavoriteClassMutationWidgetState
-    extends State<FavoriteClassMutationWidget> {
-  late bool isFavorized;
+    extends ConsumerState<FavoriteClassMutationWidget> {
+  late bool _isFavorized;
+  bool _isLoading = false;
 
   @override
   void initState() {
-    isFavorized = widget.initialFavorized;
     super.initState();
+    _isFavorized = widget.initialFavorized;
+  }
+
+  Future<void> _toggleFavorite(String userId) async {
+    setState(() => _isLoading = true);
+    final client = GraphQLClientSingleton().client;
+    final document =
+        _isFavorized ? Mutations.unFavoritizeClass : Mutations.favoritizeClass;
+    final variables = <String, dynamic>{
+      'class_id': widget.classId,
+      if (_isFavorized) 'user_id': userId,
+    };
+
+    try {
+      final result = await client.mutate(
+        MutationOptions(document: document, variables: variables),
+      );
+      if (result.hasException) throw result.exception!;
+      setState(() => _isFavorized = !_isFavorized);
+      showSuccessToast(
+        _isFavorized ? "Added to favorites" : "Removed from favorites",
+      );
+    } catch (e) {
+      showErrorToast("Could not update favorites. Please try again.");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
-      child: Mutation(
-        options: MutationOptions(
-          document: isFavorized
-              ? Mutations.unFavoritizeClass
-              : Mutations.favoritizeClass,
-          onCompleted: (dynamic resultData) {
-            setState(() {
-              isFavorized = !isFavorized;
-            });
-            showSuccessToast(
-                "${isFavorized ? "Added to" : "Removed from"} favorites");
-          },
-        ),
-        builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
-                    {Object? optimisticResult})
-                runMutation,
-            QueryResult<dynamic>? result) {
-          if (result == null || result.hasException) {
-            // ignore: avoid_print
-            CustomErrorHandler.captureException(result?.exception.toString());
-            return Container();
-          }
-          if (result.isLoading) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Icon(
-                isFavorized ? Icons.favorite : Icons.favorite_border,
+    return ref.watch(userRiverpodProvider).when(
+          loading: () => const SizedBox(
+            width: 40,
+            height: 40,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+          data: (user) {
+            final userId = user?.id;
+            return SizedBox(
+              width: 40,
+              height: 40,
+              child: IconButton(
+                icon: _isLoading
+                    ? const SizedBox(
+                        width: 24,
+                        height: 24,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : Icon(
+                        _isFavorized ? Icons.favorite : Icons.favorite_border,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                onPressed: (userId == null || _isLoading)
+                    ? null
+                    : () => _toggleFavorite(userId),
+                tooltip:
+                    _isFavorized ? "Remove from favorites" : "Add to favorites",
               ),
             );
-          }
-
-          return IconButton(
-            icon: Icon(
-              isFavorized ? Icons.favorite : Icons.favorite_border,
-            ),
-            onPressed: () => isFavorized
-                ? runMutation({
-                    'class_id': widget.classId,
-                    'user_id': Provider.of<UserProvider>(context, listen: false)
-                        .activeUser!
-                        .id!
-                  })
-                : runMutation({
-                    'class_id': widget.classId,
-                  }),
-          );
-        },
-      ),
-    );
+          },
+        );
   }
 }

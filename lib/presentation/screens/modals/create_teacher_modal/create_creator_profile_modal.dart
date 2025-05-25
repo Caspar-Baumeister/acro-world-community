@@ -38,7 +38,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             ),
           ),
           const SizedBox(height: AppPaddings.medium),
-          StandardButton(
+          StandartButton(
             text: "Continue",
             onPressed: onPressed,
             loading: isLoading,

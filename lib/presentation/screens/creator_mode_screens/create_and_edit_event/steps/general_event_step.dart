@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
@@ -137,9 +136,9 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                                   color: CustomColors.successTextColor),
                     ),
                     const SizedBox(height: AppPaddings.medium),
-                    CustomButton(
-                      "Edit event description",
-                      () {
+                    StandartButton(
+                      text: "Edit event description",
+                      onPressed: () {
                         Navigator.push(
                           context,
                           EditDescriptionPageRoute(
@@ -220,7 +219,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
             children: [
               Consumer<EventCreationAndEditingProvider>(
                   builder: (context, provider, child) {
-                return StandardButton(
+                return StandartButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -229,7 +228,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 );
               }),
               const SizedBox(width: AppPaddings.medium),
-              StandardButton(
+              StandartButton(
                 onPressed: _onNext,
                 text: "Next",
                 isFilled: true,

@@ -1,79 +1,83 @@
 import 'package:acroworld/data/graphql/mutations.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
-class HeartMutationWidget extends StatelessWidget {
-  const HeartMutationWidget(
-      {super.key,
-      required this.isLiked,
-      required this.teacherLikes,
-      required this.setIsLiked,
-      required this.setTeacherLikes,
-      required this.teacherId,
-      this.size = 42});
+class HeartMutationWidget extends ConsumerWidget {
+  const HeartMutationWidget({
+    super.key,
+    required this.isLiked,
+    required this.teacherLikes,
+    required this.setIsLiked,
+    required this.setTeacherLikes,
+    required this.teacherId,
+    this.size = 42,
+  });
 
   final bool isLiked;
   final int teacherLikes;
-  final Function(bool liked) setIsLiked;
-  final Function(int likes) setTeacherLikes;
+  final void Function(bool liked) setIsLiked;
+  final void Function(int likes) setTeacherLikes;
   final String teacherId;
   final double size;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 40, maxWidth: 40),
-      child: Mutation(
-        options: MutationOptions(
-            document:
-                isLiked ? Mutations.unlikeTeacher : Mutations.likeTeacher),
-        builder: (MultiSourceResult<dynamic> Function(Map<String, dynamic>,
-                    {Object? optimisticResult})
-                runMutation,
-            QueryResult<dynamic>? result) {
-          return GestureDetector(
-              onTap: () {
-                isLiked
-                    ? runMutation({
-                        'teacher_id': teacherId,
-                        'user_id':
-                            Provider.of<UserProvider>(context, listen: false)
-                                .activeUser!
-                                .id!
-                      })
-                    : runMutation({
-                        'teacher_id': teacherId,
-                      });
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  setTeacherLikes(teacherLikes + (isLiked ? -1 : 1));
-                });
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the current user
+    final userAsync = ref.watch(userRiverpodProvider);
 
-                Future.delayed(const Duration(milliseconds: 200), () {
-                  setIsLiked(!isLiked);
-                });
-
-                //eventBus.fire(ChangeLikeEvent());
-              },
-              child: HeartWidget(
-                isLiked: isLiked,
-                likes: teacherLikes,
-                size: size,
-              ));
-        },
+    return userAsync.when(
+      loading: () => const SizedBox(
+        width: 40,
+        height: 40,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
       ),
+      error: (e, st) => const SizedBox.shrink(),
+      data: (user) {
+        final userId = user?.id;
+        return GestureDetector(
+          onTap: () async {
+            final client = GraphQLClientSingleton().client;
+            // choose mutation document
+            final doc =
+                isLiked ? Mutations.unlikeTeacher : Mutations.likeTeacher;
+            // build variables
+            final vars = <String, dynamic>{
+              'teacher_id': teacherId,
+              if (!isLiked && userId != null) 'user_id': userId,
+            };
+            // run mutation
+            await client.mutate(
+              MutationOptions(
+                document: doc,
+                variables: vars,
+              ),
+            );
+            // optimistic UI updates
+            setTeacherLikes(teacherLikes + (isLiked ? -1 : 1));
+            setIsLiked(!isLiked);
+          },
+          child: HeartWidget(
+            isLiked: isLiked,
+            likes: teacherLikes,
+            size: size,
+          ),
+        );
+      },
     );
   }
 }
 
 class HeartWidget extends StatelessWidget {
-  const HeartWidget(
-      {super.key,
-      required this.isLiked,
-      required this.likes,
-      required this.size});
+  const HeartWidget({
+    super.key,
+    required this.isLiked,
+    required this.likes,
+    required this.size,
+  });
 
   final bool isLiked;
   final int likes;
@@ -98,11 +102,12 @@ class HeartWidget extends StatelessWidget {
           child: Text(
             likes.toString(),
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                fontWeight: FontWeight.w500,
-                fontSize: 13,
-                color: isLiked ? Colors.white : CustomColors.primaryColor),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13,
+                  color: isLiked ? Colors.white : CustomColors.primaryColor,
+                ),
           ),
-        )
+        ),
       ],
     );
   }

@@ -5,235 +5,221 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class ConfirmEmailPage extends StatefulWidget {
+class ConfirmEmailPage extends ConsumerStatefulWidget {
   const ConfirmEmailPage({super.key});
 
   @override
-  State<ConfirmEmailPage> createState() => _ConfirmEmailPageState();
+  ConsumerState<ConfirmEmailPage> createState() => _ConfirmEmailPageState();
 }
 
-class _ConfirmEmailPageState extends State<ConfirmEmailPage> {
+class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
   int _timer = 0;
   Timer? _countdownTimer;
   bool _isResendDisabled = false;
-  bool isRefreshingStatusLoading = false;
+  bool _isRefreshing = false;
 
-  bool isLoaded = false;
-
-  TextEditingController codeController = TextEditingController();
+  final codeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    sendVerificationEmail();
+    _sendVerificationEmail();
   }
 
-  Future<bool> sendVerificationEmail() async {
-    bool success = await UserService().sendEmailVerification();
-    if (success) {
-      startTimer();
-    }
-    return success;
+  Future<void> _sendVerificationEmail() async {
+    final success = await UserService().sendEmailVerification();
+    if (success) _startTimer();
   }
 
-  Future<bool> resendVerificationEmail() async {
-    bool success = await UserService().resendEmailVerification();
-    if (success) {
-      startTimer();
-    }
-    return success;
+  Future<void> _resendVerificationEmail() async {
+    final success = await UserService().resendEmailVerification();
+    if (success) _startTimer();
   }
 
-  void startTimer() {
+  void _startTimer() {
+    _countdownTimer?.cancel();
     setState(() {
       _timer = 10;
       _isResendDisabled = true;
     });
-    _countdownTimer?.cancel();
-    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        if (_timer > 0) {
-          _timer--;
-        } else {
-          _isResendDisabled = false;
-          _countdownTimer?.cancel();
-        }
-      });
-    });
-  }
-
-  Future<void> refreshStatus(UserProvider userProvider) async {
-    setState(() {
-      isRefreshingStatusLoading = true;
-    });
-    userProvider.checkEmailVerification().then((value) {
-      if (value == true) {
-        return Navigator.of(context).pushAndRemoveUntil(
-          ProfilePageRoute(),
-          (Route<dynamic> route) => false,
-        );
+    _countdownTimer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (_timer > 0) {
+        setState(() => _timer--);
+      } else {
+        t.cancel();
+        setState(() => _isResendDisabled = false);
       }
-    }).then((value) {
-      setState(() {
-        isRefreshingStatusLoading = false;
-      });
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    UserProvider userProvider = Provider.of<UserProvider>(context);
+  Future<void> _refreshStatus() async {
+    setState(() => _isRefreshing = true);
+    try {
+      // Force a refetch of the userProvider
+      final updatedUser = await ref.refresh(userRiverpodProvider.future);
+      if (updatedUser?.isEmailVerified == true) {
+        // Clear cache and go to profile
+        ref.invalidate(userRiverpodProvider);
+        context.goNamed(profileRoute);
+        return;
+      }
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+    } finally {
+      if (mounted) setState(() => _isRefreshing = false);
+    }
+  }
 
-    return BasePage(
-      appBar: const CustomAppbarSimple(title: "Confirm your email"),
-      makeScrollable: false,
-      child: RefreshIndicator(
-        onRefresh: () async => refreshStatus(userProvider),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPaddings.large,
-            vertical: AppPaddings.large,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'We have sent you an email to ${userProvider.activeUser?.email.toString()}. Click on the confirmation link in the email to continue. You need to confirm the email before you can create events.',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: CustomColors.secondaryTextColor),
-                textAlign: TextAlign.center,
-              ),
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // inputfield for code
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width * 0.6,
-                            child: InputFieldComponent(
-                              controller: codeController,
-                              footnoteText: "Enter the code from the email",
-                              isFootnoteError: false,
-                            ),
-                          ),
-                          SizedBox(width: AppPaddings.small),
-                          // button with paste icon to paste code from clipboard
-                          IconButton(
-                            icon: const Icon(Icons.paste),
-                            onPressed: () async {
-                              codeController.text =
-                                  await Clipboard.getData('text/plain')
-                                      .then((value) => value?.text ?? "");
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: AppPaddings.medium),
-                      // button to confirm email with code
-                      StandardButton(
-                        text: "Confirm email",
-                        isFilled: true,
-                        onPressed: () async {
-                          setState(() {
-                            isLoaded = true;
-                          });
-                          await verifyCode();
-                          setState(() {
-                            isLoaded = false;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              if (_isResendDisabled)
-                Text(
-                  'Wait $_timer seconds before you can resend the email.',
-                  style:
-                      const TextStyle(color: CustomColors.secondaryTextColor),
-                ),
-              const Padding(
-                padding: EdgeInsets.only(bottom: AppPaddings.large),
-              ),
-              StandardButton(
-                text: "Resend email",
-                onPressed: _isResendDisabled
-                    ? () => showErrorToast(
-                        "Please wait $_timer more seconds before sending another verification email")
-                    : () async {
-                        bool success = await resendVerificationEmail();
-                        if (!success) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text(
-                                    'Failed to send email. Please try again later.')),
-                          );
-                        }
-                      },
-              ),
-              const SizedBox(height: AppPaddings.medium),
-              StandardButton(
-                text: "Refresh status",
-                onPressed: () async => refreshStatus(userProvider),
-                loading: isRefreshingStatusLoading,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  Future<void> _verifyCode() async {
+    final code = codeController.text.trim();
+    if (code.isEmpty) {
+      showErrorToast("Please enter the code from the email");
+      return;
+    }
+
+    setState(() => _isRefreshing = true);
+    try {
+      final ok = await UserService().verifyCode(code);
+      if (ok == true) {
+        showSuccessToast("Email verified successfully");
+        // Invalidate so new "verified" user is fetched downstream
+
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          Navigator.pop(context);
+          ref.invalidate(userRiverpodProvider);
+          ref.invalidate(userNotifierProvider);
+        });
+      } else {
+        showErrorToast("Wrong verification code");
+      }
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+      showErrorToast("Error verifying email");
+    } finally {
+      if (mounted) setState(() => _isRefreshing = false);
+    }
   }
 
   @override
   void dispose() {
     _countdownTimer?.cancel();
+    codeController.dispose();
     super.dispose();
   }
 
-  // function when verification code is entered
-  Future<void> verifyCode() async {
-    if (codeController.text.isEmpty) {
-      showErrorToast("Please enter the code from the email");
-      return;
-    }
-    try {
-      UserService().verifyCode(codeController.text).then((value) {
-        if (value == null || value == false) {
-          // error toast
-          showErrorToast("Wrong verification code");
-        } else {
-          // success toast
-          showSuccessToast("Email verified successfully");
-          // Send to profile page
-          Navigator.of(context).push(ProfilePageRoute());
+  @override
+  Widget build(BuildContext context) {
+    final userAsync = ref.watch(userRiverpodProvider);
+
+    return userAsync.when(
+      loading: () => const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      ),
+      error: (err, st) {
+        CustomErrorHandler.captureException(err.toString(), stackTrace: st);
+        return Scaffold(
+          body: Center(child: Text("Failed to load user: $err")),
+        );
+      },
+      data: (user) {
+        // If not signed in or somehow no user, go back to auth
+        if (user == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            Provider.of<UserProvider>(context, listen: false)
-                .setUserFromToken();
+            context.goNamed('auth');
           });
+          return const SizedBox.shrink();
         }
-      });
-    } catch (e) {
-      CustomErrorHandler.captureException(e.toString());
-      showErrorToast("Error verifying email");
-    }
+
+        return BasePage(
+          appBar: const CustomAppbarSimple(title: "Confirm your email"),
+          makeScrollable: false,
+          child: RefreshIndicator(
+            onRefresh: _refreshStatus,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppPaddings.large,
+                vertical: AppPaddings.large,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'We have sent you an email to ${user.email}. '
+                    'Click on the confirmation link in the email to continue. '
+                    'You need to confirm the email before you can create events.',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(color: CustomColors.secondaryTextColor),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 32),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.6,
+                        child: InputFieldComponent(
+                          controller: codeController,
+                          footnoteText: "Enter the code from the email",
+                          isFootnoteError: false,
+                        ),
+                      ),
+                      const SizedBox(width: AppPaddings.small),
+                      IconButton(
+                        icon: const Icon(Icons.paste),
+                        onPressed: () async {
+                          final clip = await Clipboard.getData('text/plain');
+                          codeController.text = clip?.text ?? '';
+                        },
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: AppPaddings.medium),
+                  StandartButton(
+                    text: "Confirm email",
+                    isFilled: true,
+                    loading: _isRefreshing,
+                    onPressed: _verifyCode,
+                  ),
+                  const SizedBox(height: AppPaddings.medium),
+                  if (_isResendDisabled)
+                    Text(
+                      'Wait $_timer seconds before you can resend the email.',
+                      style: const TextStyle(
+                          color: CustomColors.secondaryTextColor),
+                    ),
+                  const SizedBox(height: AppPaddings.small),
+                  StandartButton(
+                    text: "Resend email",
+                    onPressed: _isResendDisabled
+                        ? () => showErrorToast(
+                            "Please wait $_timer more seconds before resending")
+                        : _resendVerificationEmail,
+                  ),
+                  const SizedBox(height: AppPaddings.small),
+                  StandartButton(
+                    text: "Refresh status",
+                    loading: _isRefreshing,
+                    onPressed: _refreshStatus,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }

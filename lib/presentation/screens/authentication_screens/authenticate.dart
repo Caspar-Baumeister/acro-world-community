@@ -3,9 +3,10 @@ import 'package:acroworld/presentation/screens/authentication_screens/signup_scr
 import 'package:flutter/material.dart';
 
 class Authenticate extends StatefulWidget {
-  const Authenticate({super.key, this.initShowSignIn});
+  const Authenticate({super.key, this.initShowSignIn, this.redirectAfter});
 
   final bool? initShowSignIn;
+  final String? redirectAfter;
 
   @override
   State<Authenticate> createState() => _AuthenticateState();
@@ -28,10 +29,13 @@ class _AuthenticateState extends State<Authenticate> {
 
   @override
   Widget build(BuildContext context) {
+    print("With redirect: ${widget.redirectAfter}");
     if (showSignIn) {
-      return SignIn(toggleView: toggleView);
+      return SignIn(
+          toggleView: toggleView, redirectAfter: widget.redirectAfter);
     } else {
-      return SignUp(toggleView: toggleView);
+      return SignUp(
+          toggleView: toggleView, redirectAfter: widget.redirectAfter);
     }
   }
 }

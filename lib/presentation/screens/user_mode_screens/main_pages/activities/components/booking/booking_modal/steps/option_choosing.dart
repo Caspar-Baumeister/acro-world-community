@@ -67,7 +67,7 @@ class OptionChoosingStep extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-        StandardButton(
+        StandartButton(
           text: "Continue",
           onPressed: () {
             if (currentOption != null) {

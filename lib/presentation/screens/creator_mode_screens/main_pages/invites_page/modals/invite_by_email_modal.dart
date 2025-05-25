@@ -26,7 +26,7 @@ class InviteByEmailModal extends StatelessWidget {
             textInputAction: TextInputAction.done,
           ),
           const SizedBox(height: AppPaddings.medium),
-          StandardButton(
+          StandartButton(
             text: "Invite",
             onPressed: () async {
               if (emailController.text.isNotEmpty) {

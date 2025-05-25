@@ -1,7 +1,8 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/components/buttons/place_button/place_button.dart';
-import 'package:acroworld/routing/routes/page_routes/map_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
   const CalendarAppBar({super.key})
@@ -21,8 +22,8 @@ class CalendarAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           IconButton(
-            onPressed: () => Navigator.of(context).push(
-              MapPageRoute(),
+            onPressed: () => context.pushNamed(
+              mapRoute,
             ),
             icon: const Icon(Icons.map_outlined),
           ),

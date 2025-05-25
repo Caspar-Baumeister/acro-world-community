@@ -3,10 +3,11 @@ import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_card.dart';
-import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ClassOccurenceListView extends StatefulWidget {
@@ -62,8 +63,12 @@ class _ClassOccurenceListViewState extends State<ClassOccurenceListView> {
                     return ClassOccurenceCard(
                       classEvent: classEvent,
                       onViewBookings: () {
-                        Navigator.of(context).push(ClassBookingSummaryPageRoute(
-                            classEventId: classEvent.id!));
+                        context.pushNamed(
+                          classBookingSummaryRoute,
+                          pathParameters: {
+                            'classEventId': classEvent.id!,
+                          },
+                        );
                       },
                       onCancel: () async {
                         // cancel class event

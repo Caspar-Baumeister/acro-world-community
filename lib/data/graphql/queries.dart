@@ -168,21 +168,13 @@ class_event_bookings_aggregate(where: {status: {_eq: "Confirmed"}, class_event: 
   static final getTeachersPageableQuery = gql("""
   query GetTeachersPageable(\$limit: Int, \$offset: Int, \$where: teachers_bool_exp!) {
     teachers(limit: \$limit, offset: \$offset, where: \$where, order_by: { name: asc }) {
-      id
-      name
-      user_id
-      confirmation_status
+      
       user_likes_aggregate {
         aggregate {
           count
         }
       }
-      images {
-        image {
-          url
-        }
-        is_profile_picture
-      }
+       ${Fragments.teacherFragmentAllInfo}
     }
   }
 """);
@@ -478,17 +470,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getTeacherForList = gql("""
     query getTeacherForList(\$user_id: uuid, \$search: String!) {
       teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
+        ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
         }
@@ -503,18 +485,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   static final getTeacherForListWithoutUserID = gql("""
     query getTeacherForList(\$search: String!) {
       teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
-       
+         ${Fragments.teacherFragmentAllInfo}
         user_likes_aggregate {
           aggregate {
             count
@@ -528,17 +499,7 @@ query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: 
   me {
     followed_teacher(order_by: {created_at: desc}, where: {teacher: {confirmation_status: {_eq: Confirmed}}, _and: {teacher: {name: {_ilike: \$search}}}}) {
       teacher {
-        id
-        location_name
-        name
-        type
-        images(where: {is_profile_picture: {_eq: true}}) {
-          image {
-            url
-          }
-          is_profile_picture
-        }
-        is_organization
+        ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
         }
@@ -592,16 +553,6 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   }
 }""");
 
-  static final getClassEventParticipants = gql("""
-query getClassEventParticipants(\$class_event_id: uuid) {
-  class_events_participants(where: {class_event_id: {_eq: \$class_event_id}}) {
-    user {
-      ${Fragments.userFragment}
-    }
-  }
-}
-  """);
-
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
       users(limit: \$limit, offset: \$offset) {
@@ -617,25 +568,6 @@ query getClassEventParticipants(\$class_event_id: uuid) {
       }
     }
       """);
-
-  static final getAcroRoleAggregatesFromClassEvent =
-      gql("""query GetAcroRoleAggregates(\$class_event_id: uuid!) {
-  total_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}}) {
-    aggregate {
-      count
-    }
-  }
-  base_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "dc321f52-fce9-4b00-bef6-e59fb05f4624"}}}) {
-    aggregate {
-      count
-    }
-  }
-  flyer_aggregate: class_events_participants_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user: {acro_role_id: {_eq: "83a6536f-53ba-44d2-80d9-9842375ebe8b"}}}) {
-    aggregate {
-      count
-    }
-  }
-}""");
 
   static final getFollowedTeachers = gql("""
 query getFollowedTeachers(\$user_id: uuid!) {

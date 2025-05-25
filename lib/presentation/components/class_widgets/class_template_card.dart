@@ -1,8 +1,9 @@
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/routing/routes/page_routes/single_class_id_wrapper_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ClassTemplateCard extends StatelessWidget {
   const ClassTemplateCard({
@@ -16,12 +17,15 @@ class ClassTemplateCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: indexClass.urlSlug != null || indexClass.id != null
-          ? () => Navigator.of(context).push(
-                SingleEventIdWrapperPageRoute(
-                  urlSlug: indexClass.urlSlug,
-                  classId: indexClass.id,
-                ),
-              )
+          ? () {
+              Map<String, String> pathParameters = {};
+              if (indexClass.urlSlug != null) {
+                pathParameters["urlSlug"] = indexClass.urlSlug!;
+              }
+
+              context.pushNamed(singleEventWrapperRoute,
+                  pathParameters: pathParameters);
+            }
           : () => showErrorToast("This class is not available anymore"),
       child: ListTile(
         leading: indexClass.imageUrl != null

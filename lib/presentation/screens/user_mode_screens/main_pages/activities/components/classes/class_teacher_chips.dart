@@ -1,8 +1,9 @@
 import 'package:acroworld/data/models/teacher_model.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_teacher_query.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ClassTeacherChips extends StatelessWidget {
   const ClassTeacherChips({super.key, required this.classTeacherList});
@@ -22,12 +23,18 @@ class ClassTeacherChips extends StatelessWidget {
                     padding: const EdgeInsets.only(right: 5.0),
                     child: GestureDetector(
                       // Hier muss auf ein teacher query geschickte werden, der sich den teacher holt und dann auf teacher screen leitet
-                      onTap: () => teacher.id != null
-                          ? Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    SingleTeacherQuery(teacherId: teacher.id!),
-                              ),
+                      onTap: () => teacher.slug != null
+                          // ? Navigator.of(context).push(
+                          //     MaterialPageRoute(
+                          //       builder: (context) =>
+                          //           SingleTeacherQuery(teacherId: teacher.id!),
+                          //     ),
+                          //   )
+                          ? context.pushNamed(
+                              partnerSlugRoute,
+                              pathParameters: {
+                                "slug": teacher.slug!,
+                              },
                             )
                           : null,
                       child: Chip(

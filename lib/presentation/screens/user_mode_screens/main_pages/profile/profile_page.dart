@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/settings_drawer.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_body.dart';
@@ -22,7 +21,7 @@ class ProfilePage extends StatelessWidget {
         elevation: 0,
       ),
       makeScrollable: false,
-      bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 3),
+      // bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 3),
       child: const ProfileBody(),
     );
   }

@@ -1,11 +1,12 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/filter_page_route.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/decorators.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -59,7 +60,9 @@ class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ? CustomColors.accentColor
                   : CustomColors.inactiveBorderColor),
           onPressed: () {
-            Navigator.of(context).push(FilterPageRoute());
+            context.pushNamed(
+              filterRoute,
+            );
           },
         ),
       ],

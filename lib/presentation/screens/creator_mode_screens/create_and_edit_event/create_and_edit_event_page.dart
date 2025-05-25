@@ -4,26 +4,33 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
+import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart' as provider;
 
-class CreateAndEditEventPage extends StatefulWidget {
+class CreateAndEditEventPage extends ConsumerStatefulWidget {
   const CreateAndEditEventPage({super.key, required this.isEditing});
 
   // can either edit the existing event or use it as a template to create a new event
   final bool isEditing;
 
   @override
-  State<CreateAndEditEventPage> createState() => _CreateAndEditEventPageState();
+  ConsumerState<CreateAndEditEventPage> createState() =>
+      _CreateAndEditEventPageState();
 }
 
-class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
+class _CreateAndEditEventPageState
+    extends ConsumerState<CreateAndEditEventPage> {
   @override
   void initState() {
     super.initState();
@@ -32,7 +39,9 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
   @override
   Widget build(BuildContext context) {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+        provider.Provider.of<EventCreationAndEditingProvider>(context);
+
+    final userAsync = ref.watch(userRiverpodProvider);
 
     final List<Widget> pages = [
       // second page
@@ -58,7 +67,7 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
           isEditing: widget.isEditing,
           onFinished: () async {
             final creatorProvider =
-                Provider.of<CreatorProvider>(context, listen: false);
+                provider.Provider.of<CreatorProvider>(context, listen: false);
 
             if (creatorProvider.activeTeacher == null ||
                 creatorProvider.activeTeacher!.id == null) {
@@ -75,6 +84,11 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
               await eventCreationAndEditingProvider
                   .updateClass(creatorProvider.activeTeacher!.id!);
             } else {
+              // print the current user role
+              print(
+                  "Current user role: ${provider.Provider.of<UserRoleProvider>(context, listen: false).isCreator}");
+              print(
+                  "Tokensigleton is creator: ${TokenSingletonService().getUserRoles()}");
               await eventCreationAndEditingProvider
                   .createClass(creatorProvider.activeTeacher!.id!);
             }
@@ -84,9 +98,12 @@ class _CreateAndEditEventPageState extends State<CreateAndEditEventPage> {
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).pushReplacement(MyEventsPageRoute());
-                Provider.of<TeacherEventsProvider>(context, listen: false)
-                    .fetchMyEvents(isRefresh: true);
+                context.goNamed(myEventsRoute);
+                if (userAsync.value?.id != null) {
+                  provider.Provider.of<TeacherEventsProvider>(context,
+                          listen: false)
+                      .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+                }
               });
             } else {
               // if not successful, show an error message

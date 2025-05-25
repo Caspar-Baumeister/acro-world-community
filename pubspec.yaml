@@ -12,6 +12,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  url_strategy: ^0.2.0
+  stripe_platform_interface: 11.4.0
   cupertino_icons: ^1.0.2
   provider: ^6.0.1
   shared_preferences: ^2.0.11
@@ -55,6 +59,9 @@ dependencies:
   # for quill_html_editor to work:
   webview_flutter_wkwebview: ^3.18.1
   flag: ^7.0.0
+  go_router: ^15.0.0
+  riverpod: ^2.6.1
+  flutter_riverpod: ^2.6.1
 
 dev_dependencies:
   flutter_test:
@@ -77,6 +84,10 @@ scripts:
   version: sh ./scripts/version.sh
   run-dev: flutter run --flavor dev --dart-define=app.flavor=dev
   run-prod: flutter run --flavor prod --dart-define=app.flavor=prod
+
+  run:web:dev: flutter run -d chrome --dart-define=app.flavor=dev
+  run:web:prod: flutter run -d chrome --dart-define=app.flavor=prod
+
   build-prod: flutter build api --flavor prod --dart-define=app.flavor=prod
 
   run-android-dev: flutter run --dart-define=app.flavor=dev

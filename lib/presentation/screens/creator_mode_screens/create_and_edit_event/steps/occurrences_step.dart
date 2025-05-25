@@ -29,7 +29,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
         Provider.of<EventCreationAndEditingProvider>(context);
     return Column(
       children: [
-        StandardButton(
+        StandartButton(
             text: 'Add Occurences',
             onPressed: () {
               Navigator.of(context).push(
@@ -119,7 +119,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
           children: [
             Consumer<EventCreationAndEditingProvider>(
                 builder: (context, provider, child) {
-              return StandardButton(
+              return StandartButton(
                 onPressed: () {
                   provider.setPage(0);
                   setState(() {});
@@ -129,7 +129,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
               );
             }),
             const SizedBox(width: AppPaddings.medium),
-            StandardButton(
+            StandartButton(
               onPressed: _onNext,
               text: "Next",
               isFilled: true,
