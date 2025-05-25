@@ -77,7 +77,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                 !loggingIn &&
                 !loc.startsWith('/forgot-password')) {
               final encoded = Uri.encodeComponent('$loc?${state.uri.query}');
-              print("encoded: $encoded");
               return '/auth?from=$encoded';
             }
             // 2) Just logged in and you’re on the “/auth” page → go back to `from` or to discover

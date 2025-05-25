@@ -480,6 +480,14 @@ mutation confirmPayment(\$payment_intent_id : uuid!) {
     }
   """);
 
+  static final updateOrInsertFcmToken = gql("""
+   mutation UpdateFcmToken(\$fcmToken: String!, \$userId: uuid!) {
+      update_users(_set: {fcm_token: \$fcmToken}, where: {id: {_eq: \$userId}}) {
+        affected_rows
+      }
+    }
+  """);
+
   static final bookmarkEvent = gql("""
   mutation bookmarkEvent(\$event_id: uuid) {
   insert_event_bookmarks(objects: {event_id:  \$event_id}) {

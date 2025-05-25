@@ -55,6 +55,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
       if (response['error'] == false) {
         // TokenSingletonService.login should have stored the token.
         final tok = await TokenSingletonService().getToken();
+        print("Login succeeded, token: $tok");
         if (tok == null) {
           throw Exception('Login succeeded but no token was saved.');
         }

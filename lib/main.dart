@@ -2,6 +2,7 @@ import 'package:acroworld/App.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/firebase_options.dart';
+import 'package:acroworld/notification_initializer.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/version_to_old_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -109,7 +110,7 @@ initMain() async {
   }
 
   runApp(isValid
-      ? ProviderScope(child: const App())
+      ? ProviderScope(child: NotificationInitializer(child: const App()))
       : VersionToOldPage(
           currentVersion: currentVersion, minVersion: minVersion));
 }
