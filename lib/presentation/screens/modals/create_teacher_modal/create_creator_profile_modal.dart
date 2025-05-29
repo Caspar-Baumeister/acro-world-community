@@ -2,13 +2,16 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:provider/provider.dart';
 
 class CreateCreatorProfileModal extends StatefulWidget {
   const CreateCreatorProfileModal({super.key});
@@ -42,6 +45,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             text: "Continue",
             onPressed: onPressed,
             loading: isLoading,
+            isFilled: true,
           ),
         ],
       ),
@@ -91,8 +95,10 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
         // use the teacher role for the creation of a creator profile
         final graphQLSingleton = GraphQLClientSingleton();
         graphQLSingleton.updateClient(true);
+        Provider.of<UserRoleProvider>(context, listen: false)
+            .setIsCreator(true);
         // navigate to the create creator profile page
-        Navigator.of(context).push(CreateCreatorProfilePageRoute());
+        context.goNamed(creatorProfileRoute);
       });
     } else {
       // Send error

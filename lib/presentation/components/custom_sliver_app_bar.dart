@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:acroworld/presentation/components/images/fullscreen_image_wrapper.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -24,6 +25,11 @@ class CustomSliverAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // same as before
+    final expandedHeight = kIsWeb ? 550.0 : appBarExpandedHeight;
+
+    // dial this down to taste:
+    const double blurSigma = 5.0;
     return SliverAppBar(
       actions: actions,
       centerTitle: false,
@@ -47,49 +53,67 @@ class CustomSliverAppBar extends StatelessWidget {
         },
       ),
       iconTheme: const IconThemeData(color: Colors.white),
-      expandedHeight: appBarExpandedHeight,
+      expandedHeight: !kIsWeb ? appBarExpandedHeight : 550.0,
       pinned: true,
       stretch: true,
       flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const <StretchMode>[
-          StretchMode.zoomBackground,
-        ],
-        // title: Text(clas.name ?? "",
-        //     maxLines: 3, style: HEADER_1_TEXT_STYLE),
-        background: (tag != null)
-            ? FullscreenImageWrapper(
-                imgChild: CachedNetworkImage(
-                  fit: BoxFit.cover,
-                  height: 52.0,
-                  placeholder: (context, url) => Container(
-                    color: Colors.black12,
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: Colors.black12,
-                    child: const Icon(
-                      Icons.error,
-                      color: Colors.red,
+        stretchModes: const [StretchMode.zoomBackground],
+        background: kIsWeb
+            ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  // 1) very lightly blurred, full‐bleed background
+                  ImageFiltered(
+                    imageFilter: ImageFilter.blur(
+                      sigmaX: blurSigma,
+                      sigmaY: blurSigma,
+                    ),
+                    child: CachedNetworkImage(
+                      imageUrl: imgUrl,
+                      fit: BoxFit.cover,
+                      placeholder: (_, __) => Container(color: Colors.black12),
+                      errorWidget: (_, __, ___) => Container(
+                          color: Colors.black12,
+                          child: Icon(Icons.error, color: Colors.red)),
                     ),
                   ),
-                  imageUrl: imgUrl,
-                ),
-                tag: tag!,
-                imgUrl: imgUrl)
-            : CachedNetworkImage(
-                fit: BoxFit.cover,
-                height: 52.0,
-                placeholder: (context, url) => Container(
-                  color: Colors.black12,
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.black12,
-                  child: const Icon(
-                    Icons.error,
-                    color: Colors.red,
+
+                  // 2) square, non-blurred image exactly as tall as the bar
+                  Center(
+                    child: SizedBox(
+                      height: expandedHeight,
+                      width: expandedHeight, // makes it a perfect square
+                      child: CachedNetworkImage(
+                        imageUrl: imgUrl,
+                        fit: BoxFit.cover,
+                        placeholder: (_, __) =>
+                            Container(color: Colors.black12),
+                        errorWidget: (_, __, ___) => Container(
+                            color: Colors.black12,
+                            child: Icon(Icons.error, color: Colors.red)),
+                      ),
+                    ),
                   ),
-                ),
-                imageUrl: imgUrl,
-              ),
+                ],
+              )
+            : (tag != null
+                // your existing FullscreenImageWrapper branch
+                ? FullscreenImageWrapper(
+                    imgChild: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      height: !kIsWeb ? 52.0 : 550.0,
+                      /* … */
+                      imageUrl: imgUrl,
+                    ),
+                    tag: tag!,
+                    imgUrl: imgUrl,
+                  )
+                : CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    height: !kIsWeb ? 52.0 : 550.0,
+                    /* … */
+                    imageUrl: imgUrl,
+                  )),
       ),
     );
   }

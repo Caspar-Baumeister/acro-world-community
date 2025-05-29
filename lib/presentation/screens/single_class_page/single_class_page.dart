@@ -128,30 +128,35 @@ At: ${clas.locationName}
         return Scaffold(
           bottomNavigationBar:
               widget.isCreator ? null : _buildBottomHoverButton(billingTeacher),
-          body: CustomScrollView(
-            controller: _scrollController,
-            slivers: [
-              CustomSliverAppBar(
-                actions: actions,
-                percentageCollapsed: _percentageCollapsed,
-                headerText: widget.clas.name ?? "",
-                imgUrl: widget.clas.imageUrl ?? "",
-                tag: widget.clas.imageUrl,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: Responsive.isDesktop(context)
-                      ? const EdgeInsets.symmetric(
-                          horizontal: AppPaddings.large,
-                        )
-                      : EdgeInsets.all(0),
-                  child: SingleClassBody(
-                    classe: widget.clas,
-                    classEvent: widget.classEvent,
+          body: Padding(
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(horizontal: 100.0)
+                : const EdgeInsets.all(0.0),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                CustomSliverAppBar(
+                  actions: actions,
+                  percentageCollapsed: _percentageCollapsed,
+                  headerText: widget.clas.name ?? "",
+                  imgUrl: widget.clas.imageUrl ?? "",
+                  tag: widget.clas.imageUrl,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: Responsive.isDesktop(context)
+                        ? const EdgeInsets.symmetric(
+                            horizontal: AppPaddings.large,
+                          )
+                        : EdgeInsets.all(0),
+                    child: SingleClassBody(
+                      classe: widget.clas,
+                      classEvent: widget.classEvent,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
