@@ -1,7 +1,7 @@
 // lib/presentation/screens/settings/delete_account.dart
 
+import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,7 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
       showSuccessToast("Your account was deleted");
       // GoRouter redirect to /auth will happen automatically via authProvider
     } on AuthException catch (e) {
-      showErrorToast(e.globalError);
+      showErrorToast(e.error);
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
       showErrorToast("Something went wrong. Please try again later.");

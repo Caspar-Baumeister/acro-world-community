@@ -1,110 +1,117 @@
-enum GraphQLErrorCode {
-  INVALID_EMAIL,
-  MISSING_PASSWORD,
-  INVALID_PASSWORD,
-  EMAIL_NOT_FOUND,
-  DEFAULT_ERROR
-}
+import 'dart:convert';
 
-Map<String, String> parseGraphQLError(dynamic response) {
-  // Initialize an errorMap with empty strings
-  Map<String, String> errorMap = {
-    'emailError': '',
-    'passwordError': '',
-    'error': ''
-  };
+/// Given a decoded GraphQL response map, returns the most user-friendly
+/// error it can find, with the first letter capitalized.
+String extractGraphqlError(Map<String, dynamic> response) {
+  final errors = response['errors'];
+  if (errors is! List || errors.isEmpty) {
+    return 'Unknown error occurred';
+  }
 
-  // If response contains "errors", loop through them
-  if (response['errors'] != null && response['errors'].isNotEmpty) {
-    for (var error in response['errors']) {
-      final errorCode = _getCodeFromError(error);
-      final errorMessage = _getErrorMessage(errorCode);
-
-      // Assign to emailError, passwordError, or generic error
-      if (errorCode == GraphQLErrorCode.INVALID_EMAIL ||
-          errorCode == GraphQLErrorCode.EMAIL_NOT_FOUND) {
-        errorMap['emailError'] = errorMessage;
-      } else if (errorCode == GraphQLErrorCode.MISSING_PASSWORD ||
-          errorCode == GraphQLErrorCode.INVALID_PASSWORD) {
-        errorMap['passwordError'] = errorMessage;
-      } else {
-        errorMap['error'] = errorMessage;
-      }
+  final msgs = <String>[];
+  for (final raw in errors) {
+    if (raw is Map<String, dynamic>) {
+      final parsed = _parseSingleError(raw);
+      if (parsed.isNotEmpty) msgs.add(parsed);
     }
   }
 
-  return errorMap;
+  return msgs.isNotEmpty ? msgs.join('; ') : 'Unknown error occurred';
 }
 
-String _getErrorMessage(GraphQLErrorCode errorCode) {
-  switch (errorCode) {
-    case GraphQLErrorCode.INVALID_EMAIL:
-      return "Email is invalid";
-    case GraphQLErrorCode.MISSING_PASSWORD:
-      return "Password is missing";
-    case GraphQLErrorCode.EMAIL_NOT_FOUND:
-      return "Email not found";
-    case GraphQLErrorCode.INVALID_PASSWORD:
-      return "Password is invalid";
-    default:
-      return "An unknown error occurred";
-  }
-}
+String _parseSingleError(Map<String, dynamic> error) {
+  final ext = error['extensions'];
+  final candidates = <String>[];
 
-GraphQLErrorCode _getCodeFromError(Map<String, dynamic> error) {
-  // Attempt to parse code from 'extensions.exception.thrownValue.message'
-  final codeString =
-      error['extensions']?['exception']?['thrownValue']?['message'];
-  if (codeString != null) {
-    return _mapStringToErrorCode(codeString);
+  // 1) Look for a JSON blob in .message or in any stacktrace line
+  if (error['message'] is String) candidates.add(error['message']);
+  if (ext is Map<String, dynamic> && ext['stacktrace'] is List) {
+    for (final l in ext['stacktrace']) {
+      if (l is String) candidates.add(l);
+    }
   }
-
-  // If not found above, look at 'error['message']'
-  // The server might embed something like:
-  //   "Unexpected error value: { code: \"ERR_BAD_REQUEST\", message: \"EMAIL_NOT_FOUND\" }"
-  final rawMessage = error['message'] as String?;
-  if (rawMessage != null) {
-    // Use a Regex to capture the text after `message: "` and before the next quote
-    final match = RegExp(r'message:\s*"([^"]+)"').firstMatch(rawMessage);
-    if (match != null) {
-      final extractedMessage = match.group(1); // e.g. "EMAIL_NOT_FOUND"
-      if (extractedMessage != null) {
-        return _mapStringToErrorCode(extractedMessage);
-      }
+  for (final text in candidates) {
+    final m = RegExp(r'\{[\s\S]*?\}', dotAll: true).firstMatch(text);
+    if (m != null) {
+      var blob = m.group(0)!;
+      // quote keys:  code: "X"  →  "code":"X"
+      blob = blob.replaceAllMapped(
+        RegExp(r'(\w+)\s*:'),
+        (m) => '"${m[1]}":',
+      );
+      blob = blob.replaceAll(RegExp(r',\s*}'), '}'); // strip trailing commas
+      try {
+        final dec = json.decode(blob);
+        if (dec is Map<String, dynamic>) {
+          final raw = dec['message'] ?? dec['error'];
+          if (raw is String && raw.isNotEmpty) {
+            return _humanize(raw);
+          }
+        }
+      } catch (_) {}
     }
   }
 
-  // Fallback: default error
-  return GraphQLErrorCode.DEFAULT_ERROR;
-}
-
-GraphQLErrorCode _mapStringToErrorCode(String codeString) {
-  // Compare the uppercase version of the enum's name
-  return GraphQLErrorCode.values.firstWhere(
-    (e) =>
-        e.toString().split('.').last.toUpperCase() == codeString.toUpperCase(),
-    orElse: () => GraphQLErrorCode.DEFAULT_ERROR,
-  );
-}
-
-/// lib/exceptions/auth_exception.dart
-
-class AuthException implements Exception {
-  /// Per-field error messages, e.g. `{ 'email': 'Email not found', 'password': '' }`
-  final Map<String, String> fieldErrors;
-
-  /// A top-level error message (if any), e.g. “An unexpected error occurred”
-  final String globalError;
-
-  AuthException({
-    required this.fieldErrors,
-    required this.globalError,
-  });
-
-  @override
-  String toString() {
-    // If you want something concise when logging:
-    if (globalError.isNotEmpty) return globalError;
-    return fieldErrors.values.where((e) => e.isNotEmpty).join('; ');
+  // 2) Nest/Apollo shapes
+  if (ext is Map<String, dynamic>) {
+    final exception = ext['exception'];
+    if (exception is Map<String, dynamic>) {
+      final resp = exception['response'];
+      if (resp is Map<String, dynamic> && resp['message'] != null) {
+        return _toJoined(resp['message']);
+      }
+    }
+    final direct = ext['response'];
+    if (direct is Map<String, dynamic> && direct['message'] != null) {
+      return _toJoined(direct['message']);
+    }
   }
+
+  // 3) If the raw message is a normal sentence, use it
+  final rawMsg = error['message'];
+  if (rawMsg is String && !_isConstantStyle(rawMsg)) {
+    return _capitalizeFirst(rawMsg.trim());
+  }
+
+  // 4) Fallback to extensions.code (e.g. INTERNAL_SERVER_ERROR)
+  if (ext is Map<String, dynamic> && ext['code'] != null) {
+    return _humanize(ext['code'].toString());
+  }
+
+  // 5) Last resort: whatever .message says
+  if (rawMsg is String) {
+    return _capitalizeFirst(rawMsg.trim());
+  }
+
+  return '';
+}
+
+String _toJoined(dynamic msg) {
+  if (msg is List) {
+    return _capitalizeFirst(msg.join(', ').trim());
+  }
+  return _capitalizeFirst(msg.toString().trim());
+}
+
+/// Detects ALL-CAPS (with underscores/spaces) strings.
+bool _isConstantStyle(String s) => RegExp(r'^[A-Z0-9_ ]+$').hasMatch(s);
+
+/// Converts CONSTANT_STYLE → normal sentence, or camelCase → words.
+String _humanize(String raw) {
+  raw = raw.trim();
+  // If it’s truly CONSTANT_STYLE, lowercase + replace underscores.
+  if (_isConstantStyle(raw)) {
+    final lower = raw.replaceAll('_', ' ').toLowerCase();
+    return _capitalizeFirst(lower);
+  }
+  // Else treat as camelCase or already human text:
+  final splitCamel = raw.replaceAllMapped(
+      RegExp(r'([a-z0-9])([A-Z])'), (m) => '${m[1]} ${m[2]}');
+  return _capitalizeFirst(splitCamel);
+}
+
+/// Uppercases just the first character.
+String _capitalizeFirst(String s) {
+  if (s.isEmpty) return s;
+  return s[0].toUpperCase() + s.substring(1);
 }
