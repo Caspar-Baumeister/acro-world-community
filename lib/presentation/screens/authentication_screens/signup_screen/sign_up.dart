@@ -1,5 +1,5 @@
+import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -23,10 +23,6 @@ class _SignUpState extends ConsumerState<SignUp> {
   final _formKey = GlobalKey<FormState>();
 
   String error = '';
-  String errorName = '';
-  String errorEmail = '';
-  String errorPassword = '';
-  String errorPasswordConfirm = '';
 
   bool isAgb = false;
   bool isNewsletter = false;
@@ -61,15 +57,11 @@ class _SignUpState extends ConsumerState<SignUp> {
     FocusManager.instance.primaryFocus?.unfocus();
     setState(() {
       error = '';
-      errorName = '';
-      errorEmail = '';
-      errorPassword = '';
-      errorPasswordConfirm = '';
     });
 
     if (!_formKey.currentState!.validate()) return;
     if (passwordController.text != passwordConfirmController.text) {
-      setState(() => errorPasswordConfirm = 'Passwords do not match');
+      setState(() => error = 'Passwords do not match');
       return;
     }
     if (!isAgb) {
@@ -86,10 +78,7 @@ class _SignUpState extends ConsumerState<SignUp> {
           );
     } on AuthException catch (e) {
       setState(() {
-        errorName = e.fieldErrors['name'] ?? '';
-        errorEmail = e.fieldErrors['email'] ?? '';
-        errorPassword = e.fieldErrors['password'] ?? '';
-        error = e.globalError;
+        error = e.error;
       });
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
@@ -137,16 +126,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                     validator: (val) =>
                         (val == null || val.isEmpty) ? 'Enter your name' : null,
                   ),
-                  if (errorName.isNotEmpty)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(errorName,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0)),
-                      ),
-                    ),
                   const SizedBox(height: 20.0),
                   InputFieldComponent(
                     controller: emailController,
@@ -157,16 +136,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                     validator: (val) =>
                         (val == null || val.isEmpty) ? 'Enter an email' : null,
                   ),
-                  if (errorEmail.isNotEmpty)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(errorEmail,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0)),
-                      ),
-                    ),
                   const SizedBox(height: 20.0),
                   InputFieldComponent(
                     controller: passwordController,
@@ -185,16 +154,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                         ? 'Enter a password'
                         : null,
                   ),
-                  if (errorPassword.isNotEmpty)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(errorPassword,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0)),
-                      ),
-                    ),
                   const SizedBox(height: 20.0),
                   InputFieldComponent(
                     controller: passwordConfirmController,
@@ -212,16 +171,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                         ? 'Re-enter your password'
                         : null,
                   ),
-                  if (errorPasswordConfirm.isNotEmpty)
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(errorPasswordConfirm,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0)),
-                      ),
-                    ),
                   const SizedBox(height: 20.0),
                   AGBCheckbox(
                     isAgb: isAgb,

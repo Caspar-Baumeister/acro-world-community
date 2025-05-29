@@ -1,5 +1,5 @@
+import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -24,8 +24,7 @@ class SignIn extends ConsumerStatefulWidget {
 class _SignInState extends ConsumerState<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
-  String errorEmail = '';
-  String errorPassword = '';
+
   bool isObscure = true;
 
   late final TextEditingController emailController;
@@ -49,8 +48,6 @@ class _SignInState extends ConsumerState<SignIn> {
     if (!mounted) return;
     setState(() {
       error = '';
-      errorEmail = '';
-      errorPassword = '';
     });
 
     if (!_formKey.currentState!.validate()) return;
@@ -62,9 +59,7 @@ class _SignInState extends ConsumerState<SignIn> {
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() {
-        errorEmail = e.fieldErrors['email'] ?? '';
-        errorPassword = e.fieldErrors['password'] ?? '';
-        error = e.globalError;
+        error = e.error;
       });
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
@@ -116,18 +111,6 @@ class _SignInState extends ConsumerState<SignIn> {
                           ? 'Enter an email'
                           : null,
                     ),
-                    if (errorEmail.isNotEmpty)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 8.0),
-                          child: Text(
-                            errorEmail,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0),
-                          ),
-                        ),
-                      ),
                     const SizedBox(height: 20.0),
                     InputFieldComponent(
                       controller: passwordController,
@@ -145,18 +128,6 @@ class _SignInState extends ConsumerState<SignIn> {
                         if (!isLoading) onSignin();
                       },
                     ),
-                    if (errorPassword.isNotEmpty)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
-                          child: Text(
-                            errorPassword,
-                            style: const TextStyle(
-                                color: Colors.red, fontSize: 14.0),
-                          ),
-                        ),
-                      ),
                     const SizedBox(height: 20.0),
                     StandartButton(
                       text: "Login",
