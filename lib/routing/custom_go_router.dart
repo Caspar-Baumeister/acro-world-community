@@ -1,5 +1,6 @@
 // lib/routing/app_router.dart
 
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
@@ -27,7 +28,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
@@ -70,7 +70,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 
         return auth.when(
           loading: () => null,
-          error: (_, __) => '/auth-error',
+          error: (_, __) => loc.startsWith('/auth') ? null : '/auth-error',
           data: (authState) {
             // 1) Not logged in → guard all non-/auth, non-/forgot routes
             if (authState.status == AuthStatus.unauthenticated &&
@@ -357,11 +357,40 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: errorRoute,
             builder: (ctx, state) {
               final error = state.uri.queryParameters['error'];
-              return ErrorPage(
+              return AuthErrorPage(
                 error: error ?? 'An unknown error occurred.',
               );
             }),
       ]);
 });
 
-// lib/routing/app_router.dart
+// create AuthErrorPage with displaying error message and a button to go back to the auth page
+class AuthErrorPage extends StatelessWidget {
+  final String error;
+
+  const AuthErrorPage({super.key, required this.error});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Authentication Error'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(error),
+            const SizedBox(height: 16),
+            StandartButton(
+              onPressed: () {
+                context.go('/auth');
+              },
+              text: 'Go to Auth Page',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
