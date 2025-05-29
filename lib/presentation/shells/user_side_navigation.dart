@@ -13,16 +13,16 @@ class UserDestopSideNavigationBar extends StatelessWidget {
           leading: const Icon(Icons.home),
           onTap: () => context.go('/discover'),
         ),
-        ListTile(
-          title: const Text("Activity"),
-          leading: const Icon(Icons.person),
-          onTap: () => context.go('/activity'),
-        ),
-        ListTile(
-          title: const Text("Community"),
-          leading: const Icon(Icons.group),
-          onTap: () => context.go('/community'),
-        ),
+        // ListTile(
+        //   title: const Text("Activity"),
+        //   leading: const Icon(Icons.person),
+        //   onTap: () => context.go('/activity'),
+        // ),
+        // ListTile(
+        //   title: const Text("Community"),
+        //   leading: const Icon(Icons.group),
+        //   onTap: () => context.go('/community'),
+        // ),
         ListTile(
           title: const Text("Profile"),
           leading: const Icon(Icons.settings),

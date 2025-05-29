@@ -177,6 +177,16 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                         provider.setCountry(country);
                       },
                     ),
+                    if (provider.country != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppPaddings.medium),
+                        child: CustomCountryDropdown(
+                          currentlySelected: provider.country,
+                          onCountrySelected: (String? country) {
+                            provider.setCountry(country);
+                          },
+                        ),
+                      ),
 
                     const SizedBox(height: AppPaddings.medium),
                     CustomQueryOptionInputComponent(
