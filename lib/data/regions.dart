@@ -1,4 +1,4 @@
-{
+const Map<String, List<String>> countryRegions = {
   "AU": [
     "Queensland",
     "South Australia",
@@ -1236,4 +1236,4 @@
     "Palmyra Atoll",
     "Navassa Island"
   ]
-}
+};

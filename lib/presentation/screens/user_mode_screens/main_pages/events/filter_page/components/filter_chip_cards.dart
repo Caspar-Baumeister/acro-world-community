@@ -33,6 +33,52 @@ class CountryFilterCards extends StatelessWidget {
   }
 }
 
+class RegionFilterCards extends StatelessWidget {
+  const RegionFilterCards({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    DiscoveryProvider discoveryProvider =
+        Provider.of<DiscoveryProvider>(context);
+
+    // Collect all regions matching selected countries
+    List<String> selectedRegions = [];
+    for (var country in discoveryProvider.filterCountries) {
+      if (discoveryProvider.allRegionsByCountry.containsKey(country)) {
+        selectedRegions.addAll(discoveryProvider.allRegionsByCountry[country]!);
+      }
+    }
+    selectedRegions = selectedRegions.toSet().toList(); // remove duplicates
+
+    // Add 'Not specified' option
+    const String notSpecifiedKey = "Not specified";
+
+    return BaseChipWrapper(
+      children: <Widget>[
+        ...selectedRegions
+            .where((region) => region != notSpecifiedKey)
+            .map((String region) {
+          bool isSelected = discoveryProvider.filterRegions.contains(region);
+          return GestureDetector(
+            onTap: () => discoveryProvider.changeActiveRegion(region),
+            child: FilterChipCard(
+              label: region,
+              isActive: isSelected,
+            ),
+          );
+        }),
+        GestureDetector(
+          onTap: () => discoveryProvider.changeActiveRegion(notSpecifiedKey),
+          child: FilterChipCard(
+            label: notSpecifiedKey,
+            isActive: discoveryProvider.filterRegions.contains(notSpecifiedKey),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class QuickFilterCards extends StatelessWidget {
   const QuickFilterCards({super.key});
 
@@ -87,57 +133,6 @@ class CategorieFilterCards extends StatelessWidget {
     );
   }
 }
-
-// always shows the next 12 months (March, April, Mai, June, Juli, August,
-// September, October, November, December, January, Febuary)
-// so it counts from 0 to 11 and shows the current month number (3) + 0,1,2,3,...
-// class DateFilterCards extends StatelessWidget {
-//   const DateFilterCards({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     discoveryProvider discoveryProvider =
-//         Provider.of<discoveryProvider>(context);
-
-//     List<DateTime> allMonth = eventFilterProvider.initialDates;
-//     allMonth.sort();
-//     return Wrap(
-//       spacing: 6.0, // gap between adjacent chips
-//       runSpacing: 0.0, // gap between lines
-//       children: <Widget>[
-//         ...allMonth.map((date) {
-//           bool isSelected =
-//               isDateMonthAndYearInList(eventFilterProvider.activeDates, date);
-//           return GestureDetector(
-//             onTap: () => eventFilterProvider.changeActiveEventDates(date),
-//             child: FilterChipCard(
-//               label: Container(
-//                 constraints: const BoxConstraints(minWidth: 40),
-//                 child: Column(
-//                   mainAxisAlignment: MainAxisAlignment.center,
-//                   mainAxisSize: MainAxisSize.min,
-//                   children: [
-//                     Text(
-//                       DateFormat.MMMM().format(date),
-//                       style: Theme.of(context).textTheme.bodySmall.copyWith(
-//                           color: isSelected ? Colors.white : CustomColors.primaryColor),
-//                     ),
-//                     Text(
-//                       DateFormat.y().format(date),
-//                       style: Theme.of(context).textTheme.labelSmall.copyWith(
-//                           color: isSelected ? Colors.white : CustomColors.primaryColor),
-//                     )
-//                   ],
-//                 ),
-//               ),
-//               isActive: isSelected,
-//             ),
-//           );
-//         })
-//       ],
-//     );
-//   }
-// }
 
 class DateFilterCards extends StatelessWidget {
   const DateFilterCards({super.key});
@@ -196,25 +191,50 @@ class DateFilterCards extends StatelessWidget {
 
 class FilterChipCard extends StatelessWidget {
   const FilterChipCard(
-      {super.key, required this.label, required this.isActive});
+      {super.key, required this.label, required this.isActive, this.amount});
 
   final String label;
   final bool isActive;
+  final int? amount;
 
   @override
   Widget build(BuildContext context) {
-    return Chip(
-      label: Text(
-        label,
-        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            color: isActive ? Colors.white : CustomColors.primaryColor),
-      ),
-      labelPadding: const EdgeInsets.all(0.0),
-      backgroundColor: isActive ? CustomColors.primaryColor : Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
-      side: const BorderSide(color: Colors.grey, width: 1.0),
+    return Stack(
+      children: [
+        Chip(
+          label: Text(
+            label,
+            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                color: isActive ? Colors.white : CustomColors.primaryColor),
+          ),
+          labelPadding: const EdgeInsets.all(0.0),
+          backgroundColor: isActive ? CustomColors.primaryColor : Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          side: const BorderSide(color: Colors.grey, width: 1.0),
+        ),
+        if (amount != null)
+          Positioned(
+            right: 0,
+            child: Container(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+              decoration: BoxDecoration(
+                color: isActive ? Colors.white : CustomColors.primaryColor,
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20.0),
+                  bottomLeft: Radius.circular(20.0),
+                ),
+              ),
+              child: Text(
+                '$amount',
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: isActive ? CustomColors.primaryColor : Colors.white),
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

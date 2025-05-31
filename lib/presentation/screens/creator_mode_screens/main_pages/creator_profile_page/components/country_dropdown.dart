@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 
 class CustomCountryDropdown extends StatelessWidget {
   final String? currentlySelected; // This should contain the full country name.
-  final ValueChanged<String> onCountrySelected;
+  final Function(String?, String?) onCountrySelected;
   final String hintText;
   final String? footnoteText;
 
@@ -127,7 +127,12 @@ class CustomCountryDropdown extends StatelessWidget {
               hint: Text(hintText),
               onChanged: (String? newValue) {
                 if (newValue != null) {
-                  onCountrySelected(newValue);
+                  onCountrySelected(
+                      newValue,
+                      _countryMap.keys.firstWhere(
+                        (key) => _countryMap[key] == newValue,
+                        orElse: () => '',
+                      ));
                 }
               },
               items: dropdownItems,
