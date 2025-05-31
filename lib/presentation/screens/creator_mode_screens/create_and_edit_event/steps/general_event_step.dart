@@ -8,6 +8,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -173,17 +174,20 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                     // choose from country
                     CustomCountryDropdown(
                       currentlySelected: provider.country,
-                      onCountrySelected: (String? country) {
+                      onCountrySelected:
+                          (String? country, String? countryCode) {
+                        provider.countryCode = countryCode;
                         provider.setCountry(country);
                       },
                     ),
-                    if (provider.country != null)
+                    if (provider.countryCode != null)
                       Padding(
                         padding: const EdgeInsets.only(top: AppPaddings.medium),
-                        child: CustomCountryDropdown(
-                          currentlySelected: provider.country,
-                          onCountrySelected: (String? country) {
-                            provider.setCountry(country);
+                        child: RegionDropdown(
+                          countryCode: provider.countryCode!,
+                          currentlySelected: provider.region,
+                          onRegionSelected: (String? region) {
+                            provider.setRegion(region);
                           },
                         ),
                       ),

@@ -14,6 +14,10 @@ class FilterPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     DiscoveryProvider discoveryProvider =
         Provider.of<DiscoveryProvider>(context);
+    final hasRealRegions = discoveryProvider.filterCountries.any((country) {
+      final regions = discoveryProvider.allRegionsByCountry[country] ?? [];
+      return regions.any((region) => region != "Not specified");
+    });
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
       child: Column(
@@ -61,6 +65,20 @@ class FilterPageView extends StatelessWidget {
               ],
             ),
           ),
+          if (hasRealRegions) ...[
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text("Regions",
+                      style: Theme.of(context).textTheme.headlineMedium),
+                  const SizedBox(height: 5),
+                  const RegionFilterCards(),
+                ],
+              ),
+            ),
+          ],
           Padding(
             padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
             child: Column(

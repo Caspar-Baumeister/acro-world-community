@@ -13,12 +13,14 @@ class DiscoveryProvider extends ChangeNotifier {
   final List<DateTime> _allDates = [];
   final List<EventType> _allEventTypes = [];
   final List<String> _allCountries = [];
+  final Map<String, List<String>> _allRegionsByCountry = {};
 
   // filtered data
   List<ClassEvent> _filteredEventOccurences = [];
 
   // filter
   final List<String> filterCountries = [];
+  final List<String> filterRegions = [];
   final List<EventType> filterCategories = [];
   final List<DateTime> filterDates = [];
   bool isOnlyBookableFilter = false;
@@ -38,12 +40,14 @@ class DiscoveryProvider extends ChangeNotifier {
   List<EventType> get allEventTypes => _allEventTypes;
   List<String> get allCountries => _allCountries;
   List<DateTime> get allDates => _allDates;
+  Map<String, List<String>> get allRegionsByCountry => _allRegionsByCountry;
 
   // is filter active
   bool isFilterActive() {
     return filterCountries.isNotEmpty ||
         filterCategories.isNotEmpty ||
         filterDates.isNotEmpty ||
+        filterRegions.isNotEmpty ||
         isOnlyBookableFilter ||
         isOnlyHighlightedFilter ||
         isOnlyFollowedTeacherFilter ||
@@ -55,6 +59,7 @@ class DiscoveryProvider extends ChangeNotifier {
     filterCountries.clear();
     filterCategories.clear();
     filterDates.clear();
+    filterRegions.clear();
     isOnlyBookableFilter = false;
     isOnlyHighlightedFilter = false;
     isOnlyFollowedTeacherFilter = false;
@@ -73,6 +78,18 @@ class DiscoveryProvider extends ChangeNotifier {
               event.classModel?.country != null &&
               filterCountries.contains(event.classModel?.country))
           .toList();
+    }
+
+    if (filterRegions.isNotEmpty) {
+      _filteredEventOccurences = _filteredEventOccurences.where((event) {
+        final region = event.classModel?.city ?? "Not specified";
+        final matchesRegion = filterRegions.contains(region);
+
+        final matchesNotSpecified = region == "Not specified" &&
+            filterRegions.contains("Not specified");
+
+        return matchesRegion || matchesNotSpecified;
+      }).toList();
     }
 
     if (filterCategories.isNotEmpty) {
@@ -168,6 +185,7 @@ class DiscoveryProvider extends ChangeNotifier {
         _allEventOccurences.clear();
         _allEventTypes.clear();
         _allCountries.clear();
+        _allRegionsByCountry.clear();
         try {
           // Temporary list to hold new events
           var newEvents = List<ClassEvent>.from(
@@ -196,6 +214,18 @@ class DiscoveryProvider extends ChangeNotifier {
             if (newEvent.classModel?.country != null &&
                 !_allCountries.contains(newEvent.classModel!.country!)) {
               _allCountries.add(newEvent.classModel!.country!);
+            }
+            // if the event.classModel?.city is not in the list, add it
+            if (newEvent.classModel?.country != null) {
+              final country = newEvent.classModel!.country!;
+              final region = newEvent.classModel?.city ?? "Not specified";
+
+              if (!_allRegionsByCountry.containsKey(country)) {
+                _allRegionsByCountry[country] = [];
+              }
+              if (!_allRegionsByCountry[country]!.contains(region)) {
+                _allRegionsByCountry[country]!.add(region);
+              }
             }
             // if the event.eventype is not in the list, add it
             if (newEvent.classModel?.eventType != null &&
@@ -265,6 +295,15 @@ class DiscoveryProvider extends ChangeNotifier {
     setActiveEvents();
   }
 
+  void changeActiveRegion(String region) {
+    if (filterRegions.contains(region)) {
+      filterRegions.remove(region);
+    } else {
+      filterRegions.add(region);
+    }
+    setActiveEvents();
+  }
+
   setToOnlyHighlightedFilter() {
     isOnlyHighlightedFilter = !isOnlyHighlightedFilter;
     setActiveEvents();
@@ -278,5 +317,15 @@ class DiscoveryProvider extends ChangeNotifier {
   setToOnlyFollowedTeacherFilter() {
     isOnlyFollowedTeacherFilter = !isOnlyFollowedTeacherFilter;
     setActiveEvents();
+  }
+
+  List<String> getRegionsForSelectedCountries() {
+    List<String> selectedRegions = [];
+    for (var country in filterCountries) {
+      if (_allRegionsByCountry.containsKey(country)) {
+        selectedRegions.addAll(_allRegionsByCountry[country]!);
+      }
+    }
+    return selectedRegions.toSet().toList(); // remove duplicates if any
   }
 }
