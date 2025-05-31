@@ -12,6 +12,7 @@ import 'package:acroworld/presentation/screens/create_creator_profile_pages/comp
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
@@ -147,13 +148,17 @@ class _CreateCreatorProfileBodyState
 
         // 3️⃣ refresh token & user in Riverpod, then navigate
         await TokenSingletonService().refreshToken();
+
         ref.invalidate(userRiverpodProvider);
+        provider.Provider.of<UserRoleProvider>(context, listen: false)
+            .setIsCreator(true);
         context.goNamed(creatorProfileRoute);
       } else {
         // 2️⃣ update
         final creatorProvider =
             provider.Provider.of<CreatorProvider>(context, listen: false);
         final teacherId = creatorProvider.activeTeacher?.id;
+        print("Teacher ID: $teacherId");
         if (teacherId == null) {
           setState(() => _errorMessage = 'Teacher ID not found');
           return;
@@ -174,6 +179,7 @@ class _CreateCreatorProfileBodyState
         }
         showSuccessToast("Teacher profile updated successfully");
         Navigator.of(context).pop();
+
         creatorProvider.setCreatorFromToken();
       }
     } catch (e, st) {
