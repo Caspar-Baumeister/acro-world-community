@@ -182,7 +182,7 @@ class AppTheme {
 
         // Disable splash effects
         splashFactory: NoSplash.splashFactory,
-        dialogTheme: const DialogTheme(
+        dialogTheme: const DialogThemeData(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           ),

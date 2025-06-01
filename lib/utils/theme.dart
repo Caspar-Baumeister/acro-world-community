@@ -35,7 +35,7 @@ class MyThemes {
       dividerTheme:
           const DividerThemeData(color: CustomColors.inactiveBorderColor),
       scaffoldBackgroundColor: CustomColors.backgroundColor,
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         indicator: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -78,7 +78,7 @@ class MyThemes {
         ),
       ),
       // set modal background color
-      dialogTheme: const DialogTheme(
+      dialogTheme: const DialogThemeData(
         backgroundColor: CustomColors.backgroundColor,
       ),
       drawerTheme: const DrawerThemeData(
