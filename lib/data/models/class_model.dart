@@ -37,6 +37,7 @@ class ClassModel {
   List<QuestionModel> questions = [];
   List<BookingCategoryModel>? bookingCategories;
   List<ClassFlagsModel>? classFlags;
+  bool? isCashAllowed;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassOwner? get owner {
@@ -106,6 +107,7 @@ class ClassModel {
       this.classFlags,
       required this.questions,
       this.bookingCategories,
+      this.isCashAllowed,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
@@ -167,6 +169,7 @@ class ClassModel {
     bookingEmail = json['booking_email'];
     maxBookingSlots = json['max_booking_slots'];
     city = json['location_city'];
+    isCashAllowed = json['is_cash_allowed'] ?? false;
     country = json['location_country'];
     if (json['class_teachers'] != null) {
       classTeachers = <ClassTeachers>[];

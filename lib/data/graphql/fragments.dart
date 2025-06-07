@@ -137,6 +137,7 @@ class Fragments {
         user_id
         
       }
+      is_cash_allowed
      
 
 """;
@@ -162,6 +163,7 @@ class Fragments {
         }
       }
       event_type
+      is_cash_allowed
 """;
 
   static const recurringPatternFragment = """
