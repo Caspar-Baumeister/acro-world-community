@@ -136,6 +136,7 @@ class _MarketStepState extends State<MarketStep> {
           isLoading = false;
         });
       });
+      return;
     }
     // if ticket was added but no amount was set, stop the user
     if (eventCreationAndEditingProvider.bookingOptions.isNotEmpty &&
