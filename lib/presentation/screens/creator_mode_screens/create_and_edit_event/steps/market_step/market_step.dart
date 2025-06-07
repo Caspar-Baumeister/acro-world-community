@@ -66,19 +66,25 @@ class _MarketStepState extends State<MarketStep> {
     // We'll check if the user teacher account has a stripe account
     CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
 
+    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
+        creatorProvider.activeTeacher!.stripeId != null &&
+        creatorProvider.activeTeacher!.isStripeEnabled == true;
+
     return Column(
       children: [
         creatorProvider.isLoading == true
             ? const Center(child: CircularProgressIndicator())
-            : creatorProvider.activeTeacher != null &&
-                    creatorProvider.activeTeacher!.stripeId != null &&
-                    creatorProvider.activeTeacher!.isStripeEnabled == true
-                ? MarketStepTicketSection(
-                    eventCreationAndEditingProvider:
-                        eventCreationAndEditingProvider,
-                  )
+            : isStripeEnabled // if stripe is enabled, don't need to show infobax
+                ? SizedBox.shrink()
                 : const MarketStepCreateStripeAccountSection(),
+
         const SizedBox(height: AppPaddings.medium),
+        MarketStepTicketSection(
+            eventCreationAndEditingProvider: eventCreationAndEditingProvider),
+        // enable cash payment section
+        // checkbox with enable cash payment
+        const SizedBox(height: AppPaddings.medium),
+
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -106,10 +112,33 @@ class _MarketStepState extends State<MarketStep> {
   }
 
   void _onNext() async {
+    final eventCreationAndEditingProvider =
+        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
+
+    final creatorProvider = Provider.of<CreatorProvider>(context);
+
+    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
+        creatorProvider.activeTeacher!.stripeId != null &&
+        creatorProvider.activeTeacher!.isStripeEnabled == true;
+    // if neither stripe is enabled nor cash payments, show alert with informations, that your tickets will not be shown since they cannot be bought by cash or direct payment. Please either enable stripe or add cash payment option.
+    // Add the button, that you can continue without tickets or go back
+    if (!isStripeEnabled &&
+        !eventCreationAndEditingProvider.isCashAllowed &&
+        eventCreationAndEditingProvider.bookingCategories.isNotEmpty) {
+      showNoPaymentMethodDialog(context, () async {
+        // if user continues without tickets, we just call the onFinished callback
+        // and don't add any tickets to the event
+        setState(() {
+          isLoading = true;
+        });
+        await widget.onFinished();
+        setState(() {
+          isLoading = false;
+        });
+      });
+    }
     // if ticket was added but no amount was set, stop the user
-    if (Provider.of<EventCreationAndEditingProvider>(context, listen: false)
-            .bookingOptions
-            .isNotEmpty &&
+    if (eventCreationAndEditingProvider.bookingOptions.isNotEmpty &&
         _maxAmountTicketController.text.isEmpty) {
       showErrorToast("Please set the amount of tickets");
       return;
@@ -122,4 +151,30 @@ class _MarketStepState extends State<MarketStep> {
       isLoading = false;
     });
   }
+}
+
+void showNoPaymentMethodDialog(BuildContext context, VoidCallback onContinue) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("No Payment Method Selected"),
+      content: const Text(
+        "Your tickets won’t be visible because they can’t be purchased. "
+        "Please enable Stripe or allow cash payments to make them bookable.",
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(context).pop(), // Go back
+          child: const Text("Back"),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+            onContinue();
+          },
+          child: const Text("Continue without Tickets"),
+        ),
+      ],
+    ),
+  );
 }

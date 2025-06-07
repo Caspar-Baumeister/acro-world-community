@@ -1,5 +1,6 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/custom_check_box.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_category_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
@@ -89,6 +90,41 @@ class MarketStepTicketSection extends StatelessWidget {
                 );
               },
             ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade300),
+                ),
+                padding: const EdgeInsets.all(AppPaddings.medium),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CustomCheckBox(
+                      isChecked: eventCreationAndEditingProvider.isCashAllowed,
+                      onTap: () {
+                        eventCreationAndEditingProvider
+                            .switchAllowCashPayments();
+                      },
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        "Allow cash payments.\nCash bookings are automatically marked as confirmed and might block slots for paying users. You'll need to confirm payment manually in your bookings to include it in statistics.",
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Colors.black87,
+                              height: 1.3,
+                            ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppPaddings.medium),
           ],
         ),
       ),
