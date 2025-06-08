@@ -7,6 +7,7 @@ import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -16,6 +17,7 @@ import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' as provider;
 
 class CreatorSettingsActionModal extends ConsumerWidget {
@@ -49,9 +51,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
 
                 // Now pop the current widget and push the next page safely
                 Navigator.of(context).pop();
-
-                Navigator.of(context)
-                    .push(CreateAndEditEventPageRoute(isEditing: true));
+                context.pushNamed(createEditEventRoute,
+                    queryParameters: {'isEditing': 'true'});
               },
             ),
             ListTile(

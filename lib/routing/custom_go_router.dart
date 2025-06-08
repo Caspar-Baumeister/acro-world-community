@@ -180,7 +180,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                     builder: (ctx, state) {
                       // default to create; to edit, pass isEditing=true in queryParams
                       final isEditing =
-                          state.pathParameters['isEditing'] == 'true';
+                          state.uri.queryParameters['isEditing'] == 'true';
                       return CreateAndEditEventPage(isEditing: isEditing);
                     },
                     routes: [

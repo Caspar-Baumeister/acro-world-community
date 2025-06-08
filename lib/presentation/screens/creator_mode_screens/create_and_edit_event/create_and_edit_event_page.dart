@@ -92,8 +92,9 @@ class _CreateAndEditEventPageState
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
+              print("replace with myEventsRoute");
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.goNamed(myEventsRoute);
+                context.replaceNamed(myEventsRoute);
                 if (userAsync.value?.id != null) {
                   provider.Provider.of<TeacherEventsProvider>(context,
                           listen: false)
