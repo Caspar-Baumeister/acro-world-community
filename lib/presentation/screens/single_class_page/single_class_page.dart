@@ -3,17 +3,13 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/custom_sliver_app_bar.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_body.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/back_drop_action_row.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
+import 'package:acroworld/presentation/screens/single_class_page/widgets/single_class_bottom_hover_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -62,25 +58,6 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
     super.dispose();
   }
 
-  void _shareEvent(ClassEvent? classEvent, ClassModel clas) {
-    String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
-    if (classEvent?.id != null) {
-      deeplinkUrl += "?event=${classEvent!.id!}";
-    }
-    String content = '''
-Hi, I just found this event on AcroWorld:
-
-${clas.name}
-${formatInstructors(clas.classTeachers)}
-${classEvent != null ? getDateStringMonthDay(DateTime.parse(classEvent.startDate!)) : ""}
-At: ${clas.locationName}
-''';
-    if (clas.urlSlug != null) {
-      content += "\n\nFind more info and book here: $deeplinkUrl";
-    }
-    Share.share(content);
-  }
-
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userRiverpodProvider);
@@ -113,7 +90,7 @@ At: ${clas.locationName}
                 initialFavorized: widget.clas.isInitiallyFavorized,
                 initialReported: widget.clas.flaggedByUser(userId),
                 initialInActive: widget.clas.inActiveFlaggsByUser(userId),
-                shareEvents: () => _shareEvent(
+                shareEvents: () => shareEvent(
                   widget.classEvent,
                   widget.clas,
                 ),
@@ -126,8 +103,13 @@ At: ${clas.locationName}
         ];
 
         return Scaffold(
-          bottomNavigationBar:
-              widget.isCreator ? null : _buildBottomHoverButton(billingTeacher),
+          bottomNavigationBar: widget.isCreator
+              ? null
+              : SingleClassBottomHoverButton(
+                  clas: widget.clas,
+                  classEvent: widget.classEvent,
+                  isCreator: widget.isCreator,
+                ),
           body: Padding(
             padding: kIsWeb
                 ? EdgeInsets.symmetric(horizontal: 100.0)
@@ -162,57 +144,30 @@ At: ${clas.locationName}
       },
     );
   }
+}
 
-  BottomAppBar? _buildBottomHoverButton(ClassOwner? billingTeacher) {
-    if (widget.classEvent != null &&
-        widget.classEvent!.classModel!.bookingOptions.isNotEmpty &&
-        billingTeacher != null) {
-      if (kIsWeb) {
-        return BottomAppBar(
-          elevation: 0,
-          child: CustomBottomHoverButton(
-              content: const Text(
-                "Booking only possible on mobile",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-              onPressed: () => showErrorToast(
-                    "Booking is currently only possible on mobile devices. Please use the AcroWorld app.",
-                  )),
-        );
-      }
-
-      return BottomAppBar(
-        elevation: 0,
-        child: BookingQueryHoverButton(
-          classEvent: widget.classEvent!,
-        ),
-      );
-    } else if (widget.classEvent != null) {
-      return null;
-    }
-    return BottomAppBar(
-      elevation: 0,
-      child: CustomBottomHoverButton(
-        content: const Text(
-          "Calendar",
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        onPressed: () => buildMortal(
-          context,
-          CalenderModal(
-            classId: widget.clas.id!,
-            isCreator: widget.isCreator,
-          ),
-        ),
-      ),
-    );
+/// Helper function to share a class event via a dynamic deep link.
+void shareEvent(ClassEvent? classEvent, ClassModel clas) {
+  // Build base deep link URL
+  String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
+  if (classEvent?.id != null) {
+    deeplinkUrl += "?event=${classEvent!.id!}";
   }
+
+  // Compose share content
+  String content = '''
+Hi, I just found this event on AcroWorld:
+
+${clas.name}
+${formatInstructors(clas.classTeachers)}
+${classEvent != null ? getDateStringMonthDay(DateTime.parse(classEvent.startDate!)) : ''}
+At: ${clas.locationName}
+''';
+
+  if (clas.urlSlug != null) {
+    content += "\n\nFind more info and book here: $deeplinkUrl";
+  }
+
+  // Trigger the native share dialog
+  Share.share(content);
 }
