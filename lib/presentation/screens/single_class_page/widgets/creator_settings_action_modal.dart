@@ -9,7 +9,6 @@ import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
@@ -234,8 +233,9 @@ class DeleteClassModal extends ConsumerWidget {
                       provider.Provider.of<TeacherEventsProvider>(context,
                               listen: false)
                           .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
-                      Navigator.of(context).pushAndRemoveUntil(
-                          MyEventsPageRoute(), (route) => false);
+                      // Navigator.of(context).pushAndRemoveUntil(
+                      //     MyEventsPageRoute(), (route) => false);
+                      context.replaceNamed(myEventsRoute);
                     } else {
                       throw Exception("value not true");
                     }
