@@ -317,6 +317,8 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
     \$location_country: String
+    \$location_city: String
+    \$is_cash_allowed: Boolean
   ) {
     insert_classes_one(
       object: {
@@ -329,6 +331,8 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         location_name: \$locationName,
         timezone: \$timezone,
         url_slug: \$urlSlug,
+        location_city: \$location_city,
+        is_cash_allowed: \$is_cash_allowed,
         recurring_patterns: {
           data: \$recurringPatterns
         }
@@ -363,6 +367,8 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
+    \$location_city: String
+    \$is_cash_allowed: Boolean
   ) {
 
     # Delete the class by id
@@ -383,6 +389,8 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         timezone: \$timezone,
         url_slug: \$urlSlug,
         location_country: \$location_country,
+        location_city: \$location_city,
+        is_cash_allowed: \$is_cash_allowed,
         recurring_patterns: {
           data: \$recurringPatterns
         },

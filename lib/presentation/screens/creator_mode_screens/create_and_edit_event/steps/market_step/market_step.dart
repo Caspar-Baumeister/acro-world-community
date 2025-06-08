@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_create_stripe_account_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_ticket_section.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
@@ -63,22 +62,9 @@ class _MarketStepState extends State<MarketStep> {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context);
     // Userprovider is only for the ticket section.
-    // We'll check if the user teacher account has a stripe account
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
-
-    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
-        creatorProvider.activeTeacher!.stripeId != null &&
-        creatorProvider.activeTeacher!.isStripeEnabled == true;
 
     return Column(
       children: [
-        creatorProvider.isLoading == true
-            ? const Center(child: CircularProgressIndicator())
-            : isStripeEnabled // if stripe is enabled, don't need to show infobax
-                ? SizedBox.shrink()
-                : const MarketStepCreateStripeAccountSection(),
-
-        const SizedBox(height: AppPaddings.medium),
         MarketStepTicketSection(
             eventCreationAndEditingProvider: eventCreationAndEditingProvider),
         // enable cash payment section
@@ -115,7 +101,8 @@ class _MarketStepState extends State<MarketStep> {
     final eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context, listen: false);
 
-    final creatorProvider = Provider.of<CreatorProvider>(context);
+    final creatorProvider =
+        Provider.of<CreatorProvider>(context, listen: false);
 
     bool isStripeEnabled = creatorProvider.activeTeacher != null &&
         creatorProvider.activeTeacher!.stripeId != null &&

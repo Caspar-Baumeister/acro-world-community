@@ -33,7 +33,6 @@ class CustomEasyStepper extends StatelessWidget {
           .toList(),
       onStepReached: (index) => onStepReached(index),
       fitWidth: true,
-
       internalPadding: 16,
     );
   }
