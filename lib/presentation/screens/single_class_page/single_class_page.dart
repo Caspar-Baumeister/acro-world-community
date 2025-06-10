@@ -167,24 +167,6 @@ At: ${clas.locationName}
     if (widget.classEvent != null &&
         widget.classEvent!.classModel!.bookingOptions.isNotEmpty &&
         billingTeacher != null) {
-      if (kIsWeb) {
-        return BottomAppBar(
-          elevation: 0,
-          child: CustomBottomHoverButton(
-              content: const Text(
-                "Booking only possible on mobile",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
-                ),
-              ),
-              onPressed: () => showErrorToast(
-                    "Booking is currently only possible on mobile devices. Please use the AcroWorld app.",
-                  )),
-        );
-      }
-
       return BottomAppBar(
         elevation: 0,
         child: BookingQueryHoverButton(
