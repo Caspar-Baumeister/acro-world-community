@@ -28,7 +28,7 @@ class ClassesView extends StatelessWidget {
               children: [
                 const Text("There are no activities close to you."),
                 const SizedBox(height: AppPaddings.large),
-                StandardButton(
+                StandartButton(
                   text: "increase search radius",
                   onPressed: () => calendarProvider.increaseRadius(),
                 ),

@@ -28,7 +28,7 @@ class MarketStepTicketSection extends StatelessWidget {
           children: [
             // Button to add a new ticket category
             const SizedBox(height: AppPaddings.medium),
-            StandardButton(
+            StandartButton(
               text: 'Add Ticket-Category',
               isFilled: true,
               onPressed: () {

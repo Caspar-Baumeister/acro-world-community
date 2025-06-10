@@ -28,36 +28,7 @@ class LoadingButton extends StatelessWidget {
                   height: 20,
                   child: CircularProgressIndicator(),
                 )
-              : buttonContent
-          // child: Row(
-          //   mainAxisSize: MainAxisSize.min,
-          //   children: isLoading
-          //       ? [
-          //           const SizedBox(
-          //             width: 20,
-          //             height: 20,
-          //             child: CircularProgressIndicator(),
-          //           )
-          //         ]
-          //       : [
-          //           isUserParticipating
-          //               ? const Icon(Icons.remove,
-          //                   color: Colors.black54)
-          //               : const Icon(Icons.add,
-          //                   color: Colors.black54),
-          //           const SizedBox(width: 8),
-          //           Text(
-          //             isUserParticipating
-          //                 ? "Leave"
-          //                 : "Participate",
-          //             maxLines: 10,
-          //             style: const TextStyle(
-          //                 fontSize: 16.0,
-          //                 color: Colors.black54),
-          //           ),
-          //         ],
-          // ),
-          ),
+              : buttonContent),
     );
   }
 }

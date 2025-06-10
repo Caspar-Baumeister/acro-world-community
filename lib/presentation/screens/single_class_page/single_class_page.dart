@@ -6,27 +6,36 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/back_dr
 import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
 
-class SingleClassPage extends StatefulWidget {
-  const SingleClassPage(
-      {super.key, required this.clas, this.classEvent, this.isCreator = false});
+class SingleClassPage extends ConsumerStatefulWidget {
+  const SingleClassPage({
+    super.key,
+    required this.clas,
+    this.classEvent,
+    this.isCreator = false,
+  });
 
   final ClassModel clas;
   final ClassEvent? classEvent;
   final bool isCreator;
 
   @override
-  State<SingleClassPage> createState() => _SingleClassPageState();
+  ConsumerState<SingleClassPage> createState() => _SingleClassPageState();
 }
 
-class _SingleClassPageState extends State<SingleClassPage> {
+class _SingleClassPageState extends ConsumerState<SingleClassPage> {
   final ScrollController _scrollController = ScrollController();
   final ValueNotifier<double> _percentageCollapsed = ValueNotifier(0.0);
 
@@ -38,11 +47,10 @@ class _SingleClassPageState extends State<SingleClassPage> {
 
   void _updatePercentage() {
     if (!_scrollController.hasClients) return;
-
-    const double expandedHeight = appBarExpandedHeight - kToolbarHeight;
-    final double currentHeight = appBarExpandedHeight -
+    const expandedHeight = appBarExpandedHeight - kToolbarHeight;
+    final currentHeight = appBarExpandedHeight -
         _scrollController.offset.clamp(0.0, expandedHeight);
-    final double percentage = 1.0 - (currentHeight / expandedHeight);
+    final percentage = 1.0 - (currentHeight / expandedHeight);
     _percentageCollapsed.value = percentage;
   }
 
@@ -54,114 +62,157 @@ class _SingleClassPageState extends State<SingleClassPage> {
     super.dispose();
   }
 
-  void shareEvent(ClassEvent? classEvent, ClassModel clas) {
+  void _shareEvent(ClassEvent? classEvent, ClassModel clas) {
     String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
     if (classEvent?.id != null) {
-      deeplinkUrl += "/${classEvent!.id!}";
+      deeplinkUrl += "?event=${classEvent!.id!}";
     }
     String content = '''
-Hi, I just found this event on AcroWorld: 
+Hi, I just found this event on AcroWorld:
 
 ${clas.name}
 ${formatInstructors(clas.classTeachers)}
-${classEvent != null ? getDateStringMonthDay(DateTime.parse(classEvent.startDate!)) : null}
+${classEvent != null ? getDateStringMonthDay(DateTime.parse(classEvent.startDate!)) : ""}
 At: ${clas.locationName}
 ''';
-
     if (clas.urlSlug != null) {
-      content +=
-          "\n\nFind more information and book your spot here: $deeplinkUrl";
+      content += "\n\nFind more info and book here: $deeplinkUrl";
     }
-
     Share.share(content);
   }
 
   @override
   Widget build(BuildContext context) {
-    // get the current user userid
-    String? userId = Provider.of<UserProvider>(context).activeUser?.id;
-    ClassOwner? billingTeacher =
-        widget.clas.owner?.teacher?.stripeId != null ? widget.clas.owner : null;
+    final userAsync = ref.watch(userRiverpodProvider);
 
-    List<Widget> actions = [];
-
-    actions.add(
-      ValueListenableBuilder<double>(
-        valueListenable: _percentageCollapsed,
-        builder: (context, percentage, child) {
-          return BackDropActionRow(
-              isCollapsed: percentage > appBarCollapsedThreshold,
-              classId: widget.clas.id!,
-              classObject: widget.clas,
-              initialFavorized: widget.clas.isInitiallyFavorized,
-              initialReported: widget.clas.flaggedByUser(userId!),
-              initialInActive: widget.clas.inActiveFlaggsByUser(userId),
-              shareEvents: () => shareEvent(
-                    widget.classEvent,
-                    widget.clas,
-                  ),
-              isCreator: widget.isCreator,
-              classEvent: widget.classEvent,
-              classEventId: widget.classEvent?.id);
-        },
+    return userAsync.when(
+      loading: () => const LoadingPage(),
+      error: (_, __) => const ErrorPage(
+        error: "Error loading user. Please log in again.",
       ),
-    );
+      data: (user) {
+        final userId = user?.id;
+        if (userId == null) {
+          return const ErrorPage(
+            error: "You need to be logged in to view this page.",
+          );
+        }
 
-    return Scaffold(
-      bottomNavigationBar: widget.isCreator != true
-          ? _buildBottomHoverButton(context, billingTeacher)
-          : null,
-      body: CustomScrollView(
-        controller: _scrollController,
-        slivers: <Widget>[
-          CustomSliverAppBar(
-            actions: actions,
-            percentageCollapsed: _percentageCollapsed,
-            headerText: widget.clas.name ?? "",
-            imgUrl: widget.clas.imageUrl ?? "",
-            tag: widget.clas.imageUrl,
-          )
-          // _buildSliverAppBar(context, _percentageCollapsed.value),
-          ,
-          SliverToBoxAdapter(
-            child: SingleClassBody(
-              classe: widget.clas,
-              classEvent: widget.classEvent,
+        final billingTeacher = widget.clas.owner?.teacher?.stripeId != null
+            ? widget.clas.owner
+            : null;
+
+        List<Widget> actions = [
+          ValueListenableBuilder<double>(
+            valueListenable: _percentageCollapsed,
+            builder: (context, percentage, _) {
+              return BackDropActionRow(
+                isCollapsed: percentage > appBarCollapsedThreshold,
+                classId: widget.clas.id!,
+                classObject: widget.clas,
+                initialFavorized: widget.clas.isInitiallyFavorized,
+                initialReported: widget.clas.flaggedByUser(userId),
+                initialInActive: widget.clas.inActiveFlaggsByUser(userId),
+                shareEvents: () => _shareEvent(
+                  widget.classEvent,
+                  widget.clas,
+                ),
+                isCreator: widget.isCreator,
+                classEvent: widget.classEvent,
+                classEventId: widget.classEvent?.id,
+              );
+            },
+          ),
+        ];
+
+        return Scaffold(
+          bottomNavigationBar:
+              widget.isCreator ? null : _buildBottomHoverButton(billingTeacher),
+          body: Padding(
+            padding: kIsWeb
+                ? EdgeInsets.symmetric(horizontal: 100.0)
+                : const EdgeInsets.all(0.0),
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                CustomSliverAppBar(
+                  actions: actions,
+                  percentageCollapsed: _percentageCollapsed,
+                  headerText: widget.clas.name ?? "",
+                  imgUrl: widget.clas.imageUrl ?? "",
+                  tag: widget.clas.imageUrl,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: Responsive.isDesktop(context)
+                        ? const EdgeInsets.symmetric(
+                            horizontal: AppPaddings.large,
+                          )
+                        : EdgeInsets.all(0),
+                    child: SingleClassBody(
+                      classe: widget.clas,
+                      classEvent: widget.classEvent,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 
-  BottomAppBar? _buildBottomHoverButton(
-      BuildContext context, ClassOwner? billingTeacher) {
+  BottomAppBar? _buildBottomHoverButton(ClassOwner? billingTeacher) {
     if (widget.classEvent != null &&
-        widget.classEvent!.classModel?.bookingOptions != null &&
         widget.classEvent!.classModel!.bookingOptions.isNotEmpty &&
         billingTeacher != null) {
-      return BottomAppBar(
+      if (kIsWeb) {
+        return BottomAppBar(
           elevation: 0,
-          child: BookingQueryHoverButton(classEvent: widget.classEvent!));
+          child: CustomBottomHoverButton(
+              content: const Text(
+                "Booking only possible on mobile",
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+              onPressed: () => showErrorToast(
+                    "Booking is currently only possible on mobile devices. Please use the AcroWorld app.",
+                  )),
+        );
+      }
+
+      return BottomAppBar(
+        elevation: 0,
+        child: BookingQueryHoverButton(
+          classEvent: widget.classEvent!,
+        ),
+      );
     } else if (widget.classEvent != null) {
       return null;
     }
     return BottomAppBar(
-        elevation: 0, child: Container(child: _buildCalendarButton(context)));
-  }
-
-  Widget _buildCalendarButton(BuildContext context) {
-    return CustomBottomHoverButton(
-      content: const Text(
-        "Calendar",
-        style: TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w700,
-          color: Colors.white,
+      elevation: 0,
+      child: CustomBottomHoverButton(
+        content: const Text(
+          "Calendar",
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+        ),
+        onPressed: () => buildMortal(
+          context,
+          CalenderModal(
+            classId: widget.clas.id!,
+            isCreator: widget.isCreator,
+          ),
         ),
       ),
-      onPressed: () => buildMortal(context,
-          CalenderModal(classId: widget.clas.id!, isCreator: widget.isCreator)),
     );
   }
 }

@@ -16,7 +16,6 @@ class TeacherEventsProvider extends ChangeNotifier {
 
   bool _isLoadingMyEvents = false;
   bool _isLoadingParticipatingEvents = false;
-  String? userId;
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
@@ -41,7 +40,7 @@ class TeacherEventsProvider extends ChangeNotifier {
   }
 
   // fetch more data
-  Future<void> fetchMore({bool myEvents = true}) async {
+  Future<void> fetchMore(String userId, {bool myEvents = true}) async {
     if (myEvents) {
       _isLoadingMyEvents = true;
       _offsetMyEvent += _limit;
@@ -51,7 +50,7 @@ class TeacherEventsProvider extends ChangeNotifier {
     }
     notifyListeners();
 
-    await fetchMyEvents(isRefresh: false, myEvents: myEvents);
+    await fetchMyEvents(userId, isRefresh: false, myEvents: myEvents);
 
     myEvents
         ? _isLoadingMyEvents = false
@@ -60,7 +59,7 @@ class TeacherEventsProvider extends ChangeNotifier {
   }
 
   // fetch classevents from the backend in a certain radius of the location
-  Future<void> fetchMyEvents(
+  Future<void> fetchMyEvents(String userId,
       {bool isRefresh = true, bool myEvents = true}) async {
     _isInitialized = true;
     _loading = true;

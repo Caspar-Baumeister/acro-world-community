@@ -1,9 +1,12 @@
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
-import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
-import 'package:acroworld/utils/helper_functions/logout.dart';
+import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingsDrawer extends StatelessWidget {
@@ -19,10 +22,8 @@ class SettingsDrawer extends StatelessWidget {
             children: <Widget>[
               const SizedBox(height: 20),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AccountSettingsPage(),
-                  ),
+                onTap: () => context.pushNamed(
+                  accountSettingsRoute,
                 ),
                 child: ListTile(
                     leading: Row(
@@ -41,10 +42,8 @@ class SettingsDrawer extends StatelessWidget {
               ),
               const Divider(color: Colors.grey, height: 1),
               GestureDetector(
-                onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const EssentialsPage(),
-                  ),
+                onTap: () => context.pushNamed(
+                  essentialsRoute,
                 ),
                 child: ListTile(
                     leading: Row(
@@ -84,12 +83,23 @@ class SettingsDrawer extends StatelessWidget {
                 )),
               ),
               const Divider(color: Colors.grey, height: 1),
-              buildMenuItem(
-                  text: "Log out",
-                  icon: Icons.logout,
-                  onPressed: () async {
-                    await logOut(context);
-                  }),
+              Consumer(builder: (context, ref, _) {
+                return ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: Text("Log out",
+                      style: Theme.of(context).textTheme.headlineSmall),
+                  onTap: () async {
+                    await ref.read(authProvider.notifier).signOut();
+                    ref.invalidate(userRiverpodProvider);
+                    ref.invalidate(userNotifierProvider);
+                    ref.invalidate(navigationProvider);
+                    // we don't need to route since the router listens to authentification changes
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      context.goNamed('auth');
+                    });
+                  },
+                );
+              }),
               Spacer(),
               VersionDisplay()
             ],

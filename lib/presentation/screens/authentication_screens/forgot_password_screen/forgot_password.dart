@@ -1,8 +1,9 @@
 import 'package:acroworld/data/graphql/http_api_urls.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
-import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({super.key, this.initialEmail});
@@ -57,7 +58,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
               onFieldSubmitted: (value) => onForgotPassword(),
             ),
             const SizedBox(height: 20.0),
-            StandardButton(
+            StandartButton(
               text: "Send email",
               onPressed: () {
                 onForgotPassword();
@@ -89,12 +90,10 @@ class ForgotPasswordState extends State<ForgotPassword> {
     );
 
     if (response?["data"]["reset_password"]?["success"] == true) {
+      print("Success: ${response?["data"]}");
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-              builder: (context) =>
-                  ForgotPasswordSuccess(email: emailController.text)),
-        );
+        context.pushReplacementNamed(forgotPasswordSuccessRoute,
+            queryParameters: {"email": emailController.text});
       });
     } else {
       setState(() {

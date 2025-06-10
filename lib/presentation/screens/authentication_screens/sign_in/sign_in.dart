@@ -1,206 +1,182 @@
+import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
-import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/discover_page_route.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
+import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-class SignIn extends StatefulWidget {
-  const SignIn({required this.toggleView, super.key});
-  final Function toggleView;
+class SignIn extends ConsumerStatefulWidget {
+  const SignIn({required this.toggleView, this.redirectAfter, super.key});
+
+  final VoidCallback toggleView;
+  final String? redirectAfter;
 
   @override
-  SignInState createState() => SignInState();
+  ConsumerState<SignIn> createState() => _SignInState();
 }
 
-class SignInState extends State<SignIn> {
+class _SignInState extends ConsumerState<SignIn> {
   final _formKey = GlobalKey<FormState>();
   String error = '';
-  String errorEmail = "";
-  String errorPassword = "";
-
-  bool loading = false;
 
   bool isObscure = true;
 
-  TextEditingController? emailController;
-  TextEditingController? passwordController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
 
   @override
   void initState() {
     super.initState();
-
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
 
   @override
-  Widget build(BuildContext context) {
-    bool isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
-    return Scaffold(
-      body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight:
-                    isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                child: AutofillGroup(
-                  child: Column(
-                    mainAxisAlignment: isKeyboardOpen
-                        ? MainAxisAlignment.start
-                        : MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 40.0),
-                        child: Image(
-                          image: AssetImage('assets/logo/logo_transparent.png'),
-                          height: 100,
+  Future<void> onSignin() async {
+    if (!mounted) return;
+    setState(() {
+      error = '';
+    });
+
+    if (!_formKey.currentState!.validate()) return;
+
+    try {
+      await ref
+          .read(authProvider.notifier)
+          .signIn(emailController.text, passwordController.text);
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      setState(() {
+        error = e.error;
+      });
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
+      if (!mounted) return;
+      setState(() {
+        error = 'An unexpected error occurred. Please try again later.';
+      });
+    }
+  }
+
+  Widget _form(BuildContext context) {
+    final authAsync = ref.watch(authProvider);
+    final isLoading = authAsync.isLoading;
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom != 0.0;
+    return SafeArea(
+      child: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: Responsive.isMobile(context)
+                ? BoxConstraints(
+                    minHeight:
+                        isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
+                  )
+                : BoxConstraints(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50.0),
+              child: AutofillGroup(
+                child: Column(
+                  mainAxisAlignment: isKeyboardOpen
+                      ? MainAxisAlignment.start
+                      : MainAxisAlignment.center,
+                  children: <Widget>[
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 40.0),
+                      child: Image(
+                        image: AssetImage('assets/logo/logo_transparent.png'),
+                        height: 100,
+                      ),
+                    ),
+                    InputFieldComponent(
+                      controller: emailController,
+                      autofillHints: const [AutofillHints.email],
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      labelText: 'Email',
+                      autoFocus: true,
+                      validator: (val) => (val == null || val.isEmpty)
+                          ? 'Enter an email'
+                          : null,
+                    ),
+                    const SizedBox(height: 20.0),
+                    InputFieldComponent(
+                      controller: passwordController,
+                      textInputAction: TextInputAction.done,
+                      autofillHints: const [AutofillHints.password],
+                      obscureText: isObscure,
+                      labelText: 'Password',
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isObscure ? Icons.visibility : Icons.visibility_off,
                         ),
+                        onPressed: () => setState(() => isObscure = !isObscure),
                       ),
-                      InputFieldComponent(
-                        controller: emailController!,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        textInputAction: TextInputAction.next,
-                        labelText: 'Email',
-                        autoFocus: true,
-                        validator: (val) => (val == null || val.isEmpty)
-                            ? 'Enter an email'
-                            : null,
-                      ),
-                      errorEmail != ""
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.only(top: 8.0, left: 10),
-                              child: Text(
-                                errorEmail,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
-                      const SizedBox(height: 20.0),
-                      InputFieldComponent(
-                          controller: passwordController!,
-                          textInputAction: TextInputAction.done,
-                          autofillHints: const [AutofillHints.password],
-                          obscureText: isObscure,
-                          labelText: 'Password',
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              // Based on passwordVisible state choose the icon
-                              isObscure
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                              color: Colors.black,
-                            ),
-                            onPressed: () {
-                              // Update the state i.e. toogle the state of passwordVisible variable
-                              setState(() {
-                                isObscure = !isObscure;
-                              });
-                            },
-                          ),
-                          onFieldSubmitted: (_) async {
-                            if (loading == false) {
-                              setState(() {
-                                loading = true;
-                              });
-
-                              await onSignin();
-                              setState(() {
-                                loading = false;
-                              });
-                            }
-                          }),
-                      errorPassword != ""
-                          ? Container(
-                              alignment: Alignment.centerLeft,
-                              padding:
-                                  const EdgeInsets.only(top: 12.0, left: 10),
-                              child: Text(
-                                errorPassword,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
-                      const SizedBox(height: 20.0),
-                      StandardButton(
-                        text: "Login",
-                        onPressed: () async {
-                          setState(() {
-                            loading = true;
-                          });
-                          await onSignin();
-                          setState(() {
-                            loading = false;
-                          });
-                        },
-                        loading: loading,
-                        isFilled: true,
-                        buttonFillColor: CustomColors.primaryColor,
-                      ),
-                      error != ""
-                          ? Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 12.0, left: 10),
-                              child: Text(
-                                error,
-                                style: const TextStyle(
-                                    color: Colors.red, fontSize: 14.0),
-                              ),
-                            )
-                          : Container(),
+                      onFieldSubmitted: (_) {
+                        if (!isLoading) onSignin();
+                      },
+                    ),
+                    const SizedBox(height: 20.0),
+                    StandartButton(
+                      text: "Login",
+                      onPressed: isLoading ? () {} : onSignin,
+                      loading: isLoading,
+                      isFilled: true,
+                      buttonFillColor: CustomColors.primaryColor,
+                    ),
+                    if (error.isNotEmpty)
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0)
-                            .copyWith(top: 8, bottom: 20),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (context) => ForgotPassword(
-                                            initialEmail: emailController?.text,
-                                          )),
-                                );
-                              },
-                              child: Text(
-                                "Forgot password",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge!
-                                    .copyWith(
-                                        color: CustomColors.linkTextColor),
-                              ),
-                            ),
-                          ],
+                        padding: const EdgeInsets.only(top: 12.0),
+                        child: Text(
+                          error,
+                          style: const TextStyle(
+                              color: Colors.red, fontSize: 14.0),
                         ),
                       ),
-                      LinkButtonComponent(
-                        text: "Register",
-                        onPressed: () => widget.toggleView(),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 8, 8, 20)
+                          .copyWith(bottom: 20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              context.pushNamed(
+                                forgotPasswordRoute,
+                                queryParameters: {
+                                  "email": emailController.text,
+                                },
+                              );
+                            },
+                            child: Text(
+                              "Forgot password",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge
+                                  ?.copyWith(color: CustomColors.linkTextColor),
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        height: 40,
-                      )
-                    ],
-                  ),
+                    ),
+                    LinkButtonComponent(
+                      text: "Register",
+                      onPressed: widget.toggleView,
+                    ),
+                    const SizedBox(height: 40),
+                  ],
                 ),
               ),
             ),
@@ -210,64 +186,28 @@ class SignInState extends State<SignIn> {
     );
   }
 
-  // triggert when login is pressed
-  Future<void> onSignin() async {
-    setState(() {
-      error = '';
-      errorEmail = '';
-      errorPassword = '';
-    });
-
-    if (_formKey.currentState == null || !_formKey.currentState!.validate()) {
-      return;
-    }
-
-    // get the token trough the credentials
-    // (invalid credentials) return false
-    try {
-      await TokenSingletonService()
-          .login(emailController!.text, passwordController!.text)
-          .then((response) {
-        if (response["errors"] != null) {
-          final errorMap = parseGraphQLError(response);
-
-          setState(() {
-            errorEmail = errorMap['emailError'] ?? "";
-            errorPassword = errorMap['passwordError'] ?? "";
-            error = errorMap['error'] ?? "";
-          });
-        } else if (response["error"] == false) {
-          final userProvider =
-              Provider.of<UserProvider>(context, listen: false);
-          userProvider.setUserFromToken().then((value) {
-            if (value) {
-              // NotificationService().updateToken();
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                Navigator.of(context).push(
-                  DiscoverPageRoute(),
-                );
-              });
-            } else {
-              print("failed token");
-              TokenSingletonService().getToken().then((value) => print(value));
-              setState(() {
-                error = 'We could not log you in. Please try again later';
-              });
-            }
-          });
-        } else {
-          CustomErrorHandler.captureException(response,
-              stackTrace: StackTrace.current);
-          setState(() {
-            error = 'An unexpected error occured. Please try again later';
-          });
-        }
-      });
-    } catch (e, s) {
-      CustomErrorHandler.captureException(e, stackTrace: s);
-      setState(() {
-        error = 'An unexpected error occured. Please try again later';
-      });
-    }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Responsive(
+        mobile: _form(context),
+        desktop: Center(
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 700),
+            padding: const EdgeInsets.all(32.0),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12)),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 40.0, horizontal: 32.0),
+                child: _form(context),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

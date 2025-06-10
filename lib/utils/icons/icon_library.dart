@@ -33,6 +33,8 @@ extension IconDataExtension on IconLibrary {
         return Icons.dashboard;
       case IconLibrary.invites:
         return Icons.mail;
+      case IconLibrary.world:
+        return Icons.public;
       default:
         throw Exception("Icon not found");
     }

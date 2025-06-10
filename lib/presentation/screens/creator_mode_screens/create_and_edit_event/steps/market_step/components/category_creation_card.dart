@@ -179,7 +179,7 @@ class CategoryCreationCard extends StatelessWidget {
           const SizedBox(height: AppPaddings.medium),
 
           // Button to add a new booking option to this category
-          StandardButton(
+          StandartButton(
             text: 'Add Ticket',
             onPressed: () {
               buildMortal(

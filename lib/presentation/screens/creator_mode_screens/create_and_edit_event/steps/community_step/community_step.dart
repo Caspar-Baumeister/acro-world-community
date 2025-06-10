@@ -84,7 +84,7 @@ class _CommunityStepState extends State<CommunityStep> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StandardButton(
+                StandartButton(
                   onPressed: () {
                     eventCreationAndEditingProvider.setPage(1);
                     setState(() {});
@@ -93,7 +93,7 @@ class _CommunityStepState extends State<CommunityStep> {
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
                 const SizedBox(width: AppPaddings.medium),
-                StandardButton(
+                StandartButton(
                   onPressed: _onNext,
                   text: "Next",
                   isFilled: true,

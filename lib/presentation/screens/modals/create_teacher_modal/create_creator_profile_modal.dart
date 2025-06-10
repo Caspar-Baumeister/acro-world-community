@@ -2,12 +2,13 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class CreateCreatorProfileModal extends StatefulWidget {
@@ -38,10 +39,11 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             ),
           ),
           const SizedBox(height: AppPaddings.medium),
-          StandardButton(
+          StandartButton(
             text: "Continue",
             onPressed: onPressed,
             loading: isLoading,
+            isFilled: true,
           ),
         ],
       ),
@@ -92,7 +94,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
         final graphQLSingleton = GraphQLClientSingleton();
         graphQLSingleton.updateClient(true);
         // navigate to the create creator profile page
-        Navigator.of(context).push(CreateCreatorProfilePageRoute());
+        context.pushNamed(editCreatorProfileRoute);
       });
     } else {
       // Send error

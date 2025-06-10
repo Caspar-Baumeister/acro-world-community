@@ -67,7 +67,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
         if (!isClassBookingSummary)
           Padding(
             padding: const EdgeInsets.only(bottom: AppPaddings.medium),
-            child: StandardButton(
+            child: StandartButton(
                 text: "All bookings of this event",
                 isFilled: true,
                 onPressed: () {
@@ -81,7 +81,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
                 }),
           ),
 
-        StandardButton(
+        StandartButton(
             text: "Close",
             onPressed: () {
               Navigator.of(context).pop();

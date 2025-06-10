@@ -221,15 +221,15 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StandardButton(
-                    width: MediaQuery.of(context).size.width * 0.3,
+                  StandartButton(
+                    width: null,
                     text: "Cancel",
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   const SizedBox(width: 8),
-                  StandardButton(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    text: widget.editQuestion != null ? "Edit" : "Add",
+                  StandartButton(
+                    width: null,
+                    text: "Confirm",
                     isFilled: true,
                     onPressed: () {
                       final provider =

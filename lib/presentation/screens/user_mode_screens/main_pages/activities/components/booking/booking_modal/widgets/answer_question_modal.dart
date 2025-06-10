@@ -163,14 +163,14 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StandardButton(
+                  StandartButton(
                       width: MediaQuery.of(context).size.width * 0.3,
                       text: "Cancel",
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   SizedBox(width: AppPaddings.small),
-                  StandardButton(
+                  StandartButton(
                       width: MediaQuery.of(context).size.width * 0.5,
                       text: editAnswer != null ? "Save" : "Add",
                       isFilled: true,

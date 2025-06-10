@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/presentation/components/buttons/custom_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -136,9 +137,9 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                                   color: CustomColors.successTextColor),
                     ),
                     const SizedBox(height: AppPaddings.medium),
-                    CustomButton(
-                      "Edit event description",
-                      () {
+                    StandartButton(
+                      text: "Edit event description",
+                      onPressed: () {
                         Navigator.push(
                           context,
                           EditDescriptionPageRoute(
@@ -169,6 +170,28 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                             .setLocationDescription(locationDescription ?? '');
                       },
                     ),
+                    const SizedBox(height: AppPaddings.medium),
+                    // choose from country
+                    CustomCountryDropdown(
+                      currentlySelected: provider.country,
+                      onCountrySelected:
+                          (String? country, String? countryCode) {
+                        provider.countryCode = countryCode;
+                        provider.setCountry(country);
+                      },
+                    ),
+                    if (provider.countryCode != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: AppPaddings.medium),
+                        child: RegionDropdown(
+                          countryCode: provider.countryCode!,
+                          currentlySelected: provider.region,
+                          onRegionSelected: (String? region) {
+                            provider.setRegion(region);
+                          },
+                        ),
+                      ),
+
                     const SizedBox(height: AppPaddings.medium),
                     CustomQueryOptionInputComponent(
                       hintText: 'What kind of event is it?',
@@ -210,7 +233,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
             children: [
               Consumer<EventCreationAndEditingProvider>(
                   builder: (context, provider, child) {
-                return StandardButton(
+                return StandartButton(
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -219,7 +242,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 );
               }),
               const SizedBox(width: AppPaddings.medium),
-              StandardButton(
+              StandartButton(
                 onPressed: _onNext,
                 text: "Next",
                 isFilled: true,

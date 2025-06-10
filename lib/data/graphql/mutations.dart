@@ -1,3 +1,4 @@
+import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Mutations {
@@ -315,12 +316,14 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$classOwners: [class_owners_insert_input!]!
     \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
+    \$location_country: String
   ) {
     insert_classes_one(
       object: {
         name: \$name,
         description: \$description,
         image_url: \$imageUrl,
+        location_country: \$location_country,
         event_type: \$eventType,
         location: {type: "Point", coordinates: \$location},
         location_name: \$locationName,
@@ -354,6 +357,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$location: String!,
     \$locationName: String!,
     \$timezone: String!,
+    \$location_country: String,
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
     \$classOwners: [class_owners_insert_input!]!
@@ -378,6 +382,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         location_name: \$locationName,
         timezone: \$timezone,
         url_slug: \$urlSlug,
+        location_country: \$location_country,
         recurring_patterns: {
           data: \$recurringPatterns
         },
@@ -442,13 +447,15 @@ mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!)
 }
 """);
 
-//   static final setGender = gql("""
-// mutation setGender(\$user_id : uuid!, \$gender_id : uuid!) {
-//   update_users_by_pk(pk_columns: {id: \$user_id}, _set: {acro_role_id: \$gender_id}) {
-//     id
-//   }
-// }
-// """);
+  /// USER ///
+
+  static final updateUser = '''
+      mutation updateUser(\$id: uuid!, \$changes: users_set_input!) {
+        update_users_by_pk(pk_columns: {id: \$id}, _set: \$changes) {
+          ${Fragments.userFragment}
+        }
+      }
+    ''';
 
   static final setUserLevel = gql("""
 mutation setUserLevel(\$user_id : uuid!, \$level_id : uuid!) {
@@ -468,6 +475,14 @@ mutation confirmPayment(\$payment_intent_id : uuid!) {
   static final updateFcmToken = gql("""
     mutation UpdateFcmToken(\$fcmToken: String!) {
       update_users(_set: {fcm_token: \$fcmToken}, where: {}) {
+        affected_rows
+      }
+    }
+  """);
+
+  static final updateOrInsertFcmToken = gql("""
+   mutation UpdateFcmToken(\$fcmToken: String!, \$userId: uuid!) {
+      update_users(_set: {fcm_token: \$fcmToken}, where: {id: {_eq: \$userId}}) {
         affected_rows
       }
     }
@@ -549,22 +564,6 @@ mutation confirmPayment(\$payment_intent_id : uuid!) {
 }
 
 """);
-
-  static final participateToClass = gql("""
-  mutation participateToClass (\$class_event_id: uuid){
-  insert_class_events_participants_one(object: {class_event_id: \$class_event_id}) {
-    class_event_id
-  }
-}
-
-""");
-
-  static final leaveParticipateClass = gql("""
-mutation leaveParticipateClass (\$class_event_id: uuid, \$user_id: uuid){
-  delete_class_events_participants(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}}) {
-    affected_rows
-  }
-}""");
 
   static final deleteAccount = gql("""
 mutation deleteAccount{

@@ -1,4 +1,5 @@
 import 'package:acroworld/data/graphql/http_api_urls.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -64,41 +65,50 @@ class TokenSingletonService {
   }
 
   Future<String?> _fetchToken() async {
-    if (await _isTokenExpired()) {
-      // check if there is a refresh token in shared preferences
-      String? refreshToken =
-          await LocalStorageService.get(Preferences.refreshToken);
-      // if there is no refresh token, return null
-      if (refreshToken == null) {
-        print("refetch token was null in fetchtoken");
-        return null;
-      }
-      print("refetch token was not null in fetchtoken");
-      // if there is a refresh token, fetch a new token from the backend
-      dynamic response =
-          await DatabaseService().loginWithRefreshToken(refreshToken);
-      if (response["data"]?["loginWithRefreshToken_v2"]?["token"] != null) {
-        String token = response["data"]["loginWithRefreshToken_v2"]["token"];
-
-        final userCredential =
-            await FirebaseAuth.instance.signInWithCustomToken(token);
-        _token = await userCredential.user?.getIdToken();
-        await LocalStorageService.set(Preferences.token, _token);
-
-        // if there is a new refresh token, save it in shared preferences
-        if (response["data"]?["loginWithRefreshToken_v2"]?["refreshToken"] !=
-            null) {
-          refreshToken =
-              response["data"]["loginWithRefreshToken_v2"]["refreshToken"];
-          await LocalStorageService.set(Preferences.refreshToken, refreshToken);
+    try {
+      if (await _isTokenExpired()) {
+        // check if there is a refresh token in shared preferences
+        String? refreshToken =
+            await LocalStorageService.get(Preferences.refreshToken);
+        // if there is no refresh token, return null
+        if (refreshToken == null) {
+          print("refetch token was null in fetchtoken");
+          return null;
         }
+        print("refetch token was not null in fetchtoken");
+        // if there is a refresh token, fetch a new token from the backend
+        dynamic response =
+            await DatabaseService().loginWithRefreshToken(refreshToken);
+        if (response["data"]?["loginWithRefreshToken_v2"]?["token"] != null) {
+          String token = response["data"]["loginWithRefreshToken_v2"]["token"];
 
-        return _token;
-      } else {
-        return null;
+          final userCredential =
+              await FirebaseAuth.instance.signInWithCustomToken(token);
+          _token = await userCredential.user?.getIdToken();
+          await LocalStorageService.set(Preferences.token, _token);
+
+          // if there is a new refresh token, save it in shared preferences
+          if (response["data"]?["loginWithRefreshToken_v2"]?["refreshToken"] !=
+              null) {
+            refreshToken =
+                response["data"]["loginWithRefreshToken_v2"]["refreshToken"];
+            await LocalStorageService.set(
+                Preferences.refreshToken, refreshToken);
+          }
+
+          return _token;
+        } else {
+          print("Failed to fetch token: ${response["error"]}");
+          return null;
+        }
       }
+      return _token;
+    } catch (e, stackTrace) {
+      CustomErrorHandler.captureException(
+          "error in fetching token from backend ${e.toString()}",
+          stackTrace: stackTrace);
+      return null;
     }
-    return _token;
   }
 
   // LOGIN //

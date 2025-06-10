@@ -5,6 +5,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
@@ -14,9 +15,10 @@ import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:provider/provider.dart' as provider;
 
-class CreatorSettingsActionModal extends StatelessWidget {
+class CreatorSettingsActionModal extends ConsumerWidget {
   const CreatorSettingsActionModal(
       {super.key,
       required this.classModel,
@@ -28,7 +30,8 @@ class CreatorSettingsActionModal extends StatelessWidget {
   final ClassEvent? classEvent;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final userAsync = ref.watch(userRiverpodProvider);
     return BaseModal(
       child: Container(
         color: CustomColors.backgroundColor,
@@ -39,7 +42,8 @@ class CreatorSettingsActionModal extends StatelessWidget {
               leading: const Icon(Icons.edit),
               onTap: () async {
                 // Perform the asynchronous operation
-                await Provider.of<EventCreationAndEditingProvider>(context,
+                await provider.Provider.of<EventCreationAndEditingProvider>(
+                        context,
                         listen: false)
                     .setClassFromExisting(classModel.urlSlug!, true, false);
 
@@ -80,8 +84,12 @@ class CreatorSettingsActionModal extends StatelessWidget {
                   Icons.flag_circle_outlined,
                 ),
                 onTap: () {
+                  if (userAsync.value == null) {
+                    showErrorToast("User not found");
+                    return;
+                  }
                   // Show modal
-                  _showFlagDialog(context);
+                  _showFlagDialog(context, userAsync.value!.id!);
                 },
               ),
             ListTile(
@@ -109,7 +117,7 @@ class CreatorSettingsActionModal extends StatelessWidget {
     );
   }
 
-  void _showFlagDialog(BuildContext context) {
+  void _showFlagDialog(BuildContext context, String userId) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -152,7 +160,7 @@ class CreatorSettingsActionModal extends StatelessWidget {
                       child: const Text("Close",
                           style: TextStyle(color: Colors.grey)),
                     ),
-                    StandardButton(
+                    StandartButton(
                       text: "Resolve Flags",
                       width: MediaQuery.of(context).size.width * 0.3,
                       isFilled: true,
@@ -163,9 +171,9 @@ class CreatorSettingsActionModal extends StatelessWidget {
                             .then((value) {
                           if (value) {
                             showSuccessToast("Flags resolved, reload page");
-                            Provider.of<TeacherEventsProvider>(context,
+                            provider.Provider.of<TeacherEventsProvider>(context,
                                     listen: false)
-                                .fetchMyEvents(isRefresh: true);
+                                .fetchMyEvents(userId, isRefresh: true);
                             Navigator.of(context).pop();
                           } else {
                             throw Exception("value not true");
@@ -184,13 +192,14 @@ class CreatorSettingsActionModal extends StatelessWidget {
   }
 }
 
-class DeleteClassModal extends StatelessWidget {
+class DeleteClassModal extends ConsumerWidget {
   const DeleteClassModal({super.key, required this.classModel});
 
   final ClassModel classModel;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final userAsync = ref.watch(userRiverpodProvider);
     return BaseModal(
       child: Column(
         children: [
@@ -206,7 +215,7 @@ class DeleteClassModal extends StatelessWidget {
           // open bookings
           // TODO add open bookings
           // delete button
-          StandardButton(
+          StandartButton(
               text: "Delete",
               onPressed: () {
                 try {
@@ -216,9 +225,14 @@ class DeleteClassModal extends StatelessWidget {
                       .then((value) {
                     if (value) {
                       showSuccessToast("Class deleted");
+                      if (userAsync.value == null) {
+                        showErrorToast("User not found");
+                        return;
+                      }
 
-                      Provider.of<TeacherEventsProvider>(context, listen: false)
-                          .fetchMyEvents(isRefresh: true);
+                      provider.Provider.of<TeacherEventsProvider>(context,
+                              listen: false)
+                          .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
                       Navigator.of(context).pushAndRemoveUntil(
                           MyEventsPageRoute(), (route) => false);
                     } else {

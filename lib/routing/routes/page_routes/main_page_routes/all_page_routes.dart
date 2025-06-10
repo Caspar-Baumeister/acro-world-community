@@ -10,12 +10,6 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_
 import 'package:acroworld/routing/routes/base_route.dart';
 import 'package:acroworld/routing/transitions.dart';
 
-class CreateCreatorProfilePageRoute extends BaseRoute {
-  CreateCreatorProfilePageRoute()
-      : super(const CreateCreatorProfilePage(),
-            guards: [], transitionsBuilderFunction: Transitions.slideBottom);
-}
-
 class EditCreatorProfilePageRoute extends BaseRoute {
   EditCreatorProfilePageRoute()
       : super(const CreateCreatorProfilePage(isEditing: true),

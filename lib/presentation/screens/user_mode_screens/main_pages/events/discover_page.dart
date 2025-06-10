@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_appbar.dart';
@@ -15,9 +14,6 @@ class DiscoverPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const BasePage(
       appBar: DiscoveryAppBar(),
-      bottomNavigationBar: PrimaryBottomNavbar(
-        selectedIndex: 0,
-      ),
       makeScrollable: false,
       child: DiscoverBody(),
     );

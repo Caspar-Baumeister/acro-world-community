@@ -13,6 +13,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
+import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -35,6 +36,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _errorMesssage;
 
   // class properties
+  String? country;
+  String? countryCode;
+  String? region;
   String? _classId;
   String _title = '';
   String _slug = '';
@@ -156,6 +160,16 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setCountry(String? country) {
+    this.country = country;
+    notifyListeners();
+  }
+
+  void setRegion(String? region) {
+    this.region = region;
+    notifyListeners();
+  }
+
   void setSlug(String slug) {
     _slug = slug;
     notifyListeners();
@@ -266,6 +280,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     _title = '';
     _slug = '';
     _description = '';
+    country = null;
+    region = null;
+    countryCode = null;
     _eventType = null;
     _location = null;
     _locationDescription = null;
@@ -336,6 +353,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
+        'location_country': country,
+        'location_city': region,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
       };
@@ -447,6 +466,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         ],
         'locationName': _locationName,
         'timezone': timezone,
+        'location_country': country,
+        'location_city': region,
         'urlSlug': _slug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
@@ -530,6 +551,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _title = fromClass.name ?? '';
       _slug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
+      country = fromClass.country;
+
+      region = fromClass.city;
+      countryCode = getCountryCode(fromClass.country);
       _eventType = fromClass.eventType != null
           ? mapEventTypeToString(fromClass.eventType!)
           : null;

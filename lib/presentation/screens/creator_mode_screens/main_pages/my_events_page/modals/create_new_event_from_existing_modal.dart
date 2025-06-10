@@ -54,7 +54,9 @@ class _CreateNewEventFromExistingModalState
                         currentOption: currentOption,
                         onOptionSet: (option) {
                           setState(() => currentOption = items.firstWhere(
-                              (element) => element.value == option));
+                              (element) => element.value == option,
+                              orElse: () => OptionObjects(
+                                  "Without template", "Without template")));
                         },
                         options: [
                               OptionObjects(
@@ -64,7 +66,7 @@ class _CreateNewEventFromExistingModalState
                         hintText: "Select event as template"),
                   ),
             const SizedBox(height: AppPaddings.toLarge),
-            StandardButton(
+            StandartButton(
               isFilled: true,
               text: items.isEmpty
                   ? "Create your first event"

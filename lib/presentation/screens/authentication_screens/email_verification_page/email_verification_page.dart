@@ -1,95 +1,75 @@
-// Replace with your actual imports
+import 'dart:async';
+
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/provider/user_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/profile_page_route.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-/// A page that verifies a user's email using a provided [code].
-class EmailVerificationPage extends StatefulWidget {
+class EmailVerificationPage extends ConsumerStatefulWidget {
   final String? code;
-
-  const EmailVerificationPage({
-    super.key,
-    required this.code,
-  });
+  const EmailVerificationPage({super.key, required this.code});
 
   @override
-  State<EmailVerificationPage> createState() => _EmailVerificationPageState();
+  ConsumerState<EmailVerificationPage> createState() =>
+      _EmailVerificationPageState();
 }
 
-class _EmailVerificationPageState extends State<EmailVerificationPage> {
-  /// Indicates if the email verification is currently in progress
+class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
   bool _isVerifying = false;
+  final codeController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _verifyCode();
+    // Delay to allow widget tree to finish building before navigation
+    WidgetsBinding.instance.addPostFrameCallback((_) => _verifyCode());
   }
 
-  /// Verifies the user's email via [UserService].
-  /// If verification succeeds, navigates to ProfilePage.
-  /// Otherwise, navigates to ConfirmEmailPage for re-attempt or guidance.
   Future<void> _verifyCode() async {
-    // If already verifying, skip
-    print(
-        "Verifying email with code: ${widget.code}, isVerifying: $_isVerifying");
     if (_isVerifying) return;
-
     setState(() => _isVerifying = true);
 
-    // If no code is provided, immediately fail and navigate
+    // No code → bail out
     if (widget.code == null || widget.code!.isEmpty) {
       showErrorToast("Invalid verification code");
-      if (mounted) {
-        Navigator.of(context).pushReplacement(ProfilePageRoute());
-      }
+      if (mounted) context.goNamed(profileRoute);
       setState(() => _isVerifying = false);
       return;
     }
 
     try {
       final verified = await UserService().verifyCode(widget.code!);
-      print("Email verification result: $verified");
-      if (verified == null || verified == false) {
-        // Verification failed
+      if (verified != true) {
         showErrorToast("Error verifying email");
-        if (mounted) {
-          Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
-        }
+        if (mounted) context.goNamed(confirmEmailRoute);
       } else {
-        // Verification success
         showSuccessToast("Email verified successfully");
-        if (mounted) {
-          // Update the user data after successful verification
-          Provider.of<UserProvider>(context, listen: false).setUserFromToken();
-          Navigator.of(context).pushReplacement(ProfilePageRoute());
-        }
+        // Invalidate the user so downstream UIs refetch with updated isEmailVerified
+        ref.invalidate(userRiverpodProvider);
+        if (mounted) context.goNamed(profileRoute);
       }
-    } catch (e, stackTrace) {
-      // Log the error for further inspection
-      CustomErrorHandler.captureException(e, stackTrace: stackTrace);
-
-      // Show user-friendly error
+    } catch (e, st) {
+      CustomErrorHandler.captureException(e.toString(), stackTrace: st);
       showErrorToast("Error verifying email");
-      if (mounted) {
-        Navigator.of(context).pushReplacement(ConfirmEmailPageRoute());
-      }
+      if (mounted) context.goNamed(confirmEmailRoute);
     } finally {
-      if (mounted) {
-        setState(() => _isVerifying = false);
-      }
+      if (mounted) setState(() => _isVerifying = false);
     }
   }
 
-  /// Allows the user to re-trigger the verification via pull-to-refresh.
   Future<void> _onRefresh() => _verifyCode();
+
+  @override
+  void dispose() {
+    codeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +78,8 @@ class _EmailVerificationPageState extends State<EmailVerificationPage> {
       makeScrollable: false,
       child: RefreshIndicator(
         onRefresh: _onRefresh,
-        // Wrapping in a scroll view so that pull-to-refresh works
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          // Force at least full screen height so pull-to-refresh always works
           child: Container(
             constraints: BoxConstraints(
               minHeight: MediaQuery.of(context).size.height,

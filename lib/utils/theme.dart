@@ -24,10 +24,18 @@ class MyThemes {
       ),
       indicatorColor: CustomColors.primaryColor,
       dividerColor: CustomColors.inactiveBorderColor,
+      bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+        backgroundColor: CustomColors.backgroundColor,
+        selectedItemColor: CustomColors.primaryTextColor,
+        unselectedItemColor: CustomColors.secondaryTextColor,
+        selectedIconTheme: IconThemeData(color: CustomColors.primaryTextColor),
+        unselectedIconTheme:
+            IconThemeData(color: CustomColors.secondaryTextColor),
+      ),
       dividerTheme:
           const DividerThemeData(color: CustomColors.inactiveBorderColor),
       scaffoldBackgroundColor: CustomColors.backgroundColor,
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         indicator: BoxDecoration(
           border: Border(
             bottom: BorderSide(
@@ -70,7 +78,7 @@ class MyThemes {
         ),
       ),
       // set modal background color
-      dialogTheme: const DialogTheme(
+      dialogTheme: const DialogThemeData(
         backgroundColor: CustomColors.backgroundColor,
       ),
       drawerTheme: const DrawerThemeData(
@@ -97,7 +105,7 @@ class MyThemes {
       brightness: Brightness.light,
       highlightColor: CustomColors.highlightedColor,
       colorScheme: ColorScheme.fromSwatch().copyWith(
-          background: CustomColors.backgroundColor,
+          surface: CustomColors.backgroundColor,
           surfaceTint: CustomColors.backgroundColor));
 
   // maybe for outdoor

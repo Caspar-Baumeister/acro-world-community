@@ -24,7 +24,7 @@ class QuestionPage extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StandardButton(
+                StandartButton(
                   text: "Done",
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -32,7 +32,7 @@ class QuestionPage extends StatelessWidget {
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
                 SizedBox(width: AppPaddings.small),
-                StandardButton(
+                StandartButton(
                   text: "Add Question",
                   onPressed: () {
                     buildMortal(context, AskQuestionModal());

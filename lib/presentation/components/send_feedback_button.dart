@@ -1,25 +1,39 @@
-import 'package:acroworld/provider/user_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FeedbackPopUp extends StatefulWidget {
+class FeedbackPopUp extends ConsumerStatefulWidget {
   const FeedbackPopUp({super.key, required this.subject, required this.title});
 
   final String subject;
   final String title;
 
   @override
-  FeedbackPopUpState createState() => FeedbackPopUpState();
+  ConsumerState<FeedbackPopUp> createState() => _FeedbackPopUpState();
 }
 
-class FeedbackPopUpState extends State<FeedbackPopUp> {
-  late TextEditingController _emailController;
+class _FeedbackPopUpState extends ConsumerState<FeedbackPopUp> {
+  late final TextEditingController _emailController;
   final _feedbackController = TextEditingController();
+  bool _initialized = false;
 
-  void _sendEmail() async {
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _feedbackController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendEmail() async {
     final Email email = Email(
       body: _feedbackController.text,
       subject: widget.subject,
@@ -31,40 +45,39 @@ class FeedbackPopUpState extends State<FeedbackPopUp> {
       await FlutterEmailSender.send(email);
     } catch (error) {
       if (error is PlatformException && error.code == 'not_available') {
-        showSuccessToast(
-            "No email clients found! Please contact us directly at info@acroworld.de");
+        showErrorToast(
+          "No email clients found! Please contact us at info@acroworld.de",
+        );
       } else {
         showErrorToast(
-            "An error occurred while sending feedback. Please contact us directly at info@acroworld.de");
-        // Handle other errors, or show a generic error message
+          "An error occurred sending feedback. Please contact us at info@acroworld.de",
+        );
       }
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    if (Provider.of<UserProvider>(context, listen: false).activeUser != null) {
-      _emailController = TextEditingController(
-          text: Provider.of<UserProvider>(context, listen: false)
-                  .activeUser!
-                  .email ??
-              "");
-    } else {
-      _emailController = TextEditingController(text: "");
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userRiverpodProvider);
+
+    userAsync.whenData((user) {
+      if (!_initialized) {
+        _emailController.text = user?.email ?? '';
+        _initialized = true;
+      }
+    });
+
     return CupertinoAlertDialog(
       title: Text(widget.title),
       content: Column(
         children: <Widget>[
-          Container(
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.only(top: 10.0),
-              child: const Text("Your Email")),
+          const Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(top: 10.0),
+              child: Text("Your Email"),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 10.0),
             child: CupertinoTextField(
