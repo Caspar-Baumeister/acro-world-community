@@ -65,11 +65,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F78B5A64C2031CA98618B502 /* Pods_Runner.framework in Frameworks */,
-<<<<<<< HEAD
 				CC0C3709374FB64A2C23C6FB /* Pods_Runner.framework in Frameworks */,
-=======
-				7E07CE36309B32A9CEFDC967 /* Pods_Runner.framework in Frameworks */,
->>>>>>> origin/web-checkout
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
