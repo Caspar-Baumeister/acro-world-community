@@ -1,5 +1,6 @@
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
 
@@ -17,62 +18,11 @@ class CustomCountryDropdown extends StatelessWidget {
     this.footnoteText,
   });
 
-  // Map of country code to full country name.
-  static const Map<String, String> _countryMap = {
-    "AU": "Australia",
-    "AT": "Austria",
-    "BE": "Belgium",
-    "BG": "Bulgaria",
-    "BR": "Brazil",
-    "CA": "Canada",
-    "HR": "Croatia",
-    "CY": "Cyprus",
-    "CZ": "Czech Republic",
-    "DK": "Denmark",
-    "EE": "Estonia",
-    "FI": "Finland",
-    "FR": "France",
-    "DE": "Germany",
-    "GR": "Greece",
-    "HK": "Hong Kong",
-    "HU": "Hungary",
-    // "IN": "India",       // India is not yet supported by Stripe (preview)
-    // "ID": "Indonesia",   // Indonesia is not yet supported by Stripe (preview)
-    "IE": "Ireland",
-    "IT": "Italy",
-    "JP": "Japan",
-    "LV": "Latvia",
-    "LI": "Liechtenstein",
-    "LT": "Lithuania",
-    "LU": "Luxembourg",
-    "MY": "Malaysia",
-    "MT": "Malta",
-    "MX": "Mexico",
-    "NL": "Netherlands",
-    "NZ": "New Zealand",
-    "NG": "Nigeria",
-    "NO": "Norway",
-    "PL": "Poland",
-    "PT": "Portugal",
-    "RO": "Romania",
-    "SG": "Singapore",
-    "SK": "Slovakia",
-    "SI": "Slovenia",
-    "ZA": "South Africa",
-    "ES": "Spain",
-    "SE": "Sweden",
-    "CH": "Switzerland",
-    "TH": "Thailand",
-    "AE": "United Arab Emirates",
-    "GB": "United Kingdom",
-    "US": "United States",
-  };
-
   @override
   Widget build(BuildContext context) {
     // Verify that the currently selected country (full name) exists in the country list.
     final bool isValidSelection = currentlySelected != null &&
-        _countryMap.containsValue(currentlySelected!);
+        allCountries.containsValue(currentlySelected!);
     final String? selectedValue = isValidSelection ? currentlySelected : null;
 
     // Build the list of dropdown items.
@@ -85,7 +35,7 @@ class CustomCountryDropdown extends StatelessWidget {
           style: const TextStyle(color: Colors.grey),
         ),
       ),
-      ..._countryMap.entries.map((entry) {
+      ...allCountries.entries.map((entry) {
         return DropdownMenuItem<String>(
           value: entry.value, // The full country name is stored.
           child: Row(
@@ -129,8 +79,8 @@ class CustomCountryDropdown extends StatelessWidget {
                 if (newValue != null) {
                   onCountrySelected(
                       newValue,
-                      _countryMap.keys.firstWhere(
-                        (key) => _countryMap[key] == newValue,
+                      allCountries.keys.firstWhere(
+                        (key) => allCountries[key] == newValue,
                         orElse: () => '',
                       ));
                 }
