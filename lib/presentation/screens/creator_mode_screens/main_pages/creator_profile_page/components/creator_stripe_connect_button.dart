@@ -3,6 +3,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/c
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flag/flag.dart';
@@ -190,56 +191,7 @@ class _CreatorStripeConnectButtonState
 
   /// Generates the list of available country dropdown items with flags.
   List<DropdownMenuItem<String>> _getCountryDropdownItems() {
-    const Map<String, String> countryCodes = {
-      "AU": "Australia",
-      "AT": "Austria",
-      "BE": "Belgium",
-      "BG": "Bulgaria",
-      "BR": "Brazil",
-      "CA": "Canada",
-      "HR": "Croatia",
-      "CY": "Cyprus",
-      "CZ": "Czech Republic",
-      "DK": "Denmark",
-      "EE": "Estonia",
-      "FI": "Finland",
-      "FR": "France",
-      "DE": "Germany",
-      "GR": "Greece",
-      "HK": "Hong Kong",
-      "HU": "Hungary",
-      // "IN": "India",       // India is not yet supported by Stripe (preview)
-      // "ID": "Indonesia",   // Indonesia is not yet supported by Stripe (preview)
-      "IE": "Ireland",
-      "IT": "Italy",
-      "JP": "Japan",
-      "LV": "Latvia",
-      "LI": "Liechtenstein",
-      "LT": "Lithuania",
-      "LU": "Luxembourg",
-      "MY": "Malaysia",
-      "MT": "Malta",
-      "MX": "Mexico",
-      "NL": "Netherlands",
-      "NZ": "New Zealand",
-      "NG": "Nigeria",
-      "NO": "Norway",
-      "PL": "Poland",
-      "PT": "Portugal",
-      "RO": "Romania",
-      "SG": "Singapore",
-      "SK": "Slovakia",
-      "SI": "Slovenia",
-      "ZA": "South Africa",
-      "ES": "Spain",
-      "SE": "Sweden",
-      "CH": "Switzerland",
-      "TH": "Thailand",
-      "AE": "United Arab Emirates",
-      "GB": "United Kingdom",
-      "US": "United States",
-    };
-    return countryCodes.entries
+    return stripeSupportedCountries.entries
         .map((entry) => DropdownMenuItem(
               value: entry.key,
               child: Row(
