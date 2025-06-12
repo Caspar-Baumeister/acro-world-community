@@ -5,8 +5,13 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/acti
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/booking_step_indicator.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/header_section.dart';
+import 'package:acroworld/services/local_storage_service.dart';
+import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BookingModal extends StatefulWidget {
   const BookingModal(
@@ -98,10 +103,18 @@ class _BookingModalState extends State<BookingModal> {
                         onOptionSelected: (p0) => setCurrentOption(p0),
                         currentOption: currentOption,
                         maxPlaces: widget.classEvent.maxBookingSlots,
-                        nextStep: () {
-                          setState(() {
-                            step = 1;
-                          });
+                        nextStep: () async {
+                          if (kIsWeb) {
+                            print('kIsWeb');
+                            final token = await LocalStorageService.get(
+                                Preferences.token);
+                            launchUrl(Uri.parse(
+                                '${Uri.base.toString().replaceAll('/discover', '')}/booking/checkout.html?bookingOptionId=${currentOptionObject?.id}&classEventId=${widget.classEvent.id}&token=$token'));
+                          } else {
+                            setState(() {
+                              step = 1;
+                            });
+                          }
                         },
                       )
                     : CheckoutStep(
