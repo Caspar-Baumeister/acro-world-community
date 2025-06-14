@@ -75,10 +75,6 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
           );
         }
 
-        final billingTeacher = widget.clas.owner?.teacher?.stripeId != null
-            ? widget.clas.owner
-            : null;
-
         List<Widget> actions = [
           ValueListenableBuilder<double>(
             valueListenable: _percentageCollapsed,
@@ -103,13 +99,11 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
         ];
 
         return Scaffold(
-          bottomNavigationBar: widget.isCreator
-              ? null
-              : SingleClassBottomHoverButton(
-                  clas: widget.clas,
-                  classEvent: widget.classEvent,
-                  isCreator: widget.isCreator,
-                ),
+          bottomNavigationBar: SingleClassBottomHoverButton(
+            clas: widget.clas,
+            classEvent: widget.classEvent,
+            isCreator: widget.isCreator,
+          ),
           body: Padding(
             padding: kIsWeb
                 ? EdgeInsets.symmetric(horizontal: 100.0)
