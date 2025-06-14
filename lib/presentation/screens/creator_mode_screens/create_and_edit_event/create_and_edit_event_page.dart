@@ -4,12 +4,10 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -71,6 +69,7 @@ class _CreateAndEditEventPageState
 
             if (creatorProvider.activeTeacher == null ||
                 creatorProvider.activeTeacher!.id == null) {
+              print("No active teacher found, trying to set from token");
               await creatorProvider.setCreatorFromToken().then((success) {
                 if (!success) {
                   showErrorToast("Session Expired, refreshing session");
@@ -85,10 +84,7 @@ class _CreateAndEditEventPageState
                   .updateClass(creatorProvider.activeTeacher!.id!);
             } else {
               // print the current user role
-              print(
-                  "Current user role: ${provider.Provider.of<UserRoleProvider>(context, listen: false).isCreator}");
-              print(
-                  "Tokensigleton is creator: ${TokenSingletonService().getUserRoles()}");
+
               await eventCreationAndEditingProvider
                   .createClass(creatorProvider.activeTeacher!.id!);
             }
@@ -97,14 +93,13 @@ class _CreateAndEditEventPageState
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.goNamed(myEventsRoute);
-                if (userAsync.value?.id != null) {
-                  provider.Provider.of<TeacherEventsProvider>(context,
-                          listen: false)
-                      .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
-                }
-              });
+
+              context.goNamed(myEventsRoute);
+              if (userAsync.value?.id != null) {
+                provider.Provider.of<TeacherEventsProvider>(context,
+                        listen: false)
+                    .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+              }
             } else {
               // if not successful, show an error message
               showErrorToast(eventCreationAndEditingProvider.errorMessage!);

@@ -1,3 +1,4 @@
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
@@ -10,15 +11,20 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/acti
 import 'package:acroworld/provider/event_answers_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
+import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart' as provider;
+import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutStep extends ConsumerStatefulWidget {
   const CheckoutStep({
@@ -27,18 +33,20 @@ class CheckoutStep extends ConsumerStatefulWidget {
     required this.classDate,
     required this.bookingOption,
     required this.previousStep,
-    required this.teacherStripeId,
     required this.questions,
     this.classEventId,
+    this.isDirectPayment,
+    this.isCashPayment,
   });
 
   final String className;
   final DateTime classDate;
-  final String teacherStripeId;
   final BookingOption bookingOption;
   final VoidCallback previousStep;
   final String? classEventId;
   final List<QuestionModel> questions;
+  final bool? isDirectPayment;
+  final bool? isCashPayment;
 
   @override
   ConsumerState<CheckoutStep> createState() => _CheckoutStepState();
@@ -49,9 +57,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
   bool _isPaymentIntentInitialized = false;
   String? paymentIntentId;
 
-  @override
-  void initState() {
-    super.initState();
+  Future _initializeAll(BuildContext context, WidgetRef ref) async {
     if (widget.bookingOption.id != null && widget.classEventId != null) {
       // load the current user from Riverpod
       ref.read(userRiverpodProvider.future).then((user) {
@@ -111,36 +117,132 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                         eventOccurence: widget.classEventId!,
                       ),
                       const SizedBox(height: 20.0),
-                      StandartButton(
-                        text: "Continue to payment",
-                        onPressed: () async {
-                          if (!areRequiredQuestionsAnswered(
-                              eventAnswerProvider)) {
-                            showErrorToast(
-                              "Please answer all required questions",
-                            );
-                            return;
-                          }
-                          if (paymentIntentId == null) {
-                            showErrorToast(
-                              "Something went wrong. Try again later or contact support",
-                            );
-                            return;
-                          }
-                          await attemptToPresentPaymentSheet(paymentIntentId!);
-                          eventAnswerProvider.mutateAnswers().then((ok) {
-                            if (!ok) {
-                              showErrorToast(
-                                "Error saving answers, please notify support",
+
+                      if (kIsWeb && widget.isDirectPayment == true)
+                        StandartButton(
+                          text: "Continue to payment",
+                          onPressed: () async {
+                            final token = await LocalStorageService.get(
+                                Preferences.token);
+                            launchUrl(Uri.parse(
+                                '${Uri.base.toString().replaceAll('/discover', '')}/booking/checkout.html?bookingOptionId=${widget.bookingOption}&classEventId=${widget.classEventId}&token=$token'));
+                          },
+                          loading: !_isInitAnswersReady ||
+                              !_isPaymentIntentInitialized,
+                          width: double.infinity,
+                          isFilled: true,
+                        ),
+
+                      // if event is bookable troguh direct payment
+                      if (widget.isDirectPayment == true && !kIsWeb)
+                        FutureBuilder(
+                            future: _initializeAll(context, ref),
+                            builder: (context, snapshot) {
+                              return StandartButton(
+                                text: "Continue to payment",
+                                onPressed: () async {
+                                  if (!areRequiredQuestionsAnswered(
+                                      eventAnswerProvider)) {
+                                    showErrorToast(
+                                      "Please answer all required questions",
+                                    );
+                                    return;
+                                  }
+                                  if (paymentIntentId == null) {
+                                    showErrorToast(
+                                      "Something went wrong. Try again later or contact support",
+                                    );
+                                    return;
+                                  }
+                                  await attemptToPresentPaymentSheet(
+                                      paymentIntentId!);
+                                  eventAnswerProvider
+                                      .mutateAnswers()
+                                      .then((ok) {
+                                    if (!ok) {
+                                      showErrorToast(
+                                        "Error saving answers, please notify support",
+                                      );
+                                    }
+                                  });
+                                },
+                                loading: !_isInitAnswersReady ||
+                                    !_isPaymentIntentInitialized,
+                                width: double.infinity,
+                                isFilled: true,
                               );
+                            }),
+                      // if event is bookable through cash payment
+                      if (widget.isCashPayment == true)
+                        StandartButton(
+                          text: "Pay in cash",
+                          onPressed: () async {
+                            if (!areRequiredQuestionsAnswered(
+                                eventAnswerProvider)) {
+                              showErrorToast(
+                                "Please answer all required questions",
+                              );
+                              return;
                             }
-                          });
-                        },
-                        loading: !_isInitAnswersReady ||
-                            !_isPaymentIntentInitialized,
-                        width: double.infinity,
-                        isFilled: true,
-                      ),
+                            eventAnswerProvider
+                                .mutateAnswers()
+                                .then((ok) async {
+                              if (!ok) {
+                                showErrorToast(
+                                  "Error saving answers, please notify support",
+                                );
+                              } else {
+                                GraphQLClientSingleton client =
+                                    GraphQLClientSingleton();
+                                // insert the booking
+                                final result = await client.mutate(
+                                  MutationOptions(
+                                    document: Mutations.insertClassEventBooking,
+                                    variables: {
+                                      "booking": {
+                                        "amount": widget.bookingOption
+                                                .realPriceDiscounted() *
+                                            100, // convert to cents
+                                        "booking_option_id":
+                                            widget.bookingOption.id,
+                                        "class_event_id": widget.classEventId,
+                                        "currency":
+                                            widget.bookingOption.currency.value,
+                                        "status": "WaitingForPayment",
+                                        "user_id": user.id,
+                                      },
+                                    },
+                                  ),
+                                );
+
+                                if (result.hasException) {
+                                  showErrorToast(
+                                    "Error booking the class, please try again later",
+                                  );
+                                  CustomErrorHandler.captureException(
+                                    result.exception!,
+                                    stackTrace: StackTrace.current,
+                                  );
+                                  return;
+                                } else {
+                                  // show success toast
+                                  showSuccessToast(
+                                    "Booking successful, please pay in cash at the event",
+                                  );
+                                }
+
+                                // close the modal
+                                Navigator.of(context).pop();
+                                // fire the event to refetch the booking query
+                                provider.Provider.of<EventBusProvider>(context,
+                                        listen: false)
+                                    .fireRefetchBookingQuery();
+                              }
+                            });
+                          },
+                          width: double.infinity,
+                          isFilled: true,
+                        ),
                     ],
                   ),
                 ),

@@ -29,7 +29,10 @@ class BookingCardImageSection extends StatelessWidget {
           bottom: 0,
           left: 0,
           right: 0,
-          child: BookingStatusTile(booking: booking),
+          child: BookingStatusTile(
+            bookingStatus: booking.status,
+            bookingStatusText: booking.status,
+          ),
         )
       ],
     );

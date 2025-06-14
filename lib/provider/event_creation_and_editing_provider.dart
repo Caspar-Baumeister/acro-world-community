@@ -58,6 +58,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<QuestionModel> _questions = [];
   Uint8List? _eventImage;
   int? maxBookingSlots = 0;
+  bool isCashAllowed = false;
 
   // GETTER
   String get title => _title;
@@ -199,6 +200,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     if (newIndex > oldIndex) newIndex -= 1;
     final item = _questions.removeAt(oldIndex);
     _questions.insert(newIndex, item);
+    notifyListeners();
+  }
+
+  void switchAllowCashPayments() {
+    isCashAllowed = !isCashAllowed;
     notifyListeners();
   }
 
@@ -357,6 +363,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'location_city': region,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
+        'is_cash_allowed': isCashAllowed
       };
 
       ClassesRepository classesRepository =
@@ -473,6 +480,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'classOwners': classOwners,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
+        'is_cash_allowed': isCashAllowed
       };
 
       ClassesRepository classesRepository =
@@ -563,6 +571,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _locationName = fromClass.locationName;
       maxBookingSlots = fromClass.maxBookingSlots;
       existingImageUrl = fromClass.imageUrl;
+      isCashAllowed = fromClass.isCashAllowed ?? false;
       _recurringPatterns.clear();
       _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
       if (setFromTemplate) {

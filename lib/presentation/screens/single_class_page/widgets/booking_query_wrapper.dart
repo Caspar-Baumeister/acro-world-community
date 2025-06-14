@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
@@ -49,7 +50,7 @@ class _BookingQueryHoverButtonState
 
         return Query(
           options: QueryOptions(
-            document: Queries.isClassEventBooked,
+            document: Queries.myClassEventBookings,
             fetchPolicy: FetchPolicy.networkOnly,
             variables: {
               'class_event_id': widget.classEvent.id,
@@ -69,27 +70,37 @@ class _BookingQueryHoverButtonState
               );
             }
 
-            final count = result.data?['class_event_bookings_aggregate']
-                    ?['aggregate']?['count'] ??
-                0;
+            ClassEventBooking? myBooking =
+                result.data?['class_event_bookings'] != null
+                    ? (result.data!['class_event_bookings'] as List)
+                        .map((e) => ClassEventBooking.fromJson(e))
+                        .toList()
+                        .firstOrNull
+                    : null;
 
-            if (count != 0) {
+            if (myBooking != null) {
+              // If the booking status is not empty, show "Booked"
               return CustomBottomHoverButton(
-                content: const Text(
-                  "Booked",
+                content: Text(
+                  myBooking.status == "Confirmed"
+                      ? "Booked"
+                      : "Payment pending",
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
                 ),
-                backgroundColor: CustomColors.successBgColor,
+                backgroundColor: myBooking.status == "Confirmed"
+                    ? CustomColors.successBgColor
+                    : CustomColors.warningColor,
                 onPressed: () {
                   buildMortal(
                     context,
                     BookingInformationModal(
                       classEvent: widget.classEvent,
                       userId: userId,
+                      booking: myBooking,
                     ),
                   );
                 },
