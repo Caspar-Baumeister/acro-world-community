@@ -124,7 +124,7 @@ class MarketStepTicketSection extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(AppPaddings.medium),
                 child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomCheckBox(
                       isChecked: eventCreationAndEditingProvider.isCashAllowed,
@@ -133,14 +133,45 @@ class MarketStepTicketSection extends StatelessWidget {
                             .switchAllowCashPayments();
                       },
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 16),
                     Expanded(
-                      child: Text(
-                        "Allow cash payments.\nCash bookings are automatically marked as confirmed and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include it in statistics.",
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Colors.black87,
-                              height: 1.3,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Allow cash payments",
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
+                                    ),
+                          ),
+                          const SizedBox(width: 4),
+                          Builder(
+                            builder: (context) => IconButton(
+                              icon: const Icon(Icons.info_outline, size: 18),
+                              tooltip: "More info",
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (context) => AlertDialog(
+                                    title: const Text("Allow cash payments"),
+                                    content: const Text(
+                                      "Cash bookings are automatically marked as confirmed and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include them in statistics.",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text("OK"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
                             ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

@@ -37,7 +37,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+// 1) The “root” key: for your full‐screen, outside‐the‐shell routes
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+final userShellKey = GlobalKey<NavigatorState>();
+final creatorShellKey = GlobalKey<NavigatorState>();
 
 class AuthChangeNotifier extends ChangeNotifier {
   AuthChangeNotifier(this.ref) {
@@ -90,6 +94,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       },
       routes: [
         ShellRoute(
+            navigatorKey: userShellKey,
             builder: (ctx, state, child) {
               return MainPageShell(child: child);
             },
@@ -102,17 +107,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
               GoRoute(
-                  path: '/activity',
-                  name: activitiesRoute,
-                  pageBuilder: (ctx, state) =>
-                      NoTransitionPage(child: const ActivitiesPage()),
-                  routes: [
-                    GoRoute(
-                      path: '/place-search',
-                      name: placeSearchRoute,
-                      builder: (context, state) => const PlaceSearchScreen(),
-                    )
-                  ]),
+                path: '/activity',
+                name: activitiesRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const ActivitiesPage()),
+              ),
               GoRoute(
                 path: '/community',
                 name: communityRoute,
@@ -130,6 +129,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         /// CREATOR MODE ///
         ////////////////////
         ShellRoute(
+            navigatorKey: creatorShellKey,
             builder: (ctx, state, child) {
               return MainPageShell(child: child);
             },
@@ -142,23 +142,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
               GoRoute(
-                  path: '/creator-dashboard',
-                  name: creatorDashboardRoute,
-                  pageBuilder: (ctx, state) => NoTransitionPage(
-                        child: const DashboardPage(),
-                      ),
-                  routes: [
-                    GoRoute(
-                      // add queryParams to the path with ?isEditing
-                      path: '/edit-creator-profile',
-                      name: editCreatorProfileRoute,
-                      builder: (ctx, state) {
-                        final isEditing =
-                            state.uri.queryParameters['isEditing'] == 'true';
-                        return CreateCreatorProfilePage(isEditing: isEditing);
-                      },
-                    ),
-                  ]),
+                path: '/creator-dashboard',
+                name: creatorDashboardRoute,
+                pageBuilder: (ctx, state) => NoTransitionPage(
+                  child: const DashboardPage(),
+                ),
+              ),
               // invitePage
               GoRoute(
                 path: '/invite',
@@ -173,46 +162,61 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (ctx, state) => NoTransitionPage(
                   child: const MyEventsPage(),
                 ),
-                routes: [
-                  GoRoute(
-                    path: '/create-edit-event',
-                    name: createEditEventRoute,
-                    builder: (ctx, state) {
-                      // default to create; to edit, pass isEditing=true in queryParams
-                      final isEditing =
-                          state.uri.queryParameters['isEditing'] == 'true';
-                      return CreateAndEditEventPage(isEditing: isEditing);
-                    },
-                    routes: [
-                      GoRoute(
-                        path: '/edit-description',
-                        name: editDescriptionRoute,
-                        builder: (ctx, state) {
-                          final initialText =
-                              state.pathParameters['initialText'] ?? '';
-                          // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
-                          return EditClassDescriptionPage(
-                            initialText: initialText,
-                            onTextUpdated: (newText) {/* … */},
-                          );
-                        },
-                      ),
-                      GoRoute(
-                        path: '/question',
-                        name: questionRoute,
-                        builder: (ctx, state) => const QuestionPage(),
-                      ),
-                    ],
-                  ),
-                ],
               ),
             ]),
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          // add queryParams to the path with ?isEditing
+          path: '/edit-creator-profile',
+          name: editCreatorProfileRoute,
+          builder: (ctx, state) {
+            final isEditing = state.uri.queryParameters['isEditing'] == 'true';
+            return CreateCreatorProfilePage(isEditing: isEditing);
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: '/place-search',
+          name: placeSearchRoute,
+          builder: (context, state) => const PlaceSearchScreen(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: '/create-edit-event',
+          name: createEditEventRoute,
+          builder: (ctx, state) {
+            // default to create; to edit, pass isEditing=true in queryParams
+            final isEditing = state.uri.queryParameters['isEditing'] == 'true';
+            return CreateAndEditEventPage(isEditing: isEditing);
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: '/edit-description',
+          name: editDescriptionRoute,
+          builder: (ctx, state) {
+            final initialText = state.pathParameters['initialText'] ?? '';
+            // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
+            return EditClassDescriptionPage(
+              initialText: initialText,
+              onTextUpdated: (newText) {/* … */},
+            );
+          },
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: '/question',
+          name: questionRoute,
+          builder: (ctx, state) => const QuestionPage(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           builder: (context, state) => const FilterPage(),
           path: '/filter',
           name: filterRoute,
         ),
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/account-settings',
           name: accountSettingsRoute,
           pageBuilder: (ctx, state) =>
@@ -220,36 +224,41 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/edit-userdata',
           name: editUserDataRoute,
           builder: (context, state) => const EditUserdataPage(),
         ),
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/verify-email',
           name: verifyEmailRoute,
           builder: (context, state) => const ConfirmEmailPage(),
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/essentials',
           name: essentialsRoute,
           pageBuilder: (ctx, state) =>
               NoTransitionPage(child: const EssentialsPage()),
         ),
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/map',
           name: mapRoute,
           pageBuilder: (ctx, state) => NoTransitionPage(child: const MapPage()),
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/auth',
           name: authRoute,
           builder: (ctx, state) {
             final from = state.uri.queryParameters['from'];
             return Authenticate(
               initShowSignIn: true,
-              redirectAfter: from, // ← pass it in
+              redirectAfter: from, //
             );
           },
         ),
@@ -257,12 +266,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         /// AUTHENTICATION
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/confirm-email',
           name: confirmEmailRoute,
           builder: (ctx, state) => const ConfirmEmailPage(),
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/email-verification/:code',
           name: emailVerificationRoute,
           builder: (ctx, state) => EmailVerificationPage(
@@ -271,6 +282,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
         // ForgotPassword
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/forgot-password',
           name: forgotPasswordRoute,
           builder: (ctx, state) {
@@ -279,6 +291,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           },
         ),
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/forgot-password-success',
           name: forgotPasswordSuccessRoute,
           builder: (ctx, state) => ForgotPasswordSuccess(
@@ -313,12 +326,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/create-creator-profile',
           name: createCreatorProfileRoute,
           builder: (ctx, state) => const CreateCreatorProfilePage(),
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/stripe-callback',
           name: stripeCallbackRoute,
           builder: (ctx, state) => StripeCallbackPage(
@@ -327,6 +342,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: "/class-booking-summary/:classEventId",
           name: classBookingSummaryRoute,
           pageBuilder: (ctx, state) => NoTransitionPage(
@@ -337,6 +353,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
 
         GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
           path: '/user-answer',
           name: userAnswerRoute,
           builder: (ctx, state) {
@@ -347,12 +364,14 @@ final routerProvider = Provider<GoRouter>((ref) {
         ),
         //loading page
         GoRoute(
+            parentNavigatorKey: rootNavigatorKey,
             path: '/loading',
             name: loadingRoute,
             builder: (ctx, state) => LoadingPage()),
 
         // error page
         GoRoute(
+            parentNavigatorKey: rootNavigatorKey,
             path: '/auth-error',
             name: errorRoute,
             builder: (ctx, state) {

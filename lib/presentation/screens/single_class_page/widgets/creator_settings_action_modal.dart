@@ -50,6 +50,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
 
                 // Now pop the current widget and push the next page safely
                 Navigator.of(context).pop();
+                // use widgetsbinding to push the next page
+
                 context.pushNamed(createEditEventRoute,
                     queryParameters: {'isEditing': 'true'});
               },

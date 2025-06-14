@@ -69,6 +69,7 @@ class _CreateAndEditEventPageState
 
             if (creatorProvider.activeTeacher == null ||
                 creatorProvider.activeTeacher!.id == null) {
+              print("No active teacher found, trying to set from token");
               await creatorProvider.setCreatorFromToken().then((success) {
                 if (!success) {
                   showErrorToast("Session Expired, refreshing session");
@@ -92,14 +93,13 @@ class _CreateAndEditEventPageState
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                context.replaceNamed(myEventsRoute);
-                if (userAsync.value?.id != null) {
-                  provider.Provider.of<TeacherEventsProvider>(context,
-                          listen: false)
-                      .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
-                }
-              });
+
+              context.goNamed(myEventsRoute);
+              if (userAsync.value?.id != null) {
+                provider.Provider.of<TeacherEventsProvider>(context,
+                        listen: false)
+                    .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+              }
             } else {
               // if not successful, show an error message
               showErrorToast(eventCreationAndEditingProvider.errorMessage!);
