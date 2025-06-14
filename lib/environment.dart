@@ -3,6 +3,7 @@ const bool isProduction = String.fromEnvironment('app.flavor') != 'dev';
 class AppEnvironment {
   static const bool enableSentry = isProduction;
   static const bool isProdBuild = isProduction;
+  static const bool isDev = !isProduction;
   static const String backendHost =
       isProduction ? "bro-devs.com" : "dev.acroworld.de";
 

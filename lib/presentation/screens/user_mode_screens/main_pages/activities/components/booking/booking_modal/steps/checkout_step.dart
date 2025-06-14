@@ -3,6 +3,7 @@ import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
@@ -92,6 +93,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
 
   @override
   Widget build(BuildContext context) {
+    print("is kWeb: $kIsWeb");
+    print("is direct payment: ${widget.isDirectPayment}");
     return ref.watch(userRiverpodProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => const Center(child: Text("Error loading user")),
@@ -119,18 +122,20 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                       const SizedBox(height: 20.0),
 
                       if (kIsWeb && widget.isDirectPayment == true)
-                        StandartButton(
-                          text: "Continue to payment",
-                          onPressed: () async {
-                            final token = await LocalStorageService.get(
-                                Preferences.token);
-                            launchUrl(Uri.parse(
-                                '${Uri.base.toString().replaceAll('/discover', '')}/booking/checkout.html?bookingOptionId=${widget.bookingOption}&classEventId=${widget.classEventId}&token=$token'));
-                          },
-                          loading: !_isInitAnswersReady ||
-                              !_isPaymentIntentInitialized,
-                          width: double.infinity,
-                          isFilled: true,
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(bottom: AppPaddings.medium),
+                          child: StandartButton(
+                            text: "Continue to payment",
+                            onPressed: () async {
+                              final token = await LocalStorageService.get(
+                                  Preferences.token);
+                              launchUrl(Uri.parse(
+                                  '${Uri.base.scheme}://${Uri.base.authority}/booking/checkout.html?bookingOptionId=${widget.bookingOption.id}&classEventId=${widget.classEventId}&token=$token&dev=${AppEnvironment.isDev ? "true" : "false"}'));
+                            },
+                            width: double.infinity,
+                            isFilled: true,
+                          ),
                         ),
 
                       // if event is bookable troguh direct payment
