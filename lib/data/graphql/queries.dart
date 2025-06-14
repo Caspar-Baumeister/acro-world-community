@@ -4,18 +4,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 class Queries {
   /// CATHEGORIES ///
 
-// getConfirmedBookingsForCategory
-// {
-//   class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: "123"}}, _and: {class_event_id: {_eq: ""}}}) {
-//     aggregate {
-//       count
-//     }
-//   }
-// }
-
   static final getConfirmedBookingsForCategoryAggregate = gql("""
 query getConfirmedBookingsForCategory(\$category_id: uuid!, \$class_event_id: uuid!) {
-  class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: \$category_id}}, _and: {class_event_id: {_eq: \$class_event_id}, status: {_eq: "Confirmed"}}}) {
+  class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: \$category_id}}, _and: {class_event_id: {_eq: \$class_event_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}}) {
     aggregate {
       count
     }
@@ -129,7 +120,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 // get class event bookings for creator dashboard page
   static final getClassEventBookings = gql(
       """query getClassEventBookings(\$id: uuid!, \$limit: Int, \$offset: Int) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}, _and: {status: {_eq: "Confirmed"}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$id}}}, _and: {status: { _in: ["Confirmed","WaitingForPayment"]}}}, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
     ${Fragments.classEventBookingFragment}
   }
 }
@@ -139,7 +130,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
   //fetches all classeventbookings of a creator with a specific class event id
   static final getClassEventBookingsByClassEventId = gql(
       """query getClassEventBookingsByClassSlug(\$class_event_id: uuid!, \$created_by_id: uuid!) {
-  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}, status: {_eq: "Confirmed"}}) {
+  class_event_bookings(where: {class_event: {class: {created_by_id: {_eq: \$created_by_id}}, id: {_eq: \$class_event_id}}, status: { _in: ["Confirmed","WaitingForPayment"]}}) {
     ${Fragments.classEventBookingFragment}
   }
 }
@@ -150,7 +141,7 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
 //class_event_bookings_aggregate
   static final getClassEventBookingsAggregate =
       gql("""query getClassEventBookingsAggregate(\$id: uuid!) {
-class_event_bookings_aggregate(where: {status: {_eq: "Confirmed"}, class_event: {class: {created_by_id: {_eq: \$id}}}}
+class_event_bookings_aggregate(where: {status: {_in: ["Confirmed","WaitingForPayment"]}, class_event: {class: {created_by_id: {_eq: \$id}}}}
 ) {
     aggregate {
       count
@@ -222,7 +213,7 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
   static final userBookings = gql("""
 query userBookings {
   me {
-    bookings(where: {status: {_eq: Confirmed}}, order_by: {class_event: {start_date: asc}}) {
+    bookings(where: {status: { _in: ["Confirmed","WaitingForPayment"]}}, order_by: {class_event: {start_date: asc}}) {
       created_at
       updated_at
       booking_option{
@@ -266,7 +257,7 @@ query Me {
 
   static final isClassEventBooked = gql("""
 query isClassEventBooked(\$class_event_id: uuid, \$user_id: uuid) {
-   class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}, status: {_eq: "Confirmed"}}) {
+   class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}) {
     aggregate {
       count
     }
