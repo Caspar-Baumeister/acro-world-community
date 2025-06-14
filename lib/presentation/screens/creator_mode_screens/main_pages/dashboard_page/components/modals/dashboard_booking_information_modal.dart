@@ -4,9 +4,9 @@ import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -23,70 +23,114 @@ class DashboardBookingInformationModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
+    CreatorBookingsProvider creatorBookingsProvider =
+        Provider.of<CreatorBookingsProvider>(context, listen: false);
     return BaseModal(
+        child: Container(
+      constraints:
+          BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.6),
+      child: SingleChildScrollView(
         child: Column(
-      children: [
-        // detailed infirmation section
-        Row(
           children: [
-            // image with round corners
-            BookingCardImageSection(booking: booking),
-            Expanded(
-              child: BookingCardMainContentSection(booking: booking),
+            // detailed infirmation section
+            Row(
+              children: [
+                // image with round corners
+                BookingCardImageSection(booking: booking),
+                Expanded(
+                  child: BookingCardMainContentSection(booking: booking),
+                ),
+              ],
             ),
-          ],
-        ),
-        // booking options section
-        SizedBox(height: AppPaddings.small),
-        Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (booking.bookingOption?.bookingCategory?.name != null)
+            // booking options section
+            SizedBox(height: AppPaddings.small),
+            // if the booking is waiting for payment, show a box with confirmation of receiving the payment
+            if (booking.status == "WaitingForPayment")
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+                padding: const EdgeInsets.all(AppPaddings.medium),
+                decoration: BoxDecoration(
+                  color: CustomColors.backgroundWarningColor,
+                  borderRadius: AppBorders.smallRadius,
+                  border: Border.all(color: CustomColors.inactiveBorderColor),
+                ),
+                child: Column(
+                  children: [
                     Text(
-                        "Category: ${booking.bookingOption?.bookingCategory?.name}"),
-                  Text(
-                      "Booking option: ${booking.bookingOption?.title} - ${booking.bookingPriceString}"),
-                ],
+                      "Confirm that you received the payment for this booking. This will change the status to 'Confirmed'.",
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: AppPaddings.small),
+                    StandartButton(
+                      text: "Confirm payment",
+                      isFilled: true,
+                      onPressed: () {
+                        creatorBookingsProvider
+                            .confirmPayment(booking.id)
+                            .then((value) {
+                          if (value) {
+                            showInfoToast("Payment confirmed");
+                            Navigator.of(context).pop();
+                          } else {
+                            showErrorToast("Failed to confirm payment");
+                          }
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
+
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (booking.bookingOption?.bookingCategory?.name != null)
+                        Text(
+                            "Category: ${booking.bookingOption?.bookingCategory?.name}"),
+                      Text(
+                          "Booking option: ${booking.bookingOption?.title} - ${booking.bookingPriceString}"),
+                    ],
+                  ),
+                ),
+              ],
             ),
+            SizedBox(
+              height: AppPaddings.medium,
+            ),
+
+            // User informations (gender and level)
+            UserInformationWidget(booking: booking),
+            SizedBox(height: AppPaddings.large),
+
+            if (!isClassBookingSummary)
+              Padding(
+                padding: const EdgeInsets.only(bottom: AppPaddings.medium),
+                child: StandartButton(
+                    text: "All bookings of this event",
+                    isFilled: true,
+                    onPressed: () {
+                      // navigate to bookings of class
+                      if (booking.classEvent.id != null) {
+                        Navigator.of(context).push(ClassBookingSummaryPageRoute(
+                            classEventId: booking.classEvent.id!));
+                      } else {
+                        showErrorToast("Class event not found");
+                      }
+                    }),
+              ),
+
+            StandartButton(
+                text: "Close",
+                onPressed: () {
+                  Navigator.of(context).pop();
+                }),
           ],
         ),
-        SizedBox(
-          height: AppPaddings.medium,
-        ),
-
-        // User informations (gender and level)
-        UserInformationWidget(booking: booking),
-        SizedBox(height: AppPaddings.large),
-
-        if (!isClassBookingSummary)
-          Padding(
-            padding: const EdgeInsets.only(bottom: AppPaddings.medium),
-            child: StandartButton(
-                text: "All bookings of this event",
-                isFilled: true,
-                onPressed: () {
-                  // navigate to bookings of class
-                  if (booking.classEvent.id != null) {
-                    Navigator.of(context).push(ClassBookingSummaryPageRoute(
-                        classEventId: booking.classEvent.id!));
-                  } else {
-                    showErrorToast("Class event not found");
-                  }
-                }),
-          ),
-
-        StandartButton(
-            text: "Close",
-            onPressed: () {
-              Navigator.of(context).pop();
-            }),
-      ],
+      ),
     ));
   }
 }

@@ -64,6 +64,18 @@ class Mutations {
   }
 """);
 
+  // ----------------------------------
+  // Update Class Booking
+  // ----------------------------------
+  // update class booking by id
+  static final updateClassEventBooking = gql("""
+    mutation UpdateClassEventBooking(\$id: uuid!, \$booking: class_event_bookings_set_input!) {
+      update_class_event_bookings_by_pk(pk_columns: {id: \$id}, _set: \$booking) {
+        id
+      }
+    }
+  """);
+
   /// CATEGORY ///
 
   static final insertCategories = gql("""

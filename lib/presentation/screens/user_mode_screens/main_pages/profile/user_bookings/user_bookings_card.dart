@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_status_tile.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -85,29 +86,10 @@ class UserBookingsCard extends StatelessWidget {
                           children: [
                             // location icon and location name
 
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
-                              decoration: BoxDecoration(
-                                color: userBooking.status == "Cancelled"
-                                    ? CustomColors.errorTextColor
-                                    : userBooking.status == "Confirmed"
-                                        ? CustomColors.successTextColor
-                                        : userBooking.status == "Pending"
-                                            ? DARK_GREY
-                                            : userBooking.status == "Completed"
-                                                ? CustomColors.successTextColor
-                                                : DARK_GREY,
-                                // rounded corners
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                "${userBooking.status}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium!
-                                    .copyWith(color: Colors.white),
-                              ),
+                            BookingStatusTile(
+                              bookingStatus: userBooking.status ?? "Unknown",
+                              bookingStatusText:
+                                  userBooking.status ?? "Unknown Status",
                             ),
                             const Spacer(),
                             Text(

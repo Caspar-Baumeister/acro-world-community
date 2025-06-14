@@ -157,7 +157,7 @@ class MarketStepTicketSection extends StatelessWidget {
                                   builder: (context) => AlertDialog(
                                     title: const Text("Allow cash payments"),
                                     content: const Text(
-                                      "Cash bookings are automatically marked as confirmed and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include them in statistics.",
+                                      "Cash bookings automatically create a 'to be paid' object in your booking overview and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include them in statistics.",
                                     ),
                                     actions: [
                                       TextButton(

@@ -134,9 +134,16 @@ query getUpcomingClassEventsById(\$classId: uuid!) {
     ${Fragments.classEventBookingFragment}
   }
 }
-  
-  
   """);
+
+// fetches all classeventbookings of a user with a specific class event id
+  static final myClassEventBookings = gql("""
+query isClassEventBooked(\$class_event_id: uuid, \$user_id: uuid) {
+   class_event_bookings(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}) {
+    ${Fragments.classEventBookingFragment}
+}
+}
+""");
 
 //class_event_bookings_aggregate
   static final getClassEventBookingsAggregate =
@@ -254,16 +261,6 @@ query Me {
     }
   }
 }""");
-
-  static final isClassEventBooked = gql("""
-query isClassEventBooked(\$class_event_id: uuid, \$user_id: uuid) {
-   class_event_bookings_aggregate(where: {class_event_id: {_eq: \$class_event_id}, user_id: {_eq: \$user_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}) {
-    aggregate {
-      count
-    }
-}
-}
-""");
 
 // this is for the calendar widget with date filter for a specific week
   static final getClassEventsFromToLocationWithClass = gql("""

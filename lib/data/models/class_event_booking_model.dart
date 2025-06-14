@@ -40,6 +40,21 @@ class ClassEventBooking {
     return "${(amount / 100).toStringAsFixed(2)}$symbol";
   }
 
+  // implementing copyWith method only for changing the status
+  ClassEventBooking copyWithStatus(String status) {
+    return ClassEventBooking(
+      id: id,
+      user: user,
+      classEvent: classEvent,
+      bookingOption: bookingOption,
+      amount: amount,
+      status: status,
+      currency: currency,
+      paymentIntentId: paymentIntentId,
+      createdAt: createdAt,
+    );
+  }
+
   factory ClassEventBooking.fromJson(Map<String, dynamic> json) {
     // TODO Bookingoptions should not be null in the future
     return ClassEventBooking(

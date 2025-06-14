@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
@@ -11,10 +12,14 @@ import 'package:share_plus/share_plus.dart';
 
 class BookingInformationModal extends StatelessWidget {
   const BookingInformationModal(
-      {super.key, required this.classEvent, required this.userId});
+      {super.key,
+      required this.classEvent,
+      required this.userId,
+      required this.booking});
 
   final ClassEvent classEvent;
   final String userId;
+  final ClassEventBooking booking;
 
   void shareEvent(ClassEvent classEvent, ClassModel clas) {
     String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
@@ -57,6 +62,20 @@ You can join me here: $deeplinkUrl
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
+            if (booking.status == "WaitingForPayment")
+              // show a box with the information, that you still have to pay, the amount and so on
+              Container(
+                margin: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: CustomColors.backgroundWarningColor,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Text(
+                  "You still have to pay ${(booking.amount / 100).toStringAsFixed(2)} ${booking.currency} for this booking before the event starts.",
+                  textAlign: TextAlign.center,
+                ),
+              ),
             StandartButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
