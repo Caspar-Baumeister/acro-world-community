@@ -10,7 +10,6 @@ import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class BookingModal extends StatefulWidget {
@@ -91,45 +90,42 @@ class _BookingModalState extends State<BookingModal> {
               },
             ),
             const SizedBox(height: 20.0),
-            teacherStripeId == null
-                ? const Text("This teacher is not yet connected to Stripe")
-                : step == 0
-                    ? OptionChoosingStep(
-                        classEventId: widget.classEvent.id!,
-                        className: clas.name!,
-                        classDate: widget.classEvent.startDateDT,
-                        bookingCategories: clas.bookingCategories ?? [],
-                        placesLeft: widget.classEvent.availableBookingSlots,
-                        onOptionSelected: (p0) => setCurrentOption(p0),
-                        currentOption: currentOption,
-                        maxPlaces: widget.classEvent.maxBookingSlots,
-                        nextStep: () async {
-                          if (kIsWeb) {
-                            print('kIsWeb');
-                            final token = await LocalStorageService.get(
-                                Preferences.token);
-                            launchUrl(Uri.parse(
-                                '${Uri.base.toString().replaceAll('/discover', '')}/booking/checkout.html?bookingOptionId=${currentOptionObject?.id}&classEventId=${widget.classEvent.id}&token=$token'));
-                          } else {
-                            setState(() {
-                              step = 1;
-                            });
-                          }
-                        },
-                      )
-                    : CheckoutStep(
-                        className: clas.name!,
-                        classDate: widget.classEvent.startDateDT,
-                        bookingOption: currentOptionObject!,
-                        teacherStripeId: teacherStripeId,
-                        previousStep: () {
-                          setState(() {
-                            step = 0;
-                          });
-                        },
-                        questions: clas.questions,
-                        classEventId: widget.classEvent.id,
-                      ),
+            step == 0
+                ? OptionChoosingStep(
+                    classEventId: widget.classEvent.id!,
+                    className: clas.name!,
+                    classDate: widget.classEvent.startDateDT,
+                    bookingCategories: clas.bookingCategories ?? [],
+                    placesLeft: widget.classEvent.availableBookingSlots,
+                    onOptionSelected: (p0) => setCurrentOption(p0),
+                    currentOption: currentOption,
+                    maxPlaces: widget.classEvent.maxBookingSlots,
+                    nextStep: () async {
+                      if (kIsWeb) {
+                        print('kIsWeb');
+                        final token =
+                            await LocalStorageService.get(Preferences.token);
+                        launchUrl(Uri.parse(
+                            '${Uri.base.toString().replaceAll('/discover', '')}/booking/checkout.html?bookingOptionId=${currentOptionObject?.id}&classEventId=${widget.classEvent.id}&token=$token'));
+                      } else {
+                        setState(() {
+                          step = 1;
+                        });
+                      }
+                    },
+                  )
+                : CheckoutStep(
+                    className: clas.name!,
+                    classDate: widget.classEvent.startDateDT,
+                    bookingOption: currentOptionObject!,
+                    previousStep: () {
+                      setState(() {
+                        step = 0;
+                      });
+                    },
+                    questions: clas.questions,
+                    classEventId: widget.classEvent.id,
+                  ),
           ],
         ),
       ),

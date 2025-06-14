@@ -27,14 +27,12 @@ class CheckoutStep extends ConsumerStatefulWidget {
     required this.classDate,
     required this.bookingOption,
     required this.previousStep,
-    required this.teacherStripeId,
     required this.questions,
     this.classEventId,
   });
 
   final String className;
   final DateTime classDate;
-  final String teacherStripeId;
   final BookingOption bookingOption;
   final VoidCallback previousStep;
   final String? classEventId;

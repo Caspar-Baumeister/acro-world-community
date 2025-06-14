@@ -3,9 +3,7 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 /// A standalone widget that encapsulates the bottom hover button logic
@@ -28,29 +26,13 @@ class SingleClassBottomHoverButton extends StatelessWidget {
     final billingTeacher =
         clas.owner?.teacher?.stripeId != null ? clas.owner : null;
 
+    final isCashPayment = clas.isCashAllowed ?? false;
+
     // If there's an event with booking options and a billing teacher, show booking button
     if (classEvent != null &&
         classEvent!.classModel!.bookingOptions.isNotEmpty &&
-        billingTeacher != null &&
+        (billingTeacher != null || isCashPayment) &&
         !isCreator) {
-      if (kIsWeb) {
-        return BottomAppBar(
-          elevation: 0,
-          child: CustomBottomHoverButton(
-            content: const Text(
-              'Booking only possible on mobile',
-              style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white),
-            ),
-            onPressed: () => showErrorToast(
-              'Booking is currently only possible on mobile devices. Please use the AcroWorld app.',
-            ),
-          ),
-        );
-      }
-
       return BottomAppBar(
         elevation: 0,
         child: BookingQueryHoverButton(
