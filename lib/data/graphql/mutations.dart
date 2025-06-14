@@ -53,6 +53,17 @@ class Mutations {
     }
   """);
 
+  // ----------------------------------
+  // Create Class Booking
+  // ----------------------------------
+  static final insertClassEventBooking = gql("""
+  mutation InsertClassEventBooking(\$booking: class_event_bookings_insert_input!) {
+    insert_class_event_bookings_one(object: \$booking) {
+      id
+    }
+  }
+""");
+
   /// CATEGORY ///
 
   static final insertCategories = gql("""
