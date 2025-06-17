@@ -61,6 +61,11 @@ class Fragments {
         id
         name
         image_url
+        created_by {
+          id
+          name
+          email
+        }
       }
     }
     booking_option {
