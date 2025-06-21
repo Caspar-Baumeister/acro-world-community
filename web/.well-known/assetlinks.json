@@ -1,0 +1,19 @@
+[
+    {
+      "relation": [
+        "delegate_permission/common.handle_all_urls"
+      ],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "com.community.acroworld",
+        "sha256_cert_fingerprints": [
+          "A0:01:A0:CD:5E:43:94:A2:13:C7:C9:44:A3:B6:A3:37:9A:65:B8:68:BF:2A:2F:EB:45:1A:29:CA:AE:74:3F:58",
+          "F1:49:D9:4F:33:58:62:5F:5C:93:FA:5D:42:50:35:B3:AC:B9:6C:43:77:D9:86:22:51:97:87:54:17:C1:2D:3F" 
+        ]
+      },
+      "paths": [
+        "/*",         
+        "!/acrocards" 
+      ]
+    }
+  ]
