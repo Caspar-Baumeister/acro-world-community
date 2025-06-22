@@ -61,6 +61,11 @@ class Fragments {
         id
         name
         image_url
+        created_by{
+          id
+          name
+          image_url
+        }
       }
     }
     booking_option {
@@ -138,7 +143,7 @@ class Fragments {
         
       }
       is_cash_allowed
-     
+      
 
 """;
 

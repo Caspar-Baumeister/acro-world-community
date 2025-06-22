@@ -1,6 +1,7 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
@@ -15,10 +16,12 @@ class BookingInformationModal extends StatelessWidget {
       {super.key,
       required this.classEvent,
       required this.userId,
+      required this.createdBy,
       required this.booking});
 
   final ClassEvent classEvent;
   final String userId;
+  final User? createdBy;
   final ClassEventBooking booking;
 
   void shareEvent(ClassEvent classEvent, ClassModel clas) {
@@ -82,6 +85,20 @@ You can join me here: $deeplinkUrl
               isFilled: true,
             ),
             const SizedBox(height: 15),
+            if (createdBy != null)
+              LinkButtonComponent(
+                text: "Contact organiser",
+                onPressed: () => showCupertinoModalPopup(
+                  context: context,
+                  builder: (BuildContext context) => ContactOrganiserForm(
+                    organiserEmail: createdBy?.email ?? '',
+                    onSend: (message, email, phone) {
+                      // Handle send action
+                    },
+                  ),
+                ),
+              ),
+            const SizedBox(height: 15),
             LinkButtonComponent(
               text: "Problems? Contact support",
               onPressed: () => showCupertinoModalPopup(
@@ -144,88 +161,90 @@ class _ContactOrganiserFormState extends State<ContactOrganiserForm> {
     final phoneRaw = _phoneController.text.trim();
     final phone = phoneRaw.isEmpty ? null : phoneRaw;
 
+    print("Sending message: $message");
+
     widget.onSend(message, email, phone);
 
     // Optionally clear fields or close form after sending
     // Navigator.of(context).pop();
     setState(() => _isSending = false);
+    Navigator.of(context).pop(); // Close the modal after sending
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        key: _formKey,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Contact Organiser',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 12),
-
-            // Message field
-            TextFormField(
-              controller: _messageController,
-              maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Your message',
-                border: OutlineInputBorder(),
+    return Material(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Contact Organiser',
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter a message';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            // Email field
-            TextFormField(
-              controller: _emailController,
-              keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(
-                labelText: 'Your email',
-                border: OutlineInputBorder(),
+              // Message field
+              TextFormField(
+                controller: _messageController,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: 'Your message',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a message';
+                  }
+                  return null;
+                },
               ),
-              validator: (value) {
-                if (value == null || value.trim().isEmpty) {
-                  return 'Please enter your email';
-                }
-                final emailRegex = RegExp(r"^[^@\s]+@[^@\s]+\.[^@\s]+\$");
-                if (!emailRegex.hasMatch(value.trim())) {
-                  return 'Enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 12),
+              const SizedBox(height: 12),
 
-            // Phone field (optional)
-            TextFormField(
-              controller: _phoneController,
-              keyboardType: TextInputType.phone,
-              decoration: const InputDecoration(
-                labelText: 'Phone number (optional)',
-                border: OutlineInputBorder(),
+              // Email field
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Your email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your email';
+                  }
+
+                  return null;
+                },
               ),
-            ),
-            const SizedBox(height: 20),
+              const SizedBox(height: 12),
 
-            ElevatedButton(
-              onPressed: _isSending ? null : _submit,
-              child: _isSending
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Send'),
-            ),
-          ],
+              // Phone field (optional)
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'Phone number (optional)',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: _isSending ? null : _submit,
+                child: _isSending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Send'),
+              ),
+            ],
+          ),
         ),
       ),
     );
