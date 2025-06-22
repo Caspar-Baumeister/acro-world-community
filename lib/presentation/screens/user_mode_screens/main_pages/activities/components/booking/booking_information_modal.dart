@@ -5,6 +5,8 @@ import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/email_helper.dart';
+import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -82,18 +84,173 @@ You can join me here: $deeplinkUrl
               isFilled: true,
             ),
             const SizedBox(height: 15),
+            if (booking.teacherEmail != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: LinkButtonComponent(
+                    text: "Contact organiser",
+                    onPressed: () {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) => ContactOrganiserForm(
+                          organiserEmail: booking.teacherEmail!,
+                          onSend: (message, email, phone) {
+                            sendEmail(
+                                "$message\n\nContact details:\nEmail: $email\nPhone: ${phone ?? 'Not provided'}",
+                                "Acroworld booking request - regarding booking ${clas.name} at ${getDateStringMonthDay(classEvent.startDateDT)}",
+                                [email],
+                                [booking.teacherEmail!]);
+                            print(
+                                "Message: $message, Email: $email, Phone: $phone");
+                            Navigator.of(context)
+                                .pop(); // Close the modal after sending
+                          },
+                        ),
+                      );
+                    }),
+              ),
             LinkButtonComponent(
               text: "Problems? Contact support",
               onPressed: () => showCupertinoModalPopup(
                 context: context,
                 builder: (BuildContext context) => FeedbackPopUp(
                   subject:
-                      'Problem with booking id:${classEvent.id}, user:$userId',
+                      'Problem with booking id:${booking.id}, user:$userId',
                   title: "Booking problem",
                 ),
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+/// A form widget that allows users to contact the organiser by sending
+/// a message along with their email and optional phone number.
+class ContactOrganiserForm extends StatefulWidget {
+  /// The organiser's email address to which the message will be sent.
+  final String organiserEmail;
+
+  /// Callback invoked when the user taps "Send". Provides the message,
+  /// the user's email, and optionally their phone number.
+  final void Function(String message, String email, String? phone) onSend;
+
+  const ContactOrganiserForm({
+    super.key,
+    required this.organiserEmail,
+    required this.onSend,
+  });
+
+  @override
+  _ContactOrganiserFormState createState() => _ContactOrganiserFormState();
+}
+
+class _ContactOrganiserFormState extends State<ContactOrganiserForm> {
+  final _formKey = GlobalKey<FormState>();
+  final _messageController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  bool _isSending = false;
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    _emailController.dispose();
+    _phoneController.dispose();
+    super.dispose();
+  }
+
+  void _submit() {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _isSending = true);
+
+    final message = _messageController.text.trim();
+    final email = _emailController.text.trim();
+    final phoneRaw = _phoneController.text.trim();
+    final phone = phoneRaw.isEmpty ? null : phoneRaw;
+
+    print("Sending message: $message");
+
+    widget.onSend(message, email, phone);
+
+    // Optionally clear fields or close form after sending
+    // Navigator.of(context).pop();
+    setState(() => _isSending = false);
+    Navigator.of(context).pop(); // Close the modal after sending
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text('Contact Organiser'),
+      content: Form(
+        key: _formKey,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          width: double.infinity,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Message field
+              TextFormField(
+                controller: _messageController,
+                maxLines: 4,
+                decoration: const InputDecoration(
+                  labelText: 'Your message',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter a message';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Email field
+              TextFormField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
+                decoration: const InputDecoration(
+                  labelText: 'Your email',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your email';
+                  }
+
+                  return null;
+                },
+              ),
+              const SizedBox(height: 12),
+
+              // Phone field (optional)
+              TextFormField(
+                controller: _phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: const InputDecoration(
+                  labelText: 'Phone number (optional)',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              ElevatedButton(
+                onPressed: _isSending ? null : _submit,
+                child: _isSending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Send'),
+              ),
+            ],
+          ),
         ),
       ),
     );

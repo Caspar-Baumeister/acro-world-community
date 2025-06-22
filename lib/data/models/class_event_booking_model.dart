@@ -13,6 +13,7 @@ class ClassEventBooking {
   final String currency;
   final String? paymentIntentId;
   final DateTime createdAt;
+  final String? teacherEmail;
 
   ClassEventBooking({
     required this.id,
@@ -24,6 +25,7 @@ class ClassEventBooking {
     required this.currency,
     required this.paymentIntentId,
     required this.createdAt,
+    this.teacherEmail,
   });
 
   String get bookingPriceString {
@@ -69,6 +71,8 @@ class ClassEventBooking {
       currency: json['currency'],
       paymentIntentId: json['payment_intent_id'],
       createdAt: DateTime.parse(json['created_at']),
+      teacherEmail:
+          json['class_event']?['class']?['created_by']?['email'] as String?,
     );
   }
 }
