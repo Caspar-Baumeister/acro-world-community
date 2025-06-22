@@ -1,11 +1,12 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/email_helper.dart';
+import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -16,12 +17,10 @@ class BookingInformationModal extends StatelessWidget {
       {super.key,
       required this.classEvent,
       required this.userId,
-      required this.createdBy,
       required this.booking});
 
   final ClassEvent classEvent;
   final String userId;
-  final User? createdBy;
   final ClassEventBooking booking;
 
   void shareEvent(ClassEvent classEvent, ClassModel clas) {
@@ -85,27 +84,38 @@ You can join me here: $deeplinkUrl
               isFilled: true,
             ),
             const SizedBox(height: 15),
-            if (createdBy != null)
-              LinkButtonComponent(
-                text: "Contact organiser",
-                onPressed: () => showCupertinoModalPopup(
-                  context: context,
-                  builder: (BuildContext context) => ContactOrganiserForm(
-                    organiserEmail: createdBy?.email ?? '',
-                    onSend: (message, email, phone) {
-                      // Handle send action
-                    },
-                  ),
-                ),
+            if (booking.teacherEmail != null)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: LinkButtonComponent(
+                    text: "Contact organiser",
+                    onPressed: () {
+                      showCupertinoModalPopup(
+                        context: context,
+                        builder: (BuildContext context) => ContactOrganiserForm(
+                          organiserEmail: booking.teacherEmail!,
+                          onSend: (message, email, phone) {
+                            sendEmail(
+                                "$message\n\nContact details:\nEmail: $email\nPhone: ${phone ?? 'Not provided'}",
+                                "Acroworld booking request - regarding booking ${clas.name} at ${getDateStringMonthDay(classEvent.startDateDT)}",
+                                [email],
+                                [booking.teacherEmail!]);
+                            print(
+                                "Message: $message, Email: $email, Phone: $phone");
+                            Navigator.of(context)
+                                .pop(); // Close the modal after sending
+                          },
+                        ),
+                      );
+                    }),
               ),
-            const SizedBox(height: 15),
             LinkButtonComponent(
               text: "Problems? Contact support",
               onPressed: () => showCupertinoModalPopup(
                 context: context,
                 builder: (BuildContext context) => FeedbackPopUp(
                   subject:
-                      'Problem with booking id:${classEvent.id}, user:$userId',
+                      'Problem with booking id:${booking.id}, user:$userId',
                   title: "Booking problem",
                 ),
               ),
@@ -173,20 +183,16 @@ class _ContactOrganiserFormState extends State<ContactOrganiserForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+    return AlertDialog(
+      title: const Text('Contact Organiser'),
+      content: Form(
+        key: _formKey,
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          width: double.infinity,
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Contact Organiser',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 12),
-
               // Message field
               TextFormField(
                 controller: _messageController,

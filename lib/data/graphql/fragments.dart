@@ -61,10 +61,10 @@ class Fragments {
         id
         name
         image_url
-        created_by{
+        created_by {
           id
           name
-          image_url
+          email
         }
       }
     }
