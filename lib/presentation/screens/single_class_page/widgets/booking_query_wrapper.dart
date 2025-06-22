@@ -101,7 +101,6 @@ class _BookingQueryHoverButtonState
                       classEvent: widget.classEvent,
                       userId: userId,
                       booking: myBooking,
-                      createdBy: myBooking.classEvent.classModel?.createdBy,
                     ),
                   );
                 },
