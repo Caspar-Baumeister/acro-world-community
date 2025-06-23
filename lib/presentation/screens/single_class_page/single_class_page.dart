@@ -10,7 +10,6 @@ import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:share_plus/share_plus.dart';
@@ -105,7 +104,7 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
             isCreator: widget.isCreator,
           ),
           body: Padding(
-            padding: kIsWeb
+            padding: Responsive.isDesktop(context)
                 ? EdgeInsets.symmetric(horizontal: 100.0)
                 : const EdgeInsets.all(0.0),
             child: CustomScrollView(
