@@ -171,11 +171,14 @@ class _ContactOrganiserFormState extends State<ContactOrganiserForm> {
     final phoneRaw = _phoneController.text.trim();
     final phone = phoneRaw.isEmpty ? null : phoneRaw;
 
+    print("Sending message: $message");
+
     widget.onSend(message, email, phone);
 
     // Optionally clear fields or close form after sending
     // Navigator.of(context).pop();
     setState(() => _isSending = false);
+    Navigator.of(context).pop(); // Close the modal after sending
   }
 
   @override

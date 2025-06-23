@@ -143,7 +143,7 @@ class Fragments {
         
       }
       is_cash_allowed
-     
+      
 
 """;
 

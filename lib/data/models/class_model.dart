@@ -5,6 +5,7 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/event_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 
 class ClassModel {
@@ -38,6 +39,7 @@ class ClassModel {
   List<BookingCategoryModel>? bookingCategories;
   List<ClassFlagsModel>? classFlags;
   bool? isCashAllowed;
+  User? createdBy;
 
   // get the first teacher, that is the owner or if there is no owner, the first teacher
   ClassOwner? get owner {
@@ -108,9 +110,13 @@ class ClassModel {
       required this.questions,
       this.bookingCategories,
       this.isCashAllowed,
+      this.createdBy,
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
+    createdBy =
+        json['created_by'] != null ? User.fromJson(json['created_by']) : null;
+
     if (json["recurring_patterns"] != null) {
       recurringPatterns = <RecurringPatternModel>[];
       json["recurring_patterns"].forEach((v) {
