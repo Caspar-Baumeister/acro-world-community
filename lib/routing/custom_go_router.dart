@@ -29,10 +29,12 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -63,36 +65,43 @@ final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
       navigatorKey: rootNavigatorKey,
       refreshListenable: ref.watch(goRouterRefreshProvider),
-      initialLocation: '/discover',
-      redirect: (BuildContext _, GoRouterState state) {
+      initialLocation: kIsWeb ? null : '/splash',
+      redirect: (context, state) {
         final auth = ref.read(authProvider);
-        final loc = state.matchedLocation; // the “clean” path, no query
-        final from =
-            state.uri.queryParameters['from']; // maybe “…?from=/event/…”
+        final loc = state.matchedLocation;
 
-        final loggingIn = loc == '/auth';
+        final loggingIn = loc.startsWith('/auth');
+        final forgotPassword = loc.startsWith('/forgot-password');
 
         return auth.when(
-          loading: () => null,
-          error: (_, __) => loc.startsWith('/auth') ? null : '/auth-error',
+          loading: () => null, // no blocking, handle spinner in UI
+          error: (_, __) => loggingIn ? null : '/auth-error',
           data: (authState) {
-            // 1) Not logged in → guard all non-/auth, non-/forgot routes
-            if (authState.status == AuthStatus.unauthenticated &&
+            final isAuthenticated =
+                authState.status == AuthStatus.authenticated;
+
+            // Not logged in? Block everything except /auth and /forgot
+            if (!isAuthenticated &&
                 !loggingIn &&
-                !loc.startsWith('/forgot-password')) {
-              final encoded = Uri.encodeComponent('$loc?${state.uri.query}');
+                !forgotPassword &&
+                loc != '/splash') {
+              final encoded = Uri.encodeComponent(loc);
               return '/auth?from=$encoded';
             }
-            // 2) Just logged in and you’re on the “/auth” page → go back to `from` or to discover
-            if (authState.status == AuthStatus.authenticated && loggingIn) {
-              return from != null ? Uri.decodeComponent(from) : '/discover';
+
+            // Logged in & stuck on /auth → redirect back to where you came from
+            final from = state.uri.queryParameters['from'];
+            if (isAuthenticated && loggingIn) {
+              return from != null ? Uri.decodeComponent(from) : '/';
             }
-            // 3) No redirect
-            return null;
+
+            return null; // allow navigation
           },
         );
       },
       routes: [
+        // splash screen
+
         ShellRoute(
             navigatorKey: userShellKey,
             builder: (ctx, state, child) {
@@ -100,7 +109,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
             routes: [
               GoRoute(
-                path: '/discover',
+                path: '/',
                 name: discoverRoute,
                 pageBuilder: (ctx, state) => NoTransitionPage(
                   child: const DiscoverPage(),
@@ -164,6 +173,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
             ]),
+        GoRoute(
+            path: '/splash',
+            name: splashRoute,
+            builder: (ctx, state) {
+              // This is just a placeholder; you can replace it with your actual splash screen
+              return const SplashScreen();
+            }),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           // add queryParams to the path with ?isEditing
@@ -316,6 +332,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/event/:urlSlug',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {
+            print("full path: ${state.uri.toString()}");
             final slug = state.pathParameters['urlSlug']!;
             final classEventId = state.uri.queryParameters['event'];
             return SingleEventQueryWrapper(

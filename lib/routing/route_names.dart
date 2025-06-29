@@ -25,6 +25,7 @@ const String forgotPasswordSuccessRoute = 'forgot-password-success';
 const String forgotPasswordRoute = 'forgot-password';
 const String loadingRoute = 'loading';
 const String errorRoute = 'error';
+const String splashRoute = 'splash';
 
 /// CREATOR ROUTES
 const String creatorDashboardRoute = 'creator-dashboard';

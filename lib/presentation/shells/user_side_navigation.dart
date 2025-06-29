@@ -1,3 +1,4 @@
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -11,7 +12,7 @@ class UserDestopSideNavigationBar extends StatelessWidget {
         ListTile(
           title: const Text("Discover"),
           leading: const Icon(Icons.home),
-          onTap: () => context.go('/discover'),
+          onTap: () => context.goNamed(discoverRoute),
         ),
         // ListTile(
         //   title: const Text("Activity"),

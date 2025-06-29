@@ -169,3 +169,31 @@
 //     }
 //   }
 // }
+
+import 'dart:async';
+
+import 'package:app_links/app_links.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class DeepLinkService {
+  final AppLinks _appLinks = AppLinks();
+  StreamSubscription<Uri>? _sub;
+
+  void startListening(GlobalKey<NavigatorState> navigatorKey) {
+    _sub = _appLinks.uriLinkStream.listen((Uri? uri) {
+      debugPrint('🔗 New deep link received: $uri');
+      if (uri != null) {
+        // Use root navigator key to get a valid context
+        final context = navigatorKey.currentContext;
+        if (context != null) {
+          context.go(uri.toString());
+        }
+      }
+    });
+  }
+
+  void dispose() {
+    _sub?.cancel();
+  }
+}

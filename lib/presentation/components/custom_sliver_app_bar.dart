@@ -133,7 +133,7 @@ class BlurIconButton extends StatelessWidget {
         onTap: () {
           if (!Navigator.canPop(context)) {
             // nothing to pop
-            context.go('/discover');
+            context.go('/');
           } else {
             // pop the current screen
             context.pop();
