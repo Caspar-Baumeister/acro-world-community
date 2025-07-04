@@ -17,7 +17,7 @@ class MainPageShell extends StatelessWidget {
 
   // your top‐level tab destinations:
   static const _userPaths = [
-    '/discover',
+    '/',
     '/activity',
     '/community',
     '/profile',
