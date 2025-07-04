@@ -172,20 +172,26 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                     ),
                     const SizedBox(height: AppPaddings.medium),
                     // choose from country
-                    CustomCountryDropdown(
-                      currentlySelected: provider.country,
-                      onCountrySelected:
-                          (String? country, String? countryCode) {
-                        provider.countryCode = countryCode;
-                        provider.setCountry(country);
+                    // choose from country
+                    CountryPicker(
+                      // now pass the ISO code, not the name:
+                      selectedCountryCode: provider.countryCode,
+                      onCountrySelected: (String? code, String? name) {
+                        // code: e.g. "US", name: e.g. "United States"
+                        provider.countryCode = code;
+                        provider.setCountry(name);
+                        // clear out any previously selected region:
+                        provider.setRegion(null);
                       },
                     ),
+
+// only show regions once we have a valid countryCode
                     if (provider.countryCode != null)
                       Padding(
                         padding: const EdgeInsets.only(top: AppPaddings.medium),
-                        child: RegionDropdown(
+                        child: RegionPicker(
                           countryCode: provider.countryCode!,
-                          currentlySelected: provider.region,
+                          selectedRegion: provider.region,
                           onRegionSelected: (String? region) {
                             provider.setRegion(region);
                           },
