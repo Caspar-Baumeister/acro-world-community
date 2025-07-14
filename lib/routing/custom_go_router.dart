@@ -64,41 +64,41 @@ final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
       navigatorKey: rootNavigatorKey,
-      refreshListenable: ref.watch(goRouterRefreshProvider),
+      // refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: kIsWeb ? null : '/splash',
-      redirect: (context, state) {
-        final auth = ref.read(authProvider);
-        final loc = state.matchedLocation;
+      // redirect: (context, state) {
+      //   final auth = ref.read(authProvider);
+      //   final loc = state.matchedLocation;
 
-        final loggingIn = loc.startsWith('/auth');
-        final forgotPassword = loc.startsWith('/forgot-password');
+      //   final loggingIn = loc.startsWith('/auth');
+      //   final forgotPassword = loc.startsWith('/forgot-password');
 
-        return auth.when(
-          loading: () => null, // no blocking, handle spinner in UI
-          error: (_, __) => loggingIn ? null : '/auth-error',
-          data: (authState) {
-            final isAuthenticated =
-                authState.status == AuthStatus.authenticated;
+      //   return auth.when(
+      //     loading: () => null, // no blocking, handle spinner in UI
+      //     error: (_, __) => loggingIn ? null : '/auth-error',
+      //     data: (authState) {
+      //       final isAuthenticated =
+      //           authState.status == AuthStatus.authenticated;
 
-            // Not logged in? Block everything except /auth and /forgot
-            if (!isAuthenticated &&
-                !loggingIn &&
-                !forgotPassword &&
-                loc != '/splash') {
-              final encoded = Uri.encodeComponent(loc);
-              return '/auth?from=$encoded';
-            }
+      //       // Not logged in? Block everything except /auth and /forgot
+      //       if (!isAuthenticated &&
+      //           !loggingIn &&
+      //           !forgotPassword &&
+      //           loc != '/splash') {
+      //         final encoded = Uri.encodeComponent(loc);
+      //         return '/auth?from=$encoded';
+      //       }
 
-            // Logged in & stuck on /auth → redirect back to where you came from
-            final from = state.uri.queryParameters['from'];
-            if (isAuthenticated && loggingIn) {
-              return from != null ? Uri.decodeComponent(from) : '/';
-            }
+      //       // Logged in & stuck on /auth → redirect back to where you came from
+      //       final from = state.uri.queryParameters['from'];
+      //       if (isAuthenticated && loggingIn) {
+      //         return from != null ? Uri.decodeComponent(from) : '/';
+      //       }
 
-            return null; // allow navigation
-          },
-        );
-      },
+      //       return null; // allow navigation
+      //     },
+      //   );
+      // },
       routes: [
         // splash screen
 
