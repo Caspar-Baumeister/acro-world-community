@@ -316,8 +316,8 @@ query Config {
 }
 """);
 
-  static final getClassBySlugWithOutFavorite = gql("""
-query getClassByIdWithFavorite(\$url_slug: String!) {
+  static final getClassBySlug = gql("""
+query getClassById(\$url_slug: String!) {
   classes(where: {url_slug: {_eq: \$url_slug}}){
      ${Fragments.classFragmentAllInfo}
       recurring_patterns {
@@ -336,33 +336,14 @@ query getClassByIdWithFavorite(\$url_slug: String!) {
 }
  """);
 
-  static final getClassBySlugWithFavorite = gql("""
-query getClassByIdWithFavorite(\$url_slug: String!, \$user_id: uuid!) {
-  classes(where: {url_slug: {_eq: \$url_slug}}){
-     ${Fragments.classFragmentAllInfo}
-     class_favorits(where: {user_id: {_eq: \$user_id}}) {
+  static final isClassFavorited = gql("""
+query isClassFavorited(\$class_id: uuid!, \$user_id: uuid!) {
+   class_favorits(where: {user_id: {_eq: \$user_id}}, class_id: {_eq: \$class_id}}) {
       id
       created_at
     }
-   
-      
   }
-}
- """);
-
-  static final getClassByIdWithFavorite = gql("""
-query getClassByIdWithFavorite(\$class_id: uuid!, \$user_id: uuid!) {
-   classes_by_pk(id: \$class_id){
-     ${Fragments.classFragmentAllInfo}
-     class_favorits(where: {user_id: {_eq: \$user_id}}) {
-      id
-      created_at
-     }
-   
-      
-  }
-}
- """);
+""");
 
   static final getClassEventWithClasByIdWithFavorite = gql("""
 query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: uuid!) {
