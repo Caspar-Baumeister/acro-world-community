@@ -491,11 +491,8 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
   """);
 
   static final getTeacherBySlug = gql("""
-  query getTeacherById(\$teacher_slug: String!, \$user_id: uuid) {
+  query getTeacherById(\$teacher_slug: String!) {
     teachers(where: {url_slug: {_eq: \$teacher_slug}}) {
-      user_likes(where: {user_id: {_eq: \$user_id}}) {
-        user_id
-      }
       ${Fragments.teacherFragmentAllInfo}
     }
   }

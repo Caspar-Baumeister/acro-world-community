@@ -8,6 +8,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print("ProfilePage build");
     return BasePage(
       endDrawer: const SettingsDrawer(),
       appBar: AppBar(

@@ -32,7 +32,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/lo
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
-import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,21 +44,21 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 final userShellKey = GlobalKey<NavigatorState>();
 final creatorShellKey = GlobalKey<NavigatorState>();
 
-class AuthChangeNotifier extends ChangeNotifier {
-  AuthChangeNotifier(this.ref) {
-    // Listen to the AsyncValue<AuthState> from authProvider
-    ref.listen<AsyncValue<AuthState>>(
-      authProvider,
-      (_, __) => notifyListeners(),
-    );
-  }
-  final Ref ref;
-}
+// class AuthChangeNotifier extends ChangeNotifier {
+//   AuthChangeNotifier(this.ref) {
+//     // Listen to the AsyncValue<AuthState> from authProvider
+//     ref.listen<AsyncValue<AuthState>>(
+//       authProvider,
+//       (_, __) => notifyListeners(),
+//     );
+//   }
+//   final Ref ref;
+// }
 
 // Expose it as a plain Riverpod provider:
-final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
-  (ref) => AuthChangeNotifier(ref),
-);
+// final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
+//   (ref) => AuthChangeNotifier(ref),
+// );
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -272,9 +271,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           name: authRoute,
           builder: (ctx, state) {
             final from = state.uri.queryParameters['from'];
+            final initShowSignIn =
+                state.uri.queryParameters['initShowSignIn'] == 'true';
             return Authenticate(
-              initShowSignIn: true,
-              redirectAfter: from, //
+              initShowSignIn: initShowSignIn,
+              redirectAfter: from,
             );
           },
         ),

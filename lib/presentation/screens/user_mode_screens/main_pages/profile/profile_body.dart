@@ -3,11 +3,13 @@ import 'package:acroworld/presentation/screens/modals/create_teacher_modal/creat
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_favorite_classes/user_favorite_classes.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
@@ -31,11 +33,7 @@ class ProfileBody extends ConsumerWidget {
       },
       data: (user) {
         if (user == null) {
-          // Not signed in: redirect to auth
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.goNamed('auth');
-          });
-          return const SizedBox.shrink();
+          return GuestProfileContent();
         }
 
         final hasTeacherProfile = user.teacherProfile != null;
@@ -131,6 +129,138 @@ class ProfileBody extends ConsumerWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class GuestProfileContent extends StatelessWidget {
+  const GuestProfileContent({
+    super.key,
+    this.subtitle =
+        'Log in or sign up to view your saved events, tickets, and more.',
+  });
+
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Responsive(
+      mobile: _buildMobileContent(context),
+      desktop: Center(
+        child: Container(
+          constraints: const BoxConstraints(maxWidth: 400),
+          child: _buildMobileContent(context),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMobileContent(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      alignment: Alignment.center,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+      color: CustomColors.backgroundColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // avatar
+          CircleAvatar(
+            radius: Responsive.isMobile(context) ? 64 : 80,
+            backgroundColor: CustomColors.secondaryBackgroundColor,
+            backgroundImage: const NetworkImage(
+              'https://lh3.googleusercontent.com/aida-public/AB6AXuBWSrFBlQP63zc6HP045oNHnj7aCFdbNNuP_-WyJFcJt7flDzs4VNJ_ZNZ1D_Ipyg5asy4AKKsBsR0bC_KYgZCJWcm-RPAJrCZsJcYXDAWUusMLOFY_78oa6PGTxyyO_9F0C71XL5Wm-u2tEEUUqjbJ5CN5grT-FFrOZ_PlZ0GmzBbC7qLMZ0OEE8iwxmp0cGZgCcjmhd3PZBIVXA0QV0XMWzIl66PPyyJOuFRWHneeBlX_KMf9b1o9lv0Md1vJWJoa1TO-qh8Zks0W',
+            ),
+          ),
+
+          const SizedBox(height: 24),
+
+          // title
+          Text(
+            'Create an account or log in',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: CustomColors.primaryTextColor,
+              fontSize: Responsive.isMobile(context) ? 22 : 26,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+
+          const SizedBox(height: 8),
+
+          // subtitle
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: CustomColors.subtitleText,
+              fontSize: Responsive.isMobile(context) ? 16 : 18,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+
+          SizedBox(height: Responsive.isMobile(context) ? 32 : 40),
+
+          // Log In button
+          SizedBox(
+            width: double.infinity,
+            height: Responsive.isMobile(context) ? 48 : 56,
+            child: ElevatedButton(
+              onPressed: () => context.pushNamed(
+                authRoute,
+                queryParameters: {
+                  'initShowSignIn': 'true',
+                  'from': '/profile',
+                },
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: CustomColors.primaryColor,
+                shape: const StadiumBorder(),
+                elevation: 0,
+              ),
+              child: Text(
+                'Log In',
+                style: TextStyle(
+                  fontSize: Responsive.isMobile(context) ? 16 : 18,
+                  fontWeight: FontWeight.w700,
+                  color: CustomColors.whiteTextColor,
+                ),
+              ),
+            ),
+          ),
+
+          SizedBox(height: Responsive.isMobile(context) ? 12 : 16),
+
+          // Sign Up button
+          SizedBox(
+            width: double.infinity,
+            height: Responsive.isMobile(context) ? 48 : 56,
+            child: OutlinedButton(
+              onPressed: () => context.pushNamed(
+                authRoute,
+                queryParameters: {
+                  'initShowSignIn': 'false',
+                  'from': '/profile',
+                },
+              ),
+              style: OutlinedButton.styleFrom(
+                backgroundColor: CustomColors.buttonPrimaryLight,
+                shape: const StadiumBorder(),
+                side: BorderSide.none,
+              ),
+              child: Text(
+                'Sign Up',
+                style: TextStyle(
+                  fontSize: Responsive.isMobile(context) ? 16 : 18,
+                  fontWeight: FontWeight.w700,
+                  color: CustomColors.primaryTextColor,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

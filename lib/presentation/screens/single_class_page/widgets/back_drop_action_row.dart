@@ -10,6 +10,7 @@ import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart' as Provider;
@@ -86,6 +87,7 @@ class BackDropActionRow extends ConsumerWidget {
     final favorites = ref.watch(classFavoritesProvider);
     final reports = ref.watch(classReportsProvider);
     final user = ref.watch(userRiverpodProvider);
+    final isAuthenticated = user.value != null;
 
     double blurFactor = isCollapsed ? 0 : 4;
     List<Widget> actions = [
@@ -108,83 +110,91 @@ class BackDropActionRow extends ConsumerWidget {
         CustomErrorHandler.captureException(e, stackTrace: s);
       }
     } else {
-      // Only show favorite and flag icons if user is authenticated
-      user.whenData((userData) {
-        if (userData != null) {
-          actions.add(
-            favorites.when(
-              data: (favMap) => IconButton(
-                icon: Icon(
-                  favMap[classId] == true
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: Theme.of(context).iconTheme.color,
-                ),
-                onPressed: () => ref
-                    .read(classFavoritesProvider.notifier)
-                    .toggleFavorite(classId),
-              ),
-              loading: () => const SizedBox(
-                width: 40,
-                height: 40,
-                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-              ),
-              error: (_, __) => const SizedBox.shrink(),
+      // Always show the icons, handle authentication in onPressed
+      actions.add(
+        favorites.when(
+          data: (favMap) => IconButton(
+            icon: Icon(
+              favMap[classId] == true ? Icons.favorite : Icons.favorite_border,
+              color: Theme.of(context).iconTheme.color,
             ),
-          );
-
-          actions.add(
-            reports.when(
-              data: (reportMap) {
-                final reportState = reportMap[classId] ?? const ReportState();
-                return IconButton(
-                  icon: Icon(
-                    reportState.isReported ? Icons.flag : Icons.flag_outlined,
-                    color: reportState.isReported ? Colors.red : Colors.black,
-                  ),
-                  onPressed: () async {
-                    if (!reportState.isReported) {
-                      final shouldReport = await _showWarningDialog(context);
-                      if (shouldReport != true) return;
-                    }
-                    if (context.mounted) {
-                      ref
-                          .read(classReportsProvider.notifier)
-                          .toggleReport(classId);
-                    }
-                  },
+            onPressed: () {
+              if (!isAuthenticated) {
+                showAuthRequiredDialog(
+                  context,
+                  subtitle:
+                      'Log in or sign up to save events to your favorites and build your personal collection.',
                 );
-              },
-              loading: () => const SizedBox(
-                width: 40,
-                height: 40,
-                child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                return;
+              }
+              ref.read(classFavoritesProvider.notifier).toggleFavorite(classId);
+            },
+          ),
+          loading: () => const SizedBox(
+            width: 40,
+            height: 40,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      );
+
+      actions.add(
+        reports.when(
+          data: (reportMap) {
+            final reportState = reportMap[classId] ?? const ReportState();
+            return IconButton(
+              icon: Icon(
+                reportState.isReported ? Icons.flag : Icons.flag_outlined,
+                color: reportState.isReported ? Colors.red : Colors.black,
               ),
-              error: (_, __) => const SizedBox.shrink(),
-            ),
-          );
-        }
-      });
+              onPressed: () async {
+                if (!isAuthenticated) {
+                  showAuthRequiredDialog(
+                    context,
+                    subtitle:
+                        'Log in or sign up to report events and help us maintain accurate information.',
+                  );
+                  return;
+                }
+
+                if (!reportState.isReported) {
+                  final shouldReport = await _showWarningDialog(context);
+                  if (shouldReport != true) return;
+                }
+                if (context.mounted) {
+                  ref.read(classReportsProvider.notifier).toggleReport(classId);
+                }
+              },
+            );
+          },
+          loading: () => const SizedBox(
+            width: 40,
+            height: 40,
+            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+          ),
+          error: (_, __) => const SizedBox.shrink(),
+        ),
+      );
     }
+
     return ClipOval(
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2), // Subdued color
-          // round oval
+          color: Colors.white.withOpacity(0.2),
         ),
         child: BackdropFilter(
-          filter: ImageFilter.blur(
-              sigmaX: blurFactor,
-              sigmaY: blurFactor), // Adjust blur values as needed
+          filter: ImageFilter.blur(sigmaX: blurFactor, sigmaY: blurFactor),
           child: SizedBox(
             height: 65,
             child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppPaddings.small),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    // twi gesture detector with star and check icon with color and function depending on isCompleted and isMarked
-                    children: actions)),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: actions,
+              ),
+            ),
           ),
         ),
       ),

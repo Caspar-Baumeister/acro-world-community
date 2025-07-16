@@ -93,10 +93,6 @@ class SettingsDrawer extends StatelessWidget {
                     ref.invalidate(userRiverpodProvider);
                     ref.invalidate(userNotifierProvider);
                     ref.invalidate(navigationProvider);
-                    // we don't need to route since the router listens to authentification changes
-                    WidgetsBinding.instance.addPostFrameCallback((_) {
-                      context.goNamed('auth');
-                    });
                   },
                 );
               }),
