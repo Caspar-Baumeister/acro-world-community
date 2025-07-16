@@ -58,6 +58,10 @@ class _TeacherCardState extends ConsumerState<TeacherCard> {
             widget.teacher.name ?? "No name",
             style: Theme.of(context).textTheme.titleLarge,
           ),
+          subtitle: Text(
+            "${widget.teacher.likes?.toString() ?? "0"} followers",
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           trailing: Mutation(
             options: MutationOptions(
               document: isLikedState
