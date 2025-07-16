@@ -5,12 +5,10 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gql/src/ast/ast.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart' as provider;
 
 class SingleEventQueryWrapper extends ConsumerWidget {
   const SingleEventQueryWrapper({
@@ -24,11 +22,6 @@ class SingleEventQueryWrapper extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRole =
-        provider.Provider.of<UserRoleProvider>(context, listen: false);
-
-    final isCreator = userRole.isCreator;
-
     if (urlSlug == null && classEventId == null) {
       return const ErrorPage(
         error: "No Event provided. Please check the URL.",
@@ -45,7 +38,7 @@ class SingleEventQueryWrapper extends ConsumerWidget {
       variables["url_slug"] = urlSlug;
       queryName = "classes";
     } else {
-      query = Queries.getClassEventWithClasByIdWithFavorite;
+      query = Queries.getClassEventWithClasById;
       variables["class_event_id"] = classEventId;
       queryName = "class_events_by_pk";
     }
@@ -60,7 +53,7 @@ class SingleEventQueryWrapper extends ConsumerWidget {
         if (result.hasException) {
           CustomErrorHandler.captureException(
             result.exception.toString(),
-            stackTrace: result.exception!.originalStackTrace,
+            stackTrace: StackTrace.current,
           );
           return ErrorPage(error: "Error in fetching the event");
         }
@@ -87,7 +80,6 @@ class SingleEventQueryWrapper extends ConsumerWidget {
             final clas = ClassModel.fromJson(item);
             return SingleClassPage(
               clas: clas,
-              isCreator: isCreator,
             );
           }
         } catch (e, st) {

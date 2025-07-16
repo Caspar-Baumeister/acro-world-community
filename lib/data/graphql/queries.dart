@@ -345,16 +345,13 @@ query isClassFavorited(\$class_id: uuid!, \$user_id: uuid!) {
   }
 """);
 
-  static final getClassEventWithClasByIdWithFavorite = gql("""
-query getClassEventWithClasByIdWithFavorite(\$class_event_id: uuid!, \$user_id: uuid!) {
+  static final getClassEventWithClasById = gql("""
+query getClassEventWithClasById(\$class_event_id: uuid!) {
   class_events_by_pk(id: \$class_event_id){
     ${Fragments.classEventFragment}
     class {
       ${Fragments.classFragmentAllInfo}
-      class_favorits(where: {user_id: {_eq: \$user_id}}) {
-      id
-      created_at
-      }
+     
       
       
     }
