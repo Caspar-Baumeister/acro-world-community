@@ -6,6 +6,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_body.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -108,10 +109,12 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
       data: (user) {
         if (user == null) {
           // Not signed in or no user → redirect to auth
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.goNamed('auth');
-          });
-          return const SizedBox.shrink();
+
+          return Scaffold(
+            appBar: const CustomAppbarSimple(title: "Edit User Data"),
+            body: GuestProfileContent(
+                subtitle: "Please sign in to edit your profile."),
+          );
         }
 
         // Initialize controllers & dropdowns on first build

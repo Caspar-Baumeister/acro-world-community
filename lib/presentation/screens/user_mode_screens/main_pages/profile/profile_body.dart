@@ -165,12 +165,25 @@ class GuestProfileContent extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // avatar
-          CircleAvatar(
-            radius: Responsive.isMobile(context) ? 64 : 80,
-            backgroundColor: CustomColors.secondaryBackgroundColor,
-            backgroundImage: const NetworkImage(
-              'https://lh3.googleusercontent.com/aida-public/AB6AXuBWSrFBlQP63zc6HP045oNHnj7aCFdbNNuP_-WyJFcJt7flDzs4VNJ_ZNZ1D_Ipyg5asy4AKKsBsR0bC_KYgZCJWcm-RPAJrCZsJcYXDAWUusMLOFY_78oa6PGTxyyO_9F0C71XL5Wm-u2tEEUUqjbJ5CN5grT-FFrOZ_PlZ0GmzBbC7qLMZ0OEE8iwxmp0cGZgCcjmhd3PZBIVXA0QV0XMWzIl66PPyyJOuFRWHneeBlX_KMf9b1o9lv0Md1vJWJoa1TO-qh8Zks0W',
+          // Decorative circle with image
+          Container(
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: CustomColors.primaryColor.withOpacity(0.6),
+                width: 2.5,
+              ),
+            ),
+            padding:
+                const EdgeInsets.all(12), // Padding between border and image
+            child: CircleAvatar(
+              radius: Responsive.isMobile(context)
+                  ? 64 - 12
+                  : 80 - 12, // Adjusted for padding
+              backgroundColor: Colors.white,
+              backgroundImage: const AssetImage(
+                'assets/muscleup_drawing.png',
+              ),
             ),
           ),
 

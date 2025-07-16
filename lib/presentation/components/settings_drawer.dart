@@ -3,118 +3,181 @@ import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-class SettingsDrawer extends StatelessWidget {
+class SettingsDrawer extends ConsumerWidget {
   const SettingsDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userRiverpodProvider);
+
     return Drawer(
+      backgroundColor: CustomColors.backgroundColor,
       child: SafeArea(
-        child: Material(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () => context.pushNamed(
-                  accountSettingsRoute,
-                ),
-                child: ListTile(
-                    leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.settings_outlined),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      "Settings",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    )
-                  ],
-                )),
+        child: Column(
+          children: <Widget>[
+            // Drawer Header with gradient background
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.settings,
+                    size: 28,
+                  ),
+                  const SizedBox(width: 16),
+                  Text(
+                    "Menu",
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                  ),
+                ],
               ),
-              const Divider(color: Colors.grey, height: 1),
-              GestureDetector(
-                onTap: () => context.pushNamed(
-                  essentialsRoute,
+            ),
+
+            const SizedBox(height: 8),
+
+            // Menu Items
+            _buildMenuItem(
+              context: context,
+              icon: Icons.account_circle_outlined,
+              text: "Account Settings",
+              onTap: () => context.pushNamed(accountSettingsRoute),
+            ),
+
+            _buildMenuItem(
+              context: context,
+              icon: Icons.backpack_rounded,
+              text: "Essentials",
+              onTap: () => context.pushNamed(essentialsRoute),
+            ),
+
+            _buildMenuItem(
+              context: context,
+              icon: Icons.chat_bubble_outline_rounded,
+              text: "Feedback & Bugs",
+              onTap: () => showCupertinoModalPopup(
+                context: context,
+                builder: (BuildContext context) => const FeedbackPopUp(
+                  subject: 'Feedback from AcroWorld App',
+                  title: "Feedback & Bugs",
                 ),
-                child: ListTile(
-                    leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.backpack_outlined),
-                    const SizedBox(
-                      width: 15,
-                    ),
-                    Text(
-                      "Essentials",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    )
-                  ],
-                )),
               ),
-              const Divider(color: Colors.grey, height: 1),
-              GestureDetector(
-                onTap: () => showCupertinoModalPopup(
+            ),
+
+            // Conditional rendering based on auth status
+            userAsync.when(
+              data: (user) {
+                if (user == null) {
+                  return _buildMenuItem(
                     context: context,
-                    builder: (BuildContext context) => const FeedbackPopUp(
-                        subject: 'Feedback from AcroWorld App',
-                        title: "Feedback & Bugs")),
-                child: ListTile(
-                    leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.feedback_outlined),
-                    const SizedBox(
-                      width: 15,
+                    icon: Icons.login_rounded,
+                    text: "Create Account",
+                    iconColor: CustomColors.accentColor,
+                    textColor: CustomColors.accentColor,
+                    onTap: () => context.pushNamed(
+                      authRoute,
+                      queryParameters: {
+                        'initShowSignIn': 'false',
+                        'from': '/profile',
+                      },
                     ),
-                    Text(
-                      "Feedback & Bugs",
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    )
-                  ],
-                )),
+                  );
+                } else {
+                  return _buildMenuItem(
+                    context: context,
+                    icon: Icons.logout_rounded,
+                    text: "Log out",
+                    iconColor: CustomColors.errorTextColor,
+                    textColor: CustomColors.errorTextColor,
+                    onTap: () async {
+                      await ref.read(authProvider.notifier).signOut();
+                      ref.invalidate(userRiverpodProvider);
+                      ref.invalidate(userNotifierProvider);
+                      ref.invalidate(navigationProvider);
+                    },
+                  );
+                }
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (_, __) => _buildMenuItem(
+                context: context,
+                icon: Icons.login_rounded,
+                text: "Sign in",
+                onTap: () => context.pushNamed(authRoute),
               ),
-              const Divider(color: Colors.grey, height: 1),
-              Consumer(builder: (context, ref, _) {
-                return ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: Text("Log out",
-                      style: Theme.of(context).textTheme.headlineSmall),
-                  onTap: () async {
-                    await ref.read(authProvider.notifier).signOut();
-                    ref.invalidate(userRiverpodProvider);
-                    ref.invalidate(userNotifierProvider);
-                    ref.invalidate(navigationProvider);
-                  },
-                );
-              }),
-              Spacer(),
-              VersionDisplay()
-            ],
-          ),
+            ),
+
+            // Version at bottom
+            const Spacer(),
+            const Padding(
+              padding: EdgeInsets.only(bottom: 16),
+              child: VersionDisplay(),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget buildMenuItem(
-      {required String text,
-      required IconData icon,
-      required VoidCallback onPressed}) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(
-        text,
+  Widget _buildMenuItem({
+    required BuildContext context,
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+    Color? iconColor,
+    Color? textColor,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      child: Card(
+        elevation: 0,
+        color: CustomColors.backgroundColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: CustomColors.secondaryBackgroundColor,
+            width: 1.5,
+          ),
+        ),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  size: 24,
+                  color: iconColor ?? CustomColors.primaryColor,
+                ),
+                const SizedBox(width: 16),
+                Text(
+                  text,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: textColor ?? CustomColors.primaryTextColor,
+                      ),
+                ),
+                const Spacer(),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: CustomColors.lightTextColor,
+                  size: 20,
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
-      onTap: onPressed,
     );
   }
 }
@@ -138,8 +201,12 @@ class VersionDisplay extends StatelessWidget {
           return const Text('Version unavailable');
         } else {
           return Text(
-            'Version: ${snapshot.data}',
-            style: const TextStyle(fontSize: 12, color: Colors.grey),
+            'Version ${snapshot.data}',
+            style: TextStyle(
+              fontSize: 13,
+              color: CustomColors.lightTextColor,
+              fontWeight: FontWeight.w500,
+            ),
           );
         }
       },
