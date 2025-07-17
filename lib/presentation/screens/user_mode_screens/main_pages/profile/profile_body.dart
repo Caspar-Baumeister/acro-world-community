@@ -137,7 +137,7 @@ class GuestProfileContent extends StatelessWidget {
   const GuestProfileContent({
     super.key,
     this.subtitle =
-        'Log in or sign up to view your saved events, tickets, and more.',
+        'Log in or sign up to view your saved events and upload yours for free.',
   });
 
   final String subtitle;

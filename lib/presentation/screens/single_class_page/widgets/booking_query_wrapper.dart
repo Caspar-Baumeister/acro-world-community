@@ -41,12 +41,31 @@ class _BookingQueryHoverButtonState
     final userAsync = ref.watch(userRiverpodProvider);
 
     return userAsync.when(
-      loading: () =>
-          CustomBottomHoverButton(content: Container(), onPressed: () {}),
+      loading: () => SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (user) {
         final userId = user?.id;
-        if (userId == null) return const SizedBox.shrink();
+        if (userId == null) {
+          return CustomBottomHoverButton(
+            content: const Text(
+              "Book now",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              buildMortal(
+                context,
+                BookingModal(
+                  classEvent: widget.classEvent,
+                  refetch: () => {},
+                ),
+              );
+            },
+          );
+        }
 
         return Query(
           options: QueryOptions(
