@@ -9,6 +9,7 @@ import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -76,8 +77,17 @@ class ShellSideBar extends StatelessWidget {
                                   user?.isEmailVerified ?? false;
                               return StandartButton(
                                 width: null,
-                                text: "Insert Events",
+                                text: "Create Events",
                                 onPressed: () async {
+                                  if (user == null) {
+                                    showAuthRequiredDialog(
+                                      subtitle:
+                                          'Create a partner account to upload your events as a creator, teacher, studio or anonymously.',
+                                      context,
+                                      redirectPath: '/',
+                                    );
+                                    return;
+                                  }
                                   if (!isEmailVerified) {
                                     showInfoToast(
                                         "You need to verify your email before switching to creator mode");
@@ -111,24 +121,65 @@ class ShellSideBar extends StatelessWidget {
                         })
                       ]),
                 ),
-          const Divider(
-            color: CustomColors.accentColor,
-            thickness: 1,
-          ),
+          // Authentication section - Sign Up or Logout
           Consumer(
-            builder: (context, ref, child) => ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text("Logout"),
-              onTap: () async {
-                await ref.read(authProvider.notifier).signOut();
-                ref.invalidate(userRiverpodProvider);
-                ref.invalidate(userNotifierProvider);
-                // we don't need to route since the router listens to authentification changes
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  context.goNamed('auth');
-                });
-              },
-            ),
+            builder: (context, ref, child) {
+              final userAsync = ref.watch(userRiverpodProvider);
+
+              return userAsync.when(
+                loading: () => const SizedBox.shrink(),
+                error: (_, __) => const SizedBox.shrink(),
+                data: (user) {
+                  // Common divider for both cases
+                  final divider = const Divider(
+                    color: CustomColors.accentColor,
+                    thickness: 1,
+                  );
+
+                  if (user == null) {
+                    // Show Sign Up button for unauthenticated users
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        divider,
+                        ListTile(
+                          leading: Icon(Icons.login_rounded,
+                              color: CustomColors.accentColor),
+                          title: Text(
+                            "Create Account",
+                            style: TextStyle(color: CustomColors.accentColor),
+                          ),
+                          onTap: () => context.pushNamed(
+                            authRoute,
+                            queryParameters: {
+                              'initShowSignIn': 'false',
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+
+                  // Show logout button for authenticated users
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      divider,
+                      ListTile(
+                        leading: const Icon(Icons.logout),
+                        title: const Text("Logout"),
+                        onTap: () async {
+                          await ref.read(authProvider.notifier).signOut();
+                          ref.invalidate(userRiverpodProvider);
+                          ref.invalidate(userNotifierProvider);
+                          // we don't need to route since the router listens to authentication changes
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
           ),
           const SizedBox(height: 20),
         ],
