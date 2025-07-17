@@ -6,6 +6,8 @@ void showAuthRequiredDialog(
   BuildContext context, {
   String subtitle =
       'Log in or sign up to access all features and personalize your experience.',
+  String? redirectPath,
+  String? returnAction,
 }) {
   final screenSize = MediaQuery.of(context).size;
   final isSmallScreen = screenSize.height < 600;
@@ -32,11 +34,17 @@ void showAuthRequiredDialog(
               : screenSize.height * 0.85, // Desktop devices
           // On desktop, constrain the width for better readability
           child: Responsive(
-            mobile: GuestProfileContent(subtitle: subtitle),
+            mobile: GuestProfileContent(
+              subtitle: subtitle,
+              redirectPath: redirectPath,
+            ),
             desktop: Center(
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 450),
-                child: GuestProfileContent(subtitle: subtitle),
+                child: GuestProfileContent(
+                  subtitle: subtitle,
+                  redirectPath: redirectPath,
+                ),
               ),
             ),
           ),

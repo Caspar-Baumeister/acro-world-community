@@ -138,9 +138,11 @@ class GuestProfileContent extends StatelessWidget {
     super.key,
     this.subtitle =
         'Log in or sign up to view your saved events and upload yours for free.',
+    this.redirectPath,
   });
 
   final String subtitle;
+  final String? redirectPath;
 
   @override
   Widget build(BuildContext context) {
@@ -220,13 +222,25 @@ class GuestProfileContent extends StatelessWidget {
             width: double.infinity,
             height: Responsive.isMobile(context) ? 48 : 56,
             child: ElevatedButton(
-              onPressed: () => context.pushNamed(
-                authRoute,
-                queryParameters: {
+              onPressed: () {
+                Navigator.pop(context); // Close dialog first
+
+                // Build query parameters with redirect and return action
+                final queryParams = <String, String>{
                   'initShowSignIn': 'true',
-                  'from': '/profile',
-                },
-              ),
+                };
+
+                if (redirectPath != null) {
+                  queryParams['from'] = redirectPath!;
+                } else {
+                  queryParams['from'] = '/profile';
+                }
+
+                context.pushNamed(
+                  authRoute,
+                  queryParameters: queryParams,
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: CustomColors.primaryColor,
                 shape: const StadiumBorder(),
@@ -250,13 +264,25 @@ class GuestProfileContent extends StatelessWidget {
             width: double.infinity,
             height: Responsive.isMobile(context) ? 48 : 56,
             child: OutlinedButton(
-              onPressed: () => context.pushNamed(
-                authRoute,
-                queryParameters: {
+              onPressed: () {
+                Navigator.pop(context); // Close dialog first
+
+                // Build query parameters with redirect and return action
+                final queryParams = <String, String>{
                   'initShowSignIn': 'false',
-                  'from': '/profile',
-                },
-              ),
+                };
+
+                if (redirectPath != null) {
+                  queryParams['from'] = redirectPath!;
+                } else {
+                  queryParams['from'] = '/profile';
+                }
+
+                context.pushNamed(
+                  authRoute,
+                  queryParameters: queryParams,
+                );
+              },
               style: OutlinedButton.styleFrom(
                 backgroundColor: CustomColors.buttonPrimaryLight,
                 shape: const StadiumBorder(),
