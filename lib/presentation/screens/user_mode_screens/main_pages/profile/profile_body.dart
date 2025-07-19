@@ -78,13 +78,13 @@ class ProfileBody extends ConsumerWidget {
                             provider.Provider.of<UserRoleProvider>(context,
                                     listen: false)
                                 .setIsCreator(true);
-                            context.goNamed(creatorProfileRoute);
+                            context.pushNamed(creatorProfileRoute);
                           } else {
                             final roles =
                                 await TokenSingletonService().getUserRoles();
                             if (roles.contains("TeacherUser")) {
                               GraphQLClientSingleton().updateClient(true);
-                              context.goNamed(editCreatorProfileRoute);
+                              context.pushNamed(editCreatorProfileRoute);
                             } else {
                               buildMortal(
                                 context,
