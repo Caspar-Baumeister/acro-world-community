@@ -16,7 +16,7 @@ class ClassesView extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarProvider calendarProvider = Provider.of<CalendarProvider>(context);
     if (calendarProvider.loading) {
-      return const LoadingWidget();
+      return Center(child: const LoadingWidget());
     }
 
     if (calendarProvider.weekClassEvents.isEmpty) {

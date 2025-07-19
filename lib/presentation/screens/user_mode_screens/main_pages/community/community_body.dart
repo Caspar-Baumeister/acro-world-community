@@ -1,6 +1,5 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/widgets/teacher_card.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,22 +14,13 @@ class CommunityBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Get current user or null
-    final user = ref.watch(userRiverpodProvider).maybeWhen(
-          data: (u) => u,
-          orElse: () => null,
-        );
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppPaddings.medium),
         ...teachers.where((t) => t.type != "Anonymous").map((teacher) {
-          final isLiked =
-              (user?.id == null) ? false : (teacher.likedByUser ?? false);
           return TeacherCard(
             teacher: teacher,
-            isLiked: isLiked,
           );
         }),
       ],

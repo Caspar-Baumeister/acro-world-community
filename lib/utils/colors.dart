@@ -90,4 +90,11 @@ class CustomColors {
   static const Color secondaryTextColor = _darkGreen;
 
   static const Color iconColor = _black;
+
+  // Adding new colors for guest profile
+  static const Color surfaceColor = Color(0xFFE7F0E7); // Light green surface
+  static const Color buttonPrimaryLight =
+      Color(0xFFEAF2EA); // Very light green for secondary button
+  static const Color subtitleText =
+      Color(0xFF49735E); // Muted green for secondary text
 }

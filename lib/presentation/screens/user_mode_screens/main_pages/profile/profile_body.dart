@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/guest_profile_content.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
@@ -31,11 +32,7 @@ class ProfileBody extends ConsumerWidget {
       },
       data: (user) {
         if (user == null) {
-          // Not signed in: redirect to auth
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.goNamed('auth');
-          });
-          return const SizedBox.shrink();
+          return GuestProfileContent();
         }
 
         final hasTeacherProfile = user.teacherProfile != null;

@@ -8,6 +8,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/acti
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -41,12 +42,43 @@ class _BookingQueryHoverButtonState
     final userAsync = ref.watch(userRiverpodProvider);
 
     return userAsync.when(
-      loading: () =>
-          CustomBottomHoverButton(content: Container(), onPressed: () {}),
+      loading: () => const SizedBox.shrink(),
       error: (_, __) => const SizedBox.shrink(),
       data: (user) {
         final userId = user?.id;
-        if (userId == null) return const SizedBox.shrink();
+        if (userId == null) {
+          // If no user is logged in, show Book Now button that opens auth dialog
+          return CustomBottomHoverButton(
+            content: const Text(
+              "Book now",
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            onPressed: () {
+              // Construct redirect path for the current event
+              final classSlug = widget.classEvent.classModel?.urlSlug;
+              String redirectPath;
+
+              if (classSlug != null) {
+                redirectPath =
+                    '/event/$classSlug?event=${widget.classEvent.id}';
+              } else {
+                redirectPath = '/';
+              }
+
+              // Show auth dialog with booking-specific message and redirect info
+              showAuthRequiredDialog(
+                context,
+                subtitle:
+                    'Log in or sign up to book events, manage your tickets, and keep track of your activities.',
+                redirectPath: redirectPath,
+              );
+            },
+          );
+        }
 
         return Query(
           options: QueryOptions(

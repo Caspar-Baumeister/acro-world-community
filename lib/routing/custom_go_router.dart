@@ -32,7 +32,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/lo
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
-import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -45,60 +44,60 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 final userShellKey = GlobalKey<NavigatorState>();
 final creatorShellKey = GlobalKey<NavigatorState>();
 
-class AuthChangeNotifier extends ChangeNotifier {
-  AuthChangeNotifier(this.ref) {
-    // Listen to the AsyncValue<AuthState> from authProvider
-    ref.listen<AsyncValue<AuthState>>(
-      authProvider,
-      (_, __) => notifyListeners(),
-    );
-  }
-  final Ref ref;
-}
+// class AuthChangeNotifier extends ChangeNotifier {
+//   AuthChangeNotifier(this.ref) {
+//     // Listen to the AsyncValue<AuthState> from authProvider
+//     ref.listen<AsyncValue<AuthState>>(
+//       authProvider,
+//       (_, __) => notifyListeners(),
+//     );
+//   }
+//   final Ref ref;
+// }
 
 // Expose it as a plain Riverpod provider:
-final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
-  (ref) => AuthChangeNotifier(ref),
-);
+// final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
+//   (ref) => AuthChangeNotifier(ref),
+// );
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
       navigatorKey: rootNavigatorKey,
-      refreshListenable: ref.watch(goRouterRefreshProvider),
+      // refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: kIsWeb ? null : '/splash',
-      redirect: (context, state) {
-        final auth = ref.read(authProvider);
-        final loc = state.matchedLocation;
+      // redirect: (context, state) {
+      //   final auth = ref.read(authProvider);
+      //   final loc = state.matchedLocation;
 
-        final loggingIn = loc.startsWith('/auth');
-        final forgotPassword = loc.startsWith('/forgot-password');
+      //   final loggingIn = loc.startsWith('/auth');
+      //   final forgotPassword = loc.startsWith('/forgot-password');
 
-        return auth.when(
-          loading: () => null, // no blocking, handle spinner in UI
-          error: (_, __) => loggingIn ? null : '/auth-error',
-          data: (authState) {
-            final isAuthenticated =
-                authState.status == AuthStatus.authenticated;
+      //   return auth.when(
+      //     loading: () => null, // no blocking, handle spinner in UI
+      //     error: (_, __) => loggingIn ? null : '/auth-error',
+      //     data: (authState) {
+      //       final isAuthenticated =
+      //           authState.status == AuthStatus.authenticated;
 
-            // Not logged in? Block everything except /auth and /forgot
-            if (!isAuthenticated &&
-                !loggingIn &&
-                !forgotPassword &&
-                loc != '/splash') {
-              final encoded = Uri.encodeComponent(loc);
-              return '/auth?from=$encoded';
-            }
+      //       // Not logged in? Block everything except /auth and /forgot
+      //       if (!isAuthenticated &&
+      //           !loggingIn &&
+      //           !forgotPassword &&
+      //           loc != '/splash') {
+      //         final encoded = Uri.encodeComponent(loc);
+      //         return '/auth?from=$encoded';
+      //       }
 
-            // Logged in & stuck on /auth → redirect back to where you came from
-            final from = state.uri.queryParameters['from'];
-            if (isAuthenticated && loggingIn) {
-              return from != null ? Uri.decodeComponent(from) : '/';
-            }
+      //       // Logged in & stuck on /auth → redirect back to where you came from
+      //       final from = state.uri.queryParameters['from'];
+      //       if (isAuthenticated && loggingIn) {
+      //         return from != null ? Uri.decodeComponent(from) : '/';
+      //       }
 
-            return null; // allow navigation
-          },
-        );
-      },
+      //       return null; // allow navigation
+      //     },
+      //   );
+      // },
       routes: [
         // splash screen
 
@@ -272,9 +271,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           name: authRoute,
           builder: (ctx, state) {
             final from = state.uri.queryParameters['from'];
+            final initShowSignIn =
+                state.uri.queryParameters['initShowSignIn'] == 'true';
             return Authenticate(
-              initShowSignIn: true,
-              redirectAfter: from, //
+              initShowSignIn: initShowSignIn,
+              redirectAfter: from,
             );
           },
         ),

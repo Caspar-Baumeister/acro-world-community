@@ -96,7 +96,14 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
         // Invalidate so new "verified" user is fetched downstream
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pop(context);
+          // Check if we can pop this route
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            // If we can't pop, navigate to home
+            context.go('/');
+          }
+
           ref.invalidate(userRiverpodProvider);
           ref.invalidate(userNotifierProvider);
         });
