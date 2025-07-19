@@ -19,8 +19,6 @@ const String verifyEmailRoute = 'verify-email';
 
 /// AUTHENTICATION ROUTES
 const String authRoute = 'auth';
-const String confirmEmailRoute = 'confirm-email';
-const String emailVerificationRoute = 'email-verification';
 const String forgotPasswordSuccessRoute = 'forgot-password-success';
 const String forgotPasswordRoute = 'forgot-password';
 const String loadingRoute = 'loading';

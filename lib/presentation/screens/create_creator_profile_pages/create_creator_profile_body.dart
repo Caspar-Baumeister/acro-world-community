@@ -248,11 +248,37 @@ class _CreateCreatorProfileBodyState
 
             // Initialize form on first data
             if (!_initialized) {
-              _nameController.text = user.name ?? '';
-              setUrlSlug(user.name ?? '');
-              _currentImage = null;
-              _creatorType = null;
-              _currentAdditionalImages = [];
+              if (widget.isEditing) {
+                // If in edit mode, get the teacher data from the CreatorProvider
+                final creatorProvider = provider.Provider.of<CreatorProvider>(
+                    context,
+                    listen: false);
+                final teacher = creatorProvider.activeTeacher;
+                if (teacher != null) {
+                  _nameController.text = teacher.name ?? '';
+                  _urlSlugController.text = teacher.slug ?? '';
+                  _descriptionController.text = teacher.description ?? '';
+                  _creatorType = teacher.type;
+                  _currentImage = teacher.profilImgUrl;
+                  _currentAdditionalImages = teacher.images
+                          ?.where((img) => !(img.isProfilePicture ?? false))
+                          .map((img) => img.image?.url ?? '')
+                          .where((url) => url.isNotEmpty)
+                          .toList() ??
+                      [];
+
+                  // Since we already have a slug, we know it's valid
+                  _isSlugValid = true;
+                  _isSlugAvailable = true;
+                }
+              } else {
+                // If in create mode, use the user data as before
+                _nameController.text = user.name ?? '';
+                setUrlSlug(user.name ?? '');
+                _currentImage = null;
+                _creatorType = null;
+                _currentAdditionalImages = [];
+              }
               _initialized = true;
             }
 

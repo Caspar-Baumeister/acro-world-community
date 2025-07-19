@@ -5,7 +5,6 @@ import 'package:acroworld/presentation/screens/account_settings/account_settings
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
-import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
@@ -282,21 +281,6 @@ final routerProvider = Provider<GoRouter>((ref) {
 
         /// AUTHENTICATION
 
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/confirm-email',
-          name: confirmEmailRoute,
-          builder: (ctx, state) => const ConfirmEmailPage(),
-        ),
-
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/email-verification/:code',
-          name: emailVerificationRoute,
-          builder: (ctx, state) => EmailVerificationPage(
-            code: state.pathParameters['code'],
-          ),
-        ),
         // ForgotPassword
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,

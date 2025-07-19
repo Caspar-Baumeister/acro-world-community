@@ -47,7 +47,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
       final verified = await UserService().verifyCode(widget.code!);
       if (verified != true) {
         showErrorToast("Error verifying email");
-        if (mounted) context.goNamed(confirmEmailRoute);
+        if (mounted) context.goNamed(verifyEmailRoute);
       } else {
         showSuccessToast("Email verified successfully");
         // Invalidate the user so downstream UIs refetch with updated isEmailVerified
@@ -57,7 +57,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
       showErrorToast("Error verifying email");
-      if (mounted) context.goNamed(confirmEmailRoute);
+      if (mounted) context.goNamed(verifyEmailRoute);
     } finally {
       if (mounted) setState(() => _isVerifying = false);
     }

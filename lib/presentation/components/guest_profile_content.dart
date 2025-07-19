@@ -101,8 +101,10 @@ class GuestProfileContent extends StatelessWidget {
             height: Responsive.isMobile(context) ? 48 : 65,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog first
-
+                // if you can pop then pop the current page
+                if (context.canPop()) {
+                  context.pop();
+                }
                 // Build query parameters with redirect and return action
                 final queryParams = <String, String>{
                   'initShowSignIn': 'true',
@@ -143,8 +145,9 @@ class GuestProfileContent extends StatelessWidget {
             height: Responsive.isMobile(context) ? 48 : 65,
             child: OutlinedButton(
               onPressed: () {
-                Navigator.pop(context); // Close dialog first
-
+                if (context.canPop()) {
+                  context.pop();
+                }
                 // Build query parameters with redirect and return action
                 final queryParams = <String, String>{
                   'initShowSignIn': 'false',
