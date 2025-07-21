@@ -27,6 +27,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
@@ -64,39 +65,13 @@ final routerProvider = Provider<GoRouter>((ref) {
       navigatorKey: rootNavigatorKey,
       // refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: kIsWeb ? null : '/splash',
-      // redirect: (context, state) {
-      //   final auth = ref.read(authProvider);
-      //   final loc = state.matchedLocation;
+      errorBuilder: (context, state) {
+        // Get the error message from the state
+        final error = state.error?.toString() ?? 'An unknown error occurred';
 
-      //   final loggingIn = loc.startsWith('/auth');
-      //   final forgotPassword = loc.startsWith('/forgot-password');
-
-      //   return auth.when(
-      //     loading: () => null, // no blocking, handle spinner in UI
-      //     error: (_, __) => loggingIn ? null : '/auth-error',
-      //     data: (authState) {
-      //       final isAuthenticated =
-      //           authState.status == AuthStatus.authenticated;
-
-      //       // Not logged in? Block everything except /auth and /forgot
-      //       if (!isAuthenticated &&
-      //           !loggingIn &&
-      //           !forgotPassword &&
-      //           loc != '/splash') {
-      //         final encoded = Uri.encodeComponent(loc);
-      //         return '/auth?from=$encoded';
-      //       }
-
-      //       // Logged in & stuck on /auth → redirect back to where you came from
-      //       final from = state.uri.queryParameters['from'];
-      //       if (isAuthenticated && loggingIn) {
-      //         return from != null ? Uri.decodeComponent(from) : '/';
-      //       }
-
-      //       return null; // allow navigation
-      //     },
-      //   );
-      // },
+        // Return the error page with the error message
+        return ErrorPage(error: error);
+      },
       routes: [
         // splash screen
 
