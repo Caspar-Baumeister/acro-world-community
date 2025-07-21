@@ -31,28 +31,28 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                     data: Theme.of(context).copyWith(
                       timePickerTheme: TimePickerThemeData(
                         dialBackgroundColor: Colors.white,
-                        dialTextColor: MaterialStateColor.resolveWith(
-                          (states) => states.contains(MaterialState.selected)
+                        dialTextColor: WidgetStateColor.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
                               ? CustomColors.accentColor
                               : Colors.black,
                         ),
-                        hourMinuteColor: MaterialStateColor.resolveWith(
-                          (states) => states.contains(MaterialState.selected)
+                        hourMinuteColor: WidgetStateColor.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
                               ? CustomColors.accentColor
                               : Colors.grey[200]!,
                         ),
-                        hourMinuteTextColor: MaterialStateColor.resolveWith(
-                          (states) => states.contains(MaterialState.selected)
+                        hourMinuteTextColor: WidgetStateColor.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
                               ? Colors.white
                               : Colors.black,
                         ),
-                        dayPeriodColor: MaterialStateColor.resolveWith(
-                          (states) => states.contains(MaterialState.selected)
+                        dayPeriodColor: WidgetStateColor.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
                               ? CustomColors.accentColor
                               : Colors.grey[200]!,
                         ),
-                        dayPeriodTextColor: MaterialStateColor.resolveWith(
-                          (states) => states.contains(MaterialState.selected)
+                        dayPeriodTextColor: WidgetStateColor.resolveWith(
+                          (states) => states.contains(WidgetState.selected)
                               ? Colors.white
                               : Colors.black,
                         ),
@@ -69,7 +69,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                       textButtonTheme: TextButtonThemeData(
                         style: ButtonStyle(
                           foregroundColor:
-                              MaterialStateProperty.all<Color>(Colors.black),
+                              WidgetStateProperty.all<Color>(Colors.black),
                         ),
                       ),
                       textTheme: const TextTheme(
@@ -119,55 +119,63 @@ void showCustomTimePicker({
       return Theme(
         data: Theme.of(context).copyWith(
           timePickerTheme: TimePickerThemeData(
-            dialBackgroundColor: Colors.white,
-            dialTextColor: MaterialStateColor.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                  ? CustomColors.accentColor
-                  : Colors.black,
+            backgroundColor: CustomColors.backgroundColor,
+            dialBackgroundColor: CustomColors.secondaryBackgroundColor,
+            dialHandColor: CustomColors.accentColor,
+            dialTextColor: WidgetStateColor.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? CustomColors.whiteTextColor
+                  : CustomColors.primaryTextColor,
             ),
-            hourMinuteColor: MaterialStateColor.resolveWith(
-              (states) => states.contains(MaterialState.selected)
+            hourMinuteColor: WidgetStateColor.resolveWith(
+              (states) => states.contains(WidgetState.selected)
                   ? CustomColors.accentColor
-                  : Colors.grey[200]!,
+                  : CustomColors.secondaryBackgroundColor,
             ),
             hourMinuteTextColor: MaterialStateColor.resolveWith(
               (states) => states.contains(MaterialState.selected)
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            dayPeriodColor: MaterialStateColor.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                  ? CustomColors.accentColor
-                  : Colors.grey[200]!,
-            ),
-            dayPeriodTextColor: MaterialStateColor.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                  ? Colors.white
-                  : Colors.black,
-            ),
-            dialHandColor: CustomColors.accentColor,
-            entryModeIconColor: CustomColors.accentColor,
-            inputDecorationTheme: const InputDecorationTheme(
-              contentPadding: EdgeInsets.zero,
-              border: InputBorder.none,
+                  ? CustomColors.primaryTextColor // Use dark text when selected
+                  : CustomColors.primaryTextColor,
             ),
             hourMinuteShape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
+            dayPeriodColor: WidgetStateColor.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? CustomColors.accentColor
+                  : CustomColors.secondaryBackgroundColor,
+            ),
+            dayPeriodTextColor: WidgetStateColor.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? CustomColors.whiteTextColor
+                  : CustomColors.primaryTextColor,
+            ),
+            entryModeIconColor: CustomColors.accentColor,
+            inputDecorationTheme: const InputDecorationTheme(
+              contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              border: OutlineInputBorder(),
+              hintStyle: TextStyle(color: CustomColors.primaryTextColor),
+              labelStyle: TextStyle(color: CustomColors.primaryTextColor),
+            ),
           ),
           textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+            style: TextButton.styleFrom(
+              foregroundColor: CustomColors.primaryTextColor,
             ),
           ),
           textTheme: const TextTheme(
             headlineMedium: TextStyle(
               fontSize: 36,
-              color: Colors.black, // Adjust color if necessary
+              color: CustomColors.primaryTextColor,
             ),
             bodyLarge: TextStyle(
-              fontSize: 36,
-              color: Colors.black, // Adjust color if necessary
+              fontSize: 18,
+              color: CustomColors.primaryTextColor,
+            ),
+            // This is important for input fields
+            titleMedium: TextStyle(
+              fontSize: 18,
+              color: CustomColors.primaryTextColor,
             ),
           ),
         ),

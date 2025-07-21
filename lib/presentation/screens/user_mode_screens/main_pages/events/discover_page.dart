@@ -28,7 +28,7 @@ class DiscoverBody extends StatelessWidget {
     DiscoveryProvider discoveryProvider =
         Provider.of<DiscoveryProvider>(context);
     if (discoveryProvider.loading) {
-      return const LoadingWidget();
+      return Center(child: const LoadingWidget());
     } else if (discoveryProvider.isFilter) {
       return const FilterOnDiscoveryBody();
     } else {

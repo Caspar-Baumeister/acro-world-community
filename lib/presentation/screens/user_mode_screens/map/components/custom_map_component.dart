@@ -65,6 +65,8 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
         FlutterMap(
           mapController: mapController,
           options: MapOptions(
+            interactionOptions: const InteractionOptions(
+                flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag),
             onPositionChanged: (position, hasGesture) {
               //set controller to position
               mapController.move(position.center, mapController.camera.zoom);
@@ -81,6 +83,7 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
           ),
           children: <Widget>[
             TileLayer(
+              userAgentPackageName: 'com.acroworld.app',
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
             // CurrentLocationLayer(),

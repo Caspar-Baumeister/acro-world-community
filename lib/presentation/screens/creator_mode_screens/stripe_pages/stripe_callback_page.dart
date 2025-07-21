@@ -57,6 +57,8 @@ class _StripeCallbackPageState extends ConsumerState<StripeCallbackPage> {
       provider.Provider.of<CreatorProvider>(context, listen: false)
           .setCreatorFromToken();
 
+      // TODO - set creator to true and index to 3
+
       if (isStripeVerified) {
         showSuccessToast("Your Stripe account has been verified");
       } else {
