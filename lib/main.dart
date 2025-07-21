@@ -5,6 +5,8 @@ import 'package:acroworld/firebase_options.dart';
 import 'package:acroworld/notification_initializer.dart';
 import 'package:acroworld/preferences/place_preferences.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/version_to_old_page.dart';
+import 'package:acroworld/routing/custom_go_router.dart';
+import 'package:acroworld/routing/deeplinking/deeplinking.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/version_service.dart';
@@ -39,6 +41,8 @@ void main() async {
   }
 }
 
+final deepLinkService = DeepLinkService();
+
 initMain() async {
   // We're using HiveStore for persistence,
   // so we need to initialize Hive.
@@ -47,6 +51,9 @@ initMain() async {
   await PlacePreferences.init();
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
+
+  // Start listening for new links
+  deepLinkService.startListening(rootNavigatorKey);
 
   try {
     //////////////

@@ -5,7 +5,6 @@ import 'package:acroworld/presentation/screens/account_settings/account_settings
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
-import 'package:acroworld/presentation/screens/authentication_screens/email_verification_page/email_verification_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
@@ -29,10 +28,11 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
-import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -43,56 +43,63 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 final userShellKey = GlobalKey<NavigatorState>();
 final creatorShellKey = GlobalKey<NavigatorState>();
 
-class AuthChangeNotifier extends ChangeNotifier {
-  AuthChangeNotifier(this.ref) {
-    // Listen to the AsyncValue<AuthState> from authProvider
-    ref.listen<AsyncValue<AuthState>>(
-      authProvider,
-      (_, __) => notifyListeners(),
-    );
-  }
-  final Ref ref;
-}
+// class AuthChangeNotifier extends ChangeNotifier {
+//   AuthChangeNotifier(this.ref) {
+//     // Listen to the AsyncValue<AuthState> from authProvider
+//     ref.listen<AsyncValue<AuthState>>(
+//       authProvider,
+//       (_, __) => notifyListeners(),
+//     );
+//   }
+//   final Ref ref;
+// }
 
 // Expose it as a plain Riverpod provider:
-final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
-  (ref) => AuthChangeNotifier(ref),
-);
+// final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
+//   (ref) => AuthChangeNotifier(ref),
+// );
 
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
       navigatorKey: rootNavigatorKey,
-      refreshListenable: ref.watch(goRouterRefreshProvider),
-      initialLocation: '/discover',
-      redirect: (BuildContext _, GoRouterState state) {
-        final auth = ref.read(authProvider);
-        final loc = state.matchedLocation; // the “clean” path, no query
-        final from =
-            state.uri.queryParameters['from']; // maybe “…?from=/event/…”
+      // refreshListenable: ref.watch(goRouterRefreshProvider),
+      initialLocation: kIsWeb ? null : '/splash',
+      // redirect: (context, state) {
+      //   final auth = ref.read(authProvider);
+      //   final loc = state.matchedLocation;
 
-        final loggingIn = loc == '/auth';
+      //   final loggingIn = loc.startsWith('/auth');
+      //   final forgotPassword = loc.startsWith('/forgot-password');
 
-        return auth.when(
-          loading: () => null,
-          error: (_, __) => loc.startsWith('/auth') ? null : '/auth-error',
-          data: (authState) {
-            // 1) Not logged in → guard all non-/auth, non-/forgot routes
-            if (authState.status == AuthStatus.unauthenticated &&
-                !loggingIn &&
-                !loc.startsWith('/forgot-password')) {
-              final encoded = Uri.encodeComponent('$loc?${state.uri.query}');
-              return '/auth?from=$encoded';
-            }
-            // 2) Just logged in and you’re on the “/auth” page → go back to `from` or to discover
-            if (authState.status == AuthStatus.authenticated && loggingIn) {
-              return from != null ? Uri.decodeComponent(from) : '/discover';
-            }
-            // 3) No redirect
-            return null;
-          },
-        );
-      },
+      //   return auth.when(
+      //     loading: () => null, // no blocking, handle spinner in UI
+      //     error: (_, __) => loggingIn ? null : '/auth-error',
+      //     data: (authState) {
+      //       final isAuthenticated =
+      //           authState.status == AuthStatus.authenticated;
+
+      //       // Not logged in? Block everything except /auth and /forgot
+      //       if (!isAuthenticated &&
+      //           !loggingIn &&
+      //           !forgotPassword &&
+      //           loc != '/splash') {
+      //         final encoded = Uri.encodeComponent(loc);
+      //         return '/auth?from=$encoded';
+      //       }
+
+      //       // Logged in & stuck on /auth → redirect back to where you came from
+      //       final from = state.uri.queryParameters['from'];
+      //       if (isAuthenticated && loggingIn) {
+      //         return from != null ? Uri.decodeComponent(from) : '/';
+      //       }
+
+      //       return null; // allow navigation
+      //     },
+      //   );
+      // },
       routes: [
+        // splash screen
+
         ShellRoute(
             navigatorKey: userShellKey,
             builder: (ctx, state, child) {
@@ -100,7 +107,7 @@ final routerProvider = Provider<GoRouter>((ref) {
             },
             routes: [
               GoRoute(
-                path: '/discover',
+                path: '/',
                 name: discoverRoute,
                 pageBuilder: (ctx, state) => NoTransitionPage(
                   child: const DiscoverPage(),
@@ -164,6 +171,13 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
             ]),
+        GoRoute(
+            path: '/splash',
+            name: splashRoute,
+            builder: (ctx, state) {
+              // This is just a placeholder; you can replace it with your actual splash screen
+              return const SplashScreen();
+            }),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           // add queryParams to the path with ?isEditing
@@ -256,30 +270,17 @@ final routerProvider = Provider<GoRouter>((ref) {
           name: authRoute,
           builder: (ctx, state) {
             final from = state.uri.queryParameters['from'];
+            final initShowSignIn =
+                state.uri.queryParameters['initShowSignIn'] == 'true';
             return Authenticate(
-              initShowSignIn: true,
-              redirectAfter: from, //
+              initShowSignIn: initShowSignIn,
+              redirectAfter: from,
             );
           },
         ),
 
         /// AUTHENTICATION
 
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/confirm-email',
-          name: confirmEmailRoute,
-          builder: (ctx, state) => const ConfirmEmailPage(),
-        ),
-
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/email-verification/:code',
-          name: emailVerificationRoute,
-          builder: (ctx, state) => EmailVerificationPage(
-            code: state.pathParameters['code'],
-          ),
-        ),
         // ForgotPassword
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
@@ -316,6 +317,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/event/:urlSlug',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {
+            print("full path: ${state.uri.toString()}");
             final slug = state.pathParameters['urlSlug']!;
             final classEventId = state.uri.queryParameters['event'];
             return SingleEventQueryWrapper(

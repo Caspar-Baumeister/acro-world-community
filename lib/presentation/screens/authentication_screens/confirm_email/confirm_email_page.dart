@@ -1,10 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/components/input/input_field_component.dart';
-import 'package:acroworld/presentation/screens/base_page.dart';
+import 'package:acroworld/presentation/components/appbar/standard_app_bar/standard_app_bar.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
@@ -96,7 +93,14 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
         // Invalidate so new "verified" user is fetched downstream
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          Navigator.pop(context);
+          // Check if we can pop this route
+          if (Navigator.canPop(context)) {
+            Navigator.pop(context);
+          } else {
+            // If we can't pop, navigate to home
+            context.go('/');
+          }
+
           ref.invalidate(userRiverpodProvider);
           ref.invalidate(userNotifierProvider);
         });
@@ -133,7 +137,6 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
         );
       },
       data: (user) {
-        // If not signed in or somehow no user, go back to auth
         if (user == null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             context.goNamed('auth');
@@ -141,80 +144,208 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
           return const SizedBox.shrink();
         }
 
-        return BasePage(
-          appBar: const CustomAppbarSimple(title: "Confirm your email"),
-          makeScrollable: false,
-          child: RefreshIndicator(
-            onRefresh: _refreshStatus,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.large,
-                vertical: AppPaddings.large,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'We have sent you an email to ${user.email}. '
-                    'Click on the confirmation link in the email to continue. '
-                    'You need to confirm the email before you can create events.',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium!
-                        .copyWith(color: CustomColors.secondaryTextColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.6,
-                        child: InputFieldComponent(
-                          controller: codeController,
-                          footnoteText: "Enter the code from the email",
-                          isFootnoteError: false,
-                        ),
+        return Scaffold(
+          appBar: StandardAppBar(title: "Confirm Email"),
+          body: SafeArea(
+            child: RefreshIndicator(
+              onRefresh: _refreshStatus,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 400),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppPaddings.large,
+                        vertical: AppPaddings.large,
                       ),
-                      const SizedBox(width: AppPaddings.small),
-                      IconButton(
-                        icon: const Icon(Icons.paste),
-                        onPressed: () async {
-                          final clip = await Clipboard.getData('text/plain');
-                          codeController.text = clip?.text ?? '';
-                        },
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // ─── ICON & COPY ───────────────────────────────
+                          Column(
+                            children: [
+                              Icon(
+                                Icons.mark_email_unread,
+                                size: 64,
+                                color: CustomColors.primaryColor,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "Check Your Inbox",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall!
+                                    .copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                  "We've sent a confirmation link to "
+                                  "${user.email}. Please click the link to verify your email.",
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium!),
+                            ],
+                          ),
+                          const SizedBox(height: 40),
+
+                          // ─── CODE INPUT ────────────────────────────────
+                          Stack(
+                            alignment: Alignment.centerRight,
+                            children: [
+                              TextField(
+                                controller: codeController,
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(letterSpacing: 8),
+                                decoration: InputDecoration(
+                                  hintText: "Enter confirmation code",
+                                  hintStyle: TextStyle(
+                                    letterSpacing: 8,
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      vertical: 16, horizontal: 24),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide(
+                                        color: CustomColors.buttonPrimaryLight),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide(
+                                        color: CustomColors.buttonPrimaryLight),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                    borderSide: BorderSide(
+                                      color: CustomColors.primaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.content_paste,
+                                    color: CustomColors.subtitleText),
+                                onPressed: () async {
+                                  final clip =
+                                      await Clipboard.getData('text/plain');
+                                  codeController.text = clip?.text ?? '';
+                                },
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 24),
+
+                          // ─── BUTTONS ───────────────────────────────────
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              // Confirm
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: CustomColors.subtitleText,
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                                onPressed: _verifyCode,
+                                child: _isRefreshing
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Confirm Email",
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white),
+                                      ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // Resend
+                              OutlinedButton(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor:
+                                      CustomColors.buttonPrimaryLight,
+                                  side: BorderSide(
+                                      color: CustomColors.subtitleText),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                                onPressed: _isResendDisabled
+                                    ? () => showErrorToast(
+                                        "Please wait $_timer more seconds before resending")
+                                    : _resendVerificationEmail,
+                                child: Text(
+                                  _isResendDisabled
+                                      ? "Resend in $_timer s"
+                                      : "Resend Email",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    color: CustomColors.subtitleText,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
+
+                              // Refresh
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(24),
+                                  ),
+                                ),
+                                onPressed: _refreshStatus,
+                                child: _isRefreshing
+                                    ? const SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Refresh Status",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                          color: CustomColors.subtitleText,
+                                        ),
+                                      ),
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 32),
+                          // NOTE
+                          Text(
+                            "Didn't receive the email? Check your spam folder or try resending.",
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(color: CustomColors.subtitleText),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: AppPaddings.medium),
-                  StandartButton(
-                    text: "Confirm email",
-                    isFilled: true,
-                    loading: _isRefreshing,
-                    onPressed: _verifyCode,
-                  ),
-                  const SizedBox(height: AppPaddings.medium),
-                  if (_isResendDisabled)
-                    Text(
-                      'Wait $_timer seconds before you can resend the email.',
-                      style: const TextStyle(
-                          color: CustomColors.secondaryTextColor),
                     ),
-                  const SizedBox(height: AppPaddings.small),
-                  StandartButton(
-                    text: "Resend email",
-                    onPressed: _isResendDisabled
-                        ? () => showErrorToast(
-                            "Please wait $_timer more seconds before resending")
-                        : _resendVerificationEmail,
                   ),
-                  const SizedBox(height: AppPaddings.small),
-                  StandartButton(
-                    text: "Refresh status",
-                    loading: _isRefreshing,
-                    onPressed: _refreshStatus,
-                  ),
-                ],
+                ),
               ),
             ),
           ),

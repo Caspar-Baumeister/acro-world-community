@@ -1,5 +1,7 @@
+import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ErrorPage extends StatelessWidget {
   const ErrorPage({super.key, required this.error});
@@ -11,9 +13,20 @@ class ErrorPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: CustomColors.backgroundColor,
       body: Center(
-        child: Text(
-          "An error occured. Consider updating your current app version. Error: $error",
-          textAlign: TextAlign.center,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                error,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 20),
+              StandartButton(
+                  text: "Back to Home", onPressed: () => context.goNamed("/"))
+            ],
+          ),
         ),
       ),
     );
@@ -28,9 +41,20 @@ class ErrorScreenWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(
-        "An unexpected error occured. Consider updating your current app version. Error: $error",
-        textAlign: TextAlign.center,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              error,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 20),
+            StandartButton(
+                text: "Back to Home", onPressed: () => context.goNamed("/"))
+          ],
+        ),
       ),
     );
   }

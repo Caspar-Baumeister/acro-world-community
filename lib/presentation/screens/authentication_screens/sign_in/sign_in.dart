@@ -44,7 +44,7 @@ class _SignInState extends ConsumerState<SignIn> {
     super.dispose();
   }
 
-  Future<void> onSignin() async {
+  Future<void> _onSignIn() async {
     if (!mounted) return;
     setState(() {
       error = '';
@@ -56,6 +56,18 @@ class _SignInState extends ConsumerState<SignIn> {
       await ref
           .read(authProvider.notifier)
           .signIn(emailController.text, passwordController.text);
+
+      if (!mounted) return;
+
+      if (widget.redirectAfter != null) {
+        context.go(widget.redirectAfter!);
+      } else {
+        if (Navigator.canPop(context)) {
+          context.pop();
+        } else {
+          context.go('/');
+        }
+      }
     } on AuthException catch (e) {
       if (!mounted) return;
       setState(() {
@@ -125,13 +137,13 @@ class _SignInState extends ConsumerState<SignIn> {
                         onPressed: () => setState(() => isObscure = !isObscure),
                       ),
                       onFieldSubmitted: (_) {
-                        if (!isLoading) onSignin();
+                        if (!isLoading) _onSignIn();
                       },
                     ),
                     const SizedBox(height: 20.0),
                     StandartButton(
                       text: "Login",
-                      onPressed: isLoading ? () {} : onSignin,
+                      onPressed: isLoading ? () {} : _onSignIn,
                       loading: isLoading,
                       isFilled: true,
                       buttonFillColor: CustomColors.primaryColor,
@@ -189,6 +201,12 @@ class _SignInState extends ConsumerState<SignIn> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: Responsive.isMobile(context)
+          ? AppBar(
+              title: const Text("Sign In"),
+              centerTitle: true,
+            )
+          : null,
       body: Responsive(
         mobile: _form(context),
         desktop: Center(

@@ -9,6 +9,7 @@ import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class SignUp extends ConsumerStatefulWidget {
   const SignUp({required this.toggleView, this.redirectAfter, super.key});
@@ -76,6 +77,18 @@ class _SignUpState extends ConsumerState<SignUp> {
             password: passwordController.text,
             isNewsletter: isNewsletter,
           );
+
+      if (!mounted) return;
+
+      if (widget.redirectAfter != null) {
+        context.go(widget.redirectAfter!);
+      } else {
+        if (Navigator.canPop(context)) {
+          context.pop();
+        } else {
+          context.go('/');
+        }
+      }
     } on AuthException catch (e) {
       setState(() {
         error = e.error;
@@ -216,6 +229,12 @@ class _SignUpState extends ConsumerState<SignUp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: Responsive.isMobile(context)
+          ? AppBar(
+              title: const Text("Sign Up"),
+              centerTitle: true,
+            )
+          : null,
       body: Responsive(
         mobile: _form(context),
         desktop: Center(

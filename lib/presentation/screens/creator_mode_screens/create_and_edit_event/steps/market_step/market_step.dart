@@ -1,5 +1,6 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_ticket_section.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
@@ -63,37 +64,52 @@ class _MarketStepState extends State<MarketStep> {
         Provider.of<EventCreationAndEditingProvider>(context);
     // Userprovider is only for the ticket section.
 
-    return Column(
-      children: [
-        MarketStepTicketSection(
-            eventCreationAndEditingProvider: eventCreationAndEditingProvider),
-        // enable cash payment section
-        // checkbox with enable cash payment
-        const SizedBox(height: AppPaddings.medium),
+    return Container(
+      constraints: Responsive.isDesktop(context)
+          ? const BoxConstraints(maxWidth: 800)
+          : null,
+      child: Column(
+        children: [
+          MarketStepTicketSection(
+              eventCreationAndEditingProvider: eventCreationAndEditingProvider),
+          // enable cash payment section
+          // checkbox with enable cash payment
+          const SizedBox(height: AppPaddings.medium),
 
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StandartButton(
-              onPressed: () {
-                eventCreationAndEditingProvider.setPage(2);
-                setState(() {});
-              },
-              text: "Previous",
-              width: MediaQuery.of(context).size.width * 0.3,
-            ),
-            const SizedBox(width: AppPaddings.medium),
-            StandartButton(
-              onPressed: _onNext,
-              text: widget.isEditing ? "Update Event" : "Create Event",
-              loading: isLoading,
-              isFilled: true,
-              width: MediaQuery.of(context).size.width * 0.5,
-            ),
-          ],
-        ),
-        const SizedBox(height: AppPaddings.large),
-      ],
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                constraints: Responsive.isDesktop(context)
+                    ? const BoxConstraints(maxWidth: 200)
+                    : null,
+                child: StandartButton(
+                  onPressed: () {
+                    eventCreationAndEditingProvider.setPage(2);
+                    setState(() {});
+                  },
+                  text: "Previous",
+                  width: MediaQuery.of(context).size.width * 0.3,
+                ),
+              ),
+              const SizedBox(width: AppPaddings.medium),
+              Container(
+                constraints: Responsive.isDesktop(context)
+                    ? const BoxConstraints(maxWidth: 400)
+                    : null,
+                child: StandartButton(
+                  onPressed: _onNext,
+                  text: widget.isEditing ? "Update Event" : "Create Event",
+                  loading: isLoading,
+                  isFilled: true,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppPaddings.large),
+        ],
+      ),
     );
   }
 

@@ -9,6 +9,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/utils/colors.dart';
@@ -70,189 +71,217 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
   Widget build(BuildContext context) {
     EventCreationAndEditingProvider provider =
         Provider.of<EventCreationAndEditingProvider>(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPaddings.medium,
-      ),
-      child: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              child: Form(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    EventImahePickerComponent(
-                      currentImage: provider.eventImage,
-                      existingImageUrl: provider.existingImageUrl,
-                      onImageSelected: (Uint8List image) {
-                        provider.setEventImage(image);
-                      },
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    InputFieldComponent(
-                      controller: _titleController,
-                      onEditingComplete: () {
-                        provider.setTitle(_titleController.text);
-                        if (_slugController.text.isEmpty) {
-                          String slug = _titleController.text
-                              .toLowerCase()
-                              .replaceAll(' ', '-')
-                              .replaceAll(RegExp(r'[^a-z0-9-]'), '');
-                          _slugController.text = slug;
-                          provider.setSlug(slug);
-                          provider.checkSlugAvailability();
-                        }
-                      },
-                      labelText: 'Event Title',
-                      validator: (p0) =>
-                          p0!.isEmpty ? 'Name cannot be empty' : null,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    InputFieldComponent(
-                      controller: _slugController,
-                      labelText: 'URL Slug',
-                      onEditingComplete: () {
-                        provider.setSlug(_slugController.text);
-                        provider.checkSlugAvailability();
-                      },
-                      footnoteText: provider.isSlugValid == false
-                          ? "Please use only lowercase letters, numbers, and hyphens"
-                          : (provider.isSlugAvailable == false
-                              ? "This slug is already taken"
-                              : 'This will be used in the URL of your event page'),
-                      isFootnoteError: provider.isSlugAvailable == false ||
-                          provider.isSlugValid == false,
-                      textInputAction: TextInputAction.next,
-                      suffixIcon: provider.isSlugAvailable == null &&
-                              provider.isSlugValid == null
-                          ? null
-                          : (provider.isSlugAvailable == false ||
-                                  provider.isSlugValid == false)
-                              ? const Icon(Icons.error,
-                                  color: CustomColors.errorTextColor)
-                              : const Icon(Icons.check_circle,
-                                  color: CustomColors.successTextColor),
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    StandartButton(
-                      text: "Edit event description",
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          EditDescriptionPageRoute(
-                            initialText: provider.description,
-                            onTextUpdated: (String text) {
-                              _descriptionController.text = text;
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    InputFieldComponent(
-                      controller: _locationNameController,
-                      labelText: 'Location name',
-                      isFootnoteError: false,
-                      footnoteText:
-                          "This can be the name of the studio or park and will be displayed in the app instead of the full adress",
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    CustomLocationInputComponent(
-                      currentLocation: provider.location,
-                      currentLoactionDescription: provider.locationDescription,
-                      onLocationSelected:
-                          (LatLng location, String? locationDescription) {
-                        provider.setLocation(location);
-                        provider
-                            .setLocationDescription(locationDescription ?? '');
-                      },
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    // choose from country
-                    CustomCountryDropdown(
-                      currentlySelected: provider.country,
-                      onCountrySelected:
-                          (String? country, String? countryCode) {
-                        provider.countryCode = countryCode;
-                        provider.setCountry(country);
-                      },
-                    ),
-                    if (provider.countryCode != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: AppPaddings.medium),
-                        child: RegionDropdown(
-                          countryCode: provider.countryCode!,
-                          currentlySelected: provider.region,
-                          onRegionSelected: (String? region) {
-                            provider.setRegion(region);
+    return Container(
+      constraints: Responsive.isDesktop(context)
+          ? const BoxConstraints(maxWidth: 800)
+          : null,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: AppPaddings.medium,
+        ),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                controller: _scrollController,
+                child: Form(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        width: 300,
+                        height: 300,
+                        child: EventImahePickerComponent(
+                          currentImage: provider.eventImage,
+                          existingImageUrl: provider.existingImageUrl,
+                          onImageSelected: (Uint8List image) {
+                            provider.setEventImage(image);
                           },
                         ),
                       ),
-
-                    const SizedBox(height: AppPaddings.medium),
-                    CustomQueryOptionInputComponent(
-                      hintText: 'What kind of event is it?',
-                      currentOption: provider.eventType,
-                      identifier: 'event_type',
-                      valueIdentifier: "value",
-                      query: QueryOptions(
-                        document: gql("""
-                        query {
-                          event_type {
-                            value
+                      const SizedBox(height: AppPaddings.medium),
+                      InputFieldComponent(
+                        controller: _titleController,
+                        onEditingComplete: () {
+                          provider.setTitle(_titleController.text);
+                          if (_slugController.text.isEmpty) {
+                            String slug = _titleController.text
+                                .toLowerCase()
+                                .replaceAll(' ', '-')
+                                .replaceAll(RegExp(r'[^a-z0-9-]'), '');
+                            _slugController.text = slug;
+                            provider.setSlug(slug);
+                            provider.checkSlugAvailability();
                           }
-                        }
-                        """),
+                        },
+                        labelText: 'Event Title',
+                        validator: (p0) =>
+                            p0!.isEmpty ? 'Name cannot be empty' : null,
+                        textInputAction: TextInputAction.next,
                       ),
-                      beatifyValueFunction: splitCamelCaseToLower,
-                      setOption: (String? value) {
-                        if (value != null) {
-                          provider.setEventType(value);
-                        }
-                      },
-                    ),
-                    const SizedBox(height: AppPaddings.medium),
-                    CustomSettingComponent(
-                      title: 'Questions',
-                      content: "${provider.questions.length} questions",
-                      onPressed: () {
-                        Navigator.of(context).push(QuestionPageRoute());
-                      },
-                    ),
-                  ],
+                      const SizedBox(height: AppPaddings.medium),
+                      InputFieldComponent(
+                        controller: _slugController,
+                        labelText: 'URL Slug',
+                        onEditingComplete: () {
+                          provider.setSlug(_slugController.text);
+                          provider.checkSlugAvailability();
+                        },
+                        footnoteText: provider.isSlugValid == false
+                            ? "Please use only lowercase letters, numbers, and hyphens"
+                            : (provider.isSlugAvailable == false
+                                ? "This slug is already taken"
+                                : 'This will be used in the URL of your event page'),
+                        isFootnoteError: provider.isSlugAvailable == false ||
+                            provider.isSlugValid == false,
+                        textInputAction: TextInputAction.next,
+                        suffixIcon: provider.isSlugAvailable == null &&
+                                provider.isSlugValid == null
+                            ? null
+                            : (provider.isSlugAvailable == false ||
+                                    provider.isSlugValid == false)
+                                ? const Icon(Icons.error,
+                                    color: CustomColors.errorTextColor)
+                                : const Icon(Icons.check_circle,
+                                    color: CustomColors.successTextColor),
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      StandartButton(
+                        text: "Edit event description",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            EditDescriptionPageRoute(
+                              initialText: provider.description,
+                              onTextUpdated: (String text) {
+                                _descriptionController.text = text;
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      InputFieldComponent(
+                        controller: _locationNameController,
+                        labelText: 'Location name',
+                        isFootnoteError: false,
+                        footnoteText:
+                            "This can be the name of the studio or park and will be displayed in the app instead of the full adress",
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      CustomLocationInputComponent(
+                        currentLocation: provider.location,
+                        currentLoactionDescription:
+                            provider.locationDescription,
+                        onLocationSelected:
+                            (LatLng location, String? locationDescription) {
+                          provider.setLocation(location);
+                          provider.setLocationDescription(
+                              locationDescription ?? '');
+                        },
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      // choose from country
+                      // choose from country
+                      CountryPicker(
+                        // now pass the ISO code, not the name:
+                        selectedCountryCode: provider.countryCode,
+                        onCountrySelected: (String? code, String? name) {
+                          // code: e.g. "US", name: e.g. "United States"
+                          provider.countryCode = code;
+                          provider.setCountry(name);
+                          // clear out any previously selected region:
+                          provider.setRegion(null);
+                        },
+                      ),
+
+                      // only show regions once we have a valid countryCode
+                      if (provider.countryCode != null)
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(top: AppPaddings.medium),
+                          child: RegionPicker(
+                            countryCode: provider.countryCode!,
+                            selectedRegion: provider.region,
+                            onRegionSelected: (String? region) {
+                              provider.setRegion(region);
+                            },
+                          ),
+                        ),
+
+                      const SizedBox(height: AppPaddings.medium),
+                      CustomQueryOptionInputComponent(
+                        hintText: 'What kind of event is it?',
+                        currentOption: provider.eventType,
+                        identifier: 'event_type',
+                        valueIdentifier: "value",
+                        query: QueryOptions(
+                          document: gql("""
+                          query {
+                            event_type {
+                              value
+                            }
+                          }
+                          """),
+                        ),
+                        beatifyValueFunction: splitCamelCaseToLower,
+                        setOption: (String? value) {
+                          if (value != null) {
+                            provider.setEventType(value);
+                          }
+                        },
+                      ),
+                      const SizedBox(height: AppPaddings.medium),
+                      CustomSettingComponent(
+                        title: 'Questions',
+                        content: "${provider.questions.length} questions",
+                        onPressed: () {
+                          Navigator.of(context).push(QuestionPageRoute());
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: AppPaddings.large),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Consumer<EventCreationAndEditingProvider>(
-                  builder: (context, provider, child) {
-                return StandartButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  text: "Cancel",
-                  width: MediaQuery.of(context).size.width * 0.3,
-                );
-              }),
-              const SizedBox(width: AppPaddings.medium),
-              StandartButton(
-                onPressed: _onNext,
-                text: "Next",
-                isFilled: true,
-                width: MediaQuery.of(context).size.width * 0.5,
-              ),
-            ],
-          ),
-          const SizedBox(height: AppPaddings.small),
-          DisplayErrorMessageComponent(errorMessage: _errorMessage),
-        ],
+            const SizedBox(height: AppPaddings.large),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Consumer<EventCreationAndEditingProvider>(
+                    builder: (context, provider, child) {
+                  return Container(
+                    constraints: Responsive.isDesktop(context)
+                        ? const BoxConstraints(maxWidth: 200)
+                        : null,
+                    child: StandartButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      text: "Cancel",
+                      width: MediaQuery.of(context).size.width * 0.3,
+                    ),
+                  );
+                }),
+                const SizedBox(width: AppPaddings.medium),
+                Container(
+                  constraints: Responsive.isDesktop(context)
+                      ? const BoxConstraints(maxWidth: 400)
+                      : null,
+                  child: StandartButton(
+                    onPressed: _onNext,
+                    text: "Next",
+                    isFilled: true,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppPaddings.small),
+            DisplayErrorMessageComponent(errorMessage: _errorMessage),
+          ],
+        ),
       ),
     );
   }

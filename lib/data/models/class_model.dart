@@ -22,7 +22,6 @@ class ClassModel {
   num? distance;
   String? bookingEmail;
   int? maxBookingSlots;
-  bool? isInitiallyFavorized;
   bool? isInitiallyFlagged;
   num? amountActiveFlaggs;
   num? amountNonActiveFlaggs;
@@ -93,7 +92,6 @@ class ClassModel {
       this.location,
       this.locationName,
       this.name,
-      this.isInitiallyFavorized,
       this.requirements,
       this.websiteUrl,
       this.classTeachers,
@@ -161,7 +159,6 @@ class ClassModel {
     }
     description = json['description'];
     distance = json['distance'];
-    isInitiallyFavorized = json['class_favorits']?.isNotEmpty;
 
     id = json['id'];
     urlSlug = json['url_slug'];

@@ -14,7 +14,7 @@ class ClassesRepository {
 // Fetches class with full information
   Future<ClassModel> getClassBySlug(String slug) async {
     QueryOptions queryOptions = QueryOptions(
-      document: Queries.getClassBySlugWithOutFavorite,
+      document: Queries.getClassBySlug,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
         "url_slug": slug,

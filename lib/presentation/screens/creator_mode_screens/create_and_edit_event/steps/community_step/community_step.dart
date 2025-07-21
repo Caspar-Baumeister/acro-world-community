@@ -5,6 +5,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_search_teacher_input_field.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_selected_teachers_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_teacher_suggestion_section.dart';
+import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -44,10 +45,13 @@ class _CommunityStepState extends State<CommunityStep> {
   Widget build(BuildContext context) {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context);
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: AppPaddings.medium,
       ),
+      constraints: Responsive.isDesktop(context)
+          ? const BoxConstraints(maxWidth: 800)
+          : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -84,20 +88,30 @@ class _CommunityStepState extends State<CommunityStep> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StandartButton(
-                  onPressed: () {
-                    eventCreationAndEditingProvider.setPage(1);
-                    setState(() {});
-                  },
-                  text: "Previous",
-                  width: MediaQuery.of(context).size.width * 0.3,
+                Container(
+                  constraints: Responsive.isDesktop(context)
+                      ? const BoxConstraints(maxWidth: 200)
+                      : null,
+                  child: StandartButton(
+                    onPressed: () {
+                      eventCreationAndEditingProvider.setPage(1);
+                      setState(() {});
+                    },
+                    text: "Previous",
+                    width: MediaQuery.of(context).size.width * 0.3,
+                  ),
                 ),
                 const SizedBox(width: AppPaddings.medium),
-                StandartButton(
-                  onPressed: _onNext,
-                  text: "Next",
-                  isFilled: true,
-                  width: MediaQuery.of(context).size.width * 0.5,
+                Container(
+                  constraints: Responsive.isDesktop(context)
+                      ? const BoxConstraints(maxWidth: 400)
+                      : null,
+                  child: StandartButton(
+                    onPressed: _onNext,
+                    text: "Next",
+                    isFilled: true,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                  ),
                 ),
               ],
             ),

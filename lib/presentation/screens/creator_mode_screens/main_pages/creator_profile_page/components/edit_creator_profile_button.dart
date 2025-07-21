@@ -1,9 +1,10 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class EditCreatorProfileButton extends StatelessWidget {
   final TeacherModel teacher;
@@ -15,7 +16,10 @@ class EditCreatorProfileButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
       child: FloatingButton(
         onPressed: () {
-          Navigator.of(context).push(EditCreatorProfilePageRoute());
+          context.pushNamed(
+            editCreatorProfileRoute,
+            queryParameters: {'isEditing': 'true'},
+          );
         },
         insideWidget: Row(
           children: [
