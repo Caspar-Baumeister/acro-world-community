@@ -52,6 +52,8 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                 //set controller to position
                 mapController.move(position.center, mapController.camera.zoom);
               },
+              interactionOptions: const InteractionOptions(
+                  flags: InteractiveFlag.pinchZoom | InteractiveFlag.drag),
               onTap: (tapPosition, point) => {
                 setState(() {
                   markerLocation = point;
@@ -65,6 +67,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
             ),
             children: <Widget>[
               TileLayer(
+                userAgentPackageName: 'com.acroworld.app',
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
               ),
               MarkerLayer(markers: [
