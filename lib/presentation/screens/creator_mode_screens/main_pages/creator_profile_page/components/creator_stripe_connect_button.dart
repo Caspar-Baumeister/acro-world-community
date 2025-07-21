@@ -61,6 +61,9 @@ class _CreatorStripeConnectButtonState
 
   /// Determines the appropriate button text based on the Stripe connection status.
   String _getButtonText() {
+    print("stripeId: ${widget.creatorProvider.activeTeacher?.stripeId}");
+    print(
+        "isStripeEnabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
     if (widget.creatorProvider.activeTeacher?.stripeId == null) {
       return "Connect to Stripe";
     }

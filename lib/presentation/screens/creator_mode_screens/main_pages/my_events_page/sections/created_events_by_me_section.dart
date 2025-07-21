@@ -178,7 +178,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
     if (cls.urlSlug != null) {
       context.pushNamed(
         singleEventWrapperRoute,
-        pathParameters: {"urlSlug": cls.urlSlug ?? ""},
+        pathParameters: {"urlSlug": cls.urlSlug!},
       );
     } else {
       showErrorToast("This event is not available anymore");
