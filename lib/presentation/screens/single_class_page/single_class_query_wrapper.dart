@@ -60,11 +60,31 @@ class SingleEventQueryWrapper extends ConsumerWidget {
         if (result.isLoading) {
           return const LoadingPage();
         }
+        print("result: $result");
         final data = result.data?[queryName];
         if (data == null) {
-          return const ErrorPage(
-            error: "No data returned from server.",
+          // Look for GraphQL errors in the response context
+          final linkException = result.context.entry<HttpLinkResponseContext>();
+          print("Link response: $linkException");
+          final extensions = result.context.entry<ResponseExtensions>();
+          print("Response extensions: $extensions");
+
+          // Get a more specific error message
+          String errorMessage = "The requested event could not be found.";
+          if (queryName == "class_events_by_pk") {
+            errorMessage =
+                "Event ID $classEventId was not found or may have been deleted.";
+          } else if (queryName == "classes") {
+            errorMessage =
+                "Class with URL $urlSlug was not found or may have been deleted.";
+          }
+
+          CustomErrorHandler.captureException(
+            "GraphQL returned null for $queryName",
+            stackTrace: StackTrace.current,
           );
+
+          return ErrorPage(error: errorMessage);
         }
 
         try {

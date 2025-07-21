@@ -175,11 +175,10 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
   }
 
   void _onTap(ClassModel cls) {
-    if (cls.urlSlug != null || cls.id != null) {
+    if (cls.urlSlug != null) {
       context.pushNamed(
         singleEventWrapperRoute,
         pathParameters: {"urlSlug": cls.urlSlug ?? ""},
-        queryParameters: {"event": cls.id},
       );
     } else {
       showErrorToast("This event is not available anymore");
