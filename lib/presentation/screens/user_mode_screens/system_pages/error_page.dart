@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -24,7 +25,8 @@ class ErrorPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               StandartButton(
-                  text: "Back to Home", onPressed: () => context.goNamed("/"))
+                  text: "Back to Home",
+                  onPressed: () => context.goNamed(discoverRoute))
             ],
           ),
         ),
@@ -52,7 +54,8 @@ class ErrorScreenWidget extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             StandartButton(
-                text: "Back to Home", onPressed: () => context.goNamed("/"))
+                text: "Back to Home",
+                onPressed: () => context.goNamed(discoverRoute))
           ],
         ),
       ),

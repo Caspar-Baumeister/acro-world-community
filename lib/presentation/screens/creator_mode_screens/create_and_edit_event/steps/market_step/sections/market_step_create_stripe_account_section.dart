@@ -1,9 +1,6 @@
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
-import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MarketStepCreateStripeAccountSection extends StatelessWidget {
@@ -11,7 +8,7 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
+    // CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(AppPaddings.large),
       child: Container(
@@ -80,11 +77,14 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
                         );
                       },
                   ),
+                  TextSpan(
+                      text:
+                          "\n\nAfter saving your event, you can connect to stripe in your profile. Afterwards, you can edit your event to add tickets and accept direct payments."),
                 ],
               )),
             ),
-            const SizedBox(height: AppPaddings.medium),
-            CreatorStripeConnectButton(creatorProvider: creatorProvider),
+            // const SizedBox(height: AppPaddings.medium),
+            // CreatorStripeConnectButton(creatorProvider: creatorProvider),
           ],
         ),
       ),
