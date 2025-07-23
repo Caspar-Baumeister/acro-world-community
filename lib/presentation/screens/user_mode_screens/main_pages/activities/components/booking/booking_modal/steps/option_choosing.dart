@@ -1,333 +1,294 @@
+// lib/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/pages/option_choosing_step.dart
+
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/components/custom_divider.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/provider/booking_option_selection_provider.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/provider/booking_step_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-class OptionChoosingStep extends StatelessWidget {
-  const OptionChoosingStep(
-      {super.key,
-      required this.className,
-      required this.classDate,
-      required this.classEventId,
-      required this.onOptionSelected,
-      required this.placesLeft,
-      required this.currentOption,
-      required this.nextStep,
-      required this.bookingCategories,
-      this.maxPlaces});
-  final String className;
-  final DateTime classDate;
-  final void Function(String) onOptionSelected;
-  final num? placesLeft;
-  final num? maxPlaces;
-  final String? currentOption;
-  final Function nextStep;
-  final List<BookingCategoryModel> bookingCategories;
-  final String classEventId;
+class OptionChoosingStep extends ConsumerWidget {
+  const OptionChoosingStep({
+    super.key,
+    required this.classEvent,
+  });
+
+  final ClassEvent classEvent;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final clas = classEvent.classModel!;
+
+    final bookingCategories = clas.bookingCategories
+            ?.where((bc) => (bc.bookingOptions?.isNotEmpty ?? false))
+            .toList() ??
+        [];
+
+    final selectedOption = ref.watch(selectedBookingOptionIdProvider);
+
     return Column(
       children: [
-        // show all categories
-        Container(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.45),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ...bookingCategories.where((bc) {
-                  if (bc.bookingOptions == null || bc.bookingOptions!.isEmpty) {
-                    return false;
-                  }
-                  return true;
-                }).map((bookingCategory) => Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: AppPaddings.tiny),
-                      child: BookingCategorySelectionComponent(
-                        bookingCategory: bookingCategory,
-                        currentId: currentOption,
-                        classEventId: classEventId,
-                        onChanged: (id) {
-                          onOptionSelected(id);
-                        },
-                      ),
-                    )),
-              ],
-            ),
+        Expanded(
+          child: ListView.separated(
+            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            separatorBuilder: (_, __) =>
+                const SizedBox(height: AppPaddings.small),
+            itemCount: bookingCategories.length,
+            itemBuilder: (context, idx) {
+              final category = bookingCategories[idx];
+              return BookingCategorySelectionComponent(
+                category: category,
+                eventId: classEvent.id!,
+                current: selectedOption,
+                onSelected: (opt) => ref
+                    .read(selectedBookingOptionIdProvider.notifier)
+                    .state = opt,
+              );
+            },
           ),
         ),
-
-        const SizedBox(height: 20),
+        const SizedBox(height: AppPaddings.medium),
         StandartButton(
           text: "Continue",
-          onPressed: () {
-            if (currentOption != null) {
-              nextStep();
-            } else {
-              showErrorToast(
-                "Please select an option to continue booking the class",
-              );
-            }
-          },
           isFilled: true,
           buttonFillColor: CustomColors.accentColor,
           width: double.infinity,
+          onPressed: selectedOption == null
+              ? () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text(
+                            "Please select an option to continue booking")),
+                  );
+                }
+              : () {
+                  // Determine if there are questions to show
+                  final hasQuestions =
+                      classEvent.classModel?.questions.isNotEmpty ?? false;
+
+                  // Use the provider's helper function instead of local callback
+                  goToNextBookingStep(ref, hasQuestions: hasQuestions);
+                },
         ),
-        placesLeft != null && maxPlaces != null
-            ? Padding(
-                padding: const EdgeInsets.only(top: AppPaddings.small),
-                child: Text(
-                  "$placesLeft / $maxPlaces places left",
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: placesLeft! <= (maxPlaces! / 2)
-                          ? CustomColors.errorTextColor
-                          : CustomColors.accentColor),
-                ),
-              )
-            : Container()
+        const SizedBox(height: AppPaddings.small),
+        if (classEvent.availableBookingSlots != null &&
+            classEvent.maxBookingSlots != null)
+          Text(
+            "${classEvent.availableBookingSlots} / ${classEvent.maxBookingSlots} places left",
+            style: TextStyle(
+              color: classEvent.availableBookingSlots! <=
+                      (classEvent.maxBookingSlots! / 2)
+                  ? CustomColors.errorTextColor
+                  : CustomColors.accentColor,
+            ),
+          ),
+        const SizedBox(height: AppPaddings.medium),
       ],
     );
   }
 }
 
-class BookingCategorySelectionComponent extends StatefulWidget {
+class BookingCategorySelectionComponent extends ConsumerStatefulWidget {
   const BookingCategorySelectionComponent({
     super.key,
-    required this.bookingCategory,
-    this.currentId,
-    required this.onChanged,
-    required this.classEventId,
+    required this.category,
+    required this.eventId,
+    required this.current,
+    required this.onSelected,
   });
 
-  final BookingCategoryModel bookingCategory;
-  final String classEventId;
-  final String? currentId;
-  final Function(String) onChanged;
+  final BookingCategoryModel category;
+  final String eventId;
+  final BookingOption? current;
+  final void Function(BookingOption) onSelected;
 
   @override
-  State<BookingCategorySelectionComponent> createState() =>
+  ConsumerState<BookingCategorySelectionComponent> createState() =>
       _BookingCategorySelectionComponentState();
 }
 
 class _BookingCategorySelectionComponentState
-    extends State<BookingCategorySelectionComponent> {
-  late Future<int?> _confirmedBookingsFuture;
+    extends ConsumerState<BookingCategorySelectionComponent> {
+  late Future<int> _confirmedFuture;
 
   @override
   void initState() {
     super.initState();
-    _confirmedBookingsFuture = getConfirmedBookingsAggregate();
+    _confirmedFuture = _fetchConfirmed();
+  }
+
+  Future<int> _fetchConfirmed() async {
+    final repo = BookingsRepository(apiService: GraphQLClientSingleton());
+    return await repo.getConfirmedBookingsForCategoryAggregate(
+            widget.category.id!, widget.eventId) ??
+        0;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.all(AppPaddings.medium),
-        decoration: BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
-          borderRadius: AppBorders.defaultRadius,
-        ),
-        child: FutureBuilder<int?>(
-          future: _confirmedBookingsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (snapshot.hasError) {
-              CustomErrorHandler.captureException(snapshot.error,
-                  stackTrace: StackTrace.current);
-              return Text("Error: ${snapshot.error}");
-            }
-            // if the booked places are at least as many as the contingent, show a booked out message
-            if (snapshot.data != null &&
-                snapshot.data! >= widget.bookingCategory.contingent) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // show header with title and description, contingent
-                  Text(
-                    widget.bookingCategory.name,
-                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor,
-                        ),
-                  ),
-                  SizedBox(height: AppPaddings.small),
-                  Text(widget.bookingCategory.description ?? "",
-                      overflow: TextOverflow.ellipsis,
-                      maxLines: 2,
-                      style: Theme.of(context).textTheme.bodyMedium),
-                  // a line
-                  const CustomDivider(),
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
-                    child: Text(
-                      "No more places left",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              );
-            }
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // show header with title and description, contingent and edit button
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Text(
-                        widget.bookingCategory.name,
-                        style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: CustomColors.primaryColor,
-                            ),
-                      ),
-                    ),
-                    Text(
-                      "Available tickets:  ${snapshot.data != null ? "${widget.bookingCategory.contingent - snapshot.data!}/" : ""}${widget.bookingCategory.contingent}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ],
-                ),
-                if (widget.bookingCategory.description != null &&
-                    widget.bookingCategory.description!.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
-                    child: Text(widget.bookingCategory.description ?? "",
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 2,
-                        style: Theme.of(context).textTheme.bodyMedium),
-                  ),
-                // a line
-                const CustomDivider(),
-                if (snapshot.data != null &&
-                    snapshot.data! >= widget.bookingCategory.contingent)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
-                    child: Text(
-                      "No more places left",
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                if (snapshot.data == null ||
-                    snapshot.data! < widget.bookingCategory.contingent)
-                  // show Booking options of provider with category id
-                  ...widget.bookingCategory.bookingOptions!
-                      .map((BookingOption e) => Padding(
-                            padding: const EdgeInsets.only(
-                                bottom: AppPaddings.medium),
-                            child: BookingOptionSelectionCard(
-                              bookingOption: e,
-                              value: widget.currentId == e.id,
-                              onChanged: widget.onChanged,
-                            ),
-                          )),
-              ],
-            );
-          },
-        ));
-  }
+    final opt = widget.current;
+    return FutureBuilder<int>(
+      future: _confirmedFuture,
+      builder: (context, snap) {
+        // Only enable skeletonizer during loading
+        final isLoading = snap.connectionState == ConnectionState.waiting;
 
-  // get aggregate of all confirmed bookings for this category
-  Future<int?> getConfirmedBookingsAggregate() async {
-    BookingsRepository bookingsRepository =
-        BookingsRepository(apiService: GraphQLClientSingleton());
+        if (isLoading) {
+          // Show skeleton version during loading
+          return Skeletonizer(
+            enabled: true,
+            child: _buildCategoryContainer(
+              context,
+              widget.category.contingent,
+              0,
+              opt,
+            ),
+          );
+        }
 
-    // get all confirmed bookings for this category
-    return bookingsRepository.getConfirmedBookingsForCategoryAggregate(
-        widget.bookingCategory.id!, widget.classEventId);
-  }
-}
+        if (snap.hasError) {
+          return Text("Error: ${snap.error}");
+        }
 
-class BookingOptionSelectionCard extends StatelessWidget {
-  const BookingOptionSelectionCard(
-      {super.key,
-      required this.bookingOption,
-      required this.value,
-      required this.onChanged});
+        final confirmed = snap.data!;
+        final remaining = widget.category.contingent - confirmed;
+        final soldOut = remaining <= 0;
 
-  final BookingOption bookingOption;
-  final bool value;
-  final Function(String) onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onChanged(bookingOption.id!);
+        // Show actual data when loaded
+        return _buildCategoryContainer(
+          context,
+          widget.category.contingent,
+          remaining,
+          opt,
+          soldOut: soldOut,
+        );
       },
-      child: Container(
-          decoration: BoxDecoration(
-            borderRadius: AppBorders.defaultRadius,
-            border: Border.all(color: CustomColors.primaryTextColor, width: 1),
-          ),
-          padding: const EdgeInsets.all(AppPaddings.small),
-          child: Row(
+    );
+  }
+
+  // Extract container building into a separate method for reuse
+  Widget _buildCategoryContainer(
+    BuildContext context,
+    int contingent,
+    int remaining,
+    BookingOption? opt, {
+    bool soldOut = false,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(AppPaddings.medium),
+      decoration: BoxDecoration(
+        color: CustomColors.secondaryBackgroundColor,
+        borderRadius: AppBorders.defaultRadius,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              SizedBox(
-                height: 24.0,
-                width: 24.0,
-                child: IgnorePointer(
-                  child: Checkbox(
-                    activeColor: CustomColors.successTextColor,
-                    value: value,
-                    onChanged: (_) => onChanged(bookingOption.id!),
-                  ),
-                ),
-              ),
-              VerticalDivider(
-                color: CustomColors.primaryTextColor,
-                thickness: 1,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      bookingOption.title!,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor),
-                      maxLines: 2,
-                    ),
-                    bookingOption.subtitle != null &&
-                            bookingOption.subtitle!.isNotEmpty
-                        ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.small),
-                            child: Text(
-                              bookingOption.subtitle!,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          )
-                        : Container(),
-                  ],
+              Flexible(
+                child: Text(
+                  widget.category.name,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleLarge!
+                      .copyWith(fontWeight: FontWeight.bold),
                 ),
               ),
               Text(
-                '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomColors.accentColor,
-                    fontWeight: FontWeight.bold),
+                "Available: $remaining/$contingent",
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],
-          )),
+          ),
+          if (widget.category.description?.isNotEmpty ?? false)
+            Padding(
+              padding: const EdgeInsets.only(top: AppPaddings.small),
+              child: Text(
+                widget.category.description!,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          const SizedBox(height: AppPaddings.small),
+          const Divider(),
+          if (soldOut)
+            Center(
+              child: Text(
+                "Sold out",
+                style: Theme.of(context)
+                    .textTheme
+                    .titleSmall!
+                    .copyWith(color: CustomColors.errorTextColor),
+              ),
+            )
+          else
+            ...widget.category.bookingOptions!.map((option) {
+              final isSelected = opt?.id == option.id;
+              return GestureDetector(
+                onTap: () => widget.onSelected(option),
+                child: Container(
+                  margin: const EdgeInsets.only(top: AppPaddings.small),
+                  padding: const EdgeInsets.all(AppPaddings.small),
+                  decoration: BoxDecoration(
+                    borderRadius: AppBorders.defaultRadius,
+                    border: Border.all(
+                      color: isSelected
+                          ? CustomColors.accentColor
+                          : CustomColors.lightTextColor,
+                      width: 1.5,
+                    ),
+                    color: isSelected
+                        ? CustomColors.accentColor.withOpacity(0.1)
+                        : null,
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        isSelected
+                            ? Icons.radio_button_checked
+                            : Icons.radio_button_unchecked,
+                        color: isSelected
+                            ? CustomColors.accentColor
+                            : CustomColors.lightTextColor,
+                      ),
+                      const SizedBox(width: AppPaddings.small),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(option.title!,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(fontWeight: FontWeight.bold)),
+                            if (option.subtitle?.isNotEmpty ?? false)
+                              Text(option.subtitle!,
+                                  style:
+                                      Theme.of(context).textTheme.bodyMedium),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        "${(option.price! / 100).toStringAsFixed(2)} ${option.currency.symbol}",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: CustomColors.primaryColor),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+        ],
+      ),
     );
   }
 }

@@ -88,19 +88,7 @@ class _BookingModalState extends State<BookingModal> {
             const SizedBox(height: 20.0),
             step == 0
                 ? OptionChoosingStep(
-                    classEventId: widget.classEvent.id!,
-                    className: clas.name!,
-                    classDate: widget.classEvent.startDateDT,
-                    bookingCategories: clas.bookingCategories ?? [],
-                    placesLeft: widget.classEvent.availableBookingSlots,
-                    onOptionSelected: (p0) => setCurrentOption(p0),
-                    currentOption: currentOption,
-                    maxPlaces: widget.classEvent.maxBookingSlots,
-                    nextStep: () async {
-                      setState(() {
-                        step = 1;
-                      });
-                    },
+                    classEvent: widget.classEvent,
                   )
                 : CheckoutStep(
                     className: clas.name!,
