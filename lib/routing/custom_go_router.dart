@@ -146,6 +146,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ),
               ),
             ]),
+
         GoRoute(
             path: '/splash',
             name: splashRoute,

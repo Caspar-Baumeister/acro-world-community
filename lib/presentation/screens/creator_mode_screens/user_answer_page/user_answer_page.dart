@@ -96,6 +96,10 @@ class UserAnswerBody extends StatelessWidget {
           return Center(child: Text("No questions found"));
         }
 
+        print("Answers length: ${answers.length}");
+        print("Questions length: ${questions.length}");
+        print(answers.map((e) => e.toJson()).toList());
+
         return ListView(
           padding: EdgeInsets.all(AppPaddings.small),
           children: [

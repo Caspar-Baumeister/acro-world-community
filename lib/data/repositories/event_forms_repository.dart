@@ -287,8 +287,6 @@ class EventFormsRepository {
             'Failed to get answers. Status code: ${result.exception?.raw.toString()}');
       }
 
-      print("result.data ${result.data}");
-
       // create a list of AnswerModel from the result
       final List<AnswerModel> answers = (result.data!['answers'] as List)
           .map((e) => AnswerModel.fromJson(e))

@@ -4,35 +4,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PhoneQuestionInput extends StatefulWidget {
-  final TextEditingController controller;
-  final TextEditingController prefixController;
+  final String? initialValue;
+  final String? initialDialCode;
+  final void Function(String phone, String dialCode)? onChanged;
 
-  const PhoneQuestionInput(
-      {super.key, required this.controller, required this.prefixController});
+  const PhoneQuestionInput({
+    super.key,
+    this.initialValue,
+    this.initialDialCode,
+    this.onChanged,
+  });
 
   @override
   State<PhoneQuestionInput> createState() => _PhoneQuestionInputState();
 }
 
 class _PhoneQuestionInputState extends State<PhoneQuestionInput> {
-  String _selectedCountry = "DE";
+  late TextEditingController _controller;
+  late String _selectedCountry;
 
   @override
   void initState() {
     super.initState();
-    if (widget.prefixController.text.isNotEmpty) {
-      _selectedCountry = stripeSupportedCountryDialCodes.entries
-          .firstWhere(
-              (element) => element.value == widget.prefixController.text)
-          .key;
-    }
+
+    _controller = TextEditingController(text: widget.initialValue ?? "");
+    _selectedCountry = widget.initialDialCode != null
+        ? stripeSupportedCountryDialCodes.entries
+            .firstWhere((e) => e.value == widget.initialDialCode,
+                orElse: () => const MapEntry("DE", "+49"))
+            .key
+        : "DE";
   }
 
   @override
   Widget build(BuildContext context) {
     final dialCode = stripeSupportedCountryDialCodes[_selectedCountry] ?? "";
-
-    final sortedCountryCodes = stripeSupportedCountries.keys.toList()..sort();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,36 +52,38 @@ class _PhoneQuestionInputState extends State<PhoneQuestionInput> {
               onChanged: (value) {
                 if (value != null) {
                   setState(() => _selectedCountry = value);
-                  widget.prefixController.text =
-                      stripeSupportedCountryDialCodes[value] ?? "";
+                  widget.onChanged?.call(_controller.text.trim(),
+                      stripeSupportedCountryDialCodes[value] ?? "");
                 }
               },
-              items: sortedCountryCodes.map((code) {
-                return DropdownMenuItem<String>(
-                  value: code,
-                  child: Row(
-                    children: [
-                      Flag.fromString(code, height: 20, width: 30),
-                      const SizedBox(width: 8),
-                      Text("$code (${stripeSupportedCountryDialCodes[code]})"),
-                    ],
-                  ),
-                );
-              }).toList(),
+              items: stripeSupportedCountries.keys
+                  .toList()
+                  .map((code) => DropdownMenuItem<String>(
+                        value: code,
+                        child: Row(
+                          children: [
+                            Flag.fromString(code, height: 20, width: 30),
+                            const SizedBox(width: 8),
+                            Text(
+                                "$code (${stripeSupportedCountryDialCodes[code]})"),
+                          ],
+                        ),
+                      ))
+                  .toList(),
             ),
             const SizedBox(width: 12),
             Expanded(
               child: TextFormField(
-                controller: widget.controller,
+                controller: _controller,
                 keyboardType: TextInputType.phone,
-                // only allow numbers and spaces
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r"[0-9 ]")),
                 ],
-
-                decoration: InputDecoration(
-                  prefixText: "$dialCode ",
-                ),
+                onChanged: (value) {
+                  widget.onChanged?.call(value.trim(),
+                      stripeSupportedCountryDialCodes[_selectedCountry] ?? "");
+                },
+                decoration: InputDecoration(prefixText: "$dialCode "),
               ),
             ),
           ],

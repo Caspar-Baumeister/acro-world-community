@@ -150,13 +150,17 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
               if (questionType == QuestionType.phoneNumber) ...[
                 // phone number input
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
-                      vertical: AppPaddings.medium),
-                  child: PhoneQuestionInput(
-                      controller: _answerController,
-                      prefixController: _phonePrefixController),
-                ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: AppPaddings.large,
+                        vertical: AppPaddings.medium),
+                    child: PhoneQuestionInput(
+                      initialDialCode: _phonePrefixController.text,
+                      initialValue: _answerController.text,
+                      onChanged: (phone, code) {
+                        _answerController.text = phone;
+                        _phonePrefixController.text = code;
+                      },
+                    )),
               ],
 
               SizedBox(height: AppPaddings.medium),

@@ -5,7 +5,7 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/booking_flow.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
@@ -172,13 +172,14 @@ class _BookingQueryHoverButtonState
                 ),
               ),
               onPressed: () {
-                buildMortal(
-                  context,
-                  BookingModal(
-                    classEvent: widget.classEvent,
-                    refetch: refetch!,
-                  ),
-                );
+                Navigator.of(context).push(bookingFlowRoute(widget.classEvent));
+                // buildMortal(
+                //   context,
+                //   BookingModal(
+                //     classEvent: widget.classEvent,
+                //     refetch: refetch!,
+                //   ),
+                // );
               },
             );
           },
