@@ -163,6 +163,12 @@ class _CreateCreatorProfileBodyState
           setState(() => _errorMessage = 'Teacher ID not found');
           return;
         }
+        //   \$teacherStripeId: String,
+//       \$isStripeEnabled: Boolean!,
+//       \$individualCommission: numeric
+// teacher_stripe_id: \$teacherStripeId,
+//           is_stripe_enabled: \$isStripeEnabled,
+//           individual_commission: \$individualCommission
         final msg = await profileService.updateTeacherProfile(
           _nameController.text.trim(),
           _descriptionController.text.trim(),
@@ -172,6 +178,9 @@ class _CreateCreatorProfileBodyState
           _creatorType!,
           user.id!,
           teacherId,
+          creatorProvider.activeTeacher?.stripeId,
+          creatorProvider.activeTeacher?.isStripeEnabled,
+          creatorProvider.activeTeacher?.individualCommission,
         );
         if (msg != 'success') {
           setState(() => _errorMessage = msg);

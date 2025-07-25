@@ -292,6 +292,16 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     }
   """);
 
+  // add these:
+// Edit
+// stripe_id- text, nullable
+
+// Edit
+// is_stripe_enabled- boolean, default: false
+
+// Edit
+// individual_commission- numeric, nullable
+
   static final updateTeacher = gql("""
     mutation UpdateTeacherAsTeacherUser(
       \$teacherId: uuid!,
@@ -301,6 +311,9 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
       \$urlSlug: String!,
       \$type: teacher_type_enum!,
       \$images: [teacher_images_insert_input!]!
+      \$teacherStripeId: String,
+      \$isStripeEnabled: Boolean,
+      \$individualCommission: numeric
     ) {
       delete_teachers_by_pk(id: \$teacherId) {
         id
@@ -317,6 +330,9 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
           user_id: \$userId,
           type: \$type,
           images: { data: \$images }
+          stripe_id: \$teacherStripeId,
+          is_stripe_enabled: \$isStripeEnabled,
+          individual_commission: \$individualCommission
         }
       ) {
         affected_rows
