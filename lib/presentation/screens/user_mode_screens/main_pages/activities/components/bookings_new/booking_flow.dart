@@ -1,9 +1,9 @@
 import 'dart:io' show Platform;
 
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/components/custom_stepper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/pages/checkout_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/pages/option_selection_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/pages/questionnaire_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/provider/booking_step_provider.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -22,7 +22,7 @@ class BookingFlow extends ConsumerWidget {
     Widget page;
     switch (currentStep) {
       case BookingStep.optionSelection:
-        page = OptionChoosingStep(
+        page = OptionSelectionPage(
           classEvent: event,
         );
         break;

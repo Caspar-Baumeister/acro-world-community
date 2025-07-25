@@ -8,7 +8,8 @@ enum BookingStep {
 }
 
 /// Holds the current step in the booking flow.
-final bookingStepProvider = StateProvider<BookingStep>((ref) {
+/// Auto-disposes when the booking flow is exited
+final bookingStepProvider = StateProvider.autoDispose<BookingStep>((ref) {
   return BookingStep.optionSelection; // default starting point
 });
 

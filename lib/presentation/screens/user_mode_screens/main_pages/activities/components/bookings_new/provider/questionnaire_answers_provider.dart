@@ -81,7 +81,7 @@ class QuestionnaireAnswersNotifier
   List<AnswerModel> get allAnswers => state.values.toList();
 }
 
-final questionnaireAnswersProvider = StateNotifierProvider<
+final questionnaireAnswersProvider = StateNotifierProvider.autoDispose<
     QuestionnaireAnswersNotifier, Map<String, AnswerModel>>(
   (ref) => QuestionnaireAnswersNotifier(),
 );

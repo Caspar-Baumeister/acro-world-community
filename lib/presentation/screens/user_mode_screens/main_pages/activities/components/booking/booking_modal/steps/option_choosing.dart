@@ -58,7 +58,6 @@ class OptionChoosingStep extends ConsumerWidget {
         StandartButton(
           text: "Continue",
           isFilled: true,
-          buttonFillColor: CustomColors.accentColor,
           width: double.infinity,
           onPressed: selectedOption == null
               ? () {

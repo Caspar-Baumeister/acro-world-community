@@ -115,7 +115,8 @@ class CheckoutNotifier extends StateNotifier<CheckoutState> {
   }
 }
 
-/// Expose as a Riverpod provider
-final checkoutProvider = StateNotifierProvider<CheckoutNotifier, CheckoutState>(
+/// Expose as a Riverpod provider with autodispose
+final checkoutProvider =
+    StateNotifierProvider.autoDispose<CheckoutNotifier, CheckoutState>(
   (ref) => CheckoutNotifier(ref),
 );

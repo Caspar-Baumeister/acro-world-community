@@ -25,27 +25,26 @@ class SelectableCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: AppBorders.defaultRadius,
-          border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+          border: Border.all(
+            color: value
+                ? CustomColors.accentColor
+                : CustomColors.primaryTextColor,
+            width: value ? 1.5 : 1,
+          ),
+          color: value ? CustomColors.accentColor.withOpacity(0.1) : null,
         ),
         padding: const EdgeInsets.all(AppPaddings.small),
         margin: const EdgeInsets.only(bottom: AppPaddings.medium),
         child: Row(
           children: [
-            SizedBox(
-              height: 24.0,
-              width: 24.0,
-              child: IgnorePointer(
-                child: Checkbox(
-                  activeColor: CustomColors.successTextColor,
-                  value: value,
-                  onChanged: (_) {},
-                ),
-              ),
+            Icon(
+              value ? Icons.radio_button_checked : Icons.radio_button_unchecked,
+              color: value
+                  ? CustomColors.accentColor
+                  : CustomColors.lightTextColor,
+              size: 24.0,
             ),
-            VerticalDivider(
-              color: CustomColors.primaryTextColor,
-              thickness: 1,
-            ),
+            const SizedBox(width: AppPaddings.small),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,

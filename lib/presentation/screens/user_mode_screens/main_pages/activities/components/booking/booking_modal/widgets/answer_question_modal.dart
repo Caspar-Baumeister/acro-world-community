@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/selectable_card.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/bookings_new/components/selectable_card.dart';
 import 'package:acroworld/provider/event_answers_provider.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
