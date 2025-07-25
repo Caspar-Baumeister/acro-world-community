@@ -94,6 +94,9 @@ class ProfileCreationService {
     String type,
     String userId,
     String teacherId,
+    String? teacherStripeId,
+    bool? isStripeEnabled,
+    num? individualCommission,
   ) async {
     final List<Map<String, dynamic>> imagesInput = [
       {
@@ -123,6 +126,15 @@ class ProfileCreationService {
       'userId': userId,
       'teacherId': teacherId,
     };
+    if (teacherStripeId != null) {
+      variables['teacherStripeId'] = teacherStripeId;
+    }
+    if (isStripeEnabled != null) {
+      variables['isStripeEnabled'] = isStripeEnabled;
+    }
+    if (individualCommission != null) {
+      variables['individualCommission'] = individualCommission;
+    }
 
     try {
       final QueryResult result = await client.mutate(

@@ -17,6 +17,7 @@ class TeacherModel {
   num? likes;
   String? stripeId;
   bool? isStripeEnabled;
+  num? individualCommission;
 
   // get the profile image of the teacher
   String? get profilImgUrl {
@@ -57,7 +58,8 @@ class TeacherModel {
       this.userId,
       this.isStripeEnabled,
       this.stripeId,
-      this.likedByUser});
+      this.likedByUser,
+      this.individualCommission});
 
   TeacherModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -84,6 +86,7 @@ class TeacherModel {
     }
     stripeId = json['stripe_id'];
     isStripeEnabled = json['is_stripe_enabled'];
+    individualCommission = json['individual_commission'];
   }
 }
 

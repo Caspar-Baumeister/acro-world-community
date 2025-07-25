@@ -428,6 +428,9 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
     me {
       teacher_profile {
         ${Fragments.teacherFragmentAllInfo}
+        stripe_id
+        is_stripe_enabled
+        individual_commission
       }
     }
   }
