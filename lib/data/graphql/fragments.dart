@@ -105,16 +105,20 @@ class Fragments {
       location_city
       website_url
       class_teachers {
+        id
+        teacher_id
         teacher {
           $teacherFragmentAllInfo
         }
         is_owner
       }
       class_owners {
+        id
+        teacher_id
+        is_payment_receiver
         teacher {
           $teacherFragmentAllInfo
         }
-        is_payment_receiver
       }
       class_levels {
         level {

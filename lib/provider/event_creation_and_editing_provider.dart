@@ -9,6 +9,7 @@ import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
@@ -63,6 +64,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   final List<BookingCategoryModel> oldBookingCategories = [];
   final List<QuestionModel> oldQuestions = [];
   final List<QuestionModel> _questions = [];
+  final List<ClassOwnerInput> _classOwner = [];
   Uint8List? _eventImage;
   int? maxBookingSlots = 0;
   bool isCashAllowed = false;
@@ -344,10 +346,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
                 recurringEveryXWeeks: pattern.recurringEveryXWeeks,
                 isRecurring: pattern.isRecurring ?? false))
             .toList(),
-        classOwners: [
-          ClassOwnerInput(
-              id: Uuid().v4(), teacherId: creatorId, isPaymentReceiver: true)
-        ],
+        classOwners: _classOwner,
         bookingCategories: bookingCategories
             .map((category) => BookingCategoryInput(
                 id: category.id ?? Uuid().v4(),
@@ -412,227 +411,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     return imageUrl!;
   }
 
-  Future<void> createClass(String creatorId) async {
-    try {
-      List<Map<String, dynamic>> classTeachers = [];
-      List<Map<String, dynamic>> classOwners = [];
-
-      for (var teacher in pendingInviteTeachers) {
-        classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
-      }
-
-      int maxBookingSlots = 0;
-      // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
-      if (bookingCategories.isNotEmpty) {
-        classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
-        // set max booking slots to the combined number of continguents of the categories
-        for (var category in bookingCategories) {
-          maxBookingSlots += category.contingent;
-        }
-      }
-
-      // Convert recurring patterns to JSON format
-      final List<Map<String, dynamic>> recurringPatternsJson =
-          _recurringPatterns.map((pattern) => pattern.toJson()).toList();
-
-      String? imageUrl;
-      if (_eventImage == null && existingImageUrl != null) {
-        imageUrl = existingImageUrl;
-      } else if (_eventImage != null) {
-        imageUrl = await _uploadEventImage();
-      } else {
-        throw Exception('No image was provided');
-      }
-      // get timezone with default value to germany
-      String? timezone = await getTimezone(
-          _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
-
-      Map<String, dynamic> variables = {
-        'name': _title,
-        'description': _description,
-        'imageUrl': imageUrl,
-        'eventType': _eventType ?? 'Trainings',
-        'location': [
-          _location?.longitude,
-          _location?.latitude,
-        ],
-        'locationName': _locationName,
-        'timezone': timezone,
-        'urlSlug': _urlSlug,
-        'recurringPatterns': recurringPatternsJson,
-        'classOwners': classOwners,
-        'location_country': country,
-        'location_city': locationCity,
-        'classTeachers': classTeachers,
-        'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
-        'is_cash_allowed': isCashAllowed
-      };
-
-      ClassesRepository classesRepository =
-          ClassesRepository(apiService: GraphQLClientSingleton());
-      final createdClass = await classesRepository.createClass(variables);
-
-      // create the categories
-      if (bookingCategories.isNotEmpty) {
-        try {
-          ClassesRepository classesRepository =
-              ClassesRepository(apiService: GraphQLClientSingleton());
-          // convert questions to JSON format and add the event id from the created class
-          List<Map<String, dynamic>> categoriesJson = bookingCategories
-              .map((BookingCategoryModel category) =>
-                  category.toJson(createdClass.id!))
-              .toList();
-          await classesRepository.insertBookingCategories(categoriesJson);
-        } catch (e) {
-          CustomErrorHandler.captureException("Error creating categories: $e");
-        }
-      }
-
-      // create the booking options
-      if (_bookingOptions.isNotEmpty) {
-        try {
-          BookingsRepository bookingsRepository =
-              BookingsRepository(apiService: GraphQLClientSingleton());
-          // convert questions to JSON format and add the event id from the created class
-          List<Map<String, dynamic>> bookingOptionsJson = _bookingOptions
-              .map((BookingOption bookingOption) => bookingOption.toJson())
-              .toList();
-          await bookingsRepository.insertBookingOptions(bookingOptionsJson);
-        } catch (e) {
-          CustomErrorHandler.captureException(
-              "Error creating booking options: $e");
-        }
-      }
-
-      // if successful, add the questions
-      if (_questions.isNotEmpty) {
-        try {
-          EventFormsRepository eventFormsRepository =
-              EventFormsRepository(apiService: GraphQLClientSingleton());
-
-          await eventFormsRepository.insertQuestionsWithOptions(
-              _questions, createdClass.id!);
-        } catch (e) {
-          CustomErrorHandler.captureException("Error creating questions: $e");
-        }
-      }
-      clear();
-    } catch (e) {
-      CustomErrorHandler.captureException("Error creating class: $e");
-      _errorMesssage = e.toString();
-    }
-  }
-
-  Future<void> updateClass(String creatorId) async {
-    try {
-      List<Map<String, dynamic>> classTeachers = [];
-      List<Map<String, dynamic>> classOwners = [];
-
-      for (var teacher in pendingInviteTeachers) {
-        classTeachers.add({'teacher_id': teacher.id, 'is_owner': false});
-      }
-
-      int maxBookingSlots = 0;
-      // if a ticket was added, add the owner as a class owner with is_payment_receiver set to true
-      if (bookingCategories.isNotEmpty) {
-        classOwners.add({'teacher_id': creatorId, 'is_payment_receiver': true});
-        // set max booking slots to the combined number of continguents of the categories
-        for (var category in bookingCategories) {
-          maxBookingSlots += category.contingent;
-        }
-      }
-
-      if (_classId == null) {
-        throw Exception(
-            'The class id is missing, delete the class and create a new one');
-      }
-
-      // Convert recurring patterns to JSON format
-      final List<Map<String, dynamic>> recurringPatternsJson =
-          _recurringPatterns.map((pattern) => pattern.toJson()).toList();
-
-      String? imageUrl;
-      if (_eventImage == null && existingImageUrl != null) {
-        imageUrl = existingImageUrl;
-      } else if (_eventImage != null) {
-        imageUrl = await _uploadEventImage();
-      } else {
-        throw Exception('No image was provided');
-      }
-      // get timezone with default value to germany
-      String? timezone = await getTimezone(
-          _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
-
-      Map<String, dynamic> variables = {
-        'id': _classId,
-        'name': _title,
-        'description': _description,
-        'imageUrl': imageUrl,
-        'eventType': _eventType ?? 'Trainings',
-        'location': [
-          _location?.longitude,
-          _location?.latitude,
-        ],
-        'locationName': _locationName,
-        'timezone': timezone,
-        'location_country': country,
-        'location_city': locationCity,
-        'urlSlug': _urlSlug,
-        'recurringPatterns': recurringPatternsJson,
-        'classOwners': classOwners,
-        'classTeachers': classTeachers,
-        'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
-        'is_cash_allowed': isCashAllowed
-      };
-
-      ClassesRepository classesRepository =
-          ClassesRepository(apiService: GraphQLClientSingleton());
-      classesRepository.updateClass(variables);
-
-      // if successful, update the questions
-      try {
-        EventFormsRepository eventFormsRepository =
-            EventFormsRepository(apiService: GraphQLClientSingleton());
-        // convert questions to JSON format and add the event id from the created class
-
-        await eventFormsRepository.identifyQuestionUpdates(
-            _questions, oldQuestions, _classId!);
-      } catch (e, s) {
-        CustomErrorHandler.captureException("Error updating questions: $e",
-            stackTrace: s);
-      }
-
-      // if successful, update the categories
-      try {
-        ClassesRepository classesRepository =
-            ClassesRepository(apiService: GraphQLClientSingleton());
-
-        await classesRepository.identifyBookingCategoryUpdates(
-            bookingCategories, oldBookingCategories, _classId!);
-      } catch (e) {
-        CustomErrorHandler.captureException("Error updating categories: $e");
-      }
-
-      print("class id: $_classId");
-
-      // if successful, update the booing options
-      try {
-        BookingsRepository bookingsRepository =
-            BookingsRepository(apiService: GraphQLClientSingleton());
-        await bookingsRepository.identifyBookingOptionUpdates(
-            _bookingOptions, oldBookingOptions);
-      } catch (e) {
-        CustomErrorHandler.captureException(
-            "Error updating booking options: $e");
-      }
-
-      clear();
-    } catch (e) {
-      CustomErrorHandler.captureException("Error updating class: $e");
-      _errorMesssage = e.toString();
-    }
-  }
-
   Future<String?> _uploadEventImage() async {
     if (_eventImage == null) {
       CustomErrorHandler.captureException("event image was null");
@@ -642,8 +420,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         path: 'event_images/${DateTime.now().millisecondsSinceEpoch}.png');
   }
 
-  Future<void> setClassFromExisting(
-      String slug, bool isEditing, bool setFromTemplate) async {
+  Future<void> setClassFromExisting(String slug, bool isEditing,
+      bool setFromTemplate, String creatorId) async {
     // clear existing data
     clear();
     // pull class data from database
@@ -654,14 +432,29 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     EventFormsRepository eventFormsRepository =
         EventFormsRepository(apiService: GraphQLClientSingleton());
     ClassModel? fromClass;
+
     try {
       final repositoryReturnClass =
           await classesRepository.getClassBySlug(slug);
       fromClass = repositoryReturnClass;
+      print('fromClass ${fromClass.classOwner![0]}');
       _title = fromClass.name ?? '';
       _urlSlug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
       country = fromClass.country;
+      _classOwner
+          .addAll(fromClass.classOwner?.map((classOwner) => ClassOwnerInput(
+                    id: classOwner.id!,
+                    teacherId: classOwner.teacher!.id!,
+                    isPaymentReceiver: classOwner.isPaymentReceiver!,
+                  )) ??
+              [
+                ClassOwnerInput(
+                  id: Uuid().v4(),
+                  teacherId: creatorId,
+                  isPaymentReceiver: true,
+                )
+              ]);
 
       locationCity = fromClass.city;
       countryCode = getCountryCode(fromClass.country);

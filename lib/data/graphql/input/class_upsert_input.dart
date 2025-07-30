@@ -2,7 +2,6 @@ import 'package:acroworld/data/graphql/input/booking_category_input.dart';
 import 'package:acroworld/data/graphql/input/class_owner_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
-import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:latlong2/latlong.dart';
 
 class ClassUpsertInput {

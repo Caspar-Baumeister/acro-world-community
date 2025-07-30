@@ -1,6 +1,7 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -82,9 +83,13 @@ class _CreateNewEventFromExistingModalState
                   context.pushNamed(createEditEventRoute,
                       queryParameters: {'isEditing': 'false'});
 
+                  final creatorProvider =
+                      Provider.of<CreatorProvider>(context, listen: false);
+
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)
-                      .setClassFromExisting(currentOption!.value, false, true);
+                      .setClassFromExisting(currentOption!.value, false, true,
+                          creatorProvider.activeTeacher!.id!);
                 } else {
                   Provider.of<EventCreationAndEditingProvider>(context,
                           listen: false)

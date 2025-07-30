@@ -144,12 +144,14 @@ class Aggregate {
 }
 
 class ClassOwner {
+  String? id;
   TeacherModel? teacher;
   bool? isPaymentReceiver;
 
-  ClassOwner({this.teacher, this.isPaymentReceiver});
+  ClassOwner({this.id, this.teacher, this.isPaymentReceiver});
 
   ClassOwner.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     teacher =
         json['teacher'] != null ? TeacherModel.fromJson(json['teacher']) : null;
     isPaymentReceiver = json['is_payment_receiver'];

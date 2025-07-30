@@ -4,6 +4,7 @@ import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
@@ -42,11 +43,16 @@ class CreatorSettingsActionModal extends ConsumerWidget {
               title: const Text("Edit"),
               leading: const Icon(Icons.edit),
               onTap: () async {
+                final creatorProvider = provider.Provider.of<CreatorProvider>(
+                    context,
+                    listen: false);
+
                 // Perform the asynchronous operation
                 await provider.Provider.of<EventCreationAndEditingProvider>(
                         context,
                         listen: false)
-                    .setClassFromExisting(classModel.urlSlug!, true, false);
+                    .setClassFromExisting(classModel.urlSlug!, true, false,
+                        creatorProvider.activeTeacher!.id!);
 
                 // Now pop the current widget and push the next page safely
                 Navigator.of(context).pop();
