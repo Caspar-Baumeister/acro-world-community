@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomCheckBox extends StatefulWidget {
@@ -23,14 +22,16 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
       onTap: widget.onTap,
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            color: widget.isChecked ? CustomColors.primaryColor : Colors.white,
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
+            color: widget.isChecked
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.surface,
             borderRadius: const BorderRadius.all(Radius.circular(6))),
         child: widget.isChecked
             ? Icon(
                 Icons.check_rounded,
                 size: widget.size,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
               )
             : SizedBox(width: widget.size, height: widget.size),
       ),

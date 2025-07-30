@@ -26,12 +26,12 @@ This document outlines a detailed, incremental plan to refactor the application'
 - [x] Visually verify that the app's appearance is consistent with the previous version.
 
 ### Phase 2: Refactor Core Components
-- [ ] Refactor `AppBar` components (`BaseAppbar`, `CustomAppbarSimple`, `StandardAppBar`).
-- [ ] Refactor `BottomNavigationBar` components (`BaseBottomNavigationBar`, `BBottomNavigationBar`, `PrimaryBottomNavbarItem`, `ShellBottomNavigationBar`, `ShellCreatorBottomNavigationBar`).
-- [ ] Refactor all `Button` components (`StandartButton`, `LoadingButton`, `LinkButtonComponent`, etc.).
-- [ ] Refactor `InputFieldComponent`.
-- [ ] Refactor `CustomCheckBox`.
-- [ ] Refactor `CustomDivider`.
+- [x] Refactor `AppBar` components (`BaseAppbar`, `CustomAppbarSimple`, `StandardAppBar`).
+- [x] Refactor `BottomNavigationBar` components (`BaseBottomNavigationBar`, `BBottomNavigationBar`, `PrimaryBottomNavbarItem`, `ShellBottomNavigationBar`, `ShellCreatorBottomNavigationBar`).
+- [x] Refactor all `Button` components (`StandartButton`, `LoadingButton`, `LinkButtonComponent`, etc.).
+- [x] Refactor `InputFieldComponent`.
+- [x] Refactor `CustomCheckBox`.
+- [x] Refactor `CustomDivider`.
 
 ### Phase 3: Refactor Pages and Sections
 - **Authentication Screens**

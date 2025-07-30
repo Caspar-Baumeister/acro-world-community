@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryBottomNavbarItem extends StatelessWidget {
@@ -23,7 +22,7 @@ class PrimaryBottomNavbarItem extends StatelessWidget {
       onTap: onPressed,
       child: Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: AppPaddings.small, vertical: AppPaddings.tiny),
+            horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
@@ -32,8 +31,8 @@ class PrimaryBottomNavbarItem extends StatelessWidget {
                 ? Image(
                     image: imageIcon!,
                     color: isSelected
-                        ? CustomColors.primaryColor
-                        : CustomColors.inactiveBorderColor,
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
                     width: AppDimensions.iconSizeMedium,
                     height: AppDimensions.iconSizeMedium,
                   )
@@ -41,18 +40,18 @@ class PrimaryBottomNavbarItem extends StatelessWidget {
                     ? Icon(
                         icon,
                         color: isSelected
-                            ? CustomColors.primaryColor
-                            : CustomColors.inactiveBorderColor,
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).colorScheme.outline,
                         size: AppDimensions.iconSizeMedium,
                       )
                     : Container(),
-            const SizedBox(height: AppPaddings.small),
+            const SizedBox(height: AppDimensions.spacingSmall),
             Text(
               label,
               style: Theme.of(context).textTheme.bodySmall!.copyWith(
                     color: isSelected
-                        ? CustomColors.primaryColor
-                        : CustomColors.inactiveBorderColor,
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.outline,
                   ),
             ),
           ],

@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class InputFieldComponent extends StatelessWidget {
@@ -63,7 +62,7 @@ class InputFieldComponent extends StatelessWidget {
           minLines: minLines,
           textInputAction: textInputAction,
           validator: validator,
-          cursorColor: CustomColors.primaryTextColor,
+          cursorColor: Theme.of(context).colorScheme.onSurface,
           onFieldSubmitted: onFieldSubmitted,
           decoration: InputDecoration(
             fillColor: fillColor,
@@ -71,12 +70,11 @@ class InputFieldComponent extends StatelessWidget {
             suffixIcon: suffixIcon,
             prefixIcon: leadingIcon,
             labelText: labelText,
-            labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
             alignLabelWithHint: true,
             floatingLabelBehavior: floatingLabelBehavior,
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-                    .copyWith(bottom: AppPaddings.medium),
+                const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
+                    .copyWith(bottom: AppDimensions.spacingMedium),
           ).applyDefaults(Theme.of(context).inputDecorationTheme),
         ),
         footnoteText != null
@@ -86,8 +84,8 @@ class InputFieldComponent extends StatelessWidget {
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
                           color: isFootnoteError == true
-                              ? CustomColors.errorTextColor
-                              : CustomColors.primaryTextColor,
+                              ? Theme.of(context).colorScheme.error
+                              : Theme.of(context).colorScheme.onSurface,
                         )),
               )
             : const SizedBox(height: 0),

@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class StandartButton extends StatelessWidget {
@@ -8,8 +7,8 @@ class StandartButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.icon,
-    this.buttonFillColor = CustomColors.primaryColor,
-    this.width = STANDART_BUTTON_WIDTH,
+    this.buttonFillColor,
+    this.width,
     this.disabled = false,
     this.loading = false,
     this.isFilled = false,
@@ -17,7 +16,7 @@ class StandartButton extends StatelessWidget {
 
   final String text;
   final VoidCallback onPressed;
-  final Color buttonFillColor;
+  final Color? buttonFillColor;
   final double? width;
   final bool disabled;
   final bool loading;
@@ -26,9 +25,13 @@ class StandartButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = isFilled ? buttonFillColor : Colors.white;
-    final borderColor = buttonFillColor;
-    final textColor = isFilled ? Colors.white : buttonFillColor;
+    final backgroundColor = isFilled
+        ? buttonFillColor ?? Theme.of(context).colorScheme.primary
+        : Theme.of(context).colorScheme.surface;
+    final borderColor = buttonFillColor ?? Theme.of(context).colorScheme.primary;
+    final textColor = isFilled
+        ? Theme.of(context).colorScheme.onPrimary
+        : buttonFillColor ?? Theme.of(context).colorScheme.primary;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -38,7 +41,7 @@ class StandartButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: backgroundColor,
           border: Border.all(color: borderColor),
-          borderRadius: BorderRadius.circular(STANDART_ROUNDNESS_STRONG),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
         child: Center(
           child: Padding(
@@ -65,7 +68,7 @@ class StandartButton extends StatelessWidget {
                           text,
                           style: Theme.of(context)
                               .textTheme
-                              .headlineSmall!
+                              .labelLarge!
                               .copyWith(color: textColor),
                           textAlign: TextAlign.center,
                         ),
