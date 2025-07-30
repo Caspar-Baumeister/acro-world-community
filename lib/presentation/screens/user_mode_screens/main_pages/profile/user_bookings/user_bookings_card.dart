@@ -62,7 +62,7 @@ class UserBookingsCard extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
                           child: Text(
-                            "${DateFormat("E. dd.MM.yy").format(userBooking.startDate)} ${DateFormat("HH:mm").format(userBooking.startDate)} - ${DateFormat('HH:mm').format(userBooking.endDate)}",
+                            "${DateFormat("dd.MM.").format(userBooking.startDate)} ${DateFormat("HH:mm").format(userBooking.startDate)} - ${DateFormat('HH:mm').format(userBooking.endDate)}",
                             style: Theme.of(context).textTheme.titleMedium!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

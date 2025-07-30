@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/map/components/
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/new_area_component.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -134,3 +134,4 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
     );
   }
 }
+

@@ -14,6 +14,7 @@ This document outlines a detailed, incremental plan to refactor the application'
 ## TODO
 
 ### Phase 0: Preparation - Create New Theme Structure
+
 - [x] Create `lib/theme/` directory.
 - [x] Create `lib/theme/app_theme.dart` with placeholder `ThemeData`.
 - [x] Create `lib/theme/app_colors.dart` with the color palette from the style guide.
@@ -21,11 +22,13 @@ This document outlines a detailed, incremental plan to refactor the application'
 - [x] Create `lib/theme/app_text_styles.dart` with font styles from the style guide (without color).
 
 ### Phase 1: Consolidate Theme Definitions
+
 - [x] Populate `lib/theme/app_theme.dart` with `ThemeData` for light and dark modes, using the new theme files.
 - [x] Update `router_app.dart` to use the new `AppTheme`.
 - [x] Visually verify that the app's appearance is consistent with the previous version.
 
 ### Phase 2: Refactor Core Components
+
 - [x] Refactor `AppBar` components (`BaseAppbar`, `CustomAppbarSimple`, `StandardAppBar`).
 - [x] Refactor `BottomNavigationBar` components (`BaseBottomNavigationBar`, `BBottomNavigationBar`, `PrimaryBottomNavbarItem`, `ShellBottomNavigationBar`, `ShellCreatorBottomNavigationBar`).
 - [x] Refactor all `Button` components (`StandartButton`, `LoadingButton`, `LinkButtonComponent`, etc.).
@@ -34,61 +37,63 @@ This document outlines a detailed, incremental plan to refactor the application'
 - [x] Refactor `CustomDivider`.
 
 ### Phase 3: Refactor Pages and Sections
+
 - **Authentication Screens**
-    - [x] Refactor `Authenticate` screen.
-    - [x] Refactor `SignIn` screen.
-    - [x] Refactor `SignUp` screen and its widgets.
-    - [x] Refactor `ForgotPassword` screen.
-    - [x] Refactor `ForgotPasswordSuccess` screen.
-    - [x] Refactor `ConfirmEmailPage`.
+  - [x] Refactor `Authenticate` screen.
+  - [x] Refactor `SignIn` screen.
+  - [x] Refactor `SignUp` screen and its widgets.
+  - [x] Refactor `ForgotPassword` screen.
+  - [x] Refactor `ForgotPasswordSuccess` screen.
+  - [x] Refactor `ConfirmEmailPage`.
 - **User Mode Screens**
-    - **Events**
-    - [x] Refactor `DiscoverPage` and `DiscoverBody`.
-    - [x] Refactor `DiscoveryAppBar`.
-    - [x] Refactor `FilterOnDiscoveryBody`.
-    - [x] Refactor `SliderRowDashboardDiscovery`.
-    - [x] Refactor `DiscoverySliderCard`.
-    - [x] Refactor `FilterPage` and its components.
-    - **Activities**
-    - [x] Refactor `ActivitiesPage` and `ActivitiesBody`.
-    - [x] Refactor `CalendarAppBar` and `CalendarComponent`.
-    - [x] Refactor `ClassesView` and `ClassEventExpandedTile`.
-    - **Community**
-    - [x] Refactor `TeacherPage` and `CommunityBody`.
-    - [x] Refactor `TeacherAppBar`.
-    - [x] Refactor `TeacherCard`.
-    - **Profile**
-    - [x] Refactor `ProfilePage` and `ProfileBody`.
-    - [x] Refactor `HeaderWidget`.
-    - [x] Refactor `UserBookings` and `UserBookingsCard`.
-    - [x] Refactor `UserFavoriteClasses` and `ClassTemplateCard`.
-    - **Map**
-        - [ ] Refactor `MapPage` and its components.
-    - **Single Class Page**
-        - [ ] Refactor `SingleClassPage` and its components.
-        - [ ] Refactor `SingleClassBody`.
-        - [ ] Refactor `BookingQueryHoverButton`.
+  - **Events**
+  - [x] Refactor `DiscoverPage` and `DiscoverBody`.
+  - [x] Refactor `DiscoveryAppBar`.
+  - [x] Refactor `FilterOnDiscoveryBody`.
+  - [x] Refactor `SliderRowDashboardDiscovery`.
+  - [x] Refactor `DiscoverySliderCard`.
+  - [x] Refactor `FilterPage` and its components.
+  - **Activities**
+  - [x] Refactor `ActivitiesPage` and `ActivitiesBody`.
+  - [x] Refactor `CalendarAppBar` and `CalendarComponent`.
+  - [x] Refactor `ClassesView` and `ClassEventExpandedTile`.
+  - **Community**
+  - [x] Refactor `TeacherPage` and `CommunityBody`.
+  - [x] Refactor `TeacherAppBar`.
+  - [x] Refactor `TeacherCard`.
+  - **Profile**
+  - [x] Refactor `ProfilePage` and `ProfileBody`.
+  - [x] Refactor `HeaderWidget`.
+  - [x] Refactor `UserBookings` and `UserBookingsCard`.
+  - [x] Refactor `UserFavoriteClasses` and `ClassTemplateCard`.
+  - **Map**
+  - [x] Refactor `MapPage` and its components.
+  - **Single Class Page**
+    - [ ] Refactor `SingleClassPage` and its components.
+    - [ ] Refactor `SingleClassBody`.
+    - [ ] Refactor `BookingQueryHoverButton`.
 - **Creator Mode Screens**
-    - **Dashboard**
-        - [ ] Refactor `DashboardPage` and its components.
-    - **My Events**
-        - [ ] Refactor `MyEventsPage` and its sections.
-    - **Invites**
-        - [ ] Refactor `InvitesPage` and its components.
-    - **Creator Profile**
-        - [ ] Refactor `CreatorProfilePage` and its components.
-    - **Create/Edit Event**
-        - [ ] Refactor `CreateAndEditEventPage` and all its steps and components.
+  - **Dashboard**
+    - [ ] Refactor `DashboardPage` and its components.
+  - **My Events**
+    - [ ] Refactor `MyEventsPage` and its sections.
+  - **Invites**
+    - [ ] Refactor `InvitesPage` and its components.
+  - **Creator Profile**
+    - [ ] Refactor `CreatorProfilePage` and its components.
+  - **Create/Edit Event**
+    - [ ] Refactor `CreateAndEditEventPage` and all its steps and components.
 - **Account Settings**
-    - [ ] Refactor `AccountSettingsPage`.
-    - [ ] Refactor `EditUserdataPage`.
-    - [ ] Refactor `DeleteAccount`.
+  - [ ] Refactor `AccountSettingsPage`.
+  - [ ] Refactor `EditUserdataPage`.
+  - [ ] Refactor `DeleteAccount`.
 - **System Pages**
-    - [ ] Refactor `ErrorPage`.
-    - [ ] Refactor `LoadingPage`.
-    - [ ] Refactor `VersionToOldPage`.
+  - [ ] Refactor `ErrorPage`.
+  - [ ] Refactor `LoadingPage`.
+  - [ ] Refactor `VersionToOldPage`.
 
 ### Phase 4: Cleanup
+
 - [ ] Perform a global search for any remaining direct usages of old constants.
 - [ ] Replace all remaining old constants with `Theme.of(context)` equivalents.
 - [ ] Delete `lib/constants/` directory.

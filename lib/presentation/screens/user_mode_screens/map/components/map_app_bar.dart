@@ -1,6 +1,6 @@
 import 'package:acroworld/presentation/components/buttons/place_button/place_button.dart';
 import 'package:acroworld/presentation/components/custom_sliver_app_bar.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class MapAppBar extends StatelessWidget {
@@ -8,12 +8,12 @@ class MapAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: Row(
         children: [
           BlurIconButton(isCollapsed: false),
-          SizedBox(width: AppPaddings.small),
+          SizedBox(width: AppDimensions.spacingSmall),
           Expanded(
             child: PlaceButton(
               rightPadding: false,

@@ -2,8 +2,8 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/custom_map_component.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_colors.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,12 +45,12 @@ class _MapPageState extends State<MapPage> {
                 bottom: 0,
                 child: SafeArea(
                   child: Container(
-                    color: CustomColors.backgroundColor,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     width: MediaQuery.of(context).size.width -
-                        2 * AppPaddings.medium,
+                        2 * AppDimensions.spacingMedium,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: AppPaddings.small),
-                    margin: const EdgeInsets.all(AppPaddings.medium),
+                        horizontal: AppDimensions.spacingSmall),
+                    margin: const EdgeInsets.all(AppDimensions.spacingMedium),
                     child: ClassEventExpandedTile(
                       classEvent: mapEventProvider.selectedClassEvent!,
                       showFullDate: true,
@@ -66,3 +66,4 @@ class _MapPageState extends State<MapPage> {
     ));
   }
 }
+
