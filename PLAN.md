@@ -21,9 +21,9 @@ This document outlines a detailed, incremental plan to refactor the application'
 - [x] Create `lib/theme/app_text_styles.dart` with font styles from the style guide (without color).
 
 ### Phase 1: Consolidate Theme Definitions
-- [ ] Populate `lib/theme/app_theme.dart` with `ThemeData` for light and dark modes, using the new theme files.
-- [ ] Update `router_app.dart` to use the new `AppTheme`.
-- [ ] Visually verify that the app's appearance is consistent with the previous version.
+- [x] Populate `lib/theme/app_theme.dart` with `ThemeData` for light and dark modes, using the new theme files.
+- [x] Update `router_app.dart` to use the new `AppTheme`.
+- [x] Visually verify that the app's appearance is consistent with the previous version.
 
 ### Phase 2: Refactor Core Components
 - [ ] Refactor `AppBar` components (`BaseAppbar`, `CustomAppbarSimple`, `StandardAppBar`).
