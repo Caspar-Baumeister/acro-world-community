@@ -9,12 +9,10 @@ import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
-import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
-import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/data/repositories/event_forms_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
@@ -176,7 +174,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   }
 
   void setRegion(String? region) {
-    this.locationCity = region;
+    locationCity = region;
     notifyListeners();
   }
 
@@ -322,6 +320,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   Future<void> upsertClass(String creatorId) async {
     String? timezone = await getTimezone(
         _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
+    print('_classOwner ${_classOwner.map((e) => e.toJson())}');
     final classUpsertInput = ClassUpsertInput(
         id: _classId ?? Uuid().v4(),
         name: _title,
@@ -422,6 +421,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
   Future<void> setClassFromExisting(String slug, bool isEditing,
       bool setFromTemplate, String creatorId) async {
+    print(
+        'setClassFromExisting $slug, $isEditing, $setFromTemplate, $creatorId');
     // clear existing data
     clear();
     // pull class data from database
@@ -437,24 +438,30 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       final repositoryReturnClass =
           await classesRepository.getClassBySlug(slug);
       fromClass = repositoryReturnClass;
-      print('fromClass ${fromClass.classOwner![0]}');
+
       _title = fromClass.name ?? '';
       _urlSlug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
       country = fromClass.country;
-      _classOwner
-          .addAll(fromClass.classOwner?.map((classOwner) => ClassOwnerInput(
-                    id: classOwner.id!,
-                    teacherId: classOwner.teacher!.id!,
-                    isPaymentReceiver: classOwner.isPaymentReceiver!,
-                  )) ??
-              [
-                ClassOwnerInput(
-                  id: Uuid().v4(),
-                  teacherId: creatorId,
-                  isPaymentReceiver: true,
-                )
-              ]);
+
+      if (_classOwner.isEmpty) {
+        _classOwner.add(ClassOwnerInput(
+          id: Uuid().v4(),
+          teacherId: creatorId,
+          isPaymentReceiver: true,
+        ));
+      } else {
+        _classOwner.add(fromClass.classOwner!
+            .map(
+              (classOwner) => ClassOwnerInput(
+                id: classOwner.id!,
+                teacherId: classOwner.teacher!.id!,
+                isPaymentReceiver: classOwner.isPaymentReceiver!,
+              ),
+            )
+            .toList()[0]);
+      }
+      print('fromClass.classOwner ${fromClass.classOwner}');
 
       locationCity = fromClass.city;
       countryCode = getCountryCode(fromClass.country);

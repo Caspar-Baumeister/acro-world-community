@@ -124,6 +124,7 @@ class ClassesRepository {
         "class": input.toJson(),
         "delete_recurring_pattern_ids": [],
         "delete_booking_category_ids": [],
+        // "delete_booking_option_ids": [],
         "delete_question_ids": []
       },
     );
@@ -155,34 +156,6 @@ class ClassesRepository {
     for (int i = 0; i < text.length; i += chunkSize) {
       print(text.substring(
           i, i + chunkSize > text.length ? text.length : i + chunkSize));
-    }
-  }
-
-  // updates a class
-  Future<ClassModel> updateClass(Map<String, dynamic> variables) async {
-    MutationOptions mutationOptions = MutationOptions(
-      document: Mutations.updateClassWithRecurringPatterns,
-      fetchPolicy: FetchPolicy.networkOnly,
-      variables: variables,
-    );
-
-    final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
-
-    // Check for a valid response
-    if (result.hasException) {
-      throw Exception(
-          'Failed to update class. Status code: ${result.exception?.raw.toString()}');
-    }
-
-    if (result.data != null && result.data!["insert_classes_one"] != null) {
-      try {
-        return ClassModel.fromJson(result.data!['insert_classes_one']);
-      } catch (e) {
-        throw Exception('Failed to parse class: $e');
-      }
-    } else {
-      throw Exception('Failed to update class ${result.data ?? result}');
     }
   }
 
