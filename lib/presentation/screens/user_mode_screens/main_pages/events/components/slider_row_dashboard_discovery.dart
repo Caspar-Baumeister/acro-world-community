@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discovery_slider_card.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class SliderRowDashboardDiscovery extends StatelessWidget {
@@ -23,7 +22,7 @@ class SliderRowDashboardDiscovery extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
           child: GestureDetector(
             onTap: () => onViewAll(),
             child: Row(
@@ -35,7 +34,7 @@ class SliderRowDashboardDiscovery extends StatelessWidget {
                   children: [
                     Text(header,
                         style: Theme.of(context).textTheme.headlineMedium),
-                    const SizedBox(height: AppPaddings.tiny),
+                    const SizedBox(height: AppDimensions.spacingExtraSmall),
                     subHeader != null
                         ? Text(subHeader!,
                             style: Theme.of(context).textTheme.bodyMedium)
@@ -47,25 +46,25 @@ class SliderRowDashboardDiscovery extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
-                      .copyWith(color: CustomColors.linkTextColor),
+                      .copyWith(color: Theme.of(context).colorScheme.secondary),
                 )
               ],
             ),
           ),
         ),
-        const SizedBox(height: AppPaddings.small),
+        const SizedBox(height: AppDimensions.spacingSmall),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               const SizedBox(
-                width: AppPaddings.small,
+                width: AppDimensions.spacingSmall,
               ),
               ...events.map((item) => Padding(
                     padding: const EdgeInsets.symmetric(
-                            vertical: AppPaddings.tiny,
-                            horizontal: AppPaddings.small)
+                            vertical: AppDimensions.spacingExtraSmall,
+                            horizontal: AppDimensions.spacingSmall)
                         .copyWith(bottom: 0),
                     child: DiscoverySliderCard(classEvent: item),
                   ))

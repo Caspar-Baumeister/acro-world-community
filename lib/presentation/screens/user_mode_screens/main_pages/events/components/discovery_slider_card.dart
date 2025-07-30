@@ -2,8 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_card_image_section.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -32,15 +31,15 @@ class DiscoverySliderCard extends StatelessWidget {
                 )
               : null,
       child: SizedBox(
-        width: AppDimensions.eventDashboardSliderWidth,
+        width: 200,
         child: Column(
           children: [
             EventCardImageSection(
                 imageUrl: imageUrl, isHighlighted: isHighlighted),
             AspectRatio(
-              aspectRatio: AspectRatios.ar_6_5,
+              aspectRatio: 7/5,
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: AppPaddings.tiny),
+                padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingExtraSmall),
                 alignment: Alignment.centerLeft,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +56,7 @@ class DiscoverySliderCard extends StatelessWidget {
                     location != null
                         ? Padding(
                             padding:
-                                const EdgeInsets.only(top: AppPaddings.tiny),
+                                const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
                             child: Text(
                               location,
                               maxLines: 1,
@@ -73,14 +72,14 @@ class DiscoverySliderCard extends StatelessWidget {
                           )
                         : Container(),
                     Padding(
-                      padding: const EdgeInsets.only(top: AppPaddings.small),
+                      padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                       child: Text(
                           DateTimeService.getDateString(
                               classEvent.startDate, classEvent.endDate),
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
-                              .copyWith(color: CustomColors.accentColor)
+                              .copyWith(color: Theme.of(context).colorScheme.primary)
                               .copyWith(letterSpacing: -0.5)),
                     ),
                   ],
@@ -98,7 +97,7 @@ class LocationParser {
   // a function that takes the country and city and returns a string
   static String? parseLocation(String? country, String? city) {
     if (country != null && city != null) {
-      return "$country, $city";
+      return "$city, $country";
     } else if (country != null) {
       return country;
     } else if (city != null) {

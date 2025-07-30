@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,7 +19,7 @@ class FilterOnDiscoveryBody extends StatelessWidget {
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: activeEvents.isEmpty
           ? SizedBox(
               width: double.infinity,

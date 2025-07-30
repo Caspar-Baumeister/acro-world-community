@@ -43,20 +43,20 @@ This document outlines a detailed, incremental plan to refactor the application'
     - [x] Refactor `ConfirmEmailPage`.
 - **User Mode Screens**
     - **Events**
-        - [ ] Refactor `DiscoverPage` and `DiscoverBody`.
-        - [ ] Refactor `DiscoveryAppBar`.
-        - [ ] Refactor `FilterOnDiscoveryBody`.
-        - [ ] Refactor `SliderRowDashboardDiscovery`.
-        - [ ] Refactor `DiscoverySliderCard`.
-        - [ ] Refactor `FilterPage` and its components.
+    - [x] Refactor `DiscoverPage` and `DiscoverBody`.
+    - [x] Refactor `DiscoveryAppBar`.
+    - [x] Refactor `FilterOnDiscoveryBody`.
+    - [x] Refactor `SliderRowDashboardDiscovery`.
+    - [x] Refactor `DiscoverySliderCard`.
+    - [x] Refactor `FilterPage` and its components.
     - **Activities**
-        - [ ] Refactor `ActivitiesPage` and `ActivitiesBody`.
-        - [ ] Refactor `CalendarAppBar` and `CalendarComponent`.
-        - [ ] Refactor `ClassesView` and `ClassEventExpandedTile`.
+    - [x] Refactor `ActivitiesPage` and `ActivitiesBody`.
+    - [x] Refactor `CalendarAppBar` and `CalendarComponent`.
+    - [x] Refactor `ClassesView` and `ClassEventExpandedTile`.
     - **Community**
-        - [ ] Refactor `TeacherPage` and `CommunityBody`.
-        - [ ] Refactor `TeacherAppBar`.
-        - [ ] Refactor `TeacherCard`.
+    - [x] Refactor `TeacherPage` and `CommunityBody`.
+    - [x] Refactor `TeacherAppBar`.
+    - [x] Refactor `TeacherCard`.
     - **Profile**
         - [ ] Refactor `ProfilePage` and `ProfileBody`.
         - [ ] Refactor `HeaderWidget`.

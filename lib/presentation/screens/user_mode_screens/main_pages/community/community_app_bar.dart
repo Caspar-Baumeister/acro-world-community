@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -46,62 +45,64 @@ class TeacherAppBarState extends State<TeacherAppBar> {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      elevation: 0.0,
       automaticallyImplyLeading: false,
       title: TextField(
         controller: _controller,
         focusNode: _focusNode,
         decoration: InputDecoration(
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                  STANDART_ROUNDNESS_STRONG), // Rounded corners
-              borderSide:
-                  const BorderSide(color: CustomColors.activeBorderColor),
-            ),
-            prefixIcon: const Icon(Icons.search, color: Colors.black),
-            hintText: 'Search...',
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(
-                  STANDART_ROUNDNESS_STRONG), // Rounded corners
-              borderSide:
-                  const BorderSide(color: CustomColors.inactiveBorderColor),
-            ),
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
-            hintStyle: Theme.of(context).textTheme.titleLarge,
-            suffixIcon: !_focusNode.hasFocus && _controller.text.isEmpty
-                ? null
-                : IconButton(
-                    onPressed: () {
-                      setState(() {
-                        // Wrap state changes in setState
-                        if (_controller.text.isNotEmpty) {
-                          _controller.clear();
-                        } else if (_focusNode.hasFocus) {
-                          _focusNode.unfocus();
-                          SystemChannels.textInput
-                              .invokeMethod('TextInput.hide');
-                        } else {
-                          _focusNode.requestFocus();
-                          SystemChannels.textInput
-                              .invokeMethod('TextInput.show');
-                        }
-                      });
-                    },
-                    icon: Icon(
-                      _controller.text.isNotEmpty
-                          ? Icons.close
-                          : (_focusNode.hasFocus
-                              ? Icons.keyboard_arrow_down
-                              : Icons.keyboard_arrow_up),
-                      color: Colors.black,
-                    ))),
-        style: Theme.of(context).textTheme.titleLarge, // Black text
-        cursorColor: Colors.black,
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(
+                AppDimensions.radiusMedium), // Rounded corners
+            borderSide: BorderSide(
+                color:
+                    Theme.of(context).colorScheme.primary), // activeBorderColor
+          ),
+          prefixIcon: Icon(Icons.search,
+              color: Theme.of(context).colorScheme.onSurface), // black
+          hintText: 'Search...',
+          filled: true,
+          fillColor: Theme.of(context).colorScheme.surface, // white
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(
+                AppDimensions.radiusMedium), // Rounded corners
+            borderSide: BorderSide(
+                color: Theme.of(context)
+                    .colorScheme
+                    .outline), // inactiveBorderColor
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+          hintStyle: Theme.of(context).textTheme.titleLarge,
+          suffixIcon: !_focusNode.hasFocus && _controller.text.isEmpty
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    setState(() {
+                      // Wrap state changes in setState
+                      if (_controller.text.isNotEmpty) {
+                        _controller.clear();
+                      } else if (_focusNode.hasFocus) {
+                        _focusNode.unfocus();
+                        SystemChannels.textInput.invokeMethod('TextInput.hide');
+                      } else {
+                        _focusNode.requestFocus();
+                        SystemChannels.textInput.invokeMethod('TextInput.show');
+                      }
+                    });
+                  },
+                  icon: Icon(
+                    _controller.text.isNotEmpty
+                        ? Icons.close
+                        : (_focusNode.hasFocus
+                            ? Icons.keyboard_arrow_down
+                            : Icons.keyboard_arrow_up),
+                    color: Theme.of(context).colorScheme.onSurface, // black
+                  )),
+        ),
+        style: Theme.of(context).textTheme.titleLarge,
+        cursorColor: Theme.of(context).colorScheme.onSurface,
       ),
-      backgroundColor: Colors.transparent,
-      elevation: 0.0,
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/base_chip_wrapper.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/theme/app_colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -205,14 +205,14 @@ class FilterChipCard extends StatelessWidget {
           label: Text(
             label,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: isActive ? Colors.white : CustomColors.primaryColor),
+                color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface),
           ),
           labelPadding: const EdgeInsets.all(0.0),
-          backgroundColor: isActive ? CustomColors.primaryColor : Colors.white,
+          backgroundColor: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          side: const BorderSide(color: Colors.grey, width: 1.0),
+          side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.0),
         ),
         if (amount != null)
           Positioned(
@@ -221,8 +221,8 @@ class FilterChipCard extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               decoration: BoxDecoration(
-                color: isActive ? Colors.white : CustomColors.primaryColor,
-                borderRadius: BorderRadius.only(
+                color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   bottomLeft: Radius.circular(20.0),
                 ),
@@ -230,7 +230,7 @@ class FilterChipCard extends StatelessWidget {
               child: Text(
                 '$amount',
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isActive ? CustomColors.primaryColor : Colors.white),
+                    color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary),
               ),
             ),
           ),

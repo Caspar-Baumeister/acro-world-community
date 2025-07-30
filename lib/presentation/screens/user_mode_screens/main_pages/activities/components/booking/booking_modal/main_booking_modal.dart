@@ -5,7 +5,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/acti
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/booking_step_indicator.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/header_section.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class BookingModal extends StatefulWidget {
@@ -59,7 +58,7 @@ class _BookingModalState extends State<BookingModal> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: CustomColors.primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,

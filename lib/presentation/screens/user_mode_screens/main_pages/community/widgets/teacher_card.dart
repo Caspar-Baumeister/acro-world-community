@@ -3,7 +3,7 @@ import 'package:acroworld/presentation/components/images/custom_avatar_cached_ne
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/theme/app_colors.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -108,8 +108,8 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: widget.isLiked ? CustomColors.primaryColor : Colors.white,
-          border: Border.all(color: CustomColors.primaryColor),
+          color: widget.isLiked ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+          border: Border.all(color: Theme.of(context).colorScheme.primary),
           borderRadius: BorderRadius.circular(20),
         ),
         height: 35,
@@ -123,8 +123,8 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
                   padding: const EdgeInsets.all(5),
                   child: CircularProgressIndicator(
                     color: widget.isLiked
-                        ? Colors.white
-                        : CustomColors.primaryColor,
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.primary,
                     strokeWidth: 2,
                   ),
                 ),
@@ -133,8 +133,8 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
                 widget.isLiked ? "Followed" : "Follow",
                 style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: widget.isLiked
-                          ? Colors.white
-                          : CustomColors.primaryColor,
+                          ? Theme.of(context).colorScheme.onPrimary
+                          : Theme.of(context).colorScheme.primary,
                     ),
                 textAlign: TextAlign.center,
               ),

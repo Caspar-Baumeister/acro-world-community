@@ -2,9 +2,7 @@ import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/decorators.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -35,11 +33,15 @@ class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
                   showSearch(context: context, delegate: EventSearchDelegate()),
               child: Container(
                 padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.small, vertical: AppPaddings.small),
-                decoration: searchBarDecoration,
+                    horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingSmall),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  color: Theme.of(context).colorScheme.surface,
+                ),
                 child: Row(
                   children: [
-                    const Icon(Icons.search, color: Colors.black),
+                    Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface),
                     const SizedBox(width: 10),
                     Text(
                       'Search',
@@ -54,11 +56,11 @@ class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          padding: const EdgeInsets.only(right: AppPaddings.medium),
+          padding: const EdgeInsets.only(right: AppDimensions.spacingMedium),
           icon: Icon(Icons.filter_list,
               color: discoveryProvider.isFilterActive()
-                  ? CustomColors.accentColor
-                  : CustomColors.inactiveBorderColor),
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.outline),
           onPressed: () {
             context.pushNamed(
               filterRoute,

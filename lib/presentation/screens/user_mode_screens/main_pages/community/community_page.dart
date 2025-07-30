@@ -1,6 +1,7 @@
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class TeacherPage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _TeacherPageState extends State<TeacherPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 12.0, top: 8),
+            padding: const EdgeInsets.only(left: AppDimensions.spacingSmall, top: AppDimensions.spacingSmall),
             child: FilterRow(
               selectFollowed: setFollowed,
               isFollowed: isFollowed,
@@ -107,18 +108,18 @@ class FilterBubbleState extends State<FilterBubble> {
         });
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+        padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium, vertical: AppDimensions.spacingSmall),
         decoration: BoxDecoration(
-          color: !_isSelected ? Colors.white : Colors.black,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: !_isSelected ? Colors.black : Colors.white),
+          color: !_isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          border: Border.all(color: !_isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surface),
         ),
         child: Center(
           child: Text(
             widget.label,
             style: TextStyle(
-              color: !_isSelected ? Colors.black : Colors.white,
+              color: !_isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surface,
             ),
           ),
         ),

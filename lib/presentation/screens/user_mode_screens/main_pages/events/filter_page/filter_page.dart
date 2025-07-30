@@ -9,6 +9,6 @@ class FilterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-        appBar: const FilterPageAppBar(), child: const FilterPageView());
+        appBar: const FilterPageAppBar(), child: SingleChildScrollView(child: FilterPageView()));
   }
 }

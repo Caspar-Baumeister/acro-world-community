@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart';
 import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,12 +19,12 @@ class FilterPageView extends StatelessWidget {
       return regions.any((region) => region != "Not specified");
     });
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,7 +38,7 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -52,7 +52,7 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,7 +67,7 @@ class FilterPageView extends StatelessWidget {
           ),
           if (hasRealRegions) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+              padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,7 +80,7 @@ class FilterPageView extends StatelessWidget {
             ),
           ],
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -94,7 +94,7 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppPaddings.small),
+            padding: const EdgeInsets.all(AppDimensions.spacingSmall),
             child: Center(
               child: Text(
                 "This filter will show ${discoveryProvider.filteredEventOccurencesLength.toString()} results",

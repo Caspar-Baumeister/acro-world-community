@@ -3,7 +3,7 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
 import 'package:acroworld/provider/calendar_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +16,7 @@ class ClassesView extends StatelessWidget {
   Widget build(BuildContext context) {
     CalendarProvider calendarProvider = Provider.of<CalendarProvider>(context);
     if (calendarProvider.loading) {
-      return Center(child: const LoadingWidget());
+      return const Center(child: LoadingWidget());
     }
 
     if (calendarProvider.weekClassEvents.isEmpty) {
@@ -26,8 +26,8 @@ class ClassesView extends StatelessWidget {
           Center(
             child: Column(
               children: [
-                const Text("There are no activities close to you."),
-                const SizedBox(height: AppPaddings.large),
+                Text("There are no activities close to you."),
+                const SizedBox(height: AppDimensions.spacingLarge),
                 StandartButton(
                   text: "increase search radius",
                   onPressed: () => calendarProvider.increaseRadius(),
@@ -60,7 +60,7 @@ class ClassesView extends StatelessWidget {
         itemBuilder: (context, index) {
           return Padding(
             padding: const EdgeInsets.only(
-                left: 4.0, right: 4, bottom: AppPaddings.small),
+                left: 4.0, right: 4, bottom: AppDimensions.spacingSmall),
             child: ClassEventExpandedTile(
               classEvent: classEvents[index],
             ),

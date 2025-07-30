@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/slider_row_dashboard_discovery.dart';
 import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -31,7 +31,7 @@ class _DiscoverDashboardBodyState extends State<DiscoverDashboardBody> {
 
     List<Widget> eventSliders = discoveryProvider.allEventTypes
         .map((EventType eventType) => Padding(
-              padding: const EdgeInsets.only(top: AppPaddings.small),
+              padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
               child: SliderRowDashboardDiscovery(
                   onViewAll: () {
                     // set filter catergory to the event type
@@ -50,7 +50,7 @@ class _DiscoverDashboardBodyState extends State<DiscoverDashboardBody> {
           children: [
             discoveryProvider.getHighlightedEvents().isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: SliderRowDashboardDiscovery(
                         onViewAll: () {
                           discoveryProvider.setToOnlyHighlightedFilter();
@@ -60,7 +60,7 @@ class _DiscoverDashboardBodyState extends State<DiscoverDashboardBody> {
                 : Container(),
             discoveryProvider.getBookableEvents().isNotEmpty
                 ? Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: SliderRowDashboardDiscovery(
                         onViewAll: () {
                           discoveryProvider.setToOnlyBookableFilter();
