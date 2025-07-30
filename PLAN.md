@@ -14,11 +14,11 @@ This document outlines a detailed, incremental plan to refactor the application'
 ## TODO
 
 ### Phase 0: Preparation - Create New Theme Structure
-- [ ] Create `lib/theme/` directory.
-- [ ] Create `lib/theme/app_theme.dart` with placeholder `ThemeData`.
-- [ ] Create `lib/theme/app_colors.dart` with the color palette from the style guide.
-- [ ] Create `lib/theme/app_dimensions.dart` with spacing and size constants from the style guide.
-- [ ] Create `lib/theme/app_text_styles.dart` with font styles from the style guide (without color).
+- [x] Create `lib/theme/` directory.
+- [x] Create `lib/theme/app_theme.dart` with placeholder `ThemeData`.
+- [x] Create `lib/theme/app_colors.dart` with the color palette from the style guide.
+- [x] Create `lib/theme/app_dimensions.dart` with spacing and size constants from the style guide.
+- [x] Create `lib/theme/app_text_styles.dart` with font styles from the style guide (without color).
 
 ### Phase 1: Consolidate Theme Definitions
 - [ ] Populate `lib/theme/app_theme.dart` with `ThemeData` for light and dark modes, using the new theme files.
