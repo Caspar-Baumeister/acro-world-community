@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/custom_check_box.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class CustomCheckWidget extends StatelessWidget {
@@ -19,7 +20,7 @@ class CustomCheckWidget extends StatelessWidget {
       children: [
         CustomCheckBox(
             onTap: () => setChecked(!isChecked), isChecked: isChecked),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppDimensions.spacingSmall),
         Flexible(
             child: GestureDetector(
                 onTap: () => setChecked(!isChecked), child: content))

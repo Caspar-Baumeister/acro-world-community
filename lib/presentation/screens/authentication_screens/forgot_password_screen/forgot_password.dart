@@ -29,7 +29,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: false,
         titleSpacing: 20.0,
@@ -71,7 +70,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     padding: const EdgeInsets.only(top: 12.0, left: 10),
                     child: Text(
                       error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error)
                     ),
                   )
                 : Container(),
@@ -90,7 +89,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
     );
 
     if (response?["data"]["reset_password"]?["success"] == true) {
-      print("Success: ${response?["data"]}");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.pushReplacementNamed(forgotPasswordSuccessRoute,
             queryParameters: {"email": emailController.text});
@@ -105,3 +103,4 @@ class ForgotPasswordState extends State<ForgotPassword> {
     });
   }
 }
+

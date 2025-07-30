@@ -35,12 +35,12 @@ This document outlines a detailed, incremental plan to refactor the application'
 
 ### Phase 3: Refactor Pages and Sections
 - **Authentication Screens**
-    - [ ] Refactor `Authenticate` screen.
-    - [ ] Refactor `SignIn` screen.
-    - [ ] Refactor `SignUp` screen and its widgets.
-    - [ ] Refactor `ForgotPassword` screen.
-    - [ ] Refactor `ForgotPasswordSuccess` screen.
-    - [ ] Refactor `ConfirmEmailPage`.
+    - [x] Refactor `Authenticate` screen.
+    - [x] Refactor `SignIn` screen.
+    - [x] Refactor `SignUp` screen and its widgets.
+    - [x] Refactor `ForgotPassword` screen.
+    - [x] Refactor `ForgotPasswordSuccess` screen.
+    - [x] Refactor `ConfirmEmailPage`.
 - **User Mode Screens**
     - **Events**
         - [ ] Refactor `DiscoverPage` and `DiscoverBody`.

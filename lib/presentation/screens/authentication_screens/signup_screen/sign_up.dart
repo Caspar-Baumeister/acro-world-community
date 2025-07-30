@@ -6,7 +6,6 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -115,7 +114,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                     minHeight:
                         isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
                   )
-                : BoxConstraints(),
+                : const BoxConstraints(),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Column(
@@ -200,7 +199,6 @@ class _SignUpState extends ConsumerState<SignUp> {
                     onPressed: isLoading ? () {} : _onRegister,
                     loading: isLoading,
                     isFilled: true,
-                    buttonFillColor: CustomColors.primaryColor,
                   ),
                   if (error.isNotEmpty)
                     Padding(
@@ -208,7 +206,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                       child: Text(
                         error,
                         style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
+                            Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
                       ),
                     ),
                   const SizedBox(height: 20),

@@ -5,8 +5,7 @@ import 'package:acroworld/presentation/components/appbar/standard_app_bar/standa
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/user_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -156,8 +155,8 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                     constraints: const BoxConstraints(maxWidth: 400),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppPaddings.large,
-                        vertical: AppPaddings.large,
+                        horizontal: AppDimensions.spacingLarge,
+                        vertical: AppDimensions.spacingLarge,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -168,7 +167,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               Icon(
                                 Icons.mark_email_unread,
                                 size: 64,
-                                color: CustomColors.primaryColor,
+                                color: Theme.of(context).colorScheme.primary,
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -201,7 +200,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                 style: const TextStyle(letterSpacing: 8),
                                 decoration: InputDecoration(
                                   hintText: "Enter confirmation code",
-                                  hintStyle: TextStyle(
+                                  hintStyle: const TextStyle(
                                     letterSpacing: 8,
                                   ),
                                   filled: true,
@@ -211,17 +210,17 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                        color: CustomColors.buttonPrimaryLight),
+                                        color: Theme.of(context).colorScheme.outline),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                        color: CustomColors.buttonPrimaryLight),
+                                        color: Theme.of(context).colorScheme.outline),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                      color: CustomColors.primaryColor,
+                                      color: Theme.of(context).colorScheme.primary,
                                       width: 2,
                                     ),
                                   ),
@@ -229,7 +228,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.content_paste,
-                                    color: CustomColors.subtitleText),
+                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                                 onPressed: () async {
                                   final clip =
                                       await Clipboard.getData('text/plain');
@@ -247,7 +246,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               // Confirm
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: CustomColors.subtitleText,
+                                  backgroundColor: Theme.of(context).colorScheme.onSurface,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -277,9 +276,9 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               OutlinedButton(
                                 style: OutlinedButton.styleFrom(
                                   backgroundColor:
-                                      CustomColors.buttonPrimaryLight,
+                                      Theme.of(context).colorScheme.surface,
                                   side: BorderSide(
-                                      color: CustomColors.subtitleText),
+                                      color: Theme.of(context).colorScheme.onSurface),
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -296,7 +295,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                       : "Resend Email",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: CustomColors.subtitleText,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -324,7 +323,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                         "Refresh Status",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          color: CustomColors.subtitleText,
+                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
                                         ),
                                       ),
                               ),
@@ -339,7 +338,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
-                                .copyWith(color: CustomColors.subtitleText),
+                                .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
                           ),
                         ],
                       ),

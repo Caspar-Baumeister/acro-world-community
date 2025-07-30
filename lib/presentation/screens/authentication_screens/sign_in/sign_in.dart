@@ -6,7 +6,6 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -96,7 +95,7 @@ class _SignInState extends ConsumerState<SignIn> {
                     minHeight:
                         isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
                   )
-                : BoxConstraints(),
+                : const BoxConstraints(),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: AutofillGroup(
@@ -146,15 +145,13 @@ class _SignInState extends ConsumerState<SignIn> {
                       onPressed: isLoading ? () {} : _onSignIn,
                       loading: isLoading,
                       isFilled: true,
-                      buttonFillColor: CustomColors.primaryColor,
                     ),
                     if (error.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.only(top: 12.0),
                         child: Text(
                           error,
-                          style: const TextStyle(
-                              color: Colors.red, fontSize: 14.0),
+                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error)
                         ),
                       ),
                     Padding(
@@ -177,7 +174,7 @@ class _SignInState extends ConsumerState<SignIn> {
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyLarge
-                                  ?.copyWith(color: CustomColors.linkTextColor),
+                                  ?.copyWith(color: Theme.of(context).colorScheme.secondary),
                             ),
                           ),
                         ],
