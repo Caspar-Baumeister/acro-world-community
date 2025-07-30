@@ -5,6 +5,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/class_widgets/class_template_card.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -33,7 +34,7 @@ class UserFavoriteClasses extends StatelessWidget {
             return favoriteModels.isEmpty
                 ? Center(
                     child: Padding(
-                      padding: const EdgeInsets.all(40.0),
+                      padding: const EdgeInsets.all(AppDimensions.spacingLarge),
                       child: Text(
                         "You have no favorite activities",
                         style: Theme.of(context).textTheme.titleLarge,
@@ -53,7 +54,7 @@ class UserFavoriteClasses extends StatelessWidget {
                         }
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0, vertical: 4),
+                              horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
                           child: ClassTemplateCard(indexClass: event),
                         );
                       } catch (e, s) {

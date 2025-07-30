@@ -27,21 +27,21 @@ class HeaderWidget extends StatelessWidget {
           placeholder: (context, url) => Container(
             width: 75,
             height: 75,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
           ),
           errorWidget: (context, url, error) => Container(
             width: 75,
             height: 75,
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: Colors.black12,
+              color: Theme.of(context).colorScheme.surfaceContainer,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.error,
-              color: Colors.red,
+              color: Theme.of(context).colorScheme.error,
             ),
           ),
         ),

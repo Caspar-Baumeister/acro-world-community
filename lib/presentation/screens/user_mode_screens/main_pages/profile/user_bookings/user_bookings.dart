@@ -3,6 +3,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings_card.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -25,7 +26,7 @@ class UserBookings extends StatelessWidget {
           return ErrorWidget(queryResult.exception.toString());
         } else if (queryResult.isLoading) {
           return const Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: EdgeInsets.all(AppDimensions.spacingSmall),
             child: LoadingWidget(),
           );
         } else if (queryResult.data != null &&
@@ -87,29 +88,27 @@ class UserBookings extends StatelessWidget {
                       bool isPastBooking =
                           userBookings[index].endDate.isBefore(DateTime.now());
 
-                      // Check if the previous booking (if exists) is in the future
-                      bool isPreviousBookingFuture = index > 0
-                          ? userBookings[index - 1]
-                              .endDate
-                              .isAfter(DateTime.now())
-                          : false;
-
                       // If current booking is past and previous (if exists) is future, show 'Past Bookings' heading
-                      if (isPastBooking && isPreviousBookingFuture) {
+                      if (isPastBooking &&
+                          index > 0 &&
+                          userBookings[index - 1]
+                              .endDate
+                              .isAfter(DateTime.now())) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.all(8.0).copyWith(left: 20),
-                              child: const Text("Past Bookings",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.all(AppDimensions.spacingSmall)
+                                  .copyWith(left: AppDimensions.spacingMedium),
+                              child: Text("Past Bookings",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
+                                  horizontal: AppDimensions.spacingMedium,
+                                  vertical: AppDimensions.spacingSmall),
                               child: UserBookingsCard(
                                   userBooking: userBookings[index]),
                             ),
@@ -123,16 +122,17 @@ class UserBookings extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding:
-                                  const EdgeInsets.all(8.0).copyWith(left: 20),
-                              child: const Text("Upcoming Bookings",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
+                              padding: const EdgeInsets.all(AppDimensions.spacingSmall)
+                                  .copyWith(left: AppDimensions.spacingMedium),
+                              child: Text("Upcoming Bookings",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleLarge),
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
+                                  horizontal: AppDimensions.spacingMedium,
+                                  vertical: AppDimensions.spacingSmall),
                               child: UserBookingsCard(
                                   userBooking: userBookings[index]),
                             ),
@@ -143,7 +143,8 @@ class UserBookings extends StatelessWidget {
                       // Default case, just show the booking card
                       return Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 8),
+                              horizontal: AppDimensions.spacingMedium,
+                              vertical: AppDimensions.spacingSmall),
                           child: UserBookingsCard(
                               userBooking: userBookings[index]));
                     },
@@ -154,11 +155,9 @@ class UserBookings extends StatelessWidget {
                 error:
                     "An unexpected error occured, when transforming the user bookings to an objects with ${e.toString()} ");
           }
-        } else {
-          return const ErrorPage(
-              error:
-                  "An unexpected error occured, when fetching user bookmarks");
         }
+        return const ErrorPage(
+            error: "An unexpected error occured, when fetching user bookmarks");
       },
     );
   }

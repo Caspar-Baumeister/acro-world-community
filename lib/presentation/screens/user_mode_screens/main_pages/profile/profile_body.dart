@@ -9,7 +9,7 @@ import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +48,7 @@ class ProfileBody extends ConsumerWidget {
                   delegate: SliverChildListDelegate([
                     if (hasTeacherProfile)
                       Padding(
-                        padding: const EdgeInsets.all(8.0).copyWith(left: 20),
+                        padding: const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(left: 20),
                         child: HeaderWidget(
                           imgUrl: user.teacherProfile?.profilImgUrl ??
                               user.imageUrl ??
@@ -58,8 +58,8 @@ class ProfileBody extends ConsumerWidget {
                       ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                        vertical: AppPaddings.small,
-                        horizontal: AppPaddings.medium,
+                        vertical: AppDimensions.spacingSmall,
+                        horizontal: AppDimensions.spacingMedium,
                       ),
                       child: CustomSettingComponent(
                         title: "Creator Mode",
@@ -101,13 +101,13 @@ class ProfileBody extends ConsumerWidget {
               body: Column(
                 children: [
                   Material(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.surface,
                     child: TabBar(
-                      labelColor: Colors.black,
-                      unselectedLabelColor: Colors.grey[400],
+                      labelColor: Theme.of(context).colorScheme.onSurface,
+                      unselectedLabelColor: Theme.of(context).colorScheme.outline,
                       indicatorWeight: 1,
                       indicatorSize: TabBarIndicatorSize.tab,
-                      indicatorColor: Colors.black,
+                      indicatorColor: Theme.of(context).colorScheme.onSurface,
                       tabs: const [
                         Tab(text: "Favorites"),
                         Tab(text: "Bookings"),

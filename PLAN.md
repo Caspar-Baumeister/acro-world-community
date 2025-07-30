@@ -58,10 +58,10 @@ This document outlines a detailed, incremental plan to refactor the application'
     - [x] Refactor `TeacherAppBar`.
     - [x] Refactor `TeacherCard`.
     - **Profile**
-        - [ ] Refactor `ProfilePage` and `ProfileBody`.
-        - [ ] Refactor `HeaderWidget`.
-        - [ ] Refactor `UserBookings` and `UserBookingsCard`.
-        - [ ] Refactor `UserFavoriteClasses` and `ClassTemplateCard`.
+    - [x] Refactor `ProfilePage` and `ProfileBody`.
+    - [x] Refactor `HeaderWidget`.
+    - [x] Refactor `UserBookings` and `UserBookingsCard`.
+    - [x] Refactor `UserFavoriteClasses` and `ClassTemplateCard`.
     - **Map**
         - [ ] Refactor `MapPage` and its components.
     - **Single Class Page**

@@ -13,7 +13,7 @@ class ProfilePage extends StatelessWidget {
       endDrawer: const SettingsDrawer(),
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         title: Text(
           "Profile",
           style: Theme.of(context).textTheme.headlineMedium,

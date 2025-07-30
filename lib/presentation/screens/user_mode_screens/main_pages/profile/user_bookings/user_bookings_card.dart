@@ -2,8 +2,8 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/d
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_colors.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
@@ -32,8 +32,7 @@ class UserBookingsCard extends StatelessWidget {
                       },
                     )
                   : null,
-          child: SizedBox(
-            height: BOOKING_CARD_HEIGHT + 38,
+          child: IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -45,7 +44,7 @@ class UserBookingsCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.all(8).copyWith(left: 12),
+                    padding: const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(left: AppDimensions.spacingMedium),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -54,30 +53,19 @@ class UserBookingsCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             style: Theme.of(context).textTheme.titleLarge),
                         Padding(
-                          padding: const EdgeInsets.only(top: 5.0),
+                          padding: const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
                           child: Text(
                             userBooking.bookingTitle ?? "Unknown Booking",
                             style: Theme.of(context).textTheme.bodyMedium!,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 3),
-                          child: Row(
-                            children: [
-                              // the startdate of the event in the format of Mo. 2.3.23 at 12:00 - 13:00
-
-                              Text(
-                                  DateFormat("E. dd.MM.yy")
-                                      .format(userBooking.startDate),
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium!),
-
-                              const Spacer(),
-                              Text(
-                                  "${DateFormat("HH:mm").format(userBooking.startDate)} - ${DateFormat('HH:mm').format(userBooking.endDate)}",
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium!),
-                            ],
+                          padding: const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
+                          child: Text(
+                            "${DateFormat("E. dd.MM.yy").format(userBooking.startDate)} ${DateFormat("HH:mm").format(userBooking.startDate)} - ${DateFormat('HH:mm').format(userBooking.endDate)}",
+                            style: Theme.of(context).textTheme.titleMedium!,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                         // in the right corner the status of the booking
@@ -96,11 +84,11 @@ class UserBookingsCard extends StatelessWidget {
                               userBooking.locationName ?? "More",
                               style: Theme.of(context).textTheme.bodyMedium!,
                             ),
-                            const SizedBox(width: 5),
-                            const Icon(
+                            const SizedBox(width: AppDimensions.spacingExtraSmall),
+                            Icon(
                               Icons.arrow_forward_ios_rounded,
-                              color: CustomColors.primaryColor,
-                              size: 15,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: AppDimensions.iconSizeSmall,
                             ),
                             // the price of the booking
                           ],
@@ -113,7 +101,7 @@ class UserBookingsCard extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 10),
+        const SizedBox(height: AppDimensions.spacingSmall),
       ],
     );
   }
