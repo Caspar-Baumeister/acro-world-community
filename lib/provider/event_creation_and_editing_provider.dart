@@ -1,5 +1,12 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/data/graphql/input/booking_category_input.dart';
+import 'package:acroworld/data/graphql/input/booking_option_input.dart';
+import 'package:acroworld/data/graphql/input/class_owner_input.dart';
+import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
+import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
+import 'package:acroworld/data/graphql/input/question_input.dart';
+import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
@@ -38,10 +45,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   // class properties
   String? country;
   String? countryCode;
-  String? region;
+  String? locationCity;
   String? _classId;
   String _title = '';
-  String _slug = '';
+  String _urlSlug = '';
   String _description = '';
   String? _eventType;
   LatLng? _location;
@@ -62,7 +69,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
   // GETTER
   String get title => _title;
-  String get slug => _slug;
+  String get slug => _urlSlug;
   String? get eventType => _eventType;
   String get description => _description;
   LatLng? get location => _location;
@@ -167,12 +174,12 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   }
 
   void setRegion(String? region) {
-    this.region = region;
+    this.locationCity = region;
     notifyListeners();
   }
 
   void setSlug(String slug) {
-    _slug = slug;
+    _urlSlug = slug;
     notifyListeners();
   }
 
@@ -284,10 +291,10 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   void clear() {
     _classId = null;
     _title = '';
-    _slug = '';
+    _urlSlug = '';
     _description = '';
     country = null;
-    region = null;
+    locationCity = null;
     countryCode = null;
     _eventType = null;
     _location = null;
@@ -308,6 +315,101 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     oldBookingOptions.clear();
 
     notifyListeners();
+  }
+
+  Future<void> upsertClass(String creatorId) async {
+    String? timezone = await getTimezone(
+        _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
+    final classUpsertInput = ClassUpsertInput(
+        id: _classId ?? Uuid().v4(),
+        name: _title,
+        description: _description,
+        imageUrl: await _uploadImage(),
+        isCashAllowed: isCashAllowed,
+        eventType: eventType,
+        timezone: timezone,
+        urlSlug: _urlSlug,
+        location: location!,
+        locationName: _locationName,
+        locationCity: locationCity,
+        locationCountry: country,
+        recurringPatterns: _recurringPatterns
+            .map((pattern) => RecurringPatternInput(
+                id: pattern.id ?? Uuid().v4(),
+                dayOfWeek: pattern.dayOfWeek,
+                startDate: pattern.startDate!.toIso8601String(),
+                endDate: pattern.endDate?.toIso8601String(),
+                startTime: _timeStringFromTimeOfDay(pattern.startTime),
+                endTime: _timeStringFromTimeOfDay(pattern.endTime),
+                recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+                isRecurring: pattern.isRecurring ?? false))
+            .toList(),
+        classOwners: [
+          ClassOwnerInput(
+              id: Uuid().v4(), teacherId: creatorId, isPaymentReceiver: true)
+        ],
+        bookingCategories: bookingCategories
+            .map((category) => BookingCategoryInput(
+                id: category.id ?? Uuid().v4(),
+                name: category.name,
+                contingent: category.contingent,
+                description: description,
+                bookingOptions: category.bookingOptions
+                        ?.map(
+                          (bookingOption) => BookingOptionInput(
+                            id: bookingOption.id ?? Uuid().v4(),
+                            title: bookingOption.title ?? '',
+                            subtitle: bookingOption.subtitle ?? '',
+                            price: bookingOption.price ?? 0,
+                            discount: bookingOption.discount ?? 0,
+                            currency: bookingOption.currency.label,
+                          ),
+                        )
+                        .toList() ??
+                    []))
+            .toList(),
+        questions: _questions
+            .map((question) => QuestionInput(
+                id: question.id ?? Uuid().v4(),
+                allowMultipleAnswers: question.isMultipleChoice ?? false,
+                isRequired: question.isRequired ?? false,
+                position: question.position ?? 0,
+                question: question.question ?? '',
+                title: question.title ?? '',
+                questionType: (question.type ?? QuestionType.text),
+                multipleChoiceOptions: question.choices
+                        ?.map((choice) => MultipleChoiceOptionInput(
+                              id: choice.id ?? Uuid().v4(),
+                              optionText: choice.optionText ?? '',
+                              position: choice.position ?? 0,
+                            ))
+                        .toList() ??
+                    []))
+            .toList());
+
+    ClassesRepository classesRepository =
+        ClassesRepository(apiService: GraphQLClientSingleton());
+    final createdClass = await classesRepository.upsertClass(classUpsertInput);
+
+    print('createdClass $createdClass');
+  }
+
+  String _timeStringFromTimeOfDay(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute:00'; // Assuming seconds are always 00
+  }
+
+  Future<String> _uploadImage() async {
+    String? imageUrl;
+    if (_eventImage == null && existingImageUrl != null) {
+      imageUrl = existingImageUrl;
+    } else if (_eventImage != null) {
+      imageUrl = await _uploadEventImage();
+    } else {
+      throw Exception('No image was provided');
+    }
+    return imageUrl!;
   }
 
   Future<void> createClass(String creatorId) async {
@@ -356,11 +458,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         ],
         'locationName': _locationName,
         'timezone': timezone,
-        'urlSlug': _slug,
+        'urlSlug': _urlSlug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
         'location_country': country,
-        'location_city': region,
+        'location_city': locationCity,
         'classTeachers': classTeachers,
         'max_booking_slots': maxBookingSlots == 0 ? null : maxBookingSlots,
         'is_cash_allowed': isCashAllowed
@@ -474,8 +576,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         'locationName': _locationName,
         'timezone': timezone,
         'location_country': country,
-        'location_city': region,
-        'urlSlug': _slug,
+        'location_city': locationCity,
+        'urlSlug': _urlSlug,
         'recurringPatterns': recurringPatternsJson,
         'classOwners': classOwners,
         'classTeachers': classTeachers,
@@ -557,11 +659,11 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
           await classesRepository.getClassBySlug(slug);
       fromClass = repositoryReturnClass;
       _title = fromClass.name ?? '';
-      _slug = isEditing ? fromClass.urlSlug ?? '' : '';
+      _urlSlug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
       country = fromClass.country;
 
-      region = fromClass.city;
+      locationCity = fromClass.city;
       countryCode = getCountryCode(fromClass.country);
       _eventType = fromClass.eventType != null
           ? mapEventTypeToString(fromClass.eventType!)

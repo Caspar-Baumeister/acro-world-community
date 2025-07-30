@@ -203,7 +203,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                               const EdgeInsets.only(top: AppPaddings.medium),
                           child: RegionPicker(
                             countryCode: provider.countryCode!,
-                            selectedRegion: provider.region,
+                            selectedRegion: provider.locationCity,
                             onRegionSelected: (String? region) {
                               provider.setRegion(region);
                             },

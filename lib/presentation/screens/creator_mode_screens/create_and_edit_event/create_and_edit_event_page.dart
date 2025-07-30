@@ -78,16 +78,8 @@ class _CreateAndEditEventPageState
               });
             }
 
-            // create a new event
-            if (widget.isEditing) {
-              await eventCreationAndEditingProvider
-                  .updateClass(creatorProvider.activeTeacher!.id!);
-            } else {
-              // print the current user role
-
-              await eventCreationAndEditingProvider
-                  .createClass(creatorProvider.activeTeacher!.id!);
-            }
+            await eventCreationAndEditingProvider
+                .upsertClass(creatorProvider.activeTeacher!.id!);
 
             if (eventCreationAndEditingProvider.errorMessage == null) {
               showSuccessToast(

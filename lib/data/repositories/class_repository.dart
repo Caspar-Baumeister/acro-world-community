@@ -1,3 +1,4 @@
+import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
@@ -109,6 +110,51 @@ class ClassesRepository {
       }
     } else {
       throw Exception('Failed to create class');
+    }
+  }
+
+  Future<ClassModel> upsertClass(ClassUpsertInput input) async {
+    pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
+        'upsertClass ${input.toJson()}');
+
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.upsertClass,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "class": input.toJson(),
+        "delete_recurring_pattern_ids": [],
+        "delete_booking_category_ids": [],
+        "delete_question_ids": []
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      print("exeption result $result");
+      throw Exception(
+          'Failed to create class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["insert_classes_one"] != null) {
+      try {
+        return ClassModel.fromJson(result.data!['insert_classes_one']);
+      } catch (e) {
+        throw Exception('Failed to parse class: $e');
+      }
+    } else {
+      throw Exception('Failed to create class');
+    }
+  }
+
+  void pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
+      String text) {
+    const int chunkSize = 800;
+    for (int i = 0; i < text.length; i += chunkSize) {
+      print(text.substring(
+          i, i + chunkSize > text.length ? text.length : i + chunkSize));
     }
   }
 
