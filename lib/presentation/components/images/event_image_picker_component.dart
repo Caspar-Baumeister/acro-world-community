@@ -79,7 +79,7 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                 radius: AppDimensions.iconSizeMedium,
                 child: Icon(
                   Icons.camera_alt,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onSurface,
                   size: AppDimensions.iconSizeSmall,
                 ),
               ),

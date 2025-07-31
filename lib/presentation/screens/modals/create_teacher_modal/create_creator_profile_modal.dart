@@ -49,10 +49,9 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             Text(
               'Unlock a world of possibilities and share your passion with others.',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
             ),
             const SizedBox(height: 24),
 
@@ -82,10 +81,9 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             Text(
               'Setting up your creator profile is quick, easy, and completely free. It only takes a few minutes to get started!',
               textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: CustomColors.subtitleText),
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
             ),
             const SizedBox(height: 24),
 
@@ -175,7 +173,6 @@ class _FeatureItem extends StatelessWidget {
   final String description;
 
   const _FeatureItem({
-    super.key,
     required this.icon,
     required this.title,
     required this.description,
@@ -186,7 +183,9 @@ class _FeatureItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), size: 28),
+        Icon(icon,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+            size: 28),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -202,10 +201,11 @@ class _FeatureItem extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7)),
               ),
             ],
           ),

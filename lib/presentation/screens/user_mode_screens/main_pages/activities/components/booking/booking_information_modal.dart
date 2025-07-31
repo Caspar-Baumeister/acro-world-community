@@ -4,7 +4,6 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/email_helper.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
@@ -47,7 +46,11 @@ You can join me here: $deeplinkUrl
     ClassModel clas = classEvent.classModel!;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(AppDimensions.spacingLarge, AppDimensions.spacingExtraSmall, AppDimensions.spacingLarge, AppDimensions.spacingLarge),
+      padding: const EdgeInsets.fromLTRB(
+          AppDimensions.spacingLarge,
+          AppDimensions.spacingExtraSmall,
+          AppDimensions.spacingLarge,
+          AppDimensions.spacingLarge),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -68,11 +71,13 @@ You can join me here: $deeplinkUrl
             if (booking.status == "WaitingForPayment")
               // show a box with the information, that you still have to pay, the amount and so on
               Container(
-                margin: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
+                margin:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.error.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusMedium),
                 ),
                 child: Text(
                   "You still have to pay ${(booking.amount / 100).toStringAsFixed(2)} ${booking.currency} for this booking before the event starts.",
@@ -87,7 +92,8 @@ You can join me here: $deeplinkUrl
             const SizedBox(height: 15),
             if (booking.teacherEmail != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: LinkButtonComponent(
                     text: "Contact organiser",
                     onPressed: () {

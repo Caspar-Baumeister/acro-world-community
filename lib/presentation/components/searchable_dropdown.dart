@@ -111,7 +111,7 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
               border:
                   OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
               filled: true,
-              fillColor: Colors.white,
+              fillColor: Theme.of(context).colorScheme.surfaceContainer,
             ),
             child: Row(
               children: [

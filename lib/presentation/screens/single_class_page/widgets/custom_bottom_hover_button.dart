@@ -20,7 +20,7 @@ class CustomBottomHoverButton extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () => onPressed(),
           style: ElevatedButton.styleFrom(
-            foregroundColor: Colors.white,
+            foregroundColor: Theme.of(context).colorScheme.onPrimary,
             // if no color is given, use the primary color
             backgroundColor:
                 backgroundColor ?? Theme.of(context).colorScheme.primary,

@@ -156,7 +156,7 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surfaceContainer,
                       contentPadding: const EdgeInsets.symmetric(
                               horizontal: AppDimensions.spacingMedium)
                           .copyWith(bottom: AppDimensions.spacingExtraSmall),

@@ -244,20 +244,20 @@ class FlagsWarningBox extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded,
-                color: Colors.white, size: 28),
+            Icon(Icons.warning_amber_rounded,
+                color: Theme.of(context).colorScheme.onPrimary, size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 "This class has $amountActiveFlags active flags and ${flagWarningLevel == FlagWarningLevel.light ? "might not happen" : "will most likely not happen"}",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(width: 12),
-            const Icon(Icons.info_outline, color: Colors.white, size: 24),
+            Icon(Icons.info_outline,
+                color: Theme.of(context).colorScheme.onPrimary, size: 24),
           ],
         ),
       ),
@@ -272,7 +272,7 @@ class FlagsWarningBox extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(

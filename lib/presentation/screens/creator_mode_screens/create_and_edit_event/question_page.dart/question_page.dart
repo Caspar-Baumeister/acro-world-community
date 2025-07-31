@@ -82,7 +82,7 @@ class CurrentQuestionSection extends StatelessWidget {
                     padding: EdgeInsets.symmetric(
                         vertical: AppDimensions.spacingMedium,
                         horizontal: AppDimensions.spacingLarge),
-                    child: Icon(Icons.delete, color: Colors.white),
+                    child: Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
                   ),
                   child: QuestionCard(question: item),
                 );

@@ -85,7 +85,7 @@ class ProfileImagePickerComponentState
                 backgroundColor: Theme.of(context).colorScheme.onSurface,
                 radius: AppDimensions.iconSizeSmall,
                 child: Icon(Icons.camera_alt,
-                    color: Colors.white, size: AppDimensions.iconSizeSmall),
+                    color: Theme.of(context).colorScheme.onSurface, size: AppDimensions.iconSizeSmall),
               ),
             ),
           ],

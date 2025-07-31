@@ -7,7 +7,6 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -49,12 +48,12 @@ class _BookingQueryHoverButtonState
         if (userId == null) {
           // If no user is logged in, show Book Now button that opens auth dialog
           return CustomBottomHoverButton(
-            content: const Text(
+            content: Text(
               "Book now",
               style: TextStyle(
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.onPrimary,
               ),
             ),
             onPressed: () {
@@ -120,7 +119,7 @@ class _BookingQueryHoverButtonState
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 backgroundColor: myBooking.status == "Confirmed"
@@ -142,12 +141,12 @@ class _BookingQueryHoverButtonState
             if (widget.classEvent.availableBookingSlots != null &&
                 widget.classEvent.availableBookingSlots! <= 0) {
               return CustomBottomHoverButton(
-                content: const Text(
+                content: Text(
                   "Booked out",
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.onPrimary,
                   ),
                 ),
                 onPressed: () {
@@ -163,12 +162,12 @@ class _BookingQueryHoverButtonState
             }
 
             return CustomBottomHoverButton(
-              content: const Text(
+              content: Text(
                 "Book now",
                 style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
               onPressed: () {

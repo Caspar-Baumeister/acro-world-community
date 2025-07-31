@@ -59,7 +59,7 @@ class GuestProfileContent extends StatelessWidget {
               radius: Responsive.isMobile(context)
                   ? 64 - 12
                   : 80 - 12, // Adjusted for padding
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               backgroundImage: const AssetImage(
                 'assets/muscleup_drawing.png',
               ),

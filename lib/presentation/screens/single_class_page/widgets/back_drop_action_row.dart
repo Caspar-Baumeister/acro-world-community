@@ -10,7 +10,6 @@ import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -38,24 +37,29 @@ class BackDropActionRow extends ConsumerWidget {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
         child: Padding(
           padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.flag_circle_outlined,
-                  color: Theme.of(ctx).colorScheme.error, size: AppDimensions.iconSizeDialog),
+                  color: Theme.of(ctx).colorScheme.error,
+                  size: AppDimensions.iconSizeDialog),
               const SizedBox(height: AppDimensions.spacingMedium),
               Text(
                 "Flag Event",
                 style: Theme.of(ctx).textTheme.displayMedium!.copyWith(
-                    fontWeight: FontWeight.bold, color: Theme.of(ctx).colorScheme.onSurface),
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(ctx).colorScheme.onSurface),
               ),
               const SizedBox(height: AppDimensions.spacingSmall),
               Text(
                 "Are you sure this event is not happening or incorrect?",
-                style: Theme.of(ctx).textTheme.bodyMedium!.copyWith(color: Theme.of(ctx).colorScheme.onSurface.withOpacity(0.7)),
+                style: Theme.of(ctx).textTheme.bodyMedium!.copyWith(
+                    color:
+                        Theme.of(ctx).colorScheme.onSurface.withOpacity(0.7)),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: AppDimensions.spacingMedium),
@@ -65,7 +69,11 @@ class BackDropActionRow extends ConsumerWidget {
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
                     child: Text("Close",
-                        style: Theme.of(ctx).textTheme.labelLarge!.copyWith(color: Theme.of(ctx).colorScheme.onSurface.withOpacity(0.7))),
+                        style: Theme.of(ctx).textTheme.labelLarge!.copyWith(
+                            color: Theme.of(ctx)
+                                .colorScheme
+                                .onSurface
+                                .withOpacity(0.7))),
                   ),
                   StandartButton(
                     text: "Report Event",
@@ -147,7 +155,9 @@ class BackDropActionRow extends ConsumerWidget {
             return IconButton(
               icon: Icon(
                 reportState.isReported ? Icons.flag : Icons.flag_outlined,
-                color: reportState.isReported ? Theme.of(context).colorScheme.error : Theme.of(context).iconTheme.color,
+                color: reportState.isReported
+                    ? Theme.of(context).colorScheme.error
+                    : Theme.of(context).iconTheme.color,
               ),
               onPressed: () async {
                 if (!isAuthenticated) {
@@ -182,15 +192,16 @@ class BackDropActionRow extends ConsumerWidget {
     return ClipOval(
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.2),
+          color:
+              Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.2),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurFactor, sigmaY: blurFactor),
           child: SizedBox(
             height: 65,
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingSmall),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: actions,

@@ -1,3 +1,4 @@
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 // a widget, that shows the user where he is in the booking process
@@ -56,10 +57,10 @@ class BookingStepIndicator extends StatelessWidget {
               // the style indicates which step is the current one
               style: currentStep == 1
                   ? Theme.of(context).textTheme.bodySmall!
-                  : Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: CustomColors.lightTextColor),
+                  : Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context)
+                          .extension<AppCustomColors>()!
+                          .textMuted),
               textAlign: TextAlign.center,
             ),
           ],

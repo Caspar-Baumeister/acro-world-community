@@ -204,23 +204,30 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                     letterSpacing: 8,
                                   ),
                                   filled: true,
-                                  fillColor: Colors.white,
+                                  fillColor: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceContainer,
                                   contentPadding: const EdgeInsets.symmetric(
                                       vertical: 16, horizontal: 24),
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline),
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                        color: Theme.of(context).colorScheme.outline),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .outline),
                                   ),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(24),
                                     borderSide: BorderSide(
-                                      color: Theme.of(context).colorScheme.primary,
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
                                       width: 2,
                                     ),
                                   ),
@@ -228,7 +235,10 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               ),
                               IconButton(
                                 icon: Icon(Icons.content_paste,
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6)),
                                 onPressed: () async {
                                   final clip =
                                       await Clipboard.getData('text/plain');
@@ -246,7 +256,8 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                               // Confirm
                               ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(context).colorScheme.onSurface,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.onSurface,
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -255,19 +266,23 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                 ),
                                 onPressed: _verifyCode,
                                 child: _isRefreshing
-                                    ? const SizedBox(
+                                    ? SizedBox(
                                         height: 20,
                                         width: 20,
                                         child: CircularProgressIndicator(
-                                          color: Colors.white,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onPrimary,
                                           strokeWidth: 2,
                                         ),
                                       )
                                     : Text(
                                         "Confirm Email",
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontWeight: FontWeight.w600,
-                                            color: Colors.white),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimary),
                                       ),
                               ),
                               const SizedBox(height: 12),
@@ -278,7 +293,9 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                   backgroundColor:
                                       Theme.of(context).colorScheme.surface,
                                   side: BorderSide(
-                                      color: Theme.of(context).colorScheme.onSurface),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface),
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 16),
                                   shape: RoundedRectangleBorder(
@@ -295,7 +312,8 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                       : "Resend Email",
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
-                                    color: Theme.of(context).colorScheme.onSurface,
+                                    color:
+                                        Theme.of(context).colorScheme.onSurface,
                                   ),
                                 ),
                               ),
@@ -323,7 +341,10 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                         "Refresh Status",
                                         style: TextStyle(
                                           fontWeight: FontWeight.w500,
-                                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurface
+                                              .withOpacity(0.6),
                                         ),
                                       ),
                               ),
@@ -338,7 +359,11 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
-                                .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6)),
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.6)),
                           ),
                         ],
                       ),

@@ -20,11 +20,11 @@ class FullScreenImageView extends StatelessWidget {
           children: [
             Container(
               alignment: Alignment.center,
-              color: Colors.white,
+              color: Theme.of(context).colorScheme.surface,
               child: Hero(
                 tag: tag,
                 child: PhotoViewGallery(
-                  backgroundDecoration: BoxDecoration(color: Colors.white),
+                  backgroundDecoration: BoxDecoration(color: Theme.of(context).colorScheme.surface),
                   pageOptions: <PhotoViewGalleryPageOptions>[
                     PhotoViewGalleryPageOptions(
                       imageProvider: CachedNetworkImageProvider(url),

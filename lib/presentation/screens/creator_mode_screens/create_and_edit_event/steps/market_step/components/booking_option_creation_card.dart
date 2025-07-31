@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/presentation/components/buttons/custom_icon_button.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class BookingOptionCreationCard extends StatelessWidget {
@@ -24,7 +23,8 @@ class BookingOptionCreationCard extends StatelessWidget {
       child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1),
+            border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface, width: 1),
           ),
           padding: const EdgeInsets.all(AppDimensions.spacingSmall),
           child: Row(
@@ -44,8 +44,8 @@ class BookingOptionCreationCard extends StatelessWidget {
                     bookingOption.subtitle != null &&
                             bookingOption.subtitle!.isNotEmpty
                         ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppDimensions.spacingSmall),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingSmall),
                             child: Text(
                               bookingOption.subtitle!,
                               style: Theme.of(context).textTheme.bodyMedium,

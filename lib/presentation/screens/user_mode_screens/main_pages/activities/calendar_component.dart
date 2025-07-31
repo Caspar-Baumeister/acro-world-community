@@ -1,5 +1,4 @@
 import 'package:acroworld/provider/calendar_provider.dart';
-import 'package:acroworld/theme/app_colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -28,10 +27,12 @@ class CalendarComponent extends StatelessWidget {
         calendarStyle: CalendarStyle(
             // Use `CalendarStyle` to customize the UI
             outsideDaysVisible: false,
-            todayDecoration:
-                BoxDecoration(color: Theme.of(context).colorScheme.outline, shape: BoxShape.circle),
+            todayDecoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.outline,
+                shape: BoxShape.circle),
             selectedDecoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle)),
+                color: Theme.of(context).colorScheme.primary,
+                shape: BoxShape.circle)),
         onDaySelected: (DateTime newSelectedDay, DateTime _) {
           calendarProvider.setFocusedDay(newSelectedDay);
         },

@@ -11,7 +11,6 @@ import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -40,7 +39,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
           children: [
             ListTile(
               title: const Text("Edit"),
-              leading: Icon(Icons.edit, color: Theme.of(context).iconTheme.color),
+              leading:
+                  Icon(Icons.edit, color: Theme.of(context).iconTheme.color),
               onTap: () async {
                 // Perform the asynchronous operation
                 await provider.Provider.of<EventCreationAndEditingProvider>(
@@ -58,7 +58,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
             ),
             ListTile(
               title: const Text("Bookings"),
-              leading: Icon(Icons.book_outlined, color: Theme.of(context).iconTheme.color),
+              leading: Icon(Icons.book_outlined,
+                  color: Theme.of(context).iconTheme.color),
               onTap: () {
                 if (classEventId == null) {
                   Navigator.of(context).push(DashboardPageRoute());
@@ -71,7 +72,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
             ListTile(
               title:
                   Text(classEventId == null ? "Occurences" : "All Occurences"),
-              leading: Icon(Icons.calendar_view_month_sharp, color: Theme.of(context).iconTheme.color),
+              leading: Icon(Icons.calendar_view_month_sharp,
+                  color: Theme.of(context).iconTheme.color),
               onTap: () {
                 Navigator.of(context)
                     .push(ClassOccurencePageRoute(classModel: classModel));
@@ -83,7 +85,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                 title: Text("Resolve flags",
                     style: Theme.of(context).textTheme.bodyMedium),
                 leading: Icon(
-                  Icons.flag_circle_outlined, color: Theme.of(context).iconTheme.color,
+                  Icons.flag_circle_outlined,
+                  color: Theme.of(context).iconTheme.color,
                 ),
                 onTap: () {
                   if (userAsync.value == null) {
@@ -134,7 +137,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.flag_circle_outlined,
-                    color: Theme.of(context).colorScheme.error, size: AppDimensions.iconSizeDialog),
+                    color: Theme.of(context).colorScheme.error,
+                    size: AppDimensions.iconSizeDialog),
                 const SizedBox(height: AppDimensions.spacingMedium),
                 Text(
                   "Resolve Flags",
@@ -146,12 +150,20 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                 const SizedBox(height: AppDimensions.spacingSmall),
                 Text(
                   "Flags help the community keep the platform updated. If a class gets 5 or more active flags, it will be removed.",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7)),
                 ),
                 const SizedBox(height: AppDimensions.spacingSmall),
                 Text(
                   "Are you sure, that this class is still happening and you want to resolve the flags?",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7)),
                 ),
                 const SizedBox(height: AppDimensions.spacingMedium),
                 Row(
@@ -160,7 +172,14 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                     TextButton(
                       onPressed: () => Navigator.of(context).pop(),
                       child: Text("Close",
-                          style: Theme.of(context).textTheme.labelLarge!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelLarge!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.7))),
                     ),
                     StandartButton(
                       text: "Resolve Flags",
@@ -206,48 +225,53 @@ class DeleteClassModal extends ConsumerWidget {
       child: Column(
         children: [
           // title
-          Text("Delete ${classModel.name}", style: Theme.of(context).textTheme.titleLarge),
+          Text("Delete ${classModel.name}",
+              style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: AppDimensions.spacingLarge),
           // description
           Text(
             "Are you sure you want to delete this class? This will delete all occurences of this class and cannot be undone.",
-            textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: AppDimensions.spacingMedium),
           // open bookings
           // TODO add open bookings
           // delete button
           StandartButton(
-              text: "Delete",
-              onPressed: () {
-                try {
-                  // Delete class
-                  ClassesRepository(apiService: GraphQLClientSingleton())
-                      .deleteClass(classModel.id!)
-                      .then((value) {
-                    if (value) {
-                      showSuccessToast("Class deleted");
-                      if (userAsync.value == null) {
-                        showErrorToast("User not found");
-                        return;
-                      }
-
-                      provider.Provider.of<TeacherEventsProvider>(context,
-                              listen: false)
-                          .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
-                      // Navigator.of(context).pushAndRemoveUntil(
-                      //     MyEventsPageRoute(), (route) => false);
-                      context.replaceNamed(myEventsRoute);
-                    } else {
-                      throw Exception("value not true");
+            text: "Delete",
+            onPressed: () {
+              try {
+                // Delete class
+                ClassesRepository(apiService: GraphQLClientSingleton())
+                    .deleteClass(classModel.id!)
+                    .then((value) {
+                  if (value) {
+                    showSuccessToast("Class deleted");
+                    if (userAsync.value == null) {
+                      showErrorToast("User not found");
+                      return;
                     }
-                  });
-                } catch (e, s) {
-                  // Show error
-                  CustomErrorHandler.captureException(e, stackTrace: s);
-                  showErrorToast("Failed to delete class");
-                }
-              }, isFilled: true, buttonFillColor: Theme.of(context).colorScheme.error,)
+
+                    provider.Provider.of<TeacherEventsProvider>(context,
+                            listen: false)
+                        .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+                    // Navigator.of(context).pushAndRemoveUntil(
+                    //     MyEventsPageRoute(), (route) => false);
+                    context.replaceNamed(myEventsRoute);
+                  } else {
+                    throw Exception("value not true");
+                  }
+                });
+              } catch (e, s) {
+                // Show error
+                CustomErrorHandler.captureException(e, stackTrace: s);
+                showErrorToast("Failed to delete class");
+              }
+            },
+            isFilled: true,
+            buttonFillColor: Theme.of(context).colorScheme.error,
+          )
         ],
       ),
     );

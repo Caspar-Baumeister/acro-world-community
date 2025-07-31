@@ -17,7 +17,7 @@ class LoadingButton extends StatelessWidget {
       ignoring: isLoading,
       child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.surface,
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
               textStyle:
                   const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),

@@ -151,7 +151,7 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surfaceContainer,
                     ),
                   ),
 
@@ -191,7 +191,7 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
@@ -256,7 +256,7 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
