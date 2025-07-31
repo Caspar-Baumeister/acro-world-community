@@ -520,7 +520,7 @@ class CheckoutSectionContainer extends StatelessWidget {
     return Container(
       // round corners and add shadow
       decoration: BoxDecoration(
-        color: CustomColors.secondaryBackgroundColor,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -637,8 +637,8 @@ class QuestionCard extends ConsumerWidget {
               border: Border(
                 left: BorderSide(
                   color: hasAnswer || !(question.isRequired == true)
-                      ? CustomColors.secondaryBackgroundColor
-                      : CustomColors.errorBorderColor,
+                      ? Theme.of(context).colorScheme.surface
+                      : Theme.of(context).colorScheme.error,
                   width: 4.0,
                 ),
               ),
@@ -649,13 +649,13 @@ class QuestionCard extends ConsumerWidget {
                   padding:
                       const EdgeInsets.only(right: AppDimensions.spacingSmall),
                   child: hasAnswer
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_circle,
-                          color: CustomColors.successBgColor,
+                          color: Theme.of(context).colorScheme.primary,
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.circle_outlined,
-                          color: CustomColors.errorBorderColor,
+                          color: Theme.of(context).colorScheme.error,
                         ),
                 ),
                 Expanded(
@@ -677,8 +677,8 @@ class QuestionCard extends ConsumerWidget {
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: hasAnswer
-                                        ? CustomColors.successBgColor
-                                        : CustomColors.errorBorderColor,
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context).colorScheme.error,
                                   ),
                         ),
                       ],

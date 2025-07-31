@@ -20,8 +20,8 @@ class MarkerComponent extends StatelessWidget {
       },
       child: Icon(Icons.location_on,
           color: classEventProvider.selectedClassEvent?.id == classEvent.id
-              ? CustomColors.accentColor
-              : CustomColors.iconColor,
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.onSurface,
           size: AppDimensions.iconSizeLarge),
     );
   }

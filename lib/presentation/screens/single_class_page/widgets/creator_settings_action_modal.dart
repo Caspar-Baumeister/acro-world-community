@@ -134,7 +134,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.flag_circle_outlined,
-                    color: Theme.of(context).extension<AppCustomColors>()!.warning, size: AppDimensions.iconSizeDialog),
+                    color: Theme.of(context).colorScheme.error, size: AppDimensions.iconSizeDialog),
                 const SizedBox(height: AppDimensions.spacingMedium),
                 Text(
                   "Resolve Flags",

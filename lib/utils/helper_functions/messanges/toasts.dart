@@ -10,8 +10,8 @@ void showSuccessToast(String message, {bool isTop = true}) {
       toastLength: Toast.LENGTH_SHORT,
       gravity: isTop ? ToastGravity.TOP : ToastGravity.BOTTOM,
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
-      backgroundColor: CustomColors.successBgColor,
-      textColor: CustomColors.whiteTextColor,
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      textColor: Theme.of(context).colorScheme.onPrimary,
       fontSize: const TextTheme().bodyLarge?.fontSize);
 }
 
@@ -22,8 +22,8 @@ void showErrorToast(String message) {
       toastLength: Toast.LENGTH_SHORT,
       gravity: ToastGravity.TOP,
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
-      backgroundColor: CustomColors.errorTextColor,
-      textColor: CustomColors.whiteTextColor,
+      backgroundColor: Theme.of(context).colorScheme.error,
+      textColor: Theme.of(context).colorScheme.onPrimary,
       fontSize: const TextTheme().bodyLarge?.fontSize);
 }
 
@@ -34,6 +34,6 @@ void showInfoToast(String message) {
       gravity: ToastGravity.TOP,
       timeInSecForIosWeb: AppConstants.inAppMessageTime,
       backgroundColor: CustomColors.infoBgColor,
-      textColor: CustomColors.whiteTextColor,
+      textColor: Theme.of(context).colorScheme.onPrimary,
       fontSize: const TextTheme().bodyLarge?.fontSize);
 }

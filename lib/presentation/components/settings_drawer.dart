@@ -138,7 +138,7 @@ class SettingsDrawer extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Card(
         elevation: 0,
-        color: CustomColors.backgroundColor,
+        color: Theme.of(context).colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
@@ -170,7 +170,7 @@ class SettingsDrawer extends ConsumerWidget {
                 const Spacer(),
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: CustomColors.lightTextColor,
+                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 20,
                 ),
               ],
@@ -204,7 +204,7 @@ class VersionDisplay extends StatelessWidget {
             'Version ${snapshot.data}',
             style: TextStyle(
               fontSize: 13,
-              color: CustomColors.lightTextColor,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               fontWeight: FontWeight.w500,
             ),
           );

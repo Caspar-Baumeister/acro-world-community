@@ -57,7 +57,7 @@ class AdditionalImagePickerComponentState
           const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(top: 0),
       decoration: BoxDecoration(
           border: Border.all(
-            color: CustomColors.inactiveBorderColor,
+            color: Theme.of(context).colorScheme.outline,
             width: 1.0,
           ),
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
@@ -75,7 +75,7 @@ class AdditionalImagePickerComponentState
               ? Center(
                   child: Text('No additional images selected',
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: CustomColors.primaryTextColor,
+                            color: Theme.of(context).colorScheme.onSurface,
                           )),
                 )
               : SizedBox(
@@ -160,13 +160,13 @@ class ImageCard extends StatelessWidget {
               // circle around the close icon
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: CustomColors.backgroundColor.withOpacity(0.5),
+                color: Theme.of(context).colorScheme.surface.withOpacity(0.5),
               ),
               child: Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingExtraSmall),
                 child: Icon(
                   Icons.close,
-                  color: CustomColors.errorTextColor,
+                  color: Theme.of(context).colorScheme.error,
                 ),
               ),
             ),

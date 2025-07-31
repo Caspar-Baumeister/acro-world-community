@@ -21,7 +21,7 @@ class BookOptionComponent extends StatelessWidget {
           height: 24.0,
           width: 24.0,
           child: Checkbox(
-            activeColor: CustomColors.successTextColor,
+            activeColor: Theme.of(context).colorScheme.primary,
             value: value,
             onChanged: (_) => onChanged(_),
           ),

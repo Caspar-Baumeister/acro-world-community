@@ -71,7 +71,7 @@ You can join me here: $deeplinkUrl
                 margin: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).extension<AppCustomColors>()!.warning,
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                 ),
                 child: Text(

@@ -15,11 +15,12 @@ class AccountSettingsPage extends StatelessWidget {
       makeScrollable: false,
       appBar: const CustomAppbarSimple(title: "Account settings"),
       child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(bottom: 50),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall)
+            .copyWith(bottom: 50),
         child: Column(children: [
           // a menu item called "user settings" that leads to the edit user data page
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: Theme.of(context).colorScheme.outline,

@@ -44,7 +44,7 @@ class _CreateNewEventFromExistingModalState
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
-                    .copyWith(color: Theme.of(context).extension<AppCustomColors>()!.textMuted),
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
               ),
             ),
             items.isEmpty

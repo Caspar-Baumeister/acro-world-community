@@ -74,7 +74,7 @@ class CustomOptionInputComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0, left: 10),
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: CustomColors.primaryTextColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                         )),
               )
             : const SizedBox(height: 0),
@@ -197,7 +197,7 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0, left: 10),
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: CustomColors.primaryTextColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                         )),
               )
             : const SizedBox(height: 0),

@@ -38,7 +38,7 @@ class _CustomSettingComponentState extends State<CustomSettingComponent> {
         child: Container(
           padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           decoration: BoxDecoration(
-            color: CustomColors.backgroundColor,
+            color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
             boxShadow: [
               BoxShadow(

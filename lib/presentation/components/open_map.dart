@@ -35,7 +35,7 @@ class OpenMap extends StatelessWidget {
                 width: 80.0,
                 height: 80.0,
                 point: LatLng(latitude, longitude),
-                child: const Icon(
+                child: Icon(
                   Icons.location_on,
                   color: Theme.of(context).colorScheme.error,
                   size: 40.0,

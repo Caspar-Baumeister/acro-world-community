@@ -108,10 +108,12 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                               child: Container(
                                 decoration: BoxDecoration(
                                   color: isLikedState
-                                      ? CustomColors.primaryColor
+                                      ? Theme.of(context).colorScheme.primary
                                       : Colors.white,
                                   border: Border.all(
-                                      color: CustomColors.primaryColor),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
                                   borderRadius: BorderRadius.circular(20),
                                 ),
                                 height: 35,
@@ -126,7 +128,9 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                                           child: CircularProgressIndicator(
                                             color: isLikedState
                                                 ? Colors.white
-                                                : CustomColors.primaryColor,
+                                                : Theme.of(context)
+                                                    .colorScheme
+                                                    .primary,
                                             strokeWidth: 2,
                                           ),
                                         ),
@@ -139,7 +143,9 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                                             .copyWith(
                                               color: isLikedState
                                                   ? Colors.white
-                                                  : CustomColors.primaryColor,
+                                                  : Theme.of(context)
+                                                      .colorScheme
+                                                      .primary,
                                             ),
                                       ),
                               ),

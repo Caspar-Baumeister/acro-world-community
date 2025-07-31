@@ -78,7 +78,7 @@ class CurrentQuestionSection extends StatelessWidget {
                   onDismissed: (direction) => provider.removeQuestion(index),
                   background: Container(
                     alignment: Alignment.centerRight,
-                    color: CustomColors.errorBorderColor,
+                    color: Theme.of(context).colorScheme.error,
                     padding: EdgeInsets.symmetric(
                         vertical: AppDimensions.spacingMedium,
                         horizontal: AppDimensions.spacingLarge),
@@ -110,7 +110,7 @@ class QuestionCard extends StatelessWidget {
           vertical: AppDimensions.spacingSmall,
         ),
         decoration: BoxDecoration(
-          color: CustomColors.backgroundColor,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           boxShadow: [
             BoxShadow(

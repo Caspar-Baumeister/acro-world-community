@@ -1,9 +1,9 @@
-import 'package:acroworld/constants/app_dimensions.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 const kPageTransitionDuration = Duration(milliseconds: 350);
-const kMaxBorderRadius = AppDimensions.largeRadius;
+const kMaxBorderRadius = AppDimensions.radiusLarge;
 
 CustomTransitionPage<void> setupPageBuilder(
   BuildContext context,

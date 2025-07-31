@@ -106,7 +106,7 @@ class TeacherQuery extends ConsumerWidget {
             }
 
             return RefreshIndicator(
-              color: CustomColors.primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               onRefresh: () async {
                 try {
                   refetch!();

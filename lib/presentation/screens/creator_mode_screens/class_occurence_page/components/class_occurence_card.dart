@@ -40,7 +40,7 @@ class ClassOccurenceCard extends StatelessWidget {
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
             border: classEvent.isHighlighted == true
-                ? Border.all(color: CustomColors.successTextColor)
+                ? Border.all(color: Theme.of(context).colorScheme.primary)
                 : null,
             boxShadow: [
               BoxShadow(
@@ -73,10 +73,11 @@ class ClassOccurenceCard extends StatelessWidget {
                           ? Padding(
                               padding: const EdgeInsets.only(
                                   top: AppDimensions.spacingSmall),
-                              child: const Text(
+                              child: Text(
                                 "Highlighted",
                                 style: TextStyle(
-                                    color: CustomColors.successTextColor),
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                               ),
                             )
                           : const SizedBox.shrink(),
@@ -125,7 +126,7 @@ class ClassOccurenceCard extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: CustomColors.errorTextColor),
+              ?.copyWith(color: Theme.of(context).colorScheme.error),
         );
       case ClassEventBookingStatus.notEnabled:
         return Text(
@@ -133,7 +134,7 @@ class ClassOccurenceCard extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: CustomColors.errorTextColor),
+              ?.copyWith(color: Theme.of(context).colorScheme.error),
         );
       case ClassEventBookingStatus.full:
         return Text(
@@ -141,7 +142,7 @@ class ClassOccurenceCard extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: CustomColors.errorTextColor),
+              ?.copyWith(color: Theme.of(context).colorScheme.error),
         );
       case ClassEventBookingStatus.empty:
         return Text(
@@ -149,7 +150,7 @@ class ClassOccurenceCard extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: CustomColors.successTextColor),
+              ?.copyWith(color: Theme.of(context).colorScheme.primary),
         );
       case ClassEventBookingStatus.openSlots:
         return Text(
@@ -157,7 +158,7 @@ class ClassOccurenceCard extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .bodyMedium
-              ?.copyWith(color: CustomColors.successTextColor),
+              ?.copyWith(color: Theme.of(context).colorScheme.primary),
         );
       default:
         return const Text("");

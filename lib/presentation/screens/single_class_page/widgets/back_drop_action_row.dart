@@ -45,7 +45,7 @@ class BackDropActionRow extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(Icons.flag_circle_outlined,
-                  color: Theme.of(ctx).extension<AppCustomColors>()!.warning, size: AppDimensions.iconSizeDialog),
+                  color: Theme.of(ctx).colorScheme.error, size: AppDimensions.iconSizeDialog),
               const SizedBox(height: AppDimensions.spacingMedium),
               Text(
                 "Flag Event",

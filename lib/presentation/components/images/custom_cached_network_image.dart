@@ -36,7 +36,7 @@ class CustomCachedNetworkImage extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: borderRadius,
         ),
       ),
@@ -44,7 +44,7 @@ class CustomCachedNetworkImage extends StatelessWidget {
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: borderRadius,
         ),
         child: Icon(

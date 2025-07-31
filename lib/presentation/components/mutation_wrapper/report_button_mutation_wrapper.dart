@@ -88,28 +88,38 @@ class _ReportButtonMutationWrapperState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.flag_circle_outlined,
+              Icon(Icons.flag_circle_outlined,
                   color: Theme.of(context).colorScheme.error, size: 48),
-              const SizedBox(height: 16),
+              SizedBox(height: 16),
               Text(
                 "Flag Event",
                 style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface,),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 "Are you sure this event is not happening or incorrect?",
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),),
+                style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(),
-                    child: const Text("Close",
-                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),)),
+                    child: Text("Close",
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        )),
                   ),
                   StandartButton(
                     text: "Report Event",
@@ -137,15 +147,15 @@ class _ReportButtonMutationWrapperState
   @override
   Widget build(BuildContext context) {
     return ref.watch(userRiverpodProvider).when(
-          loading: () => const SizedBox(
+          loading: () => SizedBox(
             width: 40,
             height: 40,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, __) => SizedBox.shrink(),
           data: (user) {
             final userId = user?.id;
-            if (userId == null) return const SizedBox.shrink();
+            if (userId == null) return SizedBox.shrink();
 
             return SizedBox(
               width: 40,

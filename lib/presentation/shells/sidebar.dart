@@ -41,7 +41,7 @@ class ShellSideBar extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
-                  .copyWith(color: CustomColors.accentColor),
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
           const SizedBox(height: 50),
@@ -130,8 +130,8 @@ class ShellSideBar extends StatelessWidget {
                 error: (_, __) => const SizedBox.shrink(),
                 data: (user) {
                   // Common divider for both cases
-                  final divider = const Divider(
-                    color: CustomColors.accentColor,
+                  final divider = Divider(
+                    color: Theme.of(context).colorScheme.primary,
                     thickness: 1,
                   );
 
@@ -143,10 +143,11 @@ class ShellSideBar extends StatelessWidget {
                         divider,
                         ListTile(
                           leading: Icon(Icons.login_rounded,
-                              color: CustomColors.accentColor),
+                              color: Theme.of(context).colorScheme.primary),
                           title: Text(
                             "Create Account",
-                            style: TextStyle(color: CustomColors.accentColor),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary),
                           ),
                           onTap: () => context.pushNamed(
                             authRoute,

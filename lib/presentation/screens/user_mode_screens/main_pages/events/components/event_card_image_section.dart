@@ -30,7 +30,7 @@ class EventCardImageSection extends StatelessWidget {
                     left: 5,
                     child: Container(
                         decoration: BoxDecoration(
-                            color: CustomColors.accentColor,
+                            color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(
                                 AppDimensions.radiusSmall)),
                         child: Center(
@@ -43,7 +43,7 @@ class EventCardImageSection extends StatelessWidget {
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                    color: CustomColors.whiteTextColor,
+                                    color: Theme.of(context).colorScheme.onPrimary,
                                     letterSpacing: -0.5,
                                   ),
                             ),

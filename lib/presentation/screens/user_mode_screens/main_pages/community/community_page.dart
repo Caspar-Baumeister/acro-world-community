@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
@@ -31,12 +32,14 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget build(BuildContext context) {
     return BasePage(
       appBar: TeacherAppBar(onSearchChanged: setSearch),
-      // bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 2),
+      bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 2),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: AppDimensions.spacingSmall, top: AppDimensions.spacingSmall),
+            padding: const EdgeInsets.only(
+                left: AppDimensions.spacingSmall,
+                top: AppDimensions.spacingSmall),
             child: FilterRow(
               selectFollowed: setFollowed,
               isFollowed: isFollowed,
@@ -108,18 +111,28 @@ class FilterBubbleState extends State<FilterBubble> {
         });
       },
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
-        padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium, vertical: AppDimensions.spacingSmall),
+        margin:
+            const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+        padding: const EdgeInsets.symmetric(
+            horizontal: AppDimensions.spacingMedium,
+            vertical: AppDimensions.spacingSmall),
         decoration: BoxDecoration(
-          color: !_isSelected ? Theme.of(context).colorScheme.surface : Theme.of(context).colorScheme.onSurface,
+          color: !_isSelected
+              ? Theme.of(context).colorScheme.surface
+              : Theme.of(context).colorScheme.onSurface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: !_isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surface),
+          border: Border.all(
+              color: !_isSelected
+                  ? Theme.of(context).colorScheme.onSurface
+                  : Theme.of(context).colorScheme.surface),
         ),
         child: Center(
           child: Text(
             widget.label,
             style: TextStyle(
-              color: !_isSelected ? Theme.of(context).colorScheme.onSurface : Theme.of(context).colorScheme.surface,
+              color: !_isSelected
+                  ? Theme.of(context).colorScheme.onSurface
+                  : Theme.of(context).colorScheme.surface,
             ),
           ),
         ),

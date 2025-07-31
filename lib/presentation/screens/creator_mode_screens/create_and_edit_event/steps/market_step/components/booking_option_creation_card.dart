@@ -58,7 +58,7 @@ class BookingOptionCreationCard extends StatelessWidget {
               Text(
                 '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: Theme.of(context).extension<AppCustomColors>()!.accent,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.bold),
               ),
               VerticalDivider(

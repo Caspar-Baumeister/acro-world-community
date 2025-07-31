@@ -105,7 +105,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                         ),
                         Flexible(
                           child: SearchBarWidget(
-                            color: CustomColors.backgroundColor,
+                            color: Theme.of(context).colorScheme.surface,
                             onChanged: (String value) {
                               setState(() {
                                 query = value;

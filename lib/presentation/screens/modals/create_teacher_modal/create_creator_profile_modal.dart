@@ -35,7 +35,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             Icon(
               Icons.auto_awesome,
               size: 48,
-              color: CustomColors.subtitleText,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
             ),
             const SizedBox(height: 16),
             Text(
@@ -52,7 +52,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
-                  .copyWith(color: CustomColors.subtitleText),
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
             ),
             const SizedBox(height: 24),
 
@@ -93,7 +93,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             StandartButton(
               text: "Let's Go!",
               onPressed: isLoading ? () {} : _onContinue,
-              buttonFillColor: CustomColors.subtitleText,
+              buttonFillColor: Theme.of(context).colorScheme.primary,
               loading: isLoading,
               disabled: isLoading,
               isFilled: true,
@@ -104,7 +104,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             StandartButton(
               text: "Maybe Later",
               onPressed: isLoading ? () {} : () => Navigator.of(context).pop(),
-              buttonFillColor: CustomColors.subtitleText,
+              buttonFillColor: Theme.of(context).colorScheme.secondary,
               disabled: isLoading,
             ),
           ],
@@ -186,7 +186,7 @@ class _FeatureItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: CustomColors.subtitleText, size: 28),
+        Icon(icon, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7), size: 28),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -205,7 +205,7 @@ class _FeatureItem extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
-                    .copyWith(color: CustomColors.subtitleText),
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
               ),
             ],
           ),

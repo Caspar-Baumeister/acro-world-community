@@ -80,7 +80,7 @@ class DiscoveryFilterOnCard extends StatelessWidget {
                           style: Theme.of(context)
                               .textTheme
                               .bodySmall!
-                              .copyWith(color: CustomColors.accentColor)
+                              .copyWith(color: Theme.of(context).colorScheme.primary)
                               .copyWith(letterSpacing: -0.5)),
                     ),
                   ],

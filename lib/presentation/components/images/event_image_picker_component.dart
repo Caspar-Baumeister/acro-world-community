@@ -41,8 +41,7 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                 shape: BoxShape.rectangle,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                 border: Border.all(
-                  color: CustomColors
-                      .inactiveBorderColor, // Your desired border color
+                  color: Theme.of(context).colorScheme.outline, // Your desired border color
                   width: 1.0, // Adjust the width of the border as needed
                 ),
               ),
@@ -76,7 +75,7 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
               bottom: 10,
               right: 10,
               child: CircleAvatar(
-                backgroundColor: CustomColors.iconColor,
+                backgroundColor: Theme.of(context).colorScheme.onSurface,
                 radius: AppDimensions.iconSizeMedium,
                 child: Icon(
                   Icons.camera_alt,

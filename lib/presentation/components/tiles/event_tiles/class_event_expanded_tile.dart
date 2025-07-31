@@ -91,7 +91,7 @@ class ClassTileDateAndDifficultyWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: CustomColors.accentColor)
+                    .copyWith(color: Theme.of(context).colorScheme.primary)
                     .copyWith(letterSpacing: -0.5)),
           )
         : Padding(
@@ -105,7 +105,7 @@ class ClassTileDateAndDifficultyWidget extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
-                      .copyWith(color: CustomColors.accentColor)
+                      .copyWith(color: Theme.of(context).colorScheme.primary)
                       .copyWith(letterSpacing: -0.5),
                 ),
                 const Spacer(),

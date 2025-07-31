@@ -1,8 +1,8 @@
+import 'package:acroworld/theme/app_colors.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:acroworld/theme/app_colors.dart';
-import 'package:acroworld/theme/app_text_styles.dart';
 
 enum ThemeType { light, dark, auto }
 
@@ -85,7 +85,7 @@ class AppTheme {
         onError: AppColors.lightText, // Text on error
         outline: AppColors.lightBorders, // Borders/Dividers
       ),
-      customColors: const AppCustomColors(
+      customColors: AppCustomColors(
         primaryDark: AppColors.lightPrimaryDark,
         primaryDarker: AppColors.lightPrimaryDarker,
         accent: AppColors.lightAccent,
@@ -113,7 +113,7 @@ class AppTheme {
         onError: AppColors.darkText, // Text on error
         outline: AppColors.darkBorders, // Borders/Dividers
       ),
-      customColors: const AppCustomColors(
+      customColors: AppCustomColors(
         primaryDark: AppColors.darkPrimaryLight,
         primaryDarker: AppColors.darkPrimaryLighter,
         accent: AppColors.darkAccent,
@@ -135,7 +135,8 @@ class AppTheme {
 
     // TextTheme with dynamic colors
     TextTheme getTextTheme(Brightness mode) {
-      Color textColor = mode == Brightness.dark ? AppColors.darkText : AppColors.lightText;
+      Color textColor =
+          mode == Brightness.dark ? AppColors.darkText : AppColors.lightText;
       return TextTheme(
         displayLarge: AppTextStyles.displayLarge.copyWith(color: textColor),
         displayMedium: AppTextStyles.displayMedium.copyWith(color: textColor),
@@ -165,7 +166,8 @@ class AppTheme {
 
       // Component themes
       appBarTheme: AppBarTheme(
-        systemOverlayStyle: isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        systemOverlayStyle:
+            isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         backgroundColor: colorScheme.surface,
         foregroundColor: colorScheme.onSurface,
       ),
@@ -186,7 +188,8 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: colorScheme.surfaceContainer, // Use surfaceContainer for input fields
+        fillColor: colorScheme
+            .surfaceContainer, // Use surfaceContainer for input fields
         labelStyle: TextStyle(color: customColors.textMuted),
         hintStyle: TextStyle(color: customColors.textMuted),
         errorStyle: TextStyle(color: colorScheme.error),
@@ -194,7 +197,8 @@ class AppTheme {
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           borderSide: BorderSide(color: customColors.textMuted),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+        contentPadding:
+            const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: colorScheme.surface,

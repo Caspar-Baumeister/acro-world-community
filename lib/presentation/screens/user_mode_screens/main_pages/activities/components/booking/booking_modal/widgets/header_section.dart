@@ -43,7 +43,7 @@ class BookingHeader extends StatelessWidget {
           style: Theme.of(context)
               .textTheme
               .titleLarge!
-              .copyWith(color: CustomColors.accentColor),
+              .copyWith(color: Theme.of(context).colorScheme.primary),
           textAlign: TextAlign.center,
         ),
       ],

@@ -50,7 +50,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).extension<AppCustomColors>()!.warning.withOpacity(0.2),
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                   border: Border.all(color: Theme.of(context).colorScheme.outline),
                 ),

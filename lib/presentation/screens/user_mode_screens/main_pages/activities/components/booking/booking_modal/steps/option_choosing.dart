@@ -78,7 +78,7 @@ class OptionChoosingStep extends StatelessWidget {
             }
           },
           isFilled: true,
-          buttonFillColor: CustomColors.accentColor,
+          buttonFillColor: Theme.of(context).colorScheme.primary,
           width: double.infinity,
         ),
         placesLeft != null && maxPlaces != null
@@ -88,8 +88,8 @@ class OptionChoosingStep extends StatelessWidget {
                   "$placesLeft / $maxPlaces places left",
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: placesLeft! <= (maxPlaces! / 2)
-                          ? CustomColors.errorTextColor
-                          : CustomColors.accentColor),
+                          ? Theme.of(context).colorScheme.error
+                          : Theme.of(context).colorScheme.primary),
                 ),
               )
             : Container()
@@ -132,7 +132,7 @@ class _BookingCategorySelectionComponentState
     return Container(
         padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         decoration: BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
         child: FutureBuilder<int?>(
@@ -157,7 +157,7 @@ class _BookingCategorySelectionComponentState
                     widget.bookingCategory.name,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
                   SizedBox(height: AppDimensions.spacingSmall),
@@ -173,7 +173,7 @@ class _BookingCategorySelectionComponentState
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
+                          color: Theme.of(context).colorScheme.error,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -192,7 +192,7 @@ class _BookingCategorySelectionComponentState
                         widget.bookingCategory.name,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: CustomColors.primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
                     ),
@@ -222,7 +222,7 @@ class _BookingCategorySelectionComponentState
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
+                          color: Theme.of(context).colorScheme.error,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -276,7 +276,8 @@ class BookingOptionSelectionCard extends StatelessWidget {
       child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+            border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface, width: 1),
           ),
           padding: const EdgeInsets.all(AppDimensions.spacingSmall),
           child: Row(
@@ -286,14 +287,14 @@ class BookingOptionSelectionCard extends StatelessWidget {
                 width: 24.0,
                 child: IgnorePointer(
                   child: Checkbox(
-                    activeColor: CustomColors.successTextColor,
+                    activeColor: Theme.of(context).colorScheme.primary,
                     value: value,
                     onChanged: (_) => onChanged(bookingOption.id!),
                   ),
                 ),
               ),
               VerticalDivider(
-                color: CustomColors.primaryTextColor,
+                color: Theme.of(context).colorScheme.onSurface,
                 thickness: 1,
               ),
               Expanded(
@@ -305,7 +306,7 @@ class BookingOptionSelectionCard extends StatelessWidget {
                       bookingOption.title!,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor),
+                          color: Theme.of(context).colorScheme.primary),
                       maxLines: 2,
                     ),
                     bookingOption.subtitle != null &&
@@ -325,7 +326,7 @@ class BookingOptionSelectionCard extends StatelessWidget {
               Text(
                 '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomColors.accentColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold),
               ),
             ],

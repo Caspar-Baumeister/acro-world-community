@@ -10,7 +10,6 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/link_bu
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -54,9 +53,7 @@ class SingleClassBody extends StatelessWidget {
                     DateTimeService.getDateString(
                         classEvent!.startDate!, classEvent!.endDate!),
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        color: Theme.of(context)
-                            .extension<AppCustomColors>()!
-                            .accent,
+                        color: Theme.of(context).colorScheme.primary,
                         letterSpacing: -0.5)),
                 if (classe.classLevels != null &&
                     classe.classLevels!.isNotEmpty)
@@ -234,7 +231,7 @@ class FlagsWarningBox extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: flagWarningLevel == FlagWarningLevel.light
-              ? Theme.of(context).extension<AppCustomColors>()!.warning
+              ? Theme.of(context).colorScheme.error.withOpacity(0.4)
               : Theme.of(context).colorScheme.error,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [

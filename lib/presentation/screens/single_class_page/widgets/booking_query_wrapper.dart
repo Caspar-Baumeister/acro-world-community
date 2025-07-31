@@ -124,8 +124,8 @@ class _BookingQueryHoverButtonState
                   ),
                 ),
                 backgroundColor: myBooking.status == "Confirmed"
-                    ? Theme.of(context).extension<AppCustomColors>()!.accent
-                    : Theme.of(context).extension<AppCustomColors>()!.warning,
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.error,
                 onPressed: () {
                   buildMortal(
                     context,

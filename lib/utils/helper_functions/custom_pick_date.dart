@@ -15,11 +15,11 @@ void showDatePickerDialog({
     builder: (BuildContext context, Widget? child) {
       return Theme(
         data: ThemeData.light().copyWith(
-          dialogBackgroundColor: Colors.white,
-          colorScheme: const ColorScheme.light(
-            primary: CustomColors.accentColor,
+          colorScheme: ColorScheme.light(
+            primary: Theme.of(context).colorScheme.primary,
             onPrimary: Colors.white,
-          ).copyWith(background: CustomColors.backgroundColor),
+          ).copyWith(surface: Theme.of(context).colorScheme.surface),
+          dialogTheme: DialogThemeData(backgroundColor: Colors.white),
         ),
         child: child!,
       );

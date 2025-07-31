@@ -30,14 +30,14 @@ class ClassTileNextOccurenceWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: CustomColors.primaryTextColor)
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface)
                     .copyWith(letterSpacing: -0.5)),
             Text(
               DateTimeService.getDateStringOnlyDate(nextClassEvent.startDate),
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
-                  .copyWith(color: CustomColors.accentColor)
+                  .copyWith(color: Theme.of(context).colorScheme.primary)
                   .copyWith(letterSpacing: -0.5),
             ),
           ],
@@ -50,7 +50,7 @@ class ClassTileNextOccurenceWidget extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
-                  .copyWith(color: CustomColors.primaryTextColor)
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface)
                   .copyWith(letterSpacing: -0.5),
             ),
           ),

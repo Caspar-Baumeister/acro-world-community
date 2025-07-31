@@ -32,12 +32,12 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                         dialBackgroundColor: Colors.white,
                         dialTextColor: WidgetStateColor.resolveWith(
                           (states) => states.contains(WidgetState.selected)
-                              ? CustomColors.accentColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.black,
                         ),
                         hourMinuteColor: WidgetStateColor.resolveWith(
                           (states) => states.contains(WidgetState.selected)
-                              ? CustomColors.accentColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.grey[200]!,
                         ),
                         hourMinuteTextColor: WidgetStateColor.resolveWith(
@@ -47,7 +47,7 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                         ),
                         dayPeriodColor: WidgetStateColor.resolveWith(
                           (states) => states.contains(WidgetState.selected)
-                              ? CustomColors.accentColor
+                              ? Theme.of(context).colorScheme.primary
                               : Colors.grey[200]!,
                         ),
                         dayPeriodTextColor: WidgetStateColor.resolveWith(
@@ -55,8 +55,9 @@ class _CustomTimePickerState extends State<CustomTimePicker> {
                               ? Colors.white
                               : Colors.black,
                         ),
-                        dialHandColor: CustomColors.accentColor,
-                        entryModeIconColor: CustomColors.accentColor,
+                        dialHandColor: Theme.of(context).colorScheme.primary,
+                        entryModeIconColor:
+                            Theme.of(context).colorScheme.primary,
                         inputDecorationTheme: const InputDecorationTheme(
                           contentPadding: EdgeInsets.zero,
                           border: InputBorder.none,
@@ -118,63 +119,67 @@ void showCustomTimePicker({
       return Theme(
         data: Theme.of(context).copyWith(
           timePickerTheme: TimePickerThemeData(
-            backgroundColor: CustomColors.backgroundColor,
-            dialBackgroundColor: CustomColors.secondaryBackgroundColor,
-            dialHandColor: CustomColors.accentColor,
+            backgroundColor: Theme.of(context).colorScheme.surface,
+            dialBackgroundColor: Theme.of(context).colorScheme.surfaceContainer,
+            dialHandColor: Theme.of(context).colorScheme.primary,
             dialTextColor: WidgetStateColor.resolveWith(
               (states) => states.contains(WidgetState.selected)
-                  ? CustomColors.whiteTextColor
-                  : CustomColors.primaryTextColor,
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSurface,
             ),
             hourMinuteColor: WidgetStateColor.resolveWith(
               (states) => states.contains(WidgetState.selected)
-                  ? CustomColors.accentColor
-                  : CustomColors.secondaryBackgroundColor,
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surfaceContainer,
             ),
-            hourMinuteTextColor: MaterialStateColor.resolveWith(
-              (states) => states.contains(MaterialState.selected)
-                  ? CustomColors.primaryTextColor // Use dark text when selected
-                  : CustomColors.primaryTextColor,
+            hourMinuteTextColor: WidgetStateColor.resolveWith(
+              (states) => states.contains(WidgetState.selected)
+                  ? Theme.of(context)
+                      .colorScheme
+                      .onSurface // Use dark text when selected
+                  : Theme.of(context).colorScheme.onSurface,
             ),
             hourMinuteShape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(8)),
             ),
             dayPeriodColor: WidgetStateColor.resolveWith(
               (states) => states.contains(WidgetState.selected)
-                  ? CustomColors.accentColor
-                  : CustomColors.secondaryBackgroundColor,
+                  ? Theme.of(context).colorScheme.primary
+                  : Theme.of(context).colorScheme.surfaceContainer,
             ),
             dayPeriodTextColor: WidgetStateColor.resolveWith(
               (states) => states.contains(WidgetState.selected)
-                  ? CustomColors.whiteTextColor
-                  : CustomColors.primaryTextColor,
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : Theme.of(context).colorScheme.onSurface,
             ),
-            entryModeIconColor: CustomColors.accentColor,
-            inputDecorationTheme: const InputDecorationTheme(
+            entryModeIconColor: Theme.of(context).colorScheme.primary,
+            inputDecorationTheme: InputDecorationTheme(
               contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               border: OutlineInputBorder(),
-              hintStyle: TextStyle(color: CustomColors.primaryTextColor),
-              labelStyle: TextStyle(color: CustomColors.primaryTextColor),
+              hintStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onSurface),
             ),
           ),
           textButtonTheme: TextButtonThemeData(
             style: TextButton.styleFrom(
-              foregroundColor: CustomColors.primaryTextColor,
+              foregroundColor: Theme.of(context).colorScheme.onSurface,
             ),
           ),
-          textTheme: const TextTheme(
+          textTheme: TextTheme(
             headlineMedium: TextStyle(
               fontSize: 36,
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             bodyLarge: TextStyle(
               fontSize: 18,
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
             // This is important for input fields
             titleMedium: TextStyle(
               fontSize: 18,
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ),

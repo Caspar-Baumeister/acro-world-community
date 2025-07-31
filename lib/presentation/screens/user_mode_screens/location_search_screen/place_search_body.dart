@@ -69,7 +69,7 @@ class PlacesQuery extends StatelessWidget {
           vertical: AppDimensions.spacingMedium),
       margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
       decoration: BoxDecoration(
-        color: CustomColors.backgroundColor,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         boxShadow: [
           BoxShadow(
@@ -135,9 +135,9 @@ class PlacesQuery extends StatelessWidget {
                         right: AppDimensions.spacingMedium),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                         const SizedBox(width: AppDimensions.spacingSmall),
                         Flexible(

@@ -24,7 +24,7 @@ class SelectableCard extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1),
         ),
         padding: const EdgeInsets.all(AppDimensions.spacingSmall),
         margin: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
@@ -35,14 +35,14 @@ class SelectableCard extends StatelessWidget {
               width: 24.0,
               child: IgnorePointer(
                 child: Checkbox(
-                  activeColor: CustomColors.successTextColor,
+                  activeColor: Theme.of(context).colorScheme.primary,
                   value: value,
                   onChanged: (_) {},
                 ),
               ),
             ),
             VerticalDivider(
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
               thickness: 1,
             ),
             Expanded(
@@ -54,7 +54,7 @@ class SelectableCard extends StatelessWidget {
                     text,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                     maxLines: 2,
                   ),
@@ -74,7 +74,7 @@ class SelectableCard extends StatelessWidget {
               Text(
                 trailingText!,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: CustomColors.accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,
                     ),
               ),

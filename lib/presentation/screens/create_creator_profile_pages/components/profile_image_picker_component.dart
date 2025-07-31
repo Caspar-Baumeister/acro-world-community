@@ -56,8 +56,7 @@ class ProfileImagePickerComponentState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: CustomColors
-                      .inactiveBorderColor, // Your desired border color
+                  color: Theme.of(context).colorScheme.outline, // Your desired border color
                   width: 2.0, // Adjust the width of the border as needed
                 ),
               ),
@@ -67,7 +66,7 @@ class ProfileImagePickerComponentState
                       radius: AppDimensions.avatarSizeMedium,
                     )
                   : CircleAvatar(
-                      backgroundColor: CustomColors.backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
                       radius: AppDimensions.avatarSizeMedium,
                       backgroundImage: widget.profileImage != null
                           ? MemoryImage(widget.profileImage!)
@@ -75,7 +74,7 @@ class ProfileImagePickerComponentState
                       child: widget.profileImage == null
                           ? Icon(Icons.person,
                               size: AppDimensions.avatarSizeMedium,
-                              color: CustomColors.iconColor)
+                              color: Theme.of(context).colorScheme.onSurface)
                           : null,
                     ),
             ),
@@ -83,7 +82,7 @@ class ProfileImagePickerComponentState
               bottom: 0,
               right: 0,
               child: CircleAvatar(
-                backgroundColor: CustomColors.iconColor,
+                backgroundColor: Theme.of(context).colorScheme.onSurface,
                 radius: AppDimensions.iconSizeSmall,
                 child: Icon(Icons.camera_alt,
                     color: Colors.white, size: AppDimensions.iconSizeSmall),

@@ -28,7 +28,8 @@ class CustomEasyStepper extends StatelessWidget {
       showStepBorder: false,
       // map steps with the index
       steps: steps
-          .map((step) => buildCustomEasyStep(step, steps.indexOf(step)))
+          .map(
+              (step) => buildCustomEasyStep(step, steps.indexOf(step), context))
           .toList(),
       onStepReached: (index) => onStepReached(index),
       fitWidth: true,
@@ -36,19 +37,19 @@ class CustomEasyStepper extends StatelessWidget {
     );
   }
 
-  EasyStep buildCustomEasyStep(String title, int index) {
+  EasyStep buildCustomEasyStep(String title, int index, BuildContext context) {
     return EasyStep(
       customStep: InkWell(
         onTap: () => setStep(index),
         child: CircleAvatar(
           backgroundColor: activeStep >= index
               ? Theme.of(context).colorScheme.primary
-              : Theme.of(context).colorScheme.surfaceVariant,
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
           child: activeStep == index
-              ? Icon(Icons.edit, color: CustomColors.backgroundColor, size: 10)
+              ? Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary, size: 10)
               : activeStep > index
                   ? Icon(Icons.check,
-                      color: CustomColors.backgroundColor, size: 10)
+                      color: Theme.of(context).colorScheme.onPrimary, size: 10)
                   : Container(),
         ),
       ),

@@ -30,7 +30,7 @@ class BookingStatusTile extends StatelessWidget {
             case "Pending":
               return Theme.of(context).colorScheme.outline;
             case "WaitingForPayment":
-              return Theme.of(context).extension<AppCustomColors>()!.warning;
+              return Theme.of(context).colorScheme.error;
             default:
               return Theme.of(context).colorScheme.outline;
           }

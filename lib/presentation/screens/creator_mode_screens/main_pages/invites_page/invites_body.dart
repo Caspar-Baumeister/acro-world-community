@@ -127,10 +127,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                                                                 .confirmationStatus
                                                                 .toLowerCase() ==
                                                             "pending"
-                                                        ? Theme.of(context)
-                                                            .extension<
-                                                                AppCustomColors>()!
-                                                            .warning
+                                                        ? Theme.of(context).colorScheme.error
                                                         : invite.confirmationStatus
                                                                     .toLowerCase() ==
                                                                 "accepted"

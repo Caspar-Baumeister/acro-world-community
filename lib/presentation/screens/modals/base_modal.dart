@@ -23,7 +23,7 @@ class BaseModal extends StatelessWidget {
               width: 40,
               height: 5,
               decoration: BoxDecoration(
-                color: CustomColors.iconColor,
+                color: Theme.of(context).colorScheme.onSurface,
                 borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
             ),

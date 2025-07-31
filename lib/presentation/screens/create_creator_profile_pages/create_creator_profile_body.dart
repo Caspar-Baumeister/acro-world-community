@@ -328,7 +328,10 @@ class _CreateCreatorProfileBodyState
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
-                                  .copyWith(color: CustomColors.linkTextColor),
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary),
                             ),
                           ),
                         ),
@@ -363,9 +366,10 @@ class _CreateCreatorProfileBodyState
                               : (_isSlugAvailable == false ||
                                       _isSlugValid == false)
                                   ? Icon(Icons.error,
-                                      color: CustomColors.errorTextColor)
+                                      color:
+                                          Theme.of(context).colorScheme.error)
                                   : Icon(Icons.check_circle,
-                                      color: CustomColors.successTextColor),
+                                      color: Theme.of(context).colorScheme.primary),
                         ),
                         SizedBox(height: AppDimensions.spacingMedium),
 
@@ -431,7 +435,8 @@ class _CreateCreatorProfileBodyState
                             style: Theme.of(context)
                                 .textTheme
                                 .bodySmall!
-                                .copyWith(color: CustomColors.errorTextColor),
+                                .copyWith(
+                                    color: Theme.of(context).colorScheme.error),
                           ),
                         ],
                       ],

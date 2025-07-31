@@ -49,7 +49,7 @@ class BookingCardMainContentSection extends StatelessWidget {
           Text(
             getDatedMMHHmm(booking.createdAt),
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                color: Theme.of(context).extension<AppCustomColors>()!.accent),
+                color: Theme.of(context).colorScheme.secondary),
           )
         ],
       ),
