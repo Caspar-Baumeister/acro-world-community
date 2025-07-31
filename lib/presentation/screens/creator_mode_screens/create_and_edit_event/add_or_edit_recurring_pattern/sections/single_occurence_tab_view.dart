@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/custom_pick_date.dart';
 import 'package:acroworld/utils/helper_functions/custom_time_picker.dart';
 import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
@@ -22,8 +22,8 @@ class SingleOccurenceTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppPaddings.large,
-      ).copyWith(top: AppPaddings.large),
+        horizontal: AppDimensions.spacingLarge,
+      ).copyWith(top: AppDimensions.spacingLarge),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -56,7 +56,7 @@ class SingleOccurenceTabView extends StatelessWidget {
                       }),
                 ),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Flexible(
                 flex: 1,
                 child: FloatingButton(
@@ -73,7 +73,7 @@ class SingleOccurenceTabView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           Row(
             children: [
               Flexible(
@@ -98,7 +98,7 @@ class SingleOccurenceTabView extends StatelessWidget {
                       }),
                 ),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Flexible(
                 flex: 1,
                 child: FloatingButton(

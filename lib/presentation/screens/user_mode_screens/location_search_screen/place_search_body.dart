@@ -10,8 +10,7 @@ import 'package:acroworld/provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:provider/provider.dart';
@@ -66,11 +65,12 @@ class PlacesQuery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
-      margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingMedium),
+      margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
       decoration: BoxDecoration(
         color: CustomColors.backgroundColor,
-        borderRadius: AppBorders.smallRadius,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -100,7 +100,7 @@ class PlacesQuery extends StatelessWidget {
                 stackTrace: StackTrace.current);
             return Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(AppPaddings.medium),
+              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
               child: Text(
                   "Something went wrong, just click anywhere in the map and finish the event creation, we will fix it afterwards. Please contact the support"),
             );
@@ -112,7 +112,7 @@ class PlacesQuery extends StatelessWidget {
                 data[selector].isEmpty) {
               return Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(AppPaddings.medium),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Text("No places found"),
               );
             }
@@ -131,14 +131,15 @@ class PlacesQuery extends StatelessWidget {
                             ['description']);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(right: AppPaddings.medium),
+                    padding: const EdgeInsets.only(
+                        right: AppDimensions.spacingMedium),
                     child: Row(
                       children: [
                         const Icon(
                           Icons.location_on,
                           color: CustomColors.primaryColor,
                         ),
-                        const SizedBox(width: AppPaddings.small),
+                        const SizedBox(width: AppDimensions.spacingSmall),
                         Flexible(
                           child: Text(
                             result.data?[selector]?[index]['description'],

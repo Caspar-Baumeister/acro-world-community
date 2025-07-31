@@ -75,7 +75,6 @@ class AppTheme {
       brightness: Brightness.light,
       colorScheme: const ColorScheme.light(
         primary: AppColors.lightPrimary,
-        primaryContainer: AppColors.lightPrimaryDarker,
         secondary: AppColors.lightSecondary,
         surface: AppColors.lightBackground, // Main background
         surfaceContainer: AppColors.lightSurface, // Card/modal background
@@ -84,7 +83,7 @@ class AppTheme {
         onSecondary: AppColors.lightText, // Text on secondary
         onSurface: AppColors.lightText, // Text on surface/background
         onError: AppColors.lightText, // Text on error
-        outline: AppColors.lightTextMuted, // Borders/Dividers
+        outline: AppColors.lightBorders, // Borders/Dividers
       ),
       customColors: const AppCustomColors(
         primaryDark: AppColors.lightPrimaryDark,
@@ -104,7 +103,6 @@ class AppTheme {
       brightness: Brightness.dark,
       colorScheme: const ColorScheme.dark(
         primary: AppColors.darkPrimary,
-        primaryContainer: AppColors.darkPrimaryLighter,
         secondary: AppColors.darkSecondary,
         surface: AppColors.darkBackground, // Main background
         surfaceContainer: AppColors.darkSurface, // Card/modal background
@@ -113,7 +111,7 @@ class AppTheme {
         onSecondary: AppColors.darkText, // Text on secondary
         onSurface: AppColors.darkText, // Text on surface/background
         onError: AppColors.darkText, // Text on error
-        outline: AppColors.darkTextMuted, // Borders/Dividers
+        outline: AppColors.darkBorders, // Borders/Dividers
       ),
       customColors: const AppCustomColors(
         primaryDark: AppColors.darkPrimaryLight,
@@ -123,7 +121,7 @@ class AppTheme {
         textStrong: AppColors.darkTextStrong,
         focus: AppColors.darkFocus,
         icon: AppColors.darkIcon,
-        warning: AppColors.lightWarning, // Assuming warning color is consistent or needs a dark variant
+        warning: AppColors.darkWarning,
       ),
     );
   }

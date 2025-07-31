@@ -8,37 +8,37 @@ Colors are chosen to be clean, professional, and accessible. They create a clear
 
 ### 1.1 Light Theme Colors
 
-| Role                   | Hex Color | Usage                                                                                                    |
-| :--------------------- | :-------- | :------------------------------------------------------------------------------------------------------- |
-| Accent                 | #4CAF50   | For primary calls-to-action (e.g., "Book Now" buttons), highlights, and selected states (tabs, filters). |
-| Primary                | #2196F3   | For secondary actions, links, and important informational icons.                                         |
-| Secondary              | #8BC34A   | For less critical buttons, secondary highlights, or success states (when distinct from Accent).          |
-| Background             | #F5F5F5   | The main background color for all screens and pages.                                                     |
-| Surface / Card         | #FFFFFF   | Background for cards, modals, forms, and primary content areas to make them stand out.                   |
-| Text (Primary)         | #424242   | For all primary text content, including titles, body copy, and labels.                                   |
-| Text (Secondary/Muted) | #9E9E9E   | For subtitles, helper text, disabled states, and less important information.                             |
-| Borders / Dividers     | #E0E0E0   | For subtle separation between elements, like card borders or dividers in lists.                          |
-| Success                | #66BB6A   | For positive feedback, successful operations, and validation messages.                                   |
-| Warning                | #FFB300   | For cautionary messages, alerts, or important but non-critical information.                              |
-| Error                  | #E53935   | For error messages, destructive actions, and invalid input states.                                       |
-| Disabled               | #BDBDBD   | For elements that are temporarily unavailable or inactive.                                               |
+| Role | Hex Color | Usage |
+| :--- | :--- | :--- |
+| Primary | #606c38 | For primary actions, links, and important informational icons. |
+| Secondary | #03071e | For secondary actions, links, and important informational icons. |
+| Accent | #ffba08 | For primary calls-to-action (e.g., "Book Now" buttons), highlights, and selected states (tabs, filters). |
+| Background | #F5F5F5 | The main background color for all screens and pages. |
+| Surface / Card | #FFFFFF | Background for cards, modals, forms, and primary content areas to make them stand out. |
+| Text (Primary) | #424242 | For all primary text content, including titles, body copy, and labels. |
+| Text (Secondary/Muted) | #9E9E9E | For subtitles, helper text, disabled states, and less important information. |
+| Borders / Dividers | #E0E0E0 | For subtle separation between elements, like card borders or dividers in lists. |
+| Success | #66BB6A | For positive feedback, successful operations, and validation messages. |
+| Warning | #FFB300 | For cautionary messages, alerts, or important but non-critical information. |
+| Error | #E53935 | For error messages, destructive actions, and invalid input states. |
+| Disabled | #BDBDBD | For elements that are temporarily unavailable or inactive. |
 
 ### 1.2 Dark Theme Colors
 
-| Role                   | Hex Color | Usage                                                                                                    |
-| :--------------------- | :-------- | :------------------------------------------------------------------------------------------------------- |
-| Accent                 | #69F0AE   | For primary calls-to-action (e.g., "Book Now" buttons), highlights, and selected states (tabs, filters). |
-| Primary                | #64B5F6   | For secondary actions, links, and important informational icons.                                         |
-| Secondary              | #AED581   | For less critical buttons, secondary highlights, or success states (when distinct from Accent).          |
-| Background             | #212121   | The main background color for all screens and pages.                                                     |
-| Surface / Card         | #424242   | Background for cards, modals, forms, and primary content areas to make them out.                         |
-| Text (Primary)         | #FFFFFF   | For all primary text content, including titles, body copy, and labels.                                   |
-| Text (Secondary/Muted) | #BDBDBD   | For subtitles, helper text, disabled states, and less important information.                             |
-| Borders / Dividers     | #616161   | For subtle separation between elements, like card borders or dividers in lists.                          |
-| Success                | #81C784   | For positive feedback, successful operations, and validation messages.                                   |
-| Warning                | #FFD54F   | For cautionary messages, alerts, or important but non-critical information.                              |
-| Error                  | #EF5350   | For error messages, destructive actions, and invalid input states.                                       |
-| Disabled               | #757575   | For elements that are temporarily unavailable or inactive.                                               |
+| Role | Hex Color | Usage |
+| :--- | :--- | :--- |
+| Primary | #606c38 | For primary actions, links, and important informational icons. |
+| Secondary | #03071e | For secondary actions, links, and important informational icons. |
+| Accent | #ffba08 | For primary calls-to-action (e.g., "Book Now" buttons), highlights, and selected states (tabs, filters). |
+| Background | #212121 | The main background color for all screens and pages. |
+| Surface / Card | #424242 | Background for cards, modals, forms, and primary content areas to make them out. |
+| Text (Primary) | #FFFFFF | For all primary text content, including titles, body copy, and labels. |
+| Text (Secondary/Muted) | #BDBDBD | For subtitles, helper text, disabled states, and less important information. |
+| Borders / Dividers | #616161 | For subtle separation between elements, like card borders or dividers in lists. |
+| Success | #81C784 | For positive feedback, successful operations, and validation messages. |
+| Warning | #FFD54F | For cautionary messages, alerts, or important but non-critical information. |
+| Error | #EF5350 | For error messages, destructive actions, and invalid input states. |
+| Disabled | #757575 | For elements that are temporarily unavailable or inactive. |
 
 ## 2. Typography
 
@@ -46,23 +46,23 @@ A consistent typography scale ensures readability and visual hierarchy. We use a
 
 ### 2.1 Font Sizes (in dp/pt)
 
-| Role            | Size | Weight  | Usage                                                     |
-| :-------------- | :--- | :------ | :-------------------------------------------------------- |
-| Display Large   | 57   | Regular | Large, prominent headings for key screens or sections.    |
-| Display Medium  | 45   | Regular | Secondary large headings.                                 |
-| Display Small   | 36   | Regular | Smaller display headings.                                 |
-| Headline Large  | 32   | Medium  | Main headings for content blocks.                         |
-| Headline Medium | 28   | Medium  | Sub-headings for content blocks.                          |
-| Headline Small  | 24   | Medium  | Smaller sub-headings.                                     |
-| Title Large     | 22   | Regular | Important titles within components (e.g., card titles).   |
-| Title Medium    | 16   | Medium  | Sub-titles or emphasized text.                            |
-| Title Small     | 14   | Medium  | Small titles or emphasized text.                          |
-| Body Large      | 16   | Regular | Primary body text.                                        |
-| Body Medium     | 14   | Regular | Secondary body text, default for most content.            |
-| Body Small      | 12   | Regular | Fine print, captions, or less important information.      |
-| Label Large     | 14   | Medium  | Button labels, tab labels, or other interactive elements. |
-| Label Medium    | 12   | Medium  | Smaller labels.                                           |
-| Label Small     | 11   | Medium  | Very small labels.                                        |
+| Role | Size | Weight | Usage |
+| :--- | :--- | :--- | :--- |
+| Display Large | 57 | Regular | Large, prominent headings for key screens or sections. |
+| Display Medium | 45 | Regular | Secondary large headings. |
+| Display Small | 36 | Regular | Smaller display headings. |
+| Headline Large | 32 | Medium | Main headings for content blocks. |
+| Headline Medium | 28 | Medium | Sub-headings for content blocks. |
+| Headline Small | 24 | Medium | Smaller sub-headings. |
+| Title Large | 22 | Regular | Important titles within components (e.g., card titles). |
+| Title Medium | 16 | Medium | Sub-titles or emphasized text. |
+| Title Small | 14 | Medium | Small titles or emphasized text. |
+| Body Large | 16 | Regular | Primary body text. |
+| Body Medium | 14 | Regular | Secondary body text, default for most content. |
+| Body Small | 12 | Regular | Fine print, captions, or less important information. |
+| Label Large | 14 | Medium | Button labels, tab labels, or other interactive elements. |
+| Label Medium | 12 | Medium | Smaller labels. |
+| Label Small | 11 | Medium | Very small labels. |
 
 ### 2.2 Font Weights
 
@@ -77,50 +77,50 @@ Consistent spacing creates visual rhythm and improves readability. We follow a 4
 
 ### 3.1 Padding and Margins
 
-| Role                | Value (dp) | Usage                                                               |
-| :------------------ | :--------- | :------------------------------------------------------------------ |
-| Tiny Spacing        | 4          | Smallest spacing, for tight elements or internal component padding. |
-| Small Spacing       | 8          | Standard small spacing, for elements within a group.                |
-| Medium Spacing      | 16         | Standard spacing between major UI elements.                         |
-| Large Spacing       | 24         | Larger spacing for section separation.                              |
-| Extra Large Spacing | 32         | Largest spacing, for significant content breaks.                    |
+| Role | Value (dp) | Usage |
+| :--- | :--- | :--- |
+| Tiny Spacing | 4 | Smallest spacing, for tight elements or internal component padding. |
+| Small Spacing | 8 | Standard small spacing, for elements within a group. |
+| Medium Spacing | 16 | Standard spacing between major UI elements. |
+| Large Spacing | 24 | Larger spacing for section separation. |
+| Extra Large Spacing | 32 | Largest spacing, for significant content breaks. |
 
 ### 3.2 Component Dimensions
 
-| Role                              | Value (dp) | Usage                                                        |
-| :-------------------------------- | :--------- | :----------------------------------------------------------- |
-| Icon Small                        | 16         | Smallest icons (e.g., within text, minor indicators).        |
-| Icon Medium                       | 24         | Standard icon size.                                          |
-| Icon Large                        | 32         | Larger icons (e.g., in app bars, prominent features).        |
-| Button Height (Standard)          | 48         | Fixed height for most interactive buttons.                   |
-| Input Field Height (Standard)     | 56         | Fixed height for text input fields.                          |
-| Card Elevation                    | 2-8        | Standard shadow depth for cards, increasing with importance. |
-| Modal Controller Width            | 60         | Width of the drag handle for bottom sheet modals.            |
-| Modal Controller Height           | 4          | Height of the drag handle for bottom sheet modals.           |
-| Event Vertical Scroll Card Height | 120        | Height of event cards in vertical scroll lists.              |
-| Event Dashboard Slider Width      | 200        | Width of event cards in horizontal dashboard sliders.        |
+| Role | Value (dp) | Usage |
+| :--- | :--- | :--- |
+| Icon Small | 16 | Smallest icons (e.g., within text, minor indicators). |
+| Icon Medium | 24 | Standard icon size. |
+| Icon Large | 32 | Larger icons (e.g., in app bars, prominent features). |
+| Button Height (Standard) | 48 | Fixed height for most interactive buttons. |
+| Input Field Height (Standard) | 56 | Fixed height for text input fields. |
+| Card Elevation | 2-8 | Standard shadow depth for cards, increasing with importance. |
+| Modal Controller Width | 60 | Width of the drag handle for bottom sheet modals. |
+| Modal Controller Height | 4 | Height of the drag handle for bottom sheet modals. |
+| Event Vertical Scroll Card Height | 120 | Height of event cards in vertical scroll lists. |
+| Event Dashboard Slider Width | 200 | Width of event cards in horizontal dashboard sliders. |
 
 ## 4. Roundness / Border Radius
 
 Consistent use of rounded corners provides a soft, modern aesthetic.
 
-| Role          | Value (dp) | Usage                                                                     |
-| :------------ | :--------- | :------------------------------------------------------------------------ |
-| Small Radius  | 4          | Subtle rounding for small elements (e.g., chips, small buttons).          |
-| Medium Radius | 8          | Standard rounding for cards, input fields, and most components.           |
-| Large Radius  | 12         | More pronounced rounding for prominent elements or containers.            |
-| Full Circle   | 999        | For perfectly circular elements (e.g., avatars, floating action buttons). |
+| Role | Value (dp) | Usage |
+| :--- | :--- | :--- |
+| Small Radius | 4 | Subtle rounding for small elements (e.g., chips, small buttons). |
+| Medium Radius | 8 | Standard rounding for cards, input fields, and most components. |
+| Large Radius | 12 | More pronounced rounding for prominent elements or containers. |
+| Full Circle | 999 | For perfectly circular elements (e.g., avatars, floating action buttons). |
 
 ## 5. Aspect Ratios
 
 Maintaining consistent aspect ratios for images and media ensures visual harmony.
 
-| Role | Ratio (Width:Height) | Usage                                                |
-| :--- | :------------------- | :--------------------------------------------------- |
-| 1:1  | 1:1                  | Square images (e.g., avatars, small thumbnails).     |
-| 16:9 | 16:9                 | Wide images (e.g., banners, video players).          |
-| 4:3  | 4:3                  | Standard image ratio for general content.            |
-| 6:5  | 6:5                  | Specific ratio for event cards in dashboard sliders. |
+| Role | Ratio (Width:Height) | Usage |
+| :--- | :--- | :--- |
+| 1:1 | 1:1 | Square images (e.g., avatars, small thumbnails). |
+| 16:9 | 16:9 | Wide images (e.g., banners, video players). |
+| 4:3 | 4:3 | Standard image ratio for general content. |
+| 6:5 | 6:5 | Specific ratio for event cards in dashboard sliders. |
 
 ## 6. Icons
 

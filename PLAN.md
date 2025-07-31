@@ -2,104 +2,269 @@
 
 This document outlines a detailed, incremental plan to refactor the application's styling and theming to align with the `Style-Guide.md`. The core principle is to ensure the application remains **runnable and testable after every single step**.
 
-## Core Principles:
+## Recap of previous work
 
-- **Incremental Migration**: Changes are broken down into the smallest possible, verifiable steps.
-- **No Downtime**: The application must compile and run without errors after each step.
-- **Single Source of Truth**: All styling (colors, typography, dimensions) will eventually be defined in a centralized theme.
-- **Thematic Consistency**: Components will consistently retrieve styling information from `Theme.of(context)`.
+- **Phase 0 & 1**: A new theme structure was created in `lib/theme`, and the app was updated to use it.
+- **Phase 2 & 3**: All core components, pages, and sections were refactored to use the new theme.
+- **Phase 4 (partially done)**: Non-styling constants were moved to `lib/utils/app_constants.dart`, and old constant files were deleted.
 
----
+## Current problem
 
-## TODO
+The app is currently not runnable due to errors caused by the theme migration. The main issues are:
 
-### Phase 0: Preparation - Create New Theme Structure
+- Direct usages of old constants (`CustomColors`, `AppPaddings`, `AppBorders`, etc.) that need to be replaced with the new theme-based equivalents.
+- Unused imports and other issues that need to be identified and fixed.
 
-- [x] Create `lib/theme/` directory.
-- [x] Create `lib/theme/app_theme.dart` with placeholder `ThemeData`.
-- [x] Create `lib/theme/app_colors.dart` with the color palette from the style guide.
-- [x] Create `lib/theme/app_dimensions.dart` with spacing and size constants from the style guide.
-- [x] Create `lib/theme/app_text_styles.dart` with font styles from the style guide (without color).
+## Plan to solve the errors
 
-### Phase 1: Consolidate Theme Definitions
+I will go through the following files one by one and replace the old constants with their new theme-based equivalents.
 
-- [x] Populate `lib/theme/app_theme.dart` with `ThemeData` for light and dark modes, using the new theme files.
-- [x] Update `router_app.dart` to use the new `AppTheme`.
-- [x] Visually verify that the app's appearance is consistent with the previous version.
+### Files with breaking errors:
 
-### Phase 2: Refactor Core Components
+- `lib/presentation/components/buttons/floating_button.dart`
+- `lib/presentation/components/custom_easy_stepper.dart`
+- `lib/presentation/components/guest_profile_content.dart`
+- `lib/presentation/components/images/custom_avatar_cached_network_image.dart`
+- `lib/presentation/components/images/custom_cached_network_image.dart`
+- `lib/presentation/components/images/event_image_picker_component.dart`
+- `lib/presentation/components/input/custom_option_input_component.dart`
+- `lib/presentation/components/like_teacher_mutation_widget.dart`
+- `lib/presentation/components/settings_drawer.dart`
+- `lib/presentation/components/show_more_text.dart`
+- `lib/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart`
+- `lib/presentation/components/tiles/event_tiles/widgets/class_tile_next_occurence_widget.dart`
+- `lib/presentation/screens/creator_mode_screens/class_occurence_page/class_occurence_body.dart`
+- `lib/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_card.dart`
+- `lib/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart`
+- `lib/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart`
+- `lib/presentation/screens/creator_mode_screens/create_and_edit_event/components/teacher_suggestions_query.dart`
+- `lib/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart`
+- `lib/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart`
+- `lib/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/checkout_step.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/booking_step_indicator.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/header_section.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/widgets/booking_option_widget.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/community/community_query.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/community/widgets/teacher_card.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/events/components/discovery_filter_on_card.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/events/components/event_card_image_section.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart`
+- `lib/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings_card.dart`
+- `lib/presentation/screens/user_mode_screens/map/components/marker_component.dart`
+- `lib/presentation/screens/user_mode_screens/map/components/new_area_component.dart`
+- `lib/presentation/screens/user_mode_screens/teacher_profile/screens/profile_base_screen.dart`
+- `lib/presentation/shells/sidebar.dart`
+- `lib/utils/decorators.dart`
+- `lib/utils/helper_functions/custom_pick_date.dart`
+- `lib/utils/helper_functions/custom_time_picker.dart`
+- `lib/utils/helper_functions/messanges/toasts.dart`
 
-- [x] Refactor `AppBar` components (`BaseAppbar`, `CustomAppbarSimple`, `StandardAppBar`).
-- [x] Refactor `BottomNavigationBar` components (`BaseBottomNavigationBar`, `BBottomNavigationBar`, `PrimaryBottomNavbarItem`, `ShellBottomNavigationBar`, `ShellCreatorBottomNavigationBar`).
-- [x] Refactor all `Button` components (`StandartButton`, `LoadingButton`, `LinkButtonComponent`, etc.).
-- [x] Refactor `InputFieldComponent`.
-- [x] Refactor `CustomCheckBox`.
-- [x] Refactor `CustomDivider`.
+### Step 1: Refactor `lib/presentation/components/buttons/floating_button.dart`
 
-### Phase 3: Refactor Pages and Sections
+- [x] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [x] Replace `AppDimensions.radiusSmall` with `AppDimensions.radiusMedium`.
 
-- **Authentication Screens**
-  - [x] Refactor `Authenticate` screen.
-  - [x] Refactor `SignIn` screen.
-  - [x] Refactor `SignUp` screen and its widgets.
-  - [x] Refactor `ForgotPassword` screen.
-  - [x] Refactor `ForgotPasswordSuccess` screen.
-  - [x] Refactor `ConfirmEmailPage`.
-- **User Mode Screens**
-  - **Events**
-  - [x] Refactor `DiscoverPage` and `DiscoverBody`.
-  - [x] Refactor `DiscoveryAppBar`.
-  - [x] Refactor `FilterOnDiscoveryBody`.
-  - [x] Refactor `SliderRowDashboardDiscovery`.
-  - [x] Refactor `DiscoverySliderCard`.
-  - [x] Refactor `FilterPage` and its components.
-  - **Activities**
-  - [x] Refactor `ActivitiesPage` and `ActivitiesBody`.
-  - [x] Refactor `CalendarAppBar` and `CalendarComponent`.
-  - [x] Refactor `ClassesView` and `ClassEventExpandedTile`.
-  - **Community**
-  - [x] Refactor `TeacherPage` and `CommunityBody`.
-  - [x] Refactor `TeacherAppBar`.
-  - [x] Refactor `TeacherCard`.
-  - **Profile**
-  - [x] Refactor `ProfilePage` and `ProfileBody`.
-  - [x] Refactor `HeaderWidget`.
-  - [x] Refactor `UserBookings` and `UserBookingsCard`.
-  - [x] Refactor `UserFavoriteClasses` and `ClassTemplateCard`.
-  - **Map**
-  - [x] Refactor `MapPage` and its components.
-  - **Single Class Page**
-    - [ ] Refactor `SingleClassPage` and its components.
-    - [ ] Refactor `SingleClassBody`.
-    - [ ] Refactor `BookingQueryHoverButton`.
-- **Creator Mode Screens**
-  - **Dashboard**
-    - [ ] Refactor `DashboardPage` and its components.
-  - **My Events**
-    - [ ] Refactor `MyEventsPage` and its sections.
-  - **Invites**
-    - [ ] Refactor `InvitesPage` and its components.
-  - **Creator Profile**
-    - [ ] Refactor `CreatorProfilePage` and its components.
-  - **Create/Edit Event**
-    - [ ] Refactor `CreateAndEditEventPage` and all its steps and components.
-- **Account Settings**
-  - [ ] Refactor `AccountSettingsPage`.
-  - [ ] Refactor `EditUserdataPage`.
-  - [ ] Refactor `DeleteAccount`.
-- **System Pages**
-  - [ ] Refactor `ErrorPage`.
-  - [ ] Refactor `LoadingPage`.
-  - [ ] Refactor `VersionToOldPage`.
+### Step 2: Refactor `lib/presentation/components/custom_easy_stepper.dart`
 
-### Phase 4: Cleanup
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onPrimary`.
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.infoBgColor` with `Theme.of(context).colorScheme.surfaceVariant`.
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
 
-- [ ] Perform a global search for any remaining direct usages of old constants.
-- [ ] Replace all remaining old constants with `Theme.of(context)` equivalents.
-- [ ] Delete `lib/constants/` directory.
-- [ ] Delete `lib/utils/colors.dart`.
-- [ ] Delete `lib/utils/constants.dart`.
-- [ ] Delete `lib/utils/text_constants.dart`.
-- [ ] Delete `lib/utils/theme.dart`.
+### Step 3: Refactor `lib/presentation/components/guest_profile_content.dart`
+
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+- [ ] Replace `CustomColors.subtitleText` with `Theme.of(context).textTheme.bodySmall!.color!.withOpacity(0.7)`.
+- [ ] Replace `CustomColors.whiteTextColor` with `Theme.of(context).colorScheme.onPrimary`.
+- [ ] Replace `CustomColors.buttonPrimaryLight` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 4: Refactor `lib/presentation/components/images/custom_avatar_cached_network_image.dart`
+
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+
+### Step 5: Refactor `lib/presentation/components/images/custom_cached_network_image.dart`
+
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+
+### Step 6: Refactor `lib/presentation/components/images/event_image_picker_component.dart`
+
+- [ ] Replace `CustomColors.inactiveBorderColor` with `Theme.of(context).colorScheme.outline`.
+- [ ] Replace `CustomColors.iconColor` with `Theme.of(context).colorScheme.onSurface`.
+
+### Step 7: Refactor `lib/presentation/components/input/custom_option_input_component.dart`
+
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+
+### Step 8: Refactor `lib/presentation/components/like_teacher_mutation_widget.dart`
+
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 9: Refactor `lib/presentation/components/settings_drawer.dart`
+
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+- [ ] Replace `CustomColors.lightTextColor` with `Theme.of(context).colorScheme.onSurface.withOpacity(0.7)`.
+
+### Step 10: Refactor `lib/presentation/components/show_more_text.dart`
+
+- [ ] Replace `CustomColors.linkTextColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 11: Refactor `lib/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 12: Refactor `lib/presentation/components/tiles/event_tiles/widgets/class_tile_next_occurence_widget.dart`
+
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 13: Refactor `lib/presentation/screens/creator_mode_screens/class_occurence_page/class_occurence_body.dart`
+
+- [ ] Replace `CustomColors.successBgColorSec` with `Theme.of(context).colorScheme.primary.withOpacity(0.5)`.
+- [ ] Replace `CustomColors.successBgColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [ ] Replace `CustomColors.iconColor` with `Theme.of(context).colorScheme.outline`.
+
+### Step 14: Refactor `lib/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_card.dart`
+
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [ ] Replace `CustomColors.successTextColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+
+### Step 15: Refactor `lib/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart`
+
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+
+### Step 16: Refactor `lib/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 17: Refactor `lib/presentation/screens/creator_mode_screens/create_and_edit_event/components/teacher_suggestions_query.dart`
+
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+
+### Step 18: Refactor `lib/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart`
+
+- [ ] Replace `Theme.of(context).extension<CustomColors>()!.accent` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 19: Refactor `lib/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart`
+
+- [ ] Replace `Theme.of(context).colorScheme.surface` with `Theme.of(context).colorScheme.surfaceContainer`.
+
+### Step 20: Refactor `lib/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart`
+
+- [ ] Replace `Theme.of(context).extension<CustomColors>()!.accent` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 21: Refactor `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/checkout_step.dart`
+
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.errorBorderColor` with `Theme.of(context).colorScheme.error`.
+- [ ] Replace `CustomColors.successBgColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 22: Refactor `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/steps/option_choosing.dart`
+
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+- [ ] Replace `CustomColors.successTextColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 23: Refactor `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/booking_step_indicator.dart`
+
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.lightTextColor` with `Theme.of(context).colorScheme.onSurface.withOpacity(0.7)`.
+
+### Step 24: Refactor `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/header_section.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 25: Refactor `lib/presentation/screens/user_mode_screens/main_pages/activities/components/booking/widgets/booking_option_widget.dart`
+
+- [ ] Replace `CustomColors.successTextColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 26: Refactor `lib/presentation/screens/user_mode_screens/main_pages/community/community_query.dart`
+
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 27: Refactor `lib/presentation/screens/user_mode_screens/main_pages/community/widgets/teacher_card.dart`
+
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 28: Refactor `lib/presentation/screens/user_mode_screens/main_pages/events/components/discovery_filter_on_card.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 29: Refactor `lib/presentation/screens/user_mode_screens/main_pages/events/components/event_card_image_section.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.whiteTextColor` with `Theme.of(context).colorScheme.onPrimary`.
+
+### Step 30: Refactor `lib/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart`
+
+- [ ] Replace `AppColors.lightGrey` with `Theme.of(context).colorScheme.outline`.
+
+### Step 31: Refactor `lib/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings_card.dart`
+
+- [ ] Replace `AppColors.lightGrey` with `Theme.of(context).colorScheme.outline`.
+
+### Step 32: Refactor `lib/presentation/screens/user_mode_screens/map/components/marker_component.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.iconColor` with `Theme.of(context).colorScheme.onSurface`.
+
+### Step 33: Refactor `lib/presentation/screens/user_mode_screens/map/components/new_area_component.dart`
+
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+
+### Step 34: Refactor `lib/presentation/screens/user_mode_screens/teacher_profile/screens/profile_base_screen.dart`
+
+- [ ] Replace `CustomColors.primaryColor` with `Theme.of(context).colorScheme.primary`.
+
+### Step 35: Refactor `lib/presentation/shells/sidebar.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+
+### Step 36: Refactor `lib/utils/decorators.dart`
+
+- [ ] Replace `CustomColors.inactiveBorderColor` with `Theme.of(context).colorScheme.outline`.
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+
+### Step 37: Refactor `lib/utils/helper_functions/custom_pick_date.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+
+### Step 38: Refactor `lib/utils/helper_functions/custom_time_picker.dart`
+
+- [ ] Replace `CustomColors.accentColor` with `Theme.of(context).colorScheme.secondary`.
+- [ ] Replace `CustomColors.backgroundColor` with `Theme.of(context).colorScheme.surface`.
+- [ ] Replace `CustomColors.secondaryBackgroundColor` with `Theme.of(context).colorScheme.surfaceContainer`.
+- [ ] Replace `CustomColors.whiteTextColor` with `Theme.of(context).colorScheme.onPrimary`.
+- [ ] Replace `CustomColors.primaryTextColor` with `Theme.of(context).colorScheme.onSurface`.
+
+### Step 39: Refactor `lib/utils/helper_functions/messanges/toasts.dart`
+
+- [ ] Replace `CustomColors.successBgColor` with `Theme.of(context).colorScheme.primary`.
+- [ ] Replace `CustomColors.whiteTextColor` with `Theme.of(context).colorScheme.onPrimary`.
+- [ ] Replace `CustomColors.errorTextColor` with `Theme.of(context).colorScheme.error`.
+- [ ] Replace `CustomColors.infoBgColor` with `Theme.of(context).colorScheme.surfaceVariant`.
+
+### Step 40: Code Analysis
+
 - [ ] Run `flutter analyze` to find and remove all unused imports.
+
+### Step 41: Final Review
+
 - [ ] Final review of the new theme files for consistency and completeness.

@@ -1,6 +1,5 @@
 import 'package:acroworld/data/models/booking_option.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BookOptionComponent extends StatelessWidget {
@@ -27,7 +26,7 @@ class BookOptionComponent extends StatelessWidget {
             onChanged: (_) => onChanged(_),
           ),
         ),
-        const SizedBox(width: AppPaddings.small),
+        const SizedBox(width: AppDimensions.spacingSmall),
         Expanded(
           child: GestureDetector(
             onTap: () => onChanged(!value),

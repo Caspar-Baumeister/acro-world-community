@@ -4,8 +4,7 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/ask_question_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -31,7 +30,7 @@ class QuestionPage extends StatelessWidget {
                   },
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
-                SizedBox(width: AppPaddings.small),
+                SizedBox(width: AppDimensions.spacingSmall),
                 StandartButton(
                   text: "Add Question",
                   onPressed: () {
@@ -54,11 +53,11 @@ class CurrentQuestionSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final provider = Provider.of<EventCreationAndEditingProvider>(context);
     return Container(
-      padding: EdgeInsets.all(AppPaddings.small),
+      padding: EdgeInsets.all(AppDimensions.spacingSmall),
       child: provider.questions.isEmpty
           ? Center(
               child: Padding(
-                padding: const EdgeInsets.all(AppPaddings.extraLarge),
+                padding: EdgeInsets.all(AppDimensions.spacingExtraLarge),
                 child: Text(
                   "No questions added yet, click on the button below to add a question",
                   textAlign: TextAlign.center,
@@ -66,7 +65,7 @@ class CurrentQuestionSection extends StatelessWidget {
               ),
             )
           : ReorderableListView(
-              padding: const EdgeInsets.all(AppPaddings.small),
+              padding: const EdgeInsets.all(AppDimensions.spacingSmall),
               onReorder: (oldIndex, newIndex) {
                 provider.reorderQuestions(oldIndex, newIndex);
               },
@@ -81,8 +80,8 @@ class CurrentQuestionSection extends StatelessWidget {
                     alignment: Alignment.centerRight,
                     color: CustomColors.errorBorderColor,
                     padding: EdgeInsets.symmetric(
-                        vertical: AppPaddings.medium,
-                        horizontal: AppPaddings.large),
+                        vertical: AppDimensions.spacingMedium,
+                        horizontal: AppDimensions.spacingLarge),
                     child: Icon(Icons.delete, color: Colors.white),
                   ),
                   child: QuestionCard(question: item),
@@ -107,12 +106,12 @@ class QuestionCard extends StatelessWidget {
       ),
       child: Container(
         padding: EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium,
-          vertical: AppPaddings.small,
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingSmall,
         ),
         decoration: BoxDecoration(
           color: CustomColors.backgroundColor,
-          borderRadius: AppBorders.defaultRadius,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),

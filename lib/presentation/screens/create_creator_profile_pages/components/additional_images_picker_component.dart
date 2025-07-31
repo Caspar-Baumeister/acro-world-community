@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -165,7 +164,7 @@ class ImageCard extends StatelessWidget {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingExtraSmall),
-                child: const Icon(
+                child: Icon(
                   Icons.close,
                   color: CustomColors.errorTextColor,
                 ),

@@ -15,7 +15,7 @@ class OpenGoogleMaps extends StatelessWidget {
         children: [
           Icon(
             Icons.location_on,
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
           Text("Google Maps"),
         ],

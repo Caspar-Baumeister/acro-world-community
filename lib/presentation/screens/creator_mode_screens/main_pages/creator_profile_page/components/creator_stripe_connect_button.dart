@@ -1,8 +1,7 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -30,12 +29,13 @@ class _CreatorStripeConnectButtonState
     if (loading) {
       return Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: AppPaddings.medium, vertical: AppPaddings.small),
+            horizontal: AppDimensions.spacingMedium,
+            vertical: AppDimensions.spacingSmall),
         child: Container(
-            padding: const EdgeInsets.all(AppPaddings.medium),
+            padding: const EdgeInsets.all(AppDimensions.spacingMedium),
             decoration: BoxDecoration(
               color: CustomColors.backgroundColor,
-              borderRadius: AppBorders.smallRadius,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),

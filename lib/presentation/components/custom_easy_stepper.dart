@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 
@@ -19,10 +18,10 @@ class CustomEasyStepper extends StatelessWidget {
   Widget build(BuildContext context) {
     return EasyStepper(
       activeStep: activeStep,
-      activeStepTextColor: CustomColors.primaryTextColor,
-      finishedStepTextColor: CustomColors.primaryTextColor,
-      finishedStepBorderColor: CustomColors.primaryTextColor,
-      activeStepBackgroundColor: CustomColors.accentColor,
+      activeStepTextColor: Theme.of(context).colorScheme.onPrimary,
+      finishedStepTextColor: Theme.of(context).colorScheme.onPrimary,
+      finishedStepBorderColor: Theme.of(context).colorScheme.primary,
+      activeStepBackgroundColor: Theme.of(context).colorScheme.primary,
       showLoadingAnimation: false,
       stepRadius: 12,
 
@@ -43,13 +42,12 @@ class CustomEasyStepper extends StatelessWidget {
         onTap: () => setStep(index),
         child: CircleAvatar(
           backgroundColor: activeStep >= index
-              ? CustomColors.accentColor
-              : CustomColors.infoBgColor,
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surfaceVariant,
           child: activeStep == index
-              ? const Icon(Icons.edit,
-                  color: CustomColors.backgroundColor, size: 10)
+              ? Icon(Icons.edit, color: CustomColors.backgroundColor, size: 10)
               : activeStep > index
-                  ? const Icon(Icons.check,
+                  ? Icon(Icons.check,
                       color: CustomColors.backgroundColor, size: 10)
                   : Container(),
         ),

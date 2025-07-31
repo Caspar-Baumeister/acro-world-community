@@ -1,5 +1,4 @@
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -26,11 +25,14 @@ class CustomOptionInputComponent extends StatelessWidget {
       children: [
         InputDecorator(
           decoration: InputDecoration(
-            labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
+            labelStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Theme.of(context).colorScheme.onSurface),
             alignLabelWithHint: true,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
-                    .copyWith(bottom: AppDimensions.spacingExtraSmall),
+            contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingMedium)
+                .copyWith(bottom: AppDimensions.spacingExtraSmall),
           ).applyDefaults(Theme.of(context).inputDecorationTheme),
           child: SizedBox(
             child: DropdownButtonHideUnderline(

@@ -1,8 +1,7 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/modals/stripe_highlight_modal.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +32,13 @@ class ClassOccurenceCard extends StatelessWidget {
         }
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-            .copyWith(top: AppPaddings.small),
+        padding:
+            const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
+                .copyWith(top: AppDimensions.spacingSmall),
         child: Container(
           decoration: BoxDecoration(
-            color: CustomColors.backgroundColor,
-            borderRadius: AppBorders.defaultRadius,
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
             border: classEvent.isHighlighted == true
                 ? Border.all(color: CustomColors.successTextColor)
                 : null,
@@ -53,11 +53,13 @@ class ClassOccurenceCard extends StatelessWidget {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.medium, vertical: AppPaddings.small),
+                horizontal: AppDimensions.spacingMedium,
+                vertical: AppDimensions.spacingSmall),
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: AppPaddings.medium),
+                  padding:
+                      const EdgeInsets.only(right: AppDimensions.spacingMedium),
                   child: Column(
                     children: [
                       Center(
@@ -69,8 +71,8 @@ class ClassOccurenceCard extends StatelessWidget {
                       ),
                       classEvent.isHighlighted == true
                           ? Padding(
-                              padding:
-                                  const EdgeInsets.only(top: AppPaddings.small),
+                              padding: const EdgeInsets.only(
+                                  top: AppDimensions.spacingSmall),
                               child: const Text(
                                 "Highlighted",
                                 style: TextStyle(
@@ -90,12 +92,12 @@ class ClassOccurenceCard extends StatelessWidget {
                               classEvent.startDateDT, classEvent.endDateDT,
                               isNewLine: true),
                           style: Theme.of(context).textTheme.bodyMedium),
-                      SizedBox(height: AppPaddings.tiny),
+                      SizedBox(height: AppDimensions.spacingExtraSmall),
                       classEvent.availableBookingSlots != null &&
                               classEvent.maxBookingSlots != null
                           ? Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: AppPaddings.tiny),
+                              padding: EdgeInsets.only(
+                                  bottom: AppDimensions.spacingExtraSmall),
                               child: showTextForBookingStatus(context))
                           : const SizedBox.shrink(),
                     ],
@@ -105,7 +107,7 @@ class ClassOccurenceCard extends StatelessWidget {
                 if (classEvent.isCancelled == false)
                   Icon(
                     Icons.more_vert_outlined,
-                    color: CustomColors.accentColor,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
               ],
             ),

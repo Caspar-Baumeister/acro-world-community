@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -40,7 +39,7 @@ class GuestProfileContent extends StatelessWidget {
         horizontal: 24,
         vertical: isDesktop ? 40 : 32,
       ),
-      color: CustomColors.backgroundColor,
+      color: Theme.of(context).colorScheme.surface,
       child: Column(
         mainAxisSize: isDesktop ? MainAxisSize.min : MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +49,7 @@ class GuestProfileContent extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: CustomColors.primaryColor.withOpacity(0.6),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
                 width: 2.5,
               ),
             ),
@@ -74,7 +73,7 @@ class GuestProfileContent extends StatelessWidget {
             'Create an account or log in',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
               fontSize: Responsive.isMobile(context) ? 22 : 26,
               fontWeight: FontWeight.w700,
             ),
@@ -87,7 +86,11 @@ class GuestProfileContent extends StatelessWidget {
             subtitle,
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: CustomColors.subtitleText,
+              color: Theme.of(context)
+                  .textTheme
+                  .bodySmall!
+                  .color!
+                  .withOpacity(0.7),
               fontSize: Responsive.isMobile(context) ? 16 : 18,
               fontWeight: FontWeight.w400,
             ),
@@ -122,7 +125,7 @@ class GuestProfileContent extends StatelessWidget {
                 );
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: CustomColors.primaryColor,
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 shape: const StadiumBorder(),
                 elevation: 0,
               ),
@@ -131,7 +134,7 @@ class GuestProfileContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Responsive.isMobile(context) ? 16 : 18,
                   fontWeight: FontWeight.w700,
-                  color: CustomColors.whiteTextColor,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ),
@@ -165,7 +168,7 @@ class GuestProfileContent extends StatelessWidget {
                 );
               },
               style: OutlinedButton.styleFrom(
-                backgroundColor: CustomColors.buttonPrimaryLight,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
                 shape: const StadiumBorder(),
                 side: BorderSide.none,
               ),
@@ -174,7 +177,7 @@ class GuestProfileContent extends StatelessWidget {
                 style: TextStyle(
                   fontSize: Responsive.isMobile(context) ? 16 : 18,
                   fontWeight: FontWeight.w700,
-                  color: CustomColors.primaryTextColor,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
               ),
             ),

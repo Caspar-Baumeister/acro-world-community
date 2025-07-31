@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
 import 'package:acroworld/provider/discover_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -57,7 +57,7 @@ class EventSearchDelegate extends SearchDelegate {
       query = "";
     }
     return Padding(
-      padding: const EdgeInsets.only(left: AppPaddings.medium),
+      padding: const EdgeInsets.only(left: AppDimensions.spacingMedium),
       child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
     );
   }
@@ -77,7 +77,7 @@ class EventSearchDelegate extends SearchDelegate {
     eventSuggestions.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     return Padding(
-      padding: const EdgeInsets.only(left: AppPaddings.medium),
+      padding: const EdgeInsets.only(left: AppDimensions.spacingMedium),
       child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
     );
   }

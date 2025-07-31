@@ -1,5 +1,5 @@
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ClassEventTileImage extends StatelessWidget {
@@ -18,7 +18,7 @@ class ClassEventTileImage extends StatelessWidget {
           alignment: AlignmentDirectional.center,
           children: [
             AspectRatio(
-              aspectRatio: AspectRatios.ar_1_1,
+              aspectRatio: 1,
               child: Container(
                 foregroundDecoration: isCancelled == true
                     ? const BoxDecoration(
@@ -27,7 +27,8 @@ class ClassEventTileImage extends StatelessWidget {
                       )
                     : null,
                 child: ClipRRect(
-                  borderRadius: AppBorders.smallRadius,
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusSmall),
                   child: CustomCachedNetworkImage(
                     imageUrl: imgUrl,
                   ),

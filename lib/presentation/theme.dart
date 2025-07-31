@@ -1,4 +1,4 @@
-import 'package:acroworld/constants/constants.dart';
+import 'package:acroworld/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -94,7 +94,7 @@ class AppTheme {
   static ThemeData dark() {
     return _buildTheme(
       brightness: Brightness.dark,
-      colorScheme: const ColorScheme.dark(
+      colorScheme: ColorScheme.dark(
         primary: AppColors.darkAccent1,
         primaryContainer: AppColors.darkAccent1Darker,
         secondary: AppColors.darkAccent2,
@@ -107,7 +107,7 @@ class AppTheme {
         onError: AppColors.darkTxt,
         shadow: AppColors.darkSurface,
       ),
-      customColors: const CustomColors(
+      customColors: CustomColors(
         accent1Dark: AppColors.darkAccent1Dark,
         accent1Darker: AppColors.darkAccent1Darker,
         accent3: AppColors.darkAccent3,

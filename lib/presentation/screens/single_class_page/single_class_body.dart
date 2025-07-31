@@ -9,8 +9,8 @@ import 'package:acroworld/presentation/components/open_map.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/theme/app_theme.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -35,8 +35,9 @@ class SingleClassBody extends StatelessWidget {
     }
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-          .copyWith(top: 10),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
+              .copyWith(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -57,7 +58,8 @@ class SingleClassBody extends StatelessWidget {
                             .extension<AppCustomColors>()!
                             .accent,
                         letterSpacing: -0.5)),
-                if (classe.classLevels != null && classe.classLevels!.isNotEmpty)
+                if (classe.classLevels != null &&
+                    classe.classLevels!.isNotEmpty)
                   DifficultyWidget(classe.classLevels),
               ],
             ),
@@ -195,8 +197,8 @@ class SingleClassBody extends StatelessWidget {
                     classe.websiteUrl != null && classe.websiteUrl != ""
                         ? Container(
                             alignment: Alignment.centerLeft,
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.medium),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingMedium),
                             child: SmallStandartButtonWithLink(
                                 text: "Website", link: classe.websiteUrl!),
                           )
@@ -205,7 +207,7 @@ class SingleClassBody extends StatelessWidget {
                 )
               : Container(),
           // ClassEventCalenderQuery(classId: classe.id!),
-          const SizedBox(height: AppPaddings.extraLarge)
+          const SizedBox(height: AppDimensions.spacingExtraLarge)
         ],
       ),
     ));

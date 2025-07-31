@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/appbar/standard_app_bar/standard_app_bar.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -73,14 +72,14 @@ class EssentialsCard extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(8)),
           color: Colors.white,
         ),
-        height: CLASS_CARD_HEIGHT * 1.5,
+        height: 135 * 1.5,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Card Image
 
             SizedBox(
-              height: CLASS_CARD_HEIGHT * 1.0,
+              height: 135 * 1.0,
               width: screenWidth * 0.3,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8.0),

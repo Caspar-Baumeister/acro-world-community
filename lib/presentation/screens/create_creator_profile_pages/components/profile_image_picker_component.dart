@@ -2,7 +2,6 @@ import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -74,7 +73,7 @@ class ProfileImagePickerComponentState
                           ? MemoryImage(widget.profileImage!)
                           : null,
                       child: widget.profileImage == null
-                          ? const Icon(Icons.person,
+                          ? Icon(Icons.person,
                               size: AppDimensions.avatarSizeMedium,
                               color: CustomColors.iconColor)
                           : null,

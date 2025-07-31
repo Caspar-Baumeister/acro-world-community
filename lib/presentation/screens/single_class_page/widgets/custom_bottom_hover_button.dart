@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomBottomHoverButton extends StatelessWidget {
@@ -23,7 +22,8 @@ class CustomBottomHoverButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             foregroundColor: Colors.white,
             // if no color is given, use the primary color
-            backgroundColor: backgroundColor ?? Theme.of(context).colorScheme.primary,
+            backgroundColor:
+                backgroundColor ?? Theme.of(context).colorScheme.primary,
             padding: const EdgeInsets.all(15), // internal padding
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8.0),

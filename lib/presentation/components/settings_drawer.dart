@@ -3,7 +3,6 @@ import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,7 +17,7 @@ class SettingsDrawer extends ConsumerWidget {
     final userAsync = ref.watch(userRiverpodProvider);
 
     return Drawer(
-      backgroundColor: CustomColors.backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       child: SafeArea(
         child: Column(
           children: <Widget>[
@@ -80,8 +79,8 @@ class SettingsDrawer extends ConsumerWidget {
                     context: context,
                     icon: Icons.login_rounded,
                     text: "Create Account",
-                    iconColor: CustomColors.accentColor,
-                    textColor: CustomColors.accentColor,
+                    iconColor: Theme.of(context).colorScheme.secondary,
+                    textColor: Theme.of(context).colorScheme.secondary,
                     onTap: () => context.pushNamed(
                       authRoute,
                       queryParameters: {
@@ -95,8 +94,8 @@ class SettingsDrawer extends ConsumerWidget {
                     context: context,
                     icon: Icons.logout_rounded,
                     text: "Log out",
-                    iconColor: CustomColors.errorTextColor,
-                    textColor: CustomColors.errorTextColor,
+                    iconColor: Theme.of(context).colorScheme.error,
+                    textColor: Theme.of(context).colorScheme.error,
                     onTap: () async {
                       await ref.read(authProvider.notifier).signOut();
                       ref.invalidate(userRiverpodProvider);
@@ -143,7 +142,7 @@ class SettingsDrawer extends ConsumerWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side: BorderSide(
-            color: CustomColors.secondaryBackgroundColor,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             width: 1.5,
           ),
         ),
@@ -157,14 +156,15 @@ class SettingsDrawer extends ConsumerWidget {
                 Icon(
                   icon,
                   size: 24,
-                  color: iconColor ?? CustomColors.primaryColor,
+                  color: iconColor ?? Theme.of(context).colorScheme.primary,
                 ),
                 const SizedBox(width: 16),
                 Text(
                   text,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w500,
-                        color: textColor ?? CustomColors.primaryTextColor,
+                        color: textColor ??
+                            Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
                 const Spacer(),

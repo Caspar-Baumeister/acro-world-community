@@ -61,7 +61,7 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
       child: ElevatedButton(
         onPressed: _loading ? null : _confirmAndDelete,
         style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             side: const BorderSide(color: Colors.red),
             borderRadius: BorderRadius.circular(30.0),

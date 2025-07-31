@@ -5,8 +5,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +50,7 @@ class OptionChoosingStep extends StatelessWidget {
                   return true;
                 }).map((bookingCategory) => Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: AppPaddings.tiny),
+                          vertical: AppDimensions.spacingExtraSmall),
                       child: BookingCategorySelectionComponent(
                         bookingCategory: bookingCategory,
                         currentId: currentOption,
@@ -84,7 +83,7 @@ class OptionChoosingStep extends StatelessWidget {
         ),
         placesLeft != null && maxPlaces != null
             ? Padding(
-                padding: const EdgeInsets.only(top: AppPaddings.small),
+                padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                 child: Text(
                   "$placesLeft / $maxPlaces places left",
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -131,10 +130,10 @@ class _BookingCategorySelectionComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         decoration: BoxDecoration(
           color: CustomColors.secondaryBackgroundColor,
-          borderRadius: AppBorders.defaultRadius,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
         child: FutureBuilder<int?>(
           future: _confirmedBookingsFuture,
@@ -161,7 +160,7 @@ class _BookingCategorySelectionComponentState
                           color: CustomColors.primaryColor,
                         ),
                   ),
-                  SizedBox(height: AppPaddings.small),
+                  SizedBox(height: AppDimensions.spacingSmall),
                   Text(widget.bookingCategory.description ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -169,7 +168,8 @@ class _BookingCategorySelectionComponentState
                   // a line
                   const CustomDivider(),
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -205,7 +205,8 @@ class _BookingCategorySelectionComponentState
                 if (widget.bookingCategory.description != null &&
                     widget.bookingCategory.description!.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(widget.bookingCategory.description ?? "",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
@@ -216,7 +217,8 @@ class _BookingCategorySelectionComponentState
                 if (snapshot.data != null &&
                     snapshot.data! >= widget.bookingCategory.contingent)
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
@@ -230,7 +232,7 @@ class _BookingCategorySelectionComponentState
                   ...widget.bookingCategory.bookingOptions!
                       .map((BookingOption e) => Padding(
                             padding: const EdgeInsets.only(
-                                bottom: AppPaddings.medium),
+                                bottom: AppDimensions.spacingMedium),
                             child: BookingOptionSelectionCard(
                               bookingOption: e,
                               value: widget.currentId == e.id,
@@ -273,10 +275,10 @@ class BookingOptionSelectionCard extends StatelessWidget {
       },
       child: Container(
           decoration: BoxDecoration(
-            borderRadius: AppBorders.defaultRadius,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
             border: Border.all(color: CustomColors.primaryTextColor, width: 1),
           ),
-          padding: const EdgeInsets.all(AppPaddings.small),
+          padding: const EdgeInsets.all(AppDimensions.spacingSmall),
           child: Row(
             children: [
               SizedBox(
@@ -309,8 +311,8 @@ class BookingOptionSelectionCard extends StatelessWidget {
                     bookingOption.subtitle != null &&
                             bookingOption.subtitle!.isNotEmpty
                         ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.small),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingSmall),
                             child: Text(
                               bookingOption.subtitle!,
                               style: Theme.of(context).textTheme.bodyMedium,

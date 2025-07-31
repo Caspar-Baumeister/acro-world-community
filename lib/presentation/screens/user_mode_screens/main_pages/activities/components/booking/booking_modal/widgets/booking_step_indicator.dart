@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 // a widget, that shows the user where he is in the booking process

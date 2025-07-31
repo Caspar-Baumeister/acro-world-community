@@ -16,8 +16,7 @@ import 'package:acroworld/provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/profile_creation_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -295,8 +294,8 @@ class _CreateCreatorProfileBodyState
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.medium,
-                    vertical: AppPaddings.large,
+                    horizontal: AppDimensions.spacingMedium,
+                    vertical: AppDimensions.spacingLarge,
                   ),
                   child: SingleChildScrollView(
                     child: Column(
@@ -308,14 +307,14 @@ class _CreateCreatorProfileBodyState
                           profileImage: _profileImage,
                           onImageSelected: _handleProfileImageSelected,
                         ),
-                        const SizedBox(height: AppPaddings.small),
+                        const SizedBox(height: AppDimensions.spacingSmall),
                         Center(
                           child: Text(
                             _nameController.text,
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
                         ),
-                        const SizedBox(height: AppPaddings.small),
+                        const SizedBox(height: AppDimensions.spacingSmall),
                         Center(
                           child: GestureDetector(
                             onTap: () => widget.isEditing &&
@@ -334,9 +333,9 @@ class _CreateCreatorProfileBodyState
                           ),
                         ),
 
-                        const SizedBox(height: AppPaddings.medium),
+                        const SizedBox(height: AppDimensions.spacingMedium),
                         const CustomDivider(),
-                        const SizedBox(height: AppPaddings.large),
+                        const SizedBox(height: AppDimensions.spacingLarge),
 
                         // Name field
                         InputFieldComponent(
@@ -346,7 +345,7 @@ class _CreateCreatorProfileBodyState
                               v!.isEmpty ? 'Name cannot be empty' : null,
                           textInputAction: TextInputAction.next,
                         ),
-                        const SizedBox(height: AppPaddings.medium),
+                        const SizedBox(height: AppDimensions.spacingMedium),
 
                         // Slug field
                         InputFieldComponent(
@@ -363,12 +362,12 @@ class _CreateCreatorProfileBodyState
                               ? null
                               : (_isSlugAvailable == false ||
                                       _isSlugValid == false)
-                                  ? const Icon(Icons.error,
+                                  ? Icon(Icons.error,
                                       color: CustomColors.errorTextColor)
-                                  : const Icon(Icons.check_circle,
+                                  : Icon(Icons.check_circle,
                                       color: CustomColors.successTextColor),
                         ),
-                        const SizedBox(height: AppPaddings.medium),
+                        SizedBox(height: AppDimensions.spacingMedium),
 
                         // Description
                         InputFieldComponent(
@@ -377,7 +376,7 @@ class _CreateCreatorProfileBodyState
                           maxLines: 5,
                           minLines: 2,
                         ),
-                        const SizedBox(height: AppPaddings.medium),
+                        const SizedBox(height: AppDimensions.spacingMedium),
 
                         // Creator type dropdown
                         CustomQueryOptionInputComponent(
@@ -396,7 +395,7 @@ class _CreateCreatorProfileBodyState
                           setOption: (val) =>
                               setState(() => _creatorType = val),
                         ),
-                        const SizedBox(height: AppPaddings.medium),
+                        const SizedBox(height: AppDimensions.spacingMedium),
 
                         // Additional images
                         AdditionalImagePickerComponent(
@@ -413,7 +412,7 @@ class _CreateCreatorProfileBodyState
                             });
                           },
                         ),
-                        const SizedBox(height: AppPaddings.large),
+                        const SizedBox(height: AppDimensions.spacingLarge),
 
                         // Save/Create button
                         StandartButton(
@@ -426,7 +425,7 @@ class _CreateCreatorProfileBodyState
                         ),
 
                         if (_errorMessage != null) ...[
-                          const SizedBox(height: AppPaddings.small),
+                          const SizedBox(height: AppDimensions.spacingSmall),
                           Text(
                             _errorMessage!,
                             style: Theme.of(context)

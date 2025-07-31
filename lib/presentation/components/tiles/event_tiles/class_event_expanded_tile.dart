@@ -6,7 +6,6 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/clas
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +38,8 @@ class ClassEventExpandedTile extends StatelessWidget {
               })
           : () => showErrorToast("This class is not available anymore"),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+        padding:
+            const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,8 +51,8 @@ class ClassEventExpandedTile extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

@@ -2,7 +2,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/c
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/edit_creator_profile_button.dart';
 import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -45,21 +45,22 @@ class _CreatorProfileBodyState extends State<CreatorProfileBody> {
                   )
                 : Container(),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppPaddings.large),
+              padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.spacingLarge),
               child: Center(
                 child: CreatorSwitchToUserModeButton(),
               ),
             ),
             Padding(
               padding: const EdgeInsets.only(
-                left: AppPaddings.medium,
+                left: AppDimensions.spacingMedium,
               ),
               child: Text("Settings",
                   style: Theme.of(context).textTheme.headlineMedium),
             ),
-            const SizedBox(height: AppPaddings.small),
+            const SizedBox(height: AppDimensions.spacingSmall),
             CreatorStripeConnectButton(creatorProvider: creatorProvider),
-            SizedBox(height: AppPaddings.large),
+            SizedBox(height: AppDimensions.spacingLarge),
           ],
         ),
       ),

@@ -4,8 +4,7 @@ import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -27,7 +26,7 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
     return BaseModal(
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.large,
+          horizontal: AppDimensions.spacingLarge,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

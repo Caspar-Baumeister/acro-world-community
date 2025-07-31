@@ -1,5 +1,5 @@
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/custom_check_widget.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/app_constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

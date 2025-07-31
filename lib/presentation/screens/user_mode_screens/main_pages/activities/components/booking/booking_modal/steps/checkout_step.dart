@@ -16,8 +16,6 @@ import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/foundation.dart';
@@ -127,8 +125,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
 
                       if (kIsWeb && widget.isDirectPayment == true)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
                           child: StandartButton(
                             text: "Continue to payment",
                             onPressed: () async {
@@ -145,8 +143,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                       // if event is bookable troguh direct payment
                       if (widget.isDirectPayment == true && !kIsWeb)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
                           child: FutureBuilder(
                               future: _initializeAll(context, ref),
                               builder: (context, snapshot) {
@@ -188,8 +186,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                       // if event is bookable through cash payment
                       if (widget.isCashPayment == true)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
                           child: StandartButton(
                             text: "Pay in cash",
                             onPressed: () async {
@@ -565,9 +563,9 @@ class AnswerSection extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: AppPaddings.medium,
-                    top: AppPaddings.medium,
-                    right: AppPaddings.medium),
+                    left: AppDimensions.spacingMedium,
+                    top: AppDimensions.spacingMedium,
+                    right: AppDimensions.spacingMedium),
                 child: Text(
                   "Questions from the organizer",
                   style: Theme.of(context).textTheme.titleLarge,
@@ -577,7 +575,7 @@ class AnswerSection extends StatelessWidget {
                 (e) =>
                     QuestionCard(question: e, eventOccurence: eventOccurence),
               ),
-              SizedBox(height: AppPaddings.medium),
+              SizedBox(height: AppDimensions.spacingMedium),
             ],
           ),
         ),
@@ -632,8 +630,8 @@ class QuestionCard extends ConsumerWidget {
           },
           child: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppPaddings.medium,
-              vertical: AppPaddings.small,
+              horizontal: AppDimensions.spacingMedium,
+              vertical: AppDimensions.spacingSmall,
             ),
             decoration: BoxDecoration(
               border: Border(
@@ -648,7 +646,8 @@ class QuestionCard extends ConsumerWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: AppPaddings.small),
+                  padding:
+                      const EdgeInsets.only(right: AppDimensions.spacingSmall),
                   child: hasAnswer
                       ? const Icon(
                           Icons.check_circle,
@@ -672,7 +671,7 @@ class QuestionCard extends ConsumerWidget {
                         ),
                       ),
                       if (question.isRequired == true) ...[
-                        const SizedBox(width: AppPaddings.small),
+                        const SizedBox(width: AppDimensions.spacingSmall),
                         Text(
                           "(required)",
                           style:
@@ -686,7 +685,7 @@ class QuestionCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(width: AppPaddings.medium),
+                const SizedBox(width: AppDimensions.spacingMedium),
                 const Icon(
                   Icons.arrow_forward_ios,
                   size: AppDimensions.iconSizeSmall,

@@ -1,5 +1,4 @@
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -18,8 +17,8 @@ class CustomCachedNetworkImage extends StatelessWidget {
       return Container(
         width: width,
         height: height,
-        decoration: const BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
         ),
       );
     }
@@ -48,9 +47,9 @@ class CustomCachedNetworkImage extends StatelessWidget {
           color: CustomColors.secondaryBackgroundColor,
           borderRadius: borderRadius,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.error,
-          color: CustomColors.errorTextColor,
+          color: Theme.of(context).colorScheme.error,
           size: AppDimensions.iconSizeMedium,
         ),
       ),

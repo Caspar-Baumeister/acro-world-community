@@ -4,7 +4,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
-import 'package:acroworld/utils/constants.dart';
+
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';

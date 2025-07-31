@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/presentation/components/show_more_text.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ProfileHeaderWidget extends StatefulWidget {
@@ -39,7 +39,7 @@ class _ProfileHeaderWidgetState extends State<ProfileHeaderWidget> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.medium,
+                      horizontal: AppDimensions.spacingMedium,
                     ),
                     child: Column(
                       children: [

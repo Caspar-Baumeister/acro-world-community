@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/class_event_calender_query.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CalenderModal extends StatelessWidget {

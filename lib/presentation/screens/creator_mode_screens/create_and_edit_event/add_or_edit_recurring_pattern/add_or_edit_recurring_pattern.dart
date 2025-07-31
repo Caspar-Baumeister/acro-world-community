@@ -5,8 +5,7 @@ import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/single_occurence_tab_view.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class AddOrEditRecurringPatternPage extends StatefulWidget {
@@ -127,18 +126,20 @@ class _AddOrEditRecurringPatternPageState
           if (_errorMessage != null)
             Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.large,
-              ).copyWith(top: AppPaddings.medium, bottom: AppPaddings.medium),
+                horizontal: AppDimensions.spacingLarge,
+              ).copyWith(
+                  top: AppDimensions.spacingMedium,
+                  bottom: AppDimensions.spacingMedium),
               child: Text(
                 _errorMessage!,
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
-                    .copyWith(color: CustomColors.errorTextColor),
+                    .copyWith(color: Theme.of(context).colorScheme.error),
               ),
             )
           else
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
           StandartButton(
               text: "Save",
               onPressed: () {

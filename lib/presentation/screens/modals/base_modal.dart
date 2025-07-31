@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BaseModal extends StatelessWidget {
@@ -13,8 +12,9 @@ class BaseModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      padding:
-          noPadding == true ? null : const EdgeInsets.all(AppPaddings.large),
+      padding: noPadding == true
+          ? null
+          : const EdgeInsets.all(AppDimensions.spacingLarge),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
@@ -24,13 +24,14 @@ class BaseModal extends StatelessWidget {
               height: 5,
               decoration: BoxDecoration(
                 color: CustomColors.iconColor,
-                borderRadius: AppBorders.smallRadius,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
             ),
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
             title != null
                 ? Padding(
-                    padding: const EdgeInsets.only(bottom: AppPaddings.large),
+                    padding: const EdgeInsets.only(
+                        bottom: AppDimensions.spacingLarge),
                     child: Text(
                       title!,
                       style: Theme.of(context).textTheme.titleMedium,
@@ -38,7 +39,7 @@ class BaseModal extends StatelessWidget {
                   )
                 : Container(),
             child,
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
           ]),
     );
   }
@@ -52,7 +53,7 @@ class BaseModal extends StatelessWidget {
 //       isScrollControlled: true,
 //       shape: RoundedRectangleBorder(
 //           borderRadius:
-//               BorderRadius.vertical(top: AppBorders.defaultRadius.topLeft)),
+//               BorderRadius.vertical(top: BorderRadius.circular(AppDimensions.radiusMedium).topLeft)),
 //       context: context,
 //       builder: (context) => Padding(
 //           padding:

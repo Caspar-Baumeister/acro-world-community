@@ -3,8 +3,7 @@ import 'package:acroworld/presentation/components/datetime/date_time_service.dar
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discovery_slider_card.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_card_image_section.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class DiscoveryFilterOnCard extends StatelessWidget {
@@ -23,7 +22,7 @@ class DiscoveryFilterOnCard extends StatelessWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: AppBorders.smallRadius,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         ),
         height: 135,
         child: Row(
@@ -32,16 +31,16 @@ class DiscoveryFilterOnCard extends StatelessWidget {
             // Card Image
             Padding(
               padding: const EdgeInsets.only(
-                  left: AppPaddings.small,
-                  bottom: AppPaddings.small,
-                  top: AppPaddings.small),
+                  left: AppDimensions.spacingSmall,
+                  bottom: AppDimensions.spacingSmall,
+                  top: AppDimensions.spacingSmall),
               child: EventCardImageSection(
                   imageUrl: event.classModel?.imageUrl,
                   isHighlighted: event.isHighlighted == true),
             ),
             Expanded(
               child: Container(
-                padding: const EdgeInsets.all(AppPaddings.small),
+                padding: const EdgeInsets.all(AppDimensions.spacingSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,8 +55,8 @@ class DiscoveryFilterOnCard extends StatelessWidget {
                     ),
                     location != null
                         ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.tiny),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingExtraSmall),
                             child: Text(
                               location,
                               maxLines: 1,
@@ -73,7 +72,8 @@ class DiscoveryFilterOnCard extends StatelessWidget {
                           )
                         : Container(),
                     Padding(
-                      padding: const EdgeInsets.only(top: AppPaddings.small),
+                      padding: const EdgeInsets.only(
+                          top: AppDimensions.spacingSmall),
                       child: Text(
                           DateTimeService.getDateString(
                               event.startDate, event.endDate),

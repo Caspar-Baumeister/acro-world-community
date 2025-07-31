@@ -1,7 +1,7 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/month_string_widget.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class EventOccurenceMonthlySortedView extends StatelessWidget {
@@ -22,12 +22,14 @@ class EventOccurenceMonthlySortedView extends StatelessWidget {
           return Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: MonthStringWidget(
                     date: DateTime.parse(sortedEvents[0].startDate!)),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: ClassEventExpandedTile(
                   classEvent: sortedEvents[index],
                   showFullDate: true,
@@ -44,7 +46,7 @@ class EventOccurenceMonthlySortedView extends StatelessWidget {
             DateTime.parse(currentItem.startDate!).month) {
           // Same date, just display the item
           return Padding(
-            padding: const EdgeInsets.only(bottom: AppPaddings.small),
+            padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
             child: ClassEventExpandedTile(
               classEvent: currentItem,
               showFullDate: true,
@@ -56,12 +58,14 @@ class EventOccurenceMonthlySortedView extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    bottom: AppPaddings.medium, top: AppPaddings.medium),
+                    bottom: AppDimensions.spacingMedium,
+                    top: AppDimensions.spacingMedium),
                 child: MonthStringWidget(
                     date: DateTime.parse(currentItem.startDate!)),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: ClassEventExpandedTile(
                   classEvent: currentItem,
                   showFullDate: true,

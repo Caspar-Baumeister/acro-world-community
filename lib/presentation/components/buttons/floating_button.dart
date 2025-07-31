@@ -1,5 +1,4 @@
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class FloatingButton extends StatelessWidget {
@@ -38,8 +37,8 @@ class FloatingButton extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(AppDimensions.spacingMedium),
             decoration: BoxDecoration(
-              color: CustomColors.backgroundColor,
-              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),

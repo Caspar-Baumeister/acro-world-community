@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/app_constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

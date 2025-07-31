@@ -22,7 +22,7 @@ class AccountSettingsPage extends StatelessWidget {
             decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
-                  color: Colors.grey,
+                  color: Theme.of(context).colorScheme.outline,
                   width: 0.5,
                 ),
               ),

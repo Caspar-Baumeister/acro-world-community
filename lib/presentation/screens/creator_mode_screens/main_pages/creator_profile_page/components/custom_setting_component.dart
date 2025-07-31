@@ -1,6 +1,4 @@
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class CustomSettingComponent extends StatefulWidget {
@@ -25,7 +23,8 @@ class _CustomSettingComponentState extends State<CustomSettingComponent> {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium, vertical: AppPaddings.small),
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingSmall),
       child: GestureDetector(
         onTap: () async {
           setState(() {
@@ -37,10 +36,10 @@ class _CustomSettingComponentState extends State<CustomSettingComponent> {
           });
         },
         child: Container(
-          padding: const EdgeInsets.all(AppPaddings.medium),
+          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           decoration: BoxDecoration(
             color: CustomColors.backgroundColor,
-            borderRadius: AppBorders.smallRadius,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
             boxShadow: [
               BoxShadow(
                 color: Colors.grey.withOpacity(0.5),

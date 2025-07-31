@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

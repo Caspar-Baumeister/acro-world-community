@@ -89,17 +89,17 @@ class _ReportButtonMutationWrapperState
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.flag_circle_outlined,
-                  color: Colors.redAccent, size: 48),
+                  color: Theme.of(context).colorScheme.error, size: 48),
               const SizedBox(height: 16),
               Text(
                 "Flag Event",
                 style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                    fontWeight: FontWeight.bold, color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.onSurface,),
               ),
               const SizedBox(height: 12),
               const Text(
                 "Are you sure this event is not happening or incorrect?",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -109,7 +109,7 @@ class _ReportButtonMutationWrapperState
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(),
                     child: const Text("Close",
-                        style: TextStyle(color: Colors.grey)),
+                        style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),)),
                   ),
                   StandartButton(
                     text: "Report Event",
@@ -153,7 +153,7 @@ class _ReportButtonMutationWrapperState
               child: IconButton(
                 icon: Icon(
                   _isReported ? Icons.flag : Icons.flag_outlined,
-                  color: _isReported ? Colors.red : Colors.black,
+                  color: Theme.of(context).colorScheme.error,
                 ),
                 onPressed: () => _onIconPressed(userId),
                 tooltip: _isReported

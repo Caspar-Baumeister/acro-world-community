@@ -6,7 +6,7 @@ import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/selectable_card.dart';
 import 'package:acroworld/provider/event_answers_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -84,8 +84,8 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
               if (questionType != QuestionType.phoneNumber &&
                   widget.question.question != null) ...[
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.spacingLarge),
                   child: Text(
                     widget.question.question!,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -96,8 +96,8 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 // answer input
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
-                      vertical: AppPaddings.medium),
+                      horizontal: AppDimensions.spacingLarge,
+                      vertical: AppDimensions.spacingMedium),
                   child: InputFieldComponent(
                     controller: _answerController,
                     minLines: 5,
@@ -107,12 +107,12 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 ),
               ],
               if (questionType == QuestionType.multipleChoice) ...[
-                const SizedBox(height: AppPaddings.medium),
+                const SizedBox(height: AppDimensions.spacingMedium),
                 widget.question.isMultipleChoice == true
                     ? Padding(
                         // padding only left
                         padding: const EdgeInsets.only(
-                          bottom: AppPaddings.tiny,
+                          bottom: AppDimensions.spacingExtraSmall,
                         ),
                         child: Text("(✓) You can choose multiple options",
                             style: Theme.of(context).textTheme.bodyMedium),
@@ -121,7 +121,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 // multiple choice options
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.large,
+                    horizontal: AppDimensions.spacingLarge,
                   ),
                   child: Column(
                     children: widget.question.choices!
@@ -145,21 +145,21 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                         .toList(),
                   ),
                 ),
-                const SizedBox(height: AppPaddings.medium),
+                const SizedBox(height: AppDimensions.spacingMedium),
               ],
               if (questionType == QuestionType.phoneNumber) ...[
                 // phone number input
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
-                      vertical: AppPaddings.medium),
+                      horizontal: AppDimensions.spacingLarge,
+                      vertical: AppDimensions.spacingMedium),
                   child: PhoneQuestionInput(
                       controller: _answerController,
                       prefixController: _phonePrefixController),
                 ),
               ],
 
-              SizedBox(height: AppPaddings.medium),
+              SizedBox(height: AppDimensions.spacingMedium),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -169,7 +169,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                  SizedBox(width: AppPaddings.small),
+                  SizedBox(width: AppDimensions.spacingSmall),
                   StandartButton(
                       width: MediaQuery.of(context).size.width * 0.5,
                       text: editAnswer != null ? "Save" : "Add",

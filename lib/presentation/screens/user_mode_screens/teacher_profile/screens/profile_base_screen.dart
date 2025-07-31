@@ -4,7 +4,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/profile_header_widget.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

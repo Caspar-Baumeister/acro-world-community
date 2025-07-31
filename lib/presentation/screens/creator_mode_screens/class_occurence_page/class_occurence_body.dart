@@ -5,8 +5,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_list_view.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ClassOccurenceBody extends StatefulWidget {
@@ -28,9 +27,9 @@ class _ClassOccurenceBodyState extends State<ClassOccurenceBody> {
         // switch between upcoming and past events
         Padding(
           padding: const EdgeInsets.only(
-              left: AppPaddings.large,
-              top: AppPaddings.small,
-              right: AppPaddings.large),
+              left: AppDimensions.spacingLarge,
+              top: AppDimensions.spacingSmall,
+              right: AppDimensions.spacingLarge),
           child: Row(
             children: [
               Switch(
@@ -40,12 +39,13 @@ class _ClassOccurenceBodyState extends State<ClassOccurenceBody> {
                     showPastEvents = value;
                   });
                 },
-                activeTrackColor: CustomColors.successBgColorSec,
-                activeColor: CustomColors.successBgColor,
-                inactiveTrackColor: CustomColors.secondaryBackgroundColor,
-                inactiveThumbColor: CustomColors.iconColor,
+                activeTrackColor:
+                    Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                activeColor: Theme.of(context).colorScheme.primary,
+                inactiveTrackColor: Theme.of(context).colorScheme.surface,
+                inactiveThumbColor: Theme.of(context).colorScheme.outline,
               ),
-              SizedBox(width: AppPaddings.small),
+              SizedBox(width: AppDimensions.spacingSmall),
               Text(
                 "show also past events",
                 style: Theme.of(context).textTheme.bodyMedium,

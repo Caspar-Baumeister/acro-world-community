@@ -1,5 +1,4 @@
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +21,10 @@ class CustomAvatarCachedNetworkImage extends StatelessWidget {
       return Container(
         width: width,
         height: height,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           // rounded image
           shape: BoxShape.circle,
-          color: CustomColors.secondaryBackgroundColor,
+          color: Theme.of(context).colorScheme.surfaceContainer,
         ),
       );
     }
@@ -43,21 +42,21 @@ class CustomAvatarCachedNetworkImage extends StatelessWidget {
       placeholder: (context, url) => Container(
         width: width,
         height: height,
-        decoration: const BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
+          color: Theme.of(context).colorScheme.surfaceContainer,
         ),
       ),
       errorWidget: (context, url, error) => Container(
         width: width,
         height: height,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: CustomColors.secondaryBackgroundColor,
+          color: Theme.of(context).colorScheme.surfaceContainer,
         ),
-        child: const Icon(
+        child: Icon(
           Icons.error,
-          color: CustomColors.errorTextColor,
+          color: Theme.of(context).colorScheme.error,
           size: AppDimensions.iconSizeMedium,
         ),
       ),

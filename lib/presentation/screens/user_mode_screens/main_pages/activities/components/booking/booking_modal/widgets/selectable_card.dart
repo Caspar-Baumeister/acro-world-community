@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class SelectableCard extends StatelessWidget {
@@ -24,11 +23,11 @@ class SelectableCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: AppBorders.defaultRadius,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
           border: Border.all(color: CustomColors.primaryTextColor, width: 1),
         ),
-        padding: const EdgeInsets.all(AppPaddings.small),
-        margin: const EdgeInsets.only(bottom: AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall),
+        margin: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
         child: Row(
           children: [
             SizedBox(
@@ -61,7 +60,8 @@ class SelectableCard extends StatelessWidget {
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: AppPaddings.small),
+                      padding: const EdgeInsets.only(
+                          top: AppDimensions.spacingSmall),
                       child: Text(
                         subtitle!,
                         style: Theme.of(context).textTheme.bodyMedium,
