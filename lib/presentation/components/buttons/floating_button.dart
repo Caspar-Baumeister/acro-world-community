@@ -1,5 +1,5 @@
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class FloatingButton extends StatelessWidget {
@@ -24,7 +24,7 @@ class FloatingButton extends StatelessWidget {
       children: [
         if (headerText != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: AppPaddings.small),
+            padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
             child: Text(
               headerText!,
               style: Theme.of(context)
@@ -36,10 +36,10 @@ class FloatingButton extends StatelessWidget {
         GestureDetector(
           onTap: onPressed,
           child: Container(
-            padding: const EdgeInsets.all(AppPaddings.medium),
+            padding: const EdgeInsets.all(AppDimensions.spacingMedium),
             decoration: BoxDecoration(
               color: CustomColors.backgroundColor,
-              borderRadius: AppBorders.smallRadius,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -55,8 +55,8 @@ class FloatingButton extends StatelessWidget {
                     children: [
                       if (icon != null)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(right: AppPaddings.small),
+                          padding: const EdgeInsets.only(
+                              right: AppDimensions.spacingSmall),
                           child: icon!,
                         ),
                       Flexible(

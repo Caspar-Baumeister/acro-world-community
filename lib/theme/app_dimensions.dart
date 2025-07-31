@@ -4,8 +4,10 @@ class AppDimensions {
   static const double spacingSmall = 8.0; // Corresponds to smallPadding
   static const double spacingMedium = 16.0; // Corresponds to xMediumPadding
   static const double spacingLarge = 24.0; // Corresponds to largePadding
-  static const double spacingExtraLarge = 32.0; // Corresponds to extraLargePadding
-  static const double spacingHuge = 50.0; // Corresponds to extraLargePadding (if needed for larger values)
+  static const double spacingExtraLarge =
+      32.0; // Corresponds to extraLargePadding
+  static const double spacingHuge =
+      50.0; // Corresponds to extraLargePadding (if needed for larger values)
 
   // Vertical Spacing (height_size_box)
   static const double heightSpacingSmall = 16.0; // sHeighSbox
@@ -41,4 +43,9 @@ class AppDimensions {
 
   // Font Sizes (These will be primarily managed by TextTheme, but kept here for reference if needed)
   static const double fontSizeClassic = 15.0;
+
+  static const double appBarExpandedHeight = 200.0;
+  static const double appBarCollapsedThreshold = 0.5;
+
+  static const double avatarSizeMedium = 45;
 }

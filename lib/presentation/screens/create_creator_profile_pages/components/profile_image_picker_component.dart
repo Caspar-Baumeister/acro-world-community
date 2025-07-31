@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -80,14 +80,14 @@ class ProfileImagePickerComponentState
                           : null,
                     ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 0,
               right: 0,
               child: CircleAvatar(
                 backgroundColor: CustomColors.iconColor,
-                radius: AppDimensions.iconSizeTiny,
+                radius: AppDimensions.iconSizeSmall,
                 child: Icon(Icons.camera_alt,
-                    color: Colors.white, size: AppDimensions.iconSizeTiny),
+                    color: Colors.white, size: AppDimensions.iconSizeSmall),
               ),
             ),
           ],

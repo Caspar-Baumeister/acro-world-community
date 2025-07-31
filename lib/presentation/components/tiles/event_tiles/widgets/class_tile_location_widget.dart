@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ClassTileLocationWidget extends StatelessWidget {
@@ -15,7 +15,7 @@ class ClassTileLocationWidget extends StatelessWidget {
     return classObject.locationName == null
         ? Container()
         : Padding(
-            padding: const EdgeInsets.only(top: AppPaddings.tiny),
+            padding: const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
             child: Text(
               classObject.locationName ?? '',
               maxLines: 1,

@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 
@@ -22,10 +21,10 @@ class SmallStandartButtonWithLink extends StatelessWidget {
       child: FilledButton(
           // set fillcolor to white
           style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all<Color>(Colors.white),
+            backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.surface),
             // set border to black and width to 1
             side: WidgetStateProperty.all<BorderSide>(
-                const BorderSide(color: Colors.black, width: 1)),
+                BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1)),
           ),
           onPressed: () async {
             customFunction ?? await customLaunch(link);
@@ -35,7 +34,7 @@ class SmallStandartButtonWithLink extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
-                  .copyWith(color: color ?? CustomColors.linkTextColor))),
+                  .copyWith(color: color ?? Theme.of(context).colorScheme.secondary))),
     );
   }
 }

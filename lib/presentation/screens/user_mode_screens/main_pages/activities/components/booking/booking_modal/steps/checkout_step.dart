@@ -14,6 +14,7 @@ import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';

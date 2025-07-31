@@ -18,21 +18,21 @@ class AspectRatios {
   static const ar_6_5 = 7 / 5;
 }
 
-class AppDimensions {
-  static const double modalControllerWidth = 40.0;
-  static const double modalControllerHeight = 5.0;
-  static const double bottomNavBarHeight = 100.0;
-  static const double iconSizeTiny = 14;
-  static const double iconSizeSmall = 20;
+// class AppDimensions {
+//   static const double modalControllerWidth = 40.0;
+//   static const double modalControllerHeight = 5.0;
+//   static const double bottomNavBarHeight = 100.0;
+//   static const double iconSizeTiny = 14;
+//   static const double iconSizeSmall = 20;
 
-  static const double iconSizeMedium = 24.0;
-  static const double iconSizeLarge = 36.0;
-  static const double avatarSizeMedium = 45;
-  static const double avatarSizeLarge = 80;
-  static const double eventDashboardSliderWidth = 150;
-  static const double eventVerticalScrollCardHeight = 135;
-  static const double eventCreationImageSize = 100;
-}
+//   static const double iconSizeMedium = 24.0;
+//   static const double iconSizeLarge = 36.0;
+//   static const double avatarSizeMedium = 45;
+//   static const double avatarSizeLarge = 80;
+//   static const double eventDashboardSliderWidth = 150;
+//   static const double eventVerticalScrollCardHeight = 135;
+//   static const double eventCreationImageSize = 100;
+// }
 
 class AppPaddings {
   static const double tiny = 4.0;

@@ -6,9 +6,9 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_create_stripe_account_section.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:provider/provider.dart';
 
 /// This widget represents the "Ticket" section of the "Market Step"
@@ -52,8 +52,8 @@ class MarketStepTicketSection extends StatelessWidget {
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.large,
-                  ).copyWith(bottom: AppPaddings.large),
+                    horizontal: AppDimensions.spacingLarge,
+                  ).copyWith(bottom: AppDimensions.spacingLarge),
                   child: CategoryCreationCard(
                     bookingCategory: bookingCategory,
                     onEdit: () {
@@ -99,30 +99,30 @@ class MarketStepTicketSection extends StatelessWidget {
                 );
               },
             ),
-            const SizedBox(height: AppPaddings.small),
+            const SizedBox(height: AppDimensions.spacingSmall),
             // little infobox if no categories are added yet
             if (eventCreationAndEditingProvider.bookingCategories.isEmpty)
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+                    const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
                 child: Text(
                   "Ticket categories are used to limit the number of tickets available for any group of tickets like Early Bird, Regular, Teacher or Helpers. You need to add at least one category to be able to create tickets.",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                       ),
                 ),
               ),
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+                  border: Border.all(color: Theme.of(context).colorScheme.outline),
                 ),
-                padding: const EdgeInsets.all(AppPaddings.medium),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -133,7 +133,7 @@ class MarketStepTicketSection extends StatelessWidget {
                             .switchAllowCashPayments();
                       },
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppDimensions.spacingMedium),
                     Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -143,13 +143,13 @@ class MarketStepTicketSection extends StatelessWidget {
                             style:
                                 Theme.of(context).textTheme.bodySmall?.copyWith(
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
+                                      color: Theme.of(context).colorScheme.onSurface,
                                     ),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppDimensions.spacingExtraSmall),
                           Builder(
                             builder: (context) => IconButton(
-                              icon: const Icon(Icons.info_outline, size: 18),
+                              icon: Icon(Icons.info_outline, size: AppDimensions.iconSizeSmall),
                               tooltip: "More info",
                               onPressed: () {
                                 showDialog(
@@ -178,14 +178,14 @@ class MarketStepTicketSection extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppPaddings.small),
+            const SizedBox(height: AppDimensions.spacingSmall),
             creatorProvider.isLoading == true
                 ? const Center(child: CircularProgressIndicator())
                 : isStripeEnabled // if stripe is enabled, don't need to show infobax
                     ? SizedBox.shrink()
                     : const MarketStepCreateStripeAccountSection(),
 
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
           ],
         ),
       ),

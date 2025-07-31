@@ -5,7 +5,7 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.d
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -116,8 +116,8 @@ class _ParticipatedEventsLoaderState extends State<_ParticipatedEventsLoader> {
             final cls = ev.myParticipatingEvents[index];
             return Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
+                horizontal: AppDimensions.spacingSmall,
+                vertical: AppDimensions.spacingExtraSmall,
               ),
               child: ClassTile(
                 classObject: cls,
@@ -129,19 +129,20 @@ class _ParticipatedEventsLoaderState extends State<_ParticipatedEventsLoader> {
         if (ev.canFetchMoreParticipatingEvents)
           GestureDetector(
             onTap: () => ev.fetchMore(widget.userId, myEvents: false),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingSmall,
+                vertical: AppDimensions.spacingExtraSmall,
               ),
-              child: Text("Load more"),
+              child: Text("Load more",
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ),
         if (ev.isLoadingParticipatingEvents)
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppPaddings.small,
-              vertical: AppPaddings.tiny,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacingSmall,
+              vertical: AppDimensions.spacingExtraSmall,
             ),
             child: Center(child: CircularProgressIndicator()),
           ),
@@ -156,8 +157,9 @@ class _ParticipatedEventsLoaderState extends State<_ParticipatedEventsLoader> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("You have not participated in any events yet"),
-            const SizedBox(height: AppPaddings.medium),
+            Text("You have not participated in any events yet",
+                style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: AppDimensions.spacingMedium),
             StandartButton(
               text: "Refresh",
               onPressed: () => ev.fetchMyEvents(

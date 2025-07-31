@@ -1,6 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -84,9 +83,9 @@ class ClassEventCalendarState extends State<ClassEventCalendar> {
               // Use `CalendarStyle` to customize the UI
               outsideDaysVisible: false,
               todayDecoration: BoxDecoration(
-                  color: Colors.grey[400]!, shape: BoxShape.circle),
-              selectedDecoration: const BoxDecoration(
-                  color: CustomColors.primaryColor, shape: BoxShape.circle)),
+                  color: Theme.of(context).colorScheme.outline, shape: BoxShape.circle),
+              selectedDecoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary, shape: BoxShape.circle)),
           onDaySelected: _onDaySelected,
           onPageChanged: (focusedDay) {
             _focusedDay = focusedDay;

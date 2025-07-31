@@ -2,7 +2,7 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/screens/account_settings/delete_account.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -15,7 +15,7 @@ class AccountSettingsPage extends StatelessWidget {
       makeScrollable: false,
       appBar: const CustomAppbarSimple(title: "Account settings"),
       child: Padding(
-        padding: const EdgeInsets.all(AppPaddings.small).copyWith(bottom: 50),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(bottom: 50),
         child: Column(children: [
           // a menu item called "user settings" that leads to the edit user data page
           Container(

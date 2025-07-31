@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -54,13 +54,14 @@ class AdditionalImagePickerComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppPaddings.small).copyWith(top: 0),
+      padding:
+          const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(top: 0),
       decoration: BoxDecoration(
           border: Border.all(
             color: CustomColors.inactiveBorderColor,
             width: 1.0,
           ),
-          borderRadius: AppBorders.defaultRadius),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -92,7 +93,8 @@ class AdditionalImagePickerComponentState
                             shrinkWrap: true,
                             itemCount: widget.currentImages.length,
                             itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.all(AppPaddings.small),
+                              padding: const EdgeInsets.all(
+                                  AppDimensions.spacingSmall),
                               child: ImageCard(
                                 imageUrl: widget.currentImages[index],
                                 onImageRemoved: () {
@@ -108,7 +110,8 @@ class AdditionalImagePickerComponentState
                             shrinkWrap: true,
                             itemCount: widget.additionalImages.length,
                             itemBuilder: (context, index) => Padding(
-                              padding: const EdgeInsets.all(AppPaddings.small),
+                              padding: const EdgeInsets.all(
+                                  AppDimensions.spacingSmall),
                               child: ImageCard(
                                   imageBytes: widget.additionalImages[index],
                                   onImageRemoved: () {
@@ -161,7 +164,7 @@ class ImageCard extends StatelessWidget {
                 color: CustomColors.backgroundColor.withOpacity(0.5),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(AppPaddings.tiny),
+                padding: const EdgeInsets.all(AppDimensions.spacingExtraSmall),
                 child: const Icon(
                   Icons.close,
                   color: CustomColors.errorTextColor,

@@ -1,5 +1,5 @@
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 

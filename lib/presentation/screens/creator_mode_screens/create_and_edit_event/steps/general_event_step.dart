@@ -12,8 +12,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/c
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -77,7 +76,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
           : null,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium,
+          horizontal: AppDimensions.spacingMedium,
         ),
         child: Column(
           children: [
@@ -100,7 +99,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                           },
                         ),
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _titleController,
                         onEditingComplete: () {
@@ -120,7 +119,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                             p0!.isEmpty ? 'Name cannot be empty' : null,
                         textInputAction: TextInputAction.next,
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _slugController,
                         labelText: 'URL Slug',
@@ -141,12 +140,13 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                             ? null
                             : (provider.isSlugAvailable == false ||
                                     provider.isSlugValid == false)
-                                ? const Icon(Icons.error,
-                                    color: CustomColors.errorTextColor)
-                                : const Icon(Icons.check_circle,
-                                    color: CustomColors.successTextColor),
+                                ? Icon(Icons.error,
+                                    color: Theme.of(context).colorScheme.error)
+                                : Icon(Icons.check_circle,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       StandartButton(
                         text: "Edit event description",
                         onPressed: () {
@@ -161,7 +161,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                           );
                         },
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _locationNameController,
                         labelText: 'Location name',
@@ -169,7 +169,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                         footnoteText:
                             "This can be the name of the studio or park and will be displayed in the app instead of the full adress",
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       CustomLocationInputComponent(
                         currentLocation: provider.location,
                         currentLoactionDescription:
@@ -181,7 +181,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                               locationDescription ?? '');
                         },
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       // choose from country
                       // choose from country
                       CountryPicker(
@@ -199,8 +199,8 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                       // only show regions once we have a valid countryCode
                       if (provider.countryCode != null)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(top: AppPaddings.medium),
+                          padding: const EdgeInsets.only(
+                              top: AppDimensions.spacingMedium),
                           child: RegionPicker(
                             countryCode: provider.countryCode!,
                             selectedRegion: provider.region,
@@ -210,7 +210,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                           ),
                         ),
 
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       CustomQueryOptionInputComponent(
                         hintText: 'What kind of event is it?',
                         currentOption: provider.eventType,
@@ -232,7 +232,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                           }
                         },
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       CustomSettingComponent(
                         title: 'Questions',
                         content: "${provider.questions.length} questions",
@@ -245,7 +245,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 ),
               ),
             ),
-            const SizedBox(height: AppPaddings.large),
+            const SizedBox(height: AppDimensions.spacingLarge),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -264,7 +264,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                     ),
                   );
                 }),
-                const SizedBox(width: AppPaddings.medium),
+                const SizedBox(width: AppDimensions.spacingMedium),
                 Container(
                   constraints: Responsive.isDesktop(context)
                       ? const BoxConstraints(maxWidth: 400)
@@ -278,7 +278,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 ),
               ],
             ),
-            const SizedBox(height: AppPaddings.small),
+            const SizedBox(height: AppDimensions.spacingSmall),
             DisplayErrorMessageComponent(errorMessage: _errorMessage),
           ],
         ),

@@ -4,8 +4,8 @@ import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
@@ -29,12 +29,12 @@ class StripeHighlightModal extends StatelessWidget {
         Text('Highlight your event and increase your visibility',
             style: Theme.of(context).textTheme.displayMedium,
             textAlign: TextAlign.center),
-        SizedBox(height: AppPaddings.medium),
+        SizedBox(height: AppDimensions.spacingMedium),
         Text(
             "Your event will be shown at the top of the global event list until the event starts",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyMedium),
-        SizedBox(height: AppPaddings.medium),
+        SizedBox(height: AppDimensions.spacingMedium),
         // Query that shows the price and explains what it cost per day
         HighlightPriceQuery(startDate: startDate, classEventId: classEventId),
       ],
@@ -148,7 +148,7 @@ class HighlightPriceQuery extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: CustomColors.errorTextColor));
+                    .copyWith(color: Theme.of(context).colorScheme.error));
           }
 
           if (result.isLoading) {
@@ -169,7 +169,7 @@ class HighlightPriceQuery extends StatelessWidget {
               Text(
                   'Price per day: ${(pricePerDay.toDouble() / 100).toStringAsFixed(2)}€',
                   style: Theme.of(context).textTheme.bodyMedium),
-              SizedBox(height: AppPaddings.medium),
+              SizedBox(height: AppDimensions.spacingMedium),
               BuyHighlightStripeButton(
                   classEventId: classEventId, price: price),
             ],

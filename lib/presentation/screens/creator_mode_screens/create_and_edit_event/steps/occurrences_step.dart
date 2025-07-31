@@ -6,8 +6,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -49,7 +48,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                   ),
                 );
               }),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
@@ -60,7 +59,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                       eventCreationAndEditingProvider.recurringPatterns[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
+                      horizontal: AppDimensions.spacingLarge,
                     ),
                     child: FloatingButton(
                         insideText: "",
@@ -98,28 +97,31 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                                         .titleLarge!
                                         .copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: CustomColors.primaryColor)),
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary)),
                                 IconButton(
                                     onPressed: () {
                                       eventCreationAndEditingProvider
                                           .removeRecurringPattern(index);
                                     },
-                                    icon: const Icon(
+                                    icon: Icon(
                                       Icons.delete,
-                                      color: CustomColors.errorTextColor,
+                                      color:
+                                          Theme.of(context).colorScheme.error,
                                     ))
                               ],
                             ),
                             pattern.isRecurring == true
                                 ? ReccurringPatternInfo(pattern)
                                 : SingleOccurenceInfo(pattern),
-                            const SizedBox(height: AppPaddings.small),
+                            const SizedBox(height: AppDimensions.spacingSmall),
                           ],
                         )),
                   );
                 }),
           ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -139,7 +141,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                   );
                 }),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Container(
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 200)
@@ -153,7 +155,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
               ),
             ],
           ),
-          const SizedBox(height: AppPaddings.large),
+          const SizedBox(height: AppDimensions.spacingLarge),
         ],
       ),
     );

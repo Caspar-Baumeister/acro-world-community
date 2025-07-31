@@ -6,10 +6,9 @@ import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_option_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:provider/provider.dart';
 
 /// A card that displays a booking category (e.g., "VIP Tickets")
@@ -38,10 +37,10 @@ class CategoryCreationCard extends StatelessWidget {
         Provider.of<EventCreationAndEditingProvider>(context);
 
     return Container(
-      padding: const EdgeInsets.all(AppPaddings.medium),
+      padding: const EdgeInsets.all(AppDimensions.spacingMedium),
       decoration: BoxDecoration(
-        color: CustomColors.secondaryBackgroundColor,
-        borderRadius: AppBorders.defaultRadius,
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
       ),
       child: Column(
         children: [
@@ -55,7 +54,7 @@ class CategoryCreationCard extends StatelessWidget {
                   bookingCategory.name,
                   style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: CustomColors.primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                 ),
               ),
@@ -66,7 +65,7 @@ class CategoryCreationCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppPaddings.small),
+          const SizedBox(height: AppDimensions.spacingSmall),
 
           // Description and Edit/Delete buttons
           Row(
@@ -81,7 +80,7 @@ class CategoryCreationCard extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               ),
-              const SizedBox(width: AppPaddings.small),
+              const SizedBox(width: AppDimensions.spacingSmall),
 
               // Edit/Delete buttons
               Row(
@@ -91,7 +90,7 @@ class CategoryCreationCard extends StatelessWidget {
                     icon: Icons.edit,
                     onPressed: onEdit,
                   ),
-                  const SizedBox(width: AppPaddings.small),
+                  const SizedBox(width: AppDimensions.spacingSmall),
                   CustomIconButton(
                     icon: Icons.delete,
                     onPressed: () {
@@ -145,7 +144,7 @@ class CategoryCreationCard extends StatelessWidget {
                     (option) => option.bookingCategoryId == bookingCategory.id)
                 .map((option) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.medium),
+                padding: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 child: BookingOptionCreationCard(
                   bookingOption: option,
                   onEdit: () {
@@ -176,7 +175,7 @@ class CategoryCreationCard extends StatelessWidget {
             }).toList(),
           ),
 
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
 
           // Button to add a new booking option to this category
           StandartButton(

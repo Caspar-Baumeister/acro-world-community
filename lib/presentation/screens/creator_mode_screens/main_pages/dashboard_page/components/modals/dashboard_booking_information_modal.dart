@@ -7,8 +7,8 @@ import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/state/provider/creator_bookings_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,16 +43,16 @@ class DashboardBookingInformationModal extends StatelessWidget {
               ],
             ),
             // booking options section
-            SizedBox(height: AppPaddings.small),
+            SizedBox(height: AppDimensions.spacingSmall),
             // if the booking is waiting for payment, show a box with confirmation of receiving the payment
             if (booking.status == "WaitingForPayment")
               Container(
-                margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
-                padding: const EdgeInsets.all(AppPaddings.medium),
+                margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
-                  color: CustomColors.backgroundWarningColor,
-                  borderRadius: AppBorders.smallRadius,
-                  border: Border.all(color: CustomColors.inactiveBorderColor),
+                  color: Theme.of(context).extension<AppCustomColors>()!.warning.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                  border: Border.all(color: Theme.of(context).colorScheme.outline),
                 ),
                 child: Column(
                   children: [
@@ -60,7 +60,7 @@ class DashboardBookingInformationModal extends StatelessWidget {
                       "Confirm that you received the payment for this booking. This will change the status to 'Confirmed'.",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    const SizedBox(height: AppPaddings.small),
+                    const SizedBox(height: AppDimensions.spacingSmall),
                     StandartButton(
                       text: "Confirm payment",
                       isFilled: true,
@@ -99,16 +99,16 @@ class DashboardBookingInformationModal extends StatelessWidget {
               ],
             ),
             SizedBox(
-              height: AppPaddings.medium,
+              height: AppDimensions.spacingMedium,
             ),
 
             // User informations (gender and level)
             UserInformationWidget(booking: booking),
-            SizedBox(height: AppPaddings.large),
+            SizedBox(height: AppDimensions.spacingLarge),
 
             if (!isClassBookingSummary)
               Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.medium),
+                padding: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 child: StandartButton(
                     text: "All bookings of this event",
                     isFilled: true,
@@ -156,9 +156,9 @@ class UserInformationWidget extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-            border: Border.all(color: CustomColors.inactiveBorderColor),
-            borderRadius: AppBorders.smallRadius),
-        padding: const EdgeInsets.all(AppPaddings.medium),
+            border: Border.all(color: Theme.of(context).colorScheme.outline),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusSmall)),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         child: SizedBox(
           width: double.infinity,
           child: Column(
@@ -166,26 +166,26 @@ class UserInformationWidget extends StatelessWidget {
             children: [
               Text("User informations",
                   style: Theme.of(context).textTheme.headlineMedium),
-              SizedBox(height: AppPaddings.small),
+              SizedBox(height: AppDimensions.spacingSmall),
               booking.user.gender?.name != null
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                      padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                       child: Text(
                           "Prefered position: ${booking.user.gender?.name}"),
                     )
                   : SizedBox(),
               booking.user.level?.name != null
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                      padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                       child: Text("Level: ${booking.user.level?.name}"),
                     )
                   : SizedBox(),
               booking.user.email != null
                   ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
                       decoration: BoxDecoration(
-                        color: CustomColors.secondaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(4),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -202,10 +202,10 @@ class UserInformationWidget extends StatelessWidget {
                             },
                             child: Padding(
                               padding: const EdgeInsets.only(
-                                  left: AppPaddings.small),
+                                  left: AppDimensions.spacingSmall),
                               child: Icon(
                                 Icons.copy,
-                                size: 16,
+                                size: AppDimensions.iconSizeSmall,
                               ),
                             ),
                           )

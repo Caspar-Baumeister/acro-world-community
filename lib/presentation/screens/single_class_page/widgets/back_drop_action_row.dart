@@ -9,7 +9,8 @@ import 'package:acroworld/provider/riverpod_provider/class_favorites_provider.da
 import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -37,34 +38,34 @@ class BackDropActionRow extends ConsumerWidget {
     return showDialog<bool>(
       context: context,
       builder: (ctx) => Dialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppDimensions.radiusMedium)),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.flag_circle_outlined,
-                  color: Colors.redAccent, size: 48),
-              const SizedBox(height: 16),
+              Icon(Icons.flag_circle_outlined,
+                  color: Theme.of(ctx).extension<AppCustomColors>()!.warning, size: AppDimensions.iconSizeDialog),
+              const SizedBox(height: AppDimensions.spacingMedium),
               Text(
                 "Flag Event",
                 style: Theme.of(ctx).textTheme.displayMedium!.copyWith(
-                    fontWeight: FontWeight.bold, color: Colors.black87),
+                    fontWeight: FontWeight.bold, color: Theme.of(ctx).colorScheme.onSurface),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              const SizedBox(height: AppDimensions.spacingSmall),
+              Text(
                 "Are you sure this event is not happening or incorrect?",
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(ctx).textTheme.bodyMedium!.copyWith(color: Theme.of(ctx).colorScheme.onSurface.withOpacity(0.7)),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppDimensions.spacingMedium),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(false),
-                    child: const Text("Close",
-                        style: TextStyle(color: Colors.grey)),
+                    child: Text("Close",
+                        style: Theme.of(ctx).textTheme.labelLarge!.copyWith(color: Theme.of(ctx).colorScheme.onSurface.withOpacity(0.7))),
                   ),
                   StandartButton(
                     text: "Report Event",
@@ -93,9 +94,9 @@ class BackDropActionRow extends ConsumerWidget {
     List<Widget> actions = [
       IconButton(
         onPressed: () => shareEvents(),
-        icon: const Icon(
+        icon: Icon(
           Icons.ios_share,
-          color: Colors.black,
+          color: Theme.of(context).iconTheme.color,
         ),
       ),
     ];
@@ -130,9 +131,9 @@ class BackDropActionRow extends ConsumerWidget {
               ref.read(classFavoritesProvider.notifier).toggleFavorite(classId);
             },
           ),
-          loading: () => const SizedBox(
-            width: 40,
-            height: 40,
+          loading: () => SizedBox(
+            width: AppDimensions.iconSizeLarge,
+            height: AppDimensions.iconSizeLarge,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
           error: (_, __) => const SizedBox.shrink(),
@@ -146,7 +147,7 @@ class BackDropActionRow extends ConsumerWidget {
             return IconButton(
               icon: Icon(
                 reportState.isReported ? Icons.flag : Icons.flag_outlined,
-                color: reportState.isReported ? Colors.red : Colors.black,
+                color: reportState.isReported ? Theme.of(context).colorScheme.error : Theme.of(context).iconTheme.color,
               ),
               onPressed: () async {
                 if (!isAuthenticated) {
@@ -168,9 +169,9 @@ class BackDropActionRow extends ConsumerWidget {
               },
             );
           },
-          loading: () => const SizedBox(
-            width: 40,
-            height: 40,
+          loading: () => SizedBox(
+            width: AppDimensions.iconSizeLarge,
+            height: AppDimensions.iconSizeLarge,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
           error: (_, __) => const SizedBox.shrink(),
@@ -181,7 +182,7 @@ class BackDropActionRow extends ConsumerWidget {
     return ClipOval(
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Theme.of(context).colorScheme.surfaceContainer.withOpacity(0.2),
         ),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: blurFactor, sigmaY: blurFactor),
@@ -189,7 +190,7 @@ class BackDropActionRow extends ConsumerWidget {
             height: 65,
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: actions,

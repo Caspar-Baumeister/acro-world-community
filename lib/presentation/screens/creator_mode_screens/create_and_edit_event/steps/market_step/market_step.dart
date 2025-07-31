@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/creator_provider.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +74,7 @@ class _MarketStepState extends State<MarketStep> {
               eventCreationAndEditingProvider: eventCreationAndEditingProvider),
           // enable cash payment section
           // checkbox with enable cash payment
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +92,7 @@ class _MarketStepState extends State<MarketStep> {
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Container(
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 400)
@@ -107,7 +107,7 @@ class _MarketStepState extends State<MarketStep> {
               ),
             ],
           ),
-          const SizedBox(height: AppPaddings.large),
+          const SizedBox(height: AppDimensions.spacingLarge),
         ],
       ),
     );
@@ -161,22 +161,25 @@ void showNoPaymentMethodDialog(BuildContext context, VoidCallback onContinue) {
   showDialog(
     context: context,
     builder: (context) => AlertDialog(
-      title: const Text("No Payment Method Selected"),
-      content: const Text(
+      title: Text("No Payment Method Selected",
+          style: Theme.of(context).textTheme.titleLarge),
+      content: Text(
         "Your tickets won’t be visible because they can’t be purchased. "
         "Please enable Stripe or allow cash payments to make them bookable.",
+        style: Theme.of(context).textTheme.bodyMedium,
       ),
       actions: [
         TextButton(
           onPressed: () => Navigator.of(context).pop(), // Go back
-          child: const Text("Back"),
+          child: Text("Back", style: Theme.of(context).textTheme.labelLarge),
         ),
         ElevatedButton(
           onPressed: () {
             Navigator.of(context).pop();
             onContinue();
           },
-          child: const Text("Continue without Tickets"),
+          child: Text("Continue without Tickets",
+              style: Theme.of(context).textTheme.labelLarge),
         ),
       ],
     ),

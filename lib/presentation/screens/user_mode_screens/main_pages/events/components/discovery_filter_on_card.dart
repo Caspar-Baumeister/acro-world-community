@@ -25,7 +25,7 @@ class DiscoveryFilterOnCard extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: AppBorders.smallRadius,
         ),
-        height: AppDimensions.eventVerticalScrollCardHeight,
+        height: 135,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [

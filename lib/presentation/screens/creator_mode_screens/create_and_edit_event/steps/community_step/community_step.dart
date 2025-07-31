@@ -7,7 +7,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_teacher_suggestion_section.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -46,8 +46,8 @@ class _CommunityStepState extends State<CommunityStep> {
     EventCreationAndEditingProvider eventCreationAndEditingProvider =
         Provider.of<EventCreationAndEditingProvider>(context);
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPaddings.medium,
+      padding: EdgeInsets.symmetric(
+        horizontal: AppDimensions.spacingMedium,
       ),
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -56,7 +56,7 @@ class _CommunityStepState extends State<CommunityStep> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const CommunityStepHeader(),
-          const SizedBox(height: AppPaddings.medium),
+          SizedBox(height: AppDimensions.spacingMedium),
           // Input field with search suggestions
           CommunityStepSearchTeacherInputField(
               eventCreationAndEditingProvider: eventCreationAndEditingProvider,
@@ -69,7 +69,7 @@ class _CommunityStepState extends State<CommunityStep> {
                         eventCreationAndEditingProvider),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.medium),
+                      horizontal: AppDimensions.spacingMedium),
                   constraints: BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.height * 0.5,
                   ),
@@ -101,7 +101,7 @@ class _CommunityStepState extends State<CommunityStep> {
                     width: MediaQuery.of(context).size.width * 0.3,
                   ),
                 ),
-                const SizedBox(width: AppPaddings.medium),
+                const SizedBox(width: AppDimensions.spacingMedium),
                 Container(
                   constraints: Responsive.isDesktop(context)
                       ? const BoxConstraints(maxWidth: 400)
@@ -116,7 +116,7 @@ class _CommunityStepState extends State<CommunityStep> {
               ],
             ),
           ),
-          const SizedBox(height: AppPaddings.small),
+          const SizedBox(height: AppDimensions.spacingMedium),
           DisplayErrorMessageComponent(errorMessage: _errorMessage)
           // wrap the invited teachers
         ],

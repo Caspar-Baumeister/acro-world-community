@@ -6,8 +6,8 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/user_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -85,7 +85,7 @@ class UserAnswerBody extends StatelessWidget {
         if (snapshot.hasError) {
           return Center(
               child: Padding(
-            padding: const EdgeInsets.all(AppPaddings.large),
+            padding: const EdgeInsets.all(AppDimensions.spacingLarge),
             child: Text("Error: ${snapshot.error}"),
           ));
         }
@@ -97,16 +97,16 @@ class UserAnswerBody extends StatelessWidget {
         }
 
         return ListView(
-          padding: EdgeInsets.all(AppPaddings.small),
+          padding: EdgeInsets.all(AppDimensions.spacingSmall),
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: AppPaddings.medium),
+              padding: const EdgeInsets.only(left: AppDimensions.spacingMedium),
               child: UserInfoHeader(user: user),
             ),
-            SizedBox(height: AppPaddings.medium),
+            SizedBox(height: AppDimensions.spacingMedium),
             for (int i = 0; i < questions.length; i++)
               Padding(
-                padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: AnswerQuestionCard(
                   question: questions[i],
                   answer: answers.firstWhere(
@@ -142,13 +142,13 @@ class UserInfoHeader extends StatelessWidget {
               ),
               if (user.gender != null && user.level != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: AppPaddings.small),
-                  child: Wrap(spacing: 8, runSpacing: 4, children: [
+                  padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
+                  child: Wrap(spacing: AppDimensions.spacingSmall, runSpacing: AppDimensions.spacingExtraSmall, children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
                       decoration: BoxDecoration(
-                        color: CustomColors.secondaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(4),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                       ),
                       child: Text(
                         user.gender!.name ?? "",
@@ -156,10 +156,10 @@ class UserInfoHeader extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
                       decoration: BoxDecoration(
-                        color: CustomColors.secondaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(4),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                       ),
                       child: Text(
                         user.level!.name ?? "",
@@ -170,13 +170,13 @@ class UserInfoHeader extends StatelessWidget {
                 ),
               if (user.email != null)
                 Padding(
-                  padding: const EdgeInsets.only(top: AppPaddings.small),
-                  child: Wrap(spacing: 8, runSpacing: 4, children: [
+                  padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
+                  child: Wrap(spacing: AppDimensions.spacingSmall, runSpacing: AppDimensions.spacingExtraSmall, children: [
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
                       decoration: BoxDecoration(
-                        color: CustomColors.secondaryBackgroundColor,
-                        borderRadius: BorderRadius.circular(4),
+                        color: Theme.of(context).colorScheme.surfaceContainer,
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                       ),
                       child: Text(
                         user.email ?? "",
@@ -206,7 +206,7 @@ class AnswerQuestionCard extends StatelessWidget {
     print(" question.choices: ${question.choices}");
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,26 +218,26 @@ class AnswerQuestionCard extends StatelessWidget {
                     : "No topic specified",
                 style: Theme.of(context).textTheme.headlineMedium),
             if (question.question != null && question.question!.isNotEmpty) ...[
-              SizedBox(height: AppPaddings.small),
+              SizedBox(height: AppDimensions.spacingSmall),
               ShowMoreText(text: question.question ?? ""),
             ],
             if (answer.answer != null && answer.answer!.isNotEmpty) ...[
-              SizedBox(height: AppPaddings.small),
+              SizedBox(height: AppDimensions.spacingSmall),
               Container(
-                  padding: EdgeInsets.all(AppPaddings.small),
+                  padding: EdgeInsets.all(AppDimensions.spacingSmall),
                   decoration: BoxDecoration(
                       border: Border.all(
-                          color: CustomColors.secondaryBackgroundColor),
-                      color: CustomColors.secondaryBackgroundColor,
-                      borderRadius: AppBorders.smallRadius),
+                          color: Theme.of(context).colorScheme.outline),
+                      color: Theme.of(context).colorScheme.surfaceContainer,
+                      borderRadius: BorderRadius.circular(AppDimensions.radiusSmall)),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       if (question.type == QuestionType.phoneNumber) ...[
-                        Text(answer.countryDialCode ?? ""),
-                        SizedBox(width: AppPaddings.small),
+                        Text(answer.countryDialCode ?? "", style: Theme.of(context).textTheme.bodyMedium),
+                        SizedBox(width: AppDimensions.spacingSmall),
                       ],
-                      Flexible(child: Text(answer.answer!)),
+                      Flexible(child: Text(answer.answer!, style: Theme.of(context).textTheme.bodyMedium)),
                       if (question.type == QuestionType.phoneNumber) ...[
                         // copy number to clipboard
                         GestureDetector(
@@ -253,10 +253,10 @@ class AnswerQuestionCard extends StatelessWidget {
                           },
                           child: Padding(
                             padding:
-                                const EdgeInsets.only(left: AppPaddings.small),
+                                const EdgeInsets.only(left: AppDimensions.spacingSmall),
                             child: Icon(
                               Icons.copy,
-                              size: 16,
+                              size: AppDimensions.iconSizeSmall,
                             ),
                           ),
                         )
@@ -269,21 +269,21 @@ class AnswerQuestionCard extends StatelessWidget {
                 question.choices!.isNotEmpty &&
                 answer.multipleChoiceAnswers != null &&
                 answer.multipleChoiceAnswers!.isNotEmpty) ...[
-              SizedBox(height: AppPaddings.small),
+              SizedBox(height: AppDimensions.spacingSmall),
               for (int i = 0; i < question.choices!.length; i++)
                 if (answer.multipleChoiceAnswers!.any((element) =>
                     element.multipleChoiceOptionId == question.choices![i].id))
                   Padding(
-                    padding: const EdgeInsets.only(bottom: AppPaddings.small),
+                    padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                     child: Row(
                       children: [
                         Icon(
                           Icons.check_circle,
-                          color: CustomColors.secondaryBackgroundColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        SizedBox(width: AppPaddings.small),
+                        SizedBox(width: AppDimensions.spacingSmall),
                         Expanded(
-                            child: Text(question.choices![i].optionText ?? "")),
+                            child: Text(question.choices![i].optionText ?? "", style: Theme.of(context).textTheme.bodyMedium)),
                       ],
                     ),
                   ),
@@ -354,17 +354,18 @@ class _ShowMoreTextState extends State<ShowMoreText> {
         final isOverflowing = tp.didExceedMaxLines;
 
         if (!isOverflowing) {
-          return Text(_text);
+          return Text(_text, style: Theme.of(context).textTheme.bodyMedium);
         } else {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _expanded
-                  ? Text(_text)
+                  ? Text(_text, style: Theme.of(context).textTheme.bodyMedium)
                   : Text(
                       _text,
                       maxLines: widget.maxNonExpandedLines,
                       overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
               Align(
                 alignment: Alignment.centerRight,
@@ -376,8 +377,7 @@ class _ShowMoreTextState extends State<ShowMoreText> {
                   },
                   child: Text(
                     _expanded ? widget.showLessText : widget.showMoreText,
-                    style:
-                        _expanded ? widget.showLessStyle : widget.showMoreStyle,
+                    style: widget.showMoreStyle ?? Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.secondary),
                   ),
                 ),
               ),
@@ -388,3 +388,4 @@ class _ShowMoreTextState extends State<ShowMoreText> {
     );
   }
 }
+

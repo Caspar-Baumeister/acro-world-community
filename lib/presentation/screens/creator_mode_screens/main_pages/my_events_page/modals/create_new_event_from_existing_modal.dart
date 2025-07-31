@@ -4,8 +4,8 @@ import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +36,7 @@ class _CreateNewEventFromExistingModalState
           children: [
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
               child: Text(
                 items.isEmpty
                     ? 'You have no events to use as a template for your new event. Create your first event now'
@@ -44,13 +44,13 @@ class _CreateNewEventFromExistingModalState
                 style: Theme.of(context)
                     .textTheme
                     .bodySmall!
-                    .copyWith(color: CustomColors.secondaryTextColor),
+                    .copyWith(color: Theme.of(context).extension<AppCustomColors>()!.textMuted),
               ),
             ),
             items.isEmpty
                 ? const SizedBox()
                 : Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.large),
+                    padding: const EdgeInsets.only(top: AppDimensions.spacingLarge),
                     child: CustomOptionInputComponent(
                         currentOption: currentOption,
                         onOptionSet: (option) {
@@ -66,7 +66,7 @@ class _CreateNewEventFromExistingModalState
                             items,
                         hintText: "Select event as template"),
                   ),
-            const SizedBox(height: AppPaddings.toLarge),
+            const SizedBox(height: AppDimensions.spacingHuge),
             StandartButton(
               isFilled: true,
               text: items.isEmpty

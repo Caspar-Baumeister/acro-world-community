@@ -21,7 +21,7 @@ class CalenderModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: CustomColors.primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,

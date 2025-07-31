@@ -4,8 +4,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/presentation/components/loading_indicator/loading_indicator.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -59,14 +58,14 @@ class TeacherSuggestionsQuery extends StatelessWidget {
 
             return Container(
               padding: const EdgeInsets.symmetric(
-                  horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
-              margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+                  horizontal: AppDimensions.spacingMedium, vertical: AppDimensions.spacingMedium),
+              margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
               decoration: BoxDecoration(
-                color: CustomColors.backgroundColor,
-                borderRadius: AppBorders.smallRadius,
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
+                    color: Theme.of(context).colorScheme.shadow.withOpacity(0.5),
                     spreadRadius: 1,
                     blurRadius: 2,
                     offset: const Offset(0, 1),
@@ -86,14 +85,14 @@ class TeacherSuggestionsQuery extends StatelessWidget {
                       onTeacherSelected(teacher);
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(right: AppPaddings.medium),
+                      padding: const EdgeInsets.only(right: AppDimensions.spacingMedium),
                       child: Row(
                         children: [
                           CustomAvatarCachedNetworkImage(
                             imageUrl: teacher.profilImgUrl,
                             radius: AppDimensions.avatarSizeMedium / 2,
                           ),
-                          const SizedBox(width: AppPaddings.small),
+                          const SizedBox(width: AppDimensions.spacingSmall),
                           Expanded(
                             child: Text(
                               teacher.name ?? "unknown",
@@ -102,7 +101,7 @@ class TeacherSuggestionsQuery extends StatelessWidget {
                               textAlign: TextAlign.left,
                             ),
                           ),
-                          const SizedBox(width: AppPaddings.small),
+                          const SizedBox(width: AppDimensions.spacingSmall),
                           Text(
                             "Follower: ${teacher.likes}",
                             style: Theme.of(context).textTheme.bodySmall,

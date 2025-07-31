@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/pick_image_function.dart';
@@ -69,11 +70,11 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                           ))
                       : const Icon(
                           Icons.image,
-                          size: AppDimensions.eventCreationImageSize,
+                          size: 100,
                           color: CustomColors.iconColor,
                         ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 10,
               right: 10,
               child: CircleAvatar(
@@ -82,7 +83,7 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                 child: Icon(
                   Icons.camera_alt,
                   color: Colors.white,
-                  size: AppDimensions.iconSizeTiny,
+                  size: AppDimensions.iconSizeSmall,
                 ),
               ),
             ),

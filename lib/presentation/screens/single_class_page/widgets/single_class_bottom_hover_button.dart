@@ -52,10 +52,10 @@ class SingleClassBottomHoverButton extends StatelessWidget {
     return BottomAppBar(
       elevation: 0,
       child: CustomBottomHoverButton(
-        content: const Text(
+        content: Text(
           'Calendar',
-          style: TextStyle(
-              fontSize: 12, fontWeight: FontWeight.w700, color: Colors.white),
+          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+              fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onPrimary),
         ),
         onPressed: () => buildMortal(
           context,

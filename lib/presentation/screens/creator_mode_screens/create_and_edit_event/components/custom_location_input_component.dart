@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/screens/creator_mode_screens/location_picker_page/map_location_picker_page.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -29,14 +28,14 @@ class CustomLocationInputComponent extends StatelessWidget {
         ),
       ),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: AppPaddings.small),
-        padding: const EdgeInsets.all(AppPaddings.small),
+        margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall),
         decoration: BoxDecoration(
-          color: CustomColors.backgroundColor,
-          borderRadius: AppBorders.smallRadius,
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.5),
+              color: Theme.of(context).colorScheme.shadow.withOpacity(0.5),
               spreadRadius: 1,
               blurRadius: 2,
               offset: const Offset(0, 1),
@@ -45,8 +44,8 @@ class CustomLocationInputComponent extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.location_on),
-            const SizedBox(width: AppPaddings.small),
+            Icon(Icons.location_on, color: Theme.of(context).iconTheme.color),
+            const SizedBox(width: AppDimensions.spacingSmall),
             Flexible(
               child: Text(
                 currentLoactionDescription ?? 'Select a location',

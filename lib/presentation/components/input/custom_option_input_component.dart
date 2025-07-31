@@ -1,6 +1,6 @@
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -29,8 +29,8 @@ class CustomOptionInputComponent extends StatelessWidget {
             labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
             alignLabelWithHint: true,
             contentPadding:
-                const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-                    .copyWith(bottom: AppPaddings.tiny),
+                const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
+                    .copyWith(bottom: AppDimensions.spacingExtraSmall),
           ).applyDefaults(Theme.of(context).inputDecorationTheme),
           child: SizedBox(
             child: DropdownButtonHideUnderline(
@@ -156,8 +156,8 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                       filled: true,
                       fillColor: Colors.white,
                       contentPadding: const EdgeInsets.symmetric(
-                              horizontal: AppPaddings.medium)
-                          .copyWith(bottom: AppPaddings.tiny),
+                              horizontal: AppDimensions.spacingMedium)
+                          .copyWith(bottom: AppDimensions.spacingExtraSmall),
                     ).applyDefaults(Theme.of(context).inputDecorationTheme),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(

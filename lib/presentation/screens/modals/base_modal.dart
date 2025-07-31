@@ -20,8 +20,8 @@ class BaseModal extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: AppDimensions.modalControllerWidth,
-              height: AppDimensions.modalControllerHeight,
+              width: 40,
+              height: 5,
               decoration: BoxDecoration(
                 color: CustomColors.iconColor,
                 borderRadius: AppBorders.smallRadius,

@@ -3,6 +3,7 @@ import 'package:acroworld/presentation/components/search_bar_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_body.dart';
 import 'package:acroworld/services/location_search_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';

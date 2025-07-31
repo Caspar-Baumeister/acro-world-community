@@ -8,7 +8,8 @@ import 'package:acroworld/presentation/components/open_google_maps.dart';
 import 'package:acroworld/presentation/components/open_map.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/link_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -45,14 +46,21 @@ class SingleClassBody extends StatelessWidget {
           if (classEvent != null &&
               classEvent!.startDate != null &&
               classEvent!.endDate != null) ...[
-            Text(
-                DateTimeService.getDateString(
-                    classEvent!.startDate!, classEvent!.endDate!),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: CustomColors.accentColor)
-                    .copyWith(letterSpacing: -0.5)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                    DateTimeService.getDateString(
+                        classEvent!.startDate!, classEvent!.endDate!),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context)
+                            .extension<AppCustomColors>()!
+                            .accent,
+                        letterSpacing: -0.5)),
+                if (classe.classLevels != null && classe.classLevels!.isNotEmpty)
+                  DifficultyWidget(classe.classLevels),
+              ],
+            ),
             const CustomDivider()
           ],
 
@@ -224,8 +232,8 @@ class FlagsWarningBox extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: flagWarningLevel == FlagWarningLevel.light
-              ? CustomColors.warningColor.withOpacity(0.9)
-              : CustomColors.errorBorderColor.withOpacity(0.9),
+              ? Theme.of(context).extension<AppCustomColors>()!.warning
+              : Theme.of(context).colorScheme.error,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(

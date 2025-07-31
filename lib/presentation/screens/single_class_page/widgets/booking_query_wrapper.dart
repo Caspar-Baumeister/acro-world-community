@@ -7,7 +7,7 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -124,8 +124,8 @@ class _BookingQueryHoverButtonState
                   ),
                 ),
                 backgroundColor: myBooking.status == "Confirmed"
-                    ? CustomColors.successBgColor
-                    : CustomColors.warningColor,
+                    ? Theme.of(context).extension<AppCustomColors>()!.accent
+                    : Theme.of(context).extension<AppCustomColors>()!.warning,
                 onPressed: () {
                   buildMortal(
                     context,

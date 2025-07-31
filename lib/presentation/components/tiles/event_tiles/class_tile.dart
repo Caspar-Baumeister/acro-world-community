@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/clas
 import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/class_tile_teacher_widget.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/class_tile_title_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 // This is a tile for a class, without specific class event
@@ -19,7 +19,7 @@ class ClassTile extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -32,7 +32,7 @@ class ClassTile extends StatelessWidget {
             Expanded(
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+                    const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

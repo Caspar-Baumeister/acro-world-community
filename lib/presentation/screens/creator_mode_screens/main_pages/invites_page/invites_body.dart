@@ -2,8 +2,8 @@ import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/modals/invite_by_email_modal.dart';
 import 'package:acroworld/state/provider/invites_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +32,7 @@ class _InvitesBodyState extends State<InvitesBody> {
     InvitesProvider invitesProvider = Provider.of<InvitesProvider>(context);
     return Column(
       children: [
-        SizedBox(height: AppPaddings.medium),
+        SizedBox(height: AppDimensions.spacingMedium),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {
@@ -65,18 +65,23 @@ class _InvitesBodyState extends State<InvitesBody> {
                               }
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: AppPaddings.medium,
-                                    vertical: AppPaddings.small),
+                                    horizontal: AppDimensions.spacingMedium,
+                                    vertical: AppDimensions.spacingSmall),
                                 // InvitesTile
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.all(AppPaddings.medium),
+                                  padding: const EdgeInsets.all(
+                                      AppDimensions.spacingMedium),
                                   decoration: BoxDecoration(
-                                    color: CustomColors.backgroundColor,
-                                    borderRadius: AppBorders.smallRadius,
+                                    color:
+                                        Theme.of(context).colorScheme.surface,
+                                    borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusSmall),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .shadow
+                                            .withOpacity(0.5),
                                         spreadRadius: 1,
                                         blurRadius: 2,
                                         offset: const Offset(0, 1),
@@ -88,7 +93,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                                     onTap: () {},
                                     child: Padding(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: AppPaddings.small),
+                                          vertical: AppDimensions.spacingSmall),
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -109,8 +114,9 @@ class _InvitesBodyState extends State<InvitesBody> {
                                                   .textTheme
                                                   .titleMedium,
                                             ),
-                                          const SizedBox(
-                                              height: AppPaddings.tiny),
+                                          SizedBox(
+                                              height: AppDimensions
+                                                  .spacingExtraSmall),
                                           Text(
                                             "Status: ${invite.confirmationStatus}",
                                             style: Theme.of(context)
@@ -121,15 +127,23 @@ class _InvitesBodyState extends State<InvitesBody> {
                                                                 .confirmationStatus
                                                                 .toLowerCase() ==
                                                             "pending"
-                                                        ? Colors.orange
+                                                        ? Theme.of(context)
+                                                            .extension<
+                                                                AppCustomColors>()!
+                                                            .warning
                                                         : invite.confirmationStatus
                                                                     .toLowerCase() ==
                                                                 "accepted"
-                                                            ? Colors.green
-                                                            : Colors.red),
+                                                            ? Theme.of(context)
+                                                                .colorScheme
+                                                                .primary
+                                                            : Theme.of(context)
+                                                                .colorScheme
+                                                                .error),
                                           ),
                                           const SizedBox(
-                                              height: AppPaddings.tiny),
+                                              height: AppDimensions
+                                                  .spacingExtraSmall),
                                           Text(
                                             "Invited at: ${getDatedMMHHmm(DateTime.parse(invite.createdAt))}",
                                             style: Theme.of(context)
@@ -139,7 +153,8 @@ class _InvitesBodyState extends State<InvitesBody> {
                                           if (invite.classModel != null)
                                             Padding(
                                               padding: const EdgeInsets.only(
-                                                  top: AppPaddings.tiny),
+                                                  top: AppDimensions
+                                                      .spacingExtraSmall),
                                               child: Text(
                                                 "To teach at: ${invite.classModel!.name}",
                                                 style: Theme.of(context)
@@ -160,20 +175,21 @@ class _InvitesBodyState extends State<InvitesBody> {
                             onTap: () async {
                               await invitesProvider.fetchMore();
                             },
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: AppPaddings.small,
-                                  vertical: AppPaddings.tiny),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: AppDimensions.spacingSmall,
+                                  vertical: AppDimensions.spacingExtraSmall),
                               child: Text(
                                 "Load more",
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ),
                           ),
                         if (invitesProvider.loading)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: AppPaddings.small,
-                                vertical: AppPaddings.tiny),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: AppDimensions.spacingSmall,
+                                vertical: AppDimensions.spacingExtraSmall),
                             child: Center(
                               child: CircularProgressIndicator(),
                             ),
@@ -188,8 +204,9 @@ class _InvitesBodyState extends State<InvitesBody> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text("No invites found"),
-                            const SizedBox(height: AppPaddings.medium),
+                            Text("No invites found",
+                                style: Theme.of(context).textTheme.bodyMedium),
+                            const SizedBox(height: AppDimensions.spacingMedium),
                             StandartButton(
                               text: "Refresh",
                               onPressed: () async {
@@ -206,12 +223,12 @@ class _InvitesBodyState extends State<InvitesBody> {
             ),
           ),
         ),
-        SizedBox(height: AppPaddings.small),
+        SizedBox(height: AppDimensions.spacingSmall),
         StandartButton(
             text: "Invite by Email",
             isFilled: true,
             onPressed: () => buildMortal(context, const InviteByEmailModal())),
-        SizedBox(height: AppPaddings.medium),
+        SizedBox(height: AppDimensions.spacingMedium),
       ],
     );
   }

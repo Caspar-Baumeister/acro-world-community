@@ -6,7 +6,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/m
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -74,7 +74,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: AppPaddings.medium),
+          padding: const EdgeInsets.only(top: AppDimensions.spacingMedium),
           child: StandartButton(
             text: "Create New Event",
             isFilled: true,
@@ -122,8 +122,8 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
             final cls = ev.myCreatedEvents[i];
             return Padding(
               padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
+                horizontal: AppDimensions.spacingSmall,
+                vertical: AppDimensions.spacingExtraSmall,
               ),
               child: ClassTile(
                 classObject: cls,
@@ -135,19 +135,20 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
         if (ev.canFetchMoreMyEvents)
           GestureDetector(
             onTap: () => ev.fetchMore(widget.userId),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingSmall,
+                vertical: AppDimensions.spacingExtraSmall,
               ),
-              child: Text("Load more"),
+              child: Text("Load more",
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
           ),
         if (ev.isLoadingMyEvents)
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppPaddings.small,
-              vertical: AppPaddings.tiny,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacingSmall,
+              vertical: AppDimensions.spacingExtraSmall,
             ),
             child: Center(child: CircularProgressIndicator()),
           ),
@@ -162,8 +163,9 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("You have not created any events yet"),
-            const SizedBox(height: AppPaddings.medium),
+            Text("You have not created any events yet",
+                style: Theme.of(context).textTheme.bodyMedium),
+            const SizedBox(height: AppDimensions.spacingMedium),
             StandartButton(
               text: "Refresh",
               onPressed: () => ev.fetchMyEvents(widget.userId, isRefresh: true),

@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class DisplayErrorMessageComponent extends StatelessWidget {
@@ -15,16 +14,16 @@ class DisplayErrorMessageComponent extends StatelessWidget {
     return _errorMessage != null
         ? Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppPaddings.medium,
+              horizontal: AppDimensions.spacingMedium,
             ),
             child: Text(
               _errorMessage!,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall!
-                  .copyWith(color: CustomColors.errorTextColor),
+                  .copyWith(color: Theme.of(context).colorScheme.error),
             ),
           )
-        : const SizedBox(height: AppPaddings.medium);
+        : const SizedBox(height: AppDimensions.spacingMedium);
   }
 }

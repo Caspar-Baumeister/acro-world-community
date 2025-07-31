@@ -1,7 +1,7 @@
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 
 class MarketStepCreateStripeAccountSection extends StatelessWidget {
   const MarketStepCreateStripeAccountSection({super.key});
@@ -10,20 +10,20 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
   Widget build(BuildContext context) {
     // CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
     return Padding(
-      padding: const EdgeInsets.all(AppPaddings.large),
+      padding: const EdgeInsets.all(AppDimensions.spacingLarge),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.grey.shade300),
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+          border: Border.all(color: Theme.of(context).colorScheme.outline),
         ),
-        padding: const EdgeInsets.all(AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         child: Column(
           children: [
             // Text explaining the need to create a Stripe account with a link to open info dialog explaing fees
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
               child: RichText(
                   text: TextSpan(
                 text:
@@ -48,7 +48,7 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
                               text: TextSpan(
                                   text:
                                       'Acroworld charges a 2% fee on each transaction. This fee is deducted from the total amount paid by the customer. The payment processor (Stripe) also charges a fee depending on the selected payment method. For more details, ',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
                                   children: [
                                     TextSpan(
                                       text: 'visit Stripe',
@@ -83,7 +83,7 @@ class MarketStepCreateStripeAccountSection extends StatelessWidget {
                 ],
               )),
             ),
-            // const SizedBox(height: AppPaddings.medium),
+            // const SizedBox(height: AppDimensions.spacingMedium),
             // CreatorStripeConnectButton(creatorProvider: creatorProvider),
           ],
         ),

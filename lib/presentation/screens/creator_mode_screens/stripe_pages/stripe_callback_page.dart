@@ -6,7 +6,8 @@ import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/user_role_provider.dart'; // old ChangeNotifier
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -95,24 +96,25 @@ class _StripeCallbackPageState extends ConsumerState<StripeCallbackPage> {
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppPaddings.extraLarge,
-                  vertical: AppPaddings.extraLarge,
+                  horizontal: AppDimensions.spacingExtraLarge,
+                  vertical: AppDimensions.spacingExtraLarge,
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     if (_isVerifying) const CircularProgressIndicator(),
-                    const SizedBox(height: 30),
+                    const SizedBox(height: AppDimensions.spacingExtraLarge),
                     Text(
                       "Verifying Stripe account for id: "
                       "${widget.stripeId ?? "N/A"}",
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    const SizedBox(height: 20),
-                    const Text(
+                    const SizedBox(height: AppDimensions.spacingMedium),
+                    Text(
                       "If it’s taking too long, pull down to retry.",
                       textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7)),
                     ),
                   ],
                 ),
