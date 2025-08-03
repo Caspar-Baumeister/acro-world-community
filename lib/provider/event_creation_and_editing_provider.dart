@@ -383,6 +383,14 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     print('_classOwner $_classOwner');
     print('_isEdit $_isEdit');
 
+    if (_classOwner.isEmpty) {
+      _classOwner.add(ClassOwnerInput(
+        id: Uuid().v4(),
+        teacherId: creatorId,
+        isPaymentReceiver: true,
+      ));
+    }
+
     final classUpsertInput = ClassUpsertInput(
         id: _classId ?? Uuid().v4(),
         name: _title,
