@@ -113,19 +113,32 @@ class ClassesRepository {
     }
   }
 
-  Future<ClassModel> upsertClass(ClassUpsertInput input) async {
+  Future<ClassModel> upsertClass(
+    ClassUpsertInput input,
+    List<String> deleteQuestionIds,
+    List<String> deleteRecurringPatternIds,
+    List<String> deleteClassTeacherIds,
+    List<String> deleteBookingOptionIds,
+    List<String> deleteBookingCategoryIds,
+  ) async {
     pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
         'upsertClass ${input.toJson()}');
+    print('deleteQuestionIds $deleteQuestionIds');
+    print('deleteRecurringPatternIds $deleteRecurringPatternIds');
+    print('deleteClassTeacherIds $deleteClassTeacherIds');
+    print('deleteBookingOptionIds $deleteBookingOptionIds');
+    print('deleteBookingCategoryIds $deleteBookingCategoryIds');
 
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.upsertClass,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
         "class": input.toJson(),
-        "delete_recurring_pattern_ids": [],
-        "delete_booking_category_ids": [],
-        // "delete_booking_option_ids": [],
-        "delete_question_ids": []
+        "delete_recurring_pattern_ids": deleteRecurringPatternIds,
+        "delete_booking_category_ids": deleteBookingCategoryIds,
+        "delete_class_teacher_ids": deleteClassTeacherIds,
+        "delete_booking_option_ids": deleteBookingOptionIds,
+        "delete_question_ids": deleteQuestionIds
       },
     );
 

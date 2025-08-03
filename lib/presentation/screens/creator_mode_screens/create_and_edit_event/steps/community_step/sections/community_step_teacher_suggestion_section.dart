@@ -39,11 +39,6 @@ class CommunityStepTeacherSuggestionSection extends StatelessWidget {
                       {
                         'name': {'_ilike': '$query%'}
                       },
-                      {
-                        'user': {
-                          'email': {'_ilike': '$query%'}
-                        }
-                      },
                     ],
                   },
                 };

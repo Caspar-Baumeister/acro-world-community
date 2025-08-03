@@ -604,14 +604,24 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     mutation UpsertClass(
       \$class: classes_insert_input!,
       \$delete_recurring_pattern_ids: [uuid!]!,
+      \$delete_booking_option_ids: [uuid!]!,
       \$delete_booking_category_ids: [uuid!]!,
+      \$delete_class_teacher_ids: [uuid!]!,
       \$delete_question_ids: [uuid!]!
     ) {
       delete_recurring_patterns(where: {id: {_in: \$delete_recurring_pattern_ids}}) {
         affected_rows
       }
 
+      delete_booking_option(where: {id: {_in: \$delete_booking_option_ids}}) {
+        affected_rows
+      }
+
       delete_booking_category(where: {id: {_in: \$delete_booking_category_ids}}) {
+        affected_rows
+      }
+      
+      delete_class_teachers(where: {id: {_in: \$delete_class_teacher_ids}}) {
         affected_rows
       }
 
@@ -630,10 +640,12 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
             description,
             image_url,
             location_city,
+            location_name,
             location_country,
+            is_cash_allowed,
             event_type,
             timezone,
-            url_slug
+            url_slug,
           ]
         }
       ) {

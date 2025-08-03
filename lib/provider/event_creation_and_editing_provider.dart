@@ -3,12 +3,14 @@ import 'dart:typed_data';
 import 'package:acroworld/data/graphql/input/booking_category_input.dart';
 import 'package:acroworld/data/graphql/input/booking_option_input.dart';
 import 'package:acroworld/data/graphql/input/class_owner_input.dart';
+import 'package:acroworld/data/graphql/input/class_teacher_input.dart';
 import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
 import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
@@ -55,6 +57,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   String? _locationName;
   String? existingImageUrl;
   final List<TeacherModel> _pendingInviteTeachers = [];
+  final List<ClassTeacher> _classTeachers = [];
+  final List<RecurringPatternModel> oldRecurringPatterns = [];
   final List<RecurringPatternModel> _recurringPatterns = [];
   final List<BookingOption> _bookingOptions = [];
   final List<BookingOption> oldBookingOptions = [];
@@ -66,6 +70,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   Uint8List? _eventImage;
   int? maxBookingSlots = 0;
   bool isCashAllowed = false;
+  bool _isEdit = false;
 
   // GETTER
   String get title => _title;
@@ -320,7 +325,64 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
   Future<void> upsertClass(String creatorId) async {
     String? timezone = await getTimezone(
         _location?.latitude ?? 51.1657, _location?.longitude ?? 10.4515);
-    print('_classOwner ${_classOwner.map((e) => e.toJson())}');
+
+    final newClassTeachers = _pendingInviteTeachers
+        .map(
+          (teacher) => ClassTeacherInput(
+            id: _classTeachers
+                    .where((classTeacher) =>
+                        classTeacher.teacher?.id == teacher.id)
+                    .firstOrNull
+                    ?.id ??
+                Uuid().v4(),
+            teacherId: teacher.id!,
+          ),
+        )
+        .toList();
+
+    final List<String> bookingOptionIdsToDelete = _isEdit
+        ? oldBookingOptions
+            .where((oldOption) => !_bookingOptions
+                .any((newOption) => newOption.id == oldOption.id))
+            .map((bookingOption) => bookingOption.id!)
+            .toList()
+        : [];
+
+    final List<String> bookingCategoryIdsToDelete = _isEdit
+        ? oldBookingCategories
+            .where((oldCategory) => !bookingCategories
+                .any((newCategory) => newCategory.id == oldCategory.id))
+            .map((category) => category.id!)
+            .toList()
+        : [];
+
+    final List<String> recurringPatternIdsToDelete = _isEdit
+        ? oldRecurringPatterns
+            .where((oldPattern) => !_recurringPatterns
+                .any((newPattern) => newPattern.id == oldPattern.id))
+            .map((pattern) => pattern.id!)
+            .toList()
+        : [];
+
+    final List<String> deleteClassTeacherIds = _isEdit
+        ? _classTeachers
+            .where((oldClassTeacher) => !newClassTeachers.any(
+                (newClassTeacher) => newClassTeacher.id == oldClassTeacher.id))
+            .map((classTeacher) => classTeacher.id!)
+            .toList()
+        : [];
+
+    final List<String> questionIdsToDelete = _isEdit
+        ? oldQuestions
+            .where((oldQuestion) => !_questions
+                .any((newQuestion) => newQuestion.id == oldQuestion.id))
+            .map((question) => question.id!)
+            .toList()
+        : [];
+
+    print('_classOwner $_classOwner');
+    print('_isEdit $_isEdit');
+
     final classUpsertInput = ClassUpsertInput(
         id: _classId ?? Uuid().v4(),
         name: _title,
@@ -345,49 +407,76 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
                 recurringEveryXWeeks: pattern.recurringEveryXWeeks,
                 isRecurring: pattern.isRecurring ?? false))
             .toList(),
-        classOwners: _classOwner,
-        bookingCategories: bookingCategories
-            .map((category) => BookingCategoryInput(
-                id: category.id ?? Uuid().v4(),
-                name: category.name,
-                contingent: category.contingent,
-                description: description,
-                bookingOptions: category.bookingOptions
-                        ?.map(
-                          (bookingOption) => BookingOptionInput(
-                            id: bookingOption.id ?? Uuid().v4(),
-                            title: bookingOption.title ?? '',
-                            subtitle: bookingOption.subtitle ?? '',
-                            price: bookingOption.price ?? 0,
-                            discount: bookingOption.discount ?? 0,
-                            currency: bookingOption.currency.label,
-                          ),
-                        )
-                        .toList() ??
-                    []))
+        classOwners: _classOwner.lastOrNull != null && !_isEdit
+            ? [_classOwner.last]
+            : [],
+        classTeachers: _pendingInviteTeachers
+            .map(
+              (teacher) => ClassTeacherInput(
+                id: _classTeachers
+                        .where((classTeacher) =>
+                            classTeacher.teacher?.id == teacher.id)
+                        .firstOrNull
+                        ?.id ??
+                    Uuid().v4(),
+                teacherId: teacher.id!,
+              ),
+            )
             .toList(),
-        questions: _questions
-            .map((question) => QuestionInput(
-                id: question.id ?? Uuid().v4(),
-                allowMultipleAnswers: question.isMultipleChoice ?? false,
-                isRequired: question.isRequired ?? false,
-                position: question.position ?? 0,
-                question: question.question ?? '',
-                title: question.title ?? '',
-                questionType: (question.type ?? QuestionType.text),
-                multipleChoiceOptions: question.choices
-                        ?.map((choice) => MultipleChoiceOptionInput(
-                              id: choice.id ?? Uuid().v4(),
-                              optionText: choice.optionText ?? '',
-                              position: choice.position ?? 0,
-                            ))
-                        .toList() ??
-                    []))
-            .toList());
+        bookingCategories: bookingCategories.map((category) {
+          final bookingCategoryId = category.id ?? Uuid().v4();
+          return BookingCategoryInput(
+              id: bookingCategoryId,
+              name: category.name,
+              contingent: category.contingent,
+              description: category.description ?? '',
+              bookingOptions: bookingOptions
+                  .where((option) => option.bookingCategoryId == category.id)
+                  .map(
+                    (bookingOption) => BookingOptionInput(
+                      id: bookingOption.id ?? Uuid().v4(),
+                      title: bookingOption.title ?? '',
+                      subtitle: bookingOption.subtitle ?? '',
+                      price: bookingOption.price ?? 0,
+                      discount: bookingOption.discount ?? 0,
+                      currency: bookingOption.currency.value,
+                    ),
+                  )
+                  .toList());
+        }).toList(),
+        questions: List.generate(_questions.length, (i) {
+          final question = _questions[i];
+          return QuestionInput(
+            id: question.id ?? Uuid().v4(),
+            allowMultipleAnswers: question.isMultipleChoice ?? false,
+            isRequired: question.isRequired ?? false,
+            position: i,
+            question: question.question ?? '',
+            title: question.title ?? '',
+            questionType: question.type ?? QuestionType.text,
+            multipleChoiceOptions: question.choices != null
+                ? List.generate(question.choices!.length, (j) {
+                    final choice = question.choices![j];
+                    return MultipleChoiceOptionInput(
+                      id: choice.id ?? Uuid().v4(),
+                      optionText: choice.optionText ?? '',
+                      position: j,
+                    );
+                  })
+                : [],
+          );
+        }));
 
     ClassesRepository classesRepository =
         ClassesRepository(apiService: GraphQLClientSingleton());
-    final createdClass = await classesRepository.upsertClass(classUpsertInput);
+    final createdClass = await classesRepository.upsertClass(
+      classUpsertInput,
+      questionIdsToDelete,
+      recurringPatternIdsToDelete,
+      deleteClassTeacherIds,
+      bookingOptionIdsToDelete,
+      bookingCategoryIdsToDelete,
+    );
 
     print('createdClass $createdClass');
   }
@@ -433,6 +522,7 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
     EventFormsRepository eventFormsRepository =
         EventFormsRepository(apiService: GraphQLClientSingleton());
     ClassModel? fromClass;
+    _isEdit = isEditing;
 
     try {
       final repositoryReturnClass =
@@ -443,25 +533,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       _urlSlug = isEditing ? fromClass.urlSlug ?? '' : '';
       _description = fromClass.description ?? '';
       country = fromClass.country;
-
-      if (_classOwner.isEmpty) {
-        _classOwner.add(ClassOwnerInput(
-          id: Uuid().v4(),
-          teacherId: creatorId,
-          isPaymentReceiver: true,
-        ));
-      } else {
-        _classOwner.add(fromClass.classOwner!
-            .map(
-              (classOwner) => ClassOwnerInput(
-                id: classOwner.id!,
-                teacherId: classOwner.teacher!.id!,
-                isPaymentReceiver: classOwner.isPaymentReceiver!,
-              ),
-            )
-            .toList()[0]);
-      }
-      print('fromClass.classOwner ${fromClass.classOwner}');
 
       locationCity = fromClass.city;
       countryCode = getCountryCode(fromClass.country);
@@ -476,18 +547,66 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       isCashAllowed = fromClass.isCashAllowed ?? false;
       _recurringPatterns.clear();
       _recurringPatterns.addAll(fromClass.recurringPatterns ?? []);
+
+      _classTeachers.addAll(fromClass.classTeachers ?? []);
+
+      final questions =
+          await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
+      // get categories and save them in old and new categories
+      final categories =
+          await classesRepository.getBookingCategoriesForEvent(fromClass.id!);
       if (setFromTemplate) {
         for (var recurringPattern in _recurringPatterns) {
           recurringPattern.id = null;
         }
+        for (var question in questions) {
+          question.id = null;
+        }
+
+        for (var category in categories) {
+          category.id = null;
+          if (category.bookingOptions != null) {
+            for (var bookingOption in category.bookingOptions!) {
+              bookingOption.id = null;
+            }
+          }
+        }
+
+        for (var classTeacher in _classTeachers) {
+          classTeacher.id = null;
+        }
+
+        _classOwner.clear();
+      } else {
+        _classId = fromClass.id;
       }
+
+      oldRecurringPatterns.addAll(_recurringPatterns);
+
       _pendingInviteTeachers.clear();
       _pendingInviteTeachers.addAll(fromClass.teachers);
-      _classId = fromClass.id;
+
+      print('_classOwner $_classOwner');
+
+      if (_classOwner.isEmpty) {
+        _classOwner.add(ClassOwnerInput(
+          id: Uuid().v4(),
+          teacherId: creatorId,
+          isPaymentReceiver: true,
+        ));
+      } else {
+        _classOwner.add(fromClass.classOwner!
+            .map(
+              (classOwner) => ClassOwnerInput(
+                id: setFromTemplate ? Uuid().v4() : classOwner.id!,
+                teacherId: classOwner.teacher!.id!,
+                isPaymentReceiver: classOwner.isPaymentReceiver!,
+              ),
+            )
+            .toList()[0]);
+      }
 
       // get questions and save them in old and new questions
-      final questions =
-          await eventFormsRepository.getQuestionsForEvent(fromClass.id!);
 
       if (!isEditing) {
         for (var question in questions) {
@@ -497,10 +616,6 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
 
       oldQuestions.addAll(questions);
       _questions.addAll(questions);
-
-      // get categories and save them in old and new categories
-      final categories =
-          await classesRepository.getBookingCategoriesForEvent(fromClass.id!);
 
       if (!isEditing) {
         for (var category in categories) {

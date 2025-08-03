@@ -15,7 +15,7 @@ class ClassTileTeacherWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<ClassTeachers> classTeachers =
+    final List<ClassTeacher> classTeachers =
         classObject.classTeachers?.toList() ?? [];
     return classTeachers.isEmpty
         ? Container(

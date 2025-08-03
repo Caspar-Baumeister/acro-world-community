@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 
-ClassTeachers? findFirstTeacherOrNull(List<ClassTeachers>? classTeachers) {
+ClassTeacher? findFirstTeacherOrNull(List<ClassTeacher>? classTeachers) {
   for (var teacher in classTeachers ?? []) {
     if (teacher.teacher?.isStripeEnabled == true &&
         teacher.teacher?.stripeId != null) {
