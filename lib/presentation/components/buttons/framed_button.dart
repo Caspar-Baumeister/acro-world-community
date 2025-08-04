@@ -7,16 +7,16 @@ class FramedButton extends StatelessWidget {
   final Function onPressed;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        onPressed();
-      },
-      child: Container(
-          padding: const EdgeInsets.all(4),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: const BorderRadius.all(Radius.circular(20))),
-          child: child),
+    return OutlinedButton(
+      onPressed: () => onPressed(),
+      style: OutlinedButton.styleFrom(
+        side: const BorderSide(color: Colors.grey), // Retaining original border color
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20), // Retaining original border radius
+        ),
+        padding: const EdgeInsets.all(4), // Retaining original padding
+      ),
+      child: child,
     );
   }
 }

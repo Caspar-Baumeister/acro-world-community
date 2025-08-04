@@ -10,15 +10,12 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onPressed,
-      child: Center(
-        child: Icon(
-          icon,
-          size: AppDimensions.iconSizeSmall,
-        ),
+    return IconButton(
+      icon: Icon(
+        icon,
+        size: AppDimensions.iconSizeSmall,
       ),
+      onPressed: onPressed,
     );
   }
 }

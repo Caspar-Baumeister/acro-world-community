@@ -5,6 +5,10 @@ class BackButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const BackButton(color: Colors.black);
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      color: Colors.black, // Retaining original color
+      onPressed: () => Navigator.of(context).pop(),
+    );
   }
 }
