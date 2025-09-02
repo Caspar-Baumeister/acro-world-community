@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/data/models/booking_category_model.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
@@ -35,6 +36,13 @@ class EventCreationAndEditingState {
   final String? locationName;
   final Uint8List? eventImage;
   final String? existingImageUrl;
+  final bool? isSlugValid;
+  final bool? isSlugAvailable;
+  final LatLng? location;
+  final String? locationDescription;
+  final String? countryCode;
+  final String? region;
+  final String? eventType;
   final RecurrentPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
@@ -53,6 +61,13 @@ class EventCreationAndEditingState {
     this.locationName,
     this.eventImage,
     this.existingImageUrl,
+    this.isSlugValid,
+    this.isSlugAvailable,
+    this.location,
+    this.locationDescription,
+    this.countryCode,
+    this.region,
+    this.eventType,
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
@@ -72,6 +87,13 @@ class EventCreationAndEditingState {
     String? locationName,
     Uint8List? eventImage,
     String? existingImageUrl,
+    bool? isSlugValid,
+    bool? isSlugAvailable,
+    LatLng? location,
+    String? locationDescription,
+    String? countryCode,
+    String? region,
+    String? eventType,
     RecurrentPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
@@ -90,6 +112,13 @@ class EventCreationAndEditingState {
       locationName: locationName ?? this.locationName,
       eventImage: eventImage ?? this.eventImage,
       existingImageUrl: existingImageUrl ?? this.existingImageUrl,
+      isSlugValid: isSlugValid ?? this.isSlugValid,
+      isSlugAvailable: isSlugAvailable ?? this.isSlugAvailable,
+      location: location ?? this.location,
+      locationDescription: locationDescription ?? this.locationDescription,
+      countryCode: countryCode ?? this.countryCode,
+      region: region ?? this.region,
+      eventType: eventType ?? this.eventType,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -292,6 +321,43 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
   /// Update existing image URL
   void setExistingImageUrl(String? existingImageUrl) {
     state = state.copyWith(existingImageUrl: existingImageUrl);
+  }
+
+  /// Check slug availability (simplified version)
+  Future<void> checkSlugAvailability() async {
+    // TODO: Implement actual slug availability check
+    // For now, just set as valid
+    state = state.copyWith(isSlugValid: true, isSlugAvailable: true);
+  }
+
+  /// Set location
+  void setLocation(LatLng? location) {
+    state = state.copyWith(location: location);
+  }
+
+  /// Set location description
+  void setLocationDescription(String? locationDescription) {
+    state = state.copyWith(locationDescription: locationDescription);
+  }
+
+  /// Set country code
+  void setCountryCode(String? countryCode) {
+    state = state.copyWith(countryCode: countryCode);
+  }
+
+  /// Set country
+  void setCountry(String? country) {
+    // TODO: Implement country setting logic
+  }
+
+  /// Set region
+  void setRegion(String? region) {
+    state = state.copyWith(region: region);
+  }
+
+  /// Set event type
+  void setEventType(String? eventType) {
+    state = state.copyWith(eventType: eventType);
   }
 
   /// Test constructor for unit tests

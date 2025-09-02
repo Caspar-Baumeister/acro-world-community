@@ -10,7 +10,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/c
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_eventState.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
@@ -90,10 +90,10 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         width: 300,
                         height: 300,
                         child: EventImahePickerComponent(
-                          currentImage: provider.eventImage,
-                          existingImageUrl: provider.existingImageUrl,
+                          currentImage: eventState.eventImage,
+                          existingImageUrl: eventState.existingImageUrl,
                           onImageSelected: (Uint8List image) {
-                            provider.setEventImage(image);
+                            ref.read(eventCreationAndEditingProvider.notifier).setEventImage(image);
                           },
                         ),
                       ),
@@ -101,15 +101,15 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       InputFieldComponent(
                         controller: _titleController,
                         onEditingComplete: () {
-                          provider.setTitle(_titleController.text);
+                          ref.read(eventCreationAndEditingProvider.notifier).setTitle(_titleController.text);
                           if (_slugController.text.isEmpty) {
                             String slug = _titleController.text
                                 .toLowerCase()
                                 .replaceAll(' ', '-')
                                 .replaceAll(RegExp(r'[^a-z0-9-]'), '');
                             _slugController.text = slug;
-                            provider.setSlug(slug);
-                            provider.checkSlugAvailability();
+                            ref.read(eventCreationAndEditingProvider.notifier).setSlug(slug);
+                            ref.read(eventCreationAndEditingProvider.notifier).checkSlugAvailability();
                           }
                         },
                         labelText: 'Event Title',
@@ -122,22 +122,22 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         controller: _slugController,
                         labelText: 'URL Slug',
                         onEditingComplete: () {
-                          provider.setSlug(_slugController.text);
-                          provider.checkSlugAvailability();
+                          ref.read(eventCreationAndEditingProvider.notifier).setSlug(_slugController.text);
+                          ref.read(eventCreationAndEditingProvider.notifier).checkSlugAvailability();
                         },
-                        footnoteText: provider.isSlugValid == false
+                        footnoteText: eventState.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
-                            : (provider.isSlugAvailable == false
+                            : (eventState.isSlugAvailable == false
                                 ? "This slug is already taken"
                                 : 'This will be used in the URL of your event page'),
-                        isFootnoteError: provider.isSlugAvailable == false ||
-                            provider.isSlugValid == false,
+                        isFootnoteError: eventState.isSlugAvailable == false ||
+                            eventState.isSlugValid == false,
                         textInputAction: TextInputAction.next,
-                        suffixIcon: provider.isSlugAvailable == null &&
-                                provider.isSlugValid == null
+                        suffixIcon: eventState.isSlugAvailable == null &&
+                                eventState.isSlugValid == null
                             ? null
-                            : (provider.isSlugAvailable == false ||
-                                    provider.isSlugValid == false)
+                            : (eventState.isSlugAvailable == false ||
+                                    eventState.isSlugValid == false)
                                 ? Icon(Icons.error,
                                     color: Theme.of(context).colorScheme.error)
                                 : Icon(Icons.check_circle,
@@ -151,7 +151,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                           Navigator.push(
                             context,
                             EditDescriptionPageRoute(
-                              initialText: provider.description,
+                              initialText: eventState.description,
                               onTextUpdated: (String text) {
                                 _descriptionController.text = text;
                               },
@@ -169,13 +169,13 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
                       CustomLocationInputComponent(
-                        currentLocation: provider.location,
+                        currentLocation: eventState.location,
                         currentLoactionDescription:
-                            provider.locationDescription,
+                            eventState.locationDescription,
                         onLocationSelected:
                             (LatLng location, String? locationDescription) {
-                          provider.setLocation(location);
-                          provider.setLocationDescription(
+                          ref.read(eventCreationAndEditingProvider.notifier).setLocation(location);
+                          ref.read(eventCreationAndEditingProvider.notifier).setLocationDescription(
                               locationDescription ?? '');
                         },
                       ),
@@ -184,26 +184,26 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       // choose from country
                       CountryPicker(
                         // now pass the ISO code, not the name:
-                        selectedCountryCode: provider.countryCode,
+                        selectedCountryCode: eventState.countryCode,
                         onCountrySelected: (String? code, String? name) {
                           // code: e.g. "US", name: e.g. "United States"
-                          provider.countryCode = code;
-                          provider.setCountry(name);
+                          ref.read(eventCreationAndEditingProvider.notifier).setCountryCode(code);
+                          ref.read(eventCreationAndEditingProvider.notifier).setCountry(name);
                           // clear out any previously selected region:
-                          provider.setRegion(null);
+                          ref.read(eventCreationAndEditingProvider.notifier).setRegion(null);
                         },
                       ),
 
                       // only show regions once we have a valid countryCode
-                      if (provider.countryCode != null)
+                      if (eventState.countryCode != null)
                         Padding(
                           padding: const EdgeInsets.only(
                               top: AppDimensions.spacingMedium),
                           child: RegionPicker(
-                            countryCode: provider.countryCode!,
-                            selectedRegion: provider.region,
+                            countryCode: eventState.countryCode!,
+                            selectedRegion: eventState.region,
                             onRegionSelected: (String? region) {
-                              provider.setRegion(region);
+                              ref.read(eventCreationAndEditingProvider.notifier).setRegion(region);
                             },
                           ),
                         ),
@@ -211,7 +211,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       const SizedBox(height: AppDimensions.spacingMedium),
                       CustomQueryOptionInputComponent(
                         hintText: 'What kind of event is it?',
-                        currentOption: provider.eventType,
+                        currentOption: eventState.eventType,
                         identifier: 'event_type',
                         valueIdentifier: "value",
                         query: QueryOptions(
@@ -226,14 +226,14 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         beatifyValueFunction: splitCamelCaseToLower,
                         setOption: (String? value) {
                           if (value != null) {
-                            provider.setEventType(value);
+                            ref.read(eventCreationAndEditingProvider.notifier).setEventType(value);
                           }
                         },
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
                       CustomSettingComponent(
                         title: 'Questions',
-                        content: "${provider.questions.length} questions",
+                        content: "${eventState.questions.length} questions",
                         onPressed: () {
                           Navigator.of(context).push(QuestionPageRoute());
                         },
@@ -305,24 +305,24 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       setState(() {
         _errorMessage = 'Please enter a description for your event';
       });
-    } else if (provider.location == null) {
+    } else if (eventState.location == null) {
       setState(() {
         _errorMessage = 'Please select a location for your event';
       });
-    } else if (provider.locationName == null) {
+    } else if (eventState.locationName == null) {
       setState(() {
         _errorMessage = 'Please enter a location name for your event';
       });
-    } else if (provider.isSlugValid == false) {
+    } else if (eventState.isSlugValid == false) {
       setState(() {
         _errorMessage =
             'Please use only lowercase letters, numbers, and hyphens';
       });
-    } else if (provider.isSlugAvailable == false) {
+    } else if (eventState.isSlugAvailable == false) {
       setState(() {
         _errorMessage = 'This slug is already taken';
       });
-    } else if (provider.eventType == null) {
+    } else if (eventState.eventType == null) {
       setState(() {
         _errorMessage = 'Please select an event type';
       });
@@ -342,10 +342,10 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       _errorMessage = null;
     });
 
-    provider.setTitle(_titleController.text);
-    provider.setSlug(_slugController.text);
-    provider.setDescription(_descriptionController.text);
-    provider.setLocationName(_locationNameController.text);
+    ref.read(eventCreationAndEditingProvider.notifier).setTitle(_titleController.text);
+    ref.read(eventCreationAndEditingProvider.notifier).setSlug(_slugController.text);
+    ref.read(eventCreationAndEditingProvider.notifier).setDescription(_descriptionController.text);
+    ref.read(eventCreationAndEditingProvider.notifier).setLocationName(_locationNameController.text);
     widget.onFinished();
   }
 }
