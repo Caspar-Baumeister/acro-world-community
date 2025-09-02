@@ -4,7 +4,7 @@ import 'package:acroworld/data/models/gender_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -191,7 +191,8 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
@@ -256,7 +257,8 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.surfaceContainer,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
@@ -289,7 +291,7 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                   const Spacer(),
 
                   // — Save button —
-                  StandartButton(
+                  ModernButton(
                     text: "Save",
                     onPressed: isSaving
                         ? () {}
@@ -297,7 +299,7 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                             final ok = await _onSave(user);
                             if (ok) context.pop();
                           },
-                    loading: isSaving,
+                    isLoading: isSaving,
                     isFilled: true,
                   ),
                 ],

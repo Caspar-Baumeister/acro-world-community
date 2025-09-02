@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
@@ -32,7 +32,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           : null,
       child: Column(
         children: [
-          StandartButton(
+          ModernButton(
               text: 'Add Occurences',
               onPressed: () {
                 Navigator.of(context).push(
@@ -133,7 +133,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 200)
                     : null,
-                child: StandartButton(
+                child: ModernButton(
                   onPressed: () {
                     ref
                         .read(eventCreationAndEditingProvider.notifier)
@@ -149,7 +149,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 200)
                     : null,
-                child: StandartButton(
+                child: ModernButton(
                   onPressed: _onNext,
                   text: "Next",
                   isFilled: true,

@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -132,7 +132,7 @@ class _CreatorStripeConnectButtonState
               onPressed: () => Navigator.pop(context),
               child: const Text("Cancel"),
             ),
-            StandartButton(
+            ModernButton(
               onPressed: () async {
                 if (selectedCountry != null && selectedCurrency != null) {
                   setState(() {

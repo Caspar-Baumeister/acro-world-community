@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/invitation_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/modals/invite_by_email_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
@@ -211,7 +211,7 @@ class _InvitesBodyState extends ConsumerState<InvitesBody> {
                             Text("No invites found",
                                 style: Theme.of(context).textTheme.bodyMedium),
                             const SizedBox(height: AppDimensions.spacingMedium),
-                            StandartButton(
+                            ModernButton(
                               text: "Refresh",
                               onPressed: () async {
                                 await invitesNotifier.getInvitations(
@@ -228,7 +228,7 @@ class _InvitesBodyState extends ConsumerState<InvitesBody> {
           ),
         ),
         SizedBox(height: AppDimensions.spacingSmall),
-        StandartButton(
+        ModernButton(
             text: "Invite by Email",
             isFilled: true,
             onPressed: () => buildMortal(context, const InviteByEmailModal())),
