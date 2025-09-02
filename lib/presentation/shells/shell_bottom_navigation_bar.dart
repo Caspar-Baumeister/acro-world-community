@@ -33,10 +33,6 @@ class ShellBottomNavigationBar extends ConsumerWidget {
               title: Text("Events"),
             ),
             UiNavigationBarItem(
-              icon: Icon(IconLibrary.calendar.icon),
-              title: Text("Around me"),
-            ),
-            UiNavigationBarItem(
               icon: Icon(IconLibrary.community.icon),
               title: Text("Community"),
             ),

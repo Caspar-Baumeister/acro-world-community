@@ -18,7 +18,6 @@ class MainPageShell extends ConsumerWidget {
   // your top‐level tab destinations:
   static const _userPaths = [
     '/',
-    '/activity',
     '/community',
     '/profile',
   ];
