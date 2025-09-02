@@ -201,6 +201,22 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     );
   }
 
+  /// Reorder questions from oldIndex to newIndex
+  void reorderQuestions(int oldIndex, int newIndex) {
+    if (newIndex > oldIndex) newIndex -= 1;
+    final questions = List<QuestionModel>.from(state.questions);
+    final item = questions.removeAt(oldIndex);
+    questions.insert(newIndex, item);
+    state = state.copyWith(questions: questions);
+  }
+
+  /// Remove a question at the given index
+  void removeQuestion(int index) {
+    final questions = List<QuestionModel>.from(state.questions);
+    questions.removeAt(index);
+    state = state.copyWith(questions: questions);
+  }
+
   /// Test constructor for unit tests
   EventCreationAndEditingNotifier.test() 
       : super(EventCreationAndEditingState(

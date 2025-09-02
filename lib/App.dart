@@ -23,23 +23,7 @@ class App extends StatelessWidget {
     CustomErrorHandler.logDebug('App:build');
 
     return ProviderScope(
-      child: provider.MultiProvider(
-        providers: [
-          // Keep only the providers that haven't been migrated to Riverpod yet
-          provider.ChangeNotifierProvider(create: (_) => EventBusProvider()),
-          provider.ChangeNotifierProvider(create: (_) => MapEventsProvider()),
-          provider.ChangeNotifierProvider(
-              create: (_) => CreatorBookingsProvider()),
-          provider.ChangeNotifierProvider(
-              create: (_) => EventCreationAndEditingProvider()),
-          provider.ChangeNotifierProvider(create: (_) => CreatorProvider()),
-          provider.ChangeNotifierProvider(create: (_) => EventAnswerProvider()),
-          provider.ChangeNotifierProvider(
-              create: (_) => InvitesProvider(
-                  invitationRepository: InvitationRepository(
-                      apiService: GraphQLClientSingleton()))),
-        ],
-        child: ValueListenableBuilder<GraphQLClient>(
+      child: ValueListenableBuilder<GraphQLClient>(
           valueListenable: GraphQLClientSingleton().clientNotifier,
           builder: (context, client, child) {
             return GraphQLProvider(
@@ -48,7 +32,6 @@ class App extends StatelessWidget {
             );
           },
         ),
-      ),
     );
   }
 }
