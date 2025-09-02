@@ -1,58 +1,62 @@
 import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/modals/invite_by_email_modal.dart';
-import 'package:acroworld/state/provider/invites_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart'; // TODO: Migrate to Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InvitesBody extends StatefulWidget {
+class InvitesBody extends ConsumerStatefulWidget {
   const InvitesBody({super.key});
 
   @override
-  State<InvitesBody> createState() => _InvitesBodyState();
+  ConsumerState<InvitesBody> createState() => _InvitesBodyState();
 }
 
-class _InvitesBodyState extends State<InvitesBody> {
+class _InvitesBodyState extends ConsumerState<InvitesBody> {
   @override
   void initState() {
-    // TODO: Migrate InvitesProvider to Riverpod
-    // InvitesProvider invitesProvider =
-    //     Provider.of<InvitesProvider>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // invitesProvider.getInvitations(isRefresh: true);
-    });
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final invitesNotifier = ref.read(invitesProvider.notifier);
+      final invitesState = ref.read(invitesProvider);
+
+      if (invitesState.invites.isEmpty) {
+        invitesNotifier.getInvitations(isRefresh: true);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Migrate InvitesProvider to Riverpod
-    // InvitesProvider invitesProvider = Provider.of<InvitesProvider>(context);
+    final invitesState = ref.watch(invitesProvider);
+    final invitesNotifier = ref.read(invitesProvider.notifier);
+
     return Column(
       children: [
         SizedBox(height: AppDimensions.spacingMedium),
         Expanded(
           child: RefreshIndicator(
             onRefresh: () async {
-              await invitesProvider.getInvitations(isRefresh: true);
+              await invitesNotifier.getInvitations(isRefresh: true);
             },
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (invitesProvider.loading)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: const Center(
-                        child: CircularProgressIndicator(),
+                  if (invitesState.loading)
+                    Column(
+                      children: List.generate(
+                        5, // Show 5 skeleton items
+                        (index) => const ListItemSkeleton(),
                       ),
                     ),
-                  if (!invitesProvider.loading &&
-                      invitesProvider.invites.isNotEmpty)
+
+                  // if (!invitesProvider.loading && invitesProvider.invites.isNotEmpty)
+                  if (true)
                     Column(
                       children: [
                         ListView.builder(
@@ -60,7 +64,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                             shrinkWrap: true,
                             itemBuilder: (context, index) {
                               InvitationModel invite =
-                                  invitesProvider.invites[index];
+                                  invitesState.invites[index];
                               if (invite.invitedUser == null &&
                                   invite.email == null) {
                                 return const SizedBox();
@@ -129,7 +133,9 @@ class _InvitesBodyState extends State<InvitesBody> {
                                                                 .confirmationStatus
                                                                 .toLowerCase() ==
                                                             "pending"
-                                                        ? Theme.of(context).colorScheme.error
+                                                        ? Theme.of(context)
+                                                            .colorScheme
+                                                            .error
                                                         : invite.confirmationStatus
                                                                     .toLowerCase() ==
                                                                 "accepted"
@@ -168,11 +174,11 @@ class _InvitesBodyState extends State<InvitesBody> {
                                 ),
                               );
                             },
-                            itemCount: invitesProvider.invites.length),
-                        if (invitesProvider.canFetchMore)
+                            itemCount: invitesState.invites.length),
+                        if (invitesState.canFetchMore)
                           GestureDetector(
                             onTap: () async {
-                              await invitesProvider.fetchMore();
+                              await invitesNotifier.fetchMore();
                             },
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -184,7 +190,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                               ),
                             ),
                           ),
-                        if (invitesProvider.loading)
+                        if (invitesState.loading)
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: AppDimensions.spacingSmall,
@@ -195,8 +201,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                           ),
                       ],
                     ),
-                  if (!invitesProvider.loading &&
-                      invitesProvider.invites.isEmpty)
+                  if (!invitesState.loading && invitesState.invites.isEmpty)
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.7,
                       child: Center(
@@ -209,7 +214,7 @@ class _InvitesBodyState extends State<InvitesBody> {
                             StandartButton(
                               text: "Refresh",
                               onPressed: () async {
-                                await invitesProvider.getInvitations(
+                                await invitesNotifier.getInvitations(
                                     isRefresh: true);
                               },
                             ),

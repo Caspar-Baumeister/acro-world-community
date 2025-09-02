@@ -1,20 +1,19 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
 // This modal will be shown after the user creates a new class (when the user selcted an event to be highlighted)
 // or when the user clicks on the highlight your event button
-class StripeHighlightModal extends StatelessWidget {
+class StripeHighlightModal extends ConsumerWidget {
   const StripeHighlightModal(
       {super.key, required this.classEventId, required this.startDate});
 
@@ -22,7 +21,7 @@ class StripeHighlightModal extends StatelessWidget {
   final DateTime startDate;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return BaseModal(
         child: Column(
       children: [
@@ -42,7 +41,7 @@ class StripeHighlightModal extends StatelessWidget {
   }
 }
 
-class BuyHighlightStripeButton extends StatelessWidget {
+class BuyHighlightStripeButton extends ConsumerWidget {
   const BuyHighlightStripeButton({
     super.key,
     required this.classEventId,
@@ -53,16 +52,16 @@ class BuyHighlightStripeButton extends StatelessWidget {
   final double price;
 
   @override
-  Widget build(BuildContext context) {
-    return StandartButton(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ModernButton(
         text: "Buy Highlight",
         onPressed: () {
-          initPaymentSheet(context, classEventId, price);
+          initPaymentSheet(context, classEventId, price, ref);
         });
   }
 
-  Future<void> initPaymentSheet(
-      BuildContext context, String classEventId, double amount) async {
+  Future<void> initPaymentSheet(BuildContext context, String classEventId,
+      double amount, WidgetRef ref) async {
     try {
       final stripeRepository =
           StripeRepository(apiService: GraphQLClientSingleton());
@@ -107,13 +106,11 @@ class BuyHighlightStripeButton extends StatelessWidget {
 
       // 5. Fire the refetch event for booking query
       print("Fire refetch event for booking query");
-      var eventBusProvider =
-          Provider.of<EventBusProvider>(context, listen: false);
       // Fire the refetch event for booking query
       Navigator.of(context).pop();
       Navigator.of(context).pop();
       showSuccessToast("Payment successful");
-      eventBusProvider.fireRefetchEventHighlightsQuery();
+      ref.read(eventBusProvider.notifier).fireRefetchEventHighlightsQuery();
     } catch (e) {
       showErrorToast("Failed to initialize payment. Please contact support");
       rethrow;

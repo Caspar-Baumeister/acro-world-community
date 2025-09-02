@@ -2,17 +2,16 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboad_bookings_statistics.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_booking_view.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as provider;
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return BasePage(
         appBar: const CustomAppbarSimple(
           title: "Bookings",
@@ -33,40 +32,39 @@ class _DashboardBodyState extends ConsumerState<DashboardBody> {
   @override
   void initState() {
     super.initState();
-    // initialises the bookings provider with the creator id from the creator provider
-    CreatorBookingsProvider creatorBookingsProvider =
-        provider.Provider.of<CreatorBookingsProvider>(context, listen: false);
-    if (creatorBookingsProvider.confirmedBookings.isEmpty) {
-      // creatorBookingsProvider.creatorUserId =
-      //     provider.Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
+    // Initialize the bookings provider with the creator id after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final creatorBookingsNotifier =
+          ref.read(creatorBookingsProvider.notifier);
       final userId = ref.read(userRiverpodProvider).value?.id;
+
       if (userId != null) {
-        creatorBookingsProvider.creatorUserId = userId;
-        creatorBookingsProvider.fetchBookings();
-        creatorBookingsProvider.getClassEventBookingsAggregate();
+        creatorBookingsNotifier.setCreatorUserId(userId);
+        creatorBookingsNotifier.fetchBookings();
+        creatorBookingsNotifier.getClassEventBookingsAggregate();
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // get the bookings from the provider
-    final creatorBookingsProvider =
-        provider.Provider.of<CreatorBookingsProvider>(context);
+    final creatorBookingsState = ref.watch(creatorBookingsProvider);
+    final creatorBookingsNotifier = ref.read(creatorBookingsProvider.notifier);
+
     return RefreshIndicator(
       onRefresh: () async {
-        await creatorBookingsProvider.fetchBookings(isRefresh: true);
-        await creatorBookingsProvider.getClassEventBookingsAggregate();
+        await creatorBookingsNotifier.fetchBookings(isRefresh: true);
+        await creatorBookingsNotifier.getClassEventBookingsAggregate();
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           DashboadBookingsStatistics(
-              totalAmountBookings: creatorBookingsProvider.totalBookings),
-          if (creatorBookingsProvider.confirmedBookings.isNotEmpty)
+              totalAmountBookings: creatorBookingsState.totalBookings),
+          if (creatorBookingsState.confirmedBookings.isNotEmpty)
             Expanded(
                 child: DashboardBookingView(
-                    bookings: creatorBookingsProvider.confirmedBookings))
+                    bookings: creatorBookingsState.confirmedBookings))
         ],
       ),
     );

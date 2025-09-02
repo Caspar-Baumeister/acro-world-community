@@ -53,16 +53,15 @@ class _CreatorStripeConnectButtonState
 
     return CustomSettingComponent(
       title: "Payment",
-      content: _getButtonText(),
-      onPressed: () => _handleStripeConnection(context),
+      content: _getButtonText(creatorState),
+      onPressed: () => _handleStripeConnection(context, creatorState),
     );
   }
 
   /// Determines the appropriate button text based on the Stripe connection status.
-  String _getButtonText() {
+  String _getButtonText(CreatorState creatorState) {
     print("stripeId: ${creatorState.activeTeacher?.stripeId}");
-    print(
-        "isStripeEnabled: ${creatorState.activeTeacher?.isStripeEnabled}");
+    print("isStripeEnabled: ${creatorState.activeTeacher?.isStripeEnabled}");
     if (creatorState.activeTeacher?.stripeId == null) {
       return "Connect to Stripe";
     }
@@ -73,11 +72,11 @@ class _CreatorStripeConnectButtonState
   }
 
   /// Handles the logic for connecting or logging into Stripe.
-  Future<void> _handleStripeConnection(BuildContext context) async {
+  Future<void> _handleStripeConnection(
+      BuildContext context, CreatorState creatorState) async {
     print("Stripe connect button pressed");
     print("Stripe ID: ${creatorState.activeTeacher?.stripeId}");
-    print(
-        "Stripe enabled: ${creatorState.activeTeacher?.isStripeEnabled}");
+    print("Stripe enabled: ${creatorState.activeTeacher?.isStripeEnabled}");
 
     if (creatorState.activeTeacher?.stripeId != null &&
         creatorState.activeTeacher?.isStripeEnabled != true) {
@@ -222,7 +221,8 @@ class _CreatorStripeConnectButtonState
 
   /// Retrieves and opens the Stripe login link, or shows an error if unavailable.
   Future<void> _openStripeDashboard() async {
-    final loginUrl = await ref.read(creatorProvider.notifier).getStripeLoginLink();
+    final loginUrl =
+        await ref.read(creatorProvider.notifier).getStripeLoginLink();
     if (loginUrl != null) {
       customLaunch(loginUrl);
     } else {

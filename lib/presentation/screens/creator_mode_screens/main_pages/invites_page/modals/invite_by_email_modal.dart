@@ -1,23 +1,26 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/state/provider/invites_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class InviteByEmailModal extends StatelessWidget {
+// import 'package:provider/provider.dart';
+
+class InviteByEmailModal extends ConsumerWidget {
   const InviteByEmailModal({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     TextEditingController emailController = TextEditingController();
     return BaseModal(
       title: "Invite by Email",
       child: Column(
         children: [
           const SizedBox(height: AppDimensions.spacingMedium),
-          Text("Enter the email of the user you want to invite", style: Theme.of(context).textTheme.bodyMedium),
+          Text("Enter the email of the user you want to invite",
+              style: Theme.of(context).textTheme.bodyMedium),
           const SizedBox(height: AppDimensions.spacingMedium),
           InputFieldComponent(
             controller: emailController,
@@ -30,9 +33,8 @@ class InviteByEmailModal extends StatelessWidget {
             text: "Invite",
             onPressed: () async {
               if (emailController.text.isNotEmpty) {
-                InvitesProvider invitesProvider =
-                    Provider.of<InvitesProvider>(context, listen: false);
-                await invitesProvider.inviteByEmail(emailController.text);
+                final invitesNotifier = ref.read(invitesProvider.notifier);
+                await invitesNotifier.inviteByEmail(emailController.text);
                 Navigator.of(context).pop();
               }
             },

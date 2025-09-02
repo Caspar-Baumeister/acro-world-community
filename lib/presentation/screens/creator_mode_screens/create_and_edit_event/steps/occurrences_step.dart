@@ -39,9 +39,11 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                   MaterialPageRoute(
                     builder: (context) => AddOrEditRecurringPatternPage(
                       onFinished: (RecurringPatternModel recurringPattern) {
-                        ref.read(eventCreationAndEditingProvider.notifier).addRecurringPattern(
-                          recurringPattern,
-                        );
+                        ref
+                            .read(eventCreationAndEditingProvider.notifier)
+                            .addRecurringPattern(
+                              recurringPattern,
+                            );
                       },
                     ),
                   ),
@@ -51,8 +53,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount:
-                    eventState.recurringPatterns.length,
+                itemCount: eventState.recurringPatterns.length,
                 itemBuilder: (context, index) {
                   RecurringPatternModel pattern =
                       eventState.recurringPatterns[index];
@@ -69,11 +70,13 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                   AddOrEditRecurringPatternPage(
                                 onFinished:
                                     (RecurringPatternModel recurringPattern) {
-                                  ref.read(eventCreationAndEditingProvider.notifier)
+                                  ref
+                                      .read(eventCreationAndEditingProvider
+                                          .notifier)
                                       .editRecurringPattern(
-                                    index,
-                                    recurringPattern,
-                                  );
+                                        index,
+                                        recurringPattern,
+                                      );
                                 },
                                 recurringPattern: pattern,
                               ),
@@ -101,8 +104,10 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                                 .primary)),
                                 IconButton(
                                     onPressed: () {
-                                                                        ref.read(eventCreationAndEditingProvider.notifier)
-                                      .removeRecurringPattern(index);
+                                      ref
+                                          .read(eventCreationAndEditingProvider
+                                              .notifier)
+                                          .removeRecurringPattern(index);
                                     },
                                     icon: Icon(
                                       Icons.delete,
@@ -129,13 +134,15 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                     ? const BoxConstraints(maxWidth: 200)
                     : null,
                 child: StandartButton(
-                    onPressed: () {
-                      ref.read(eventCreationAndEditingProvider.notifier).setPage(0);
-                      setState(() {});
-                    },
-                    text: "Previous",
-                    width: MediaQuery.of(context).size.width * 0.3,
-                  ),
+                  onPressed: () {
+                    ref
+                        .read(eventCreationAndEditingProvider.notifier)
+                        .setPage(0);
+                    setState(() {});
+                  },
+                  text: "Previous",
+                  width: MediaQuery.of(context).size.width * 0.3,
+                ),
               ),
               const SizedBox(width: AppDimensions.spacingMedium),
               Container(

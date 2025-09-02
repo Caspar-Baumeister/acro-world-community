@@ -14,7 +14,6 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
 
 class ShellSideBar extends ConsumerWidget {
   const ShellSideBar({super.key, required this.isCreator});
@@ -93,7 +92,9 @@ class ShellSideBar extends ConsumerWidget {
                                     context.pushNamed(verifyEmailRoute);
                                   } else if (hasTeacherProfile) {
                                     GraphQLClientSingleton().updateClient(true);
-                                    ref.read(userRoleProvider.notifier).setIsCreator(true);
+                                    ref
+                                        .read(userRoleProvider.notifier)
+                                        .setIsCreator(true);
                                     context.goNamed(myEventsRoute);
                                   } else {
                                     final roles = await TokenSingletonService()

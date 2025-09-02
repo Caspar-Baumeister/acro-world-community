@@ -15,7 +15,6 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
 
 class ProfileBody extends ConsumerWidget {
   const ProfileBody({super.key});
@@ -48,7 +47,9 @@ class ProfileBody extends ConsumerWidget {
                   delegate: SliverChildListDelegate([
                     if (hasTeacherProfile)
                       Padding(
-                        padding: const EdgeInsets.all(AppDimensions.spacingSmall).copyWith(left: 20),
+                        padding:
+                            const EdgeInsets.all(AppDimensions.spacingSmall)
+                                .copyWith(left: 20),
                         child: HeaderWidget(
                           imgUrl: user.teacherProfile?.profilImgUrl ??
                               user.imageUrl ??
@@ -75,7 +76,9 @@ class ProfileBody extends ConsumerWidget {
                             context.pushNamed(verifyEmailRoute);
                           } else if (hasTeacherProfile) {
                             GraphQLClientSingleton().updateClient(true);
-                            ref.read(userRoleProvider.notifier).setIsCreator(true);
+                            ref
+                                .read(userRoleProvider.notifier)
+                                .setIsCreator(true);
                             context.pushNamed(creatorProfileRoute);
                           } else {
                             final roles =
@@ -102,7 +105,8 @@ class ProfileBody extends ConsumerWidget {
                     color: Theme.of(context).colorScheme.surface,
                     child: TabBar(
                       labelColor: Theme.of(context).colorScheme.onSurface,
-                      unselectedLabelColor: Theme.of(context).colorScheme.outline,
+                      unselectedLabelColor:
+                          Theme.of(context).colorScheme.outline,
                       indicatorWeight: 1,
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicatorColor: Theme.of(context).colorScheme.onSurface,

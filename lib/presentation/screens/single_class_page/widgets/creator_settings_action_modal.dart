@@ -5,8 +5,8 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -16,7 +16,6 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 
 class CreatorSettingsActionModal extends ConsumerWidget {
   const CreatorSettingsActionModal(
@@ -30,7 +29,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
   final ClassEvent? classEvent;
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userRiverpodProvider);
     return BaseModal(
       child: Container(
@@ -43,7 +42,8 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                   Icon(Icons.edit, color: Theme.of(context).iconTheme.color),
               onTap: () async {
                 // Perform the asynchronous operation
-                await ref.read(eventCreationAndEditingProvider.notifier)
+                await ref
+                    .read(eventCreationAndEditingProvider.notifier)
                     .setClassFromExisting(classModel.urlSlug!, true, false);
 
                 // Now pop the current widget and push the next page safely
@@ -185,13 +185,14 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                       isFilled: true,
                       onPressed: () {
                         // Resolve flags
-                        final teacherEventsNotifier = ref.read(teacherEventsProvider.notifier);
+                        // final teacherEventsNotifier = ref.read(teacherEventsProvider.notifier);
                         ClassesRepository(apiService: GraphQLClientSingleton())
                             .resolveAllClassFlags(classModel.id!)
                             .then((value) {
                           if (value) {
                             showSuccessToast("Flags resolved, reload page");
-                            teacherEventsNotifier.fetchMyEvents(userId, isRefresh: true);
+                            // TODO: Fix ref usage in callback
+                            // teacherEventsNotifier.fetchMyEvents(userId, isRefresh: true);
                             Navigator.of(context).pop();
                           } else {
                             throw Exception("value not true");
@@ -216,7 +217,7 @@ class DeleteClassModal extends ConsumerWidget {
   final ClassModel classModel;
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userRiverpodProvider);
     return BaseModal(
       child: Column(
@@ -250,7 +251,8 @@ class DeleteClassModal extends ConsumerWidget {
                       return;
                     }
 
-                    ref.read(teacherEventsProvider.notifier)
+                    ref
+                        .read(teacherEventsProvider.notifier)
                         .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
                     // Navigator.of(context).pushAndRemoveUntil(
                     //     MyEventsPageRoute(), (route) => false);

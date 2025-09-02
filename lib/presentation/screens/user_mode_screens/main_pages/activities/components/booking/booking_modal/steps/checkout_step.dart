@@ -4,12 +4,12 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
@@ -23,7 +23,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutStep extends ConsumerStatefulWidget {
@@ -74,7 +73,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           widget.classEventId!,
           user!,
         ).then((_) {
-          ref.read(eventAnswerProvider.notifier)
+          ref
+              .read(eventAnswerProvider.notifier)
               .initAnswers(user.id!, widget.classEventId!)
               .then((_) {
             setState(() {
@@ -150,8 +150,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                 return StandartButton(
                                   text: "Continue to payment",
                                   onPressed: () async {
-                                    if (!areRequiredQuestionsAnswered(
-                                        eventAnswerProvider)) {
+                                    if (!areRequiredQuestionsAnswered(ref)) {
                                       showErrorToast(
                                         "Please answer all required questions",
                                       );
@@ -165,7 +164,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                     }
                                     await attemptToPresentPaymentSheet(
                                         paymentIntentId!);
-                                    eventAnswerProvider
+                                    ref
+                                        .read(eventAnswerProvider.notifier)
                                         .mutateAnswers()
                                         .then((ok) {
                                       if (!ok) {
@@ -190,14 +190,14 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                           child: StandartButton(
                             text: "Pay in cash",
                             onPressed: () async {
-                              if (!areRequiredQuestionsAnswered(
-                                  eventAnswerProvider)) {
+                              if (!areRequiredQuestionsAnswered(ref)) {
                                 showErrorToast(
                                   "Please answer all required questions",
                                 );
                                 return;
                               }
-                              eventAnswerProvider
+                              ref
+                                  .read(eventAnswerProvider.notifier)
                                   .mutateAnswers()
                                   .then((ok) async {
                                 if (!ok) {
@@ -248,7 +248,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                   // close the modal
                                   Navigator.of(context).pop();
                                   // fire the event to refetch the booking query
-                                  ref.read(eventBusProvider.notifier)
+                                  ref
+                                      .read(eventBusProvider.notifier)
                                       .fireRefetchBookingQuery();
                                 }
                               });
@@ -266,13 +267,13 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
         );
   }
 
-  bool areRequiredQuestionsAnswered(EventAnswerProvider eventAnswerProvider) {
-    return eventAnswerProvider.doAllQuestionsHaveAnswers(
-      widget.questions
-          .where((q) => q.isRequired == true && q.id != null)
-          .map((q) => q.id!)
-          .toList(),
-    );
+  bool areRequiredQuestionsAnswered(WidgetRef ref) {
+    return ref.read(eventAnswerProvider.notifier).doAllQuestionsHaveAnswers(
+          widget.questions
+              .where((q) => q.isRequired == true && q.id != null)
+              .map((q) => q.id!)
+              .toList(),
+        );
   }
 
   Future<void> attemptToPresentPaymentSheet(String pi) async {
@@ -283,8 +284,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           .attemptToPresentPaymentSheet(pi)
           .then((_) {
         Navigator.of(context).pop();
-        ref.read(eventBusProvider.notifier)
-            .fireRefetchBookingQuery();
+        ref.read(eventBusProvider.notifier).fireRefetchBookingQuery();
       });
     } on StripeException catch (e) {
       CustomErrorHandler.captureException(
@@ -607,8 +607,7 @@ class QuestionCard extends ConsumerWidget {
         }
 
         // The answers provider remains the same
-        final eventAnswerNotifier =
-            ref.read(eventAnswerProvider.notifier);
+        final eventAnswerNotifier = ref.read(eventAnswerProvider.notifier);
 
         final hasAnswer = question.id != null
             ? eventAnswerNotifier.doesQuestionIdHaveAnswer(question.id!)

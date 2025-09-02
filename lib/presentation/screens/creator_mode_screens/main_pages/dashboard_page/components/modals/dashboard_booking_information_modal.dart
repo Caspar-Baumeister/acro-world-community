@@ -4,17 +4,16 @@ import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class DashboardBookingInformationModal extends StatelessWidget {
+class DashboardBookingInformationModal extends ConsumerWidget {
   const DashboardBookingInformationModal(
       {super.key, required this.booking, required this.isClassBookingSummary});
 
@@ -22,9 +21,8 @@ class DashboardBookingInformationModal extends StatelessWidget {
   final bool isClassBookingSummary;
 
   @override
-  Widget build(BuildContext context) {
-    CreatorBookingsProvider creatorBookingsProvider =
-        Provider.of<CreatorBookingsProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    // final creatorBookingsProvider = ref.read(creatorBookingsProvider.notifier);
     return BaseModal(
         child: Container(
       constraints:
@@ -47,12 +45,15 @@ class DashboardBookingInformationModal extends StatelessWidget {
             // if the booking is waiting for payment, show a box with confirmation of receiving the payment
             if (booking.status == "WaitingForPayment")
               Container(
-                margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+                margin: const EdgeInsets.symmetric(
+                    vertical: AppDimensions.spacingSmall),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.error.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusSmall),
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.outline),
                 ),
                 child: Column(
                   children: [
@@ -65,7 +66,8 @@ class DashboardBookingInformationModal extends StatelessWidget {
                       text: "Confirm payment",
                       isFilled: true,
                       onPressed: () {
-                        creatorBookingsProvider
+                        ref
+                            .read(creatorBookingsProvider.notifier)
                             .confirmPayment(booking.id)
                             .then((value) {
                           if (value) {
@@ -108,7 +110,8 @@ class DashboardBookingInformationModal extends StatelessWidget {
 
             if (!isClassBookingSummary)
               Padding(
-                padding: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 child: StandartButton(
                     text: "All bookings of this event",
                     isFilled: true,
@@ -169,23 +172,28 @@ class UserInformationWidget extends StatelessWidget {
               SizedBox(height: AppDimensions.spacingSmall),
               booking.user.gender?.name != null
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
+                      padding: const EdgeInsets.only(
+                          bottom: AppDimensions.spacingSmall),
                       child: Text(
                           "Prefered position: ${booking.user.gender?.name}"),
                     )
                   : SizedBox(),
               booking.user.level?.name != null
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
+                      padding: const EdgeInsets.only(
+                          bottom: AppDimensions.spacingSmall),
                       child: Text("Level: ${booking.user.level?.name}"),
                     )
                   : SizedBox(),
               booking.user.email != null
                   ? Container(
-                      padding: EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: AppDimensions.spacingSmall,
+                          vertical: AppDimensions.spacingExtraSmall),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.surfaceContainer,
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusSmall),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

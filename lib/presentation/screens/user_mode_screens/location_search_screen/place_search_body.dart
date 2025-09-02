@@ -6,13 +6,12 @@ import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/loading_indicator/loading_indicator.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/set_to_user_location_widget.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/map_events_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
 class PlaceQuery extends StatelessWidget {
   const PlaceQuery(
@@ -195,14 +194,14 @@ class PlacesQuery extends StatelessWidget {
   }
 }
 
-class PlaceSearchBody extends StatefulWidget {
+class PlaceSearchBody extends ConsumerStatefulWidget {
   const PlaceSearchBody({super.key});
 
   @override
-  State<PlaceSearchBody> createState() => _PlaceSearchBodyState();
+  ConsumerState<PlaceSearchBody> createState() => _PlaceSearchBodyState();
 }
 
-class _PlaceSearchBodyState extends State<PlaceSearchBody> {
+class _PlaceSearchBodyState extends ConsumerState<PlaceSearchBody> {
   String query = '';
   String placeId = '';
   bool isNavigatedBack = false;
@@ -234,14 +233,14 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         placeId: placeId,
                         onPlaceSet: (Place place) {
                           LocationSingleton().setPlace(place);
-                          Provider.of<PlaceProvider>(context, listen: false)
-                              .updatePlace(place);
+                          // Place will be updated automatically via LocationSingleton
                           // Calendar events will be fetched automatically when place changes
                           // updateCurrentCameraPosition MapEventsProvider
-                          Provider.of<MapEventsProvider>(context, listen: false)
+                          ref
+                              .read(mapEventsProvider.notifier)
                               .setPlaceFromPlace(place);
-
-                          Provider.of<MapEventsProvider>(context, listen: false)
+                          ref
+                              .read(mapEventsProvider.notifier)
                               .fetchClasseEvents();
                           if (!isNavigatedBack) {
                             Navigator.of(context).pop();

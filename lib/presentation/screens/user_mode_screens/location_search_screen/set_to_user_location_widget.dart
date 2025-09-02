@@ -1,13 +1,11 @@
 import 'package:acroworld/data/models/places/place.dart';
-
-
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class SetToUserLocationWidget extends ConsumerStatefulWidget {
   const SetToUserLocationWidget({super.key});
@@ -17,7 +15,8 @@ class SetToUserLocationWidget extends ConsumerStatefulWidget {
       _SetToUserLocationWidgetState();
 }
 
-class _SetToUserLocationWidgetState extends ConsumerState<SetToUserLocationWidget> {
+class _SetToUserLocationWidgetState
+    extends ConsumerState<SetToUserLocationWidget> {
   bool loading = false;
   setToUserLocation(BuildContext context) async {
     Location location = Location();
@@ -62,15 +61,7 @@ class _SetToUserLocationWidgetState extends ConsumerState<SetToUserLocationWidge
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       LocationSingleton().setPlace(place);
-      // TODO: These providers need to be migrated to Riverpod
-      // Provider.of<PlaceProvider>(context, listen: false).updatePlace(place);
-      // TODO: Calendar events will be fetched automatically when place changes
-      // updateCurrentCameraPosition MapEventsProvider
-      // Provider.of<MapEventsProvider>(context, listen: false)
-      //     .setPlaceFromPlace(place);
-
-      // Provider.of<MapEventsProvider>(context, listen: false)
-      //     .fetchClasseEvents();
+      // Place is updated via LocationSingleton, which will trigger Riverpod providers automatically
       Navigator.of(context).pop();
     });
   }
