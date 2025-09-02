@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -24,7 +24,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 // provider as provider
-
 
 class CreateCreatorProfileBody extends ConsumerStatefulWidget {
   const CreateCreatorProfileBody({
@@ -362,7 +361,9 @@ class _CreateCreatorProfileBodyState
                                       color:
                                           Theme.of(context).colorScheme.error)
                                   : Icon(Icons.check_circle,
-                                      color: Theme.of(context).colorScheme.primary),
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary),
                         ),
                         SizedBox(height: AppDimensions.spacingMedium),
 
@@ -412,13 +413,13 @@ class _CreateCreatorProfileBodyState
                         const SizedBox(height: AppDimensions.spacingLarge),
 
                         // Save/Create button
-                        StandartButton(
+                        ModernButton(
                           isFilled: true,
                           onPressed: () => _handleUploadAndMutation(user),
                           text: widget.isEditing
                               ? 'Save Changes'
                               : 'Create Teacher Profile',
-                          loading: _isLoading,
+                          isLoading: _isLoading,
                         ),
 
                         if (_errorMessage != null) ...[

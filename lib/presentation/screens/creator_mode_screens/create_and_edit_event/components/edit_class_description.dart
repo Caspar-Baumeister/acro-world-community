@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:flutter/material.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
@@ -71,7 +71,7 @@ class EditClassDescriptionPageState extends State<EditClassDescriptionPage> {
                   inputAction: InputAction.newline),
             ),
             SizedBox(height: 16),
-            StandartButton(
+            ModernButton(
               text: 'SAVE',
               onPressed: _applyChanges,
               isFilled: true,

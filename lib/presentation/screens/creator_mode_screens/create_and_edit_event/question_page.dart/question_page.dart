@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/ask_question_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
@@ -23,7 +23,7 @@ class QuestionPage extends ConsumerWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                StandartButton(
+                ModernButton(
                   text: "Done",
                   onPressed: () {
                     Navigator.of(context).pop();
@@ -31,7 +31,7 @@ class QuestionPage extends ConsumerWidget {
                   width: MediaQuery.of(context).size.width * 0.3,
                 ),
                 SizedBox(width: AppDimensions.spacingSmall),
-                StandartButton(
+                ModernButton(
                   text: "Add Question",
                   onPressed: () {
                     buildMortal(context, AskQuestionModal());
@@ -67,7 +67,9 @@ class CurrentQuestionSection extends ConsumerWidget {
           : ReorderableListView(
               padding: const EdgeInsets.all(AppDimensions.spacingSmall),
               onReorder: (oldIndex, newIndex) {
-                ref.read(eventCreationAndEditingProvider.notifier).reorderQuestions(oldIndex, newIndex);
+                ref
+                    .read(eventCreationAndEditingProvider.notifier)
+                    .reorderQuestions(oldIndex, newIndex);
               },
               children: List.generate(eventState.questions.length, (index) {
                 final item = eventState.questions[index];
@@ -75,14 +77,17 @@ class CurrentQuestionSection extends ConsumerWidget {
                   key:
                       ValueKey(item.id), // Ensure the key is unique and stable.
                   direction: DismissDirection.endToStart,
-                  onDismissed: (direction) => ref.read(eventCreationAndEditingProvider.notifier).removeQuestion(index),
+                  onDismissed: (direction) => ref
+                      .read(eventCreationAndEditingProvider.notifier)
+                      .removeQuestion(index),
                   background: Container(
                     alignment: Alignment.centerRight,
                     color: Theme.of(context).colorScheme.error,
                     padding: EdgeInsets.symmetric(
                         vertical: AppDimensions.spacingMedium,
                         horizontal: AppDimensions.spacingLarge),
-                    child: Icon(Icons.delete, color: Theme.of(context).colorScheme.onPrimary),
+                    child: Icon(Icons.delete,
+                        color: Theme.of(context).colorScheme.onPrimary),
                   ),
                   child: QuestionCard(question: item),
                 );

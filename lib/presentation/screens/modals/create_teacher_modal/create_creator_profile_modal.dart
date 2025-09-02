@@ -1,5 +1,5 @@
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -88,22 +88,20 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             const SizedBox(height: 24),
 
             // ─── Primary Action ─────────────────────────────
-            StandartButton(
+            ModernButton(
               text: "Let's Go!",
-              onPressed: isLoading ? () {} : _onContinue,
-              buttonFillColor: Theme.of(context).colorScheme.primary,
-              loading: isLoading,
-              disabled: isLoading,
+              onPressed: isLoading ? null : _onContinue,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              isLoading: isLoading,
               isFilled: true,
             ),
 
             // ─── Secondary Action ───────────────────────────
             const SizedBox(height: 12),
-            StandartButton(
+            ModernButton(
               text: "Maybe Later",
-              onPressed: isLoading ? () {} : () => Navigator.of(context).pop(),
-              buttonFillColor: Theme.of(context).colorScheme.secondary,
-              disabled: isLoading,
+              onPressed: isLoading ? null : () => Navigator.of(context).pop(),
+              backgroundColor: Theme.of(context).colorScheme.secondary,
             ),
           ],
         ),

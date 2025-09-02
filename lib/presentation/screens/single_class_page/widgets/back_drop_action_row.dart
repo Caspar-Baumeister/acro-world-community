@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_icon_button.dart';
 import 'package:acroworld/provider/riverpod_provider/class_favorites_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
@@ -74,7 +74,7 @@ class BackDropActionRow extends ConsumerWidget {
                                 .onSurface
                                 .withOpacity(0.7))),
                   ),
-                  StandartButton(
+                  ModernButton(
                     text: "Report Event",
                     width: MediaQuery.of(ctx).size.width * 0.3,
                     isFilled: true,

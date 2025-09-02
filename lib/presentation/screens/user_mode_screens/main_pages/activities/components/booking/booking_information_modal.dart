@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/email_helper.dart';
@@ -84,7 +84,7 @@ You can join me here: $deeplinkUrl
                   textAlign: TextAlign.center,
                 ),
               ),
-            StandartButton(
+            ModernButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
               isFilled: true,

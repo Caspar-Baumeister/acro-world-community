@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/sections/regular_event_tab_view.dart';
@@ -140,7 +140,7 @@ class _AddOrEditRecurringPatternPageState
             )
           else
             const SizedBox(height: AppDimensions.spacingMedium),
-          StandartButton(
+          ModernButton(
               text: "Save",
               onPressed: () {
                 _onNext();

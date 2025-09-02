@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/class_event_calender_query.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +31,7 @@ class CalenderModal extends StatelessWidget {
                 child: ClassEventCalenderQuery(
                     classId: classId, isCreator: isCreator)),
             const SizedBox(height: 20),
-            StandartButton(
+            ModernButton(
                 text: "Close", onPressed: () => Navigator.of(context).pop()),
             const SizedBox(height: 20),
           ],

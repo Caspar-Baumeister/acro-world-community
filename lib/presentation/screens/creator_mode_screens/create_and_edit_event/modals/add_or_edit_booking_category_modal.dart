@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -72,7 +72,7 @@ class _AddOrEditBookingCategoryModalState
               isNumberInput: true,
             ),
             const SizedBox(height: AppDimensions.spacingHuge),
-            StandartButton(
+            ModernButton(
               text: widget.bookingCategory == null ? "Create" : "Update",
               onPressed: () {
                 _onNext();
@@ -80,7 +80,8 @@ class _AddOrEditBookingCategoryModalState
             ),
             if (_errorMessage != null)
               Padding(
-                padding: const EdgeInsets.only(top: AppDimensions.spacingMedium),
+                padding:
+                    const EdgeInsets.only(top: AppDimensions.spacingMedium),
                 child: Text(
                   _errorMessage!,
                   style: Theme.of(context)

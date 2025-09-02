@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/teacher_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/presentation/components/show_more_text.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -94,7 +94,7 @@ Widget actions(BuildContext context, String communityId, String? webUrl) {
     children: [
       webUrl != null
           ? Flexible(
-              child: StandartButton(
+              child: ModernButton(
               text: "Website",
               onPressed: () {},
             ))

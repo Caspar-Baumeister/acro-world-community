@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -66,7 +66,7 @@ class OptionChoosingStep extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-        StandartButton(
+        ModernButton(
           text: "Continue",
           onPressed: () {
             if (currentOption != null) {
@@ -78,7 +78,7 @@ class OptionChoosingStep extends StatelessWidget {
             }
           },
           isFilled: true,
-          buttonFillColor: Theme.of(context).colorScheme.primary,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           width: double.infinity,
         ),
         placesLeft != null && maxPlaces != null

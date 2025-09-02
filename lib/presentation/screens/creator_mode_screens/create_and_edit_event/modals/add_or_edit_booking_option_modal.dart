@@ -1,11 +1,11 @@
 import 'package:acroworld/data/models/booking_option.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:flutter/material.dart';
 import 'package:acroworld/utils/helper_functions/currency_formater.dart';
+import 'package:flutter/material.dart';
 
 /// Modal to create or edit a BookingOption
 /// Contains fields for title, subtitle, price, and currency
@@ -129,7 +129,7 @@ class _AddOrEditBookingOptionModalState
           const SizedBox(height: AppDimensions.spacingHuge),
 
           // Create/Update button
-          StandartButton(
+          ModernButton(
             text: widget.bookingOption == null ? "Create" : "Update",
             onPressed: _onNext,
           ),

@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -18,7 +18,8 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: activeEvents.isEmpty
           ? SizedBox(
               width: double.infinity,
@@ -34,7 +35,7 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  StandartButton(
+                  ModernButton(
                     text: "Reset Filter",
                     onPressed: () {
                       ref.read(discoveryProvider.notifier).resetFilter();
