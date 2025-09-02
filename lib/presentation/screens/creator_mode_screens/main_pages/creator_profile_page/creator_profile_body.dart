@@ -1,47 +1,47 @@
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/edit_creator_profile_button.dart';
-import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatorProfileBody extends StatefulWidget {
+class CreatorProfileBody extends ConsumerStatefulWidget {
   const CreatorProfileBody({super.key});
 
   @override
-  State<CreatorProfileBody> createState() => _CreatorProfileBodyState();
+  ConsumerState<CreatorProfileBody> createState() => _CreatorProfileBodyState();
 }
 
-class _CreatorProfileBodyState extends State<CreatorProfileBody> {
+class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
   // init state runs creatorProvider.setCreatorFromToken
 
   @override
   void initState() {
     super.initState();
-    Provider.of<CreatorProvider>(context, listen: false).setCreatorFromToken();
+    ref.read(creatorProvider.notifier).setCreatorFromToken();
   }
 
   @override
   Widget build(BuildContext context) {
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
-    if (creatorProvider.isLoading) {
+    final creatorState = ref.watch(creatorProvider);
+    if (creatorState.isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
     }
     return RefreshIndicator(
       onRefresh: () async {
-        await creatorProvider.setCreatorFromToken();
+        await ref.read(creatorProvider.notifier).setCreatorFromToken();
       },
       child: SingleChildScrollView(
         physics: AlwaysScrollableScrollPhysics(),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            creatorProvider.activeTeacher != null
+            creatorState.activeTeacher != null
                 ? EditCreatorProfileButton(
-                    teacher: creatorProvider.activeTeacher!,
+                    teacher: creatorState.activeTeacher!,
                   )
                 : Container(),
             Padding(
@@ -59,7 +59,7 @@ class _CreatorProfileBodyState extends State<CreatorProfileBody> {
                   style: Theme.of(context).textTheme.headlineMedium),
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
-            CreatorStripeConnectButton(creatorProvider: creatorProvider),
+            CreatorStripeConnectButton(creatorProvider: ref.read(creatorProvider.notifier)),
             SizedBox(height: AppDimensions.spacingLarge),
           ],
         ),

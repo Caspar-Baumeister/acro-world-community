@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
-
 class App extends StatelessWidget {
   const App({super.key});
 
@@ -29,7 +28,8 @@ class App extends StatelessWidget {
           // Keep only the providers that haven't been migrated to Riverpod yet
           provider.ChangeNotifierProvider(create: (_) => EventBusProvider()),
           provider.ChangeNotifierProvider(create: (_) => MapEventsProvider()),
-          provider.ChangeNotifierProvider(create: (_) => CreatorBookingsProvider()),
+          provider.ChangeNotifierProvider(
+              create: (_) => CreatorBookingsProvider()),
           provider.ChangeNotifierProvider(
               create: (_) => EventCreationAndEditingProvider()),
           provider.ChangeNotifierProvider(create: (_) => CreatorProvider()),

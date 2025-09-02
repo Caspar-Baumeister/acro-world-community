@@ -18,7 +18,7 @@ class PlaceButton extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10.0)
           .copyWith(right: rightPadding ? 10 : 0),
       child: StandartButton(
-        text: placeState.currentPlace?.description ?? "Select Location",
+        text: placeState?.description ?? "Select Location",
         icon: Icon(Icons.location_on),
         onPressed: () {
           context.pushNamed(

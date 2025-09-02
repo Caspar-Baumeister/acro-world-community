@@ -4,9 +4,9 @@ import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/routing/routes/page_routes/creator_page_routes.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -16,7 +16,7 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 class CreatorSettingsActionModal extends ConsumerWidget {
   const CreatorSettingsActionModal(
@@ -43,9 +43,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                   Icon(Icons.edit, color: Theme.of(context).iconTheme.color),
               onTap: () async {
                 // Perform the asynchronous operation
-                await provider.Provider.of<EventCreationAndEditingProvider>(
-                        context,
-                        listen: false)
+                await ref.read(eventCreationAndEditingProvider.notifier)
                     .setClassFromExisting(classModel.urlSlug!, true, false);
 
                 // Now pop the current widget and push the next page safely
@@ -192,8 +190,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                             .then((value) {
                           if (value) {
                             showSuccessToast("Flags resolved, reload page");
-                            provider.Provider.of<TeacherEventsProvider>(context,
-                                    listen: false)
+                            ref.read(teacherEventsProvider.notifier)
                                 .fetchMyEvents(userId, isRefresh: true);
                             Navigator.of(context).pop();
                           } else {
@@ -253,8 +250,7 @@ class DeleteClassModal extends ConsumerWidget {
                       return;
                     }
 
-                    provider.Provider.of<TeacherEventsProvider>(context,
-                            listen: false)
+                    ref.read(teacherEventsProvider.notifier)
                         .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
                     // Navigator.of(context).pushAndRemoveUntil(
                     //     MyEventsPageRoute(), (route) => false);

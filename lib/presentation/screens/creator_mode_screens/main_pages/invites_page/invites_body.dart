@@ -7,7 +7,7 @@ import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart'; // TODO: Migrate to Riverpod
 
 class InvitesBody extends StatefulWidget {
   const InvitesBody({super.key});
@@ -19,17 +19,19 @@ class InvitesBody extends StatefulWidget {
 class _InvitesBodyState extends State<InvitesBody> {
   @override
   void initState() {
-    InvitesProvider invitesProvider =
-        Provider.of<InvitesProvider>(context, listen: false);
+    // TODO: Migrate InvitesProvider to Riverpod
+    // InvitesProvider invitesProvider =
+    //     Provider.of<InvitesProvider>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      invitesProvider.getInvitations(isRefresh: true);
+      // invitesProvider.getInvitations(isRefresh: true);
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    InvitesProvider invitesProvider = Provider.of<InvitesProvider>(context);
+    // TODO: Migrate InvitesProvider to Riverpod
+    // InvitesProvider invitesProvider = Provider.of<InvitesProvider>(context);
     return Column(
       children: [
         SizedBox(height: AppDimensions.spacingMedium),

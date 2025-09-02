@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/d
 import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart'; // TODO: Migrate to Riverpod
 
 class DashboardBookingView extends StatelessWidget {
   const DashboardBookingView({super.key, required this.bookings});
@@ -17,7 +17,9 @@ class DashboardBookingView extends StatelessWidget {
         itemCount: bookings.length + 1,
         itemBuilder: (context, index) {
           if (index == bookings.length) {
-            if (!Provider.of<CreatorBookingsProvider>(context).canFetchMore) {
+            // TODO: Migrate CreatorBookingsProvider to Riverpod
+            // if (!Provider.of<CreatorBookingsProvider>(context).canFetchMore) {
+            if (false) { // Temporarily disabled
               return Container();
             }
             return Padding(
@@ -31,7 +33,8 @@ class DashboardBookingView extends StatelessWidget {
                     text: "Load more",
                     onPressed: () {
                       // fetch more bookings
-                      Provider.of<CreatorBookingsProvider>(context,
+                      // TODO: Migrate CreatorBookingsProvider to Riverpod
+                      // Provider.of<CreatorBookingsProvider>(context,
                               listen: false)
                           .fetchMore();
                     }),
