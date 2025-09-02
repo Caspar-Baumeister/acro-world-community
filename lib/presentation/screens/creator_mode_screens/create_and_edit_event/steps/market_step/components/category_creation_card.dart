@@ -1,14 +1,14 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/presentation/components/buttons/custom_icon_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_option_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:flutter/material.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A card that displays a booking category (e.g., "VIP Tickets")
@@ -94,12 +94,9 @@ class CategoryCreationCard extends ConsumerWidget {
                     icon: Icons.delete,
                     onPressed: () {
                       // Warn user if there are any booking options associated with this category
-                      final hasAssociatedTickets =
-                          eventState.bookingOptions
-                              .any(
-                                  (option) =>
-                                      option.bookingCategoryId ==
-                                      bookingCategory.id);
+                      final hasAssociatedTickets = eventState.bookingOptions
+                          .any((option) =>
+                              option.bookingCategoryId == bookingCategory.id);
 
                       if (hasAssociatedTickets) {
                         showDialog(
@@ -143,7 +140,8 @@ class CategoryCreationCard extends ConsumerWidget {
                     (option) => option.bookingCategoryId == bookingCategory.id)
                 .map((option) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
                 child: BookingOptionCreationCard(
                   bookingOption: option,
                   onEdit: () {
@@ -152,11 +150,12 @@ class CategoryCreationCard extends ConsumerWidget {
                       context,
                       AddOrEditBookingOptionModal(
                         onFinished: (BookingOption updatedOption) {
-                          ref.read(eventCreationAndEditingProvider.notifier).editBookingOption(
-                            eventState.bookingOptions
-                                .indexOf(option),
-                            updatedOption,
-                          );
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .editBookingOption(
+                                eventState.bookingOptions.indexOf(option),
+                                updatedOption,
+                              );
                         },
                         bookingOption: option,
                         categoryID: bookingCategory.id!,
@@ -165,9 +164,10 @@ class CategoryCreationCard extends ConsumerWidget {
                   },
                   onDelete: () {
                     // Remove the booking option from the provider
-                    final index = eventState.bookingOptions
-                        .indexOf(option);
-                    ref.read(eventCreationAndEditingProvider.notifier).removeBookingOption(index);
+                    final index = eventState.bookingOptions.indexOf(option);
+                    ref
+                        .read(eventCreationAndEditingProvider.notifier)
+                        .removeBookingOption(index);
                   },
                 ),
               );
@@ -177,16 +177,18 @@ class CategoryCreationCard extends ConsumerWidget {
           const SizedBox(height: AppDimensions.spacingMedium),
 
           // Button to add a new booking option to this category
-          StandartButton(
+          ModernButton(
             text: 'Add Ticket',
             onPressed: () {
               buildMortal(
                 context,
                 AddOrEditBookingOptionModal(
                   onFinished: (BookingOption bookingOption) {
-                    ref.read(eventCreationAndEditingProvider.notifier).addBookingOption(
-                      bookingOption,
-                    );
+                    ref
+                        .read(eventCreationAndEditingProvider.notifier)
+                        .addBookingOption(
+                          bookingOption,
+                        );
                   },
                   categoryID: bookingCategory.id!,
                 ),

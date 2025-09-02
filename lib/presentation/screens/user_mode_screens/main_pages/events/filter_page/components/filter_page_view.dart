@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -18,12 +18,14 @@ class FilterPageView extends ConsumerWidget {
       return regions.any((region) => region != "Not specified");
     });
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -37,7 +39,8 @@ class FilterPageView extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -51,7 +54,8 @@ class FilterPageView extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -66,7 +70,8 @@ class FilterPageView extends ConsumerWidget {
           ),
           if (hasRealRegions) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+              padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.spacingSmall),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -79,7 +84,8 @@ class FilterPageView extends ConsumerWidget {
             ),
           ],
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -105,7 +111,7 @@ class FilterPageView extends ConsumerWidget {
             height: 20,
           ),
           Center(
-            child: StandartButton(
+            child: ModernButton(
               text: "Continue",
               onPressed: () {
                 Navigator.of(context).pop();
@@ -117,7 +123,7 @@ class FilterPageView extends ConsumerWidget {
             height: 20,
           ),
           Center(
-            child: StandartButton(
+            child: ModernButton(
               text: "Reset",
               onPressed: () {
                 ref.read(discoveryProvider.notifier).resetFilter();

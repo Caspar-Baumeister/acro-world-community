@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_check_box.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_category_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
@@ -77,7 +77,7 @@ class MarketStepTicketSection extends ConsumerWidget {
                 );
               },
             ),
-            StandartButton(
+            ModernButton(
               text: 'Add Ticket-Category',
               isFilled: true,
               onPressed: () {

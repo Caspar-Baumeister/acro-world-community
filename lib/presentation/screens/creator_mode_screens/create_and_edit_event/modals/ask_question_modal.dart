@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/event/question_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
@@ -219,13 +219,13 @@ class _AskQuestionModalState extends ConsumerState<AskQuestionModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StandartButton(
+                  ModernButton(
                     width: null,
                     text: "Cancel",
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                   const SizedBox(width: 8),
-                  StandartButton(
+                  ModernButton(
                     width: null,
                     text: "Confirm",
                     isFilled: true,

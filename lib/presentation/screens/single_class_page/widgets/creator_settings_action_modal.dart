@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
@@ -179,7 +179,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                                       .onSurface
                                       .withOpacity(0.7))),
                     ),
-                    StandartButton(
+                    ModernButton(
                       text: "Resolve Flags",
                       width: MediaQuery.of(context).size.width * 0.3,
                       isFilled: true,
@@ -236,7 +236,7 @@ class DeleteClassModal extends ConsumerWidget {
           // open bookings
           // TODO add open bookings
           // delete button
-          StandartButton(
+          ModernButton(
             text: "Delete",
             onPressed: () {
               try {
@@ -268,7 +268,7 @@ class DeleteClassModal extends ConsumerWidget {
               }
             },
             isFilled: true,
-            buttonFillColor: Theme.of(context).colorScheme.error,
+            backgroundColor: Theme.of(context).colorScheme.error,
           )
         ],
       ),

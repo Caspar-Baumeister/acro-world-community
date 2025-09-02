@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_card_main_content_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/dashboard_single_booking_card.dart';
@@ -62,7 +62,7 @@ class DashboardBookingInformationModal extends ConsumerWidget {
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                     const SizedBox(height: AppDimensions.spacingSmall),
-                    StandartButton(
+                    ModernButton(
                       text: "Confirm payment",
                       isFilled: true,
                       onPressed: () {
@@ -112,7 +112,7 @@ class DashboardBookingInformationModal extends ConsumerWidget {
               Padding(
                 padding:
                     const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
-                child: StandartButton(
+                child: ModernButton(
                     text: "All bookings of this event",
                     isFilled: true,
                     onPressed: () {
@@ -126,7 +126,7 @@ class DashboardBookingInformationModal extends ConsumerWidget {
                     }),
               ),
 
-            StandartButton(
+            ModernButton(
                 text: "Close",
                 onPressed: () {
                   Navigator.of(context).pop();

@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/event/answer_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
@@ -165,14 +165,14 @@ class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StandartButton(
+                  ModernButton(
                       width: MediaQuery.of(context).size.width * 0.3,
                       text: "Cancel",
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
                   SizedBox(width: AppDimensions.spacingSmall),
-                  StandartButton(
+                  ModernButton(
                       width: MediaQuery.of(context).size.width * 0.5,
                       text: editAnswer != null ? "Save" : "Add",
                       isFilled: true,
