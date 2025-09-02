@@ -3,19 +3,18 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FilterPageView extends StatelessWidget {
+class FilterPageView extends ConsumerWidget {
   const FilterPageView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
-    final hasRealRegions = discoveryProvider.filterCountries.any((country) {
-      final regions = discoveryProvider.allRegionsByCountry[country] ?? [];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
+    final hasRealRegions = discoveryState.filterCountries.any((country) {
+      final regions = discoveryState.allRegionsByCountry[country] ?? [];
       return regions.any((region) => region != "Not specified");
     });
     return Padding(
@@ -97,7 +96,7 @@ class FilterPageView extends StatelessWidget {
             padding: const EdgeInsets.all(AppDimensions.spacingSmall),
             child: Center(
               child: Text(
-                "This filter will show ${discoveryProvider.filteredEventOccurencesLength.toString()} results",
+                "This filter will show ${discoveryState.filteredEventOccurencesLength.toString()} results",
                 style: Theme.of(context).textTheme.bodyLarge,
               ),
             ),
@@ -121,7 +120,7 @@ class FilterPageView extends StatelessWidget {
             child: StandartButton(
               text: "Reset",
               onPressed: () {
-                discoveryProvider.resetFilter();
+                ref.read(discoveryProvider.notifier).resetFilter();
 
                 Navigator.of(context).pop();
               },

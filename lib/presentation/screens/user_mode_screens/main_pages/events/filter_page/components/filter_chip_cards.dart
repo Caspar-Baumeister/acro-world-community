@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/base_chip_wrapper.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
-
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,9 @@ class CountryFilterCards extends ConsumerWidget {
             .map((String country) {
           bool isSelected = discoveryState.filterCountries.contains(country);
           return GestureDetector(
-            onTap: () => ref.read(discoveryProvider.notifier).changeActiveCountry(country),
+            onTap: () => ref
+                .read(discoveryProvider.notifier)
+                .changeActiveCountry(country),
             child: FilterChipCard(
               label: country,
               isActive: isSelected,
@@ -58,7 +59,8 @@ class RegionFilterCards extends ConsumerWidget {
             .map((String region) {
           bool isSelected = discoveryState.filterRegions.contains(region);
           return GestureDetector(
-            onTap: () => ref.read(discoveryProvider.notifier).changeActiveRegion(region),
+            onTap: () =>
+                ref.read(discoveryProvider.notifier).changeActiveRegion(region),
             child: FilterChipCard(
               label: region,
               isActive: isSelected,
@@ -66,7 +68,9 @@ class RegionFilterCards extends ConsumerWidget {
           );
         }),
         GestureDetector(
-          onTap: () => ref.read(discoveryProvider.notifier).changeActiveRegion(notSpecifiedKey),
+          onTap: () => ref
+              .read(discoveryProvider.notifier)
+              .changeActiveRegion(notSpecifiedKey),
           child: FilterChipCard(
             label: notSpecifiedKey,
             isActive: discoveryState.filterRegions.contains(notSpecifiedKey),
@@ -86,14 +90,16 @@ class QuickFilterCards extends ConsumerWidget {
     return BaseChipWrapper(
       children: <Widget>[
         GestureDetector(
-          onTap: () => ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter(),
+          onTap: () =>
+              ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter(),
           child: FilterChipCard(
             label: "Highlights",
             isActive: discoveryState.isOnlyHighlightedFilter,
           ),
         ),
         GestureDetector(
-          onTap: () => ref.read(discoveryProvider.notifier).setToOnlyBookableFilter(),
+          onTap: () =>
+              ref.read(discoveryProvider.notifier).setToOnlyBookableFilter(),
           child: FilterChipCard(
             label: "Bookable Events",
             isActive: discoveryState.isOnlyBookableFilter,
@@ -114,11 +120,12 @@ class CategorieFilterCards extends ConsumerWidget {
     return BaseChipWrapper(
       children: <Widget>[
         ...discoveryState.allEventTypes.map((EventType eventType) {
-          bool isSelected =
-              discoveryState.filterCategories.contains(eventType);
+          bool isSelected = discoveryState.filterCategories.contains(eventType);
 
           return GestureDetector(
-            onTap: () => ref.read(discoveryProvider.notifier).changeActiveCategory(eventType),
+            onTap: () => ref
+                .read(discoveryProvider.notifier)
+                .changeActiveCategory(eventType),
             child: FilterChipCard(
               label: eventType.name,
               isActive: isSelected,
@@ -168,7 +175,9 @@ class DateFilterCards extends ConsumerWidget {
                   bool isSelected = isDateMonthAndYearInList(
                       discoveryState.filterDates, date);
                   return GestureDetector(
-                    onTap: () => ref.read(discoveryProvider.notifier).changeActiveEventDates(date),
+                    onTap: () => ref
+                        .read(discoveryProvider.notifier)
+                        .changeActiveEventDates(date),
                     child: FilterChipCard(
                       label: DateFormat.MMMM().format(date),
                       isActive: isSelected,
