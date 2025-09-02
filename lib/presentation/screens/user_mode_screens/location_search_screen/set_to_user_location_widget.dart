@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/places/place.dart';
-import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';

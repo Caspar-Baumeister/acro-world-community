@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';

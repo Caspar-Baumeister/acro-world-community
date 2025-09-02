@@ -6,7 +6,7 @@ import 'package:acroworld/presentation/components/loading_indicator/loading_indi
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/components/search_bar_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/set_to_user_location_widget.dart';
-import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';

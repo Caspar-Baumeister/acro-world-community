@@ -1,6 +1,6 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

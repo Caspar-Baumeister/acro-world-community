@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/loading_widget.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
-import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
