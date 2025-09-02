@@ -6,7 +6,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_favorite_classes/user_favorite_classes.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';

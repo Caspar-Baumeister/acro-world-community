@@ -11,7 +11,7 @@ import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+
 import 'package:acroworld/router_app.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/state/provider/creator_bookings_provider.dart';
@@ -39,7 +39,7 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(
             create: (_) => EventCreationAndEditingProvider()),
         ChangeNotifierProvider(create: (_) => CreatorProvider()),
-        ChangeNotifierProvider(create: (_) => UserRoleProvider()),
+
         ChangeNotifierProvider(create: (_) => EventAnswerProvider()),
         ChangeNotifierProvider(
             create: (_) => InvitesProvider(

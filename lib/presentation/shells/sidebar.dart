@@ -5,7 +5,7 @@ import 'package:acroworld/presentation/shells/user_side_navigation.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
@@ -16,13 +16,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart' as provider;
 
-class ShellSideBar extends StatelessWidget {
+class ShellSideBar extends ConsumerWidget {
   const ShellSideBar({super.key, required this.isCreator});
 
   final bool isCreator;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,10 +93,7 @@ class ShellSideBar extends StatelessWidget {
                                     context.pushNamed(verifyEmailRoute);
                                   } else if (hasTeacherProfile) {
                                     GraphQLClientSingleton().updateClient(true);
-                                    provider.Provider.of<UserRoleProvider>(
-                                            context,
-                                            listen: false)
-                                        .setIsCreator(true);
+                                    ref.read(userRoleProvider.notifier).setIsCreator(true);
                                     context.goNamed(myEventsRoute);
                                   } else {
                                     final roles = await TokenSingletonService()

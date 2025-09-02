@@ -1,6 +1,6 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
@@ -31,8 +31,7 @@ class ErrorScreenWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    UserRoleProvider userRoleProvider =
-        Provider.Provider.of<UserRoleProvider>(context, listen: false);
+    final isCreator = ref.watch(userRoleProvider);
 
     return Center(
       child: Padding(
@@ -50,7 +49,7 @@ class ErrorScreenWidget extends ConsumerWidget {
                 text: "Back to Home",
                 onPressed: () {
                   // Set navigation index to 3 (Profile tab)
-                  if (userRoleProvider.isCreator) {
+                  if (isCreator) {
                     ref.read(creatorNavigationProvider.notifier).setIndex(3);
                     context.goNamed(creatorProfileRoute);
                   } else {

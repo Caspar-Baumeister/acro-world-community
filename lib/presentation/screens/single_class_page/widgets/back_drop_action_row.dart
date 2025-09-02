@@ -8,7 +8,7 @@ import 'package:acroworld/presentation/screens/single_class_page/widgets/creator
 import 'package:acroworld/provider/riverpod_provider/class_favorites_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +92,7 @@ class BackDropActionRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userRoleProvider = Provider.Provider.of<UserRoleProvider>(context);
+    final isCreator = ref.watch(userRoleProvider);
     final favorites = ref.watch(classFavoritesProvider);
     final reports = ref.watch(classReportsProvider);
     final user = ref.watch(userRiverpodProvider);
@@ -109,7 +109,7 @@ class BackDropActionRow extends ConsumerWidget {
       ),
     ];
 
-    if (userRoleProvider.isCreator) {
+    if (isCreator) {
       try {
         actions.add(CreatorSettingsActionIconButton(
             classModel: classObject,
