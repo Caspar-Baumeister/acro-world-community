@@ -217,6 +217,15 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = state.copyWith(questions: questions);
   }
 
+  /// Set class from existing slug (simplified version)
+  Future<void> setClassFromExisting(String slug, bool isEditing, bool setFromTemplate) async {
+    // TODO: Implement full setClassFromExisting logic
+    // For now, just clear the state and set a basic class model
+    state = EventCreationAndEditingState(
+      classModel: _createEmptyClassModel(),
+    );
+  }
+
   /// Test constructor for unit tests
   EventCreationAndEditingNotifier.test() 
       : super(EventCreationAndEditingState(

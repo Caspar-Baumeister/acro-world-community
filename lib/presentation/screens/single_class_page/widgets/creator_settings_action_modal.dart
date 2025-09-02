@@ -185,13 +185,13 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                       isFilled: true,
                       onPressed: () {
                         // Resolve flags
+                        final teacherEventsNotifier = ref.read(teacherEventsProvider.notifier);
                         ClassesRepository(apiService: GraphQLClientSingleton())
                             .resolveAllClassFlags(classModel.id!)
                             .then((value) {
                           if (value) {
                             showSuccessToast("Flags resolved, reload page");
-                            ref.read(teacherEventsProvider.notifier)
-                                .fetchMyEvents(userId, isRefresh: true);
+                            teacherEventsNotifier.fetchMyEvents(userId, isRefresh: true);
                             Navigator.of(context).pop();
                           } else {
                             throw Exception("value not true");

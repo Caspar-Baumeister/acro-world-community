@@ -4,12 +4,12 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
-import 'package:acroworld/provider/event_answers_provider.dart';
+// import 'package:acroworld/provider/event_answers_provider.dart'; // TODO: Migrate to Riverpod
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
@@ -74,13 +74,14 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           widget.classEventId!,
           user!,
         ).then((_) {
-          provider.Provider.of<EventAnswerProvider>(context, listen: false)
-              .initAnswers(user.id!, widget.classEventId!)
-              .then((_) {
+          // TODO: Migrate EventAnswerProvider to Riverpod
+          // provider.Provider.of<EventAnswerProvider>(context, listen: false)
+          //     .initAnswers(user.id!, widget.classEventId!)
+          //     .then((_) {
             setState(() {
               _isInitAnswersReady = true;
             });
-          });
+          // });
         });
       });
     } else {
@@ -104,8 +105,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
             if (user?.id == null) {
               return const Center(child: Text("Please log in to continue"));
             }
-            final eventAnswerProvider =
-                provider.Provider.of<EventAnswerProvider>(context);
+            // TODO: Migrate EventAnswerProvider to Riverpod
+            // final eventAnswerProvider = provider.Provider.of<EventAnswerProvider>(context);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [

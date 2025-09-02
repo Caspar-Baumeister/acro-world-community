@@ -1,16 +1,8 @@
 // ignore_for_file: file_names
 
-import 'package:acroworld/data/repositories/invitation_repository.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/provider/event_answers_provider.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/router_app.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/state/provider/creator_bookings_provider.dart';
-import 'package:acroworld/state/provider/invites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -24,14 +16,14 @@ class App extends StatelessWidget {
 
     return ProviderScope(
       child: ValueListenableBuilder<GraphQLClient>(
-          valueListenable: GraphQLClientSingleton().clientNotifier,
-          builder: (context, client, child) {
-            return GraphQLProvider(
-              client: GraphQLClientSingleton().clientNotifier,
-              child: RouterApp(),
-            );
-          },
-        ),
+        valueListenable: GraphQLClientSingleton().clientNotifier,
+        builder: (context, client, child) {
+          return GraphQLProvider(
+            client: GraphQLClientSingleton().clientNotifier,
+            child: RouterApp(),
+          );
+        },
+      ),
     );
   }
 }
