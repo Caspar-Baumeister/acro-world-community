@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -12,7 +12,7 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 class CreatedEventsByMeSection extends ConsumerWidget {
   const CreatedEventsByMeSection({super.key});
@@ -38,27 +38,25 @@ class CreatedEventsByMeSection extends ConsumerWidget {
   }
 }
 
-class _EventsByMeLoader extends StatefulWidget {
+class _EventsByMeLoader extends ConsumerStatefulWidget {
   final String userId;
   const _EventsByMeLoader({required this.userId});
 
   @override
-  State<_EventsByMeLoader> createState() => _EventsByMeLoaderState();
+  ConsumerState<_EventsByMeLoader> createState() => _EventsByMeLoaderState();
 }
 
-class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
+class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
   var _didInit = false;
 
   @override
   void initState() {
     super.initState();
 
-    // This is *outside* of build, so it's safe to call notifyListeners()
+    // This is *outside* of build, so it's safe to call methods
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_didInit) {
-        final eventsProv =
-            provider.Provider.of<TeacherEventsProvider>(context, listen: false);
-        eventsProv
+        ref.read(teacherEventsProvider.notifier)
             .fetchMyEvents(widget.userId, isRefresh: true)
             .catchError((e, st) {
           CustomErrorHandler.captureException(e, stackTrace: st);
@@ -70,7 +68,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsProv = provider.Provider.of<TeacherEventsProvider>(context);
+    final eventsState = ref.watch(teacherEventsProvider);
     return Column(
       children: [
         Padding(
@@ -87,21 +85,21 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
         Expanded(
           child: RefreshIndicator(
             onRefresh: () =>
-                eventsProv.fetchMyEvents(widget.userId, isRefresh: true),
+                ref.read(teacherEventsProvider.notifier).fetchMyEvents(widget.userId, isRefresh: true),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (eventsProv.loading)
+                  if (eventsState.loading)
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.7,
                       child: const Center(child: CircularProgressIndicator()),
                     ),
-                  if (!eventsProv.loading &&
-                      eventsProv.myCreatedEvents.isNotEmpty)
-                    _buildEventsList(eventsProv),
-                  if (!eventsProv.loading && eventsProv.myCreatedEvents.isEmpty)
-                    _buildEmptyState(eventsProv),
+                  if (!eventsState.loading &&
+                      eventsState.myCreatedEvents.isNotEmpty)
+                    _buildEventsList(eventsState),
+                  if (!eventsState.loading && eventsState.myCreatedEvents.isEmpty)
+                    _buildEmptyState(eventsState),
                 ],
               ),
             ),
@@ -111,7 +109,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
     );
   }
 
-  Widget _buildEventsList(TeacherEventsProvider ev) {
+  Widget _buildEventsList(TeacherEventsState ev) {
     return Column(
       children: [
         ListView.builder(
@@ -134,7 +132,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
         ),
         if (ev.canFetchMoreMyEvents)
           GestureDetector(
-            onTap: () => ev.fetchMore(widget.userId),
+            onTap: () => ref.read(teacherEventsProvider.notifier).fetchMore(widget.userId),
             child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppDimensions.spacingSmall,
@@ -156,7 +154,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
     );
   }
 
-  Widget _buildEmptyState(TeacherEventsProvider ev) {
+  Widget _buildEmptyState(TeacherEventsState ev) {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.7,
       child: Center(
@@ -168,7 +166,7 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
             const SizedBox(height: AppDimensions.spacingMedium),
             StandartButton(
               text: "Refresh",
-              onPressed: () => ev.fetchMyEvents(widget.userId, isRefresh: true),
+              onPressed: () => ref.read(teacherEventsProvider.notifier).fetchMyEvents(widget.userId, isRefresh: true),
             ),
           ],
         ),

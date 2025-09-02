@@ -31,7 +31,7 @@ class ModernEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       width: width ?? 280,
       height: height ?? 240,
@@ -41,7 +41,7 @@ class ModernEventCard extends StatelessWidget {
         shadowColor: colorScheme.shadow.withOpacity(0.1),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: isHighlighted 
+          side: isHighlighted
               ? BorderSide(color: colorScheme.primary, width: 2)
               : BorderSide.none,
         ),
@@ -57,14 +57,17 @@ class ModernEventCard extends StatelessWidget {
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius:
+                        const BorderRadius.vertical(top: Radius.circular(16)),
                     image: imageUrl != null
                         ? DecorationImage(
                             image: NetworkImage(imageUrl!),
                             fit: BoxFit.cover,
                           )
                         : null,
-                    color: imageUrl == null ? colorScheme.surfaceVariant : null,
+                    color: imageUrl == null
+                        ? colorScheme.surfaceContainerHighest
+                        : null,
                   ),
                   child: imageUrl == null
                       ? Icon(
@@ -189,7 +192,7 @@ class ModernSectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -222,7 +225,8 @@ class ModernSectionHeader extends StatelessWidget {
               onPressed: onViewAll,
               style: TextButton.styleFrom(
                 foregroundColor: colorScheme.primary,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               ),
               child: Text(
                 viewAllText!,
