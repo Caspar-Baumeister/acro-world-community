@@ -32,7 +32,7 @@ class CategoryCreationCard extends ConsumerWidget {
   final VoidCallback onDelete;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
 
     return Container(

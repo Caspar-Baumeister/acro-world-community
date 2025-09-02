@@ -374,6 +374,26 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
+  /// Create class (simplified version)
+  Future<void> createClass(String creatorId) async {
+    // TODO: Implement full createClass logic
+    // For now, just set loading state
+    state = state.copyWith(isLoading: true);
+    // Simulate async operation
+    await Future.delayed(const Duration(seconds: 1));
+    state = state.copyWith(isLoading: false);
+  }
+
+  /// Update class (simplified version)
+  Future<void> updateClass(String creatorId) async {
+    // TODO: Implement full updateClass logic
+    // For now, just set loading state
+    state = state.copyWith(isLoading: true);
+    // Simulate async operation
+    await Future.delayed(const Duration(seconds: 1));
+    state = state.copyWith(isLoading: false);
+  }
+
   /// Test constructor for unit tests
   EventCreationAndEditingNotifier.test() 
       : super(EventCreationAndEditingState(

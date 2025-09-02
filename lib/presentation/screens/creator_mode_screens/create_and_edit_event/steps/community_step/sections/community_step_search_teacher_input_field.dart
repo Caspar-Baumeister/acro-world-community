@@ -10,11 +10,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class CommunityStepSearchTeacherInputField extends ConsumerWidget {
   const CommunityStepSearchTeacherInputField({
     super.key,
-    required this.eventCreationAndEditingProvider,
     required this.teacherQueryController,
   });
-
-  final EventCreationAndEditingProvider eventCreationAndEditingProvider;
   final TextEditingController teacherQueryController;
 
   @override

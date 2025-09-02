@@ -258,8 +258,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       text: "Cancel",
                       width: MediaQuery.of(context).size.width * 0.3,
                     ),
-                  );
-                }),
+                  ),
                 const SizedBox(width: AppDimensions.spacingMedium),
                 Container(
                   constraints: Responsive.isDesktop(context)

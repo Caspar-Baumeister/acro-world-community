@@ -43,7 +43,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventState);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingMedium,
@@ -58,14 +58,11 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
           SizedBox(height: AppDimensions.spacingMedium),
           // Input field with search suggestions
           CommunityStepSearchTeacherInputField(
-              eventState: eventState,
               teacherQueryController: teacherQueryController),
           Expanded(
             child: Stack(
               children: [
-                CommunityStepSelectedTeachersSection(
-                    eventState:
-                        eventState),
+                CommunityStepSelectedTeachersSection(),
                 Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.spacingMedium),
@@ -74,7 +71,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                   ),
                   child: CommunityStepTeacherSuggestionSection(
                       query: query,
-                      eventState:
+                      eventCreationAndEditingProvider:
                           eventState,
                       teacherQueryController: teacherQueryController),
                 ),
@@ -82,7 +79,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
             ),
           ),
           CommunityStepAmountNotifiesComponent(
-              eventState: eventState),
+              eventCreationAndEditingProvider: eventState),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,

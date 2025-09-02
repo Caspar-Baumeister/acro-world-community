@@ -6,15 +6,14 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 
 class CreateAndEditEventPage extends ConsumerStatefulWidget {
   const CreateAndEditEventPage({super.key, required this.isEditing});
@@ -44,27 +43,26 @@ class _CreateAndEditEventPageState
       // second page
       GeneralEventStep(
         onFinished: () {
-          eventCreationAndEditingProvider.setPage(1);
+          ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
           setState(() {});
         },
       ),
       OccurrenceStep(
         onFinished: () {
-          eventCreationAndEditingProvider.setPage(2);
+          ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
           setState(() {});
         },
       ),
       CommunityStep(
         onFinished: () {
-          eventCreationAndEditingProvider.setPage(3);
+          ref.read(eventCreationAndEditingProvider.notifier).setPage(3);
           setState(() {});
         },
       ),
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {
-            final creatorNotifier =
-                ref.read(creatorProvider.notifier);
+            final creatorNotifier = ref.read(creatorProvider.notifier);
             final creatorState = ref.read(creatorProvider);
 
             if (creatorState.activeTeacher == null ||
@@ -80,23 +78,24 @@ class _CreateAndEditEventPageState
 
             // create a new event
             if (widget.isEditing) {
-              await eventCreationAndEditingProvider
-                  .updateClass(creatorProvider.activeTeacher!.id!);
+              await ref.read(eventCreationAndEditingProvider.notifier)
+                  .updateClass(creatorState.activeTeacher!.id!);
             } else {
               // print the current user role
 
-              await eventCreationAndEditingProvider
-                  .createClass(creatorProvider.activeTeacher!.id!);
+              await ref.read(eventCreationAndEditingProvider.notifier)
+                  .createClass(creatorState.activeTeacher!.id!);
             }
 
-            if (eventCreationAndEditingProvider.errorMessage == null) {
+            if (eventState.errorMessage == null) {
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
 
               context.goNamed(myEventsRoute);
               if (userAsync.value?.id != null) {
-                ref.read(teacherEventsProvider.notifier)
+                ref
+                    .read(teacherEventsProvider.notifier)
                     .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
               }
             } else {
@@ -113,11 +112,11 @@ class _CreateAndEditEventPageState
           Stack(
             children: [
               CustomEasyStepper(
-                  activeStep: eventCreationAndEditingProvider.currentPage,
+                  activeStep: eventState.currentPage,
                   onStepReached: (_) {},
                   setStep: (index) {
-                    if (index < eventCreationAndEditingProvider.currentPage) {
-                      eventCreationAndEditingProvider.setPage(index);
+                    if (index < eventState.currentPage) {
+                      ref.read(eventCreationAndEditingProvider.notifier).setPage(index);
                       setState(() {});
                     }
                   },
@@ -143,7 +142,7 @@ class _CreateAndEditEventPageState
             ],
           ),
           Expanded(
-            child: pages[eventCreationAndEditingProvider.currentPage],
+            child: pages[eventState.currentPage],
           ),
         ],
       ),
