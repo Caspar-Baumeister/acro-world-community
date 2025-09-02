@@ -1,5 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _BookmarkEventMutationWidgetState
           loading: () => const SizedBox(
             width: 40,
             height: 40,
-            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+            child: Center(child: ModernSkeleton(width: 20, height: 20)),
           ),
           error: (_, __) => const SizedBox.shrink(),
           data: (user) {

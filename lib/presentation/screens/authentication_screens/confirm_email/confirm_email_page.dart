@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/standard_app_bar/standard_app_bar.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -127,7 +129,16 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
 
     return userAsync.when(
       loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ModernSkeleton(width: 200, height: 20),
+              SizedBox(height: 16),
+              ModernSkeleton(width: 300, height: 100),
+            ],
+          ),
+        ),
       ),
       error: (err, st) {
         CustomErrorHandler.captureException(err.toString(), stackTrace: st);
@@ -269,11 +280,13 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                     ? SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: CircularProgressIndicator(
-                                          color: Theme.of(context)
+                                        child: ModernSkeleton(
+                                          width: 20,
+                                          height: 20,
+                                          baseColor: Theme.of(context)
                                               .colorScheme
                                               .onPrimary,
-                                          strokeWidth: 2,
+
                                         ),
                                       )
                                     : Text(
@@ -333,8 +346,10 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                                     ? const SizedBox(
                                         height: 20,
                                         width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
+                                        child: ModernSkeleton(
+                                          width: 20,
+                                          height: 20,
+
                                         ),
                                       )
                                     : Text(

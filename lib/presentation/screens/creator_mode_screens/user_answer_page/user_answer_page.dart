@@ -3,6 +3,7 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/event_forms_repository.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/user_service.dart';
@@ -26,7 +27,16 @@ class UserAnswerPage extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
             appBar: CustomAppbarSimple(title: "Answers"),
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ModernSkeleton(width: 200, height: 20),
+                  SizedBox(height: 16),
+                  ModernSkeleton(width: 300, height: 100),
+                ],
+              ),
+            ),
           );
         }
         if (snapshot.hasError) {
@@ -80,7 +90,16 @@ class UserAnswerBody extends StatelessWidget {
               userId: userId, classEventId: classEventId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(width: 300, height: 100),
+              ],
+            ),
+          );
         }
         if (snapshot.hasError) {
           return Center(

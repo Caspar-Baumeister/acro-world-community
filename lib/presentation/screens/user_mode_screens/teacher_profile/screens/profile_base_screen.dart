@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/class_section.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/gallery_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/profile_header_widget.dart';
@@ -28,7 +29,16 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
   Widget build(BuildContext context) {
     return ref.watch(userRiverpodProvider).when(
           loading: () => const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+            body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ModernSkeleton(width: 200, height: 20),
+                  SizedBox(height: 16),
+                  ModernSkeleton(width: 300, height: 100),
+                ],
+              ),
+            ),
           ),
           error: (e, st) => Scaffold(
             body: Center(child: Text('Error loading user')),
@@ -38,7 +48,16 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
 
             return teacherLikes.when(
               loading: () => const Scaffold(
-                body: Center(child: CircularProgressIndicator()),
+                body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ModernSkeleton(width: 200, height: 20),
+                  SizedBox(height: 16),
+                  ModernSkeleton(width: 300, height: 100),
+                ],
+              ),
+            ),
               ),
               error: (_, __) => Scaffold(
                 body: Center(child: Text('Error loading teacher likes')),
@@ -125,13 +144,15 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                                         width: 25,
                                         child: Padding(
                                           padding: const EdgeInsets.all(5),
-                                          child: CircularProgressIndicator(
-                                            color: isLikedState
+                                          child: ModernSkeleton(
+                                            width: 15,
+                                            height: 15,
+                                            baseColor: isLikedState
                                                 ? Colors.white
                                                 : Theme.of(context)
                                                     .colorScheme
                                                     .primary,
-                                            strokeWidth: 2,
+
                                           ),
                                         ),
                                       )

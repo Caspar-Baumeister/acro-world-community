@@ -6,6 +6,7 @@ import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
@@ -98,7 +99,16 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
     print("is kWeb: $kIsWeb");
     print("is direct payment: ${widget.isDirectPayment}");
     return ref.watch(userRiverpodProvider).when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(width: 300, height: 100),
+              ],
+            ),
+          ),
           error: (_, __) => const Center(child: Text("Error loading user")),
           data: (user) {
             if (user?.id == null) {

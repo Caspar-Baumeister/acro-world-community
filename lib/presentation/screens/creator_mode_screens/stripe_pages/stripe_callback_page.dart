@@ -1,4 +1,5 @@
 import 'package:acroworld/data/repositories/stripe_repository.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
@@ -97,7 +98,7 @@ class _StripeCallbackPageState extends ConsumerState<StripeCallbackPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (_isVerifying) const CircularProgressIndicator(),
+                    if (_isVerifying) const ModernSkeleton(width: 40, height: 40),
                     const SizedBox(height: AppDimensions.spacingExtraLarge),
                     Text(
                       "Verifying Stripe account for id: "

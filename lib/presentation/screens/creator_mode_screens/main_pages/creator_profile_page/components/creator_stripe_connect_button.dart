@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -47,7 +48,7 @@ class _CreatorStripeConnectButtonState
             child: Container(
                 width: double.infinity,
                 alignment: Alignment.center,
-                child: CircularProgressIndicator())),
+                child: ModernSkeleton(width: 100, height: 20))),
       );
     }
 

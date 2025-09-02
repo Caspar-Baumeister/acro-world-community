@@ -1,6 +1,7 @@
 // lib/presentation/screens/settings/delete_account.dart
 
 import 'package:acroworld/exceptions/auth_exception.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -71,7 +72,7 @@ class _DeleteAccountState extends ConsumerState<DeleteAccount> {
             ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(strokeWidth: 2),
+                child: ModernSkeleton(width: 20, height: 20),
               )
             : const Text(
                 "Delete account",

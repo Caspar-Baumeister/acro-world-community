@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/shells/creator_side_navigation.dart';
 import 'package:acroworld/presentation/shells/user_side_navigation.dart';
@@ -62,7 +63,15 @@ class ShellSideBar extends ConsumerWidget {
                           final userAsync = ref.watch(userRiverpodProvider);
                           return userAsync.when(
                             loading: () => const Center(
-                                child: CircularProgressIndicator()),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ModernSkeleton(width: 200, height: 20),
+                                  SizedBox(height: 16),
+                                  ModernSkeleton(width: 300, height: 100),
+                                ],
+                              ),
+                            ),
                             error: (e, st) {
                               // Optionally log
                               return Center(

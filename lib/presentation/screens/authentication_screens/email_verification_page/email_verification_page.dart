@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
@@ -89,7 +91,7 @@ class _EmailVerificationPageState extends ConsumerState<EmailVerificationPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (_isVerifying) const CircularProgressIndicator(),
+                if (_isVerifying) const ModernSkeleton(width: 40, height: 40),
                 const SizedBox(height: 20),
                 const Text("Verifying email..."),
               ],

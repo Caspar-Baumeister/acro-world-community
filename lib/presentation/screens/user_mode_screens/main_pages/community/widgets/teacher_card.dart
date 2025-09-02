@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -55,7 +56,7 @@ class TeacherCard extends ConsumerWidget {
             loading: () => const SizedBox(
               width: 100,
               height: 35,
-              child: Center(child: CircularProgressIndicator()),
+              child: Center(child: ModernSkeleton(width: 20, height: 20)),
             ),
             error: (_, __) => const SizedBox(width: 100, height: 35),
           ),
@@ -121,11 +122,13 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
                 width: 25,
                 child: Padding(
                   padding: const EdgeInsets.all(5),
-                  child: CircularProgressIndicator(
-                    color: widget.isLiked
+                  child: ModernSkeleton(
+                    width: 15,
+                    height: 15,
+                    baseColor: widget.isLiked
                         ? Theme.of(context).colorScheme.onPrimary
                         : Theme.of(context).colorScheme.primary,
-                    strokeWidth: 2,
+
                   ),
                 ),
               )

@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/custom_map_component.dart';
 import 'package:acroworld/provider/riverpod_provider/map_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/place_provider.dart';
@@ -38,7 +39,7 @@ class _MapPageState extends ConsumerState<MapPage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      CircularProgressIndicator(),
+                      ModernSkeleton(width: 40, height: 40),
                       SizedBox(height: 16),
                       Text('Loading events...'),
                     ],

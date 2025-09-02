@@ -1,6 +1,7 @@
 import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/services/location_singleton.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,7 +73,7 @@ class _SetToUserLocationWidgetState
       return const SizedBox(
           height: AppDimensions.iconSizeMedium,
           width: AppDimensions.iconSizeMedium,
-          child: CircularProgressIndicator());
+          child: ModernSkeleton(width: 24, height: 24));
     }
     return IconButton(
       iconSize: AppDimensions.iconSizeMedium,

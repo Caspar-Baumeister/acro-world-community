@@ -1,4 +1,5 @@
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:flutter/material.dart';
 
 class CustomSettingComponent extends StatefulWidget {
@@ -74,7 +75,7 @@ class _CustomSettingComponentState extends State<CustomSettingComponent> {
                   ? SizedBox(
                       height: AppDimensions.iconSizeMedium,
                       width: AppDimensions.iconSizeMedium,
-                      child: const CircularProgressIndicator())
+                      child: const ModernSkeleton(width: 24, height: 24))
                   : const Icon(Icons.arrow_forward_ios_rounded)
             ],
           ),

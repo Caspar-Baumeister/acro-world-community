@@ -1,4 +1,5 @@
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -145,7 +146,9 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
               } else if (result.isLoading) {
                 return const SizedBox(
                   height: 50,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: ModernSkeleton(width: 100, height: 20),
+                  ),
                 );
               } else {
                 try {

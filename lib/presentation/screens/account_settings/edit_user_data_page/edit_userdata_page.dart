@@ -5,6 +5,7 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -98,7 +99,18 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
 
     return userAsync.when(
       loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ModernSkeleton(width: 200, height: 20),
+              SizedBox(height: 16),
+              ModernSkeleton(width: 300, height: 100),
+              SizedBox(height: 16),
+              ModernSkeleton(width: 250, height: 80),
+            ],
+          ),
+        ),
       ),
       error: (err, st) {
         CustomErrorHandler.captureException(err.toString(), stackTrace: st);
@@ -180,7 +192,9 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                       if (result.isLoading) {
                         return const SizedBox(
                           height: 50,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: ModernSkeleton(width: 100, height: 20),
+                          ),
                         );
                       }
                       final roles = (result.data!['acro_roles'] as List)
@@ -246,7 +260,9 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                       if (result.isLoading) {
                         return const SizedBox(
                           height: 50,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: ModernSkeleton(width: 100, height: 20),
+                          ),
                         );
                       }
                       final levels = (result.data!['levels'] as List)
