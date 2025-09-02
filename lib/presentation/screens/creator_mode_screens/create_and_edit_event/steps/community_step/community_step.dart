@@ -43,7 +43,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final eventState = ref.watch(eventState);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingMedium,
@@ -58,14 +58,14 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
           SizedBox(height: AppDimensions.spacingMedium),
           // Input field with search suggestions
           CommunityStepSearchTeacherInputField(
-              eventCreationAndEditingProvider: eventCreationAndEditingProvider,
+              eventState: eventState,
               teacherQueryController: teacherQueryController),
           Expanded(
             child: Stack(
               children: [
                 CommunityStepSelectedTeachersSection(
-                    eventCreationAndEditingProvider:
-                        eventCreationAndEditingProvider),
+                    eventState:
+                        eventState),
                 Container(
                   padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.spacingMedium),
@@ -74,15 +74,15 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                   ),
                   child: CommunityStepTeacherSuggestionSection(
                       query: query,
-                      eventCreationAndEditingProvider:
-                          eventCreationAndEditingProvider,
+                      eventState:
+                          eventState,
                       teacherQueryController: teacherQueryController),
                 ),
               ],
             ),
           ),
           CommunityStepAmountNotifiesComponent(
-              eventCreationAndEditingProvider: eventCreationAndEditingProvider),
+              eventState: eventState),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +93,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                       : null,
                   child: StandartButton(
                     onPressed: () {
-                      ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
+                      ref.read(eventState.notifier).setPage(1);
                       setState(() {});
                     },
                     text: "Previous",

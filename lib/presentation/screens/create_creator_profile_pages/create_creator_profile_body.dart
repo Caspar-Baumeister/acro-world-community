@@ -24,7 +24,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 // provider as provider
-import 'package:provider/provider.dart' as provider;
+
 
 class CreateCreatorProfileBody extends ConsumerStatefulWidget {
   const CreateCreatorProfileBody({

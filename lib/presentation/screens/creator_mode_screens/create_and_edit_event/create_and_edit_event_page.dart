@@ -4,17 +4,17 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
-import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/teacher_event_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 class CreateAndEditEventPage extends ConsumerStatefulWidget {
   const CreateAndEditEventPage({super.key, required this.isEditing});
@@ -36,8 +36,7 @@ class _CreateAndEditEventPageState
 
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        provider.Provider.of<EventCreationAndEditingProvider>(context);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
 
     final userAsync = ref.watch(userRiverpodProvider);
 
@@ -64,13 +63,14 @@ class _CreateAndEditEventPageState
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {
-            final creatorProvider =
-                provider.Provider.of<CreatorProvider>(context, listen: false);
+            final creatorNotifier =
+                ref.read(creatorProvider.notifier);
+            final creatorState = ref.read(creatorProvider);
 
-            if (creatorProvider.activeTeacher == null ||
-                creatorProvider.activeTeacher!.id == null) {
+            if (creatorState.activeTeacher == null ||
+                creatorState.activeTeacher!.id == null) {
               print("No active teacher found, trying to set from token");
-              await creatorProvider.setCreatorFromToken().then((success) {
+              await creatorNotifier.setCreatorFromToken().then((success) {
                 if (!success) {
                   showErrorToast("Session Expired, refreshing session");
                   return;
@@ -96,13 +96,12 @@ class _CreateAndEditEventPageState
 
               context.goNamed(myEventsRoute);
               if (userAsync.value?.id != null) {
-                provider.Provider.of<TeacherEventsProvider>(context,
-                        listen: false)
+                ref.read(teacherEventsProvider.notifier)
                     .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
               }
             } else {
               // if not successful, show an error message
-              showErrorToast(eventCreationAndEditingProvider.errorMessage!);
+              showErrorToast(eventState.errorMessage!);
             }
           })
     ];

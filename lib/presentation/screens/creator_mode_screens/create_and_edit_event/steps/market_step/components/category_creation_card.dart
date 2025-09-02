@@ -5,16 +5,16 @@ import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_option_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A card that displays a booking category (e.g., "VIP Tickets")
 /// and its associated booking options. It also provides edit/delete
 /// actions for the category and buttons to add/edit/delete booking options.
-class CategoryCreationCard extends StatelessWidget {
+class CategoryCreationCard extends ConsumerWidget {
   const CategoryCreationCard({
     super.key,
     required this.bookingCategory,
@@ -33,8 +33,7 @@ class CategoryCreationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
 
     return Container(
       padding: const EdgeInsets.all(AppDimensions.spacingMedium),
@@ -96,7 +95,7 @@ class CategoryCreationCard extends StatelessWidget {
                     onPressed: () {
                       // Warn user if there are any booking options associated with this category
                       final hasAssociatedTickets =
-                          eventCreationAndEditingProvider.bookingOptions
+                          eventState.bookingOptions
                               .any(
                                   (option) =>
                                       option.bookingCategoryId ==
@@ -139,7 +138,7 @@ class CategoryCreationCard extends StatelessWidget {
 
           // Show booking options for this category
           Column(
-            children: eventCreationAndEditingProvider.bookingOptions
+            children: eventState.bookingOptions
                 .where(
                     (option) => option.bookingCategoryId == bookingCategory.id)
                 .map((option) {
@@ -153,8 +152,8 @@ class CategoryCreationCard extends StatelessWidget {
                       context,
                       AddOrEditBookingOptionModal(
                         onFinished: (BookingOption updatedOption) {
-                          eventCreationAndEditingProvider.editBookingOption(
-                            eventCreationAndEditingProvider.bookingOptions
+                          ref.read(eventCreationAndEditingProvider.notifier).editBookingOption(
+                            eventState.bookingOptions
                                 .indexOf(option),
                             updatedOption,
                           );
@@ -166,9 +165,9 @@ class CategoryCreationCard extends StatelessWidget {
                   },
                   onDelete: () {
                     // Remove the booking option from the provider
-                    final index = eventCreationAndEditingProvider.bookingOptions
+                    final index = eventState.bookingOptions
                         .indexOf(option);
-                    eventCreationAndEditingProvider.removeBookingOption(index);
+                    ref.read(eventCreationAndEditingProvider.notifier).removeBookingOption(index);
                   },
                 ),
               );
@@ -185,7 +184,7 @@ class CategoryCreationCard extends StatelessWidget {
                 context,
                 AddOrEditBookingOptionModal(
                   onFinished: (BookingOption bookingOption) {
-                    eventCreationAndEditingProvider.addBookingOption(
+                    ref.read(eventCreationAndEditingProvider.notifier).addBookingOption(
                       bookingOption,
                     );
                   },

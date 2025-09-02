@@ -247,9 +247,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Consumer<EventCreationAndEditingProvider>(
-                    builder: (context, provider, child) {
-                  return Container(
+                Container(
                     constraints: Responsive.isDesktop(context)
                         ? const BoxConstraints(maxWidth: 200)
                         : null,

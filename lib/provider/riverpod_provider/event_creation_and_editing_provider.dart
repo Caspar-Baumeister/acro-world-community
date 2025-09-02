@@ -43,6 +43,7 @@ class EventCreationAndEditingState {
   final String? countryCode;
   final String? region;
   final String? eventType;
+  final bool isCashAllowed;
   final RecurrentPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
@@ -68,6 +69,7 @@ class EventCreationAndEditingState {
     this.countryCode,
     this.region,
     this.eventType,
+    this.isCashAllowed = false,
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
@@ -94,6 +96,7 @@ class EventCreationAndEditingState {
     String? countryCode,
     String? region,
     String? eventType,
+    bool? isCashAllowed,
     RecurrentPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
@@ -119,6 +122,7 @@ class EventCreationAndEditingState {
       countryCode: countryCode ?? this.countryCode,
       region: region ?? this.region,
       eventType: eventType ?? this.eventType,
+      isCashAllowed: isCashAllowed ?? this.isCashAllowed,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -363,6 +367,11 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
   /// Set current page
   void setPage(int page) {
     state = state.copyWith(currentPage: page);
+  }
+
+  /// Toggle cash allowed
+  void toggleCashAllowed() {
+    state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
   /// Test constructor for unit tests
