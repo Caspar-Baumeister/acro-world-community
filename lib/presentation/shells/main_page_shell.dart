@@ -4,14 +4,14 @@ import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/presentation/shells/shell_bottom_navigation_bar.dart';
 import 'package:acroworld/presentation/shells/shell_creator_bottom_navigation_bar.dart';
 import 'package:acroworld/presentation/shells/shell_desktop_layout.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
 /// Wraps your shell and keeps track of which tab is active by
 /// inspecting the current GoRouter location.
-class MainPageShell extends StatelessWidget {
+class MainPageShell extends ConsumerWidget {
   final Widget child;
   const MainPageShell({super.key, required this.child});
 
@@ -31,9 +31,8 @@ class MainPageShell extends StatelessWidget {
   ];
 
   @override
-  Widget build(BuildContext context) {
-    bool isCreator =
-        Provider.of<UserRoleProvider>(context, listen: false).isCreator;
+  Widget build(BuildContext context, WidgetRef ref) {
+    bool isCreator = ref.watch(userRoleProvider);
     if (Responsive.isDesktop(context)) {
       return ShellDesktopLayout(isCreator: isCreator, child: child);
     }

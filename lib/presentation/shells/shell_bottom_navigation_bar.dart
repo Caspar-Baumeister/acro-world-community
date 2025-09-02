@@ -1,6 +1,7 @@
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/bottom_navbar/bottom_navigation_bar.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,7 +15,7 @@ class ShellBottomNavigationBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedIndex =
         ref.watch(navigationProvider); // Listen to the navigation provider
-    print("Selected index: $selectedIndex");
+    CustomErrorHandler.logDebug("Selected index: $selectedIndex");
     final notifier = ref.read(navigationProvider.notifier);
 
     return Theme(

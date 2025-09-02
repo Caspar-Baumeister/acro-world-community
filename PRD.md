@@ -70,7 +70,36 @@
 *   User retention rate.
 *   App Store and Play Store ratings.
 
-## 7. Future Enhancements
+## 7. Technical Refactoring Requirements
+
+### 7.1 State Management Migration
+*   **Complete Riverpod Migration:** Replace all Provider implementations with Riverpod for consistent state management
+*   **Remove Provider Dependencies:** Eliminate all Provider-related code and dependencies
+*   **Standardize State Patterns:** Implement consistent patterns for state management across all features
+
+### 7.2 Navigation & UI Cleanup
+*   **Fix Double Navigation Bars:** Resolve the issue of dual bottom navigation bars being displayed
+*   **Remove "Around Me" Tab:** Eliminate the activities/calendar tab and all associated components
+*   **Standardize Navigation:** Ensure consistent navigation patterns throughout the app
+*   **Clean Up Unused Routes:** Remove all routes and components related to removed features
+
+### 7.3 Logging & Error Handling
+*   **Enhanced Logging System:** Extend Sentry integration with comprehensive logging capabilities
+*   **Centralized Error Handling:** Implement robust error handling with proper logging and user feedback
+*   **Performance Monitoring:** Add performance tracking and monitoring capabilities
+
+### 7.4 Code Quality & Architecture
+*   **Remove Unused Code:** Identify and eliminate all dead code and unused dependencies
+*   **Standardize Design System:** Implement consistent UI components and design patterns
+*   **Image Aspect Ratios:** Ensure all images have consistent landscape aspect ratios
+*   **Code Organization:** Improve file structure and follow clean architecture principles
+
+### 7.5 Testing Strategy
+*   **Integration Tests:** Implement high-level tests to ensure overall app stability
+*   **Unit Tests:** Add comprehensive unit tests for new components and refactored code
+*   **Test Coverage:** Ensure adequate test coverage for critical functionality
+
+## 8. Future Enhancements
 
 *   **Direct Messaging:** Allow users to communicate with teachers and organizers directly within the app.
 *   **Social Feed:** A community feed where users can share photos, videos, and updates.

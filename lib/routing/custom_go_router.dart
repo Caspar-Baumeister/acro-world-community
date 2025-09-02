@@ -1,5 +1,6 @@
 // lib/routing/app_router.dart
 
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
@@ -292,7 +293,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/event/:urlSlug',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {
-            print("full path: ${state.uri.toString()}");
+            CustomErrorHandler.logDebug("full path: ${state.uri.toString()}");
             final slug = state.pathParameters['urlSlug']!;
             final classEventId = state.uri.queryParameters['event'];
             return SingleEventQueryWrapper(
