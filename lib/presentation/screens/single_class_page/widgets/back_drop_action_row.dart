@@ -13,7 +13,6 @@ import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as Provider;
 
 class BackDropActionRow extends ConsumerWidget {
   const BackDropActionRow({

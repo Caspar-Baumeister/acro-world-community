@@ -3,7 +3,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/creator_provider.dart'; // old ChangeNotifier
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/user_role_provider.dart'; // old ChangeNotifier
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -46,9 +46,8 @@ class _StripeCallbackPageState extends ConsumerState<StripeCallbackPage> {
       // refresh client if needed
       client.updateClient(true);
 
-      // use the old UserRoleProvider
-      provider.Provider.of<UserRoleProvider>(context, listen: false)
-          .setIsCreator(true);
+      // use the Riverpod UserRoleProvider
+      ref.read(userRoleProvider.notifier).setIsCreator(true);
 
       // invalidate & refetch Riverpod user
       ref.invalidate(userRiverpodProvider);

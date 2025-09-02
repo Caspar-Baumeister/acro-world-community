@@ -3,14 +3,14 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// A standalone widget that encapsulates the bottom hover button logic
 /// for the SingleClassPage, handling booking and calendar actions.
-class SingleClassBottomHoverButton extends StatelessWidget {
+class SingleClassBottomHoverButton extends ConsumerWidget {
   final ClassModel clas;
   final ClassEvent? classEvent;
 
@@ -21,9 +21,8 @@ class SingleClassBottomHoverButton extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    UserRoleProvider userRoleProvider =
-        Provider.of<UserRoleProvider>(context, listen: false);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isCreator = ref.watch(userRoleProvider);
     // Determine if the class owner is billable (has stripeId)
     final billingTeacher =
         clas.owner?.teacher?.stripeId != null ? clas.owner : null;
@@ -34,7 +33,7 @@ class SingleClassBottomHoverButton extends StatelessWidget {
     if (classEvent != null &&
         classEvent!.classModel!.bookingOptions.isNotEmpty &&
         (billingTeacher != null || isCashPayment) &&
-        !userRoleProvider.isCreator) {
+        !isCreator) {
       return BottomAppBar(
         elevation: 0,
         child: BookingQueryHoverButton(
@@ -61,7 +60,7 @@ class SingleClassBottomHoverButton extends StatelessWidget {
           context,
           CalenderModal(
             classId: clas.id!,
-            isCreator: userRoleProvider.isCreator,
+            isCreator: isCreator,
           ),
         ),
       ),

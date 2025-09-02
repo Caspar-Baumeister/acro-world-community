@@ -1,26 +1,25 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class CreatorSwitchToUserModeButton extends StatelessWidget {
+class CreatorSwitchToUserModeButton extends ConsumerWidget {
   const CreatorSwitchToUserModeButton({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return StandartButton(
       text: "User Mode",
       onPressed: () {
         final graphQLSingleton = GraphQLClientSingleton();
         graphQLSingleton.updateClient(false);
-        Provider.of<UserRoleProvider>(context, listen: false)
-            .setIsCreator(false);
+        ref.read(userRoleProvider.notifier).setIsCreator(false);
 
         print("Switch to User Mode");
         // Switch to creator mode
