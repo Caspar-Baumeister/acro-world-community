@@ -1,14 +1,14 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
-import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_card.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class ClassOccurenceListView extends ConsumerStatefulWidget {
   const ClassOccurenceListView({
@@ -21,15 +21,18 @@ class ClassOccurenceListView extends ConsumerStatefulWidget {
   final VoidCallback refetch;
 
   @override
-  ConsumerState<ClassOccurenceListView> createState() => _ClassOccurenceListViewState();
+  ConsumerState<ClassOccurenceListView> createState() =>
+      _ClassOccurenceListViewState();
 }
 
-class _ClassOccurenceListViewState extends ConsumerState<ClassOccurenceListView> {
+class _ClassOccurenceListViewState
+    extends ConsumerState<ClassOccurenceListView> {
   @override
   void initState() {
     super.initState();
     // Listen to the specific refetch event
-    ref.read(eventBusProvider.notifier)
+    ref
+        .read(eventBusProvider.notifier)
         .listenToRefetchEventHighlightsQuery((event) {
       _callRefetch();
       // Call your refetch logic here

@@ -28,6 +28,13 @@ class EventCreationAndEditingState {
   final List<BookingCategoryModel> bookingCategories;
   final List<BookingOption> bookingOptions;
   final List<QuestionModel> questions;
+  final List<QuestionModel> oldQuestions;
+  final String title;
+  final String slug;
+  final String description;
+  final String? locationName;
+  final Uint8List? eventImage;
+  final String? existingImageUrl;
   final RecurrentPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
@@ -39,6 +46,13 @@ class EventCreationAndEditingState {
     this.bookingCategories = const [],
     this.bookingOptions = const [],
     this.questions = const [],
+    this.oldQuestions = const [],
+    this.title = '',
+    this.slug = '',
+    this.description = '',
+    this.locationName,
+    this.eventImage,
+    this.existingImageUrl,
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
@@ -51,6 +65,13 @@ class EventCreationAndEditingState {
     List<BookingCategoryModel>? bookingCategories,
     List<BookingOption>? bookingOptions,
     List<QuestionModel>? questions,
+    List<QuestionModel>? oldQuestions,
+    String? title,
+    String? slug,
+    String? description,
+    String? locationName,
+    Uint8List? eventImage,
+    String? existingImageUrl,
     RecurrentPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
@@ -62,6 +83,13 @@ class EventCreationAndEditingState {
       bookingCategories: bookingCategories ?? this.bookingCategories,
       bookingOptions: bookingOptions ?? this.bookingOptions,
       questions: questions ?? this.questions,
+      oldQuestions: oldQuestions ?? this.oldQuestions,
+      title: title ?? this.title,
+      slug: slug ?? this.slug,
+      description: description ?? this.description,
+      locationName: locationName ?? this.locationName,
+      eventImage: eventImage ?? this.eventImage,
+      existingImageUrl: existingImageUrl ?? this.existingImageUrl,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -234,6 +262,36 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = EventCreationAndEditingState(
       classModel: _createEmptyClassModel(),
     );
+  }
+
+  /// Update title
+  void setTitle(String title) {
+    state = state.copyWith(title: title);
+  }
+
+  /// Update slug
+  void setSlug(String slug) {
+    state = state.copyWith(slug: slug);
+  }
+
+  /// Update description
+  void setDescription(String description) {
+    state = state.copyWith(description: description);
+  }
+
+  /// Update location name
+  void setLocationName(String? locationName) {
+    state = state.copyWith(locationName: locationName);
+  }
+
+  /// Update event image
+  void setEventImage(Uint8List? eventImage) {
+    state = state.copyWith(eventImage: eventImage);
+  }
+
+  /// Update existing image URL
+  void setExistingImageUrl(String? existingImageUrl) {
+    state = state.copyWith(existingImageUrl: existingImageUrl);
   }
 
   /// Test constructor for unit tests

@@ -10,25 +10,25 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/c
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class GeneralEventStep extends StatefulWidget {
+class GeneralEventStep extends ConsumerStatefulWidget {
   const GeneralEventStep({super.key, required this.onFinished});
 
   final Function onFinished;
 
   @override
-  State<GeneralEventStep> createState() => _GeneralEventStepState();
+  ConsumerState<GeneralEventStep> createState() => _GeneralEventStepState();
 }
 
-class _GeneralEventStepState extends State<GeneralEventStep> {
+class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   late TextEditingController _titleController;
   late TextEditingController _slugController;
   late TextEditingController _descriptionController;
@@ -39,21 +39,20 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
   @override
   void initState() {
     super.initState();
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
+    final eventState = ref.read(eventCreationAndEditingProvider);
     _locationNameController =
-        TextEditingController(text: provider.locationName);
-    _titleController = TextEditingController(text: provider.title);
-    _slugController = TextEditingController(text: provider.slug);
-    _descriptionController = TextEditingController(text: provider.description);
+        TextEditingController(text: eventState.locationName);
+    _titleController = TextEditingController(text: eventState.title);
+    _slugController = TextEditingController(text: eventState.slug);
+    _descriptionController = TextEditingController(text: eventState.description);
 
     // add listener to update provider
     _descriptionController.addListener(() {
-      provider.setDescription(_descriptionController.text);
+      ref.read(eventCreationAndEditingProvider.notifier).setDescription(_descriptionController.text);
     });
 
     _locationNameController.addListener(() {
-      provider.setLocationName(_locationNameController.text);
+      ref.read(eventCreationAndEditingProvider.notifier).setLocationName(_locationNameController.text);
     });
   }
 
@@ -68,8 +67,7 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
 
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -290,9 +288,8 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
     setState(() {
       _errorMessage = null;
     });
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
-    if (provider.eventImage == null && provider.existingImageUrl == null) {
+    final eventState = ref.read(eventCreationAndEditingProvider);
+    if (eventState.eventImage == null && eventState.existingImageUrl == null) {
       setState(() {
         _errorMessage = 'Please select an image for your event';
       });
