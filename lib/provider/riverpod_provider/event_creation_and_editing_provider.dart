@@ -131,6 +131,16 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = state.copyWith(questions: updatedQuestions);
   }
 
+  /// Edit question in list
+  void editQuestion(String id, QuestionModel question) {
+    final questions = List<QuestionModel>.from(state.questions);
+    final index = questions.indexWhere((q) => q.id == id);
+    if (index != -1) {
+      questions[index] = question;
+      state = state.copyWith(questions: questions);
+    }
+  }
+
   /// Remove question
   void removeQuestion(int index) {
     final updatedQuestions = List<QuestionModel>.from(state.questions);

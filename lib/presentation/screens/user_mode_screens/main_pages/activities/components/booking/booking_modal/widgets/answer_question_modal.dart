@@ -24,7 +24,8 @@ class AnswerQuestionModal extends ConsumerStatefulWidget {
   final String userId;
 
   @override
-  ConsumerState<AnswerQuestionModal> createState() => _AnswerQuestionModalState();
+  ConsumerState<AnswerQuestionModal> createState() =>
+      _AnswerQuestionModalState();
 }
 
 class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
@@ -38,7 +39,8 @@ class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
     _phonePrefixController = TextEditingController();
     super.initState();
 
-    final AnswerModel? editAnswer = ref.read(eventAnswerProvider.notifier)
+    final AnswerModel? editAnswer = ref
+        .read(eventAnswerProvider.notifier)
         .getAnswersByQuestionId(widget.question.id!);
     if (editAnswer != null) {
       _answerController.text = editAnswer.answer ?? "";
@@ -60,7 +62,8 @@ class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
   @override
   Widget build(BuildContext context) {
     final eventAnswerState = ref.watch(eventAnswerProvider);
-    final AnswerModel? editAnswer = ref.read(eventAnswerProvider.notifier)
+    final AnswerModel? editAnswer = ref
+        .read(eventAnswerProvider.notifier)
         .getAnswersByQuestionId(widget.question.id!);
 
     if (editAnswer != null) {
@@ -201,18 +204,20 @@ class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
                         } else {
                           if (_answerController.text.isNotEmpty ||
                               questionType == QuestionType.multipleChoice) {
-                            ref.read(eventAnswerProvider.notifier).addAnswer(AnswerModel(
-                                answer: _answerController.text,
-                                countryDialCode: _phonePrefixController.text,
-                                eventOccurence: widget.eventOccurence,
-                                userId: widget.userId,
-                                questionId: widget.question.id,
-                                multipleChoiceAnswers: _selectedOptions
-                                    .map((e) => MultipleChoiceAnswerModel(
-                                        isCorrect: true,
-                                        multipleChoiceOptionId: e,
-                                        userId: widget.userId))
-                                    .toList()));
+                            ref.read(eventAnswerProvider.notifier).addAnswer(
+                                AnswerModel(
+                                    answer: _answerController.text,
+                                    countryDialCode:
+                                        _phonePrefixController.text,
+                                    eventOccurence: widget.eventOccurence,
+                                    userId: widget.userId,
+                                    questionId: widget.question.id,
+                                    multipleChoiceAnswers: _selectedOptions
+                                        .map((e) => MultipleChoiceAnswerModel(
+                                            isCorrect: true,
+                                            multipleChoiceOptionId: e,
+                                            userId: widget.userId))
+                                        .toList()));
                           } else {
                             showErrorToast("Please enter an answer");
                             return;

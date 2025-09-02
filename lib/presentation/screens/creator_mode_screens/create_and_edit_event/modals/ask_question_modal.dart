@@ -2,21 +2,21 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
-class AskQuestionModal extends StatefulWidget {
+class AskQuestionModal extends ConsumerStatefulWidget {
   const AskQuestionModal({super.key, this.editQuestion});
   final QuestionModel? editQuestion;
 
   @override
-  State<AskQuestionModal> createState() => _AskQuestionModalState();
+  ConsumerState<AskQuestionModal> createState() => _AskQuestionModalState();
 }
 
-class _AskQuestionModalState extends State<AskQuestionModal> {
+class _AskQuestionModalState extends ConsumerState<AskQuestionModal> {
   final TextEditingController _questionController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   bool _isExistingQuestion = false;
@@ -29,10 +29,9 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
   void initState() {
     super.initState();
 
-    final provider =
-        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
+    final eventState = ref.read(eventCreationAndEditingProvider);
     _isExistingQuestion = widget.editQuestion != null &&
-        provider.oldQuestions.any((q) => q.id == widget.editQuestion!.id);
+        eventState.oldQuestions.any((q) => q.id == widget.editQuestion!.id);
 
     if (widget.editQuestion != null) {
       final question = widget.editQuestion!;
@@ -67,9 +66,8 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (widget.editQuestion != null) {
-      final provider =
-          Provider.of<EventCreationAndEditingProvider>(context, listen: false);
-      _isExistingQuestion = provider.oldQuestions
+      final eventState = ref.read(eventCreationAndEditingProvider);
+      _isExistingQuestion = eventState.oldQuestions
           .any((q) => q.id != null && q.id == widget.editQuestion!.id);
     }
   }
@@ -87,7 +85,7 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
   @override
   Widget build(BuildContext context) {
     final int newPosition =
-        Provider.of<EventCreationAndEditingProvider>(context).questions.length;
+        ref.watch(eventCreationAndEditingProvider).questions.length;
 
     // get the keybord height
     final double keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
@@ -233,10 +231,7 @@ class _AskQuestionModalState extends State<AskQuestionModal> {
                     isFilled: true,
                     onPressed: () {
                       final provider =
-                          Provider.of<EventCreationAndEditingProvider>(
-                        context,
-                        listen: false,
-                      );
+                          ref.read(eventCreationAndEditingProvider.notifier);
 
                       final model = QuestionModel(
                         id: widget.editQuestion?.id ?? Uuid().v4(),
