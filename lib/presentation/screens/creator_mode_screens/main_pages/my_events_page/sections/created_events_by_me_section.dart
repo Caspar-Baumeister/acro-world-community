@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
@@ -23,16 +23,7 @@ class CreatedEventsByMeSection extends ConsumerWidget {
 
     return userAsync.when(
       loading: () => const Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ModernSkeleton(width: 200, height: 20),
-            SizedBox(height: 16),
-            ModernSkeleton(width: 300, height: 100),
-            SizedBox(height: 16),
-            ModernSkeleton(width: 250, height: 80),
-          ],
-        ),
+        child: ProfileSkeleton(),
       ),
       error: (e, st) {
         CustomErrorHandler.captureException(e, stackTrace: st);
@@ -108,11 +99,10 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
                       height: MediaQuery.of(context).size.height * 0.7,
                       child: const Center(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ModernSkeleton(width: 200, height: 20),
-                            SizedBox(height: 16),
-                            ModernSkeleton(width: 300, height: 100),
+                            EventCardSkeleton(),
+                            EventCardSkeleton(),
+                            EventCardSkeleton(),
                           ],
                         ),
                       ),
@@ -177,9 +167,9 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ModernSkeleton(width: 200, height: 20),
+                  ShimmerSkeleton(width: 200, height: 20),
                   SizedBox(height: 16),
-                  ModernSkeleton(width: 300, height: 100),
+                  ShimmerSkeleton(width: 300, height: 100),
                 ],
               ),
             ),
