@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
@@ -21,7 +22,18 @@ class CreatedEventsByMeSection extends ConsumerWidget {
     final userAsync = ref.watch(userRiverpodProvider);
 
     return userAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ModernSkeleton(width: 200, height: 20),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 300, height: 100),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 250, height: 80),
+          ],
+        ),
+      ),
       error: (e, st) {
         CustomErrorHandler.captureException(e, stackTrace: st);
         return const Center(child: Text("Error loading user"));
@@ -94,7 +106,16 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
                   if (eventsState.loading)
                     SizedBox(
                       height: MediaQuery.of(context).size.height * 0.7,
-                      child: const Center(child: CircularProgressIndicator()),
+                      child: const Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ModernSkeleton(width: 200, height: 20),
+                            SizedBox(height: 16),
+                            ModernSkeleton(width: 300, height: 100),
+                          ],
+                        ),
+                      ),
                     ),
                   if (!eventsState.loading &&
                       eventsState.myCreatedEvents.isNotEmpty)
@@ -152,7 +173,16 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
               horizontal: AppDimensions.spacingSmall,
               vertical: AppDimensions.spacingExtraSmall,
             ),
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ModernSkeleton(width: 200, height: 20),
+                  SizedBox(height: 16),
+                  ModernSkeleton(width: 300, height: 100),
+                ],
+              ),
+            ),
           ),
       ],
     );

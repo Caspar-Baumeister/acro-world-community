@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/edit_creator_profile_button.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
@@ -27,7 +28,16 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
     final creatorState = ref.watch(creatorProvider);
     if (creatorState.isLoading) {
       return const Center(
-        child: CircularProgressIndicator(),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ModernSkeleton(width: 200, height: 20),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 300, height: 100),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 250, height: 80),
+          ],
+        ),
       );
     }
     return RefreshIndicator(

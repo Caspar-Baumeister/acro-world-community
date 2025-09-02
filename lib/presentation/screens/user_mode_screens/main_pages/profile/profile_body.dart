@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
@@ -24,7 +25,18 @@ class ProfileBody extends ConsumerWidget {
     final userAsync = ref.watch(userRiverpodProvider);
 
     return userAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ModernSkeleton(width: 200, height: 20),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 300, height: 100),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 250, height: 80),
+          ],
+        ),
+      ),
       error: (e, st) {
         // Optionally log
         return Center(child: Text('Error loading profile'));

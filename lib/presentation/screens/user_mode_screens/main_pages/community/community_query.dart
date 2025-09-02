@@ -2,6 +2,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_body.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +24,18 @@ class TeacherQuery extends ConsumerWidget {
     final authAsync = ref.watch(userRiverpodProvider);
 
     return authAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ModernSkeleton(width: 200, height: 20),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 300, height: 100),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 250, height: 80),
+          ],
+        ),
+      ),
       error: (e, st) {
         CustomErrorHandler.captureException(e.toString(), stackTrace: st);
         return const Center(child: Text("Error loading user"));

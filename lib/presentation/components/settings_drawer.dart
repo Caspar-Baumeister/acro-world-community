@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -105,7 +106,16 @@ class SettingsDrawer extends ConsumerWidget {
                   );
                 }
               },
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    ModernSkeleton(width: 200, height: 20),
+                    SizedBox(height: 16),
+                    ModernSkeleton(width: 300, height: 100),
+                  ],
+                ),
+              ),
               error: (_, __) => _buildMenuItem(
                 context: context,
                 icon: Icons.login_rounded,
