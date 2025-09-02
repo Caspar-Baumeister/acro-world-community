@@ -29,29 +29,24 @@ class _MarketStepState extends ConsumerState<MarketStep> {
   @override
   void initState() {
     super.initState();
-    final eventCreationProvider =
-        ref.read(eventCreationAndEditingProvider.notifier);
     // add listener to update provider
-    _maxAmountTicketController = TextEditingController(
-        text: eventCreationProvider.maxBookingSlots == null
-            ? "20"
-            : eventCreationProvider.maxBookingSlots.toString());
+    _maxAmountTicketController = TextEditingController(text: "20");
 
     _maxAmountTicketController.addListener(() {
       if (_maxAmountTicketController.text != "") {
-        eventCreationProvider.maxBookingSlots =
-            int.parse(_maxAmountTicketController.text);
+        ref.read(eventCreationAndEditingProvider.notifier).setMaxBookingSlots(
+            int.parse(_maxAmountTicketController.text));
       }
     });
 
-    final creatorProvider =
-        ref.read(creatorProvider.notifier);
-    if (creatorProvider.activeTeacher == null) {
-      creatorProvider.setCreatorFromToken().then((success) {
+    final creatorNotifier = ref.read(creatorProvider.notifier);
+    final creatorState = ref.read(creatorProvider);
+    if (creatorState.activeTeacher == null) {
+      creatorNotifier.setCreatorFromToken().then((success) {
         if (!success) {
           showErrorToast("Session Expired, refreshing session");
           TokenSingletonService().refreshToken().then((value) {
-            creatorProvider.setCreatorFromToken();
+            creatorNotifier.setCreatorFromToken();
           });
         }
       });
@@ -69,8 +64,7 @@ class _MarketStepState extends ConsumerState<MarketStep> {
           : null,
       child: Column(
         children: [
-          MarketStepTicketSection(
-              eventCreationAndEditingProvider: eventCreationAndEditingProvider),
+          MarketStepTicketSection(),
           // enable cash payment section
           // checkbox with enable cash payment
           const SizedBox(height: AppDimensions.spacingMedium),
@@ -113,15 +107,15 @@ class _MarketStepState extends ConsumerState<MarketStep> {
   }
 
   void _onNext() async {
-    final eventCreationAndEditingProvider =
-        ref.read(eventCreationAndEditingProvider.notifier);
+    final eventNotifier = ref.read(eventCreationAndEditingProvider.notifier);
+    final eventState = ref.read(eventCreationAndEditingProvider);
 
-    final creatorProvider =
-        ref.read(creatorProvider.notifier);
+    final creatorNotifier = ref.read(creatorProvider.notifier);
+    final creatorState = ref.read(creatorProvider);
 
-    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
-        creatorProvider.activeTeacher!.stripeId != null &&
-        creatorProvider.activeTeacher!.isStripeEnabled == true;
+    bool isStripeEnabled = creatorState.activeTeacher != null &&
+        creatorState.activeTeacher!.stripeId != null &&
+        creatorState.activeTeacher!.isStripeEnabled == true;
     // if neither stripe is enabled nor cash payments, show alert with informations, that your tickets will not be shown since they cannot be bought by cash or direct payment. Please either enable stripe or add cash payment option.
     // Add the button, that you can continue without tickets or go back
     if (!isStripeEnabled &&

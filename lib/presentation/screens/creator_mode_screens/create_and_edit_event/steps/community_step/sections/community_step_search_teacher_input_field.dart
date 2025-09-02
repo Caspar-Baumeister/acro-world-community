@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,7 +39,8 @@ class CommunityStepSearchTeacherInputField extends ConsumerWidget {
       },
       data: (user) {
         final userId = user?.id;
-        final alreadyInvitedYourself = eventCreationAndEditingProvider
+        final eventState = ref.watch(eventCreationAndEditingProvider);
+        final alreadyInvitedYourself = eventState
             .pendingInviteTeachers
             .any((TeacherModel teacher) => teacher.userId == userId);
 

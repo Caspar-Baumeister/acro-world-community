@@ -44,6 +44,8 @@ class EventCreationAndEditingState {
   final String? region;
   final String? eventType;
   final bool isCashAllowed;
+  final List<TeacherModel> pendingInviteTeachers;
+  final int? maxBookingSlots;
   final RecurrentPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
@@ -70,10 +72,21 @@ class EventCreationAndEditingState {
     this.region,
     this.eventType,
     this.isCashAllowed = false,
+    this.pendingInviteTeachers = const [],
+    this.maxBookingSlots,
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
   });
+
+  /// Get amount of followers from pending invite teachers
+  int get amountOfFollowers {
+    int amount = 0;
+    for (var teacher in pendingInviteTeachers) {
+      amount += (teacher.likes ?? 0).toInt();
+    }
+    return amount;
+  }
 
   EventCreationAndEditingState copyWith({
     int? currentPage,
@@ -97,6 +110,8 @@ class EventCreationAndEditingState {
     String? region,
     String? eventType,
     bool? isCashAllowed,
+    List<TeacherModel>? pendingInviteTeachers,
+    int? maxBookingSlots,
     RecurrentPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
@@ -123,6 +138,8 @@ class EventCreationAndEditingState {
       region: region ?? this.region,
       eventType: eventType ?? this.eventType,
       isCashAllowed: isCashAllowed ?? this.isCashAllowed,
+      pendingInviteTeachers: pendingInviteTeachers ?? this.pendingInviteTeachers,
+      maxBookingSlots: maxBookingSlots ?? this.maxBookingSlots,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -392,6 +409,64 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     // Simulate async operation
     await Future.delayed(const Duration(seconds: 1));
     state = state.copyWith(isLoading: false);
+  }
+
+  /// Add pending invite teacher
+  void addPendingInviteTeacher(TeacherModel teacher) {
+    final updatedTeachers = List<TeacherModel>.from(state.pendingInviteTeachers)
+      ..add(teacher);
+    state = state.copyWith(pendingInviteTeachers: updatedTeachers);
+  }
+
+  /// Remove pending invite teacher
+  void removePendingInviteTeacher(String teacherId) {
+    final updatedTeachers = List<TeacherModel>.from(state.pendingInviteTeachers)
+      ..removeWhere((teacher) => teacher.id == teacherId);
+    state = state.copyWith(pendingInviteTeachers: updatedTeachers);
+  }
+
+  /// Set max booking slots
+  void setMaxBookingSlots(int? slots) {
+    state = state.copyWith(maxBookingSlots: slots);
+  }
+
+  /// Edit booking option
+  void editBookingOption(int index, BookingOption option) {
+    final options = List<BookingOption>.from(state.bookingOptions);
+    if (index >= 0 && index < options.length) {
+      options[index] = option;
+      state = state.copyWith(bookingOptions: options);
+    }
+  }
+
+  /// Edit booking category
+  void editCategory(int index, BookingCategoryModel category) {
+    final categories = List<BookingCategoryModel>.from(state.bookingCategories);
+    if (index >= 0 && index < categories.length) {
+      categories[index] = category;
+      state = state.copyWith(bookingCategories: categories);
+    }
+  }
+
+  /// Remove booking category
+  void removeCategory(int index) {
+    final categories = List<BookingCategoryModel>.from(state.bookingCategories);
+    if (index >= 0 && index < categories.length) {
+      categories.removeAt(index);
+      state = state.copyWith(bookingCategories: categories);
+    }
+  }
+
+  /// Add booking category
+  void addCategory(BookingCategoryModel category) {
+    final categories = List<BookingCategoryModel>.from(state.bookingCategories)
+      ..add(category);
+    state = state.copyWith(bookingCategories: categories);
+  }
+
+  /// Switch allow cash payments
+  void switchAllowCashPayments() {
+    state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
   /// Test constructor for unit tests

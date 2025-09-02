@@ -17,12 +17,12 @@ class CommunityStepSelectedTeachersSection extends ConsumerWidget {
       ),
       child: Wrap(
         spacing: 3,
-        children: eventState.pendingInviteTeachers
-            .map((teacher) {
+        children: eventState.pendingInviteTeachers.map((teacher) {
           return TeacherOption(
             teacher: teacher,
             onDelete: () {
-              ref.read(eventCreationAndEditingProvider.notifier)
+              ref
+                  .read(eventCreationAndEditingProvider.notifier)
                   .removePendingInviteTeacher(teacher.id!);
             },
           );

@@ -71,15 +71,12 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                   ),
                   child: CommunityStepTeacherSuggestionSection(
                       query: query,
-                      eventCreationAndEditingProvider:
-                          eventState,
                       teacherQueryController: teacherQueryController),
                 ),
               ],
             ),
           ),
-          CommunityStepAmountNotifiesComponent(
-              eventCreationAndEditingProvider: eventState),
+          CommunityStepAmountNotifiesComponent(),
           Center(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +87,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                       : null,
                   child: StandartButton(
                     onPressed: () {
-                      ref.read(eventState.notifier).setPage(1);
+                      ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
                       setState(() {});
                     },
                     text: "Previous",

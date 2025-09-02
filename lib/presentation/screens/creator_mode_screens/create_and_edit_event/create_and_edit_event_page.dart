@@ -78,12 +78,14 @@ class _CreateAndEditEventPageState
 
             // create a new event
             if (widget.isEditing) {
-              await ref.read(eventCreationAndEditingProvider.notifier)
+              await ref
+                  .read(eventCreationAndEditingProvider.notifier)
                   .updateClass(creatorState.activeTeacher!.id!);
             } else {
               // print the current user role
 
-              await ref.read(eventCreationAndEditingProvider.notifier)
+              await ref
+                  .read(eventCreationAndEditingProvider.notifier)
                   .createClass(creatorState.activeTeacher!.id!);
             }
 
@@ -116,7 +118,9 @@ class _CreateAndEditEventPageState
                   onStepReached: (_) {},
                   setStep: (index) {
                     if (index < eventState.currentPage) {
-                      ref.read(eventCreationAndEditingProvider.notifier).setPage(index);
+                      ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .setPage(index);
                       setState(() {});
                     }
                   },

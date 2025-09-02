@@ -4,37 +4,31 @@ import 'package:acroworld/presentation/components/custom_check_box.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_category_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_create_stripe_account_section.dart';
-import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// This widget represents the "Ticket" section of the "Market Step"
 /// in your event creation or editing flow. It shows existing categories
 /// and allows adding new ticket categories.
-class MarketStepTicketSection extends StatelessWidget {
+class MarketStepTicketSection extends ConsumerWidget {
   const MarketStepTicketSection({
     super.key,
-    required this.eventCreationAndEditingProvider,
   });
 
-  /// Provider responsible for handling all event creation and editing logic,
-  /// including the list of `BookingCategoryModel` and `BookingOption`.
-  final EventCreationAndEditingProvider eventCreationAndEditingProvider;
-
   @override
-  Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     // Userprovider is only for the ticket section.
     // We'll check if the user teacher account has a stripe account
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
+    final creatorState = ref.watch(creatorProvider);
 
-    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
-        creatorProvider.activeTeacher!.stripeId != null &&
-        creatorProvider.activeTeacher!.isStripeEnabled == true;
+    bool isStripeEnabled = creatorState.activeTeacher != null &&
+        creatorState.activeTeacher!.stripeId != null &&
+        creatorState.activeTeacher!.isStripeEnabled == true;
 
     return Expanded(
       child: SingleChildScrollView(
@@ -45,10 +39,10 @@ class MarketStepTicketSection extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               itemCount:
-                  eventCreationAndEditingProvider.bookingCategories.length,
+                  eventState.bookingCategories.length,
               itemBuilder: (context, index) {
                 final bookingCategory =
-                    eventCreationAndEditingProvider.bookingCategories[index];
+                    eventState.bookingCategories[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -63,7 +57,7 @@ class MarketStepTicketSection extends StatelessWidget {
                           onFinished: (BookingCategoryModel updatedCategory) {
                             // Update category in the provider
                             // The provider logic should also update the total tickets internally.
-                            eventCreationAndEditingProvider.editCategory(
+                            ref.read(eventCreationAndEditingProvider.notifier).editCategory(
                               index,
                               updatedCategory,
                             );
@@ -75,7 +69,7 @@ class MarketStepTicketSection extends StatelessWidget {
                     onDelete: () {
                       // Remove category from the provider
                       // The provider logic should also update the total tickets internally.
-                      eventCreationAndEditingProvider.removeCategory(index);
+                      ref.read(eventCreationAndEditingProvider.notifier).removeCategory(index);
                     },
                   ),
                 );
@@ -91,7 +85,7 @@ class MarketStepTicketSection extends StatelessWidget {
                     onFinished: (BookingCategoryModel bookingCategory) {
                       // Add a new category to the provider.
                       // The provider logic should also update the total tickets internally.
-                      eventCreationAndEditingProvider.addCategory(
+                      ref.read(eventCreationAndEditingProvider.notifier).addCategory(
                         bookingCategory,
                       );
                     },
@@ -101,7 +95,7 @@ class MarketStepTicketSection extends StatelessWidget {
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
             // little infobox if no categories are added yet
-            if (eventCreationAndEditingProvider.bookingCategories.isEmpty)
+            if (eventState.bookingCategories.isEmpty)
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
@@ -127,9 +121,9 @@ class MarketStepTicketSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomCheckBox(
-                      isChecked: eventCreationAndEditingProvider.isCashAllowed,
+                      isChecked: eventState.isCashAllowed,
                       onTap: () {
-                        eventCreationAndEditingProvider
+                        ref.read(eventCreationAndEditingProvider.notifier)
                             .switchAllowCashPayments();
                       },
                     ),
@@ -179,7 +173,7 @@ class MarketStepTicketSection extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
-            creatorProvider.isLoading == true
+            creatorState.isLoading == true
                 ? const Center(child: CircularProgressIndicator())
                 : isStripeEnabled // if stripe is enabled, don't need to show infobax
                     ? SizedBox.shrink()
