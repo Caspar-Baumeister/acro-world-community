@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart';
+// import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar.dart'; // Removed - using shell navigation
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
@@ -32,7 +32,7 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget build(BuildContext context) {
     return BasePage(
       appBar: TeacherAppBar(onSearchChanged: setSearch),
-      bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 2),
+      // bottomNavigationBar: const PrimaryBottomNavbar(selectedIndex: 2), // Removed - handled by shell
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
