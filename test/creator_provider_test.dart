@@ -21,12 +21,9 @@ void main() {
         id: 'test-id',
         userId: 'user-id',
         name: 'Test Teacher',
-        bio: 'Test Bio',
-        profileImageUrl: 'test-url',
-        stripeAccountId: 'stripe-id',
-        isVerified: true,
+        description: 'Test Description',
         createdAt: '2024-01-01',
-        updatedAt: '2024-01-01',
+        isStripeEnabled: true,
       );
       
       notifier.state = notifier.state.copyWith(activeTeacher: mockTeacher);
@@ -42,12 +39,9 @@ void main() {
         id: 'test-id',
         userId: 'user-id',
         name: 'Test Teacher',
-        bio: 'Test Bio',
-        profileImageUrl: 'test-url',
-        stripeAccountId: 'stripe-id',
-        isVerified: true,
+        description: 'Test Description',
         createdAt: '2024-01-01',
-        updatedAt: '2024-01-01',
+        isStripeEnabled: true,
       );
 
       notifier.updateCreator(mockTeacher);

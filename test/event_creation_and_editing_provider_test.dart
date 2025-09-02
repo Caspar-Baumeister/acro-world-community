@@ -36,8 +36,7 @@ void main() {
         id: 'test-id',
         name: 'Test Category',
         description: 'Test Description',
-        price: 10.0,
-        maxParticipants: 20,
+        contingent: 20,
       );
 
       notifier.addBookingCategory(category);
@@ -50,8 +49,7 @@ void main() {
         id: 'test-id',
         name: 'Test Category',
         description: 'Test Description',
-        price: 10.0,
-        maxParticipants: 20,
+        contingent: 20,
       );
 
       notifier.addBookingCategory(category);
@@ -65,9 +63,9 @@ void main() {
       final question = QuestionModel(
         id: 'test-id',
         question: 'Test Question?',
-        type: 'text',
+        type: QuestionType.text,
         isRequired: true,
-        options: [],
+        choices: [],
       );
 
       notifier.addQuestion(question);
@@ -79,9 +77,9 @@ void main() {
       final question = QuestionModel(
         id: 'test-id',
         question: 'Test Question?',
-        type: 'text',
+        type: QuestionType.text,
         isRequired: true,
-        options: [],
+        choices: [],
       );
 
       notifier.addQuestion(question);
@@ -98,8 +96,7 @@ void main() {
         id: 'test-id',
         name: 'Test Category',
         description: 'Test Description',
-        price: 10.0,
-        maxParticipants: 20,
+        contingent: 20,
       );
       notifier.addBookingCategory(category);
 
