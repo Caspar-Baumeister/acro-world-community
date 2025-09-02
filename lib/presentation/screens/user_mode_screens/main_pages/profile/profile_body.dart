@@ -75,9 +75,7 @@ class ProfileBody extends ConsumerWidget {
                             context.pushNamed(verifyEmailRoute);
                           } else if (hasTeacherProfile) {
                             GraphQLClientSingleton().updateClient(true);
-                            provider.Provider.of<UserRoleProvider>(context,
-                                    listen: false)
-                                .setIsCreator(true);
+                            ref.read(userRoleProvider.notifier).setIsCreator(true);
                             context.pushNamed(creatorProfileRoute);
                           } else {
                             final roles =

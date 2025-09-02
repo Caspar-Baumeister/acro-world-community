@@ -24,7 +24,7 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   const EdgeInsets.only(left: 0), // Adjust this value as needed
 
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => discoveryProvider.resetFilter(),
+              onPressed: () => ref.read(discoveryProvider.notifier).resetFilter(),
             ),
           Expanded(
             child: InkWell(
