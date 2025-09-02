@@ -1,7 +1,7 @@
 // lib/routing/app_router.dart
 
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
@@ -379,7 +379,7 @@ class AuthErrorPage extends StatelessWidget {
           children: [
             Text(error),
             const SizedBox(height: 16),
-            StandartButton(
+            ModernButton(
               onPressed: () {
                 context.go('/auth');
               },

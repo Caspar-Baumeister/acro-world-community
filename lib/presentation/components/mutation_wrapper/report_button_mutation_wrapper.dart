@@ -1,6 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -121,7 +121,7 @@ class _ReportButtonMutationWrapperState
                               .withOpacity(0.7),
                         )),
                   ),
-                  StandartButton(
+                  ModernButton(
                     text: "Report Event",
                     width: MediaQuery.of(context).size.width * 0.3,
                     isFilled: true,
