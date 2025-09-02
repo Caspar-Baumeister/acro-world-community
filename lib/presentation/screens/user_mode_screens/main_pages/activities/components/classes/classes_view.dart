@@ -1,25 +1,44 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_event_expanded_tile.dart';
 import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ClassesView extends StatelessWidget {
+class ClassesView extends ConsumerWidget {
   const ClassesView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    CalendarProvider calendarProvider = Provider.of<CalendarProvider>(context);
-    if (calendarProvider.loading) {
-      return const Center(child: LoadingWidget());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final calendarState = ref.watch(calendarProvider);
+    if (calendarState.loading) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ModernSkeleton(width: 200, height: 20),
+            SizedBox(height: 16),
+            ModernSkeleton(width: 150, height: 20),
+            SizedBox(height: 24),
+            ModernSkeleton(
+                width: 300,
+                height: 100,
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+            SizedBox(height: 16),
+            ModernSkeleton(
+                width: 300,
+                height: 100,
+                borderRadius: BorderRadius.all(Radius.circular(12))),
+          ],
+        ),
+      );
     }
 
-    if (calendarProvider.weekClassEvents.isEmpty) {
+    if (calendarState.weekClassEvents.isEmpty) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -28,9 +47,11 @@ class ClassesView extends StatelessWidget {
               children: [
                 Text("There are no activities close to you."),
                 const SizedBox(height: AppDimensions.spacingLarge),
-                StandartButton(
+                ModernButton(
                   text: "increase search radius",
-                  onPressed: () => calendarProvider.increaseRadius(),
+                  onPressed: () {
+                    // TODO: Implement increaseRadius method in CalendarNotifier
+                  },
                 ),
               ],
             ),
@@ -39,7 +60,7 @@ class ClassesView extends StatelessWidget {
       );
     }
 
-    List<ClassEvent> classEvents = calendarProvider.focusedDayClassEvents;
+    List<ClassEvent> classEvents = calendarState.weekClassEvents;
 
     if (classEvents.isEmpty) {
       return const Column(

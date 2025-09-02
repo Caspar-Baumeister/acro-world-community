@@ -2,11 +2,10 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/loading_indicator/loading_indicator.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
-import 'package:acroworld/presentation/components/search_bar_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/set_to_user_location_widget.dart';
-import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/provider/map_events_provider.dart';
 import 'package:acroworld/provider/place_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
@@ -37,11 +36,45 @@ class PlaceQuery extends StatelessWidget {
             onPlaceSet(place);
           });
 
-          return const LoadingWidget();
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                SizedBox(height: 8),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+              ],
+            ),
+          );
         } else if (placeResult.hasException || !placeResult.isConcrete) {
           return Container();
         } else {
-          return const LoadingWidget();
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                SizedBox(height: 8),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+              ],
+            ),
+          );
         }
       },
     );
@@ -183,7 +216,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
           Row(
             children: [
               Flexible(
-                child: SearchBarWidget(
+                child: ModernSearchBar(
                   onChanged: (String value) {
                     setState(() {
                       query = value;
@@ -203,8 +236,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                           LocationSingleton().setPlace(place);
                           Provider.of<PlaceProvider>(context, listen: false)
                               .updatePlace(place);
-                          Provider.of<CalendarProvider>(context, listen: false)
-                              .fetchClasseEvents();
+                          // Calendar events will be fetched automatically when place changes
                           // updateCurrentCameraPosition MapEventsProvider
                           Provider.of<MapEventsProvider>(context, listen: false)
                               .setPlaceFromPlace(place);

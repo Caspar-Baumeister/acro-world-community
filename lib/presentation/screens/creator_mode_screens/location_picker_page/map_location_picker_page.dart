@@ -1,5 +1,5 @@
 import 'package:acroworld/data/graphql/queries.dart';
-import 'package:acroworld/presentation/components/search_bar_widget.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_body.dart';
 import 'package:acroworld/services/location_search_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
@@ -104,8 +104,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                           ),
                         ),
                         Flexible(
-                          child: SearchBarWidget(
-                            color: Theme.of(context).colorScheme.surface,
+                          child: ModernSearchBar(
                             onChanged: (String value) {
                               setState(() {
                                 query = value;

@@ -1,6 +1,6 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings_card.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -27,7 +27,7 @@ class UserBookings extends StatelessWidget {
         } else if (queryResult.isLoading) {
           return const Padding(
             padding: EdgeInsets.all(AppDimensions.spacingSmall),
-            child: LoadingWidget(),
+            child: ModernLoadingWidget(),
           );
         } else if (queryResult.data != null &&
             queryResult.data?["me"] != null) {

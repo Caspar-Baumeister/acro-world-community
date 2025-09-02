@@ -1,19 +1,18 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/base_chip_wrapper.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
-import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/theme/app_colors.dart';
+import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-class CountryFilterCards extends StatelessWidget {
+class CountryFilterCards extends ConsumerWidget {
   const CountryFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
     return BaseChipWrapper(
       children: <Widget>[
         ...discoveryProvider.allCountries
@@ -205,14 +204,19 @@ class FilterChipCard extends StatelessWidget {
           label: Text(
             label,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.onSurface),
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurface),
           ),
           labelPadding: const EdgeInsets.all(0.0),
-          backgroundColor: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.surface,
+          backgroundColor: isActive
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          side: BorderSide(color: Theme.of(context).colorScheme.outline, width: 1.0),
+          side: BorderSide(
+              color: Theme.of(context).colorScheme.outline, width: 1.0),
         ),
         if (amount != null)
           Positioned(
@@ -221,7 +225,9 @@ class FilterChipCard extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               decoration: BoxDecoration(
-                color: isActive ? Theme.of(context).colorScheme.onPrimary : Theme.of(context).colorScheme.primary,
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.primary,
                 borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   bottomLeft: Radius.circular(20.0),
@@ -230,7 +236,9 @@ class FilterChipCard extends StatelessWidget {
               child: Text(
                 '$amount',
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isActive ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.onPrimary),
+                    color: isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onPrimary),
               ),
             ),
           ),

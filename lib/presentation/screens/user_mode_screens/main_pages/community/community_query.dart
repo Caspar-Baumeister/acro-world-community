@@ -1,7 +1,7 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_body.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
@@ -71,7 +71,7 @@ class TeacherQuery extends ConsumerWidget {
               return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  LoadingWidget(onRefresh: () async {
+                  ModernLoadingWidget(onRefresh: () async {
                     try {
                       refetch!();
                     } catch (e, st) {

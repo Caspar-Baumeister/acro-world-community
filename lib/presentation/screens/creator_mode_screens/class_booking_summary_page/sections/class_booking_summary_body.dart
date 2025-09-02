@@ -2,7 +2,7 @@
 
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/class_booking_summary_booking_view.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/participants_statistics.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -38,7 +38,7 @@ class ClassBookingSummaryBody extends ConsumerWidget {
     final bookingsAsync = ref.watch(classEventBookingsProvider(classEventId));
 
     return bookingsAsync.when(
-      loading: () => const LoadingWidget(),
+      loading: () => const ModernLoadingWidget(),
       error: (err, st) {
         return Center(child: Text("Error: ${err.toString()}"));
       },

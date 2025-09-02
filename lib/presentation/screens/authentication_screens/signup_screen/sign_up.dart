@@ -1,7 +1,7 @@
 import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
@@ -194,10 +194,10 @@ class _SignUpState extends ConsumerState<SignUp> {
                     setNewsletter: (val) => setState(() => isNewsletter = val),
                   ),
                   const SizedBox(height: 20.0),
-                  StandartButton(
+                  ModernButton(
                     text: "Register",
-                    onPressed: isLoading ? () {} : _onRegister,
-                    loading: isLoading,
+                    onPressed: isLoading ? null : _onRegister,
+                    isLoading: isLoading,
                     isFilled: true,
                   ),
                   if (error.isNotEmpty)

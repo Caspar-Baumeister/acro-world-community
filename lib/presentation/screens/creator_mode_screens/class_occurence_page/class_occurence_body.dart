@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_occurence_page/components/class_occurence_list_view.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -61,7 +61,7 @@ class _ClassOccurenceBodyState extends State<ClassOccurenceBody> {
                   widget.classModel.id!, showPastEvents),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const LoadingWidget();
+              return const ModernLoadingWidget();
             } else if (snapshot.hasError) {
               CustomErrorHandler.captureException(snapshot.error!,
                   stackTrace: snapshot.stackTrace);

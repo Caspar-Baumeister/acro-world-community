@@ -3,7 +3,7 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/favorite_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/class_widgets/class_template_card.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +24,7 @@ class UserFavoriteClasses extends StatelessWidget {
         if (queryResult.hasException) {
           return ErrorWidget(queryResult.exception.toString());
         } else if (queryResult.isLoading) {
-          return const LoadingWidget();
+          return const ModernLoadingWidget();
         } else if (queryResult.data != null &&
             queryResult.data?["me"] != null) {
           try {
@@ -54,7 +54,8 @@ class UserFavoriteClasses extends StatelessWidget {
                         }
                         return Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingExtraSmall),
+                              horizontal: AppDimensions.spacingSmall,
+                              vertical: AppDimensions.spacingExtraSmall),
                           child: ClassTemplateCard(indexClass: event),
                         );
                       } catch (e, s) {

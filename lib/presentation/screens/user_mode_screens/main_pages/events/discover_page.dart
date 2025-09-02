@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_appbar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_dashboard_body.dart';
@@ -27,7 +27,7 @@ class DiscoverBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final discoveryState = ref.watch(discoveryProvider);
     if (discoveryState.loading) {
-      return Center(child: const LoadingWidget());
+      return const ModernLoadingWidget();
     } else if (discoveryState.isFilter) {
       return const FilterOnDiscoveryBody();
     } else {

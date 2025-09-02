@@ -1,7 +1,7 @@
 import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
@@ -140,10 +140,10 @@ class _SignInState extends ConsumerState<SignIn> {
                       },
                     ),
                     const SizedBox(height: 20.0),
-                    StandartButton(
+                    ModernButton(
                       text: "Login",
-                      onPressed: isLoading ? () {} : _onSignIn,
-                      loading: isLoading,
+                      onPressed: isLoading ? null : _onSignIn,
+                      isLoading: isLoading,
                       isFilled: true,
                     ),
                     if (error.isNotEmpty)

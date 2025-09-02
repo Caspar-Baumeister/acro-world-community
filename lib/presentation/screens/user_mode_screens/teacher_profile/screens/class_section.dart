@@ -2,7 +2,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/class_widgets/class_template_card.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -28,7 +28,7 @@ class ClassSection extends StatelessWidget {
             return const Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Center(
-                child: LoadingWidget(),
+                child: ModernLoadingWidget(),
               ),
             );
           }
