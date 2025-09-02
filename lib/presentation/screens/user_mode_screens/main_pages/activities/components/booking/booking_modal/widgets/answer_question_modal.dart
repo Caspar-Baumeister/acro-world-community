@@ -5,11 +5,11 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/selectable_card.dart';
-import 'package:acroworld/provider/event_answers_provider.dart';
+// import 'package:acroworld/provider/event_answers_provider.dart'; // TODO: Migrate to Riverpod
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart'; // TODO: Migrate to Riverpod
 
 class AnswerQuestionModal extends StatefulWidget {
   const AnswerQuestionModal({
@@ -38,9 +38,11 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
     _phonePrefixController = TextEditingController();
     super.initState();
 
-    final AnswerModel? editAnswer =
-        Provider.of<EventAnswerProvider>(context, listen: false)
-            .getAnswersByQuestionId(widget.question.id!);
+    // TODO: Migrate EventAnswerProvider to Riverpod
+    // final AnswerModel? editAnswer =
+    //     Provider.of<EventAnswerProvider>(context, listen: false)
+    //         .getAnswersByQuestionId(widget.question.id!);
+    final AnswerModel? editAnswer = null; // Temporarily disabled
     if (editAnswer != null) {
       _answerController.text = editAnswer.answer ?? "";
       if (widget.question.type == QuestionType.phoneNumber) {
@@ -60,9 +62,12 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<EventAnswerProvider>(context);
-    final AnswerModel? editAnswer =
-        provider.getAnswersByQuestionId(widget.question.id!);
+    // TODO: Migrate EventAnswerProvider to Riverpod
+    // final provider = Provider.of<EventAnswerProvider>(context);
+    // TODO: Migrate EventAnswerProvider to Riverpod
+    // final AnswerModel? editAnswer =
+    //     provider.getAnswersByQuestionId(widget.question.id!);
+    final AnswerModel? editAnswer = null; // Temporarily disabled
 
     if (editAnswer != null) {
       print("Edit answer: ${editAnswer.toString()}");
