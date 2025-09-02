@@ -10,7 +10,7 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/components/additional_images_picker_component.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/components/profile_image_picker_component.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
-import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -153,9 +153,8 @@ class _CreateCreatorProfileBodyState
         context.goNamed(creatorProfileRoute);
       } else {
         // 2️⃣ update
-        final creatorProvider =
-            provider.Provider.of<CreatorProvider>(context, listen: false);
-        final teacherId = creatorProvider.activeTeacher?.id;
+        final creatorState = ref.read(creatorProvider);
+        final teacherId = creatorState.activeTeacher?.id;
         print("Teacher ID: $teacherId");
         if (teacherId == null) {
           setState(() => _errorMessage = 'Teacher ID not found');
@@ -176,9 +175,9 @@ class _CreateCreatorProfileBodyState
           _creatorType!,
           user.id!,
           teacherId,
-          creatorProvider.activeTeacher?.stripeId,
-          creatorProvider.activeTeacher?.isStripeEnabled,
-          creatorProvider.activeTeacher?.individualCommission,
+          creatorState.activeTeacher?.stripeId,
+          creatorState.activeTeacher?.isStripeEnabled,
+          creatorState.activeTeacher?.individualCommission,
         );
         if (msg != 'success') {
           setState(() => _errorMessage = msg);
@@ -187,7 +186,7 @@ class _CreateCreatorProfileBodyState
         showSuccessToast("Teacher profile updated successfully");
         Navigator.of(context).pop();
 
-        creatorProvider.setCreatorFromToken();
+        ref.read(creatorProvider.notifier).setCreatorFromToken();
       }
     } catch (e, st) {
       CustomErrorHandler.captureException(e.toString(), stackTrace: st);
@@ -202,10 +201,7 @@ class _CreateCreatorProfileBodyState
 
     if (widget.isEditing) {
       // if you have a creatorRiverpodProvider you can watch it instead of Provider.of
-      final existing =
-          provider.Provider.of<CreatorProvider>(context, listen: false)
-              .activeTeacher
-              ?.slug;
+      final existing = ref.read(creatorProvider).activeTeacher?.slug;
       if (existing?.toLowerCase() == slug.toLowerCase()) {
         return;
       }
@@ -257,10 +253,8 @@ class _CreateCreatorProfileBodyState
             if (!_initialized) {
               if (widget.isEditing) {
                 // If in edit mode, get the teacher data from the CreatorProvider
-                final creatorProvider = provider.Provider.of<CreatorProvider>(
-                    context,
-                    listen: false);
-                final teacher = creatorProvider.activeTeacher;
+                final creatorState = ref.read(creatorProvider);
+                final teacher = creatorState.activeTeacher;
                 if (teacher != null) {
                   _nameController.text = teacher.name ?? '';
                   _urlSlugController.text = teacher.slug ?? '';

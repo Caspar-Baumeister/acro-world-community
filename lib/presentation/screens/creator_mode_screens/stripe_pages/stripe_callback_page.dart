@@ -1,7 +1,7 @@
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/provider/creator_provider.dart'; // old ChangeNotifier
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -53,9 +53,8 @@ class _StripeCallbackPageState extends ConsumerState<StripeCallbackPage> {
       ref.invalidate(userRiverpodProvider);
       ref.invalidate(userNotifierProvider);
 
-      // use the old CreatorProvider
-      provider.Provider.of<CreatorProvider>(context, listen: false)
-          .setCreatorFromToken();
+      // use the new Riverpod CreatorProvider
+      ref.read(creatorProvider.notifier).setCreatorFromToken();
 
       // TODO - set creator to true and index to 3
 

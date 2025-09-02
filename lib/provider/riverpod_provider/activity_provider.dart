@@ -50,6 +50,7 @@ class ActivityNotifier extends StateNotifier<ActivityState> {
 }
 
 /// Provider for activity state
-final activityProvider = StateNotifierProvider<ActivityNotifier, ActivityState>((ref) {
+final activityProvider =
+    StateNotifierProvider<ActivityNotifier, ActivityState>((ref) {
   return ActivityNotifier();
 });
