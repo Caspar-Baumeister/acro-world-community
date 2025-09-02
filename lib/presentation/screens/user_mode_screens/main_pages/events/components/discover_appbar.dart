@@ -1,25 +1,24 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
+class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const DiscoveryAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
     return BaseAppbar(
       // if filter is active, show back button
       title: Row(
         children: [
           // Conditionally display the leading icon
-          if (discoveryProvider.isFilterActive())
+          if (discoveryState.isFilter)
             IconButton(
               padding:
                   const EdgeInsets.only(left: 0), // Adjust this value as needed
@@ -58,7 +57,7 @@ class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           padding: const EdgeInsets.only(right: AppDimensions.spacingMedium),
           icon: Icon(Icons.filter_list,
-              color: discoveryProvider.isFilterActive()
+              color: discoveryState.isFilter
                   ? Theme.of(context).colorScheme.primary
                   : Theme.of(context).colorScheme.outline),
           onPressed: () {
