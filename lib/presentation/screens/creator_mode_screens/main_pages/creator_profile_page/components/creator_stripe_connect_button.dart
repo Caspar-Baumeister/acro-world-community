@@ -1,31 +1,30 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
-import 'package:acroworld/provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatorStripeConnectButton extends StatefulWidget {
+class CreatorStripeConnectButton extends ConsumerStatefulWidget {
   const CreatorStripeConnectButton({
     super.key,
-    required this.creatorProvider,
   });
 
-  final CreatorProvider creatorProvider;
-
   @override
-  State<CreatorStripeConnectButton> createState() =>
+  ConsumerState<CreatorStripeConnectButton> createState() =>
       _CreatorStripeConnectButtonState();
 }
 
 class _CreatorStripeConnectButtonState
-    extends State<CreatorStripeConnectButton> {
+    extends ConsumerState<CreatorStripeConnectButton> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    final creatorState = ref.watch(creatorProvider);
     if (loading) {
       return Padding(
         padding: const EdgeInsets.symmetric(
@@ -61,13 +60,13 @@ class _CreatorStripeConnectButtonState
 
   /// Determines the appropriate button text based on the Stripe connection status.
   String _getButtonText() {
-    print("stripeId: ${widget.creatorProvider.activeTeacher?.stripeId}");
+    print("stripeId: ${creatorState.activeTeacher?.stripeId}");
     print(
-        "isStripeEnabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
-    if (widget.creatorProvider.activeTeacher?.stripeId == null) {
+        "isStripeEnabled: ${creatorState.activeTeacher?.isStripeEnabled}");
+    if (creatorState.activeTeacher?.stripeId == null) {
       return "Connect to Stripe";
     }
-    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (creatorState.activeTeacher?.isStripeEnabled == true) {
       return "View Stripe dashboard";
     }
     return "Continue Stripe setup";
@@ -76,17 +75,17 @@ class _CreatorStripeConnectButtonState
   /// Handles the logic for connecting or logging into Stripe.
   Future<void> _handleStripeConnection(BuildContext context) async {
     print("Stripe connect button pressed");
-    print("Stripe ID: ${widget.creatorProvider.activeTeacher?.stripeId}");
+    print("Stripe ID: ${creatorState.activeTeacher?.stripeId}");
     print(
-        "Stripe enabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
+        "Stripe enabled: ${creatorState.activeTeacher?.isStripeEnabled}");
 
-    if (widget.creatorProvider.activeTeacher?.stripeId != null &&
-        widget.creatorProvider.activeTeacher?.isStripeEnabled != true) {
+    if (creatorState.activeTeacher?.stripeId != null &&
+        creatorState.activeTeacher?.isStripeEnabled != true) {
       await _createStripeUser();
       return;
     }
 
-    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (creatorState.activeTeacher?.isStripeEnabled == true) {
       await _openStripeDashboard();
       return;
     }
@@ -212,7 +211,7 @@ class _CreatorStripeConnectButtonState
   /// Creates a new Stripe user and opens the Stripe dashboard link if successful.
   Future<void> _createStripeUser(
       {String? countryCode, String? defaultCurrency}) async {
-    final stripeUrl = await widget.creatorProvider.createStripeUser(
+    final stripeUrl = await ref.read(creatorProvider.notifier).createStripeUser(
         countryCode: countryCode, defaultCurrency: defaultCurrency);
     if (stripeUrl != null) {
       customLaunch(stripeUrl);
@@ -223,7 +222,7 @@ class _CreatorStripeConnectButtonState
 
   /// Retrieves and opens the Stripe login link, or shows an error if unavailable.
   Future<void> _openStripeDashboard() async {
-    final loginUrl = await widget.creatorProvider.getStripeLoginLink();
+    final loginUrl = await ref.read(creatorProvider.notifier).getStripeLoginLink();
     if (loginUrl != null) {
       customLaunch(loginUrl);
     } else {

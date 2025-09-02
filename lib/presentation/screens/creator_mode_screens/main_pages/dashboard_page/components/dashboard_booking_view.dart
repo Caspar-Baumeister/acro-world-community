@@ -34,9 +34,7 @@ class DashboardBookingView extends StatelessWidget {
                     onPressed: () {
                       // fetch more bookings
                       // TODO: Migrate CreatorBookingsProvider to Riverpod
-                      // Provider.of<CreatorBookingsProvider>(context,
-                              listen: false)
-                          .fetchMore();
+                      // Provider.of<CreatorBookingsProvider>(context, listen: false).fetchMore();
                     }),
               ),
             );

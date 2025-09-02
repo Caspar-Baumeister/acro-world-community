@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/data/models/booking_category_model.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
@@ -18,6 +17,7 @@ import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
@@ -46,6 +46,7 @@ class EventCreationAndEditingState {
   final bool isCashAllowed;
   final List<TeacherModel> pendingInviteTeachers;
   final int? maxBookingSlots;
+  final List<RecurrentPatternModel> recurringPatterns;
   final RecurrentPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
@@ -74,6 +75,7 @@ class EventCreationAndEditingState {
     this.isCashAllowed = false,
     this.pendingInviteTeachers = const [],
     this.maxBookingSlots,
+    this.recurringPatterns = const [],
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
@@ -112,6 +114,7 @@ class EventCreationAndEditingState {
     bool? isCashAllowed,
     List<TeacherModel>? pendingInviteTeachers,
     int? maxBookingSlots,
+    List<RecurrentPatternModel>? recurringPatterns,
     RecurrentPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
@@ -138,8 +141,10 @@ class EventCreationAndEditingState {
       region: region ?? this.region,
       eventType: eventType ?? this.eventType,
       isCashAllowed: isCashAllowed ?? this.isCashAllowed,
-      pendingInviteTeachers: pendingInviteTeachers ?? this.pendingInviteTeachers,
+      pendingInviteTeachers:
+          pendingInviteTeachers ?? this.pendingInviteTeachers,
       maxBookingSlots: maxBookingSlots ?? this.maxBookingSlots,
+      recurringPatterns: recurringPatterns ?? this.recurringPatterns,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -148,8 +153,9 @@ class EventCreationAndEditingState {
 }
 
 /// Notifier for event creation and editing state management
-class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEditingState> {
-  EventCreationAndEditingNotifier({ClassModel? existingEvent}) 
+class EventCreationAndEditingNotifier
+    extends StateNotifier<EventCreationAndEditingState> {
+  EventCreationAndEditingNotifier({ClassModel? existingEvent})
       : super(EventCreationAndEditingState(
           classModel: existingEvent ?? _createEmptyClassModel(),
         ));
@@ -185,7 +191,8 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
 
   /// Remove booking category
   void removeBookingCategory(int index) {
-    final updatedCategories = List<BookingCategoryModel>.from(state.bookingCategories);
+    final updatedCategories =
+        List<BookingCategoryModel>.from(state.bookingCategories);
     updatedCategories.removeAt(index);
     state = state.copyWith(bookingCategories: updatedCategories);
   }
@@ -235,10 +242,11 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
   Future<void> validateSlug(String slug) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
-      
-      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
       final isValid = await repository.validateSlug(slug);
-      
+
       state = state.copyWith(
         isSlugValid: isValid,
         isLoading: false,
@@ -257,10 +265,11 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
   Future<bool> saveEvent() async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
-      
-      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
       final success = await repository.createClass(state.classModel!);
-      
+
       if (success) {
         state = state.copyWith(isLoading: false);
         CustomErrorHandler.logDebug('Event saved successfully');
@@ -306,7 +315,8 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
   }
 
   /// Set class from existing slug (simplified version)
-  Future<void> setClassFromExisting(String slug, bool isEditing, bool setFromTemplate) async {
+  Future<void> setClassFromExisting(
+      String slug, bool isEditing, bool setFromTemplate) async {
     // TODO: Implement full setClassFromExisting logic
     // For now, just clear the state and set a basic class model
     state = EventCreationAndEditingState(
@@ -469,15 +479,40 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
+  /// Add recurring pattern
+  void addRecurringPattern(RecurrentPatternModel pattern) {
+    final patterns = List<RecurrentPatternModel>.from(state.recurringPatterns)
+      ..add(pattern);
+    state = state.copyWith(recurringPatterns: patterns);
+  }
+
+  /// Edit recurring pattern
+  void editRecurringPattern(int index, RecurrentPatternModel pattern) {
+    final patterns = List<RecurrentPatternModel>.from(state.recurringPatterns);
+    if (index >= 0 && index < patterns.length) {
+      patterns[index] = pattern;
+      state = state.copyWith(recurringPatterns: patterns);
+    }
+  }
+
+  /// Remove recurring pattern
+  void removeRecurringPattern(int index) {
+    final patterns = List<RecurrentPatternModel>.from(state.recurringPatterns);
+    if (index >= 0 && index < patterns.length) {
+      patterns.removeAt(index);
+      state = state.copyWith(recurringPatterns: patterns);
+    }
+  }
+
   /// Test constructor for unit tests
-  EventCreationAndEditingNotifier.test() 
+  EventCreationAndEditingNotifier.test()
       : super(EventCreationAndEditingState(
           classModel: _createEmptyClassModel(),
         ));
 }
 
 /// Provider for event creation and editing state
-final eventCreationAndEditingProvider = 
-    StateNotifierProvider<EventCreationAndEditingNotifier, EventCreationAndEditingState>((ref) {
+final eventCreationAndEditingProvider = StateNotifierProvider<
+    EventCreationAndEditingNotifier, EventCreationAndEditingState>((ref) {
   return EventCreationAndEditingNotifier();
 });

@@ -5,28 +5,27 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OccurrenceStep extends StatefulWidget {
+class OccurrenceStep extends ConsumerStatefulWidget {
   const OccurrenceStep({super.key, required this.onFinished});
   final Function onFinished;
 
   @override
-  State<OccurrenceStep> createState() => _OccurrenceStepState();
+  ConsumerState<OccurrenceStep> createState() => _OccurrenceStepState();
 }
 
-class _OccurrenceStepState extends State<OccurrenceStep> {
+class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
   void _onNext() {
     widget.onFinished();
   }
 
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -40,7 +39,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                   MaterialPageRoute(
                     builder: (context) => AddOrEditRecurringPatternPage(
                       onFinished: (RecurringPatternModel recurringPattern) {
-                        eventCreationAndEditingProvider.addRecurringPattern(
+                        ref.read(eventCreationAndEditingProvider.notifier).addRecurringPattern(
                           recurringPattern,
                         );
                       },
@@ -53,10 +52,10 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
             child: ListView.builder(
                 shrinkWrap: true,
                 itemCount:
-                    eventCreationAndEditingProvider.recurringPatterns.length,
+                    eventState.recurringPatterns.length,
                 itemBuilder: (context, index) {
                   RecurringPatternModel pattern =
-                      eventCreationAndEditingProvider.recurringPatterns[index];
+                      eventState.recurringPatterns[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.spacingLarge,
@@ -70,7 +69,7 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                                   AddOrEditRecurringPatternPage(
                                 onFinished:
                                     (RecurringPatternModel recurringPattern) {
-                                  eventCreationAndEditingProvider
+                                  ref.read(eventCreationAndEditingProvider.notifier)
                                       .editRecurringPattern(
                                     index,
                                     recurringPattern,
@@ -102,8 +101,8 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                                                 .primary)),
                                 IconButton(
                                     onPressed: () {
-                                      eventCreationAndEditingProvider
-                                          .removeRecurringPattern(index);
+                                                                        ref.read(eventCreationAndEditingProvider.notifier)
+                                      .removeRecurringPattern(index);
                                     },
                                     icon: Icon(
                                       Icons.delete,
@@ -129,17 +128,14 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 200)
                     : null,
-                child: Consumer<EventCreationAndEditingProvider>(
-                    builder: (context, provider, child) {
-                  return StandartButton(
+                child: StandartButton(
                     onPressed: () {
-                      provider.setPage(0);
+                      ref.read(eventCreationAndEditingProvider.notifier).setPage(0);
                       setState(() {});
                     },
                     text: "Previous",
                     width: MediaQuery.of(context).size.width * 0.3,
-                  );
-                }),
+                  ),
               ),
               const SizedBox(width: AppDimensions.spacingMedium),
               Container(

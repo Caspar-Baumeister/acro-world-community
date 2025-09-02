@@ -7,8 +7,8 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:flutter/material.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// This widget represents the "Ticket" section of the "Market Step"
@@ -38,11 +38,9 @@ class MarketStepTicketSection extends ConsumerWidget {
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount:
-                  eventState.bookingCategories.length,
+              itemCount: eventState.bookingCategories.length,
               itemBuilder: (context, index) {
-                final bookingCategory =
-                    eventState.bookingCategories[index];
+                final bookingCategory = eventState.bookingCategories[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -57,10 +55,12 @@ class MarketStepTicketSection extends ConsumerWidget {
                           onFinished: (BookingCategoryModel updatedCategory) {
                             // Update category in the provider
                             // The provider logic should also update the total tickets internally.
-                            ref.read(eventCreationAndEditingProvider.notifier).editCategory(
-                              index,
-                              updatedCategory,
-                            );
+                            ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .editCategory(
+                                  index,
+                                  updatedCategory,
+                                );
                           },
                           bookingCategory: bookingCategory,
                         ),
@@ -69,7 +69,9 @@ class MarketStepTicketSection extends ConsumerWidget {
                     onDelete: () {
                       // Remove category from the provider
                       // The provider logic should also update the total tickets internally.
-                      ref.read(eventCreationAndEditingProvider.notifier).removeCategory(index);
+                      ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .removeCategory(index);
                     },
                   ),
                 );
@@ -85,9 +87,11 @@ class MarketStepTicketSection extends ConsumerWidget {
                     onFinished: (BookingCategoryModel bookingCategory) {
                       // Add a new category to the provider.
                       // The provider logic should also update the total tickets internally.
-                      ref.read(eventCreationAndEditingProvider.notifier).addCategory(
-                        bookingCategory,
-                      );
+                      ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .addCategory(
+                            bookingCategory,
+                          );
                     },
                   ),
                 );
@@ -97,24 +101,29 @@ class MarketStepTicketSection extends ConsumerWidget {
             // little infobox if no categories are added yet
             if (eventState.bookingCategories.isEmpty)
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingLarge),
                 child: Text(
                   "Ticket categories are used to limit the number of tickets available for any group of tickets like Early Bird, Regular, Teacher or Helpers. You need to add at least one category to be able to create tickets.",
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7),
                       ),
                 ),
               ),
             const SizedBox(height: AppDimensions.spacingMedium),
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceContainer,
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusLarge),
+                  border:
+                      Border.all(color: Theme.of(context).colorScheme.outline),
                 ),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Row(
@@ -123,7 +132,8 @@ class MarketStepTicketSection extends ConsumerWidget {
                     CustomCheckBox(
                       isChecked: eventState.isCashAllowed,
                       onTap: () {
-                        ref.read(eventCreationAndEditingProvider.notifier)
+                        ref
+                            .read(eventCreationAndEditingProvider.notifier)
                             .switchAllowCashPayments();
                       },
                     ),
@@ -134,16 +144,21 @@ class MarketStepTicketSection extends ConsumerWidget {
                         children: [
                           Text(
                             "Allow cash payments",
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(context).colorScheme.onSurface,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
-                          const SizedBox(width: AppDimensions.spacingExtraSmall),
+                          const SizedBox(
+                              width: AppDimensions.spacingExtraSmall),
                           Builder(
                             builder: (context) => IconButton(
-                              icon: Icon(Icons.info_outline, size: AppDimensions.iconSizeSmall),
+                              icon: Icon(Icons.info_outline,
+                                  size: AppDimensions.iconSizeSmall),
                               tooltip: "More info",
                               onPressed: () {
                                 showDialog(

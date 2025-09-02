@@ -59,7 +59,7 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
                   style: Theme.of(context).textTheme.headlineMedium),
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
-            CreatorStripeConnectButton(creatorProvider: ref.read(creatorProvider.notifier)),
+            CreatorStripeConnectButton(),
             SizedBox(height: AppDimensions.spacingLarge),
           ],
         ),
