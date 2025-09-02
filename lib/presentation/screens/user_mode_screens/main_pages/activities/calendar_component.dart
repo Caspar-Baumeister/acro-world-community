@@ -1,27 +1,28 @@
-import 'package:acroworld/provider/calendar_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/calendar_provider.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class CalendarComponent extends StatelessWidget {
+class CalendarComponent extends ConsumerWidget {
   const CalendarComponent({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    CalendarProvider calendarProvider = Provider.of<CalendarProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final calendarState = ref.watch(calendarProvider);
     return IgnorePointer(
-      ignoring: calendarProvider.loading,
+      ignoring: calendarState.loading,
       child: TableCalendar(
         availableGestures: AvailableGestures.horizontalSwipe,
         firstDay: kFirstDay,
         lastDay: kLastDay,
-        focusedDay: calendarProvider.focusedDay,
+        focusedDay: calendarState.focusedDay ?? DateTime.now(),
         selectedDayPredicate: (day) =>
-            isSameDay(calendarProvider.focusedDay, day),
+            isSameDay(calendarState.focusedDay, day),
         calendarFormat: CalendarFormat.week,
         rangeSelectionMode: RangeSelectionMode.disabled,
-        eventLoader: (day) => calendarProvider.getClassEventsForDay(day),
+        eventLoader: (day) => calendarState.weekClassEvents.where((event) => 
+            isSameDay(event.startDateDT, day)).toList(),
         startingDayOfWeek: StartingDayOfWeek.monday,
         availableCalendarFormats: const {CalendarFormat.week: 'week'},
         calendarStyle: CalendarStyle(
@@ -34,10 +35,10 @@ class CalendarComponent extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
                 shape: BoxShape.circle)),
         onDaySelected: (DateTime newSelectedDay, DateTime _) {
-          calendarProvider.setFocusedDay(newSelectedDay);
+          ref.read(calendarProvider.notifier).setFocusedDay(newSelectedDay);
         },
         onPageChanged: (newFocusedDay) {
-          calendarProvider.onPageChanged(newFocusedDay);
+          ref.read(calendarProvider.notifier).setFocusedDay(newFocusedDay);
         },
       ),
     );

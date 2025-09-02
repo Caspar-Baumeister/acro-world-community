@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/provider/teacher_event_provider.dart';
-import 'package:provider/provider.dart' as provider;
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -26,7 +25,7 @@ class CreatorSwitchToUserModeButton extends ConsumerWidget {
         // Switch to creator mode
         context.goNamed(profileRoute);
         // dispose all creator providers
-        provider.Provider.of<TeacherEventsProvider>(context, listen: false).cleanUp();
+        ref.read(teacherEventsProvider.notifier).cleanUp();
       },
       isFilled: true,
     );
