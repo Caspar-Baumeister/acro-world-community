@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -145,7 +145,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                                         Theme.of(context).colorScheme.primary),
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
-                      StandartButton(
+                      ModernButton(
                         text: "Edit event description",
                         onPressed: () {
                           Navigator.push(
@@ -251,7 +251,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                     constraints: Responsive.isDesktop(context)
                         ? const BoxConstraints(maxWidth: 200)
                         : null,
-                    child: StandartButton(
+                    child: ModernButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -264,7 +264,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                   constraints: Responsive.isDesktop(context)
                       ? const BoxConstraints(maxWidth: 400)
                       : null,
-                  child: StandartButton(
+                  child: ModernButton(
                     onPressed: _onNext,
                     text: "Next",
                     isFilled: true,

@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_ticket_section.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
@@ -76,7 +76,7 @@ class _MarketStepState extends ConsumerState<MarketStep> {
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 200)
                     : null,
-                child: StandartButton(
+                child: ModernButton(
                   onPressed: () {
                     ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
                     setState(() {});
@@ -90,10 +90,10 @@ class _MarketStepState extends ConsumerState<MarketStep> {
                 constraints: Responsive.isDesktop(context)
                     ? const BoxConstraints(maxWidth: 400)
                     : null,
-                child: StandartButton(
+                child: ModernButton(
                   onPressed: _onNext,
                   text: widget.isEditing ? "Update Event" : "Create Event",
-                  loading: isLoading,
+                  isLoading: isLoading,
                   isFilled: true,
                   width: MediaQuery.of(context).size.width * 0.5,
                 ),

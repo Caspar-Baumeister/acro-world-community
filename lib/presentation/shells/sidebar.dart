@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/shells/creator_side_navigation.dart';
 import 'package:acroworld/presentation/shells/user_side_navigation.dart';
@@ -73,7 +73,7 @@ class ShellSideBar extends ConsumerWidget {
                                   user?.teacherProfile != null;
                               final isEmailVerified =
                                   user?.isEmailVerified ?? false;
-                              return StandartButton(
+                              return ModernButton(
                                 width: null,
                                 text: "Create Events",
                                 onPressed: () async {

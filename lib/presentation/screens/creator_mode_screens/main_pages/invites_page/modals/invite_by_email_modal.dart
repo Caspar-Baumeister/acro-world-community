@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
@@ -29,7 +29,7 @@ class InviteByEmailModal extends ConsumerWidget {
             textInputAction: TextInputAction.done,
           ),
           const SizedBox(height: AppDimensions.spacingMedium),
-          StandartButton(
+          ModernButton(
             text: "Invite",
             onPressed: () async {
               if (emailController.text.isNotEmpty) {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/data/graphql/http_api_urls.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordSuccess extends StatefulWidget {
@@ -96,12 +96,12 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
             ),
           ),
           const SizedBox(height: 15.0),
-          StandartButton(
+          ModernButton(
             text: "send new email",
             onPressed: () {
               onForgotPassword();
             },
-            loading: loading,
+            isLoading: loading,
             isFilled: true,
           ),
           error != ""

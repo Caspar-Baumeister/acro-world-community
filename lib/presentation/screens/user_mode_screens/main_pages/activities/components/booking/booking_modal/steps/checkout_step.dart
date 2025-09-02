@@ -5,7 +5,7 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/environment.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
@@ -126,7 +126,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                         Padding(
                           padding: const EdgeInsets.only(
                               bottom: AppDimensions.spacingMedium),
-                          child: StandartButton(
+                          child: ModernButton(
                             text: "Continue to payment",
                             onPressed: () async {
                               final token = await LocalStorageService.get(
@@ -147,7 +147,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                           child: FutureBuilder(
                               future: _initializeAll(context, ref),
                               builder: (context, snapshot) {
-                                return StandartButton(
+                                return ModernButton(
                                   text: "Continue to payment",
                                   onPressed: () async {
                                     if (!areRequiredQuestionsAnswered(ref)) {
@@ -175,7 +175,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                       }
                                     });
                                   },
-                                  loading: !_isInitAnswersReady ||
+                                  isLoading: !_isInitAnswersReady ||
                                       !_isPaymentIntentInitialized,
                                   width: double.infinity,
                                   isFilled: true,
@@ -187,7 +187,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                         Padding(
                           padding: const EdgeInsets.only(
                               bottom: AppDimensions.spacingMedium),
-                          child: StandartButton(
+                          child: ModernButton(
                             text: "Pay in cash",
                             onPressed: () async {
                               if (!areRequiredQuestionsAnswered(ref)) {

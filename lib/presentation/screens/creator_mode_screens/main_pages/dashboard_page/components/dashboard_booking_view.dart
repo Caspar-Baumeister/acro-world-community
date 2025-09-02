@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/dashboard_single_booking_card.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -28,7 +28,7 @@ class DashboardBookingView extends ConsumerWidget {
                   top: AppDimensions.spacingMedium,
                   bottom: AppDimensions.spacingMedium),
               child: Center(
-                child: StandartButton(
+                child: ModernButton(
                     text: "Load more",
                     onPressed: () {
                       // fetch more bookings

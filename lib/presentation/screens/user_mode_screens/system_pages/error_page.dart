@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -44,7 +44,7 @@ class ErrorScreenWidget extends ConsumerWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             const SizedBox(height: AppDimensions.spacingMedium),
-            StandartButton(
+            ModernButton(
                 text: "Back to Home",
                 onPressed: () {
                   // Set navigation index to 3 (Profile tab)

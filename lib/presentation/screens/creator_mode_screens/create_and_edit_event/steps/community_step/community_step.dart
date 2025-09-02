@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_amount_notifies_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_header.dart';
@@ -85,7 +85,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                   constraints: Responsive.isDesktop(context)
                       ? const BoxConstraints(maxWidth: 200)
                       : null,
-                  child: StandartButton(
+                  child: ModernButton(
                     onPressed: () {
                       ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
                       setState(() {});
@@ -99,7 +99,7 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
                   constraints: Responsive.isDesktop(context)
                       ? const BoxConstraints(maxWidth: 400)
                       : null,
-                  child: StandartButton(
+                  child: ModernButton(
                     onPressed: _onNext,
                     text: "Next",
                     isFilled: true,

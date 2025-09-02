@@ -1,5 +1,5 @@
 import 'package:acroworld/data/graphql/http_api_urls.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -57,12 +57,12 @@ class ForgotPasswordState extends State<ForgotPassword> {
               onFieldSubmitted: (value) => onForgotPassword(),
             ),
             const SizedBox(height: 20.0),
-            StandartButton(
+            ModernButton(
               text: "Send email",
               onPressed: () {
                 onForgotPassword();
               },
-              loading: loading,
+              isLoading: loading,
               isFilled: true,
             ),
             error != ""
