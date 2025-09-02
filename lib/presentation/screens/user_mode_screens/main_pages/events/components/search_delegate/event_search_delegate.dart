@@ -4,7 +4,7 @@ import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EventSearchDelegate extends SearchDelegate {
   @override
@@ -34,10 +34,9 @@ class EventSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+    final discoveryState = ProviderScope.containerOf(context).read(discoveryProvider);
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
-        discoveryProvider.filteredEventOccurences.where((ClassEvent event) =>
+        discoveryState.filteredEventOccurences.where((ClassEvent event) =>
             event.classModel?.name != null &&
             event.classModel!.name!
                 .toLowerCase()
@@ -64,11 +63,10 @@ class EventSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+    final discoveryState = ProviderScope.containerOf(context).read(discoveryProvider);
 
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
-        discoveryProvider.filteredEventOccurences.where((ClassEvent event) =>
+        discoveryState.filteredEventOccurences.where((ClassEvent event) =>
             event.classModel?.name != null &&
             event.classModel!.name!
                 .toLowerCase()
