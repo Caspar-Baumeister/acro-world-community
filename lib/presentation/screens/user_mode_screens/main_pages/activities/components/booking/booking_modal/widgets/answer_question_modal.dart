@@ -5,13 +5,13 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/selectable_card.dart';
-// import 'package:acroworld/provider/event_answers_provider.dart'; // TODO: Migrate to Riverpod
+import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart'; // TODO: Migrate to Riverpod
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnswerQuestionModal extends StatefulWidget {
+class AnswerQuestionModal extends ConsumerStatefulWidget {
   const AnswerQuestionModal({
     super.key,
     required this.question,
@@ -24,10 +24,10 @@ class AnswerQuestionModal extends StatefulWidget {
   final String userId;
 
   @override
-  State<AnswerQuestionModal> createState() => _AnswerQuestionModalState();
+  ConsumerState<AnswerQuestionModal> createState() => _AnswerQuestionModalState();
 }
 
-class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
+class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
   late TextEditingController _answerController;
   late TextEditingController _phonePrefixController;
   final List<String> _selectedOptions = <String>[];
@@ -38,11 +38,8 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
     _phonePrefixController = TextEditingController();
     super.initState();
 
-    // TODO: Migrate EventAnswerProvider to Riverpod
-    // final AnswerModel? editAnswer =
-    //     Provider.of<EventAnswerProvider>(context, listen: false)
-    //         .getAnswersByQuestionId(widget.question.id!);
-    final AnswerModel? editAnswer = null; // Temporarily disabled
+    final AnswerModel? editAnswer = ref.read(eventAnswerProvider.notifier)
+        .getAnswersByQuestionId(widget.question.id!);
     if (editAnswer != null) {
       _answerController.text = editAnswer.answer ?? "";
       if (widget.question.type == QuestionType.phoneNumber) {
@@ -62,12 +59,9 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: Migrate EventAnswerProvider to Riverpod
-    // final provider = Provider.of<EventAnswerProvider>(context);
-    // TODO: Migrate EventAnswerProvider to Riverpod
-    // final AnswerModel? editAnswer =
-    //     provider.getAnswersByQuestionId(widget.question.id!);
-    final AnswerModel? editAnswer = null; // Temporarily disabled
+    final eventAnswerState = ref.watch(eventAnswerProvider);
+    final AnswerModel? editAnswer = ref.read(eventAnswerProvider.notifier)
+        .getAnswersByQuestionId(widget.question.id!);
 
     if (editAnswer != null) {
       print("Edit answer: ${editAnswer.toString()}");
@@ -188,7 +182,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                             showErrorToast("Please enter an answer");
                             return;
                           }
-                          provider.updateAnswer(
+                          ref.read(eventAnswerProvider.notifier).updateAnswer(
                               editAnswer.questionId!,
                               AnswerModel(
                                   answer: _answerController.text,
@@ -207,7 +201,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                         } else {
                           if (_answerController.text.isNotEmpty ||
                               questionType == QuestionType.multipleChoice) {
-                            provider.addAnswer(AnswerModel(
+                            ref.read(eventAnswerProvider.notifier).addAnswer(AnswerModel(
                                 answer: _answerController.text,
                                 countryDialCode: _phonePrefixController.text,
                                 eventOccurence: widget.eventOccurence,

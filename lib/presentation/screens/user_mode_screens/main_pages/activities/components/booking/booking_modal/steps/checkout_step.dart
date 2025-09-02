@@ -9,7 +9,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
-// import 'package:acroworld/provider/event_answers_provider.dart'; // TODO: Migrate to Riverpod
+import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
@@ -23,7 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart' as provider;
+
 import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutStep extends ConsumerStatefulWidget {
@@ -74,14 +74,13 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           widget.classEventId!,
           user!,
         ).then((_) {
-          // TODO: Migrate EventAnswerProvider to Riverpod
-          // provider.Provider.of<EventAnswerProvider>(context, listen: false)
-          //     .initAnswers(user.id!, widget.classEventId!)
-          //     .then((_) {
+          ref.read(eventAnswerProvider.notifier)
+              .initAnswers(user.id!, widget.classEventId!)
+              .then((_) {
             setState(() {
               _isInitAnswersReady = true;
             });
-          // });
+          });
         });
       });
     } else {
@@ -105,8 +104,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
             if (user?.id == null) {
               return const Center(child: Text("Please log in to continue"));
             }
-            // TODO: Migrate EventAnswerProvider to Riverpod
-            // final eventAnswerProvider = provider.Provider.of<EventAnswerProvider>(context);
+            final eventAnswerState = ref.watch(eventAnswerProvider);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -250,9 +248,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                   // close the modal
                                   Navigator.of(context).pop();
                                   // fire the event to refetch the booking query
-                                  provider.Provider.of<EventBusProvider>(
-                                          context,
-                                          listen: false)
+                                  ref.read(eventBusProvider.notifier)
                                       .fireRefetchBookingQuery();
                                 }
                               });
@@ -287,7 +283,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           .attemptToPresentPaymentSheet(pi)
           .then((_) {
         Navigator.of(context).pop();
-        provider.Provider.of<EventBusProvider>(context, listen: false)
+        ref.read(eventBusProvider.notifier)
             .fireRefetchBookingQuery();
       });
     } on StripeException catch (e) {
@@ -611,11 +607,11 @@ class QuestionCard extends ConsumerWidget {
         }
 
         // The answers provider remains the same
-        final eventAnswerProvider =
-            provider.Provider.of<EventAnswerProvider>(context);
+        final eventAnswerNotifier =
+            ref.read(eventAnswerProvider.notifier);
 
         final hasAnswer = question.id != null
-            ? eventAnswerProvider.doesQuestionIdHaveAnswer(question.id!)
+            ? eventAnswerNotifier.doesQuestionIdHaveAnswer(question.id!)
             : false;
 
         return GestureDetector(
