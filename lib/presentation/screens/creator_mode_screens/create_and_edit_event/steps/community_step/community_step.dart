@@ -6,20 +6,20 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_selected_teachers_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_teacher_suggestion_section.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CommunityStep extends StatefulWidget {
+class CommunityStep extends ConsumerStatefulWidget {
   const CommunityStep({super.key, required this.onFinished});
   final Function onFinished;
 
   @override
-  State<CommunityStep> createState() => _CommunityStepState();
+  ConsumerState<CommunityStep> createState() => _CommunityStepState();
 }
 
-class _CommunityStepState extends State<CommunityStep> {
+class _CommunityStepState extends ConsumerState<CommunityStep> {
   late TextEditingController teacherQueryController;
   String? _errorMessage;
   String query = '';
@@ -43,8 +43,7 @@ class _CommunityStepState extends State<CommunityStep> {
 
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingMedium,
@@ -94,7 +93,7 @@ class _CommunityStepState extends State<CommunityStep> {
                       : null,
                   child: StandartButton(
                     onPressed: () {
-                      eventCreationAndEditingProvider.setPage(1);
+                      ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
                       setState(() {});
                     },
                     text: "Previous",

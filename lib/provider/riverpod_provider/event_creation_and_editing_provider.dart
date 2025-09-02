@@ -360,6 +360,11 @@ class EventCreationAndEditingNotifier extends StateNotifier<EventCreationAndEdit
     state = state.copyWith(eventType: eventType);
   }
 
+  /// Set current page
+  void setPage(int page) {
+    state = state.copyWith(currentPage: page);
+  }
+
   /// Test constructor for unit tests
   EventCreationAndEditingNotifier.test() 
       : super(EventCreationAndEditingState(
