@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shimmer/shimmer.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
-/// Modern skeleton loading component using shimmer package
+/// Modern skeleton loading component using skeletonizer package
 class ShimmerSkeleton extends StatelessWidget {
   final double? width;
   final double? height;
@@ -20,14 +20,13 @@ class ShimmerSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: baseColor ?? Colors.grey[300]!,
-      highlightColor: highlightColor ?? Colors.grey[100]!,
+    return Skeletonizer(
+      enabled: true,
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: baseColor ?? Colors.grey[300],
           borderRadius: borderRadius ?? BorderRadius.circular(4),
         ),
       ),
@@ -41,33 +40,47 @@ class ListItemSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Row(
-        children: [
-          const ShimmerSkeleton(
-            width: 50,
-            height: 50,
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const ShimmerSkeleton(
-                  width: double.infinity,
-                  height: 16,
-                ),
-                const SizedBox(height: 8),
-                const ShimmerSkeleton(
-                  width: 200,
-                  height: 12,
-                ),
-              ],
+    return Skeletonizer(
+      enabled: true,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        child: Row(
+          children: [
+            Container(
+              width: 50,
+              height: 50,
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                shape: BoxShape.circle,
+              ),
             ),
-          ),
-        ],
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    width: 200,
+                    height: 12,
+                    decoration: BoxDecoration(
+                      color: Colors.grey,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -78,34 +91,52 @@ class EventCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const ShimmerSkeleton(
-              width: double.infinity,
-              height: 120,
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            const SizedBox(height: 12),
-            const ShimmerSkeleton(
-              width: double.infinity,
-              height: 20,
-            ),
-            const SizedBox(height: 8),
-            const ShimmerSkeleton(
-              width: 150,
-              height: 16,
-            ),
-            const SizedBox(height: 8),
-            const ShimmerSkeleton(
-              width: 100,
-              height: 14,
-            ),
-          ],
+    return Skeletonizer(
+      enabled: true,
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: double.infinity,
+                height: 120,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 150,
+                height: 16,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+              const SizedBox(height: 8),
+              Container(
+                width: 100,
+                height: 14,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -117,31 +148,49 @@ class ProfileSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          const ShimmerSkeleton(
-            width: 100,
-            height: 100,
-            borderRadius: BorderRadius.all(Radius.circular(50)),
-          ),
-          const SizedBox(height: 16),
-          const ShimmerSkeleton(
-            width: 200,
-            height: 20,
-          ),
-          const SizedBox(height: 8),
-          const ShimmerSkeleton(
-            width: 150,
-            height: 16,
-          ),
-          const SizedBox(height: 16),
-          const ShimmerSkeleton(
-            width: double.infinity,
-            height: 100,
-          ),
-        ],
+    return Skeletonizer(
+      enabled: true,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: 200,
+              height: 20,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Container(
+              width: 150,
+              height: 16,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(4),
+              ),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
