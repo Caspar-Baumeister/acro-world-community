@@ -1,7 +1,7 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
@@ -12,7 +12,7 @@ import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 class BookingQueryHoverButton extends ConsumerStatefulWidget {
   const BookingQueryHoverButton({super.key, required this.classEvent});
@@ -30,7 +30,7 @@ class _BookingQueryHoverButtonState
   @override
   void initState() {
     super.initState();
-    provider.Provider.of<EventBusProvider>(context, listen: false)
+    ref.read(eventBusProvider.notifier)
         .listenToRefetchBookingQuery((_) {
       if (_refetch != null) _refetch!();
     });

@@ -14,7 +14,7 @@ import 'package:acroworld/state/provider/invites_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart' as provider;
+
 
 class App extends StatelessWidget {
   const App({super.key});

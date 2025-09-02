@@ -17,7 +17,7 @@ dependencies:
   url_strategy: ^0.2.0
   stripe_platform_interface: 11.5.0
   cupertino_icons: ^1.0.2
-  provider: ^6.0.1
+  # provider: ^6.0.1  # Temporarily commented out - migrating to Riverpod
   shared_preferences: ^2.0.11
   flutter_launcher_icons: ^0.14.1
   flutter_map: ^7.0.2

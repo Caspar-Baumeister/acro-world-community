@@ -3,17 +3,17 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/ask_question_modal.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class QuestionPage extends StatelessWidget {
+class QuestionPage extends ConsumerWidget {
   const QuestionPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return BasePage(
         makeScrollable: false,
         appBar: CustomAppbarSimple(title: 'Question'),
@@ -46,15 +46,15 @@ class QuestionPage extends StatelessWidget {
   }
 }
 
-class CurrentQuestionSection extends StatelessWidget {
+class CurrentQuestionSection extends ConsumerWidget {
   const CurrentQuestionSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final provider = Provider.of<EventCreationAndEditingProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       padding: EdgeInsets.all(AppDimensions.spacingSmall),
-      child: provider.questions.isEmpty
+      child: eventState.questions.isEmpty
           ? Center(
               child: Padding(
                 padding: EdgeInsets.all(AppDimensions.spacingExtraLarge),
@@ -67,15 +67,15 @@ class CurrentQuestionSection extends StatelessWidget {
           : ReorderableListView(
               padding: const EdgeInsets.all(AppDimensions.spacingSmall),
               onReorder: (oldIndex, newIndex) {
-                provider.reorderQuestions(oldIndex, newIndex);
+                ref.read(eventCreationAndEditingProvider.notifier).reorderQuestions(oldIndex, newIndex);
               },
-              children: List.generate(provider.questions.length, (index) {
-                final item = provider.questions[index];
+              children: List.generate(eventState.questions.length, (index) {
+                final item = eventState.questions[index];
                 return Dismissible(
                   key:
                       ValueKey(item.id), // Ensure the key is unique and stable.
                   direction: DismissDirection.endToStart,
-                  onDismissed: (direction) => provider.removeQuestion(index),
+                  onDismissed: (direction) => ref.read(eventCreationAndEditingProvider.notifier).removeQuestion(index),
                   background: Container(
                     alignment: Alignment.centerRight,
                     color: Theme.of(context).colorScheme.error,
