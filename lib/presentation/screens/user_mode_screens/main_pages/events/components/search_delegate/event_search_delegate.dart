@@ -132,9 +132,7 @@ class EventSearchDelegate extends SearchDelegate {
         events: eventCardData,
         isGridMode: true,
         isLoading: false,
-        onEventTap: () {
-          // Handle event tap - could navigate to event details
-        },
+        // Remove onEventTap to use internal navigation logic
       ),
     );
   }
@@ -164,9 +162,7 @@ class EventSearchDelegate extends SearchDelegate {
         events: eventCardData,
         isGridMode: true,
         isLoading: false,
-        onEventTap: () {
-          // Handle event tap - could navigate to event details
-        },
+        // Remove onEventTap to use internal navigation logic
       ),
     );
   }
