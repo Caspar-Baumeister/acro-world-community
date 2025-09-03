@@ -27,54 +27,30 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
   Widget build(BuildContext context) {
     final discoveryState = ref.watch(discoveryProvider);
 
-    List<Widget> eventSliders = discoveryState.allEventTypes
-        .map((EventType eventType) => Padding(
-              padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-              child: SimpleEventSliderRow(
-                title: eventType.name,
-                events: discoveryState.getEventsByType(eventType),
-                onViewAll: () {
-                  // set filter category to the event type
-                  ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
-                },
-              ),
-            ))
-        .toList();
+    // Debug information
+    print('Discovery State Debug:');
+    print('- Loading: ${discoveryState.loading}');
+    print('- All Events: ${discoveryState.allEventOccurences.length}');
+    print('- All Event Types: ${discoveryState.allEventTypes.length}');
+    print('- Highlighted Events: ${discoveryState.getHighlightedEvents().length}');
+    print('- Bookable Events: ${discoveryState.getBookableEvents().length}');
 
-    return RefreshIndicator(
-      onRefresh: () async => await ref.read(discoveryProvider.notifier).fetchAllEventOccurences(),
-      child: SingleChildScrollView(
+    // Simple test - just return a basic widget to see if the issue is with the provider
+    return Container(
+      color: Colors.red,
+      child: Center(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            discoveryState.getHighlightedEvents().isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: SimpleEventSliderRow(
-                      title: 'Highlights',
-                      events: discoveryState.getHighlightedEvents(),
-                      onViewAll: () {
-                        ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
-                      },
-                    ),
-                  )
-                : Container(),
-            discoveryState.getBookableEvents().isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: SimpleEventSliderRow(
-                      title: 'Bookable Events',
-                      subtitle: "Tickets available here!",
-                      events: discoveryState.getBookableEvents(),
-                      onViewAll: () {
-                        ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
-                      },
-                    ),
-                  )
-                : Container(),
-            // Followed Teacher
-            // for each event type in the discovery provider, create a slider row with the events
-            ...eventSliders
+            Text('TEST: Discovery Page is rendering!', style: TextStyle(fontSize: 20, color: Colors.white)),
+            Text('Loading: ${discoveryState.loading}', style: TextStyle(color: Colors.white)),
+            Text('Events: ${discoveryState.allEventOccurences.length}', style: TextStyle(color: Colors.white)),
+            ElevatedButton(
+              onPressed: () {
+                ref.read(discoveryProvider.notifier).fetchAllEventOccurences();
+              },
+              child: Text('Refresh Data'),
+            ),
           ],
         ),
       ),
