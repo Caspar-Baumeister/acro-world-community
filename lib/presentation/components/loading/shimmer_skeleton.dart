@@ -347,3 +347,148 @@ class EventRowSkeleton extends StatelessWidget {
     );
   }
 }
+
+/// Skeleton for responsive event card with landscape aspect ratio
+class ResponsiveEventCardSkeleton extends StatelessWidget {
+  final double? width;
+  final bool isGridMode;
+  
+  const ResponsiveEventCardSkeleton({
+    super.key,
+    this.width,
+    this.isGridMode = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 160.0);
+    final cardHeight = isGridMode ? 240.0 : 200.0;
+
+    return Skeletonizer(
+      enabled: true,
+      child: Container(
+        width: cardWidth,
+        height: cardHeight,
+        margin: EdgeInsets.only(
+          right: isGridMode ? 0 : 12,
+          bottom: isGridMode ? 12 : 0,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Image skeleton
+            Expanded(
+              flex: 3,
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                ),
+              ),
+            ),
+            // Content skeleton
+            Expanded(
+              flex: 2,
+              child: Padding(
+                padding: const EdgeInsets.all(8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title skeleton
+                    Container(
+                      height: 16,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      height: 12,
+                      width: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Container(
+                      height: 12,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Skeleton for responsive event list (both horizontal and grid)
+class ResponsiveEventListSkeleton extends StatelessWidget {
+  final bool isGridMode;
+  final int itemCount;
+  
+  const ResponsiveEventListSkeleton({
+    super.key,
+    this.isGridMode = false,
+    this.itemCount = 3,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (isGridMode) {
+      return _buildGridSkeleton(context);
+    } else {
+      return _buildHorizontalSkeleton(context);
+    }
+  }
+
+  Widget _buildHorizontalSkeleton(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          return const ResponsiveEventCardSkeleton(isGridMode: false);
+        },
+      ),
+    );
+  }
+
+  Widget _buildGridSkeleton(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: itemCount,
+        itemBuilder: (context, index) {
+          return const ResponsiveEventCardSkeleton(isGridMode: true);
+        },
+      ),
+    );
+  }
+}

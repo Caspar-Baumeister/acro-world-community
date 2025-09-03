@@ -9,6 +9,7 @@ class ResponsiveEventSection extends StatelessWidget {
   final bool isGridMode;
   final VoidCallback? onViewAll;
   final VoidCallback? onEventTap;
+  final bool isLoading;
 
   const ResponsiveEventSection({
     super.key,
@@ -18,6 +19,7 @@ class ResponsiveEventSection extends StatelessWidget {
     this.isGridMode = false,
     this.onViewAll,
     this.onEventTap,
+    this.isLoading = false,
   });
 
   @override
@@ -88,6 +90,7 @@ class ResponsiveEventSection extends StatelessWidget {
             events: events,
             isGridMode: isGridMode,
             onEventTap: onEventTap,
+            isLoading: isLoading,
           ),
         ],
       ),

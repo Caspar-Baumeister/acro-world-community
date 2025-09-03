@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/cards/responsive_event_card.dart';
+import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:flutter/material.dart';
 
 /// Pure UI component for displaying events in different layouts
@@ -7,6 +8,7 @@ class ResponsiveEventList extends StatelessWidget {
   final bool isGridMode;
   final VoidCallback? onEventTap;
   final double? cardWidth;
+  final bool isLoading;
 
   const ResponsiveEventList({
     super.key,
@@ -14,10 +16,18 @@ class ResponsiveEventList extends StatelessWidget {
     this.isGridMode = false,
     this.onEventTap,
     this.cardWidth,
+    this.isLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return ResponsiveEventListSkeleton(
+        isGridMode: isGridMode,
+        itemCount: isGridMode ? 6 : 3,
+      );
+    }
+
     if (events.isEmpty) {
       return _buildEmptyState(context);
     }
@@ -70,6 +80,8 @@ class ResponsiveEventList extends StatelessWidget {
             onTap: onEventTap,
             width: cardWidth,
             isGridMode: false,
+            urlSlug: eventData.urlSlug,
+            eventId: eventData.eventId,
           );
         },
       ),
@@ -100,6 +112,8 @@ class ResponsiveEventList extends StatelessWidget {
             isHighlighted: eventData.isHighlighted,
             onTap: onEventTap,
             isGridMode: true,
+            urlSlug: eventData.urlSlug,
+            eventId: eventData.eventId,
           );
         },
       ),
@@ -115,6 +129,8 @@ class EventCardData {
   final DateTime? startDate;
   final DateTime? endDate;
   final bool isHighlighted;
+  final String? urlSlug;
+  final String? eventId;
 
   const EventCardData({
     required this.title,
@@ -123,6 +139,8 @@ class EventCardData {
     this.startDate,
     this.endDate,
     this.isHighlighted = false,
+    this.urlSlug,
+    this.eventId,
   });
 
   factory EventCardData.fromClassEvent(dynamic classEvent) {
@@ -140,6 +158,8 @@ class EventCardData {
           ? DateTime.tryParse(classEvent.endDate!) 
           : null,
       isHighlighted: classEvent.isHighlighted == true,
+      urlSlug: classEvent.classModel?.urlSlug,
+      eventId: classEvent.id,
     );
   }
 

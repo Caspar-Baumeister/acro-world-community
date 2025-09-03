@@ -1,7 +1,6 @@
-import 'package:acroworld/presentation/components/sections/responsive_event_section.dart';
 import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_section.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -42,9 +41,11 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
     List<Widget> eventSections = discoveryState.allEventTypes
         .map((EventType eventType) => ResponsiveEventSection(
               title: eventType.name,
-              events: discoveryState.getEventsByType(eventType)
+              events: discoveryState
+                  .getEventsByType(eventType)
                   .map((event) => EventCardData.fromClassEvent(event))
                   .toList(),
+              isLoading: discoveryState.loading,
               onViewAll: () {
                 ref
                     .read(discoveryProvider.notifier)
@@ -61,12 +62,14 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Show highlighted events if available
-            if (discoveryState.getHighlightedEvents().isNotEmpty)
+            if (discoveryState.getHighlightedEvents().isNotEmpty || discoveryState.loading)
               ResponsiveEventSection(
                 title: 'Highlights',
-                events: discoveryState.getHighlightedEvents()
+                events: discoveryState
+                    .getHighlightedEvents()
                     .map((event) => EventCardData.fromClassEvent(event))
                     .toList(),
+                isLoading: discoveryState.loading,
                 onViewAll: () {
                   ref
                       .read(discoveryProvider.notifier)
@@ -74,13 +77,15 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
                 },
               ),
             // Show bookable events if available
-            if (discoveryState.getBookableEvents().isNotEmpty)
+            if (discoveryState.getBookableEvents().isNotEmpty || discoveryState.loading)
               ResponsiveEventSection(
                 title: 'Bookable Events',
                 subtitle: "Tickets available here!",
-                events: discoveryState.getBookableEvents()
+                events: discoveryState
+                    .getBookableEvents()
                     .map((event) => EventCardData.fromClassEvent(event))
                     .toList(),
+                isLoading: discoveryState.loading,
                 onViewAll: () {
                   ref
                       .read(discoveryProvider.notifier)

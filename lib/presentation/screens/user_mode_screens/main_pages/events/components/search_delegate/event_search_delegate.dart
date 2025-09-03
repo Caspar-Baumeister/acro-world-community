@@ -2,7 +2,6 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,7 +33,8 @@ class EventSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    final discoveryState = ProviderScope.containerOf(context).read(discoveryProvider);
+    final discoveryState =
+        ProviderScope.containerOf(context).read(discoveryProvider);
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
         discoveryState.filteredEventOccurences.where((ClassEvent event) =>
             event.classModel?.name != null &&
@@ -66,6 +66,7 @@ class EventSearchDelegate extends SearchDelegate {
       child: ResponsiveEventList(
         events: eventCardData,
         isGridMode: true,
+        isLoading: false,
         onEventTap: () {
           // Handle event tap - could navigate to event details
         },
@@ -75,7 +76,8 @@ class EventSearchDelegate extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    final discoveryState = ProviderScope.containerOf(context).read(discoveryProvider);
+    final discoveryState =
+        ProviderScope.containerOf(context).read(discoveryProvider);
 
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
         discoveryState.filteredEventOccurences.where((ClassEvent event) =>
@@ -96,6 +98,7 @@ class EventSearchDelegate extends SearchDelegate {
       child: ResponsiveEventList(
         events: eventCardData,
         isGridMode: true,
+        isLoading: false,
         onEventTap: () {
           // Handle event tap - could navigate to event details
         },

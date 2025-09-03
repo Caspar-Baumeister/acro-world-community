@@ -1,5 +1,7 @@
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 /// Pure UI event card component with no data logic or providers
 class ResponsiveEventCard extends StatelessWidget {
@@ -12,6 +14,8 @@ class ResponsiveEventCard extends StatelessWidget {
   final VoidCallback? onTap;
   final double? width;
   final bool isGridMode;
+  final String? urlSlug;
+  final String? eventId;
 
   const ResponsiveEventCard({
     super.key,
@@ -24,6 +28,8 @@ class ResponsiveEventCard extends StatelessWidget {
     this.onTap,
     this.width,
     this.isGridMode = false,
+    this.urlSlug,
+    this.eventId,
   });
 
   @override
@@ -37,7 +43,7 @@ class ResponsiveEventCard extends StatelessWidget {
     final cardHeight = isGridMode ? 240.0 : 200.0;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: onTap ?? _handleCardTap(context),
       child: Container(
         width: cardWidth,
         height: cardHeight,
@@ -224,5 +230,18 @@ class ResponsiveEventCard extends StatelessWidget {
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     return months[month - 1];
+  }
+
+  VoidCallback? _handleCardTap(BuildContext context) {
+    if (urlSlug != null && eventId != null) {
+      return () {
+        context.pushNamed(
+          singleEventWrapperRoute,
+          pathParameters: {"urlSlug": urlSlug!},
+          queryParameters: {"event": eventId!},
+        );
+      };
+    }
+    return null;
   }
 }
