@@ -1,6 +1,4 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/components/cards/modern_event_discovery_card.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 /// Simple event slider row for testing
@@ -100,7 +98,7 @@ class SimpleEventSliderRow extends StatelessWidget {
               ),
             )
           else
-            Container(
+            SizedBox(
               height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
@@ -144,7 +142,8 @@ class SimpleEventSliderRow extends StatelessWidget {
                                     child: Image.network(
                                       event.classModel!.imageUrl!,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (context, error, stackTrace) {
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
                                         return Icon(
                                           Icons.event,
                                           size: 32,

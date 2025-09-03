@@ -1,4 +1,5 @@
-import 'package:acroworld/presentation/components/sections/simple_event_slider_row.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_section.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
@@ -37,19 +38,18 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
         '- Highlighted Events: ${discoveryState.getHighlightedEvents().length}');
     print('- Bookable Events: ${discoveryState.getBookableEvents().length}');
 
-    // Build event sliders for each event type
-    List<Widget> eventSliders = discoveryState.allEventTypes
-        .map((EventType eventType) => Padding(
-              padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-              child: SimpleEventSliderRow(
-                title: eventType.name,
-                events: discoveryState.getEventsByType(eventType),
-                onViewAll: () {
-                  ref
-                      .read(discoveryProvider.notifier)
-                      .changeActiveCategory(eventType);
-                },
-              ),
+    // Build event sections for each event type
+    List<Widget> eventSections = discoveryState.allEventTypes
+        .map((EventType eventType) => ResponsiveEventSection(
+              title: eventType.name,
+              events: discoveryState.getEventsByType(eventType)
+                  .map((event) => EventCardData.fromClassEvent(event))
+                  .toList(),
+              onViewAll: () {
+                ref
+                    .read(discoveryProvider.notifier)
+                    .changeActiveCategory(eventType);
+              },
             ))
         .toList();
 
@@ -62,27 +62,36 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
           children: [
             // Show highlighted events if available
             if (discoveryState.getHighlightedEvents().isNotEmpty)
-              SimpleEventSliderRow(
+              ResponsiveEventSection(
                 title: 'Highlights',
-                events: discoveryState.getHighlightedEvents(),
+                events: discoveryState.getHighlightedEvents()
+                    .map((event) => EventCardData.fromClassEvent(event))
+                    .toList(),
                 onViewAll: () {
-                  ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
+                  ref
+                      .read(discoveryProvider.notifier)
+                      .setToOnlyHighlightedFilter();
                 },
               ),
             // Show bookable events if available
             if (discoveryState.getBookableEvents().isNotEmpty)
-              SimpleEventSliderRow(
+              ResponsiveEventSection(
                 title: 'Bookable Events',
                 subtitle: "Tickets available here!",
-                events: discoveryState.getBookableEvents(),
+                events: discoveryState.getBookableEvents()
+                    .map((event) => EventCardData.fromClassEvent(event))
+                    .toList(),
                 onViewAll: () {
-                  ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
+                  ref
+                      .read(discoveryProvider.notifier)
+                      .setToOnlyBookableFilter();
                 },
               ),
-            // Show all event type sliders
-            ...eventSliders,
+            // Show all event type sections
+            ...eventSections,
             // Show message if no events at all
-            if (discoveryState.allEventOccurences.isEmpty && !discoveryState.loading)
+            if (discoveryState.allEventOccurences.isEmpty &&
+                !discoveryState.loading)
               Container(
                 padding: const EdgeInsets.all(32),
                 child: Center(
@@ -90,7 +99,9 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
                     children: [
                       Icon(Icons.event_busy, size: 64, color: Colors.grey),
                       const SizedBox(height: 16),
-                      Text('No events found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text('No events found',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       const SizedBox(height: 8),
                       Text('Try refreshing or check your connection'),
                     ],

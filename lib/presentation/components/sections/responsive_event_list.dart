@@ -1,0 +1,157 @@
+import 'package:acroworld/presentation/components/cards/responsive_event_card.dart';
+import 'package:flutter/material.dart';
+
+/// Pure UI component for displaying events in different layouts
+class ResponsiveEventList extends StatelessWidget {
+  final List<EventCardData> events;
+  final bool isGridMode;
+  final VoidCallback? onEventTap;
+  final double? cardWidth;
+
+  const ResponsiveEventList({
+    super.key,
+    required this.events,
+    this.isGridMode = false,
+    this.onEventTap,
+    this.cardWidth,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (events.isEmpty) {
+      return _buildEmptyState(context);
+    }
+
+    if (isGridMode) {
+      return _buildGridLayout(context);
+    } else {
+      return _buildHorizontalLayout(context);
+    }
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      height: 120,
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Center(
+        child: Text(
+          "No events available",
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHorizontalLayout(BuildContext context) {
+    return SizedBox(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          final eventData = events[index];
+          return ResponsiveEventCard(
+            title: eventData.title,
+            location: eventData.location,
+            imageUrl: eventData.imageUrl,
+            startDate: eventData.startDate,
+            endDate: eventData.endDate,
+            isHighlighted: eventData.isHighlighted,
+            onTap: onEventTap,
+            width: cardWidth,
+            isGridMode: false,
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildGridLayout(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: GridView.builder(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: events.length,
+        itemBuilder: (context, index) {
+          final eventData = events[index];
+          return ResponsiveEventCard(
+            title: eventData.title,
+            location: eventData.location,
+            imageUrl: eventData.imageUrl,
+            startDate: eventData.startDate,
+            endDate: eventData.endDate,
+            isHighlighted: eventData.isHighlighted,
+            onTap: onEventTap,
+            isGridMode: true,
+          );
+        },
+      ),
+    );
+  }
+}
+
+/// Data class for event card information (no business logic)
+class EventCardData {
+  final String title;
+  final String? location;
+  final String? imageUrl;
+  final DateTime? startDate;
+  final DateTime? endDate;
+  final bool isHighlighted;
+
+  const EventCardData({
+    required this.title,
+    this.location,
+    this.imageUrl,
+    this.startDate,
+    this.endDate,
+    this.isHighlighted = false,
+  });
+
+  factory EventCardData.fromClassEvent(dynamic classEvent) {
+    return EventCardData(
+      title: classEvent.classModel?.name ?? "Unknown Event",
+      location: _parseLocation(
+        classEvent.classModel?.country,
+        classEvent.classModel?.city,
+      ),
+      imageUrl: classEvent.classModel?.imageUrl,
+      startDate: classEvent.startDate != null 
+          ? DateTime.tryParse(classEvent.startDate!) 
+          : null,
+      endDate: classEvent.endDate != null 
+          ? DateTime.tryParse(classEvent.endDate!) 
+          : null,
+      isHighlighted: classEvent.isHighlighted == true,
+    );
+  }
+
+  static String? _parseLocation(String? country, String? city) {
+    if (country != null && city != null) {
+      return "$city, $country";
+    } else if (country != null) {
+      return country;
+    } else if (city != null) {
+      return city;
+    } else {
+      return null;
+    }
+  }
+}

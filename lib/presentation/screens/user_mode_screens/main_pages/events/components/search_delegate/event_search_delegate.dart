@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -55,9 +55,21 @@ class EventSearchDelegate extends SearchDelegate {
       });
       query = "";
     }
+
+    // Convert to EventCardData and display in grid
+    final eventCardData = eventSuggestions
+        .map((event) => EventCardData.fromClassEvent(event))
+        .toList();
+
     return Padding(
-      padding: const EdgeInsets.only(left: AppDimensions.spacingMedium),
-      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
+      padding: const EdgeInsets.all(16),
+      child: ResponsiveEventList(
+        events: eventCardData,
+        isGridMode: true,
+        onEventTap: () {
+          // Handle event tap - could navigate to event details
+        },
+      ),
     );
   }
 
@@ -74,9 +86,20 @@ class EventSearchDelegate extends SearchDelegate {
 
     eventSuggestions.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
+    // Convert to EventCardData and display in grid
+    final eventCardData = eventSuggestions
+        .map((event) => EventCardData.fromClassEvent(event))
+        .toList();
+
     return Padding(
-      padding: const EdgeInsets.only(left: AppDimensions.spacingMedium),
-      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
+      padding: const EdgeInsets.all(16),
+      child: ResponsiveEventList(
+        events: eventCardData,
+        isGridMode: true,
+        onEventTap: () {
+          // Handle event tap - could navigate to event details
+        },
+      ),
     );
   }
 }
