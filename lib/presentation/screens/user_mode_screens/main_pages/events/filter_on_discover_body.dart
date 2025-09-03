@@ -20,7 +20,8 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
     // Debug: Print filter state and events
     print('FilterOnDiscoveryBody: Filter active: ${discoveryState.isFilter}');
     print('FilterOnDiscoveryBody: Filter dates: ${discoveryState.filterDates}');
-    print('FilterOnDiscoveryBody: Filter categories: ${discoveryState.filterCategories}');
+    print(
+        'FilterOnDiscoveryBody: Filter categories: ${discoveryState.filterCategories}');
     print('FilterOnDiscoveryBody: Active events count: ${activeEvents.length}');
     if (activeEvents.isNotEmpty) {
       print('FilterOnDiscoveryBody: First few events:');

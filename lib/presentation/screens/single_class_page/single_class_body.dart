@@ -2,12 +2,12 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/presentation/components/cards/modern_teacher_card.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/components/open_google_maps.dart';
 import 'package:acroworld/presentation/components/open_map.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
@@ -99,29 +99,24 @@ class SingleClassBody extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Teacher:",
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      "Teachers",
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                     ),
-                    const SizedBox(height: 2),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(width: 10),
-                            ClassTeacherChips(
-                                classTeacherList: List<TeacherModel>.from(
-                                    classTeachers
-                                        .where((e) => e.teacher != null)
-                                        .map((e) => e.teacher))),
-                          ],
-                        ),
+                    const SizedBox(height: 16),
+                    ModernTeacherList(
+                      teachers: List<TeacherModel>.from(
+                        classTeachers
+                            .where((e) => e.teacher != null)
+                            .map((e) => e.teacher!),
                       ),
+                      isCompact: classTeachers.length > 2,
+                      maxItems: 3,
                     ),
-                    const CustomDivider()
+                    const SizedBox(height: 24),
+                    const CustomDivider(),
                   ],
                 )
               : Container(),

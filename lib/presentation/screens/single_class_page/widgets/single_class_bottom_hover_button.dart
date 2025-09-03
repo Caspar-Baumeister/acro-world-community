@@ -1,8 +1,8 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/presentation/components/buttons/modern_bottom_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -48,20 +48,15 @@ class SingleClassBottomHoverButton extends ConsumerWidget {
     }
 
     // No specific event: show calendar modal button
-    return BottomAppBar(
-      elevation: 0,
-      child: CustomBottomHoverButton(
-        content: Text(
-          'Calendar',
-          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-              fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onPrimary),
-        ),
-        onPressed: () => buildMortal(
-          context,
-          CalenderModal(
-            classId: clas.id!,
-            isCreator: isCreator,
-          ),
+    return ModernBottomButton(
+      text: 'Calendar',
+      variant: ModernBottomButtonVariant.primary,
+      icon: Icons.calendar_today,
+      onPressed: () => buildMortal(
+        context,
+        CalenderModal(
+          classId: clas.id!,
+          isCreator: isCreator,
         ),
       ),
     );

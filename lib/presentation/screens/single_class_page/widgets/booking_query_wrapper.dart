@@ -1,18 +1,18 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
+import 'package:acroworld/presentation/components/buttons/modern_bottom_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/custom_bottom_hover_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-
 
 class BookingQueryHoverButton extends ConsumerStatefulWidget {
   const BookingQueryHoverButton({super.key, required this.classEvent});
@@ -30,8 +30,7 @@ class _BookingQueryHoverButtonState
   @override
   void initState() {
     super.initState();
-    ref.read(eventBusProvider.notifier)
-        .listenToRefetchBookingQuery((_) {
+    ref.read(eventBusProvider.notifier).listenToRefetchBookingQuery((_) {
       if (_refetch != null) _refetch!();
     });
   }
@@ -47,15 +46,10 @@ class _BookingQueryHoverButtonState
         final userId = user?.id;
         if (userId == null) {
           // If no user is logged in, show Book Now button that opens auth dialog
-          return CustomBottomHoverButton(
-            content: Text(
-              "Book now",
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).colorScheme.onPrimary,
-              ),
-            ),
+          return ModernBottomButton(
+            text: "Book now",
+            variant: ModernBottomButtonVariant.primary,
+            icon: Icons.event_available,
             onPressed: () {
               // Construct redirect path for the current event
               final classSlug = widget.classEvent.classModel?.urlSlug;
@@ -111,20 +105,16 @@ class _BookingQueryHoverButtonState
 
             if (myBooking != null) {
               // If the booking status is not empty, show "Booked"
-              return CustomBottomHoverButton(
-                content: Text(
-                  myBooking.status == "Confirmed"
-                      ? "Booked"
-                      : "Payment pending",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
-                backgroundColor: myBooking.status == "Confirmed"
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).colorScheme.error,
+              return ModernBottomButton(
+                text: myBooking.status == "Confirmed"
+                    ? "Booked"
+                    : "Payment pending",
+                variant: myBooking.status == "Confirmed"
+                    ? ModernBottomButtonVariant.success
+                    : ModernBottomButtonVariant.warning,
+                icon: myBooking.status == "Confirmed"
+                    ? Icons.check_circle
+                    : Icons.schedule,
                 onPressed: () {
                   buildMortal(
                     context,
@@ -140,15 +130,10 @@ class _BookingQueryHoverButtonState
 
             if (widget.classEvent.availableBookingSlots != null &&
                 widget.classEvent.availableBookingSlots! <= 0) {
-              return CustomBottomHoverButton(
-                content: Text(
-                  "Booked out",
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
-                ),
+              return ModernBottomButton(
+                text: "Booked out",
+                variant: ModernBottomButtonVariant.secondary,
+                icon: Icons.event_busy,
                 onPressed: () {
                   final classId = widget.classEvent.classModel?.id;
                   if (classId != null) {
@@ -161,15 +146,10 @@ class _BookingQueryHoverButtonState
               );
             }
 
-            return CustomBottomHoverButton(
-              content: Text(
-                "Book now",
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
-              ),
+            return ModernBottomButton(
+              text: "Book now",
+              variant: ModernBottomButtonVariant.primary,
+              icon: Icons.event_available,
               onPressed: () {
                 buildMortal(
                   context,

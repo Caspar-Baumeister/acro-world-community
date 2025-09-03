@@ -153,23 +153,34 @@ class ResponsiveEventCard extends StatelessWidget {
     ColorScheme colorScheme,
   ) {
     final dateString = _formatDate();
+    final screenWidth = MediaQuery.of(context).size.width;
+    
+    // Calculate responsive font size based on screen width
+    final baseFontSize = isGridMode ? 12.0 : 14.0;
+    final responsiveFontSize = screenWidth < 360 
+        ? baseFontSize - 1.0  // Smaller screens
+        : screenWidth > 400 
+            ? baseFontSize + 1.0  // Larger screens
+            : baseFontSize;
     
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Title
-          Expanded(
+          // Title - Use Flexible to allow proper text wrapping
+          Flexible(
             child: Text(
               title,
               style: theme.textTheme.titleSmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: colorScheme.onSurface,
                 height: 1.2,
+                fontSize: responsiveFontSize,
               ),
               maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+              overflow: TextOverflow.fade, // Fade instead of ellipsis for better UX
+              softWrap: true,
             ),
           ),
           const SizedBox(height: 4),
@@ -180,6 +191,7 @@ class ResponsiveEventCard extends StatelessWidget {
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
                 height: 1.1,
+                fontSize: responsiveFontSize - 1.0, // Slightly smaller than title
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -192,6 +204,7 @@ class ResponsiveEventCard extends StatelessWidget {
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.primary,
                 fontWeight: FontWeight.w500,
+                fontSize: responsiveFontSize - 1.0, // Slightly smaller than title
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
