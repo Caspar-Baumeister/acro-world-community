@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/slider_row_dashboard_discovery.dart';
+import 'package:acroworld/presentation/components/sections/modern_event_slider_row.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
@@ -30,13 +30,15 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
     List<Widget> eventSliders = discoveryState.allEventTypes
         .map((EventType eventType) => Padding(
               padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-              child: SliderRowDashboardDiscovery(
-                  onViewAll: () {
-                    // set filter catergory to the event type
-                    ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
-                  },
-                  header: eventType.name,
-                  events: discoveryState.getEventsByType(eventType)),
+              child: ModernEventSliderRow(
+                title: eventType.name,
+                events: discoveryState.getEventsByType(eventType),
+                onViewAll: () {
+                  // set filter category to the event type
+                  ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
+                },
+                isLoading: discoveryState.loading,
+              ),
             ))
         .toList();
 
@@ -49,23 +51,29 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
             discoveryState.getHighlightedEvents().isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: SliderRowDashboardDiscovery(
-                        onViewAll: () {
-                          ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
-                        },
-                        header: 'Highlights',
-                        events: discoveryState.getHighlightedEvents()))
+                    child: ModernEventSliderRow(
+                      title: 'Highlights',
+                      events: discoveryState.getHighlightedEvents(),
+                      onViewAll: () {
+                        ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
+                      },
+                      isLoading: discoveryState.loading,
+                    ),
+                  )
                 : Container(),
             discoveryState.getBookableEvents().isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: SliderRowDashboardDiscovery(
-                        onViewAll: () {
-                          ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
-                        },
-                        header: 'Bookable Events',
-                        subHeader: "Tickets available here!",
-                        events: discoveryState.getBookableEvents()))
+                    child: ModernEventSliderRow(
+                      title: 'Bookable Events',
+                      subtitle: "Tickets available here!",
+                      events: discoveryState.getBookableEvents(),
+                      onViewAll: () {
+                        ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
+                      },
+                      isLoading: discoveryState.loading,
+                    ),
+                  )
                 : Container(),
             // Followed Teacher
             // for each event type in the discovery provider, create a slider row with the events
