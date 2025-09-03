@@ -47,7 +47,8 @@ class ModernButton extends StatelessWidget {
       borderColor = backgroundColor ?? colorScheme.primary;
     } else if (isFilled) {
       bgColor = backgroundColor ?? colorScheme.primary;
-      fgColor = textColor ?? colorScheme.onPrimary;
+      // Ensure proper contrast - use white text on colored backgrounds
+      fgColor = textColor ?? (backgroundColor != null ? Colors.white : colorScheme.onPrimary);
       borderColor = backgroundColor ?? colorScheme.primary;
     } else {
       bgColor = Colors.transparent;
@@ -63,8 +64,9 @@ class ModernButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: fgColor,
-          elevation: isFilled ? 2 : 0,
-          shadowColor: isFilled ? colorScheme.primary.withOpacity(0.3) : null,
+          elevation: isFilled ? 0 : 0, // Remove elevation for modern flat design
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
             borderRadius: borderRadius ?? BorderRadius.circular(12),
             side: BorderSide(

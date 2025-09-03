@@ -79,7 +79,7 @@ class AppTheme {
         surface: AppColors.lightBackground, // Main background
         surfaceContainer: AppColors.lightSurface, // Card/modal background
         error: AppColors.lightError,
-        onPrimary: AppColors.lightText, // Text on primary
+        onPrimary: Colors.white, // White text on primary for good contrast
         onSecondary: AppColors.lightText, // Text on secondary
         onSurface: AppColors.lightText, // Text on surface/background
         onError: AppColors.lightText, // Text on error
@@ -107,7 +107,7 @@ class AppTheme {
         surface: AppColors.darkBackground, // Main background
         surfaceContainer: AppColors.darkSurface, // Card/modal background
         error: AppColors.darkError,
-        onPrimary: AppColors.darkText, // Text on primary
+        onPrimary: Colors.white, // White text on primary for good contrast
         onSecondary: AppColors.darkText, // Text on secondary
         onSurface: AppColors.darkText, // Text on surface/background
         onError: AppColors.darkText, // Text on error

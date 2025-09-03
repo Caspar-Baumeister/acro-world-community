@@ -1,9 +1,7 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
-import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -16,14 +14,15 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final discoveryState = ref.watch(discoveryProvider);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return BaseAppbar(
       // if filter is active, show back button
       leading: discoveryState.isFilter
           ? IconButton(
               padding: const EdgeInsets.only(left: 0),
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => ref.read(discoveryProvider.notifier).resetFilter(),
+              onPressed: () =>
+                  ref.read(discoveryProvider.notifier).resetFilter(),
             )
           : null,
       title: Container(
@@ -53,7 +52,7 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => showSearch(
-                      context: context, 
+                      context: context,
                       delegate: EventSearchDelegate(),
                     ),
                     borderRadius: BorderRadius.circular(12),
@@ -73,7 +72,8 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
                           Text(
                             'Search events...',
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                              color:
+                                  colorScheme.onSurfaceVariant.withOpacity(0.6),
                             ),
                           ),
                         ],

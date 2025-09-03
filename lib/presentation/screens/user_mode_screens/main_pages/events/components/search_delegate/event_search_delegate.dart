@@ -10,7 +10,7 @@ class EventSearchDelegate extends SearchDelegate {
   ThemeData appBarTheme(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return theme.copyWith(
       appBarTheme: AppBarTheme(
         backgroundColor: colorScheme.surface,
