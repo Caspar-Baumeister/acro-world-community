@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/sections/modern_event_slider_row.dart';
+import 'package:acroworld/presentation/components/sections/simple_event_slider_row.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
@@ -30,14 +30,13 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
     List<Widget> eventSliders = discoveryState.allEventTypes
         .map((EventType eventType) => Padding(
               padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-              child: ModernEventSliderRow(
+              child: SimpleEventSliderRow(
                 title: eventType.name,
                 events: discoveryState.getEventsByType(eventType),
                 onViewAll: () {
                   // set filter category to the event type
                   ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
                 },
-                isLoading: discoveryState.loading,
               ),
             ))
         .toList();
@@ -51,27 +50,25 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
             discoveryState.getHighlightedEvents().isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: ModernEventSliderRow(
+                    child: SimpleEventSliderRow(
                       title: 'Highlights',
                       events: discoveryState.getHighlightedEvents(),
                       onViewAll: () {
                         ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
                       },
-                      isLoading: discoveryState.loading,
                     ),
                   )
                 : Container(),
             discoveryState.getBookableEvents().isNotEmpty
                 ? Padding(
                     padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                    child: ModernEventSliderRow(
+                    child: SimpleEventSliderRow(
                       title: 'Bookable Events',
                       subtitle: "Tickets available here!",
                       events: discoveryState.getBookableEvents(),
                       onViewAll: () {
                         ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
                       },
-                      isLoading: discoveryState.loading,
                     ),
                   )
                 : Container(),
