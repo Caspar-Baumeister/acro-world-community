@@ -9,7 +9,8 @@ class DiscoverDashboardBody extends ConsumerStatefulWidget {
   const DiscoverDashboardBody({super.key});
 
   @override
-  ConsumerState<DiscoverDashboardBody> createState() => _DiscoverDashboardBodyState();
+  ConsumerState<DiscoverDashboardBody> createState() =>
+      _DiscoverDashboardBodyState();
 }
 
 class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
@@ -32,25 +33,76 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
     print('- Loading: ${discoveryState.loading}');
     print('- All Events: ${discoveryState.allEventOccurences.length}');
     print('- All Event Types: ${discoveryState.allEventTypes.length}');
-    print('- Highlighted Events: ${discoveryState.getHighlightedEvents().length}');
+    print(
+        '- Highlighted Events: ${discoveryState.getHighlightedEvents().length}');
     print('- Bookable Events: ${discoveryState.getBookableEvents().length}');
 
-    // Simple test - just return a basic widget to see if the issue is with the provider
-    return Container(
-      color: Colors.red,
-      child: Center(
+    // Build event sliders for each event type
+    List<Widget> eventSliders = discoveryState.allEventTypes
+        .map((EventType eventType) => Padding(
+              padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
+              child: SimpleEventSliderRow(
+                title: eventType.name,
+                events: discoveryState.getEventsByType(eventType),
+                onViewAll: () {
+                  ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
+                },
+              ),
+            ))
+        .toList();
+
+    return RefreshIndicator(
+      onRefresh: () async => await ref.read(discoveryProvider.notifier).fetchAllEventOccurences(),
+      child: SingleChildScrollView(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('TEST: Discovery Page is rendering!', style: TextStyle(fontSize: 20, color: Colors.white)),
-            Text('Loading: ${discoveryState.loading}', style: TextStyle(color: Colors.white)),
-            Text('Events: ${discoveryState.allEventOccurences.length}', style: TextStyle(color: Colors.white)),
-            ElevatedButton(
-              onPressed: () {
-                ref.read(discoveryProvider.notifier).fetchAllEventOccurences();
-              },
-              child: Text('Refresh Data'),
+            // Simple test - just show basic info first
+            Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.blue),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Events Found:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                  Text('Total Events: ${discoveryState.allEventOccurences.length}'),
+                  Text('Event Types: ${discoveryState.allEventTypes.length}'),
+                  Text('Highlighted: ${discoveryState.getHighlightedEvents().length}'),
+                  Text('Bookable: ${discoveryState.getBookableEvents().length}'),
+                  const SizedBox(height: 16),
+                  Text('Event Types:', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ...discoveryState.allEventTypes.map((type) => Text('- ${type.name} (${discoveryState.getEventsByType(type).length} events)')),
+                ],
+              ),
             ),
+            // Show a simple list of events for testing
+            if (discoveryState.allEventOccurences.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('First 5 Events:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    const SizedBox(height: 8),
+                    ...discoveryState.allEventOccurences.take(5).map((event) => 
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        margin: const EdgeInsets.only(bottom: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text('${event.classModel?.name ?? "Unknown"} - ${event.classModel?.city ?? "No city"}'),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
           ],
         ),
       ),
