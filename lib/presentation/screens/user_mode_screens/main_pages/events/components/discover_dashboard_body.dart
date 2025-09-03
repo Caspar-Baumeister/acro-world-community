@@ -45,62 +45,56 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
                 title: eventType.name,
                 events: discoveryState.getEventsByType(eventType),
                 onViewAll: () {
-                  ref.read(discoveryProvider.notifier).changeActiveCategory(eventType);
+                  ref
+                      .read(discoveryProvider.notifier)
+                      .changeActiveCategory(eventType);
                 },
               ),
             ))
         .toList();
 
     return RefreshIndicator(
-      onRefresh: () async => await ref.read(discoveryProvider.notifier).fetchAllEventOccurences(),
+      onRefresh: () async =>
+          await ref.read(discoveryProvider.notifier).fetchAllEventOccurences(),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Simple test - just show basic info first
-            Container(
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: Colors.blue),
+            // Show highlighted events if available
+            if (discoveryState.getHighlightedEvents().isNotEmpty)
+              SimpleEventSliderRow(
+                title: 'Highlights',
+                events: discoveryState.getHighlightedEvents(),
+                onViewAll: () {
+                  ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter();
+                },
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Events Found:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  Text('Total Events: ${discoveryState.allEventOccurences.length}'),
-                  Text('Event Types: ${discoveryState.allEventTypes.length}'),
-                  Text('Highlighted: ${discoveryState.getHighlightedEvents().length}'),
-                  Text('Bookable: ${discoveryState.getBookableEvents().length}'),
-                  const SizedBox(height: 16),
-                  Text('Event Types:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  ...discoveryState.allEventTypes.map((type) => Text('- ${type.name} (${discoveryState.getEventsByType(type).length} events)')),
-                ],
+            // Show bookable events if available
+            if (discoveryState.getBookableEvents().isNotEmpty)
+              SimpleEventSliderRow(
+                title: 'Bookable Events',
+                subtitle: "Tickets available here!",
+                events: discoveryState.getBookableEvents(),
+                onViewAll: () {
+                  ref.read(discoveryProvider.notifier).setToOnlyBookableFilter();
+                },
               ),
-            ),
-            // Show a simple list of events for testing
-            if (discoveryState.allEventOccurences.isNotEmpty)
+            // Show all event type sliders
+            ...eventSliders,
+            // Show message if no events at all
+            if (discoveryState.allEventOccurences.isEmpty && !discoveryState.loading)
               Container(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('First 5 Events:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                    const SizedBox(height: 8),
-                    ...discoveryState.allEventOccurences.take(5).map((event) => 
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        margin: const EdgeInsets.only(bottom: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text('${event.classModel?.name ?? "Unknown"} - ${event.classModel?.city ?? "No city"}'),
-                      ),
-                    ),
-                  ],
+                padding: const EdgeInsets.all(32),
+                child: Center(
+                  child: Column(
+                    children: [
+                      Icon(Icons.event_busy, size: 64, color: Colors.grey),
+                      const SizedBox(height: 16),
+                      Text('No events found', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Text('Try refreshing or check your connection'),
+                    ],
+                  ),
                 ),
               ),
           ],
