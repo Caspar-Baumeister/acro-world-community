@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 // Define core color values here.
 // These will be used to construct ColorScheme and AppCustomColors.
 class AppColors {
-  // Light Theme Base Colors - Modern and improved
-  static const Color lightPrimary = Color(0xFF2563EB); // Modern blue primary
-  static const Color lightPrimaryDark = Color(0xFF1D4ED8); // Darker blue
-  static const Color lightPrimaryDarker = Color(0xFF1E40AF); // Even darker blue
-  static const Color lightSecondary = Color(0xFF7C3AED); // Purple secondary
-  static const Color lightAccent = Color(0xFFF59E0B); // Amber accent
+  // Light Theme Base Colors - Eco-conscious nature-inspired muted earthy greens
+  static const Color lightPrimary = Color(0xFF6B8E6B); // Muted sage green primary
+  static const Color lightPrimaryDark = Color(0xFF5A7A5A); // Darker sage green
+  static const Color lightPrimaryDarker = Color(0xFF4A6B4A); // Even darker sage green
+  static const Color lightSecondary = Color(0xFF7A9A7A); // Soft forest green secondary
+  static const Color lightAccent = Color(0xFFD4A574); // Warm earth tone accent
 
   static const Color lightBackground = Color(0xFFFAFAFA); // Slightly warmer white
   static const Color lightSurface = Color(0xFFFFFFFF); // Pure white
@@ -18,16 +18,16 @@ class AppColors {
   static const Color lightBorders = Color(0xFFE5E7EB); // Softer borders
   static const Color lightError = Color(0xFFDC2626); // Modern red
   static const Color lightWarning = Color(0xFFD97706); // Modern orange
-  static const Color lightSuccess = Color(0xFF059669); // Modern green
+  static const Color lightSuccess = Color(0xFF5A7A5A); // Muted sage green success
   static const Color lightIcon = Color(0xFF374151); // Better icon color
   static const Color lightFocus = Color(0xFFF59E0B); // Same as lightAccent
 
-  // Dark Theme Base Colors - Modern and improved
-  static const Color darkPrimary = Color(0xFF3B82F6); // Brighter blue for dark theme
-  static const Color darkPrimaryLight = Color(0xFF60A5FA); // Lighter blue
-  static const Color darkPrimaryLighter = Color(0xFF93C5FD); // Even lighter blue
-  static const Color darkSecondary = Color(0xFF8B5CF6); // Purple secondary
-  static const Color darkAccent = Color(0xFFFBBF24); // Brighter amber
+  // Dark Theme Base Colors - Eco-conscious nature-inspired muted earthy greens
+  static const Color darkPrimary = Color(0xFF7A9A7A); // Muted sage green for dark theme
+  static const Color darkPrimaryLight = Color(0xFF8AAA8A); // Lighter muted sage green
+  static const Color darkPrimaryLighter = Color(0xFF9ABA9A); // Even lighter muted sage green
+  static const Color darkSecondary = Color(0xFF8AAA8A); // Soft forest green secondary
+  static const Color darkAccent = Color(0xFFD4A574); // Warm earth tone accent
 
   static const Color darkBackground = Color(0xFF0F172A); // Modern dark background
   static const Color darkSurface = Color(0xFF1E293B); // Modern dark surface
