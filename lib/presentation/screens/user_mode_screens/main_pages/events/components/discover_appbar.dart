@@ -1,4 +1,5 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -13,60 +14,115 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final discoveryState = ref.watch(discoveryProvider);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     return BaseAppbar(
       // if filter is active, show back button
-      title: Row(
-        children: [
-          // Conditionally display the leading icon
-          if (discoveryState.isFilter)
-            IconButton(
-              padding:
-                  const EdgeInsets.only(left: 0), // Adjust this value as needed
-
+      leading: discoveryState.isFilter
+          ? IconButton(
+              padding: const EdgeInsets.only(left: 0),
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
               onPressed: () => ref.read(discoveryProvider.notifier).resetFilter(),
-            ),
-          Expanded(
-            child: InkWell(
-              onTap: () =>
-                  showSearch(context: context, delegate: EventSearchDelegate()),
+            )
+          : null,
+      title: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: [
+            // Modern search field
+            Expanded(
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.spacingSmall, vertical: AppDimensions.spacingSmall),
+                height: 48,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-                  border: Border.all(color: Theme.of(context).colorScheme.outline),
-                  color: Theme.of(context).colorScheme.surface,
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.search, color: Theme.of(context).colorScheme.onSurface),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Search',
-                      style: Theme.of(context).textTheme.titleLarge,
+                  color: colorScheme.surface,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: colorScheme.outline.withOpacity(0.2),
+                    width: 1,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: colorScheme.shadow.withOpacity(0.05),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
                     ),
                   ],
                 ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => showSearch(
+                      context: context, 
+                      delegate: EventSearchDelegate(),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.search,
+                            color: colorScheme.onSurfaceVariant,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Search events...',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-      actions: [
-        IconButton(
-          padding: const EdgeInsets.only(right: AppDimensions.spacingMedium),
-          icon: Icon(Icons.filter_list,
-              color: discoveryState.isFilter
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).colorScheme.outline),
-          onPressed: () {
-            context.pushNamed(
-              filterRoute,
-            );
-          },
+            // Modern filter button
+            const SizedBox(width: 12),
+            Container(
+              width: 48,
+              height: 48,
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: discoveryState.isFilter
+                      ? colorScheme.primary
+                      : colorScheme.outline.withOpacity(0.2),
+                  width: discoveryState.isFilter ? 2 : 1,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: colorScheme.shadow.withOpacity(0.05),
+                    blurRadius: 8,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => context.pushNamed(filterRoute),
+                  borderRadius: BorderRadius.circular(12),
+                  child: Icon(
+                    Icons.tune,
+                    color: discoveryState.isFilter
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 
