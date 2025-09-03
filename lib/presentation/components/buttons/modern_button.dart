@@ -35,12 +35,12 @@ class ModernButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Determine colors based on button type
     Color bgColor;
     Color fgColor;
     Color borderColor;
-    
+
     if (isOutlined) {
       bgColor = Colors.transparent;
       fgColor = backgroundColor ?? colorScheme.primary;
@@ -48,7 +48,8 @@ class ModernButton extends StatelessWidget {
     } else if (isFilled) {
       bgColor = backgroundColor ?? colorScheme.primary;
       // Ensure proper contrast - use white text on colored backgrounds
-      fgColor = textColor ?? (backgroundColor != null ? Colors.white : colorScheme.onPrimary);
+      fgColor = textColor ??
+          (backgroundColor != null ? Colors.white : colorScheme.onPrimary);
       borderColor = backgroundColor ?? colorScheme.primary;
     } else {
       bgColor = Colors.transparent;
@@ -64,7 +65,8 @@ class ModernButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: fgColor,
-          elevation: isFilled ? 0 : 0, // Remove elevation for modern flat design
+          elevation:
+              isFilled ? 0 : 0, // Remove elevation for modern flat design
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
@@ -74,7 +76,8 @@ class ModernButton extends StatelessWidget {
               width: isOutlined ? 1.5 : 0,
             ),
           ),
-          padding: padding ?? const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: padding ??
+              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         ),
         child: isLoading
             ? SizedBox(
@@ -129,7 +132,7 @@ class ModernIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     final button = Container(
       width: size,
       height: size,
@@ -186,7 +189,7 @@ class ModernFAB extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return FloatingActionButton(
       onPressed: onPressed,
       tooltip: tooltip,

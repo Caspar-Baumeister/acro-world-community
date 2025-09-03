@@ -89,13 +89,13 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: colorScheme.surface,
+                color: discoveryState.isFilter
+                    ? colorScheme.primary.withOpacity(0.1) // Light green background when active
+                    : colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: discoveryState.isFilter
-                      ? colorScheme.primary
-                      : colorScheme.outline.withOpacity(0.2),
-                  width: discoveryState.isFilter ? 2 : 1,
+                  color: colorScheme.outline.withOpacity(0.2),
+                  width: 1,
                 ),
                 boxShadow: [
                   BoxShadow(

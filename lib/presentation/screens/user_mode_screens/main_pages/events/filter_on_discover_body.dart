@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_grid_view.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
@@ -44,7 +44,7 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
                 ],
               ),
             )
-          : EventOccurenceMonthlySortedView(sortedEvents: activeEvents),
+          : EventOccurenceMonthlyGridView(sortedEvents: activeEvents),
     );
   }
 }
