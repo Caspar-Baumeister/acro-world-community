@@ -17,7 +17,17 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
     List<ClassEvent> activeEvents = discoveryState.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
-
+    // Debug: Print filter state and events
+    print('FilterOnDiscoveryBody: Filter active: ${discoveryState.isFilter}');
+    print('FilterOnDiscoveryBody: Filter dates: ${discoveryState.filterDates}');
+    print('FilterOnDiscoveryBody: Filter categories: ${discoveryState.filterCategories}');
+    print('FilterOnDiscoveryBody: Active events count: ${activeEvents.length}');
+    if (activeEvents.isNotEmpty) {
+      print('FilterOnDiscoveryBody: First few events:');
+      for (final event in activeEvents.take(3)) {
+        print('  - ${event.classModel?.name} (${event.startDate})');
+      }
+    }
 
     return Padding(
       padding:
