@@ -18,6 +18,12 @@ class EventOccurenceMonthlyGridView extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    // Debug: Print the events we're receiving
+    print('EventOccurenceMonthlyGridView: Received ${sortedEvents.length} events');
+    for (final event in sortedEvents.take(3)) {
+      print('Event: ${event.classModel?.name} - Date: ${event.startDate}');
+    }
+
     // Group events by month
     final Map<String, List<ClassEvent>> eventsByMonth = {};
     
@@ -30,6 +36,9 @@ class EventOccurenceMonthlyGridView extends StatelessWidget {
       }
       eventsByMonth[monthKey]!.add(event);
     }
+
+    // Debug: Print the grouped months
+    print('EventOccurenceMonthlyGridView: Grouped into ${eventsByMonth.keys.length} months: ${eventsByMonth.keys.toList()}');
 
     // Sort months chronologically
     final sortedMonths = eventsByMonth.keys.toList()

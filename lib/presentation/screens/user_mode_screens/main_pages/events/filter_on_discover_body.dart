@@ -17,6 +17,8 @@ class FilterOnDiscoveryBody extends ConsumerWidget {
     List<ClassEvent> activeEvents = discoveryState.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
+
+
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
