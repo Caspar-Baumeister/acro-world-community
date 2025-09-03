@@ -202,8 +202,18 @@ class AppTheme {
       ),
       bottomNavigationBarTheme: BottomNavigationBarThemeData(
         backgroundColor: colorScheme.surface,
-        selectedItemColor: customColors.textStrong,
+        selectedItemColor: colorScheme.primary,
         unselectedItemColor: customColors.textMuted,
+        type: BottomNavigationBarType.fixed,
+        elevation: 8,
+        selectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 11,
+        ),
+        unselectedLabelStyle: TextStyle(
+          fontWeight: FontWeight.w500,
+          fontSize: 11,
+        ),
       ),
 
       // Disable splash effects

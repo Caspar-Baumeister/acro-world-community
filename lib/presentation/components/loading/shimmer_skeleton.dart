@@ -352,7 +352,7 @@ class EventRowSkeleton extends StatelessWidget {
 class ResponsiveEventCardSkeleton extends StatelessWidget {
   final double? width;
   final bool isGridMode;
-  
+
   const ResponsiveEventCardSkeleton({
     super.key,
     this.width,
@@ -388,7 +388,8 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.grey[300],
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(12)),
                 ),
               ),
             ),
@@ -442,7 +443,7 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
 class ResponsiveEventListSkeleton extends StatelessWidget {
   final bool isGridMode;
   final int itemCount;
-  
+
   const ResponsiveEventListSkeleton({
     super.key,
     this.isGridMode = false,

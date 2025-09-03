@@ -3,39 +3,39 @@ import 'package:flutter/material.dart';
 // Define core color values here.
 // These will be used to construct ColorScheme and AppCustomColors.
 class AppColors {
-  // Light Theme Base Colors
-  static const Color lightPrimary = Color(0xFF606c38); // Primary
-  static const Color lightPrimaryDark = Color(0xFF4a542c); // Derived from Primary
-  static const Color lightPrimaryDarker = Color(0xFF353d1f); // Derived from Primary
-  static const Color lightSecondary = Color(0xFF03071e); // Secondary
-  static const Color lightAccent = Color(0xFFffba08); // Accent
+  // Light Theme Base Colors - Modern and improved
+  static const Color lightPrimary = Color(0xFF2563EB); // Modern blue primary
+  static const Color lightPrimaryDark = Color(0xFF1D4ED8); // Darker blue
+  static const Color lightPrimaryDarker = Color(0xFF1E40AF); // Even darker blue
+  static const Color lightSecondary = Color(0xFF7C3AED); // Purple secondary
+  static const Color lightAccent = Color(0xFFF59E0B); // Amber accent
 
-  static const Color lightBackground = Color(0xFFF5F5F5);
-  static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightText = Color(0xFF424242);
-  static const Color lightTextMuted = Color(0xFF9E9E9E);
-  static const Color lightTextStrong = Color(0xFF424242); // Same as lightText
-  static const Color lightBorders = Color(0xFFE0E0E0);
-  static const Color lightError = Color(0xFFE53935);
-  static const Color lightWarning = Color(0xFF8B0000);
-  static const Color lightSuccess = Color(0xFF66BB6A);
-  static const Color lightIcon = Color(0xFF424242);
-  static const Color lightFocus = Color(0xFFffba08); // Same as lightAccent
+  static const Color lightBackground = Color(0xFFFAFAFA); // Slightly warmer white
+  static const Color lightSurface = Color(0xFFFFFFFF); // Pure white
+  static const Color lightText = Color(0xFF1F2937); // Darker, more readable text
+  static const Color lightTextMuted = Color(0xFF6B7280); // Better contrast muted text
+  static const Color lightTextStrong = Color(0xFF111827); // Stronger text color
+  static const Color lightBorders = Color(0xFFE5E7EB); // Softer borders
+  static const Color lightError = Color(0xFFDC2626); // Modern red
+  static const Color lightWarning = Color(0xFFD97706); // Modern orange
+  static const Color lightSuccess = Color(0xFF059669); // Modern green
+  static const Color lightIcon = Color(0xFF374151); // Better icon color
+  static const Color lightFocus = Color(0xFFF59E0B); // Same as lightAccent
 
-  // Dark Theme Base Colors
-  static const Color darkPrimary = Color(0xFF606c38); // Primary
-  static const Color darkPrimaryLight = Color(0xFF7a8b4a); // Derived from Primary
-  static const Color darkPrimaryLighter = Color(0xFF94a75c); // Derived from Primary
-  static const Color darkSecondary = Color(0xFF03071e); // Secondary
-  static const Color darkAccent = Color(0xFFffba08); // Accent
+  // Dark Theme Base Colors - Modern and improved
+  static const Color darkPrimary = Color(0xFF3B82F6); // Brighter blue for dark theme
+  static const Color darkPrimaryLight = Color(0xFF60A5FA); // Lighter blue
+  static const Color darkPrimaryLighter = Color(0xFF93C5FD); // Even lighter blue
+  static const Color darkSecondary = Color(0xFF8B5CF6); // Purple secondary
+  static const Color darkAccent = Color(0xFFFBBF24); // Brighter amber
 
-  static const Color darkBackground = Color(0xFF212121);
-  static const Color darkSurface = Color(0xFF424242);
-  static const Color darkText = Color(0xFFFFFFFF);
-  static const Color darkTextMuted = Color(0xFFBDBDBD);
-  static const Color darkTextStrong = Color(0xFFFFFFFF); // Same as darkText
-  static const Color darkBorders = Color(0xFF616161);
-  static const Color darkError = Color(0xFFEF5350);
+  static const Color darkBackground = Color(0xFF0F172A); // Modern dark background
+  static const Color darkSurface = Color(0xFF1E293B); // Modern dark surface
+  static const Color darkText = Color(0xFFF8FAFC); // Clean white text
+  static const Color darkTextMuted = Color(0xFF94A3B8); // Better contrast muted text
+  static const Color darkTextStrong = Color(0xFFFFFFFF); // Pure white for strong text
+  static const Color darkBorders = Color(0xFF334155); // Modern dark borders
+  static const Color darkError = Color(0xFFEF4444); // Modern red
   static const Color darkWarning = Color(0xFF8B0000);
   static const Color darkSuccess = Color(0xFF81C784);
   static const Color darkIcon = Color(0xFFFFFFFF);

@@ -62,7 +62,8 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Show highlighted events if available
-            if (discoveryState.getHighlightedEvents().isNotEmpty || discoveryState.loading)
+            if (discoveryState.getHighlightedEvents().isNotEmpty ||
+                discoveryState.loading)
               ResponsiveEventSection(
                 title: 'Highlights',
                 events: discoveryState
@@ -77,7 +78,8 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
                 },
               ),
             // Show bookable events if available
-            if (discoveryState.getBookableEvents().isNotEmpty || discoveryState.loading)
+            if (discoveryState.getBookableEvents().isNotEmpty ||
+                discoveryState.loading)
               ResponsiveEventSection(
                 title: 'Bookable Events',
                 subtitle: "Tickets available here!",
