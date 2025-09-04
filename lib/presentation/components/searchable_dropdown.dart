@@ -61,10 +61,38 @@ class _SearchableDropdownState extends State<SearchableDropdown> {
               .toList();
 
           return AlertDialog(
-            title: TextField(
-              autofocus: true,
-              decoration: const InputDecoration(hintText: 'Search…'),
-              onChanged: (v) => setState(() => filter = v),
+            title: Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  width: 1,
+                ),
+              ),
+              child: TextField(
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search…',
+                  hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurfaceVariant
+                            .withOpacity(0.6),
+                      ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 20,
+                  ),
+                  border: InputBorder.none,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+                onChanged: (v) => setState(() => filter = v),
+              ),
             ),
             content: SizedBox(
               width: double.maxFinite,

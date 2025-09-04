@@ -13,14 +13,7 @@ class TeacherPage extends StatefulWidget {
 }
 
 class _TeacherPageState extends State<TeacherPage> {
-  String search = "";
   bool isFollowed = false;
-
-  setSearch(String newSearch) {
-    setState(() {
-      search = newSearch;
-    });
-  }
 
   setFollowed(bool newFollowed) {
     setState(() {
@@ -31,21 +24,20 @@ class _TeacherPageState extends State<TeacherPage> {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-      appBar: TeacherAppBar(onSearchChanged: setSearch),
+      appBar: const TeacherAppBar(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(
-                left: AppDimensions.spacingSmall,
-                top: AppDimensions.spacingSmall),
+            padding:
+                const EdgeInsets.only(left: AppDimensions.spacingSmall, top: 8),
             child: FilterRow(
               selectFollowed: setFollowed,
               isFollowed: isFollowed,
             ),
           ),
           TeacherQuery(
-            search: search,
+            search: "", // No search functionality in main view
             isFollowed: isFollowed,
           )
         ],
@@ -63,7 +55,7 @@ class FilterRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(

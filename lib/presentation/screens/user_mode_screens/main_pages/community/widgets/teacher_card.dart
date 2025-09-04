@@ -25,7 +25,7 @@ class TeacherCard extends ConsumerWidget {
     final colorScheme = theme.colorScheme;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
@@ -52,15 +52,15 @@ class TeacherCard extends ConsumerWidget {
               : null,
           borderRadius: BorderRadius.circular(16),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 // Profile image
                 CustomAvatarCachedNetworkImage(
                   imageUrl: teacher.profilImgUrl ?? "",
-                  radius: 40,
+                  radius: 60,
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 12),
                 // Name and followers
                 Expanded(
                   child: Column(

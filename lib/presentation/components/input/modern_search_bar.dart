@@ -7,9 +7,13 @@ class ModernSearchBar extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onFilterPressed;
+  final VoidCallback? onTap;
   final bool showFilterButton;
   final bool enabled;
+  final bool readOnly;
   final TextEditingController? controller;
+  final Color? filterButtonColor;
+  final bool isFilterActive;
 
   const ModernSearchBar({
     super.key,
@@ -18,16 +22,20 @@ class ModernSearchBar extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.onFilterPressed,
+    this.onTap,
     this.showFilterButton = true,
     this.enabled = true,
+    this.readOnly = false,
     this.controller,
+    this.filterButtonColor,
+    this.isFilterActive = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
@@ -51,29 +59,61 @@ class ModernSearchBar extends StatelessWidget {
                   ),
                 ],
               ),
-              child: TextField(
-                controller: controller,
-                enabled: enabled,
-                onChanged: onChanged,
-                onSubmitted: onSubmitted,
-                style: theme.textTheme.bodyMedium,
-                decoration: InputDecoration(
-                  hintText: hintText ?? 'Search...',
-                  hintStyle: theme.textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant.withOpacity(0.6),
-                  ),
-                  prefixIcon: Icon(
-                    Icons.search,
-                    color: colorScheme.onSurfaceVariant,
-                    size: 20,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
-                  ),
-                ),
-              ),
+              child: readOnly
+                  ? Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: onTap,
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.search,
+                                color: colorScheme.onSurfaceVariant,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                hintText ?? 'Search...',
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: colorScheme.onSurfaceVariant
+                                      .withOpacity(0.6),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : TextField(
+                      controller: controller,
+                      enabled: enabled,
+                      onChanged: onChanged,
+                      onSubmitted: onSubmitted,
+                      onTap: onTap,
+                      style: theme.textTheme.bodyMedium,
+                      decoration: InputDecoration(
+                        hintText: hintText ?? 'Search...',
+                        hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                          color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          color: colorScheme.onSurfaceVariant,
+                          size: 20,
+                        ),
+                        border: InputBorder.none,
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 12,
+                        ),
+                      ),
+                    ),
             ),
           ),
           // Filter button
@@ -83,7 +123,10 @@ class ModernSearchBar extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: colorScheme.surface,
+                color: isFilterActive
+                    ? (filterButtonColor ?? colorScheme.primary)
+                        .withOpacity(0.1)
+                    : colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: colorScheme.outline.withOpacity(0.2),
@@ -97,12 +140,18 @@ class ModernSearchBar extends StatelessWidget {
                   ),
                 ],
               ),
-              child: IconButton(
-                onPressed: onFilterPressed,
-                icon: Icon(
-                  Icons.tune,
-                  color: colorScheme.onSurfaceVariant,
-                  size: 20,
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onFilterPressed,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Icon(
+                    Icons.tune,
+                    color: isFilterActive
+                        ? (filterButtonColor ?? colorScheme.primary)
+                        : colorScheme.onSurfaceVariant,
+                    size: 20,
+                  ),
                 ),
               ),
             ),
@@ -132,7 +181,7 @@ class ModernFilterChip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       margin: const EdgeInsets.only(right: 8),
       child: FilterChip(
@@ -143,8 +192,8 @@ class ModernFilterChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 16,
-                color: isSelected 
-                    ? colorScheme.onPrimary 
+                color: isSelected
+                    ? colorScheme.onPrimary
                     : colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 4),
@@ -158,24 +207,21 @@ class ModernFilterChip extends StatelessWidget {
         selectedColor: colorScheme.primary,
         checkmarkColor: colorScheme.onPrimary,
         labelStyle: theme.textTheme.labelMedium?.copyWith(
-          color: isSelected 
-              ? colorScheme.onPrimary 
-              : colorScheme.onSurfaceVariant,
+          color:
+              isSelected ? colorScheme.onPrimary : colorScheme.onSurfaceVariant,
           fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
         ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
           side: BorderSide(
-            color: isSelected 
-                ? colorScheme.primary 
+            color: isSelected
+                ? colorScheme.primary
                 : colorScheme.outline.withOpacity(0.2),
             width: 1,
           ),
         ),
         elevation: isSelected ? 2 : 0,
-        shadowColor: isSelected 
-            ? colorScheme.primary.withOpacity(0.3) 
-            : null,
+        shadowColor: isSelected ? colorScheme.primary.withOpacity(0.3) : null,
       ),
     );
   }
