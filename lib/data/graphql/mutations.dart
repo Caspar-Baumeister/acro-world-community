@@ -618,4 +618,72 @@ mutation deleteAccount{
     success
   }
 }""");
+
+  /// Comments ///
+
+  static final insertComment = gql("""
+mutation insertComment(\$content: String!, \$rating: Int!, \$teacher_id: uuid!, \$user_id: uuid!) {
+  insert_comments_one(object: {
+    content: \$content
+    rating: \$rating
+    teacher_id: \$teacher_id
+    user_id: \$user_id
+  }) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final updateComment = gql("""
+mutation updateComment(\$id: uuid!, \$content: String!, \$rating: Int!) {
+  update_comments_by_pk(
+    pk_columns: {id: \$id}
+    _set: {
+      content: \$content
+      rating: \$rating
+      updated_at: "now()"
+    }
+  ) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final deleteComment = gql("""
+mutation deleteComment(\$id: uuid!) {
+  delete_comments_by_pk(id: \$id) {
+    id
+  }
+}
+""");
 }

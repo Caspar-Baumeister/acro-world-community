@@ -573,4 +573,110 @@ query getFollowedTeachers(\$user_id: uuid!) {
       }
     }
       """);
+
+  /// Comments ///
+
+  static final getCommentsForTeacher = gql("""
+query getCommentsForTeacher(\$teacher_id: uuid!, \$limit: Int, \$offset: Int) {
+  comments(
+    where: {teacher_id: {_eq: \$teacher_id}}
+    order_by: {created_at: desc}
+    limit: \$limit
+    offset: \$offset
+  ) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final getCommentsCountForTeacher = gql("""
+query getCommentsCountForTeacher(\$teacher_id: uuid!) {
+  comments_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  static final getCommentsStatsForTeacher = gql("""
+query getCommentsStatsForTeacher(\$teacher_id: uuid!) {
+  comments_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
+    aggregate {
+      count
+      avg {
+        rating
+      }
+    }
+  }
+}
+""");
+
+  static final getUserCommentForTeacher = gql("""
+query getUserCommentForTeacher(\$teacher_id: uuid!, \$user_id: uuid!) {
+  comments(where: {teacher_id: {_eq: \$teacher_id}, user_id: {_eq: \$user_id}}, limit: 1) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final getTeacherEventsStats = gql("""
+query getTeacherEventsStats(\$teacher_id: uuid!) {
+  classes_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  static final getTeacherParticipatedEventsStats = gql("""
+query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
+  class_events_aggregate(where: {class: {teacher_id: {_eq: \$teacher_id}}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  static final getTeacherBookingsStats = gql("""
+query getTeacherBookingsStats(\$teacher_id: uuid!) {
+  class_event_bookings_aggregate(where: {class_event: {class: {teacher_id: {_eq: \$teacher_id}}}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
 }

@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
@@ -61,77 +62,19 @@ class FilterRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Row(
-        children: [
-          FilterBubble(
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            ModernFilterChip(
               label: "Followed",
-              onTap: selectFollowed,
-              initialValue: isFollowed)
-        ],
-      ),
-    );
-  }
-}
-
-class FilterBubble extends StatefulWidget {
-  final String label;
-  final Function(bool) onTap;
-  final bool initialValue;
-
-  const FilterBubble(
-      {super.key,
-      required this.label,
-      required this.onTap,
-      required this.initialValue});
-
-  @override
-  FilterBubbleState createState() => FilterBubbleState();
-}
-
-class FilterBubbleState extends State<FilterBubble> {
-  late bool _isSelected;
-
-  @override
-  void initState() {
-    _isSelected = widget.initialValue;
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () async {
-        await widget.onTap(!_isSelected);
-        setState(() {
-          _isSelected = !_isSelected;
-        });
-      },
-      child: Container(
-        margin:
-            const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
-        padding: const EdgeInsets.symmetric(
-            horizontal: AppDimensions.spacingMedium,
-            vertical: AppDimensions.spacingSmall),
-        decoration: BoxDecoration(
-          color: !_isSelected
-              ? Theme.of(context).colorScheme.surface
-              : Theme.of(context).colorScheme.onSurface,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          border: Border.all(
-              color: !_isSelected
-                  ? Theme.of(context).colorScheme.onSurface
-                  : Theme.of(context).colorScheme.surface),
-        ),
-        child: Center(
-          child: Text(
-            widget.label,
-            style: TextStyle(
-              color: !_isSelected
-                  ? Theme.of(context).colorScheme.onSurface
-                  : Theme.of(context).colorScheme.surface,
+              isSelected: isFollowed,
+              onSelected: () => selectFollowed(!isFollowed),
+              icon: Icons.favorite,
             ),
-          ),
+          ],
         ),
       ),
     );

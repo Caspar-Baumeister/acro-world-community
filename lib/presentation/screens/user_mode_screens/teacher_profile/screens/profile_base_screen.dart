@@ -1,8 +1,6 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/class_section.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/gallery_screen.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/profile_header_widget.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/screens/modern_teacher_profile.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
@@ -49,15 +47,15 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
             return teacherLikes.when(
               loading: () => const Scaffold(
                 body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ModernSkeleton(width: 200, height: 20),
-                  SizedBox(height: 16),
-                  ModernSkeleton(width: 300, height: 100),
-                ],
-              ),
-            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ModernSkeleton(width: 200, height: 20),
+                      SizedBox(height: 16),
+                      ModernSkeleton(width: 300, height: 100),
+                    ],
+                  ),
+                ),
               ),
               error: (_, __) => Scaffold(
                 body: Center(child: Text('Error loading teacher likes')),
@@ -66,155 +64,39 @@ class _ProfileBaseScreenState extends ConsumerState<ProfileBaseScreen> {
                 final isLikedState = likesMap[widget.teacher.id] ?? false;
 
                 return Scaffold(
-                  appBar: PreferredSize(
-                    preferredSize: const Size.fromHeight(40),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(
-                              color: Color.fromARGB(255, 238, 238, 238)),
-                        ),
-                      ),
-                      child: AppBar(
-                        // leading backbutton
-                        leading: IconButton(
-                          icon: const Icon(Icons.arrow_back_ios,
-                              color: Colors.black),
-                          onPressed: () {
-                            if (!GoRouter.of(context).canPop()) {
-                              // nothing to pop
-                              context.go('/community');
-                            } else {
-                              // pop the current screen
-                              GoRouter.of(context).pop();
-                            }
-                          },
-                        ),
-                        backgroundColor: Colors.white,
-                        title: Text(
-                          widget.teacher.name ?? "Unknown",
-                          style: const TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.w600),
-                        ),
-                        elevation: 0,
-                        actions: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                                right: 20.0, top: 5, bottom: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                if (currentUser == null) {
-                                  showAuthRequiredDialog(
-                                    context,
-                                    subtitle:
-                                        'Log in or sign up to follow ${widget.teacher.name ?? "this partner"} and stay updated with their activities.',
-                                  );
-                                  return;
-                                }
-                                setState(() => loading = true);
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                  body: ModernTeacherProfile(
+                    teacher: widget.teacher,
+                    isLiked: isLikedState,
+                    loading: loading,
+                    onFollowPressed: () {
+                      if (currentUser == null) {
+                        showAuthRequiredDialog(
+                          context,
+                          subtitle:
+                              'Log in or sign up to follow ${widget.teacher.name ?? "this partner"} and stay updated with their activities.',
+                        );
+                        return;
+                      }
+                      setState(() => loading = true);
 
-                                ref
-                                    .read(teacherLikesProvider.notifier)
-                                    .toggleTeacherLike(widget.teacher.id!);
+                      ref
+                          .read(teacherLikesProvider.notifier)
+                          .toggleTeacherLike(widget.teacher.id!);
 
-                                Future.delayed(
-                                    const Duration(milliseconds: 200), () {
-                                  setState(() {
-                                    loading = false;
-                                  });
-                                });
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: isLikedState
-                                      ? Theme.of(context).colorScheme.primary
-                                      : Colors.white,
-                                  border: Border.all(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                height: 35,
-                                width: 100,
-                                alignment: Alignment.center,
-                                child: loading
-                                    ? SizedBox(
-                                        height: 25,
-                                        width: 25,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(5),
-                                          child: ModernSkeleton(
-                                            width: 15,
-                                            height: 15,
-                                            baseColor: isLikedState
-                                                ? Colors.white
-                                                : Theme.of(context)
-                                                    .colorScheme
-                                                    .primary,
-
-                                          ),
-                                        ),
-                                      )
-                                    : Text(
-                                        isLikedState ? "Followed" : "Follow",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(
-                                              color: isLikedState
-                                                  ? Colors.white
-                                                  : Theme.of(context)
-                                                      .colorScheme
-                                                      .primary,
-                                            ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  body: DefaultTabController(
-                    length: 2,
-                    child: NestedScrollView(
-                      headerSliverBuilder: (ctx, _) => [
-                        SliverList(
-                          delegate: SliverChildListDelegate([
-                            ProfileHeaderWidget(
-                              teacher: widget.teacher,
-                              isLiked: isLikedState,
-                            ),
-                          ]),
-                        ),
-                      ],
-                      body: Column(
-                        children: [
-                          Material(
-                            color: Colors.white,
-                            child: TabBar(
-                              labelColor: Colors.black,
-                              unselectedLabelColor: Colors.grey[400],
-                              indicatorWeight: 1,
-                              indicatorColor: Colors.black,
-                              tabs: const [
-                                Tab(icon: Icon(Icons.festival_outlined)),
-                                Tab(icon: Icon(Icons.grid_on_sharp)),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: TabBarView(
-                              children: [
-                                ClassSection(teacherId: widget.teacher.id!),
-                                Gallery(images: widget.teacher.images),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                      Future.delayed(const Duration(milliseconds: 200), () {
+                        setState(() {
+                          loading = false;
+                        });
+                      });
+                    },
+                    onBackPressed: () {
+                      if (!GoRouter.of(context).canPop()) {
+                        context.go('/community');
+                      } else {
+                        GoRouter.of(context).pop();
+                      }
+                    },
                   ),
                 );
               },

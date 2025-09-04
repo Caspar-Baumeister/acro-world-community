@@ -17,12 +17,13 @@ class CommunityBody extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: AppDimensions.spacingMedium),
+        const SizedBox(height: AppDimensions.spacingSmall),
         ...teachers.where((t) => t.type != "Anonymous").map((teacher) {
           return TeacherCard(
             teacher: teacher,
           );
         }),
+        const SizedBox(height: AppDimensions.spacingMedium),
       ],
     );
   }
