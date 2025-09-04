@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/teacher_model.dart';
-import 'package:acroworld/presentation/components/cards/modern_user_card.dart';
+import 'package:acroworld/presentation/components/cards/simple_user_card.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/widgets/teacher_card.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -30,7 +30,7 @@ class CommunityBody extends ConsumerWidget {
       itemCount: filteredTeachers.length,
       itemBuilder: (context, index) {
         final teacher = filteredTeachers[index];
-        return _ModernTeacherCardWrapper(
+        return _SimpleTeacherCardWrapper(
           teacher: teacher,
         );
       },
@@ -68,9 +68,9 @@ class CommunityBody extends ConsumerWidget {
   }
 }
 
-/// A wrapper that integrates the modern user card with the teacher likes provider
-class _ModernTeacherCardWrapper extends ConsumerWidget {
-  const _ModernTeacherCardWrapper({
+/// A wrapper that integrates the simple user card with the teacher likes provider
+class _SimpleTeacherCardWrapper extends ConsumerWidget {
+  const _SimpleTeacherCardWrapper({
     required this.teacher,
   });
 
@@ -83,7 +83,7 @@ class _ModernTeacherCardWrapper extends ConsumerWidget {
     return teacherLikes.when(
       data: (likesMap) {
         final isFollowed = likesMap[teacher.id] ?? false;
-        return ModernUserCard(
+        return SimpleUserCard(
           name: teacher.name ?? "No name",
           followerCount: (teacher.likes ?? 0).toInt(),
           profileImageUrl: teacher.profilImgUrl ?? "",
@@ -93,7 +93,7 @@ class _ModernTeacherCardWrapper extends ConsumerWidget {
           description: teacher.description,
         );
       },
-      loading: () => ModernUserCard(
+      loading: () => SimpleUserCard(
         name: teacher.name ?? "No name",
         followerCount: (teacher.likes ?? 0).toInt(),
         profileImageUrl: teacher.profilImgUrl ?? "",
@@ -103,7 +103,7 @@ class _ModernTeacherCardWrapper extends ConsumerWidget {
         onCardTap: () => _handleCardTap(context),
         description: teacher.description,
       ),
-      error: (_, __) => ModernUserCard(
+      error: (_, __) => SimpleUserCard(
         name: teacher.name ?? "No name",
         followerCount: (teacher.likes ?? 0).toInt(),
         profileImageUrl: teacher.profilImgUrl ?? "",
