@@ -57,18 +57,20 @@ class ProfileBody extends ConsumerWidget {
               headerSliverBuilder: (ctx, _) => [
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    if (hasTeacherProfile)
-                      Padding(
-                        padding:
-                            const EdgeInsets.all(AppDimensions.spacingSmall)
-                                .copyWith(left: 20),
-                        child: HeaderWidget(
-                          imgUrl: user.teacherProfile?.profilImgUrl ??
-                              user.imageUrl ??
-                              '',
-                          name: user.teacherProfile?.name ?? user.name ?? '',
-                        ),
-                      ),
+                    // Always show user profile header
+                    HeaderWidget(
+                      imgUrl: user.imageUrl ?? '',
+                      name: user.name ?? 'User',
+                      subtitle: hasTeacherProfile 
+                          ? 'Creator & User' 
+                          : 'User',
+                      showEditButton: true,
+                      onEditPressed: () {
+                        context.pushNamed(editUserDataRoute);
+                      },
+                    ),
+                    
+                    // Creator Mode Section
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         vertical: AppDimensions.spacingSmall,

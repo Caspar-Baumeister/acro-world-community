@@ -161,7 +161,6 @@ class ImageUploadService {
   Future<String> uploadImage(Uint8List imageBytes,
       {required String path}) async {
     try {
-      print('ImageUploadService: Uploading image to path: $path');
       final Reference storageRef = FirebaseStorage.instance.ref().child(path);
 
       final UploadTask uploadTask = storageRef.putData(
@@ -172,14 +171,11 @@ class ImageUploadService {
       );
 
       final TaskSnapshot snapshot = await uploadTask;
-      print('ImageUploadService: Upload completed, getting download URL...');
 
       final String downloadUrl = await snapshot.ref.getDownloadURL();
-      print('ImageUploadService: Download URL: $downloadUrl');
 
       return downloadUrl;
     } catch (e) {
-      print('ImageUploadService: Error uploading image: $e');
       throw Exception('Error uploading image: $e');
     }
   }
