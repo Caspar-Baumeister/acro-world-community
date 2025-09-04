@@ -54,20 +54,6 @@ class AccountSettingsPage extends StatelessWidget {
                 ),
               ),
             ),
-            child: ListTile(
-              leading: const Icon(
-                Icons.image,
-                color: Colors.blue,
-              ),
-              title: const Text(
-                "Test User Image Upload",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                ),
-              ),
-              onTap: () => context.pushNamed(userImageTestRoute),
-            ),
           ),
 
           const Spacer(),
