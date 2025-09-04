@@ -52,7 +52,11 @@ class ModernBottomButton extends StatelessWidget {
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20), // More rounded for modern look
+                side: BorderSide(
+                  color: _getBackgroundColor(colorScheme).withOpacity(0.2),
+                  width: 1,
+                ),
               ),
             ),
             child: isLoading
@@ -77,7 +81,8 @@ class ModernBottomButton extends StatelessWidget {
                         text,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: _getForegroundColor(colorScheme),
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.w500, // Slightly lighter weight
+                          letterSpacing: 0.5, // Better letter spacing
                         ),
                       ),
                     ],
@@ -91,15 +96,15 @@ class ModernBottomButton extends StatelessWidget {
   Color _getBackgroundColor(ColorScheme colorScheme) {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
-        return colorScheme.primary;
+        return const Color(0xFF6B8E6B); // Muted sage green (from our theme)
       case ModernBottomButtonVariant.success:
-        return const Color(0xFF10B981); // Green
+        return const Color(0xFF7FB069); // Soft pastel green
       case ModernBottomButtonVariant.warning:
-        return const Color(0xFFF59E0B); // Amber
+        return const Color(0xFFD4A574); // Warm pastel amber
       case ModernBottomButtonVariant.error:
-        return const Color(0xFFEF4444); // Red
+        return const Color(0xFFE8A598); // Soft pastel red
       case ModernBottomButtonVariant.secondary:
-        return colorScheme.surfaceContainerHighest;
+        return const Color(0xFFF5F5F5); // Light gray
     }
   }
 
@@ -107,11 +112,13 @@ class ModernBottomButton extends StatelessWidget {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
       case ModernBottomButtonVariant.success:
-      case ModernBottomButtonVariant.warning:
-      case ModernBottomButtonVariant.error:
         return Colors.white;
+      case ModernBottomButtonVariant.warning:
+        return const Color(0xFF8B4513); // Dark brown for warm amber
+      case ModernBottomButtonVariant.error:
+        return const Color(0xFF8B0000); // Dark red for soft red background
       case ModernBottomButtonVariant.secondary:
-        return colorScheme.onSurface;
+        return const Color(0xFF666666); // Medium gray for light background
     }
   }
 }
