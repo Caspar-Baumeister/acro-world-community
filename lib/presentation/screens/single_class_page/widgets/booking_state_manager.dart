@@ -2,7 +2,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/presentation/components/buttons/floating_action_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_bottom_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
@@ -29,7 +29,7 @@ class BookingStateManager {
     if (userId == null) {
       return BookingButtonState(
         text: "Book now",
-        variant: ModernFloatingButtonVariant.primary,
+        variant: ModernBottomButtonVariant.primary,
         onPressed: () => _showAuthDialog(classEvent),
       );
     }
@@ -38,7 +38,7 @@ class BookingStateManager {
     if (isCreator) {
       return BookingButtonState(
         text: "Calendar",
-        variant: ModernFloatingButtonVariant.primary,
+        variant: ModernBottomButtonVariant.primary,
         onPressed: () => _showCalendarModal(clas, isCreator),
       );
     }
@@ -47,7 +47,7 @@ class BookingStateManager {
     if (classEvent == null) {
       return BookingButtonState(
         text: "Calendar",
-        variant: ModernFloatingButtonVariant.primary,
+        variant: ModernBottomButtonVariant.primary,
         onPressed: () => _showCalendarModal(clas, isCreator),
       );
     }
@@ -56,19 +56,20 @@ class BookingStateManager {
     if (classEvent.classModel?.bookingOptions.isEmpty ?? true) {
       return BookingButtonState(
         text: "Calendar",
-        variant: ModernFloatingButtonVariant.primary,
+        variant: ModernBottomButtonVariant.primary,
         onPressed: () => _showCalendarModal(clas, isCreator),
       );
     }
 
     // Check if class has billing capability
-    final billingTeacher = clas.owner?.teacher?.stripeId != null ? clas.owner : null;
+    final billingTeacher =
+        clas.owner?.teacher?.stripeId != null ? clas.owner : null;
     final isCashPayment = clas.isCashAllowed ?? false;
 
     if (billingTeacher == null && !isCashPayment) {
       return BookingButtonState(
         text: "Calendar",
-        variant: ModernFloatingButtonVariant.primary,
+        variant: ModernBottomButtonVariant.primary,
         onPressed: () => _showCalendarModal(clas, isCreator),
       );
     }
@@ -77,18 +78,19 @@ class BookingStateManager {
     if (booking != null) {
       return BookingButtonState(
         text: booking.status == "Confirmed" ? "Booked" : "Payment pending",
-        variant: booking.status == "Confirmed" 
-            ? ModernFloatingButtonVariant.success 
-            : ModernFloatingButtonVariant.warning,
+        variant: booking.status == "Confirmed"
+            ? ModernBottomButtonVariant.success
+            : ModernBottomButtonVariant.warning,
         onPressed: () => _showBookingInfoModal(classEvent, userId, booking),
       );
     }
 
     // Event is fully booked
-    if (classEvent.availableBookingSlots != null && classEvent.availableBookingSlots! <= 0) {
+    if (classEvent.availableBookingSlots != null &&
+        classEvent.availableBookingSlots! <= 0) {
       return BookingButtonState(
         text: "Booked out",
-        variant: ModernFloatingButtonVariant.secondary,
+        variant: ModernBottomButtonVariant.secondary,
         onPressed: () => _showCalendarModal(clas, isCreator),
       );
     }
@@ -96,7 +98,7 @@ class BookingStateManager {
     // Available for booking
     return BookingButtonState(
       text: "Book now",
-      variant: ModernFloatingButtonVariant.primary,
+      variant: ModernBottomButtonVariant.primary,
       onPressed: () => _showBookingModal(classEvent),
     );
   }
@@ -109,7 +111,8 @@ class BookingStateManager {
     // This will be handled by the calling context
   }
 
-  static void _showBookingInfoModal(ClassEvent classEvent, String userId, ClassEventBooking booking) {
+  static void _showBookingInfoModal(
+      ClassEvent classEvent, String userId, ClassEventBooking booking) {
     // This will be handled by the calling context
   }
 
@@ -127,12 +130,13 @@ class BookingButtonState {
   });
 
   final String text;
-  final ModernFloatingButtonVariant variant;
+  final ModernBottomButtonVariant variant;
   final VoidCallback onPressed;
 }
 
 /// Provider for booking data
-final bookingDataProvider = FutureProvider.family<ClassEventBooking?, String>((ref, eventId) async {
+final bookingDataProvider =
+    FutureProvider.family<ClassEventBooking?, String>((ref, eventId) async {
   // This will be implemented with proper data fetching
   return null;
 });
@@ -178,27 +182,27 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
 
           // Handle auth case
           if (userId == null) {
-            return ModernFloatingButton(
+            return ModernBottomButton(
               text: "Book now",
-              variant: ModernFloatingButtonVariant.primary,
+              variant: ModernBottomButtonVariant.primary,
               onPressed: () => _handleAuthRequired(context),
             );
           }
 
           // Handle creator case
           if (isCreator) {
-            return ModernFloatingButton(
+            return ModernBottomButton(
               text: "Calendar",
-              variant: ModernFloatingButtonVariant.primary,
+              variant: ModernBottomButtonVariant.primary,
               onPressed: () => _showCalendarModal(context),
             );
           }
 
           // Handle no event case
           if (widget.classEvent == null) {
-            return ModernFloatingButton(
+            return ModernBottomButton(
               text: "Calendar",
-              variant: ModernFloatingButtonVariant.primary,
+              variant: ModernBottomButtonVariant.primary,
               onPressed: () => _showCalendarModal(context),
             );
           }
@@ -228,9 +232,9 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
         }
 
         if (result.isLoading) {
-          return const ModernFloatingButton(
+          return const ModernBottomButton(
             text: "Loading...",
-            variant: ModernFloatingButtonVariant.secondary,
+            variant: ModernBottomButtonVariant.secondary,
             isLoading: true,
             onPressed: null,
           );
@@ -251,10 +255,11 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
           booking: booking,
         );
 
-        return ModernFloatingButton(
+        return ModernBottomButton(
           text: buttonState.text,
           variant: buttonState.variant,
-          onPressed: () => _handleButtonPress(context, buttonState, userId, refetch),
+          onPressed: () =>
+              _handleButtonPress(context, buttonState, userId, refetch),
         );
       },
     );
@@ -272,7 +277,8 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
 
     showAuthRequiredDialog(
       context,
-      subtitle: 'Log in or sign up to book events, manage your tickets, and keep track of your activities.',
+      subtitle:
+          'Log in or sign up to book events, manage your tickets, and keep track of your activities.',
       redirectPath: redirectPath,
     );
   }
@@ -297,17 +303,20 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
       case "Booked":
       case "Payment pending":
         if (widget.classEvent != null) {
-          final booking = _getCurrentBooking();
-          if (booking != null) {
-            buildMortal(
-              context,
-              BookingInformationModal(
-                classEvent: widget.classEvent!,
-                userId: userId,
-                booking: booking,
-              ),
-            );
-          }
+          // For now, show a simple dialog since we don't have the booking data
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Text(buttonState.text),
+              content: const Text('Booking information will be shown here.'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text('OK'),
+                ),
+              ],
+            ),
+          );
         }
         break;
       case "Book now":
@@ -328,11 +337,5 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
         _showCalendarModal(context);
         break;
     }
-  }
-
-  ClassEventBooking? _getCurrentBooking() {
-    // This would need to be implemented to get the current booking
-    // For now, return null as this is a simplified version
-    return null;
   }
 }
