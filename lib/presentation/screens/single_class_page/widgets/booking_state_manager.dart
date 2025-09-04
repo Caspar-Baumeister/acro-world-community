@@ -171,46 +171,42 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
     final userAsync = ref.watch(userRiverpodProvider);
     final isCreator = ref.watch(userRoleProvider);
 
-    return BottomAppBar(
-      elevation: 0,
-      color: Colors.transparent,
-      child: userAsync.when(
-        loading: () => const SizedBox.shrink(),
-        error: (_, __) => const SizedBox.shrink(),
-        data: (user) {
-          final userId = user?.id;
+    return userAsync.when(
+      loading: () => const SizedBox.shrink(),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (user) {
+        final userId = user?.id;
 
-          // Handle auth case
-          if (userId == null) {
-            return ModernBottomButton(
-              text: "Book now",
-              variant: ModernBottomButtonVariant.primary,
-              onPressed: () => _handleAuthRequired(context),
-            );
-          }
+        // Handle auth case
+        if (userId == null) {
+          return ModernBottomButton(
+            text: "Book now",
+            variant: ModernBottomButtonVariant.primary,
+            onPressed: () => _handleAuthRequired(context),
+          );
+        }
 
-          // Handle creator case
-          if (isCreator) {
-            return ModernBottomButton(
-              text: "Calendar",
-              variant: ModernBottomButtonVariant.primary,
-              onPressed: () => _showCalendarModal(context),
-            );
-          }
+        // Handle creator case
+        if (isCreator) {
+          return ModernBottomButton(
+            text: "Calendar",
+            variant: ModernBottomButtonVariant.primary,
+            onPressed: () => _showCalendarModal(context),
+          );
+        }
 
-          // Handle no event case
-          if (widget.classEvent == null) {
-            return ModernBottomButton(
-              text: "Calendar",
-              variant: ModernBottomButtonVariant.primary,
-              onPressed: () => _showCalendarModal(context),
-            );
-          }
+        // Handle no event case
+        if (widget.classEvent == null) {
+          return ModernBottomButton(
+            text: "Calendar",
+            variant: ModernBottomButtonVariant.primary,
+            onPressed: () => _showCalendarModal(context),
+          );
+        }
 
-          // Handle event with booking
-          return _buildEventBookingButton(context, userId);
-        },
-      ),
+        // Handle event with booking
+        return _buildEventBookingButton(context, userId);
+      },
     );
   }
 

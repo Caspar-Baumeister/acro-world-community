@@ -36,41 +36,36 @@ class ModernBottomButton extends StatelessWidget {
         ),
       ),
       child: ElevatedButton(
-            onPressed: isLoading ? null : onPressed,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: _getBackgroundColor(colorScheme),
-              foregroundColor: _getForegroundColor(colorScheme),
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
-              minimumSize: const Size(200, 56), // Ensure minimum size
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-                side: BorderSide.none,
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: _getBackgroundColor(colorScheme),
+          foregroundColor: _getForegroundColor(colorScheme),
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          surfaceTintColor: Colors.transparent,
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide.none,
+          ),
+        ),
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                ),
+              )
+            : Text(
+                text,
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: _getForegroundColor(colorScheme),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            child: isLoading
-                ? SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: 2,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        _getForegroundColor(colorScheme),
-                      ),
-                    ),
-                  )
-                : Text(
-                    text,
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: _getForegroundColor(colorScheme),
-                      fontWeight: FontWeight.w600, // Bold like example
-                      letterSpacing: 0.2, // Tighter spacing for modern look
-                      fontSize: 16, // Consistent size
-                    ),
-                  ),
-            ),
+      ),
     );
   }
 
