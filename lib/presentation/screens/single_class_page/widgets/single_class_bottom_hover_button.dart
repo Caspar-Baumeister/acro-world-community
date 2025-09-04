@@ -51,7 +51,6 @@ class SingleClassBottomHoverButton extends ConsumerWidget {
     return ModernBottomButton(
       text: 'Calendar',
       variant: ModernBottomButtonVariant.primary,
-      icon: Icons.calendar_today,
       onPressed: () => buildMortal(
         context,
         CalenderModal(

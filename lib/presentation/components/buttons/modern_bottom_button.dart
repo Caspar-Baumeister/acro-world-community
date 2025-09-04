@@ -34,10 +34,10 @@ class ModernBottomButton extends StatelessWidget {
           ),
           // Remove shadow for cleaner look like example
         ),
-        child: SizedBox(
-          width: double.infinity,
-          height: 56,
-          child: ElevatedButton(
+        child: Center(
+          child: SizedBox(
+            height: 56,
+            child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: _getBackgroundColor(colorScheme),
@@ -45,6 +45,7 @@ class ModernBottomButton extends StatelessWidget {
               elevation: 0,
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16), // Better padding
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16), // Clean, modern radius
                 side: BorderSide.none, // No border for cleaner look
@@ -61,24 +62,16 @@ class ModernBottomButton extends StatelessWidget {
                       ),
                     ),
                   )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      if (icon != null) ...[
-                        Icon(icon, size: 20),
-                        const SizedBox(width: 8),
-                      ],
-                      Text(
-                        text,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: _getForegroundColor(colorScheme),
-                          fontWeight: FontWeight.w600, // Bold like example
-                          letterSpacing: 0.2, // Tighter spacing for modern look
-                          fontSize: 16, // Consistent size
-                        ),
-                      ),
-                    ],
+                : Text(
+                    text,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: _getForegroundColor(colorScheme),
+                      fontWeight: FontWeight.w600, // Bold like example
+                      letterSpacing: 0.2, // Tighter spacing for modern look
+                      fontSize: 16, // Consistent size
+                    ),
                   ),
+            ),
           ),
         ),
       ),

@@ -49,7 +49,6 @@ class _BookingQueryHoverButtonState
           return ModernBottomButton(
             text: "Book now",
             variant: ModernBottomButtonVariant.primary,
-            icon: Icons.event_available,
             onPressed: () {
               // Construct redirect path for the current event
               final classSlug = widget.classEvent.classModel?.urlSlug;
@@ -112,9 +111,6 @@ class _BookingQueryHoverButtonState
                 variant: myBooking.status == "Confirmed"
                     ? ModernBottomButtonVariant.success
                     : ModernBottomButtonVariant.warning,
-                icon: myBooking.status == "Confirmed"
-                    ? Icons.check_circle
-                    : Icons.schedule,
                 onPressed: () {
                   buildMortal(
                     context,
@@ -133,7 +129,6 @@ class _BookingQueryHoverButtonState
               return ModernBottomButton(
                 text: "Booked out",
                 variant: ModernBottomButtonVariant.secondary,
-                icon: Icons.event_busy,
                 onPressed: () {
                   final classId = widget.classEvent.classModel?.id;
                   if (classId != null) {
@@ -149,7 +144,6 @@ class _BookingQueryHoverButtonState
             return ModernBottomButton(
               text: "Book now",
               variant: ModernBottomButtonVariant.primary,
-              icon: Icons.event_available,
               onPressed: () {
                 buildMortal(
                   context,
