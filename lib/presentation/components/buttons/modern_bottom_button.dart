@@ -32,13 +32,7 @@ class ModernBottomButton extends StatelessWidget {
               width: 1,
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 16,
-              offset: const Offset(0, -4),
-            ),
-          ],
+          // Remove shadow for cleaner look like example
         ),
         child: SizedBox(
           width: double.infinity,
@@ -52,11 +46,8 @@ class ModernBottomButton extends StatelessWidget {
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20), // More rounded for modern look
-                side: BorderSide(
-                  color: _getBackgroundColor(colorScheme).withOpacity(0.2),
-                  width: 1,
-                ),
+                borderRadius: BorderRadius.circular(16), // Clean, modern radius
+                side: BorderSide.none, // No border for cleaner look
               ),
             ),
             child: isLoading
@@ -81,8 +72,9 @@ class ModernBottomButton extends StatelessWidget {
                         text,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: _getForegroundColor(colorScheme),
-                          fontWeight: FontWeight.w500, // Slightly lighter weight
-                          letterSpacing: 0.5, // Better letter spacing
+                          fontWeight: FontWeight.w600, // Bold like example
+                          letterSpacing: 0.2, // Tighter spacing for modern look
+                          fontSize: 16, // Consistent size
                         ),
                       ),
                     ],
@@ -96,7 +88,7 @@ class ModernBottomButton extends StatelessWidget {
   Color _getBackgroundColor(ColorScheme colorScheme) {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
-        return const Color(0xFF6B8E6B); // Muted sage green (from our theme)
+        return const Color(0xFF1A1A1A); // Dark modern background like example
       case ModernBottomButtonVariant.success:
         return const Color(0xFF7FB069); // Soft pastel green
       case ModernBottomButtonVariant.warning:
@@ -111,6 +103,7 @@ class ModernBottomButton extends StatelessWidget {
   Color _getForegroundColor(ColorScheme colorScheme) {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
+        return Colors.white; // White text on dark background
       case ModernBottomButtonVariant.success:
         return Colors.white;
       case ModernBottomButtonVariant.warning:
