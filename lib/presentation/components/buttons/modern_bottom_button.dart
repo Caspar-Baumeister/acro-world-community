@@ -21,50 +21,54 @@ class ModernBottomButton extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.transparent,
-            Colors.white.withOpacity(0.9),
-            Colors.white,
-          ],
-          stops: const [0.0, 0.7, 1.0],
-        ),
-      ),
-      child: ElevatedButton(
-        onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: _getBackgroundColor(colorScheme),
-          foregroundColor: _getForegroundColor(colorScheme),
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          surfaceTintColor: Colors.transparent,
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-            side: BorderSide.none,
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Colors.transparent,
+              Colors.white.withOpacity(0.9),
+              Colors.white,
+            ],
+            stops: const [0.0, 0.7, 1.0],
           ),
         ),
-        child: isLoading
-            ? const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                ),
-              )
-            : Text(
-                text,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: _getForegroundColor(colorScheme),
-                  fontWeight: FontWeight.w600,
-                ),
+        child: Center(
+          child: ElevatedButton(
+            onPressed: isLoading ? null : onPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: _getBackgroundColor(colorScheme),
+              foregroundColor: _getForegroundColor(colorScheme),
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              surfaceTintColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+                side: BorderSide.none,
               ),
+            ),
+            child: isLoading
+                ? const SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  )
+                : Text(
+                    text,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: _getForegroundColor(colorScheme),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+          ),
+        ),
       ),
     );
   }
@@ -76,7 +80,7 @@ class ModernBottomButton extends StatelessWidget {
       case ModernBottomButtonVariant.success:
         return const Color(0xFF4CAF50); // Stronger green for better contrast
       case ModernBottomButtonVariant.warning:
-        return const Color(0xFFFF9800); // Stronger orange for better contrast
+        return const Color(0xFFD4A574); // Subtle warm amber
       case ModernBottomButtonVariant.error:
         return const Color(0xFFF44336); // Stronger red for better contrast
       case ModernBottomButtonVariant.secondary:
