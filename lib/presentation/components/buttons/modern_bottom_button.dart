@@ -21,23 +21,24 @@ class ModernBottomButton extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: colorScheme.surface,
-          border: Border(
-            top: BorderSide(
-              color: colorScheme.outline.withOpacity(0.1),
-              width: 1,
-            ),
-          ),
-          // Remove shadow for cleaner look like example
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.transparent,
+            Colors.white.withOpacity(0.9),
+            Colors.white,
+          ],
+          stops: const [0.0, 0.7, 1.0],
         ),
-        child: Center(
-          child: SizedBox(
-            height: 56,
-            child: ElevatedButton(
+      ),
+      child: Center(
+        child: SizedBox(
+          height: 56,
+          child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: _getBackgroundColor(colorScheme),
@@ -74,37 +75,36 @@ class ModernBottomButton extends StatelessWidget {
             ),
           ),
         ),
-      ),
     );
   }
 
   Color _getBackgroundColor(ColorScheme colorScheme) {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
-        return const Color(0xFF1A1A1A); // Dark modern background like example
+        return const Color(0xFF000000); // Pure black for maximum contrast
       case ModernBottomButtonVariant.success:
-        return const Color(0xFF7FB069); // Soft pastel green
+        return const Color(0xFF4CAF50); // Stronger green for better contrast
       case ModernBottomButtonVariant.warning:
-        return const Color(0xFFD4A574); // Warm pastel amber
+        return const Color(0xFFFF9800); // Stronger orange for better contrast
       case ModernBottomButtonVariant.error:
-        return const Color(0xFFE8A598); // Soft pastel red
+        return const Color(0xFFF44336); // Stronger red for better contrast
       case ModernBottomButtonVariant.secondary:
-        return const Color(0xFFF5F5F5); // Light gray
+        return const Color(0xFFE0E0E0); // Light gray
     }
   }
 
   Color _getForegroundColor(ColorScheme colorScheme) {
     switch (variant) {
       case ModernBottomButtonVariant.primary:
-        return Colors.white; // White text on dark background
+        return Colors.white; // White text on dark background for maximum contrast
       case ModernBottomButtonVariant.success:
-        return Colors.white;
+        return Colors.white; // White text on green background
       case ModernBottomButtonVariant.warning:
-        return const Color(0xFF8B4513); // Dark brown for warm amber
+        return Colors.white; // White text on amber background for better contrast
       case ModernBottomButtonVariant.error:
-        return const Color(0xFF8B0000); // Dark red for soft red background
+        return Colors.white; // White text on red background for better contrast
       case ModernBottomButtonVariant.secondary:
-        return const Color(0xFF666666); // Medium gray for light background
+        return const Color(0xFF333333); // Dark gray for light background
     }
   }
 }
