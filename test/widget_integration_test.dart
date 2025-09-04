@@ -9,7 +9,7 @@ import 'package:acroworld/presentation/shells/sidebar.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_body.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_body.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/single_class_bottom_hover_button.dart';
+import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_state_manager.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
 import 'package:acroworld/data/models/class_model.dart';
@@ -154,7 +154,7 @@ void main() {
       expect(find.byType(ProfileBody), findsOneWidget);
     });
 
-    testWidgets('SingleClassBottomHoverButton should build without compilation errors', (WidgetTester tester) async {
+    testWidgets('CleanBookingButton should build without compilation errors', (WidgetTester tester) async {
       final mockClassModel = ClassModel(
         id: 'test-id',
         name: 'Test Class',
@@ -177,7 +177,7 @@ void main() {
         ProviderScope(
           child: MaterialApp(
             home: Scaffold(
-              body: SingleClassBottomHoverButton(
+              body: CleanBookingButton(
                 clas: mockClassModel,
                 classEvent: mockClassEvent,
               ),
@@ -186,7 +186,7 @@ void main() {
         ),
       );
       
-      expect(find.byType(SingleClassBottomHoverButton), findsOneWidget);
+      expect(find.byType(CleanBookingButton), findsOneWidget);
     });
 
     testWidgets('StripeCallbackPage should build without compilation errors', (WidgetTester tester) async {

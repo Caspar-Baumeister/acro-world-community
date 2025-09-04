@@ -3,7 +3,7 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/custom_sliver_app_bar.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_body.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/back_drop_action_row.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/single_class_bottom_hover_button.dart';
+import 'package:acroworld/presentation/screens/single_class_page/widgets/booking_state_manager.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/share_event.dart';
@@ -56,7 +56,7 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
     final isCancelled = widget.classEvent?.isCancelled ?? false;
 
     return Scaffold(
-      bottomNavigationBar: SingleClassBottomHoverButton(
+      bottomNavigationBar: CleanBookingButton(
         clas: widget.clas,
         classEvent: widget.classEvent,
       ),
