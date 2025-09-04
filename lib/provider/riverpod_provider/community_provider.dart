@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider for community search state
-final communitySearchProvider = StateNotifierProvider<CommunitySearchNotifier, String>((ref) {
+final communitySearchProvider =
+    StateNotifierProvider<CommunitySearchNotifier, String>((ref) {
   return CommunitySearchNotifier();
 });
 
 /// Provider for community filter state
-final communityFilterProvider = StateNotifierProvider<CommunityFilterNotifier, String>((ref) {
+final communityFilterProvider =
+    StateNotifierProvider<CommunityFilterNotifier, String>((ref) {
   return CommunityFilterNotifier();
 });
 

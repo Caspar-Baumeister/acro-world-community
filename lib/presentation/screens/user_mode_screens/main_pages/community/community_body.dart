@@ -1,7 +1,10 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/cards/modern_user_card.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/widgets/teacher_card.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,24 +30,8 @@ class CommunityBody extends ConsumerWidget {
       itemCount: filteredTeachers.length,
       itemBuilder: (context, index) {
         final teacher = filteredTeachers[index];
-        return ModernUserCard(
-          name: teacher.name ?? "No name",
-          followerCount: (teacher.likes ?? 0).toInt(),
-          profileImageUrl: teacher.profilImgUrl ?? "",
-          isFollowed: false, // This will be handled by the follow button logic
-          onFollowTap: () {
-            // Handle follow logic here
-            // This should be moved to the TeacherCard logic
-          },
-          onCardTap: () {
-            if (teacher.slug != null) {
-              context.pushNamed(
-                'partnerSlugRoute', // You'll need to define this route
-                pathParameters: {"slug": teacher.slug!},
-              );
-            }
-          },
-          description: teacher.description,
+        return _ModernTeacherCardWrapper(
+          teacher: teacher,
         );
       },
     );
@@ -78,5 +65,76 @@ class CommunityBody extends ConsumerWidget {
         ],
       ),
     );
+  }
+}
+
+/// A wrapper that integrates the modern user card with the teacher likes provider
+class _ModernTeacherCardWrapper extends ConsumerWidget {
+  const _ModernTeacherCardWrapper({
+    required this.teacher,
+  });
+
+  final TeacherModel teacher;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final teacherLikes = ref.watch(teacherLikesProvider);
+
+    return teacherLikes.when(
+      data: (likesMap) {
+        final isFollowed = likesMap[teacher.id] ?? false;
+        return ModernUserCard(
+          name: teacher.name ?? "No name",
+          followerCount: (teacher.likes ?? 0).toInt(),
+          profileImageUrl: teacher.profilImgUrl ?? "",
+          isFollowed: isFollowed,
+          onFollowTap: () => _handleFollowTap(context, ref),
+          onCardTap: () => _handleCardTap(context),
+          description: teacher.description,
+        );
+      },
+      loading: () => ModernUserCard(
+        name: teacher.name ?? "No name",
+        followerCount: (teacher.likes ?? 0).toInt(),
+        profileImageUrl: teacher.profilImgUrl ?? "",
+        isFollowed: false,
+        isLoading: true,
+        onFollowTap: () {},
+        onCardTap: () => _handleCardTap(context),
+        description: teacher.description,
+      ),
+      error: (_, __) => ModernUserCard(
+        name: teacher.name ?? "No name",
+        followerCount: (teacher.likes ?? 0).toInt(),
+        profileImageUrl: teacher.profilImgUrl ?? "",
+        isFollowed: false,
+        onFollowTap: () => _handleFollowTap(context, ref),
+        onCardTap: () => _handleCardTap(context),
+        description: teacher.description,
+      ),
+    );
+  }
+
+  void _handleFollowTap(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.read(userRiverpodProvider).value;
+    if (currentUser == null) {
+      showAuthRequiredDialog(
+        context,
+        subtitle:
+            'Log in or sign up to follow your favorite partners and stay updated with their events.',
+      );
+      return;
+    }
+
+    ref.read(teacherLikesProvider.notifier).toggleTeacherLike(teacher.id!);
+  }
+
+  void _handleCardTap(BuildContext context) {
+    if (teacher.slug != null) {
+      context.pushNamed(
+        'partnerSlugRoute', // This should match your route name
+        pathParameters: {"slug": teacher.slug!},
+      );
+    }
   }
 }

@@ -1,8 +1,8 @@
 import 'package:acroworld/presentation/components/filters/modern_filter_chip.dart';
 import 'package:acroworld/presentation/components/search/modern_search_bar.dart';
-import 'package:acroworld/provider/riverpod_provider/community_provider.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
+import 'package:acroworld/provider/riverpod_provider/community_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,4 +51,3 @@ class TeacherPage extends ConsumerWidget {
     );
   }
 }
-
