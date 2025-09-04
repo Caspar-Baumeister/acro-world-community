@@ -35,10 +35,7 @@ class ModernBottomButton extends StatelessWidget {
           stops: const [0.0, 0.7, 1.0],
         ),
       ),
-      child: Center(
-        child: SizedBox(
-          height: 56,
-          child: ElevatedButton(
+      child: ElevatedButton(
             onPressed: isLoading ? null : onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: _getBackgroundColor(colorScheme),
@@ -46,10 +43,11 @@ class ModernBottomButton extends StatelessWidget {
               elevation: 0,
               shadowColor: Colors.transparent,
               surfaceTintColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16), // Better padding
+              minimumSize: const Size(200, 56), // Ensure minimum size
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16), // Clean, modern radius
-                side: BorderSide.none, // No border for cleaner look
+                borderRadius: BorderRadius.circular(16),
+                side: BorderSide.none,
               ),
             ),
             child: isLoading
@@ -73,8 +71,6 @@ class ModernBottomButton extends StatelessWidget {
                     ),
                   ),
             ),
-          ),
-        ),
     );
   }
 

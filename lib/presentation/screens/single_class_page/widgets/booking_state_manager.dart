@@ -4,7 +4,6 @@ import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/modern_bottom_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -174,6 +173,7 @@ class _CleanBookingButtonState extends ConsumerState<CleanBookingButton> {
 
     return BottomAppBar(
       elevation: 0,
+      color: Colors.transparent,
       child: userAsync.when(
         loading: () => const SizedBox.shrink(),
         error: (_, __) => const SizedBox.shrink(),
