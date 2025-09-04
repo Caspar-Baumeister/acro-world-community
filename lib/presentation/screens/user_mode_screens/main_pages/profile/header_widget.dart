@@ -1,4 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
@@ -13,37 +13,9 @@ class HeaderWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        CachedNetworkImage(
-          fit: BoxFit.cover,
+        CustomAvatarCachedNetworkImage(
           imageUrl: imgUrl,
-          imageBuilder: (context, imageProvider) => Container(
-            width: 75,
-            height: 75,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-            ),
-          ),
-          placeholder: (context, url) => Container(
-            width: 75,
-            height: 75,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            width: 75,
-            height: 75,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: Theme.of(context).colorScheme.surfaceContainer,
-            ),
-            child: Icon(
-              Icons.error,
-              color: Theme.of(context).colorScheme.error,
-            ),
-          ),
+          radius: 37.5, // 75/2
         ),
         const SizedBox(width: 5),
         Expanded(

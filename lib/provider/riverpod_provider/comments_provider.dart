@@ -115,6 +115,9 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
 
   Future<void> addOrUpdateComment(String content, int rating, String teacherId,
       {String? commentId}) async {
+    // Refresh user data to get the most up-to-date information including image URL
+    _ref.invalidate(userRiverpodProvider);
+
     // Get current user from the user provider
     final currentUser = _ref.read(userRiverpodProvider).value?.id;
 

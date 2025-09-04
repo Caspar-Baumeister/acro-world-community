@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:acroworld/data/graphql/queries.dart'; // for the dropdown queries
 import 'package:acroworld/data/models/class_event.dart'; // if still needed
 import 'package:acroworld/data/models/gender_model.dart';
@@ -5,8 +7,9 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
+import 'package:acroworld/presentation/components/input/user_image_picker.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -29,6 +32,10 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
   String? acroLevel;
   String? acroLevelId;
   bool _initialized = false;
+
+  // Image upload state
+  Uint8List? _selectedImageBytes;
+  bool _isUploadingImage = false;
 
   @override
   void initState() {
@@ -57,6 +64,43 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
   }
 
   Future<bool> _onSave(User user) async {
+    // Handle image upload first if there's a selected image
+    if (_selectedImageBytes != null) {
+      setState(() {
+        _isUploadingImage = true;
+      });
+
+      try {
+        final success = await ref
+            .read(userNotifierProvider.notifier)
+            .uploadAndUpdateImage(_selectedImageBytes!);
+
+        if (!success) {
+          showErrorToast("Failed to upload profile image");
+          setState(() {
+            _isUploadingImage = false;
+          });
+          return false;
+        }
+
+        // Clear the selected image after successful upload
+        setState(() {
+          _selectedImageBytes = null;
+        });
+      } catch (e) {
+        showErrorToast("Error uploading image: $e");
+        setState(() {
+          _isUploadingImage = false;
+        });
+        return false;
+      } finally {
+        setState(() {
+          _isUploadingImage = false;
+        });
+      }
+    }
+
+    // Handle other field changes
     final changes = _computeChanges(user);
     if (changes == null) return true; // nothing to do
     final success =
@@ -67,6 +111,41 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
       showErrorToast("Something went wrong, profile not updated");
     }
     return success;
+  }
+
+  Future<void> _handleImageSelected(Uint8List imageBytes) async {
+    setState(() {
+      _selectedImageBytes = imageBytes;
+    });
+  }
+
+  Future<void> _handleImageRemoved() async {
+    setState(() {
+      _selectedImageBytes = null;
+    });
+  }
+
+  Future<void> _removeCurrentImage() async {
+    setState(() {
+      _isUploadingImage = true;
+    });
+
+    try {
+      final success =
+          await ref.read(userNotifierProvider.notifier).removeImage();
+
+      if (success) {
+        showSuccessToast("Profile image removed");
+      } else {
+        showErrorToast("Failed to remove profile image");
+      }
+    } catch (e) {
+      showErrorToast("Error removing image: $e");
+    } finally {
+      setState(() {
+        _isUploadingImage = false;
+      });
+    }
   }
 
   Future<bool> _onWillPop(User user) async {
@@ -164,6 +243,67 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                       ),
                       filled: true,
                       fillColor: Theme.of(context).colorScheme.surfaceContainer,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // — Profile Image Section —
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Profile Picture:")),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      children: [
+                        UserImagePickerComponent(
+                          currentImageUrl: user.imageUrl,
+                          onImageSelected: _handleImageSelected,
+                          onImageRemoved: _handleImageRemoved,
+                          size: 100,
+                          showEditIcon: true,
+                          showRemoveButton: true,
+                          isLoading: _isUploadingImage,
+                        ),
+                        const SizedBox(height: 12),
+                        if (user.imageUrl != null) ...[
+                          TextButton.icon(
+                            onPressed:
+                                _isUploadingImage ? null : _removeCurrentImage,
+                            icon: _isUploadingImage
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : const Icon(Icons.delete, size: 16),
+                            label: Text(
+                              _isUploadingImage
+                                  ? "Removing..."
+                                  : "Remove Current Image",
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                          ),
+                        ],
+                        if (_selectedImageBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'New image selected - will be uploaded when you save',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
 
@@ -308,14 +448,14 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
 
                   // — Save button —
                   ModernButton(
-                    text: "Save",
-                    onPressed: isSaving
+                    text: _isUploadingImage ? "Uploading Image..." : "Save",
+                    onPressed: (isSaving || _isUploadingImage)
                         ? () {}
                         : () async {
                             final ok = await _onSave(user);
                             if (ok) context.pop();
                           },
-                    isLoading: isSaving,
+                    isLoading: isSaving || _isUploadingImage,
                     isFilled: true,
                   ),
                 ],

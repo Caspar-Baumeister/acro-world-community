@@ -1,11 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
+import 'package:acroworld/presentation/components/input/user_image_picker.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,6 +34,10 @@ class _SignUpState extends ConsumerState<SignUp> {
 
   bool passwordObscure = true;
   bool passwordConfirmObscure = true;
+
+  // Image upload state
+  Uint8List? _selectedImageBytes;
+  bool _isUploadingImage = false;
 
   late final TextEditingController nameController;
   late final TextEditingController emailController;
@@ -70,6 +79,7 @@ class _SignUpState extends ConsumerState<SignUp> {
     }
 
     try {
+      // 1. Register the user
       await ref.read(authProvider.notifier).register(
             name: nameController.text.trim(),
             email: emailController.text.trim(),
@@ -79,6 +89,40 @@ class _SignUpState extends ConsumerState<SignUp> {
 
       if (!mounted) return;
 
+      // 2. Upload profile image if selected
+      if (_selectedImageBytes != null) {
+        setState(() {
+          _isUploadingImage = true;
+        });
+
+        try {
+          // Use the UserNotifier method to ensure state is properly updated
+          final success = await ref
+              .read(userNotifierProvider.notifier)
+              .uploadAndUpdateImage(_selectedImageBytes!);
+
+          if (!success) {
+            showErrorToast("Failed to upload profile image");
+          } else {
+            // Wait a moment for the database to be fully updated
+            await Future.delayed(const Duration(milliseconds: 500));
+            
+            // Refresh user data to ensure it's up to date
+            ref.invalidate(userNotifierProvider);
+          }
+        } catch (e) {
+          // Don't fail registration if image upload fails
+          print('Warning: Failed to upload profile image: $e');
+        } finally {
+          if (mounted) {
+            setState(() {
+              _isUploadingImage = false;
+            });
+          }
+        }
+      }
+
+      // 3. Navigate to next screen
       if (widget.redirectAfter != null) {
         context.go(widget.redirectAfter!);
       } else {
@@ -184,6 +228,59 @@ class _SignUpState extends ConsumerState<SignUp> {
                         : null,
                   ),
                   const SizedBox(height: 20.0),
+
+                  // Profile Image Section
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Profile Picture (Optional)',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.7),
+                                  ),
+                        ),
+                        const SizedBox(height: 12.0),
+                        UserImagePickerComponent(
+                          currentImageUrl: null,
+                          onImageSelected: (imageBytes) {
+                            setState(() {
+                              _selectedImageBytes = imageBytes;
+                            });
+                          },
+                          onImageRemoved: () {
+                            setState(() {
+                              _selectedImageBytes = null;
+                            });
+                          },
+                          size: 80,
+                          showEditIcon: true,
+                          showRemoveButton: true,
+                          isLoading: _isUploadingImage,
+                        ),
+                        if (_selectedImageBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Image selected',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20.0),
                   AGBCheckbox(
                     isAgb: isAgb,
                     setAgb: (val) => setState(() => isAgb = val),
@@ -195,9 +292,10 @@ class _SignUpState extends ConsumerState<SignUp> {
                   ),
                   const SizedBox(height: 20.0),
                   ModernButton(
-                    text: "Register",
-                    onPressed: isLoading ? null : _onRegister,
-                    isLoading: isLoading,
+                    text: _isUploadingImage ? "Uploading Image..." : "Register",
+                    onPressed:
+                        (isLoading || _isUploadingImage) ? null : _onRegister,
+                    isLoading: isLoading || _isUploadingImage,
                     isFilled: true,
                   ),
                   if (error.isNotEmpty)
@@ -205,8 +303,8 @@ class _SignUpState extends ConsumerState<SignUp> {
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Text(
                         error,
-                        style:
-                            Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                     ),
                   const SizedBox(height: 20),

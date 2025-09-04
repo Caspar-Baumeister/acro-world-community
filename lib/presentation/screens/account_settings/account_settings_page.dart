@@ -44,6 +44,32 @@ class AccountSettingsPage extends StatelessWidget {
             ),
           ),
 
+          // Test button for user image functionality
+          Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outline,
+                  width: 0.5,
+                ),
+              ),
+            ),
+            child: ListTile(
+              leading: const Icon(
+                Icons.image,
+                color: Colors.blue,
+              ),
+              title: const Text(
+                "Test User Image Upload",
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                ),
+              ),
+              onTap: () => context.pushNamed(userImageTestRoute),
+            ),
+          ),
+
           const Spacer(),
           const Center(child: DeleteAccount()),
         ]),

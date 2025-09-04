@@ -28,6 +28,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/test_screens/user_image_test_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
@@ -218,6 +219,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/edit-userdata',
           name: editUserDataRoute,
           builder: (context, state) => const EditUserdataPage(),
+        ),
+        GoRoute(
+          parentNavigatorKey: rootNavigatorKey,
+          path: '/user-image-test',
+          name: userImageTestRoute,
+          builder: (context, state) => const UserImageTestScreen(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
