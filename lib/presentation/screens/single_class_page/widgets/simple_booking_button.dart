@@ -4,6 +4,7 @@ import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/simple_floating_button.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/calendar_modal.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_information_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -26,7 +27,8 @@ class SimpleBookingButton extends ConsumerStatefulWidget {
   final ClassEvent? classEvent;
 
   @override
-  ConsumerState<SimpleBookingButton> createState() => _SimpleBookingButtonState();
+  ConsumerState<SimpleBookingButton> createState() =>
+      _SimpleBookingButtonState();
 }
 
 class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
@@ -171,17 +173,12 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
   }
 
   void _showBookingInfo(BuildContext context, ClassEventBooking booking) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(booking.status == "Confirmed" ? "Booked" : "Payment pending"),
-        content: const Text('Booking information will be shown here.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
+    buildMortal(
+      context,
+      BookingInformationModal(
+        classEvent: widget.classEvent!,
+        userId: ref.read(userRiverpodProvider).value?.id ?? '',
+        booking: booking,
       ),
     );
   }
