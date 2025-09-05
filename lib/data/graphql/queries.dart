@@ -262,8 +262,8 @@ query Me {
   }
 }""");
 
-  static final userFavoriteClassEvents = gql("""
-query UserFavoriteClassEvents(\$limit: Int, \$offset: Int, \$showPastEvents: Boolean!) {
+  static final userFavoriteClassEventsUpcoming = gql("""
+query UserFavoriteClassEventsUpcoming(\$limit: Int, \$offset: Int) {
   me {
     class_favorits {
       classes {
@@ -271,9 +271,30 @@ query UserFavoriteClassEvents(\$limit: Int, \$offset: Int, \$showPastEvents: Boo
         class_events(
           where: { 
             start_date: { 
-              _gte: \$showPastEvents ? "1900-01-01" : "now()" 
+              _gte: "now()" 
             }
           }
+          order_by: { start_date: asc }
+          limit: \$limit
+          offset: \$offset
+        ) {
+          ${Fragments.classEventFragment}
+          class {
+            ${Fragments.classFragmentAllInfo}
+          }
+        }
+      }
+    }
+  }
+}""");
+
+  static final userFavoriteClassEventsAll = gql("""
+query UserFavoriteClassEventsAll(\$limit: Int, \$offset: Int) {
+  me {
+    class_favorits {
+      classes {
+        id
+        class_events(
           order_by: { start_date: asc }
           limit: \$limit
           offset: \$offset

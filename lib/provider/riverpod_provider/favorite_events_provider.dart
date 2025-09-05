@@ -62,11 +62,12 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
       final client = GraphQLClientSingleton().client;
       final result = await client.query(
         QueryOptions(
-          document: Queries.userFavoriteClassEvents,
+          document: state.showPastEvents 
+              ? Queries.userFavoriteClassEventsAll 
+              : Queries.userFavoriteClassEventsUpcoming,
           variables: {
             'limit': _pageSize,
             'offset': _currentOffset,
-            'showPastEvents': state.showPastEvents,
           },
           fetchPolicy: FetchPolicy.networkOnly,
         ),
