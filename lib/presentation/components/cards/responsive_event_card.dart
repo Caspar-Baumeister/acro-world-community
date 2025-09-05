@@ -167,9 +167,11 @@ class ResponsiveEventCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space evenly
         children: [
-          // Title - Use Flexible to allow proper text wrapping
-          Flexible(
+          // Title - Fixed height with overflow
+          SizedBox(
+            height: 32, // Fixed height for title (2 lines max)
             child: Text(
               title,
               style: theme.textTheme.titleSmall?.copyWith(
@@ -179,36 +181,43 @@ class ResponsiveEventCard extends StatelessWidget {
                 fontSize: responsiveFontSize,
               ),
               maxLines: 2,
-              overflow: TextOverflow.fade, // Fade instead of ellipsis for better UX
-              softWrap: true,
+              overflow: TextOverflow.ellipsis, // Use ellipsis for consistent height
             ),
           ),
-          const SizedBox(height: 4),
-          // Location
-          if (location != null && location!.isNotEmpty)
-            Text(
-              location!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                height: 1.1,
-                fontSize: responsiveFontSize - 1.0, // Slightly smaller than title
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+          // Location and Date - Fixed height container
+          SizedBox(
+            height: 32, // Fixed height for location and date
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Location
+                if (location != null && location!.isNotEmpty)
+                  Text(
+                    location!,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.onSurfaceVariant,
+                      height: 1.1,
+                      fontSize: responsiveFontSize - 1.0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                // Date
+                if (dateString.isNotEmpty)
+                  Text(
+                    dateString,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: colorScheme.primary,
+                      fontWeight: FontWeight.w500,
+                      fontSize: responsiveFontSize - 1.0,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              ],
             ),
-          const SizedBox(height: 4),
-          // Date
-          if (dateString.isNotEmpty)
-            Text(
-              dateString,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.primary,
-                fontWeight: FontWeight.w500,
-                fontSize: responsiveFontSize - 1.0, // Slightly smaller than title
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
+          ),
         ],
       ),
     );
