@@ -15,36 +15,56 @@ class ClassTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Card Image
-            ClassEventTileImage(
-              width: MediaQuery.of(context).size.width * 0.3,
-              isCancelled: false,
-              imgUrl: classObject.imageUrl,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
-            Expanded(
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Card Image
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: ClassEventTileImage(
+                  width: MediaQuery.of(context).size.width * 0.25,
+                  isCancelled: false,
+                  imgUrl: classObject.imageUrl,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClassTileTitleWidget(classObject: classObject),
+                    const SizedBox(height: 4),
                     ClassTileLocationWidget(classObject: classObject),
+                    const SizedBox(height: 8),
                     ClassTileTeacherWidget(classObject: classObject),
+                    const SizedBox(height: 8),
                     ClassTileNextOccurenceWidget(classObject: classObject),
                   ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
