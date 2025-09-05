@@ -149,6 +149,7 @@ class EventCardData {
       classEvent.classModel?.city,
       classEvent.classModel?.locationName,
       classEvent.classModel?.locationCountry,
+      classEvent.classModel?.locationCity,
     );
     
     return EventCardData(
@@ -172,20 +173,22 @@ class EventCardData {
     String? city, 
     String? locationName, 
     String? locationCountry,
+    String? locationCity,
   ) {
     // Clean up all strings by removing extra whitespace
     final cleanCountry = country?.trim();
     final cleanCity = city?.trim();
     final cleanLocationName = locationName?.trim();
     final cleanLocationCountry = locationCountry?.trim();
+    final cleanLocationCity = locationCity?.trim();
     
     // Priority 1: Use locationName if available
     if (cleanLocationName != null && cleanLocationName.isNotEmpty) {
       return cleanLocationName;
     }
     
-    // Priority 2: Combine city and country (prefer locationCountry over country)
-    final primaryCity = cleanCity;
+    // Priority 2: Combine city and country (prefer locationCity/locationCountry over city/country)
+    final primaryCity = cleanLocationCity ?? cleanCity;
     final primaryCountry = cleanLocationCountry ?? cleanCountry;
     
     if (primaryCity != null && primaryCity.isNotEmpty && 
