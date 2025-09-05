@@ -36,11 +36,15 @@ class ResponsiveEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     // Calculate responsive width
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 180.0); // Reduced from 200 to 180 for smaller cards
-    final cardHeight = isGridMode ? 200.0 : 180.0; // Reduced height for smaller cards
+    final cardWidth = width ??
+        (isGridMode
+            ? (screenWidth - 48) / 2.0
+            : 180.0); // Reduced from 200 to 180 for smaller cards
+    final cardHeight =
+        isGridMode ? 200.0 : 180.0; // Reduced height for smaller cards
 
     return GestureDetector(
       onTap: onTap ?? _handleCardTap(context),
@@ -154,71 +158,65 @@ class ResponsiveEventCard extends StatelessWidget {
   ) {
     final dateString = _formatDate();
     final screenWidth = MediaQuery.of(context).size.width;
-    
+
     // Calculate responsive font size based on screen width
     final baseFontSize = isGridMode ? 12.0 : 14.0;
-    final responsiveFontSize = screenWidth < 360 
-        ? baseFontSize - 1.0  // Smaller screens
-        : screenWidth > 400 
-            ? baseFontSize + 1.0  // Larger screens
+    final responsiveFontSize = screenWidth < 360
+        ? baseFontSize - 1.0 // Smaller screens
+        : screenWidth > 400
+            ? baseFontSize + 1.0 // Larger screens
             : baseFontSize;
-    
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start, // Start alignment to remove space
+        mainAxisAlignment:
+            MainAxisAlignment.start, // Start alignment to remove space
         children: [
-          // Title - Smaller height
-          SizedBox(
-            height: 32, // Reduced height for title
-            child: Text(
-              title,
-              style: theme.textTheme.titleSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: colorScheme.onSurface,
-                height: 1.2,
-                fontSize: responsiveFontSize,
-              ),
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
+          // Title - Let it flow naturally
+          Text(
+            title,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
+              height: 1.2,
+              fontSize: responsiveFontSize,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2), // Small spacing between title and location
-          // Location and Date - Smaller height
-          SizedBox(
-            height: 28, // Reduced height for location and date
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                // Location
-                if (location != null && location!.isNotEmpty)
-                  Text(
-                    location!,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                      height: 1.1,
-                      fontSize: responsiveFontSize - 1.0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 4), // Small spacing between title and location
+          // Location and Date - Let them flow naturally
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Location
+              if (location != null && location!.isNotEmpty)
+                Text(
+                  location!,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    height: 1.1,
+                    fontSize: responsiveFontSize - 1.0,
                   ),
-                const SizedBox(height: 1), // Minimal spacing between location and date
-                // Date
-                if (dateString.isNotEmpty)
-                  Text(
-                    dateString,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.primary,
-                      fontWeight: FontWeight.w500,
-                      fontSize: responsiveFontSize - 1.0,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              const SizedBox(height: 2), // Small spacing between location and date
+              // Date
+              if (dateString.isNotEmpty)
+                Text(
+                  dateString,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w500,
+                    fontSize: responsiveFontSize - 1.0,
                   ),
-              ],
-            ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+            ],
           ),
         ],
       ),
@@ -227,7 +225,7 @@ class ResponsiveEventCard extends StatelessWidget {
 
   String _formatDate() {
     if (startDate == null) return '';
-    
+
     try {
       return DateTimeService.getDateString(
         startDate!.toIso8601String(),
@@ -237,7 +235,7 @@ class ResponsiveEventCard extends StatelessWidget {
       // Fallback to simple date formatting
       final start = startDate!;
       final end = endDate;
-      
+
       if (end != null && start.day != end.day) {
         // Multi-day event
         return '${start.day}. ${_getMonthName(start.month)} - ${end.day}. ${_getMonthName(end.month)}';
@@ -250,8 +248,18 @@ class ResponsiveEventCard extends StatelessWidget {
 
   String _getMonthName(int month) {
     const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
     ];
     return months[month - 1];
   }
