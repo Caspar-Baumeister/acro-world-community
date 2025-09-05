@@ -262,6 +262,32 @@ query Me {
   }
 }""");
 
+  static final userFavoriteClassEvents = gql("""
+query UserFavoriteClassEvents(\$limit: Int, \$offset: Int, \$showPastEvents: Boolean!) {
+  me {
+    class_favorits {
+      classes {
+        id
+        class_events(
+          where: { 
+            start_date: { 
+              _gte: \$showPastEvents ? "1900-01-01" : "now()" 
+            }
+          }
+          order_by: { start_date: asc }
+          limit: \$limit
+          offset: \$offset
+        ) {
+          ${Fragments.classEventFragment}
+          class {
+            ${Fragments.classFragmentAllInfo}
+          }
+        }
+      }
+    }
+  }
+}""");
+
 // this is for the calendar widget with date filter for a specific week
   static final getClassEventsFromToLocationWithClass = gql("""
 query getClassEventsFromToLocationWithClass(\$from: timestamptz!, \$to: timestamptz!, \$latitude: numeric, \$longitude: numeric, \$distance: float8){

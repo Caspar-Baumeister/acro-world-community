@@ -66,8 +66,11 @@ class _EventSearchPageState extends ConsumerState<EventSearchPage> {
             hintText: 'Search events...',
             border: InputBorder.none,
             hintStyle: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant.withOpacity(0.6),
-            ),
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurfaceVariant
+                      .withOpacity(0.6),
+                ),
           ),
           style: Theme.of(context).textTheme.bodyLarge,
         ),

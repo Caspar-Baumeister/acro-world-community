@@ -29,13 +29,13 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/event_search_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/teacher_search_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/search/event_search_page.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/search/teacher_search_page.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
