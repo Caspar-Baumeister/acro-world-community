@@ -38,3 +38,5 @@ const String userAnswerRoute = 'user-answer';
 const String invitesRoute = 'invites';
 const String creatorProfileRoute = 'creator-profile';
 const String classBookingSummaryRoute = 'class-booking-summary';
+const String ticketsRoute = 'tickets';
+const String favoritesRoute = 'favorites';

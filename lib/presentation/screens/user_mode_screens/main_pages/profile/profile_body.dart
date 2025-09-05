@@ -3,8 +3,6 @@ import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_favorite_classes/user_favorite_classes.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
@@ -126,8 +124,7 @@ class ProfileBody extends ConsumerWidget {
                               title: "Tickets",
                               subtitle: "View your bookings",
                               onTap: () {
-                                // TODO: Navigate to tickets page
-                                showInfoToast("Tickets feature coming soon!");
+                                context.pushNamed(ticketsRoute);
                               },
                             ),
                           ),
@@ -139,8 +136,7 @@ class ProfileBody extends ConsumerWidget {
                               title: "Favorites",
                               subtitle: "Saved classes",
                               onTap: () {
-                                // TODO: Navigate to favorites page
-                                showInfoToast("Favorites feature coming soon!");
+                                context.pushNamed(favoritesRoute);
                               },
                             ),
                           ),
@@ -201,50 +197,6 @@ class ProfileBody extends ConsumerWidget {
                 ),
               ),
 
-              // Favorites and Bookings Tabs
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Material(
-                        color: Colors.transparent,
-                        child: TabBar(
-                          labelColor: Theme.of(context).colorScheme.onSurface,
-                          unselectedLabelColor: Theme.of(context).colorScheme.outline,
-                          indicatorWeight: 2,
-                          indicatorSize: TabBarIndicatorSize.tab,
-                          indicatorColor: Theme.of(context).colorScheme.primary,
-                          tabs: const [
-                            Tab(text: "Favorites"),
-                            Tab(text: "Bookings"),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        height: 400, // Fixed height for tab content
-                        child: const TabBarView(
-                          children: [
-                            UserFavoriteClasses(),
-                            UserBookings(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
 
               // Logout and Delete Account
               SliverToBoxAdapter(

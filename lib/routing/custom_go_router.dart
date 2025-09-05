@@ -27,6 +27,8 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/comm
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/discover_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/favorites_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
@@ -106,6 +108,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: profileRoute,
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const ProfilePage()),
+              ),
+              GoRoute(
+                path: '/tickets',
+                name: ticketsRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const TicketsPage()),
+              ),
+              GoRoute(
+                path: '/favorites',
+                name: favoritesRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const FavoritesPage()),
               ),
             ]),
         ////////////////////
