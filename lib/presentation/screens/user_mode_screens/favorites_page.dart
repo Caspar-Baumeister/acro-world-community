@@ -238,7 +238,7 @@ class _FavoritesBodyState extends State<FavoritesBody> {
             
             // Horizontal scrollable events for this month
             SizedBox(
-              height: 200,
+              height: 220, // Increased to match card height
               child: ResponsiveEventList(
                 events: monthEvents.map((event) => EventCardData.fromClassEvent(event)).toList(),
                 isGridMode: false,

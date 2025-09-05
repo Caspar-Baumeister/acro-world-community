@@ -63,7 +63,7 @@ class ResponsiveEventList extends StatelessWidget {
 
   Widget _buildHorizontalLayout(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 220, // Increased from 200 to match card height
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),

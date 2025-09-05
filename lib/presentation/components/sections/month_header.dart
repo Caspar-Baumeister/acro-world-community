@@ -35,7 +35,7 @@ class MonthHeader extends StatelessWidget {
             child: Text(
               monthYear,
               style: theme.textTheme.titleMedium?.copyWith(
-                color: colorScheme.primary,
+                color: Colors.black, // Changed to black
                 fontWeight: FontWeight.w600,
               ),
             ),
