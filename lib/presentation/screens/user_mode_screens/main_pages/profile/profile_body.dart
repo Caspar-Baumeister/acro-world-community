@@ -121,7 +121,7 @@ class ProfileBody extends ConsumerWidget {
                               context: context,
                               icon: Icons.confirmation_number_rounded,
                               title: "Tickets",
-                              subtitle: "View your bookings",
+                              subtitle: "My bookings",
                               onTap: () {
                                 context.pushNamed(ticketsRoute);
                               },
