@@ -102,19 +102,34 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
 
       List<ClassEvent> newEvents = [];
       
+      // Debug logging
+      print('DEBUG: favoriteData length: ${favoriteData.length}');
+      if (favoriteData.isNotEmpty) {
+        print('DEBUG: first favorite keys: ${favoriteData[0].keys.toList()}');
+        print('DEBUG: first favorite classes type: ${favoriteData[0]['classes'].runtimeType}');
+        print('DEBUG: first favorite classes value: ${favoriteData[0]['classes']}');
+      }
+      
       for (final favorite in favoriteData) {
-        final classes = favorite['classes'] as List<dynamic>?;
-        if (classes != null) {
-          for (final classData in classes) {
-            final classEvents = classData['class_events'] as List<dynamic>?;
-            if (classEvents != null) {
-              for (final eventData in classEvents) {
-                try {
-                  final classEvent = ClassEvent.fromJson(eventData);
-                  newEvents.add(classEvent);
-                } catch (e) {
-                  CustomErrorHandler.captureException('Error parsing class event: $e');
-                }
+        // Handle both cases: classes as a single object or as a list
+        final classesData = favorite['classes'];
+        List<dynamic> classes = [];
+        
+        if (classesData is List) {
+          classes = classesData;
+        } else if (classesData is Map) {
+          classes = [classesData];
+        }
+        
+        for (final classData in classes) {
+          final classEvents = classData['class_events'] as List<dynamic>?;
+          if (classEvents != null) {
+            for (final eventData in classEvents) {
+              try {
+                final classEvent = ClassEvent.fromJson(eventData);
+                newEvents.add(classEvent);
+              } catch (e) {
+                CustomErrorHandler.captureException('Error parsing class event: $e');
               }
             }
           }
