@@ -17,8 +17,8 @@ class MonthHeader extends StatelessWidget {
 
     return Container(
       margin: EdgeInsets.only(
-        top: isFirst ? 16 : 32,
-        bottom: 16,
+        top: isFirst ? 16 : 24,
+        bottom: 12,
         left: 16,
         right: 16,
       ),

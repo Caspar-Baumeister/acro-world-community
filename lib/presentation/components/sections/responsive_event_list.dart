@@ -147,6 +147,9 @@ class EventCardData {
     final location = _parseLocation(
       classEvent.classModel?.country,
       classEvent.classModel?.city,
+      classEvent.classModel?.locationName,
+      classEvent.classModel?.locationCity,
+      classEvent.classModel?.locationCountry,
     );
     
     return EventCardData(
@@ -165,20 +168,38 @@ class EventCardData {
     );
   }
 
-  static String? _parseLocation(String? country, String? city) {
-    // Clean up the strings by removing extra whitespace
+  static String? _parseLocation(
+    String? country, 
+    String? city, 
+    String? locationName, 
+    String? locationCity, 
+    String? locationCountry,
+  ) {
+    // Clean up all strings by removing extra whitespace
     final cleanCountry = country?.trim();
     final cleanCity = city?.trim();
+    final cleanLocationName = locationName?.trim();
+    final cleanLocationCity = locationCity?.trim();
+    final cleanLocationCountry = locationCountry?.trim();
     
-    if (cleanCountry != null && cleanCountry.isNotEmpty && 
-        cleanCity != null && cleanCity.isNotEmpty) {
-      return "$cleanCity, $cleanCountry";
-    } else if (cleanCountry != null && cleanCountry.isNotEmpty) {
-      return cleanCountry;
-    } else if (cleanCity != null && cleanCity.isNotEmpty) {
-      return cleanCity;
-    } else {
-      return null;
+    // Priority 1: Use locationName if available
+    if (cleanLocationName != null && cleanLocationName.isNotEmpty) {
+      return cleanLocationName;
     }
+    
+    // Priority 2: Combine city and country (prefer locationCity/locationCountry over city/country)
+    final primaryCity = cleanLocationCity ?? cleanCity;
+    final primaryCountry = cleanLocationCountry ?? cleanCountry;
+    
+    if (primaryCity != null && primaryCity.isNotEmpty && 
+        primaryCountry != null && primaryCountry.isNotEmpty) {
+      return "$primaryCity, $primaryCountry";
+    } else if (primaryCountry != null && primaryCountry.isNotEmpty) {
+      return primaryCountry;
+    } else if (primaryCity != null && primaryCity.isNotEmpty) {
+      return primaryCity;
+    }
+    
+    return null;
   }
 }

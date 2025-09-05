@@ -246,7 +246,7 @@ class _FavoritesBodyState extends State<FavoritesBody> {
               ),
             ),
             
-            const SizedBox(height: 16),
+            const SizedBox(height: 8),
           ],
         );
       },

@@ -70,12 +70,12 @@ class ResponsiveEventCard extends StatelessWidget {
           children: [
             // Image section
             Expanded(
-              flex: 3,
+              flex: 2,
               child: _buildImageSection(context, colorScheme),
             ),
             // Content section
             Expanded(
-              flex: 2,
+              flex: 3,
               child: _buildContentSection(context, theme, colorScheme),
             ),
           ],
