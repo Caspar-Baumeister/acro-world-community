@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ProfileBody extends ConsumerWidget {
   const ProfileBody({super.key});
@@ -141,6 +142,19 @@ class ProfileBody extends ConsumerWidget {
                             ),
                           ),
                         ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      // Shop Button
+                      _buildActionButton(
+                        context: context,
+                        icon: Icons.shopping_bag_rounded,
+                        title: "AcroWorld Shop",
+                        subtitle: "Buy the right equipment",
+                        onTap: () {
+                          _openShop(context);
+                        },
                       ),
 
                       const SizedBox(height: 24),
@@ -532,6 +546,20 @@ class ProfileBody extends ConsumerWidget {
         );
       },
     );
+  }
+
+  void _openShop(BuildContext context) async {
+    final Uri url = Uri.parse('https://acroworld.shop');
+    
+    try {
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        showErrorToast('Could not open the shop');
+      }
+    } catch (e) {
+      showErrorToast('Error opening shop: $e');
+    }
   }
 }
 
