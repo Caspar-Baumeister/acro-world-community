@@ -63,10 +63,10 @@ class ResponsiveEventList extends StatelessWidget {
 
   Widget _buildHorizontalLayout(BuildContext context) {
     return SizedBox(
-      height: 220, // Updated to match card height
+      height: 240, // Increased height to accommodate shadow
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), // Added vertical padding for shadow
         itemCount: events.length,
         itemBuilder: (context, index) {
           final eventData = events[index];
@@ -148,7 +148,6 @@ class EventCardData {
       classEvent.classModel?.country,
       classEvent.classModel?.city,
       classEvent.classModel?.locationName,
-      classEvent.classModel?.locationCity,
       classEvent.classModel?.locationCountry,
     );
     
@@ -172,14 +171,12 @@ class EventCardData {
     String? country, 
     String? city, 
     String? locationName, 
-    String? locationCity, 
     String? locationCountry,
   ) {
     // Clean up all strings by removing extra whitespace
     final cleanCountry = country?.trim();
     final cleanCity = city?.trim();
     final cleanLocationName = locationName?.trim();
-    final cleanLocationCity = locationCity?.trim();
     final cleanLocationCountry = locationCountry?.trim();
     
     // Priority 1: Use locationName if available
@@ -187,8 +184,8 @@ class EventCardData {
       return cleanLocationName;
     }
     
-    // Priority 2: Combine city and country (prefer locationCity/locationCountry over city/country)
-    final primaryCity = cleanLocationCity ?? cleanCity;
+    // Priority 2: Combine city and country (prefer locationCountry over country)
+    final primaryCity = cleanCity;
     final primaryCountry = cleanLocationCountry ?? cleanCountry;
     
     if (primaryCity != null && primaryCity.isNotEmpty && 
