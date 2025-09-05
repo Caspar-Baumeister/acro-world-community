@@ -63,7 +63,7 @@ class ResponsiveEventList extends StatelessWidget {
 
   Widget _buildHorizontalLayout(BuildContext context) {
     return SizedBox(
-      height: 200, // Updated to match card height
+      height: 220, // Updated to match card height
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -148,13 +148,6 @@ class EventCardData {
       classEvent.classModel?.country,
       classEvent.classModel?.city,
     );
-    
-    // Debug print to see what location data we have
-    print('DEBUG EventCardData: ${classEvent.classModel?.name}');
-    print('  - Country: ${classEvent.classModel?.country}');
-    print('  - City: ${classEvent.classModel?.city}');
-    print('  - Parsed Location: $location');
-    print('  - ClassModel: ${classEvent.classModel}');
     
     return EventCardData(
       title: classEvent.classModel?.name ?? "Unknown Event",
