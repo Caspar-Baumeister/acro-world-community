@@ -102,14 +102,6 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
 
       List<ClassEvent> newEvents = [];
       
-      // Debug logging
-      print('DEBUG: favoriteData length: ${favoriteData.length}');
-      if (favoriteData.isNotEmpty) {
-        print('DEBUG: first favorite keys: ${favoriteData[0].keys.toList()}');
-        print('DEBUG: first favorite classes type: ${favoriteData[0]['classes'].runtimeType}');
-        print('DEBUG: first favorite classes value: ${favoriteData[0]['classes']}');
-      }
-      
       for (final favorite in favoriteData) {
         // Handle both cases: classes as a single object or as a list
         final classesData = favorite['classes'];
@@ -137,9 +129,16 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
       }
 
       // Sort events by start date
-      newEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
+      newEvents.sort((a, b) {
+        if (a.startDate == null && b.startDate == null) return 0;
+        if (a.startDate == null) return 1;
+        if (b.startDate == null) return -1;
+        return DateTime.parse(a.startDate!).compareTo(DateTime.parse(b.startDate!));
+      });
 
       final allEvents = refresh ? newEvents : [...state.events, ...newEvents];
+      
+      print('DEBUG: Found ${newEvents.length} new events, total: ${allEvents.length}');
       
       state = state.copyWith(
         events: allEvents,
