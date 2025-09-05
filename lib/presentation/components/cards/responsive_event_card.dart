@@ -39,8 +39,8 @@ class ResponsiveEventCard extends StatelessWidget {
     
     // Calculate responsive width
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 160.0);
-    final cardHeight = isGridMode ? 240.0 : 250.0; // Increased from 220 to 250
+    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 200.0); // Increased from 160 to 200 for better aspect ratio
+    final cardHeight = isGridMode ? 240.0 : 200.0; // Reduced height to 200 for better aspect ratio
 
     return GestureDetector(
       onTap: onTap ?? _handleCardTap(context),
