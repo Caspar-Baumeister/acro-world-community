@@ -48,7 +48,7 @@ class HeaderWidget extends StatelessWidget {
                 ),
                 child: CustomAvatarCachedNetworkImage(
                   imageUrl: imgUrl,
-                  radius: 40,
+                  radius: 60,
                 ),
               ),
               const SizedBox(width: 16),
