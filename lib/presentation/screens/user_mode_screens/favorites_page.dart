@@ -1,8 +1,8 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/buttons/past_events_filter_button.dart';
-import 'package:acroworld/presentation/components/cards/favorite_event_card.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/components/sections/month_header.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/favorite_events_provider.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +42,8 @@ class _FavoritesPageState extends ConsumerState<FavoritesPage> {
       child: FavoritesBody(
         state: favoriteEventsState,
         onRefresh: () => ref.read(favoriteEventsProvider.notifier).refresh(),
-        onTogglePastEvents: () => ref.read(favoriteEventsProvider.notifier).togglePastEvents(),
+        onTogglePastEvents: () =>
+            ref.read(favoriteEventsProvider.notifier).togglePastEvents(),
         onLoadMore: () => ref.read(favoriteEventsProvider.notifier).loadMore(),
       ),
     );
@@ -114,8 +115,8 @@ class _FavoritesBodyState extends State<FavoritesBody> {
             Text(
               widget.state.error!,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurfaceVariant,
-              ),
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 16),
@@ -149,8 +150,8 @@ class _FavoritesBodyState extends State<FavoritesBody> {
               Text(
                 'Start favoriting classes to see their events here!',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -161,77 +162,112 @@ class _FavoritesBodyState extends State<FavoritesBody> {
 
     return RefreshIndicator(
       onRefresh: () async => widget.onRefresh(),
-      child: Column(
-        children: [
-          // Filter Button
-          PastEventsFilterButton(
-            showPastEvents: widget.state.showPastEvents,
-            onToggle: widget.onTogglePastEvents,
-          ),
-          
-          // Events List
-          Expanded(
-            child: ListView.builder(
-              controller: _scrollController,
-              itemCount: widget.state.events.length + (widget.state.isLoading ? 1 : 0),
-              itemBuilder: (context, index) {
-                if (index >= widget.state.events.length) {
-                  return const Padding(
-                    padding: EdgeInsets.all(16),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                }
-
-                final event = widget.state.events[index];
-                final isPastEvent = event.startDate != null && 
-                    DateTime.parse(event.startDate!).isBefore(DateTime.now());
-
-                // Add month header if this is the first event of a new month
-                final shouldShowMonthHeader = _shouldShowMonthHeader(index, widget.state.events);
-                
-                return Column(
-                  children: [
-                    if (shouldShowMonthHeader)
-                      MonthHeader(
-                        monthYear: _getMonthYear(DateTime.parse(event.startDate!)),
-                        isFirst: index == 0,
-                      ),
-                    FavoriteEventCard(
-                      event: event,
-                      isPastEvent: isPastEvent,
-                    ),
-                  ],
-                );
-              },
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height -
+            MediaQuery.of(context).padding.top -
+            kToolbarHeight -
+            100, // Account for filter button and padding
+        child: Column(
+          children: [
+            // Filter Button
+            PastEventsFilterButton(
+              showPastEvents: widget.state.showPastEvents,
+              onToggle: widget.onTogglePastEvents,
             ),
-          ),
-        ],
+
+            // Events List
+            Expanded(
+              child: _buildEventsByMonth(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  bool _shouldShowMonthHeader(int index, List<ClassEvent> events) {
-    if (index == 0) return true;
-    
-    final currentEvent = events[index];
-    final previousEvent = events[index - 1];
-    
-    if (currentEvent.startDate == null || previousEvent.startDate == null) {
-      return false;
+  Widget _buildEventsByMonth() {
+    if (widget.state.isLoading && widget.state.events.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
+
+    // Group events by month
+    final Map<String, List<ClassEvent>> eventsByMonth = {};
     
-    final currentMonth = DateTime(DateTime.parse(currentEvent.startDate!).year, DateTime.parse(currentEvent.startDate!).month);
-    final previousMonth = DateTime(DateTime.parse(previousEvent.startDate!).year, DateTime.parse(previousEvent.startDate!).month);
-    
-    return !currentMonth.isAtSameMomentAs(previousMonth);
+    for (final event in widget.state.events) {
+      if (event.startDate != null) {
+        final date = DateTime.parse(event.startDate!);
+        final monthKey = '${date.year}-${date.month.toString().padLeft(2, '0')}';
+        
+        if (!eventsByMonth.containsKey(monthKey)) {
+          eventsByMonth[monthKey] = [];
+        }
+        eventsByMonth[monthKey]!.add(event);
+      }
+    }
+
+    // Sort months chronologically
+    final sortedMonths = eventsByMonth.keys.toList()
+      ..sort((a, b) => a.compareTo(b));
+
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: sortedMonths.length + (widget.state.isLoading ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index >= sortedMonths.length) {
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+
+        final monthKey = sortedMonths[index];
+        final monthEvents = eventsByMonth[monthKey]!;
+        final firstEvent = monthEvents.first;
+        final monthYear = _getMonthYear(DateTime.parse(firstEvent.startDate!));
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Month Header
+            MonthHeader(
+              monthYear: monthYear,
+              isFirst: index == 0,
+            ),
+            
+            // Horizontal scrollable events for this month
+            SizedBox(
+              height: 200,
+              child: ResponsiveEventList(
+                events: monthEvents.map((event) => EventCardData.fromClassEvent(event)).toList(),
+                isGridMode: false,
+                isLoading: false,
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+          ],
+        );
+      },
+    );
   }
+
 
   String _getMonthYear(DateTime date) {
     const months = [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December'
     ];
     return '${months[date.month - 1]} ${date.year}';
   }
