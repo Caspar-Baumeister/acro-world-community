@@ -82,8 +82,8 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
         throw Exception('No data received');
       }
 
-      final favorites = data['me'] as List<dynamic>?;
-      if (favorites == null || favorites.isEmpty) {
+      final meData = data['me'] as List<dynamic>?;
+      if (meData == null || meData.isEmpty) {
         state = state.copyWith(
           isLoading: false,
           hasMore: false,
@@ -91,7 +91,7 @@ class FavoriteEventsNotifier extends StateNotifier<FavoriteEventsState> {
         return;
       }
 
-      final favoriteData = favorites[0]['class_favorits'] as List<dynamic>?;
+      final favoriteData = meData[0]['class_favorits'] as List<dynamic>?;
       if (favoriteData == null) {
         state = state.copyWith(
           isLoading: false,
