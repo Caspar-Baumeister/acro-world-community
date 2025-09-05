@@ -59,9 +59,7 @@ class ProfileBody extends ConsumerWidget {
                 child: HeaderWidget(
                   imgUrl: user.imageUrl ?? '',
                   name: user.name ?? 'User',
-                  subtitle: hasTeacherProfile 
-                      ? 'Creator & User' 
-                      : 'User',
+                  subtitle: hasTeacherProfile ? 'Creator & User' : 'User',
                   showEditButton: true,
                   onEditPressed: () {
                     context.pushNamed(editUserDataRoute);
@@ -115,7 +113,7 @@ class ProfileBody extends ConsumerWidget {
 
                       const SizedBox(height: 16),
 
-                      // Tickets and Favorites Row
+                      // Action Buttons Row (3 columns)
                       Row(
                         children: [
                           Expanded(
@@ -129,7 +127,7 @@ class ProfileBody extends ConsumerWidget {
                               },
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: _buildActionButton(
                               context: context,
@@ -141,20 +139,19 @@ class ProfileBody extends ConsumerWidget {
                               },
                             ),
                           ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: _buildActionButton(
+                              context: context,
+                              icon: Icons.shopping_bag_rounded,
+                              title: "Shop",
+                              subtitle: "Equipment",
+                              onTap: () {
+                                _openShop(context);
+                              },
+                            ),
+                          ),
                         ],
-                      ),
-
-                      const SizedBox(height: 16),
-
-                      // Shop Button
-                      _buildActionButton(
-                        context: context,
-                        icon: Icons.shopping_bag_rounded,
-                        title: "AcroWorld Shop",
-                        subtitle: "Buy the right equipment",
-                        onTap: () {
-                          _openShop(context);
-                        },
                       ),
 
                       const SizedBox(height: 24),
@@ -173,44 +170,40 @@ class ProfileBody extends ConsumerWidget {
                       Text(
                         "Settings",
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                              fontWeight: FontWeight.bold,
+                            ),
                       ),
                       const SizedBox(height: 16),
-                      
                       _buildSettingsItem(
                         context: context,
                         icon: Icons.account_circle_outlined,
                         title: "Account Settings",
                         onTap: () => context.pushNamed(accountSettingsRoute),
                       ),
-                      
                       _buildSettingsItem(
                         context: context,
                         icon: Icons.backpack_rounded,
                         title: "Essentials",
                         onTap: () => context.pushNamed(essentialsRoute),
                       ),
-                      
                       _buildSettingsItem(
                         context: context,
                         icon: Icons.chat_bubble_outline_rounded,
                         title: "Feedback & Bugs",
                         onTap: () => showCupertinoModalPopup(
                           context: context,
-                          builder: (BuildContext context) => const FeedbackPopUp(
+                          builder: (BuildContext context) =>
+                              const FeedbackPopUp(
                             subject: 'Feedback from AcroWorld App',
                             title: "Feedback & Bugs",
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 24),
                     ],
                   ),
                 ),
               ),
-
 
               // Logout and Delete Account
               SliverToBoxAdapter(
@@ -229,9 +222,9 @@ class ProfileBody extends ConsumerWidget {
                           ref.invalidate(navigationProvider);
                         },
                       ),
-                      
+
                       const SizedBox(height: 12),
-                      
+
                       _buildDangerButton(
                         context: context,
                         icon: Icons.delete_forever_rounded,
@@ -301,7 +294,10 @@ class ProfileBody extends ConsumerWidget {
                   decoration: BoxDecoration(
                     color: isProminent
                         ? Colors.white.withOpacity(0.2)
-                        : Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        : Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -320,20 +316,23 @@ class ProfileBody extends ConsumerWidget {
                       Text(
                         title,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: isProminent
-                              ? Colors.white
-                              : Theme.of(context).colorScheme.onSurface,
-                        ),
+                              fontWeight: FontWeight.bold,
+                              color: isProminent
+                                  ? Colors.white
+                                  : Theme.of(context).colorScheme.onSurface,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         subtitle,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: isProminent
-                              ? Colors.white.withOpacity(0.8)
-                              : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                        ),
+                              color: isProminent
+                                  ? Colors.white.withOpacity(0.8)
+                                  : Theme.of(context)
+                                      .colorScheme
+                                      .onSurface
+                                      .withOpacity(0.7),
+                            ),
                       ),
                     ],
                   ),
@@ -342,7 +341,10 @@ class ProfileBody extends ConsumerWidget {
                   Icons.arrow_forward_ios_rounded,
                   color: isProminent
                       ? Colors.white.withOpacity(0.8)
-                      : Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                      : Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7),
                   size: 16,
                 ),
               ],
@@ -384,7 +386,8 @@ class ProfileBody extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Icon(
@@ -397,16 +400,19 @@ class ProfileBody extends ConsumerWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                        fontWeight: FontWeight.bold,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                  ),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7),
+                      ),
                   textAlign: TextAlign.center,
                 ),
               ],
@@ -454,13 +460,14 @@ class ProfileBody extends ConsumerWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                  ),
+                        fontWeight: FontWeight.w500,
+                      ),
                 ),
                 const Spacer(),
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 20,
                 ),
               ],
@@ -505,9 +512,9 @@ class ProfileBody extends ConsumerWidget {
                 Text(
                   title,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w500,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                        fontWeight: FontWeight.w500,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
                 ),
               ],
             ),
@@ -550,7 +557,7 @@ class ProfileBody extends ConsumerWidget {
 
   void _openShop(BuildContext context) async {
     final Uri url = Uri.parse('https://acroworld.shop');
-    
+
     try {
       if (await canLaunchUrl(url)) {
         await launchUrl(url, mode: LaunchMode.externalApplication);
