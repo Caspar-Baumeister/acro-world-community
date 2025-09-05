@@ -40,7 +40,7 @@ class ResponsiveEventCard extends StatelessWidget {
     // Calculate responsive width
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 160.0);
-    final cardHeight = isGridMode ? 240.0 : 220.0; // Increased from 200 to 220
+    final cardHeight = isGridMode ? 240.0 : 250.0; // Increased from 220 to 250
 
     return GestureDetector(
       onTap: onTap ?? _handleCardTap(context),
@@ -192,6 +192,18 @@ class ResponsiveEventCard extends StatelessWidget {
                 color: colorScheme.onSurfaceVariant,
                 height: 1.1,
                 fontSize: responsiveFontSize - 1.0, // Slightly smaller than title
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          else
+            // Debug: Show when location is null or empty
+            Text(
+              'No location data',
+              style: theme.textTheme.bodySmall?.copyWith(
+                color: colorScheme.error,
+                height: 1.1,
+                fontSize: responsiveFontSize - 1.0,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,

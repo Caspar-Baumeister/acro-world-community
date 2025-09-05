@@ -24,25 +24,17 @@ class MonthHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: Container(
-              height: 1,
-              color: colorScheme.outline.withOpacity(0.2),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Text(
-              monthYear,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: Colors.black, // Changed to black
-                fontWeight: FontWeight.w600,
-              ),
+          Text(
+            monthYear,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.w600,
             ),
           ),
           Expanded(
             child: Container(
               height: 1,
+              margin: const EdgeInsets.only(left: 16),
               color: colorScheme.outline.withOpacity(0.2),
             ),
           ),
