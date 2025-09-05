@@ -40,3 +40,5 @@ const String creatorProfileRoute = 'creator-profile';
 const String classBookingSummaryRoute = 'class-booking-summary';
 const String ticketsRoute = 'tickets';
 const String favoritesRoute = 'favorites';
+const String eventSearchRoute = 'event-search';
+const String teacherSearchRoute = 'teacher-search';

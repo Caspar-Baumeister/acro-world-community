@@ -1,7 +1,8 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/search_delegate/teacher_search_delegate.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class TeacherAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TeacherAppBar({super.key});
@@ -12,10 +13,7 @@ class TeacherAppBar extends StatelessWidget implements PreferredSizeWidget {
       title: ModernSearchBar(
         hintText: 'Search teachers...',
         readOnly: true,
-        onTap: () => showSearch(
-          context: context,
-          delegate: TeacherSearchDelegate(),
-        ),
+        onTap: () => context.pushNamed(teacherSearchRoute),
         showFilterButton: false, // No filter button, using FilterRow instead
       ),
     );

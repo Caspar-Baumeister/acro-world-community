@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
 import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +26,7 @@ class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
       title: ModernSearchBar(
         hintText: 'Search events...',
         readOnly: true,
-        onTap: () => showSearch(
-          context: context,
-          delegate: EventSearchDelegate(),
-        ),
+        onTap: () => context.pushNamed(eventSearchRoute),
         onFilterPressed: () => context.pushNamed(filterRoute),
         isFilterActive: discoveryState.isFilter,
         showFilterButton: true,

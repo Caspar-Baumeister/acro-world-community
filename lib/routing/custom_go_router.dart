@@ -34,6 +34,8 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/lo
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/event_search_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/teacher_search_page.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
@@ -120,6 +122,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: favoritesRoute,
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const FavoritesPage()),
+              ),
+              GoRoute(
+                path: '/event-search',
+                name: eventSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const EventSearchPage()),
+              ),
+              GoRoute(
+                path: '/teacher-search',
+                name: teacherSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const TeacherSearchPage()),
               ),
             ]),
         ////////////////////
