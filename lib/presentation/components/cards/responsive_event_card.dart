@@ -195,18 +195,6 @@ class ResponsiveEventCard extends StatelessWidget {
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-            )
-          else
-            // Debug: Show when location is null or empty
-            Text(
-              'No location data',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.error,
-                height: 1.1,
-                fontSize: responsiveFontSize - 1.0,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
           const SizedBox(height: 4),
           // Date

@@ -149,12 +149,6 @@ class EventCardData {
       classEvent.classModel?.city,
     );
     
-    // Debug print to see what location data we have
-    print('DEBUG EventCardData: ${classEvent.classModel?.name}');
-    print('  - Country: ${classEvent.classModel?.country}');
-    print('  - City: ${classEvent.classModel?.city}');
-    print('  - Parsed Location: $location');
-    
     return EventCardData(
       title: classEvent.classModel?.name ?? "Unknown Event",
       location: location,
@@ -172,12 +166,17 @@ class EventCardData {
   }
 
   static String? _parseLocation(String? country, String? city) {
-    if (country != null && city != null) {
-      return "$city, $country";
-    } else if (country != null) {
-      return country;
-    } else if (city != null) {
-      return city;
+    // Clean up the strings by removing extra whitespace
+    final cleanCountry = country?.trim();
+    final cleanCity = city?.trim();
+    
+    if (cleanCountry != null && cleanCountry.isNotEmpty && 
+        cleanCity != null && cleanCity.isNotEmpty) {
+      return "$cleanCity, $cleanCountry";
+    } else if (cleanCountry != null && cleanCountry.isNotEmpty) {
+      return cleanCountry;
+    } else if (cleanCity != null && cleanCity.isNotEmpty) {
+      return cleanCity;
     } else {
       return null;
     }
