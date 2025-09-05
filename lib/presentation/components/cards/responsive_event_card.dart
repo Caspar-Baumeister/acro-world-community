@@ -168,11 +168,11 @@ class ResponsiveEventCard extends StatelessWidget {
             : baseFontSize;
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment:
-            MainAxisAlignment.start, // Start alignment to remove space
+            MainAxisAlignment.spaceBetween, // Start alignment to remove space
         children: [
           // Title - Let it flow naturally
           Text(
@@ -186,12 +186,11 @@ class ResponsiveEventCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4), // Small spacing between title and location
           // Location and Date - Let them flow naturally
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Location
+              // Locationc
               if (location != null && location!.isNotEmpty)
                 Text(
                   location!,
@@ -204,7 +203,7 @@ class ResponsiveEventCard extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               const SizedBox(
-                  height: 4), // Increased spacing between location and date
+                  height: 6), // Increased spacing between location and date
               // Date
               if (dateString.isNotEmpty)
                 Text(
