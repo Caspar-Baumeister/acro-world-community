@@ -171,7 +171,7 @@ class ResponsiveEventCard extends StatelessWidget {
         children: [
           // Title - Fixed height with overflow
           SizedBox(
-            height: 32, // Fixed height for title (2 lines max)
+            height: 40, // Increased height for title (2 lines max)
             child: Text(
               title,
               style: theme.textTheme.titleSmall?.copyWith(
@@ -184,12 +184,13 @@ class ResponsiveEventCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis, // Use ellipsis for consistent height
             ),
           ),
+          const SizedBox(height: 4), // Small spacing between title and location/date
           // Location and Date - Fixed height container
           SizedBox(
-            height: 32, // Fixed height for location and date
+            height: 40, // Increased height for location and date
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 // Location
                 if (location != null && location!.isNotEmpty)
@@ -203,6 +204,7 @@ class ResponsiveEventCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
+                const SizedBox(height: 2), // Small spacing between location and date
                 // Date
                 if (dateString.isNotEmpty)
                   Text(
