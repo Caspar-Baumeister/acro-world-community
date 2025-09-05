@@ -184,8 +184,7 @@ class ResponsiveEventCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis, // Use ellipsis for consistent height
             ),
           ),
-          const SizedBox(height: 4), // Small spacing between title and location/date
-          // Location and Date - Fixed height container
+          // Location and Date - Fixed height container (no spacing)
           SizedBox(
             height: 40, // Increased height for location and date
             child: Column(
