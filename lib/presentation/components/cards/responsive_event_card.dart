@@ -39,8 +39,8 @@ class ResponsiveEventCard extends StatelessWidget {
     
     // Calculate responsive width
     final screenWidth = MediaQuery.of(context).size.width;
-    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 200.0); // Increased from 160 to 200 for better aspect ratio
-    final cardHeight = isGridMode ? 240.0 : 220.0; // Increased height to 220 to prevent cut-off
+    final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 180.0); // Reduced from 200 to 180 for smaller cards
+    final cardHeight = isGridMode ? 200.0 : 180.0; // Reduced height for smaller cards
 
     return GestureDetector(
       onTap: onTap ?? _handleCardTap(context),
@@ -167,11 +167,11 @@ class ResponsiveEventCard extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween, // Distribute space evenly
+        mainAxisAlignment: MainAxisAlignment.start, // Start alignment to remove space
         children: [
-          // Title - Fixed height with overflow
+          // Title - Smaller height
           SizedBox(
-            height: 40, // Increased height for title (2 lines max)
+            height: 32, // Reduced height for title
             child: Text(
               title,
               style: theme.textTheme.titleSmall?.copyWith(
@@ -181,12 +181,13 @@ class ResponsiveEventCard extends StatelessWidget {
                 fontSize: responsiveFontSize,
               ),
               maxLines: 2,
-              overflow: TextOverflow.ellipsis, // Use ellipsis for consistent height
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          // Location and Date - Fixed height container (no spacing)
+          const SizedBox(height: 2), // Small spacing between title and location
+          // Location and Date - Smaller height
           SizedBox(
-            height: 40, // Increased height for location and date
+            height: 28, // Reduced height for location and date
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -203,7 +204,7 @@ class ResponsiveEventCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
-                const SizedBox(height: 2), // Small spacing between location and date
+                const SizedBox(height: 1), // Minimal spacing between location and date
                 // Date
                 if (dateString.isNotEmpty)
                   Text(

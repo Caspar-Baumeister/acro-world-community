@@ -237,14 +237,14 @@ class _FavoritesBodyState extends State<FavoritesBody> {
             ),
             
             // Horizontal scrollable events for this month
-            SizedBox(
-              height: 240, // Updated to accommodate shadow
-              child: ResponsiveEventList(
-                events: monthEvents.map((event) => EventCardData.fromClassEvent(event)).toList(),
-                isGridMode: false,
-                isLoading: false,
-              ),
-            ),
+                                SizedBox(
+                      height: 200, // Updated to match smaller cards
+                      child: ResponsiveEventList(
+                        events: monthEvents.map((event) => EventCardData.fromClassEvent(event)).toList(),
+                        isGridMode: false,
+                        isLoading: false,
+                      ),
+                    ),
             
             const SizedBox(height: 8),
           ],
