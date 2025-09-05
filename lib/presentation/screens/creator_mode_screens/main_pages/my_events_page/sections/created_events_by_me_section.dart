@@ -2,7 +2,7 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
+import 'package:acroworld/presentation/components/cards/responsive_event_card.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -136,9 +136,17 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
                 horizontal: AppDimensions.spacingSmall,
                 vertical: AppDimensions.spacingExtraSmall,
               ),
-              child: ClassTile(
-                classObject: cls,
+              child: ResponsiveEventCard(
+                title: cls.name ?? "Unknown Event",
+                location: _getLocationString(cls),
+                imageUrl: cls.imageUrl,
+                startDate: null, // ClassModel doesn't have specific start/end dates
+                endDate: null,
+                isHighlighted: false,
                 onTap: () => _onTap(cls),
+                isGridMode: false,
+                urlSlug: cls.urlSlug,
+                eventId: cls.id,
               ),
             );
           },
@@ -198,6 +206,27 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
         ),
       ),
     );
+  }
+
+  String? _getLocationString(ClassModel cls) {
+    // Priority 1: Use locationName if available
+    if (cls.locationName != null && cls.locationName!.isNotEmpty) {
+      return cls.locationName;
+    }
+    
+    // Priority 2: Combine city and country
+    final city = cls.city?.trim();
+    final country = cls.country?.trim();
+    
+    if (city != null && city.isNotEmpty && country != null && country.isNotEmpty) {
+      return "$city, $country";
+    } else if (country != null && country.isNotEmpty) {
+      return country;
+    } else if (city != null && city.isNotEmpty) {
+      return city;
+    }
+    
+    return null;
   }
 
   void _onTap(ClassModel cls) {
