@@ -217,6 +217,48 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
 }
 """);
 
+  // Optimized query for My Events page with minimal data
+  static final getMyEventsOptimized = gql("""
+query getMyEventsOptimized(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) {
+   classes(where: \$where, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+    id
+    name
+    image_url
+    location_name
+    city
+    location_country
+    url_slug
+    created_at
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
+      id
+      start_date
+      is_highlighted
+    }
+    class_events_aggregate(where: {end_date: {_gte: now}}) {
+      aggregate {
+        count
+      }
+    }
+    class_teachers(limit: 3) {
+      teacher {
+        id
+        name
+        images(where: {is_profile_picture: {_eq: true}}, limit: 1) {
+          image {
+            url
+          }
+        }
+      }
+      is_owner
+    }
+    class_flags(where: {is_active: {_eq: true}}) {
+      id
+      user_id
+    }
+  }
+}
+""");
+
   static final userBookings = gql("""
 query userBookings {
   me {

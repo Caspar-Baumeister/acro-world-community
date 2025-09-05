@@ -85,7 +85,10 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
 
   /// Fetch my events
   Future<void> fetchMyEvents(String userId, {bool isRefresh = true, bool myEvents = true}) async {
+    // Set loading state immediately for better UX
     state = state.copyWith(isInitialized: true, loading: true);
+    
+    CustomErrorHandler.logDebug('Starting to fetch ${myEvents ? 'created' : 'participating'} events for user: $userId');
 
     if (isRefresh) {
       if (myEvents) {
@@ -104,9 +107,11 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
     }
 
     try {
+      final stopwatch = Stopwatch()..start();
       final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       
-      final repositoryReturn = await repository.getClassesLazyAsTeacher(
+      // Use optimized method for better performance
+      final repositoryReturn = await repository.getMyEventsOptimized(
         _limit,
         myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
         {
@@ -139,7 +144,13 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
         },
       );
 
+      stopwatch.stop();
+      CustomErrorHandler.logDebug('GraphQL query took ${stopwatch.elapsedMilliseconds}ms');
+      
+      final parseStopwatch = Stopwatch()..start();
       final events = List<ClassModel>.from(repositoryReturn["classes"]);
+      parseStopwatch.stop();
+      CustomErrorHandler.logDebug('Data parsing took ${parseStopwatch.elapsedMilliseconds}ms');
 
       if (myEvents) {
         final updatedEvents = isRefresh ? events : [...state.myCreatedEvents, ...events];
@@ -159,8 +170,69 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
 
       CustomErrorHandler.logDebug('Fetched ${events.length} ${myEvents ? 'created' : 'participating'} events');
     } catch (e) {
-      CustomErrorHandler.logError('Error fetching my events: $e');
-      state = state.copyWith(loading: false);
+      CustomErrorHandler.logError('Error fetching my events with optimized query: $e');
+      
+      // Fallback to original query if optimized one fails
+      try {
+        CustomErrorHandler.logDebug('Falling back to original query...');
+        final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+        
+        final repositoryReturn = await repository.getClassesLazyAsTeacher(
+          _limit,
+          myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
+          {
+            "_or": [
+              if (myEvents)
+                {
+                  "created_by_id": {"_eq": userId}
+                },
+              if (myEvents)
+                {
+                  "class_owners": {
+                    "teacher": {
+                      "user_id": {"_eq": userId}
+                    }
+                  }
+                },
+              if (!myEvents)
+                {
+                  "class_teachers": {
+                    "teacher": {
+                      "user_id": {"_eq": userId}
+                    }
+                  }
+                },
+            ],
+            if (!myEvents)
+              "_not": {
+                "created_by_id": {"_eq": userId}
+              },
+          },
+        );
+
+        final events = List<ClassModel>.from(repositoryReturn["classes"]);
+
+        if (myEvents) {
+          final updatedEvents = isRefresh ? events : [...state.myCreatedEvents, ...events];
+          state = state.copyWith(
+            myCreatedEvents: updatedEvents,
+            canFetchMoreMyEvents: events.length == _limit,
+            loading: false,
+          );
+        } else {
+          final updatedEvents = isRefresh ? events : [...state.myParticipatingEvents, ...events];
+          state = state.copyWith(
+            myParticipatingEvents: updatedEvents,
+            canFetchMoreParticipatingEvents: events.length == _limit,
+            loading: false,
+          );
+        }
+
+        CustomErrorHandler.logDebug('Fallback query successful, fetched ${events.length} events');
+      } catch (fallbackError) {
+        CustomErrorHandler.logError('Fallback query also failed: $fallbackError');
+        state = state.copyWith(loading: false);
+      }
     }
   }
 

@@ -82,6 +82,47 @@ class ClassesRepository {
     }
   }
 
+  // Optimized method for My Events page with caching and minimal data
+  Future<Map<String, dynamic>> getMyEventsOptimized(
+      int limit, int offset, Map where) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: Queries.getMyEventsOptimized,
+      fetchPolicy: FetchPolicy.cacheFirst, // Use cache first for better performance
+      variables: {
+        "limit": limit,
+        "offset": offset,
+        "where": where,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    // Check for a valid response
+    if (result.hasException == true) {
+      throw Exception(
+          'Failed to load my events. result: ${result.exception?.raw ?? result}');
+    }
+
+    List<ClassModel> classes = [];
+
+    if (result.data != null && result.data!["classes"] != null) {
+      try {
+        classes = List<ClassModel>.from(
+          result.data!['classes'].map((json) => ClassModel.fromJson(json)),
+        );
+
+        return {
+          "classes": classes,
+        };
+      } catch (e) {
+        throw Exception('Failed to parse my events: $e');
+      }
+    } else {
+      throw Exception('Failed to load my events, no data, with result $result');
+    }
+  }
+
   // creates a new class
   Future<ClassModel> createClass(Map<String, dynamic> variables) async {
     print("urlSlug: ${variables["urlSlug"]}");
