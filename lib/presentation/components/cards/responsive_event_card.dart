@@ -203,7 +203,8 @@ class ResponsiveEventCard extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-              const SizedBox(height: 2), // Small spacing between location and date
+              const SizedBox(
+                  height: 4), // Increased spacing between location and date
               // Date
               if (dateString.isNotEmpty)
                 Text(
