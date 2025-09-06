@@ -1,6 +1,8 @@
 import 'package:acroworld/presentation/components/buttons/floating_action_button.dart';
+import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/invites_body.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/sections/email_invitations_section.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/sections/event_invitations_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/modals/invite_by_email_modal.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +16,16 @@ class InvitesPage extends StatelessWidget {
     
     return Stack(
       children: [
-        BasePage(makeScrollable: false, child: InvitesBody()),
+        const BasePage(
+          makeScrollable: false,
+          child: CustomTabView(
+            tabTitles: ["Email Invitations", "Event Invitations"],
+            tabViews: [
+              EmailInvitationsSection(),
+              EventInvitationsSection(),
+            ],
+          ),
+        ),
         // Floating Invite by Email Button
         CustomFloatingActionButton(
           title: "Invite by Email",
