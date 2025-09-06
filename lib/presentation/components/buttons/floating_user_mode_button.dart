@@ -15,7 +15,6 @@ class FloatingUserModeButton extends ConsumerWidget {
     return FloatingModeSwitchButton(
       title: "User Mode",
       subtitle: "Switch to browse events",
-      icon: Icons.person,
       onPressed: () => _switchToUserMode(context, ref),
       isCreatorMode: false,
     );

@@ -17,12 +17,12 @@ class FloatingCreatorModeButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userState = ref.watch(userRiverpodProvider);
-    
+
     return userState.when(
       data: (user) {
         final hasTeacherProfile = user?.teacherProfile != null;
         final isEmailVerified = user?.isEmailVerified ?? false;
-        
+
         String subtitle;
         if (!isEmailVerified) {
           subtitle = "Verify Email to Access";
@@ -31,12 +31,12 @@ class FloatingCreatorModeButton extends ConsumerWidget {
         } else {
           subtitle = "Register as a Creator";
         }
-        
+
         return FloatingModeSwitchButton(
           title: "Creator Mode",
           subtitle: subtitle,
-          icon: Icons.star,
-          onPressed: () => _switchToCreatorMode(context, ref, isEmailVerified, hasTeacherProfile),
+          onPressed: () => _switchToCreatorMode(
+              context, ref, isEmailVerified, hasTeacherProfile),
           isCreatorMode: true,
         );
       },
@@ -45,29 +45,34 @@ class FloatingCreatorModeButton extends ConsumerWidget {
     );
   }
 
-  Future<void> _switchToCreatorMode(
-    BuildContext context, 
-    WidgetRef ref, 
-    bool isEmailVerified, 
-    bool hasTeacherProfile
-  ) async {
+  Future<void> _switchToCreatorMode(BuildContext context, WidgetRef ref,
+      bool isEmailVerified, bool hasTeacherProfile) async {
     if (!isEmailVerified) {
-      showInfoToast("You need to verify your email before switching to creator mode");
-      context.pushNamed(verifyEmailRoute);
+      showInfoToast(
+          "You need to verify your email before switching to creator mode", context: context);
+      if (context.mounted) {
+        context.pushNamed(verifyEmailRoute);
+      }
     } else if (hasTeacherProfile) {
       GraphQLClientSingleton().updateClient(true);
       ref.read(userRoleProvider.notifier).setIsCreator(true);
-      context.pushNamed(creatorProfileRoute);
+      if (context.mounted) {
+        context.pushNamed(creatorProfileRoute);
+      }
     } else {
       final roles = await TokenSingletonService().getUserRoles();
       if (roles.contains("TeacherUser")) {
         GraphQLClientSingleton().updateClient(true);
-        context.pushNamed(editCreatorProfileRoute);
+        if (context.mounted) {
+          context.pushNamed(editCreatorProfileRoute);
+        }
       } else {
-        buildMortal(
-          context,
-          const CreateCreatorProfileModal(),
-        );
+        if (context.mounted) {
+          buildMortal(
+            context,
+            const CreateCreatorProfileModal(),
+          );
+        }
       }
     }
   }
