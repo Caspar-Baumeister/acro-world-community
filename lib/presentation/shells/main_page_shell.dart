@@ -1,5 +1,7 @@
 // lib/routing/app_router.dart
 
+import 'package:acroworld/presentation/components/buttons/floating_creator_mode_button.dart';
+import 'package:acroworld/presentation/components/buttons/floating_user_mode_button.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/presentation/shells/shell_bottom_navigation_bar.dart';
 import 'package:acroworld/presentation/shells/shell_creator_bottom_navigation_bar.dart';
@@ -36,7 +38,16 @@ class MainPageShell extends ConsumerWidget {
       return ShellDesktopLayout(isCreator: isCreator, child: child);
     }
     return Scaffold(
-      body: child,
+      body: Stack(
+        children: [
+          child,
+          // Floating mode switch button
+          if (isCreator)
+            const FloatingUserModeButton()
+          else
+            const FloatingCreatorModeButton(),
+        ],
+      ),
       bottomNavigationBar: isCreator
           ? ShellCreatorBottomNavigationBar(
               onItemPressed: (index) {

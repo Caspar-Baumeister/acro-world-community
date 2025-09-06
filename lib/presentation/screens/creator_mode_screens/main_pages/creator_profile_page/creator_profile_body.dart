@@ -1,7 +1,6 @@
 import 'package:acroworld/presentation/components/sections/analytics_dashboard.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/edit_creator_profile_button.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -58,13 +57,6 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
                     teacher: creatorState.activeTeacher!,
                   )
                 : Container(),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.spacingLarge),
-              child: Center(
-                child: CreatorSwitchToUserModeButton(),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.only(
                 left: AppDimensions.spacingMedium,

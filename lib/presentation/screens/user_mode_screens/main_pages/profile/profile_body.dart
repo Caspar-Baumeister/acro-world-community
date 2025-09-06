@@ -1,17 +1,10 @@
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
-import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
-import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,7 +49,7 @@ class ProfileBody extends ConsumerWidget {
             slivers: [
               // Profile Header
               SliverToBoxAdapter(
-                child: HeaderWidget(
+                        child: HeaderWidget(
                   imgUrl: user.imageUrl ?? '',
                   name: user.name ?? 'User',
                   subtitle: hasTeacherProfile ? 'Creator & User' : 'User',
@@ -73,43 +66,6 @@ class ProfileBody extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-                      // Creator Mode Button (Prominent)
-                      _buildProminentButton(
-                        context: context,
-                        icon: Icons.star_rounded,
-                        title: "Creator Mode",
-                        subtitle: !isEmailVerified
-                            ? "Verify Email to Access"
-                            : hasTeacherProfile
-                                ? "Switch to Creator Mode"
-                                : "Register as a Creator",
-                        onTap: () async {
-                          if (!isEmailVerified) {
-                            showInfoToast(
-                                "You need to verify your email before switching to creator mode");
-                            context.pushNamed(verifyEmailRoute);
-                          } else if (hasTeacherProfile) {
-                            GraphQLClientSingleton().updateClient(true);
-                            ref
-                                .read(userRoleProvider.notifier)
-                                .setIsCreator(true);
-                            context.pushNamed(creatorProfileRoute);
-                          } else {
-                            final roles =
-                                await TokenSingletonService().getUserRoles();
-                            if (roles.contains("TeacherUser")) {
-                              GraphQLClientSingleton().updateClient(true);
-                              context.pushNamed(editCreatorProfileRoute);
-                            } else {
-                              buildMortal(
-                                context,
-                                const CreateCreatorProfileModal(),
-                              );
-                            }
-                          }
-                        },
-                        isProminent: true,
-                      ),
 
                       const SizedBox(height: 16),
 
@@ -364,7 +320,7 @@ class ProfileBody extends ConsumerWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -469,11 +425,11 @@ class ProfileBody extends ConsumerWidget {
                   color:
                       Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 20,
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
       ),
     );
   }
