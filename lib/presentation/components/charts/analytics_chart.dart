@@ -83,17 +83,18 @@ class AnalyticsChart extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-          // Chart
+          // Chart with axes
           SizedBox(
-            height: 120,
-            child: _buildChart(context, colorScheme),
+            height: 180,
+            child: _buildChartWithAxes(context, colorScheme),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildChart(BuildContext context, ColorScheme colorScheme) {
+
+  Widget _buildChartWithAxes(BuildContext context, ColorScheme colorScheme) {
     if (dataPoints.isEmpty) {
       return Center(
         child: Text(
@@ -110,7 +111,7 @@ class AnalyticsChart extends StatelessWidget {
     final range = maxValue - minValue;
 
     return CustomPaint(
-      painter: _ChartPainter(
+      painter: _ChartWithAxesPainter(
         dataPoints: dataPoints,
         maxValue: maxValue,
         minValue: minValue,
@@ -148,7 +149,8 @@ class ChartDataPoint {
   });
 }
 
-class _ChartPainter extends CustomPainter {
+
+class _ChartWithAxesPainter extends CustomPainter {
   final List<ChartDataPoint> dataPoints;
   final double maxValue;
   final double minValue;
@@ -156,7 +158,7 @@ class _ChartPainter extends CustomPainter {
   final Color primaryColor;
   final ColorScheme colorScheme;
 
-  _ChartPainter({
+  _ChartWithAxesPainter({
     required this.dataPoints,
     required this.maxValue,
     required this.minValue,
@@ -179,20 +181,89 @@ class _ChartPainter extends CustomPainter {
       ..color = primaryColor.withOpacity(0.1)
       ..style = PaintingStyle.fill;
 
+    final axisPaint = Paint()
+      ..color = colorScheme.outline.withOpacity(0.3)
+      ..strokeWidth = 1.0
+      ..style = PaintingStyle.stroke;
+
+    final textPainter = TextPainter(
+      textDirection: TextDirection.ltr,
+    );
+
+    // Chart area with margins for axes
+    final chartLeft = 40.0;
+    final chartRight = size.width - 10.0;
+    final chartTop = 10.0;
+    final chartBottom = size.height - 30.0;
+    final chartWidth = chartRight - chartLeft;
+    final chartHeight = chartBottom - chartTop;
+
+    // Draw Y-axis
+    canvas.drawLine(
+      Offset(chartLeft, chartTop),
+      Offset(chartLeft, chartBottom),
+      axisPaint,
+    );
+
+    // Draw X-axis
+    canvas.drawLine(
+      Offset(chartLeft, chartBottom),
+      Offset(chartRight, chartBottom),
+      axisPaint,
+    );
+
+    // Draw Y-axis labels
+    final ySteps = 5;
+    for (int i = 0; i <= ySteps; i++) {
+      final value = minValue + (range * i / ySteps);
+      final y = chartBottom - (i * chartHeight / ySteps);
+      
+      final label = _formatValue(value);
+      textPainter.text = TextSpan(
+        text: label,
+        style: TextStyle(
+          color: colorScheme.onSurfaceVariant,
+          fontSize: 10,
+        ),
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(chartLeft - textPainter.width - 5, y - textPainter.height / 2),
+      );
+    }
+
+    // Draw X-axis labels
+    for (int i = 0; i < dataPoints.length; i++) {
+      final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
+      
+      textPainter.text = TextSpan(
+        text: dataPoints[i].label,
+        style: TextStyle(
+          color: colorScheme.onSurfaceVariant,
+          fontSize: 10,
+        ),
+      );
+      textPainter.layout();
+      textPainter.paint(
+        canvas,
+        Offset(x - textPainter.width / 2, chartBottom + 5),
+      );
+    }
+
+    // Draw chart
     final path = Path();
     final fillPath = Path();
 
-    final stepX = size.width / (dataPoints.length - 1);
-    
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
-      final x = i * stepX;
+      final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
       final normalizedValue = range > 0 ? (point.value - minValue) / range : 0.5;
-      final y = size.height - (normalizedValue * size.height * 0.8) - (size.height * 0.1);
+      final y = chartBottom - (normalizedValue * chartHeight);
 
       if (i == 0) {
         path.moveTo(x, y);
-        fillPath.moveTo(x, size.height);
+        fillPath.moveTo(x, chartBottom);
         fillPath.lineTo(x, y);
       } else {
         path.lineTo(x, y);
@@ -201,7 +272,7 @@ class _ChartPainter extends CustomPainter {
     }
 
     // Close the fill path
-    fillPath.lineTo(size.width, size.height);
+    fillPath.lineTo(chartRight, chartBottom);
     fillPath.close();
 
     // Draw fill
@@ -217,11 +288,21 @@ class _ChartPainter extends CustomPainter {
 
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
-      final x = i * stepX;
+      final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
       final normalizedValue = range > 0 ? (point.value - minValue) / range : 0.5;
-      final y = size.height - (normalizedValue * size.height * 0.8) - (size.height * 0.1);
+      final y = chartBottom - (normalizedValue * chartHeight);
 
       canvas.drawCircle(Offset(x, y), 4, pointPaint);
+    }
+  }
+
+  String _formatValue(double value) {
+    if (value >= 1000000) {
+      return '${(value / 1000000).toStringAsFixed(1)}M';
+    } else if (value >= 1000) {
+      return '${(value / 1000).toStringAsFixed(1)}K';
+    } else {
+      return value.toInt().toString();
     }
   }
 

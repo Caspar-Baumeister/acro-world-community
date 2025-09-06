@@ -32,7 +32,7 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
         ModernNavigationBarItem(
           icon: IconLibrary.calendar.icon,
           selectedIcon: IconLibrary.calendar.icon,
-          label: "My Events",
+          label: "Listings",
         ),
         ModernNavigationBarItem(
           icon: IconLibrary.invites.icon,
