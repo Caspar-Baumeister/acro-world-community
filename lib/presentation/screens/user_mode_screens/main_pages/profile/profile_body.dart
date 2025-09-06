@@ -51,7 +51,7 @@ class ProfileBody extends ConsumerWidget {
             slivers: [
               // Profile Header
               SliverToBoxAdapter(
-                        child: HeaderWidget(
+                child: HeaderWidget(
                   imgUrl: user.imageUrl ?? '',
                   name: user.name ?? 'User',
                   subtitle: hasTeacherProfile ? 'Creator & User' : 'User',
@@ -68,7 +68,6 @@ class ProfileBody extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
                     children: [
-
                       const SizedBox(height: 16),
 
                       // Action Buttons Row (3 columns)
@@ -322,7 +321,7 @@ class ProfileBody extends ConsumerWidget {
   }) {
     return Container(
       decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -427,11 +426,11 @@ class ProfileBody extends ConsumerWidget {
                   color:
                       Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 20,
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
+        ),
       ),
     );
   }

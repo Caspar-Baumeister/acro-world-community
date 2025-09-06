@@ -34,18 +34,28 @@ class MainPageShell extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     bool isCreator = ref.watch(userRoleProvider);
+    final currentLocation = GoRouterState.of(context).uri.path;
+    
     if (Responsive.isDesktop(context)) {
       return ShellDesktopLayout(isCreator: isCreator, child: child);
     }
+    
+    // Determine which floating button to show based on current route
+    Widget? floatingButton;
+    if (isCreator && currentLocation == '/creator-profile') {
+      // Show user mode button only on creator profile page
+      floatingButton = const FloatingUserModeButton();
+    } else if (!isCreator && currentLocation == '/profile') {
+      // Show creator mode button only on user profile page
+      floatingButton = const FloatingCreatorModeButton();
+    }
+    
     return Scaffold(
       body: Stack(
         children: [
           child,
-          // Floating mode switch button
-          if (isCreator)
-            const FloatingUserModeButton()
-          else
-            const FloatingCreatorModeButton(),
+          // Floating mode switch button (only on specific screens)
+          if (floatingButton != null) floatingButton,
         ],
       ),
       bottomNavigationBar: isCreator

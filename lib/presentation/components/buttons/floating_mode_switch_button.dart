@@ -21,7 +21,7 @@ class FloatingModeSwitchButton extends StatelessWidget {
     final colorScheme = theme.colorScheme;
 
     return Positioned(
-      bottom: 100, // Position above the bottom navigation bar
+      bottom: 8, // Position just above the bottom navigation bar
       left: 16,
       right: 16,
       child: Material(
