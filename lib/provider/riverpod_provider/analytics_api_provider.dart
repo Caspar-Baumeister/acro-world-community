@@ -1,42 +1,86 @@
 import 'package:acroworld/data/repositories/bookings_repository.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/charts/analytics_chart.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// Provider for bookings analytics data
 final bookingsAnalyticsProvider = FutureProvider.family<List<ChartDataPoint>, String>((ref, timePeriod) async {
-  final repository = BookingsRepository(apiService: GraphQLClientSingleton());
+  final creatorState = ref.watch(creatorProvider);
+  final creatorId = creatorState.activeTeacher?.userId;
   
-  // Get date range based on time period
-  final dateRange = _getDateRangeForPeriod(timePeriod);
+  if (creatorId == null) {
+    CustomErrorHandler.logError("Creator ID not found for analytics");
+    throw Exception("Creator not found. Please ensure you're logged in as a creator.");
+  }
   
-  // Fetch bookings data from API
-  final bookings = await repository.getCreatorsClassEventBookings(
-    "creator_id", // This should be the actual creator ID
-    100, // Large limit to get all data
-    0,
-  );
-  
-  // Group bookings by date and create chart data points
-  return _groupBookingsByDate(bookings, dateRange, timePeriod);
+  try {
+    CustomErrorHandler.logDebug("Fetching bookings analytics for creator: $creatorId, period: $timePeriod");
+    
+    final repository = BookingsRepository(apiService: GraphQLClientSingleton());
+    
+    // Get date range based on time period
+    final dateRange = _getDateRangeForPeriod(timePeriod);
+    CustomErrorHandler.logDebug("Date range: ${dateRange['start']} to ${dateRange['end']}");
+    
+    // Fetch bookings data from API
+    final bookings = await repository.getCreatorsClassEventBookings(
+      creatorId,
+      100, // Large limit to get all data
+      0,
+    );
+    
+    CustomErrorHandler.logDebug("Fetched ${bookings.length} bookings");
+    
+    // Group bookings by date and create chart data points
+    final result = _groupBookingsByDate(bookings, dateRange, timePeriod);
+    CustomErrorHandler.logDebug("Generated ${result.length} chart data points for bookings");
+    
+    return result;
+  } catch (e, stackTrace) {
+    CustomErrorHandler.logError("Error fetching bookings analytics: $e", stackTrace: stackTrace);
+    rethrow;
+  }
 });
 
 /// Provider for revenue analytics data
 final revenueAnalyticsProvider = FutureProvider.family<List<ChartDataPoint>, String>((ref, timePeriod) async {
-  final repository = BookingsRepository(apiService: GraphQLClientSingleton());
+  final creatorState = ref.watch(creatorProvider);
+  final creatorId = creatorState.activeTeacher?.userId;
   
-  // Get date range based on time period
-  final dateRange = _getDateRangeForPeriod(timePeriod);
+  if (creatorId == null) {
+    CustomErrorHandler.logError("Creator ID not found for revenue analytics");
+    throw Exception("Creator not found. Please ensure you're logged in as a creator.");
+  }
   
-  // Fetch bookings data from API
-  final bookings = await repository.getCreatorsClassEventBookings(
-    "creator_id", // This should be the actual creator ID
-    100, // Large limit to get all data
-    0,
-  );
-  
-  // Group revenue by date and create chart data points
-  return _groupRevenueByDate(bookings, dateRange, timePeriod);
+  try {
+    CustomErrorHandler.logDebug("Fetching revenue analytics for creator: $creatorId, period: $timePeriod");
+    
+    final repository = BookingsRepository(apiService: GraphQLClientSingleton());
+    
+    // Get date range based on time period
+    final dateRange = _getDateRangeForPeriod(timePeriod);
+    CustomErrorHandler.logDebug("Date range: ${dateRange['start']} to ${dateRange['end']}");
+    
+    // Fetch bookings data from API
+    final bookings = await repository.getCreatorsClassEventBookings(
+      creatorId,
+      100, // Large limit to get all data
+      0,
+    );
+    
+    CustomErrorHandler.logDebug("Fetched ${bookings.length} bookings for revenue");
+    
+    // Group revenue by date and create chart data points
+    final result = _groupRevenueByDate(bookings, dateRange, timePeriod);
+    CustomErrorHandler.logDebug("Generated ${result.length} chart data points for revenue");
+    
+    return result;
+  } catch (e, stackTrace) {
+    CustomErrorHandler.logError("Error fetching revenue analytics: $e", stackTrace: stackTrace);
+    rethrow;
+  }
 });
 
 /// Provider for page views analytics data (hardcoded for now)
@@ -107,7 +151,7 @@ List<ChartDataPoint> _groupBookingsByDate(
   final Map<String, int> bookingsByDate = {};
   
   for (final booking in bookings) {
-    final bookingDate = DateTime.parse(booking.createdAt);
+    final bookingDate = booking.createdAt; // Already a DateTime
     if (bookingDate.isAfter(dateRange['start']!) && 
         bookingDate.isBefore(dateRange['end']!)) {
       final dateKey = _getDateKey(bookingDate, timePeriod);
@@ -127,11 +171,11 @@ List<ChartDataPoint> _groupRevenueByDate(
   final Map<String, double> revenueByDate = {};
   
   for (final booking in bookings) {
-    final bookingDate = DateTime.parse(booking.createdAt);
+    final bookingDate = booking.createdAt; // Already a DateTime
     if (bookingDate.isAfter(dateRange['start']!) && 
         bookingDate.isBefore(dateRange['end']!)) {
       final dateKey = _getDateKey(bookingDate, timePeriod);
-      final amount = double.tryParse(booking.amount?.toString() ?? '0') ?? 0.0;
+      final amount = booking.amount; // Already a double
       revenueByDate[dateKey] = (revenueByDate[dateKey] ?? 0.0) + amount;
     }
   }
@@ -261,7 +305,7 @@ List<ChartDataPoint> _createChartDataPoints(
   for (final key in sortedKeys) {
     data.add(ChartDataPoint(
       label: key,
-      value: groupedData[key] is int ? groupedData[key].toDouble() : groupedData[key],
+      value: groupedData[key] is int ? groupedData[key].toDouble() : groupedData[key].toDouble(),
       date: DateTime.now(), // This would be calculated properly in real implementation
     ));
   }
