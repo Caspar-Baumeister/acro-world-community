@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/sections/analytics_dashboard.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_switch_to_user_mode_button.dart';
@@ -49,6 +50,9 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Analytics Dashboard
+            const AnalyticsDashboard(),
+            
             creatorState.activeTeacher != null
                 ? EditCreatorProfileButton(
                     teacher: creatorState.activeTeacher!,
