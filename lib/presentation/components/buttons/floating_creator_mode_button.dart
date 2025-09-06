@@ -49,7 +49,8 @@ class FloatingCreatorModeButton extends ConsumerWidget {
       bool isEmailVerified, bool hasTeacherProfile) async {
     if (!isEmailVerified) {
       showInfoToast(
-          "You need to verify your email before switching to creator mode", context: context);
+          "You need to verify your email before switching to creator mode",
+          context: context);
       if (context.mounted) {
         context.pushNamed(verifyEmailRoute);
       }
