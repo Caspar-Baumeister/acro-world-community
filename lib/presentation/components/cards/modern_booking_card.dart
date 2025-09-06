@@ -1,26 +1,19 @@
+import 'package:acroworld/data/models/class_event_booking_model.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/modals/dashboard_booking_information_modal.dart';
+import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
-/// Modern booking card component with consistent styling
 class ModernBookingCard extends StatelessWidget {
-  final String name;
-  final String eventTitle;
-  final String eventDate;
-  final String bookedAt;
-  final String price;
-  final String? imageUrl;
-  final BookingStatus status;
-  final VoidCallback? onTap;
+  final ClassEventBooking booking;
+  final bool isClassBookingSummary;
+  final bool? showBookingOption;
 
   const ModernBookingCard({
     super.key,
-    required this.name,
-    required this.eventTitle,
-    required this.eventDate,
-    required this.bookedAt,
-    required this.price,
-    this.imageUrl,
-    required this.status,
-    this.onTap,
+    required this.booking,
+    this.isClassBookingSummary = false,
+    this.showBookingOption,
   });
 
   @override
@@ -28,105 +21,111 @@ class ModernBookingCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Card(
-        elevation: 4,
-        shadowColor: colorScheme.shadow.withOpacity(0.1),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                // Image and status section
-                _buildImageSection(colorScheme),
-                const SizedBox(width: 16),
-                // Content section
-                Expanded(
-                  child: _buildContentSection(theme, colorScheme),
-                ),
-                // Price section
-                _buildPriceSection(theme, colorScheme),
-              ],
+    return GestureDetector(
+      onTap: () => _showBookingDetails(context),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
             ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Event image with status badge
+              _buildImageSection(context, colorScheme),
+              const SizedBox(width: 12),
+              // Main content
+              Expanded(
+                child: _buildContentSection(context, theme, colorScheme),
+              ),
+              // Price section
+              _buildPriceSection(context, theme, colorScheme),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Widget _buildImageSection(ColorScheme colorScheme) {
+  Widget _buildImageSection(BuildContext context, ColorScheme colorScheme) {
     return Stack(
       children: [
-        Container(
-          width: 80,
-          height: 80,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            image: imageUrl != null
-                ? DecorationImage(
-                    image: NetworkImage(imageUrl!),
+        // Event image
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Container(
+            width: 60,
+            height: 60,
+            color: colorScheme.surfaceContainerHighest,
+            child: booking.classEvent.classModel?.imageUrl != null
+                ? Image.network(
+                    booking.classEvent.classModel!.imageUrl!,
                     fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) => _buildImagePlaceholder(colorScheme),
                   )
-                : null,
-            color: imageUrl == null ? colorScheme.surfaceContainerHighest : null,
+                : _buildImagePlaceholder(colorScheme),
           ),
-          child: imageUrl == null
-              ? Icon(
-                  Icons.event,
-                  size: 32,
-                  color: colorScheme.onSurfaceVariant,
-                )
-              : null,
         ),
         // Status badge
         Positioned(
-          bottom: 4,
-          left: 4,
-          child: _buildStatusBadge(colorScheme),
+          top: 4,
+          right: 4,
+          child: _buildStatusBadge(context, colorScheme),
         ),
       ],
     );
   }
 
-  Widget _buildStatusBadge(ColorScheme colorScheme) {
-    Color backgroundColor;
-    Color textColor;
+  Widget _buildImagePlaceholder(ColorScheme colorScheme) {
+    return Container(
+      color: colorScheme.surfaceContainerHighest,
+      child: Icon(
+        Icons.event,
+        color: colorScheme.onSurfaceVariant,
+        size: 24,
+      ),
+    );
+  }
+
+  Widget _buildStatusBadge(BuildContext context, ColorScheme colorScheme) {
+    final status = booking.status;
+    final isConfirmed = status == "Confirmed";
+    final isWaiting = status == "WaitingForPayment";
     
-    switch (status) {
-      case BookingStatus.waitingForPayment:
-        backgroundColor = Colors.red;
-        textColor = Colors.white;
-        break;
-      case BookingStatus.confirmed:
-        backgroundColor = Colors.green;
-        textColor = Colors.white;
-        break;
-      case BookingStatus.cancelled:
-        backgroundColor = Colors.grey;
-        textColor = Colors.white;
-        break;
-      case BookingStatus.pending:
-        backgroundColor = Colors.orange;
-        textColor = Colors.white;
-        break;
+    Color badgeColor;
+    String badgeText;
+    
+    if (isConfirmed) {
+      badgeColor = Colors.green;
+      badgeText = "Confirmed";
+    } else if (isWaiting) {
+      badgeColor = Colors.orange;
+      badgeText = "Waiting";
+    } else {
+      badgeColor = Colors.red;
+      badgeText = status;
     }
     
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: backgroundColor,
+        color: badgeColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        status.displayName,
-        style: TextStyle(
-          color: textColor,
+        badgeText,
+        style: const TextStyle(
+          color: Colors.white,
           fontSize: 10,
           fontWeight: FontWeight.w600,
         ),
@@ -134,13 +133,13 @@ class ModernBookingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentSection(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildContentSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Name
+        // Person name
         Text(
-          name,
+          booking.user.name ?? "Unknown User",
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
@@ -149,17 +148,18 @@ class ModernBookingCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Event title
+        // Event name and date
         Text(
-          eventTitle,
+          "${booking.classEvent.classModel?.name ?? "Unknown Event"} - ${getDatedMMYY(booking.classEvent.startDateDT)}",
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface,
+            color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w500,
           ),
-          maxLines: 1,
+          maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
-        const SizedBox(height: 4),
-        // Event date
+        const SizedBox(height: 8),
+        // Booking date
         Row(
           children: [
             Icon(
@@ -169,25 +169,7 @@ class ModernBookingCard extends StatelessWidget {
             ),
             const SizedBox(width: 4),
             Text(
-              eventDate,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 2),
-        // Booked at
-        Row(
-          children: [
-            Icon(
-              Icons.bookmark,
-              size: 14,
-              color: colorScheme.onSurfaceVariant,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              bookedAt,
+              "Booked: ${getDatedMMHHmm(booking.createdAt)}",
               style: theme.textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurfaceVariant,
               ),
@@ -198,45 +180,34 @@ class ModernBookingCard extends StatelessWidget {
     );
   }
 
-  Widget _buildPriceSection(ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildPriceSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Text(
-          price,
-          style: theme.textTheme.titleLarge?.copyWith(
+          booking.bookingPriceString,
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
             color: colorScheme.primary,
           ),
         ),
         const SizedBox(height: 4),
         Icon(
-          Icons.arrow_forward_ios,
-          size: 16,
+          Icons.chevron_right,
           color: colorScheme.onSurfaceVariant,
+          size: 20,
         ),
       ],
     );
   }
-}
 
-/// Booking status enum
-enum BookingStatus {
-  waitingForPayment,
-  confirmed,
-  cancelled,
-  pending;
-
-  String get displayName {
-    switch (this) {
-      case BookingStatus.waitingForPayment:
-        return 'Waiting for Payment';
-      case BookingStatus.confirmed:
-        return 'Confirmed';
-      case BookingStatus.cancelled:
-        return 'Cancelled';
-      case BookingStatus.pending:
-        return 'Pending';
-    }
+  void _showBookingDetails(BuildContext context) {
+    buildMortal(
+      context,
+      DashboardBookingInformationModal(
+        booking: booking,
+        isClassBookingSummary: isClassBookingSummary,
+      ),
+    );
   }
 }

@@ -15,6 +15,8 @@ class CreatorBookingsState {
   final int offset;
   final String? error;
   final String? creatorUserId;
+  final String searchQuery;
+  final String selectedStatus;
 
   const CreatorBookingsState({
     this.loading = true,
@@ -24,6 +26,8 @@ class CreatorBookingsState {
     this.offset = 0,
     this.error,
     this.creatorUserId,
+    this.searchQuery = "",
+    this.selectedStatus = "all",
   });
 
   CreatorBookingsState copyWith({
@@ -34,6 +38,8 @@ class CreatorBookingsState {
     int? offset,
     String? error,
     String? creatorUserId,
+    String? searchQuery,
+    String? selectedStatus,
   }) {
     return CreatorBookingsState(
       loading: loading ?? this.loading,
@@ -43,6 +49,8 @@ class CreatorBookingsState {
       offset: offset ?? this.offset,
       error: error ?? this.error,
       creatorUserId: creatorUserId ?? this.creatorUserId,
+      searchQuery: searchQuery ?? this.searchQuery,
+      selectedStatus: selectedStatus ?? this.selectedStatus,
     );
   }
 
@@ -53,6 +61,30 @@ class CreatorBookingsState {
           booking.status == "Confirmed" ||
           booking.status == "WaitingForPayment")
       .toList();
+
+  List<ClassEventBooking> get filteredBookings {
+    var filtered = bookings.where((booking) {
+      // Filter by status
+      if (selectedStatus != "all" && booking.status != selectedStatus) {
+        return false;
+      }
+      
+      // Filter by search query
+      if (searchQuery.isNotEmpty) {
+        final personName = booking.user.name?.toLowerCase() ?? "";
+        final eventName = booking.classEvent.classModel?.name?.toLowerCase() ?? "";
+        final query = searchQuery.toLowerCase();
+        
+        if (!personName.contains(query) && !eventName.contains(query)) {
+          return false;
+        }
+      }
+      
+      return true;
+    }).toList();
+    
+    return filtered;
+  }
 }
 
 /// Notifier for creator bookings
@@ -203,6 +235,16 @@ class CreatorBookingsNotifier extends StateNotifier<CreatorBookingsState> {
   /// Set creator user ID
   void setCreatorUserId(String userId) {
     state = state.copyWith(creatorUserId: userId);
+  }
+
+  /// Update search query
+  void updateSearchQuery(String query) {
+    state = state.copyWith(searchQuery: query);
+  }
+
+  /// Update selected status filter
+  void updateSelectedStatus(String status) {
+    state = state.copyWith(selectedStatus: status);
   }
 
   /// Clear all data
