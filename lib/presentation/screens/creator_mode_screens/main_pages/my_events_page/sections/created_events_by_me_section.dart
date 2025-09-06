@@ -3,13 +3,11 @@ import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart'
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -72,53 +70,36 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
   @override
   Widget build(BuildContext context) {
     final eventsState = ref.watch(teacherEventsProvider);
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: AppDimensions.spacingMedium),
-          child: ModernButton(
-            text: "Create New Event",
-            isFilled: true,
-            onPressed: () => buildMortal(
-              context,
-              const CreateNewEventFromExistingModal(),
-            ),
-          ),
-        ),
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => ref
-                .read(teacherEventsProvider.notifier)
-                .fetchMyEvents(widget.userId, isRefresh: true),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (eventsState.loading)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: const Center(
-                        child: Column(
-                          children: [
-                            EventCardSkeleton(),
-                            EventCardSkeleton(),
-                            EventCardSkeleton(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  if (!eventsState.loading &&
-                      eventsState.myCreatedEvents.isNotEmpty)
-                    _buildEventsList(eventsState),
-                  if (!eventsState.loading &&
-                      eventsState.myCreatedEvents.isEmpty)
-                    _buildEmptyState(eventsState),
-                ],
+    return RefreshIndicator(
+      onRefresh: () => ref
+          .read(teacherEventsProvider.notifier)
+          .fetchMyEvents(widget.userId, isRefresh: true),
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (eventsState.loading)
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.7,
+                child: const Center(
+                  child: Column(
+                    children: [
+                      EventCardSkeleton(),
+                      EventCardSkeleton(),
+                      EventCardSkeleton(),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ),
+            if (!eventsState.loading &&
+                eventsState.myCreatedEvents.isNotEmpty)
+              _buildEventsList(eventsState),
+            if (!eventsState.loading &&
+                eventsState.myCreatedEvents.isEmpty)
+              _buildEmptyState(eventsState),
+          ],
         ),
-      ],
+      ),
     );
   }
 
