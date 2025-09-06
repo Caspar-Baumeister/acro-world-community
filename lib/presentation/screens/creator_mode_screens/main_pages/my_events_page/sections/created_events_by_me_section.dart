@@ -174,6 +174,8 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
               ),
             ),
           ),
+        // Bottom padding for floating button
+        const SizedBox(height: 80),
       ],
     );
   }

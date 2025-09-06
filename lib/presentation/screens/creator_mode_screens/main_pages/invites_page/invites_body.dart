@@ -233,6 +233,9 @@ class _InvitesBodyState extends ConsumerState<InvitesBody> {
             isFilled: true,
             onPressed: () => buildMortal(context, const InviteByEmailModal())),
         SizedBox(height: AppDimensions.spacingMedium),
+        
+        // Bottom padding for floating button
+        const SizedBox(height: 80),
       ],
     );
   }

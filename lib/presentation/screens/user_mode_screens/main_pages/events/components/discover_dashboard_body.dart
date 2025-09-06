@@ -115,6 +115,8 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
                   ),
                 ),
               ),
+            // Bottom padding for floating button
+            const SizedBox(height: 80),
           ],
         ),
       ),

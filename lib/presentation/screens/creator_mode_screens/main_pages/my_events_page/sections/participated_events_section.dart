@@ -165,6 +165,8 @@ class _ParticipatedEventsLoaderState
               ),
             ),
           ),
+        // Bottom padding for floating button
+        const SizedBox(height: 80),
       ],
     );
   }
