@@ -64,8 +64,8 @@ class ModernBookingCard extends StatelessWidget {
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Container(
-            width: 60,
-            height: 60,
+            width: 80,
+            height: 80,
             color: colorScheme.surfaceContainerHighest,
             child: booking.classEvent.classModel?.imageUrl != null
                 ? Image.network(
@@ -92,7 +92,7 @@ class ModernBookingCard extends StatelessWidget {
       child: Icon(
         Icons.event,
         color: colorScheme.onSurfaceVariant,
-        size: 24,
+        size: 32,
       ),
     );
   }
