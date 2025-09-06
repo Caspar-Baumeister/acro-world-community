@@ -3,7 +3,7 @@ import 'package:acroworld/presentation/components/custom_tab_view.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/sections/created_events_by_me_section.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/sections/participated_events_section.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/sections/jobs_section.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
@@ -19,10 +19,10 @@ class MyEventsPage extends StatelessWidget {
         const BasePage(
           makeScrollable: false,
           child: CustomTabView(
-            tabTitles: ["From you created", "You're taking part"],
+            tabTitles: ["My Events", "Jobs"],
             tabViews: [
               CreatedEventsByMeSection(),
-              ParticipatedEventsSection(),
+              JobsSection(),
             ],
           ),
         ),
