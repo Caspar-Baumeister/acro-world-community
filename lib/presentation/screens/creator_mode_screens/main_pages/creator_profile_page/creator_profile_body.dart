@@ -67,6 +67,9 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
             const SizedBox(height: AppDimensions.spacingSmall),
             CreatorStripeConnectButton(),
             SizedBox(height: AppDimensions.spacingLarge),
+            
+            // Bottom padding to prevent content from being hidden behind floating button
+            SizedBox(height: 80), // Space for floating button + padding
           ],
         ),
       ),

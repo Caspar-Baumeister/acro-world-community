@@ -199,6 +199,11 @@ class ProfileBody extends ConsumerWidget {
                   ),
                 ),
               ),
+
+              // Bottom padding to prevent content from being hidden behind floating button
+              SliverToBoxAdapter(
+                child: SizedBox(height: 80), // Space for floating button + padding
+              ),
             ],
           ),
         );
