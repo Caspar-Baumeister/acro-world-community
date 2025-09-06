@@ -2,7 +2,7 @@ import 'package:acroworld/presentation/components/input/modern_search_bar.dart' 
 import 'package:acroworld/presentation/components/filters/modern_filter_chip.dart';
 import 'package:flutter/material.dart';
 
-class BookingsSearchAndFilter extends StatelessWidget {
+class BookingsSearchAndFilter extends StatefulWidget {
   final String searchQuery;
   final String selectedStatus;
   final ValueChanged<String> onSearchChanged;
@@ -19,6 +19,33 @@ class BookingsSearchAndFilter extends StatelessWidget {
   });
 
   @override
+  State<BookingsSearchAndFilter> createState() => _BookingsSearchAndFilterState();
+}
+
+class _BookingsSearchAndFilterState extends State<BookingsSearchAndFilter> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.searchQuery);
+  }
+
+  @override
+  void didUpdateWidget(BookingsSearchAndFilter oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.searchQuery != oldWidget.searchQuery) {
+      _controller.text = widget.searchQuery;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(16),
@@ -27,10 +54,10 @@ class BookingsSearchAndFilter extends StatelessWidget {
           // Search bar
           ModernSearchBar(
             hintText: "Search by person name or event...",
-            onChanged: onSearchChanged,
-            onSubmitted: onSearchSubmitted,
+            onChanged: widget.onSearchChanged,
+            onSubmitted: widget.onSearchSubmitted,
             showFilterButton: false,
-            controller: TextEditingController(text: searchQuery),
+            controller: _controller,
           ),
           const SizedBox(height: 12),
           // Filter chips
@@ -40,28 +67,28 @@ class BookingsSearchAndFilter extends StatelessWidget {
               children: [
                 ModernFilterChip(
                   label: "All",
-                  isSelected: selectedStatus == "all",
-                  onTap: () => onStatusChanged("all"),
+                  isSelected: widget.selectedStatus == "all",
+                  onTap: () => widget.onStatusChanged("all"),
                 ),
                 const SizedBox(width: 8),
                 ModernFilterChip(
                   label: "Confirmed",
-                  isSelected: selectedStatus == "Confirmed",
-                  onTap: () => onStatusChanged("Confirmed"),
+                  isSelected: widget.selectedStatus == "Confirmed",
+                  onTap: () => widget.onStatusChanged("Confirmed"),
                   icon: Icons.check_circle,
                 ),
                 const SizedBox(width: 8),
                 ModernFilterChip(
                   label: "Waiting",
-                  isSelected: selectedStatus == "WaitingForPayment",
-                  onTap: () => onStatusChanged("WaitingForPayment"),
+                  isSelected: widget.selectedStatus == "WaitingForPayment",
+                  onTap: () => widget.onStatusChanged("WaitingForPayment"),
                   icon: Icons.schedule,
                 ),
                 const SizedBox(width: 8),
                 ModernFilterChip(
                   label: "Cancelled",
-                  isSelected: selectedStatus == "Cancelled",
-                  onTap: () => onStatusChanged("Cancelled"),
+                  isSelected: widget.selectedStatus == "Cancelled",
+                  onTap: () => widget.onStatusChanged("Cancelled"),
                   icon: Icons.cancel,
                 ),
               ],
