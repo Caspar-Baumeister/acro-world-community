@@ -25,7 +25,7 @@ class DiscoverPage extends StatelessWidget {
           child: DiscoverBody(),
         ),
         // Floating Insert Event Button
-        FloatingActionButton(
+        CustomFloatingActionButton(
           title: "Insert Event",
           subtitle: "Add your class or workshop",
           onPressed: () => context.pushNamed(profileRoute),

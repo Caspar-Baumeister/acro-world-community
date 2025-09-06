@@ -1,14 +1,14 @@
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
-class FloatingActionButton extends StatelessWidget {
+class CustomFloatingActionButton extends StatelessWidget {
   final String title;
   final String subtitle;
   final VoidCallback onPressed;
   final Color backgroundColor;
   final Color textColor;
 
-  const FloatingActionButton({
+  const CustomFloatingActionButton({
     super.key,
     required this.title,
     required this.subtitle,

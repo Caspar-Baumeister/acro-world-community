@@ -27,7 +27,7 @@ class MyEventsPage extends StatelessWidget {
           ),
         ),
         // Floating Create Event Button
-        FloatingActionButton(
+        CustomFloatingActionButton(
           title: "Create Event",
           subtitle: "Add a new class or workshop",
           onPressed: () => context.pushNamed(createEditEventRoute),

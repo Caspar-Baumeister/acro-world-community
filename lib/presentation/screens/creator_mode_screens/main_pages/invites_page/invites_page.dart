@@ -16,7 +16,7 @@ class InvitesPage extends StatelessWidget {
       children: [
         BasePage(makeScrollable: false, child: InvitesBody()),
         // Floating Invite by Email Button
-        FloatingActionButton(
+        CustomFloatingActionButton(
           title: "Invite by Email",
           subtitle: "Send invitations to teachers",
           onPressed: () => buildMortal(context, const InviteByEmailModal()),
