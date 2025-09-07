@@ -3,13 +3,11 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/booking_summary_charts.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/booking_summary_levels_and_roles.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/booking_summary_stats.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/class_booking_summary_booking_view.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -50,35 +48,16 @@ class ClassBookingSummaryBody extends ConsumerWidget {
           );
         }
 
-        final first = bookings.first;
-        final name = first.classEvent.classModel?.name;
-        final date = getDatedMMYY(first.classEvent.startDateDT);
-
         return Column(
           children: [
-            // Event title and date
-            if (name != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.spacingMedium),
-                child: Text(
-                  "$name\n$date",
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-            const SizedBox(height: 16),
             // Stats section
             BookingSummaryStats(bookings: bookings),
             const SizedBox(height: 16),
-            // Charts section
-            SizedBox(
-              height: 200,
-              child: BookingSummaryCharts(bookings: bookings),
-            ),
+            // Level and role summary
+            BookingSummaryLevelsAndRoles(bookings: bookings),
             const SizedBox(height: 16),
             // Bookings list
-            Expanded(child: ClassBookingSummaryBookingView(bookings: bookings)),
+            ClassBookingSummaryBookingView(bookings: bookings),
           ],
         );
       },

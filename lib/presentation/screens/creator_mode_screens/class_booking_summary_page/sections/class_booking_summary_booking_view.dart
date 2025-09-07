@@ -13,20 +13,44 @@ class ClassBookingSummaryBookingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
-      itemCount: bookings.length,
-      itemBuilder: (context, index) {
-        final booking = bookings[index];
-        return Padding(
-          padding: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
+    return Column(
+      children: [
+        // Section header
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
+          child: Row(
+            children: [
+              Text(
+                "Bookings",
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const Spacer(),
+              Text(
+                "${bookings.length} total",
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        // Bookings list
+        ...bookings.map((booking) => Padding(
+          padding: const EdgeInsets.only(
+            left: AppDimensions.spacingMedium,
+            right: AppDimensions.spacingMedium,
+            bottom: AppDimensions.spacingMedium,
+          ),
           child: ModernBookingCard(
             booking: booking,
             isClassBookingSummary: true,
             showBookingOption: true,
           ),
-        );
-      },
+        )).toList(),
+      ],
     );
   }
 }

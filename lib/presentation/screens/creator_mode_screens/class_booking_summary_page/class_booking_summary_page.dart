@@ -11,7 +11,7 @@ class ClassBookingSummaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BasePage(
-        makeScrollable: false,
+        makeScrollable: true,
         appBar: const CustomAppbarSimple(
           title: "Bookings Summary",
         ),

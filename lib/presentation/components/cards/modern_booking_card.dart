@@ -168,10 +168,13 @@ class ModernBookingCard extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
             const SizedBox(width: 4),
-            Text(
-              "Booked: ${getDatedMMHHmm(booking.createdAt)}",
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
+            Expanded(
+              child: Text(
+                "Booked: ${getDatedMMHHmm(booking.createdAt)}",
+                style: theme.textTheme.bodySmall?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
