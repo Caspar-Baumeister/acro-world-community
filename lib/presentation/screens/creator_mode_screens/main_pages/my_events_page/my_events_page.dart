@@ -7,8 +7,15 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/m
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
-class MyEventsPage extends StatelessWidget {
+class MyEventsPage extends StatefulWidget {
   const MyEventsPage({super.key});
+
+  @override
+  State<MyEventsPage> createState() => _MyEventsPageState();
+}
+
+class _MyEventsPageState extends State<MyEventsPage> {
+  int _currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +23,33 @@ class MyEventsPage extends StatelessWidget {
     
     return Stack(
       children: [
-        const BasePage(
+        BasePage(
           makeScrollable: false,
           child: CustomTabView(
             tabTitles: ["My Events", "Jobs"],
-            tabViews: [
+            tabViews: const [
               CreatedEventsByMeSection(),
               JobsSection(),
             ],
+            onTap: (index) {
+              setState(() {
+                _currentTabIndex = index;
+              });
+            },
           ),
         ),
-        // Floating Create Event Button
-        CustomFloatingActionButton(
-          title: "Create Event",
-          subtitle: "Add a new class or workshop",
-          onPressed: () => buildMortal(
-            context,
-            const CreateNewEventFromExistingModal(),
+        // Floating Create Event Button - only show on "My Events" tab (index 0)
+        if (_currentTabIndex == 0)
+          CustomFloatingActionButton(
+            title: "Create Event",
+            subtitle: "Add a new class or workshop",
+            onPressed: () => buildMortal(
+              context,
+              const CreateNewEventFromExistingModal(),
+            ),
+            backgroundColor: colorScheme.primary,
+            textColor: Colors.white,
           ),
-          backgroundColor: colorScheme.primary,
-          textColor: Colors.white,
-        ),
       ],
     );
   }

@@ -7,8 +7,15 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/i
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
-class InvitesPage extends StatelessWidget {
+class InvitesPage extends StatefulWidget {
   const InvitesPage({super.key});
+
+  @override
+  State<InvitesPage> createState() => _InvitesPageState();
+}
+
+class _InvitesPageState extends State<InvitesPage> {
+  int _currentTabIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -16,24 +23,30 @@ class InvitesPage extends StatelessWidget {
     
     return Stack(
       children: [
-        const BasePage(
+        BasePage(
           makeScrollable: false,
           child: CustomTabView(
             tabTitles: ["Email Invitations", "Event Invitations"],
-            tabViews: [
+            tabViews: const [
               EmailInvitationsSection(),
               EventInvitationsSection(),
             ],
+            onTap: (index) {
+              setState(() {
+                _currentTabIndex = index;
+              });
+            },
           ),
         ),
-        // Floating Invite by Email Button
-        CustomFloatingActionButton(
-          title: "Invite by Email",
-          subtitle: "Send invitations to teachers",
-          onPressed: () => buildMortal(context, const InviteByEmailModal()),
-          backgroundColor: colorScheme.secondary,
-          textColor: Colors.white,
-        ),
+        // Floating Invite by Email Button - only show on "Email Invitations" tab (index 0)
+        if (_currentTabIndex == 0)
+          CustomFloatingActionButton(
+            title: "Invite by Email",
+            subtitle: "Send invitations to teachers",
+            onPressed: () => buildMortal(context, const InviteByEmailModal()),
+            backgroundColor: colorScheme.secondary,
+            textColor: Colors.white,
+          ),
       ],
     );
   }
