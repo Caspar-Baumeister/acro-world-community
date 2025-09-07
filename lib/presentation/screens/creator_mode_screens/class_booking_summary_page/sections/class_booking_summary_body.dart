@@ -3,8 +3,9 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/booking_summary_charts.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/booking_summary_stats.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/class_booking_summary_booking_view.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/participants_statistics.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -55,6 +56,7 @@ class ClassBookingSummaryBody extends ConsumerWidget {
 
         return Column(
           children: [
+            // Event title and date
             if (name != null)
               Padding(
                 padding: const EdgeInsets.symmetric(
@@ -65,10 +67,17 @@ class ClassBookingSummaryBody extends ConsumerWidget {
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
+            const SizedBox(height: 16),
+            // Stats section
+            BookingSummaryStats(bookings: bookings),
+            const SizedBox(height: 16),
+            // Charts section
             SizedBox(
               height: 200,
-              child: ParticipantsStatistics(bookings: bookings),
+              child: BookingSummaryCharts(bookings: bookings),
             ),
+            const SizedBox(height: 16),
+            // Bookings list
             Expanded(child: ClassBookingSummaryBookingView(bookings: bookings)),
           ],
         );
