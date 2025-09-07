@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/sections/class_booking_summary_body.dart';
 import 'package:flutter/material.dart';
 
@@ -10,11 +9,13 @@ class ClassBookingSummaryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BasePage(
-        makeScrollable: true,
-        appBar: const CustomAppbarSimple(
-          title: "Bookings Summary",
-        ),
-        child: ClassBookingSummaryBody(classEventId: classEventId));
+    return Scaffold(
+      appBar: const CustomAppbarSimple(
+        title: "Bookings Summary",
+      ),
+      body: SingleChildScrollView(
+        child: ClassBookingSummaryBody(classEventId: classEventId),
+      ),
+    );
   }
 }
