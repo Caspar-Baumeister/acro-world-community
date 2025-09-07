@@ -1,9 +1,9 @@
 import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/cards/modern_email_invitation_card.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+import 'package:acroworld/presentation/components/sections/email_invitations_search_and_filter.dart';
 import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -15,6 +15,9 @@ class EmailInvitationsSection extends ConsumerStatefulWidget {
 }
 
 class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSection> {
+  String _searchQuery = '';
+  String _selectedFilter = 'all';
+
   @override
   void initState() {
     super.initState();
@@ -33,11 +36,38 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
     final invitesState = ref.watch(invitesProvider);
     final invitesNotifier = ref.read(invitesProvider.notifier);
 
-    return RefreshIndicator(
-      onRefresh: () async {
-        await invitesNotifier.getInvitations(isRefresh: true);
-      },
-      child: _buildInvitationsList(invitesState, invitesNotifier),
+    return Column(
+      children: [
+        // Search and filter
+        EmailInvitationsSearchAndFilter(
+          searchQuery: _searchQuery,
+          selectedFilter: _selectedFilter,
+          onSearchChanged: (query) {
+            setState(() {
+              _searchQuery = query;
+            });
+          },
+          onFilterChanged: (filter) {
+            setState(() {
+              _selectedFilter = filter;
+            });
+          },
+          onSearchSubmitted: (query) {
+            setState(() {
+              _searchQuery = query;
+            });
+          },
+        ),
+        // Invitations list
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await invitesNotifier.getInvitations(isRefresh: true);
+            },
+            child: _buildInvitationsList(invitesState, invitesNotifier),
+          ),
+        ),
+      ],
     );
   }
 
@@ -46,15 +76,17 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
       return _buildLoadingState();
     }
 
-    if (invitesState.invites.isEmpty) {
+    final filteredInvites = _getFilteredInvites(invitesState.invites);
+    
+    if (filteredInvites.isEmpty) {
       return _buildEmptyState(invitesNotifier);
     }
 
     return ListView.builder(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: invitesState.invites.length + (invitesState.canFetchMore ? 1 : 0) + 1, // +1 for bottom padding
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      itemCount: filteredInvites.length + (invitesState.canFetchMore ? 1 : 0) + 1, // +1 for bottom padding
       itemBuilder: (context, index) {
-        if (index == invitesState.invites.length) {
+        if (index == filteredInvites.length) {
           // Load more button
           if (invitesState.canFetchMore) {
             return GestureDetector(
@@ -77,15 +109,50 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
           return const SizedBox.shrink();
         }
         
-        if (index == invitesState.invites.length + (invitesState.canFetchMore ? 1 : 0)) {
+        if (index == filteredInvites.length + (invitesState.canFetchMore ? 1 : 0)) {
           // Bottom padding for floating button
           return const SizedBox(height: 80);
         }
         
-        final invite = invitesState.invites[index];
-        return _buildInvitationCard(invite);
+        final invite = filteredInvites[index];
+        return ModernEmailInvitationCard(
+          invitation: invite,
+          onTap: () {
+            // TODO: Navigate to invitation details
+          },
+        );
       },
     );
+  }
+
+  List<InvitationModel> _getFilteredInvites(List<InvitationModel> invites) {
+    return invites.where((invite) {
+      // Search filter
+      if (_searchQuery.isNotEmpty) {
+        final query = _searchQuery.toLowerCase();
+        final teacherName = invite.invitedUser?.name?.toLowerCase() ?? '';
+        final email = invite.email?.toLowerCase() ?? '';
+        final eventName = invite.classModel?.name?.toLowerCase() ?? '';
+        
+        final matchesSearch = teacherName.contains(query) ||
+            email.contains(query) ||
+            eventName.contains(query);
+        if (!matchesSearch) return false;
+      }
+      
+      // Status filter
+      switch (_selectedFilter) {
+        case 'accepted':
+          return invite.confirmationStatus.toLowerCase() == 'accepted';
+        case 'pending':
+          return invite.confirmationStatus.toLowerCase() == 'pending';
+        case 'rejected':
+          return invite.confirmationStatus.toLowerCase() == 'rejected';
+        case 'all':
+        default:
+          return true;
+      }
+    }).toList();
   }
 
   Widget _buildLoadingState() {
@@ -102,6 +169,8 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
   }
 
   Widget _buildEmptyState(InvitesNotifier invitesNotifier) {
+    final hasFilters = _searchQuery.isNotEmpty || _selectedFilter != 'all';
+    
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -113,20 +182,29 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
           ),
           const SizedBox(height: 16),
           Text(
-            'No email invitations found',
+            hasFilters ? 'No invitations match your search' : 'No email invitations found',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
           Text(
-            'You haven\'t sent any email invitations yet',
+            hasFilters 
+                ? 'Try adjusting your search or filters'
+                : 'You haven\'t sent any email invitations yet',
             style: Theme.of(context).textTheme.bodyMedium,
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 16),
           ModernButton(
-            text: "Refresh",
+            text: hasFilters ? "Clear Filters" : "Refresh",
             onPressed: () async {
-              await invitesNotifier.getInvitations(isRefresh: true);
+              if (hasFilters) {
+                setState(() {
+                  _searchQuery = '';
+                  _selectedFilter = 'all';
+                });
+              } else {
+                await invitesNotifier.getInvitations(isRefresh: true);
+              }
             },
           ),
         ],
@@ -134,74 +212,4 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
     );
   }
 
-  Widget _buildInvitationCard(InvitationModel invite) {
-    if (invite.invitedUser == null && invite.email == null) {
-      return const SizedBox();
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Container(
-        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-          boxShadow: [
-            BoxShadow(
-              color: Theme.of(context).colorScheme.shadow.withOpacity(0.5),
-              spreadRadius: 1,
-              blurRadius: 2,
-              offset: const Offset(0, 1),
-            ),
-          ],
-        ),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (invite.invitedUser?.name != null)
-                  Text(
-                    invite.invitedUser!.name!,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                if (invite.invitedUser?.name == null && invite.email != null)
-                  Text(
-                    invite.email!,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                SizedBox(height: AppDimensions.spacingExtraSmall),
-                Text(
-                  "Status: ${invite.confirmationStatus}",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: invite.confirmationStatus.toLowerCase() == "pending"
-                        ? Theme.of(context).colorScheme.error
-                        : invite.confirmationStatus.toLowerCase() == "accepted"
-                            ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).colorScheme.error,
-                  ),
-                ),
-                const SizedBox(height: AppDimensions.spacingExtraSmall),
-                Text(
-                  "Invited at: ${getDatedMMHHmm(DateTime.parse(invite.createdAt))}",
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                if (invite.classModel != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppDimensions.spacingExtraSmall),
-                    child: Text(
-                      "To teach at: ${invite.classModel!.name}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
 }

@@ -1,16 +1,15 @@
-import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
+import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 
-class EventInvitationCard extends StatelessWidget {
-  final ClassModel invitation;
-  final String status; // 'approved', 'pending', 'rejected'
+class ModernEmailInvitationCard extends StatelessWidget {
+  final InvitationModel invitation;
   final VoidCallback? onTap;
 
-  const EventInvitationCard({
+  const ModernEmailInvitationCard({
     super.key,
     required this.invitation,
-    required this.status,
     this.onTap,
   });
 
@@ -39,7 +38,7 @@ class EventInvitationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Event image with status badge
+              // Teacher image with status badge
               _buildImageSection(context, colorScheme),
               const SizedBox(width: 12),
               // Main content
@@ -56,22 +55,25 @@ class EventInvitationCard extends StatelessWidget {
   }
 
   Widget _buildImageSection(BuildContext context, ColorScheme colorScheme) {
+    final isConfirmed = invitation.confirmationStatus.toLowerCase() == "accepted";
+    final teacherImageUrl = invitation.invitedUser?.imageUrl;
+    
     return Stack(
       children: [
-        // Event image
+        // Teacher image or anonymous placeholder
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Container(
             width: 80,
             height: 80,
             color: colorScheme.surfaceContainerHighest,
-            child: invitation.imageUrl != null
+            child: isConfirmed && teacherImageUrl != null
                 ? CustomCachedNetworkImage(
-                    imageUrl: invitation.imageUrl!,
+                    imageUrl: teacherImageUrl,
                     width: 80,
                     height: 80,
                   )
-                : _buildImagePlaceholder(colorScheme),
+                : _buildAnonymousPlaceholder(colorScheme),
           ),
         ),
         // Status badge
@@ -84,11 +86,11 @@ class EventInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImagePlaceholder(ColorScheme colorScheme) {
+  Widget _buildAnonymousPlaceholder(ColorScheme colorScheme) {
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Icon(
-        Icons.event,
+        Icons.person_outline,
         color: colorScheme.onSurfaceVariant,
         size: 32,
       ),
@@ -96,14 +98,32 @@ class EventInvitationCard extends StatelessWidget {
   }
 
   Widget _buildStatusBadge(BuildContext context, ColorScheme colorScheme) {
+    final status = invitation.confirmationStatus;
+    final isAccepted = status.toLowerCase() == "accepted";
+    final isPending = status.toLowerCase() == "pending";
+    
+    Color badgeColor;
+    String badgeText;
+    
+    if (isAccepted) {
+      badgeColor = Colors.green;
+      badgeText = "Accepted";
+    } else if (isPending) {
+      badgeColor = Colors.orange;
+      badgeText = "Pending";
+    } else {
+      badgeColor = Colors.red;
+      badgeText = status;
+    }
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: _getStatusColor(colorScheme),
+        color: badgeColor,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
-        status.toUpperCase(),
+        badgeText,
         style: const TextStyle(
           color: Colors.white,
           fontSize: 10,
@@ -114,15 +134,16 @@ class EventInvitationCard extends StatelessWidget {
   }
 
   Widget _buildContentSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
-    final eventName = invitation.name ?? "Unknown Event";
-    final location = invitation.locationName ?? invitation.city ?? "Unknown Location";
+    final teacherName = invitation.invitedUser?.name ?? invitation.email ?? "Unknown";
+    final eventName = invitation.classModel?.name ?? "Unknown Event";
+    final invitedAt = getDatedMMHHmm(DateTime.parse(invitation.createdAt));
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Event name
+        // Teacher name
         Text(
-          eventName,
+          teacherName,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
@@ -131,9 +152,9 @@ class EventInvitationCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Location
+        // Event name
         Text(
-          location,
+          eventName,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
@@ -142,64 +163,53 @@ class EventInvitationCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Event type or description
-        if (invitation.description != null)
-          Text(
-            invitation.description!,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant.withOpacity(0.7),
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        // Invited at
+        Text(
+          "Invited: $invitedAt",
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
           ),
+        ),
       ],
     );
   }
 
   Widget _buildStatusSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+    final status = invitation.confirmationStatus;
+    final isAccepted = status.toLowerCase() == "accepted";
+    final isPending = status.toLowerCase() == "pending";
+    
+    Color statusColor;
+    IconData statusIcon;
+    
+    if (isAccepted) {
+      statusColor = Colors.green;
+      statusIcon = Icons.check_circle;
+    } else if (isPending) {
+      statusColor = Colors.orange;
+      statusIcon = Icons.schedule;
+    } else {
+      statusColor = Colors.red;
+      statusIcon = Icons.cancel;
+    }
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         Icon(
-          _getStatusIcon(),
-          color: _getStatusColor(colorScheme),
+          statusIcon,
+          color: statusColor,
           size: 24,
         ),
         const SizedBox(height: 4),
         Text(
           status,
           style: theme.textTheme.bodySmall?.copyWith(
-            color: _getStatusColor(colorScheme),
+            color: statusColor,
             fontWeight: FontWeight.w600,
           ),
         ),
       ],
     );
-  }
-
-  Color _getStatusColor(ColorScheme colorScheme) {
-    switch (status.toLowerCase()) {
-      case 'approved':
-        return colorScheme.primary;
-      case 'pending':
-        return colorScheme.secondary;
-      case 'rejected':
-        return colorScheme.error;
-      default:
-        return colorScheme.onSurface.withOpacity(0.7);
-    }
-  }
-
-  IconData _getStatusIcon() {
-    switch (status.toLowerCase()) {
-      case 'approved':
-        return Icons.check_circle;
-      case 'pending':
-        return Icons.schedule;
-      case 'rejected':
-        return Icons.cancel;
-      default:
-        return Icons.help;
-    }
   }
 }
