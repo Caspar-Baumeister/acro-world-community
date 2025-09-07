@@ -1,7 +1,9 @@
+import 'package:acroworld/presentation/components/dialogs/jobs_feature_request_dialog.dart';
 import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/jobs_search_and_filter.dart';
 import 'package:acroworld/provider/riverpod_provider/jobs_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +15,8 @@ class JobsSection extends ConsumerStatefulWidget {
 }
 
 class _JobsSectionState extends ConsumerState<JobsSection> {
+  bool _showFeatureRequestOverlay = true;
+
   @override
   void initState() {
     super.initState();
@@ -26,53 +30,136 @@ class _JobsSectionState extends ConsumerState<JobsSection> {
   Widget build(BuildContext context) {
     final jobsState = ref.watch(jobsProvider);
 
-    return Column(
+    return Stack(
       children: [
-        // Search and filter
-        JobsSearchAndFilter(
-          searchQuery: jobsState.searchQuery,
-          selectedFilter: jobsState.selectedFilter,
-          onSearchChanged: (query) {
-            ref.read(jobsProvider.notifier).updateSearchQuery(query);
-            // Debounce search
-            Future.delayed(const Duration(milliseconds: 500), () {
-              if (mounted) {
+        Column(
+          children: [
+            // Search and filter
+            JobsSearchAndFilter(
+              searchQuery: jobsState.searchQuery,
+              selectedFilter: jobsState.selectedFilter,
+              onSearchChanged: (query) {
+                ref.read(jobsProvider.notifier).updateSearchQuery(query);
+                // Debounce search
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    ref.read(jobsProvider.notifier).fetchJobs(
+                      searchQuery: query,
+                      filter: jobsState.selectedFilter,
+                      isRefresh: true,
+                    );
+                  }
+                });
+              },
+              onFilterChanged: (filter) {
+                ref.read(jobsProvider.notifier).updateFilter(filter);
+                ref.read(jobsProvider.notifier).fetchJobs(
+                  searchQuery: jobsState.searchQuery,
+                  filter: filter,
+                  isRefresh: true,
+                );
+              },
+              onSearchSubmitted: (query) {
                 ref.read(jobsProvider.notifier).fetchJobs(
                   searchQuery: query,
                   filter: jobsState.selectedFilter,
                   isRefresh: true,
                 );
-              }
-            });
-          },
-          onFilterChanged: (filter) {
-            ref.read(jobsProvider.notifier).updateFilter(filter);
-            ref.read(jobsProvider.notifier).fetchJobs(
-              searchQuery: jobsState.searchQuery,
-              filter: filter,
-              isRefresh: true,
-            );
-          },
-          onSearchSubmitted: (query) {
-            ref.read(jobsProvider.notifier).fetchJobs(
-              searchQuery: query,
-              filter: jobsState.selectedFilter,
-              isRefresh: true,
-            );
-          },
-        ),
-        // Jobs list
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () => ref.read(jobsProvider.notifier).fetchJobs(
-              searchQuery: jobsState.searchQuery,
-              filter: jobsState.selectedFilter,
-              isRefresh: true,
+              },
             ),
-            child: _buildJobsList(jobsState),
+            // Jobs list
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => ref.read(jobsProvider.notifier).fetchJobs(
+                  searchQuery: jobsState.searchQuery,
+                  filter: jobsState.selectedFilter,
+                  isRefresh: true,
+                ),
+                child: _buildJobsList(jobsState),
+              ),
+            ),
+          ],
+        ),
+        // Feature request overlay
+        if (_showFeatureRequestOverlay) _buildFeatureRequestOverlay(context),
+      ],
+    );
+  }
+
+  Widget _buildFeatureRequestOverlay(BuildContext context) {
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.work_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Jobs Dashboard Coming Soon!",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "You will soon be able to post open job offers for performers, teachers, medics, or other community members for your events or studios.\n\nIf you are interested in this feature, let us know below. We will only build this feature if it is wished for by the community.",
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () {
+                        setState(() {
+                          _showFeatureRequestOverlay = false;
+                        });
+                      },
+                      child: const Text('Not Interested'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _showFeatureRequestOverlay = false;
+                        });
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder: (BuildContext context) => const JobsFeatureRequestDialog(),
+                        );
+                      },
+                      child: const Text('I Want This Feature'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
-      ],
+      ),
     );
   }
 
