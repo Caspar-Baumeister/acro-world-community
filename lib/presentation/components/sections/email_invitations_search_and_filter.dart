@@ -72,9 +72,9 @@ class _EmailInvitationsSearchAndFilterState extends State<EmailInvitationsSearch
                 ),
                 const SizedBox(width: 8),
                 ModernFilterChip(
-                  label: "Accepted",
-                  isSelected: widget.selectedFilter == "accepted",
-                  onTap: () => widget.onFilterChanged("accepted"),
+                  label: "Confirmed",
+                  isSelected: widget.selectedFilter == "confirmed",
+                  onTap: () => widget.onFilterChanged("confirmed"),
                   icon: Icons.check_circle,
                 ),
                 const SizedBox(width: 8),

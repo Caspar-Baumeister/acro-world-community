@@ -142,8 +142,8 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
       
       // Status filter
       switch (_selectedFilter) {
-        case 'accepted':
-          return invite.confirmationStatus.toLowerCase() == 'accepted';
+        case 'confirmed':
+          return invite.confirmationStatus.toLowerCase() == 'confirmed';
         case 'pending':
           return invite.confirmationStatus.toLowerCase() == 'pending';
         case 'rejected':
