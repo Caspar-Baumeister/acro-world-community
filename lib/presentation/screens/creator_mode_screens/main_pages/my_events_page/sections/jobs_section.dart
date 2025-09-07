@@ -1,10 +1,13 @@
-import 'package:acroworld/presentation/components/dialogs/jobs_feature_request_dialog.dart';
 import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/jobs_search_and_filter.dart';
 import 'package:acroworld/provider/riverpod_provider/jobs_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class JobsSection extends ConsumerStatefulWidget {
@@ -87,79 +90,12 @@ class _JobsSectionState extends ConsumerState<JobsSection> {
   }
 
   Widget _buildFeatureRequestOverlay(BuildContext context) {
-    return Container(
-      color: Colors.black.withOpacity(0.5),
-      child: Center(
-        child: Container(
-          margin: const EdgeInsets.all(20),
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.work_outline,
-                size: 64,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "Jobs Dashboard Coming Soon!",
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                "You will soon be able to post open job offers for performers, teachers, medics, or other community members for your events or studios.\n\nIf you are interested in this feature, let us know below. We will only build this feature if it is wished for by the community.",
-                style: Theme.of(context).textTheme.bodyMedium,
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: () {
-                        setState(() {
-                          _showFeatureRequestOverlay = false;
-                        });
-                      },
-                      child: const Text('Not Interested'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _showFeatureRequestOverlay = false;
-                        });
-                        showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) => const JobsFeatureRequestDialog(),
-                        );
-                      },
-                      child: const Text('I Want This Feature'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
+    return _JobsFeatureRequestOverlay(
+      onDismiss: () {
+        setState(() {
+          _showFeatureRequestOverlay = false;
+        });
+      },
     );
   }
 
@@ -429,5 +365,177 @@ class _JobsSectionState extends ConsumerState<JobsSection> {
 
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
+  }
+}
+
+class _JobsFeatureRequestOverlay extends ConsumerStatefulWidget {
+  final VoidCallback onDismiss;
+
+  const _JobsFeatureRequestOverlay({required this.onDismiss});
+
+  @override
+  ConsumerState<_JobsFeatureRequestOverlay> createState() => _JobsFeatureRequestOverlayState();
+}
+
+class _JobsFeatureRequestOverlayState extends ConsumerState<_JobsFeatureRequestOverlay> {
+  late final TextEditingController _emailController;
+  final _commentController = TextEditingController();
+  bool _initialized = false;
+  bool _isSending = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _emailController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _commentController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _sendFeatureRequest() async {
+    setState(() {
+      _isSending = true;
+    });
+
+    final Email email = Email(
+      body: _commentController.text.isNotEmpty 
+          ? "Feature Request: Jobs Dashboard\n\nAdditional remarks:\n${_commentController.text}"
+          : "Feature Request: Jobs Dashboard\n\nI am interested in this feature and would like to be notified when it becomes available.",
+      subject: 'Jobs Dashboard Feature Request',
+      recipients: ['info@acroworld.de'],
+      cc: [_emailController.text],
+    );
+
+    try {
+      await FlutterEmailSender.send(email);
+      showSuccessToast("Feature request sent successfully!");
+      widget.onDismiss();
+    } catch (error) {
+      if (error is PlatformException && error.code == 'not_available') {
+        showErrorToast(
+          "No email clients found! Please contact us at info@acroworld.de",
+        );
+      } else {
+        showErrorToast(
+          "An error occurred sending your request. Please contact us at info@acroworld.de",
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSending = false;
+        });
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final userAsync = ref.watch(userRiverpodProvider);
+
+    userAsync.whenData((user) {
+      if (!_initialized) {
+        _emailController.text = user?.email ?? '';
+        _initialized = true;
+      }
+    });
+
+    return Container(
+      color: Colors.black.withOpacity(0.5),
+      child: Center(
+        child: Container(
+          margin: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.work_outline,
+                size: 64,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "Jobs Dashboard Coming Soon!",
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "You will soon be able to post open job offers for performers, teachers, medics, or other community members for your events or studios.\n\nIf you are interested in this feature, let us know below. We will only build this feature if it is wished for by the community.",
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              // Email field
+              CupertinoTextField(
+                controller: _emailController,
+                placeholder: "Your Email",
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Comment field
+              CupertinoTextField(
+                controller: _commentController,
+                placeholder: "Additional remarks (optional)",
+                minLines: 3,
+                maxLines: 5,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              const SizedBox(height: 24),
+              // Interested button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isSending ? null : _sendFeatureRequest,
+                  child: _isSending
+                      ? const Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                              ),
+                            ),
+                            SizedBox(width: 12),
+                            Text('Sending...'),
+                          ],
+                        )
+                      : const Text('I Want This Feature'),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
