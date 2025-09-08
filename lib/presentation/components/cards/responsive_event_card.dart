@@ -199,7 +199,7 @@ class ResponsiveEventCard extends StatelessWidget {
                   : const SizedBox(height: 15),
 
               const SizedBox(
-                  height: 6), // Increased spacing between location and date
+                  height: 2), // Increased spacing between location and date
               // Date
               if (dateString.isNotEmpty)
                 Text(

@@ -2,7 +2,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/favorite_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/class_widgets/class_template_card.dart';
+import 'package:acroworld/presentation/components/cards/modern_class_event_card.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -42,27 +42,30 @@ class UserFavoriteClasses extends StatelessWidget {
                       ),
                     ),
                   )
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: favoriteModels.length,
-                    itemBuilder: ((context, index) {
-                      try {
-                        ClassModel? event = favoriteModels[index].classObject;
-                        if (event == null) {
-                          return Container();
+                : SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: favoriteModels.map((favorite) {
+                        try {
+                          ClassModel? event = favorite.classObject;
+                          if (event == null) {
+                            return const SizedBox.shrink();
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 12),
+                            child: ModernClassEventCard(
+                              classModel: event,
+                              width: 160,
+                            ),
+                          );
+                        } catch (e, s) {
+                          CustomErrorHandler.captureException(e, stackTrace: s);
+                          return const SizedBox.shrink();
                         }
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: AppDimensions.spacingSmall,
-                              vertical: AppDimensions.spacingExtraSmall),
-                          child: ClassTemplateCard(indexClass: event),
-                        );
-                      } catch (e, s) {
-                        CustomErrorHandler.captureException(e, stackTrace: s);
-                        return Container();
-                      }
-                    }));
+                      }).toList(),
+                    ),
+                  );
           } catch (e) {
             return const ErrorPage(
                 error:
