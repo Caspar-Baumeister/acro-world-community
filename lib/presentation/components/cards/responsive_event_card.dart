@@ -42,29 +42,21 @@ class ResponsiveEventCard extends StatelessWidget {
     final cardWidth = width ??
         (isGridMode
             ? (screenWidth - 48) / 2.0
-            : 180.0); // Reduced from 200 to 180 for smaller cards
-    final cardHeight =
-        isGridMode ? 200.0 : 180.0; // Reduced height for smaller cards
+            : 160.0); // Reduced from 200 to 180 for smaller cards
 
     return GestureDetector(
       onTap: onTap ?? _handleCardTap(context),
       child: Container(
         width: cardWidth,
-        height: cardHeight,
         margin: EdgeInsets.only(
           right: isGridMode ? 0 : 12,
           bottom: isGridMode ? 12 : 0,
         ),
         decoration: BoxDecoration(
-          color: colorScheme.surface,
+          color: isHighlighted
+              ? colorScheme.primaryContainer
+              : colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: colorScheme.shadow.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
           border: isHighlighted
               ? Border.all(color: colorScheme.primary, width: 2)
               : null,
@@ -73,13 +65,12 @@ class ResponsiveEventCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Image section
-            Expanded(
-              flex: 2,
+            SizedBox(
+              height: cardWidth,
               child: _buildImageSection(context, colorScheme),
             ),
             // Content section
             Expanded(
-              flex: 3,
               child: _buildContentSection(context, theme, colorScheme),
             ),
           ],
@@ -93,13 +84,15 @@ class ResponsiveEventCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
       ),
       child: Stack(
         children: [
           // Main image
           ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(12),
+            ),
             child: imageUrl != null
                 ? Image.network(
                     imageUrl!,
@@ -168,11 +161,10 @@ class ResponsiveEventCard extends StatelessWidget {
             : baseFontSize;
 
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment:
-            MainAxisAlignment.spaceBetween, // Start alignment to remove space
+        mainAxisSize: MainAxisSize.min,
         children: [
           // Title - Let it flow naturally
           Text(
@@ -186,22 +178,26 @@ class ResponsiveEventCard extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
+          const SizedBox(height: 8),
           // Location and Date - Let them flow naturally
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               // Locationc
-              if (location != null && location!.isNotEmpty)
-                Text(
-                  location!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                    height: 1.1,
-                    fontSize: responsiveFontSize - 1.0,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
+              location != null && location!.isNotEmpty
+                  ? Text(
+                      location!,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                        height: 1.1,
+                        fontSize: responsiveFontSize - 1.0,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  : const SizedBox(height: 15),
+
               const SizedBox(
                   height: 6), // Increased spacing between location and date
               // Date

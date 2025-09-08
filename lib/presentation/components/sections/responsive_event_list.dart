@@ -63,10 +63,11 @@ class ResponsiveEventList extends StatelessWidget {
 
   Widget _buildHorizontalLayout(BuildContext context) {
     return SizedBox(
-      height: 200, // Reduced height to match smaller cards
+      height: 260.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10), // Added vertical padding for shadow
+        padding: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 4), // Added vertical padding for shadow
         itemCount: events.length,
         itemBuilder: (context, index) {
           final eventData = events[index];
@@ -96,8 +97,8 @@ class ResponsiveEventList extends StatelessWidget {
         physics: const ClampingScrollPhysics(), // Allow scrolling
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          childAspectRatio: 0.75,
           crossAxisSpacing: 12,
+          childAspectRatio: 0.6,
           mainAxisSpacing: 12,
         ),
         itemCount: events.length,
@@ -149,16 +150,16 @@ class EventCardData {
       classEvent.classModel?.city,
       classEvent.classModel?.locationName,
     );
-    
+
     return EventCardData(
       title: classEvent.classModel?.name ?? "Unknown Event",
       location: location,
       imageUrl: classEvent.classModel?.imageUrl,
-      startDate: classEvent.startDate != null 
-          ? DateTime.tryParse(classEvent.startDate!) 
+      startDate: classEvent.startDate != null
+          ? DateTime.tryParse(classEvent.startDate!)
           : null,
-      endDate: classEvent.endDate != null 
-          ? DateTime.tryParse(classEvent.endDate!) 
+      endDate: classEvent.endDate != null
+          ? DateTime.tryParse(classEvent.endDate!)
           : null,
       isHighlighted: classEvent.isHighlighted == true,
       urlSlug: classEvent.classModel?.urlSlug,
@@ -167,30 +168,32 @@ class EventCardData {
   }
 
   static String? _parseLocation(
-    String? country, 
-    String? city, 
+    String? country,
+    String? city,
     String? locationName,
   ) {
     // Clean up all strings by removing extra whitespace
     final cleanCountry = country?.trim();
     final cleanCity = city?.trim();
     final cleanLocationName = locationName?.trim();
-    
+
     // Priority 1: Use locationName if available
     if (cleanLocationName != null && cleanLocationName.isNotEmpty) {
       return cleanLocationName;
     }
-    
+
     // Priority 2: Combine city and country
-    if (cleanCity != null && cleanCity.isNotEmpty && 
-        cleanCountry != null && cleanCountry.isNotEmpty) {
+    if (cleanCity != null &&
+        cleanCity.isNotEmpty &&
+        cleanCountry != null &&
+        cleanCountry.isNotEmpty) {
       return "$cleanCity, $cleanCountry";
     } else if (cleanCountry != null && cleanCountry.isNotEmpty) {
       return cleanCountry;
     } else if (cleanCity != null && cleanCity.isNotEmpty) {
       return cleanCity;
     }
-    
+
     return null;
   }
 }

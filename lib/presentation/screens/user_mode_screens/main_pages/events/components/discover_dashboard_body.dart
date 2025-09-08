@@ -27,16 +27,6 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
   @override
   Widget build(BuildContext context) {
     final discoveryState = ref.watch(discoveryProvider);
-
-    // Debug information
-    print('Discovery State Debug:');
-    print('- Loading: ${discoveryState.loading}');
-    print('- All Events: ${discoveryState.allEventOccurences.length}');
-    print('- All Event Types: ${discoveryState.allEventTypes.length}');
-    print(
-        '- Highlighted Events: ${discoveryState.getHighlightedEvents().length}');
-    print('- Bookable Events: ${discoveryState.getBookableEvents().length}');
-
     // Build event sections for each event type
     List<Widget> eventSections = discoveryState.allEventTypes
         .map((EventType eventType) => ResponsiveEventSection(
