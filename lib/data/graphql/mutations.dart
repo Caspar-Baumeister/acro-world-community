@@ -643,6 +643,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
             location_name,
             location_country,
             is_cash_allowed,
+            max_booking_slots,
             event_type,
             timezone,
             url_slug,

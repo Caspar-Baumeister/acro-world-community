@@ -391,6 +391,8 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
       ));
     }
 
+    print('bookingCategories $bookingCategories');
+
     final classUpsertInput = ClassUpsertInput(
         id: _classId ?? Uuid().v4(),
         name: _title,
@@ -404,6 +406,9 @@ class EventCreationAndEditingProvider extends ChangeNotifier {
         locationName: _locationName,
         locationCity: locationCity,
         locationCountry: country,
+        maxBookingSlots: bookingCategories
+            .map((category) => category.contingent)
+            .reduce((a, b) => a + b),
         recurringPatterns: _recurringPatterns
             .map((pattern) => RecurringPatternInput(
                 id: pattern.id ?? Uuid().v4(),

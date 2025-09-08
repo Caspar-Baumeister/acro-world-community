@@ -15,6 +15,7 @@ class ClassUpsertInput {
   final bool isCashAllowed;
   final LatLng location;
 
+  final int? maxBookingSlots;
   final String? locationName;
   final String? locationCity;
   final String? locationCountry;
@@ -39,6 +40,7 @@ class ClassUpsertInput {
     required this.classOwners,
     required this.classTeachers,
     required this.bookingCategories,
+    required this.maxBookingSlots,
     required this.questions,
     this.eventType,
     this.locationName,
@@ -58,6 +60,7 @@ class ClassUpsertInput {
         "event_type": eventType,
         "timezone": timezone,
         "url_slug": urlSlug,
+        "max_booking_slots": maxBookingSlots ?? 0,
         "location": {
           "type": "Point",
           "coordinates": [location.longitude, location.latitude]
