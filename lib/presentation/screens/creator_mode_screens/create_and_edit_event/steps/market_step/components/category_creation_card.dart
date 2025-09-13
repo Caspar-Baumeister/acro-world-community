@@ -38,16 +38,21 @@ class CategoryCreationCard extends ConsumerWidget {
       padding: const EdgeInsets.all(AppDimensions.spacingMedium),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         border: Border.all(
-          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
-          width: 1.5,
+          color: Theme.of(context).colorScheme.outline.withOpacity(0.4),
+          width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.15),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 1),
           ),
         ],
       ),
@@ -61,16 +66,29 @@ class CategoryCreationCard extends ConsumerWidget {
               Flexible(
                 child: Text(
                   bookingCategory.name,
-                  style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        fontWeight: FontWeight.bold,
+                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                        fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.primary,
                       ),
                 ),
               ),
               // Category contingent (how many tickets available for this category)
-              Text(
-                "Tickets: ${bookingCategory.contingent}",
-                style: Theme.of(context).textTheme.bodyMedium,
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingSmall,
+                  vertical: 4,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                ),
+                child: Text(
+                  "Tickets: ${bookingCategory.contingent}",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                ),
               ),
             ],
           ),
