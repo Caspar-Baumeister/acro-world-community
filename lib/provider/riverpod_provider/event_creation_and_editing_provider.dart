@@ -6,7 +6,9 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
+import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -299,14 +301,56 @@ class EventCreationAndEditingNotifier
     state = state.copyWith(questions: questions);
   }
 
-  /// Set class from existing slug (simplified version)
+  /// Set class from existing slug for template creation
   Future<void> setClassFromExisting(
       String slug, bool isEditing, bool setFromTemplate) async {
-    // TODO: Implement full setClassFromExisting logic
-    // For now, just clear the state and set a basic class model
-    state = EventCreationAndEditingState(
-      classModel: _createEmptyClassModel(),
-    );
+    try {
+      state = state.copyWith(isLoading: true, errorMessage: null);
+      
+      // Fetch the class data by slug
+      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+      final classModel = await repository.getClassBySlug(slug);
+      
+      // Create a new class model based on the template but clear the ID and slug
+      final templateClassModel = ClassModel(
+        description: classModel.description,
+        imageUrl: classModel.imageUrl,
+        location: classModel.location,
+        locationName: classModel.locationName,
+        name: classModel.name,
+        requirements: classModel.requirements,
+        websiteUrl: classModel.websiteUrl,
+        classTeachers: classModel.classTeachers,
+        classLevels: classModel.classLevels,
+        eventType: classModel.eventType,
+        city: classModel.city,
+        country: classModel.country,
+        classEvents: null, // Clear events for new class
+        questions: List<QuestionModel>.from(classModel.questions), // Copy questions
+        bookingCategories: classModel.bookingCategories,
+        classFlags: null, // Clear flags for new class
+        isCashAllowed: classModel.isCashAllowed,
+        createdBy: null, // Clear creator for new class
+        bookingEmail: classModel.bookingEmail,
+        maxBookingSlots: classModel.maxBookingSlots,
+        // Don't set id, urlSlug, createdAt, updatedAt - these will be generated
+      );
+      
+      state = EventCreationAndEditingState(
+        classModel: templateClassModel,
+        isLoading: false,
+        errorMessage: null,
+      );
+      
+      CustomErrorHandler.logDebug('Template loaded successfully from slug: $slug');
+    } catch (e) {
+      CustomErrorHandler.logError('Error loading template: $e');
+      state = EventCreationAndEditingState(
+        classModel: _createEmptyClassModel(),
+        isLoading: false,
+        errorMessage: 'Failed to load template: ${e.toString()}',
+      );
+    }
   }
 
   /// Update title
