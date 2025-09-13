@@ -321,12 +321,14 @@ class _CreateAndEditEventPageState
                         final finalEventState =
                             ref.read(eventCreationAndEditingProvider);
 
-                        print("🎯 DEBUG: Checking creation result after delay:");
+                        print(
+                            "🎯 DEBUG: Checking creation result after delay:");
                         print(
                             "🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
                         print(
                             "🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
-                        print("🎯 DEBUG: - State toString: ${finalEventState.toString()}");
+                        print(
+                            "🎯 DEBUG: - State toString: ${finalEventState.toString()}");
 
                         if (finalEventState.errorMessage == null) {
                           print("✅ DEBUG: Event creation successful!");
@@ -344,9 +346,11 @@ class _CreateAndEditEventPageState
 
                           // Refresh the events list
                           final userAsync = ref.read(userRiverpodProvider);
-                          print("🎯 DEBUG: User async value: ${userAsync.value?.id}");
+                          print(
+                              "🎯 DEBUG: User async value: ${userAsync.value?.id}");
                           if (userAsync.value?.id != null) {
-                            print("🎯 DEBUG: Refreshing events list for user: ${userAsync.value!.id}");
+                            print(
+                                "🎯 DEBUG: Refreshing events list for user: ${userAsync.value!.id}");
                             try {
                               await ref
                                   .read(teacherEventsProvider.notifier)
@@ -357,7 +361,8 @@ class _CreateAndEditEventPageState
                               print("❌ DEBUG: Events list refresh failed: $e");
                             }
                           } else {
-                            print("❌ DEBUG: No user ID found, cannot refresh events list");
+                            print(
+                                "❌ DEBUG: No user ID found, cannot refresh events list");
                           }
                         } else {
                           // Show error message

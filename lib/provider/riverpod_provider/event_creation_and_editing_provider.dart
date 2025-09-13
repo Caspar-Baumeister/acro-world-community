@@ -579,6 +579,7 @@ class EventCreationAndEditingNotifier
         'location_country': state.countryCode,
         'location_city': state.region,
         'is_cash_allowed': state.isCashAllowed,
+        'created_by_id': creatorId,
       };
 
       print(
@@ -588,21 +589,21 @@ class EventCreationAndEditingNotifier
       // Create the class
       print("🚀 DEBUG: Calling repository.createClass()...");
       final createdClass = await repository.createClass(variables);
-      
+
       print("🚀 DEBUG: Repository call completed successfully!");
       print("🚀 DEBUG: Created class ID: ${createdClass.id}");
       print("🚀 DEBUG: Created class name: ${createdClass.name}");
       print("🚀 DEBUG: Created class slug: ${createdClass.urlSlug}");
-      
+
       // TODO: Create booking categories and options
       // This would require additional API calls to create the ticket categories and options
       print("🚀 DEBUG: Skipping booking categories creation for now...");
-      
+
       state = state.copyWith(
         isLoading: false,
         errorMessage: null,
       );
-      
+
       print("🚀 DEBUG: State updated - isLoading: false, errorMessage: null");
       print("🚀 DEBUG: Event creation completed successfully!");
     } catch (e) {
