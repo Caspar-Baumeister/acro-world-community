@@ -313,8 +313,10 @@ class EventCreationAndEditingNotifier
           ClassesRepository(apiService: GraphQLClientSingleton());
       final classModel = await repository.getClassBySlug(slug);
 
-      // Create a new class model based on the template but clear the ID and slug
+      // Create a class model - preserve original data for editing, clear for template creation
       final templateClassModel = ClassModel(
+        id: isEditing ? classModel.id : null, // Preserve ID for editing
+        urlSlug: isEditing ? classModel.urlSlug : null, // Preserve slug for editing
         description: classModel.description,
         imageUrl: classModel.imageUrl,
         location: classModel.location,
@@ -327,16 +329,16 @@ class EventCreationAndEditingNotifier
         eventType: classModel.eventType,
         city: classModel.city,
         country: classModel.country,
-        classEvents: null, // Clear events for new class
-        questions:
-            List<QuestionModel>.from(classModel.questions), // Copy questions
+        classEvents: isEditing ? classModel.classEvents : null, // Preserve events for editing
+        questions: List<QuestionModel>.from(classModel.questions), // Copy questions
         bookingCategories: classModel.bookingCategories,
-        classFlags: null, // Clear flags for new class
+        classFlags: isEditing ? classModel.classFlags : null, // Preserve flags for editing
         isCashAllowed: classModel.isCashAllowed,
-        createdBy: null, // Clear creator for new class
+        createdBy: isEditing ? classModel.createdBy : null, // Preserve creator for editing
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
-        // Don't set id, urlSlug, createdAt, updatedAt - these will be generated
+        createdAt: isEditing ? classModel.createdAt : null, // Preserve timestamps for editing
+        updatedAt: isEditing ? classModel.updatedAt : null,
       );
 
       // Debug: Print template data
@@ -363,6 +365,7 @@ class EventCreationAndEditingNotifier
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
         title: templateClassModel.name ?? '',
+        slug: isEditing ? (templateClassModel.urlSlug ?? '') : '', // Preserve slug for editing
         description: templateClassModel.description ?? '',
         locationName: templateClassModel.locationName,
         existingImageUrl: templateClassModel.imageUrl,
@@ -672,14 +675,10 @@ class EventCreationAndEditingNotifier
     }
   }
 
-  /// Update class (simplified version)
+  /// Update class
   Future<void> updateClass(String creatorId) async {
-    // TODO: Implement full updateClass logic
-    // For now, just set loading state
-    state = state.copyWith(isLoading: true);
-    // Simulate async operation
-    await Future.delayed(const Duration(seconds: 1));
-    state = state.copyWith(isLoading: false);
+    // Use the same logic as createClass since upsertClass handles both create and update
+    await createClass(creatorId);
   }
 
   /// Add pending invite teacher
