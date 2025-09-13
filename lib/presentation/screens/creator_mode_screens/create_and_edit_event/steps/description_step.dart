@@ -55,151 +55,136 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
     
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Description'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+    return Container(
+      constraints: Responsive.isDesktop(context)
+          ? const BoxConstraints(maxWidth: 800)
+          : null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMedium,
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-      ),
-      body: Container(
-        constraints: Responsive.isDesktop(context)
-            ? const BoxConstraints(maxWidth: 800)
-            : null,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppDimensions.spacingMedium,
-          ),
-          child: Column(
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: AppDimensions.spacingMedium,
+        child: Column(
+          children: [
+            // Header - compact
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall,
+              ),
+              child: Column(
+                children: [
+                  Text(
+                    'Event Description',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: AppDimensions.spacingSmall),
+                  Text(
+                    'Write a detailed description for your event. Use the toolbar below to format your text.',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+            
+            // Rich text editor - takes most of the space
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                  ),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   children: [
-                    Text(
-                      'Event Description',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
+                    // Toolbar
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.spacingSmall,
+                        vertical: AppDimensions.spacingSmall,
                       ),
-                      textAlign: TextAlign.center,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                        ),
+                      ),
+                      child: ToolBar(
+                        controller: _controller,
+                        toolBarConfig: customToolBarList,
+                      ),
                     ),
-                    const SizedBox(height: AppDimensions.spacingSmall),
-                    Text(
-                      'Write a detailed description for your event. Use the toolbar below to format your text.',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    
+                    // Editor - flexible height
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surface,
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(12),
+                            bottomRight: Radius.circular(12),
+                          ),
+                        ),
+                        child: QuillHtmlEditor(
+                          text: eventState.description,
+                          controller: _controller,
+                          minHeight: 300,
+                          inputAction: InputAction.newline,
+                        ),
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
               ),
-              
-              // Rich text editor - takes most of the space
-              Expanded(
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+            ),
+            
+            const SizedBox(height: AppDimensions.spacingMedium),
+            
+            // Action buttons with safe area
+            SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  bottom: AppDimensions.spacingMedium,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      constraints: Responsive.isDesktop(context)
+                          ? const BoxConstraints(maxWidth: 200)
+                          : null,
+                      child: ModernButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        text: "Cancel",
+                        width: MediaQuery.of(context).size.width * 0.3,
+                      ),
                     ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    children: [
-                      // Toolbar
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimensions.spacingSmall,
-                          vertical: AppDimensions.spacingSmall,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            topRight: Radius.circular(12),
-                          ),
-                        ),
-                        child: ToolBar(
-                          controller: _controller,
-                          toolBarConfig: customToolBarList,
-                        ),
+                    const SizedBox(width: AppDimensions.spacingMedium),
+                    Container(
+                      constraints: Responsive.isDesktop(context)
+                          ? const BoxConstraints(maxWidth: 400)
+                          : null,
+                      child: ModernButton(
+                        onPressed: _onNext,
+                        text: "Next",
+                        isFilled: true,
+                        width: MediaQuery.of(context).size.width * 0.3,
                       ),
-                      
-                      // Editor - flexible height
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surface,
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(12),
-                              bottomRight: Radius.circular(12),
-                            ),
-                          ),
-                          child: QuillHtmlEditor(
-                            text: eventState.description,
-                            controller: _controller,
-                            minHeight: 200,
-                            inputAction: InputAction.newline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              
-              const SizedBox(height: AppDimensions.spacingMedium),
-              
-              // Action buttons with safe area
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    bottom: AppDimensions.spacingMedium,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                        constraints: Responsive.isDesktop(context)
-                            ? const BoxConstraints(maxWidth: 200)
-                            : null,
-                        child: ModernButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          text: "Cancel",
-                          width: MediaQuery.of(context).size.width * 0.3,
-                        ),
-                      ),
-                      const SizedBox(width: AppDimensions.spacingMedium),
-                      Container(
-                        constraints: Responsive.isDesktop(context)
-                            ? const BoxConstraints(maxWidth: 400)
-                            : null,
-                        child: ModernButton(
-                          onPressed: _onNext,
-                          text: "Next",
-                          isFilled: true,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
