@@ -433,6 +433,9 @@ query getClassById(\$url_slug: String!) {
       start_time
       class_id
     }
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}) {
+      ${Fragments.classEventFragment}
+    }
     
   }
 }
