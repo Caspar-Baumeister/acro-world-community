@@ -383,6 +383,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
           data: \$classTeachers
         }
         max_booking_slots: \$max_booking_slots
+        created_by_id: \$created_by_id
       }
     ) {
       id

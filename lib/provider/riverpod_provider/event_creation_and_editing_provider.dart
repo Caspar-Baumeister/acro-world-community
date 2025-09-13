@@ -540,7 +540,7 @@ class EventCreationAndEditingNotifier
   Future<void> createClass(String creatorId) async {
     try {
       print("🚀 DEBUG: Starting event creation...");
-      print("🚀 DEBUG: Creator ID: $creatorId");
+      print("🚀 DEBUG: Creator ID (Teacher): $creatorId");
       print("🚀 DEBUG: Event state: ${state.toString()}");
 
       state = state.copyWith(isLoading: true, errorMessage: null);

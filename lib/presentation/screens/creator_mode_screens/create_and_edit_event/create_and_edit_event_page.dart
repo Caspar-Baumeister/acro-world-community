@@ -303,14 +303,28 @@ class _CreateAndEditEventPageState
                         print("🎯 DEBUG: Starting event creation...");
                         if (widget.isEditing) {
                           print("🎯 DEBUG: Updating existing event");
-                          await ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .updateClass(creatorState.activeTeacher!.id!);
+                          final userAsync = ref.read(userRiverpodProvider);
+                          if (userAsync.value?.id != null) {
+                            await ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .updateClass(creatorState.activeTeacher!.id!, userAsync.value!.id!);
+                          } else {
+                            print("❌ DEBUG: No user ID found, cannot update event");
+                            showErrorToast("User not found, please log in again");
+                            return;
+                          }
                         } else {
-                          print("🎯 DEBUG: Creating new event");
+                        print("🎯 DEBUG: Creating new event");
+                        final userAsync = ref.read(userRiverpodProvider);
+                        if (userAsync.value?.id != null) {
                           await ref
                               .read(eventCreationAndEditingProvider.notifier)
-                              .createClass(creatorState.activeTeacher!.id!);
+                              .createClass(creatorState.activeTeacher!.id!, userAsync.value!.id!);
+                        } else {
+                          print("❌ DEBUG: No user ID found, cannot create event");
+                          showErrorToast("User not found, please log in again");
+                          return;
+                        }
                         }
                         print("🎯 DEBUG: Event creation call completed");
 
