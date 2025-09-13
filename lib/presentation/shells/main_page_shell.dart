@@ -6,6 +6,7 @@ import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/presentation/shells/shell_bottom_navigation_bar.dart';
 import 'package:acroworld/presentation/shells/shell_creator_bottom_navigation_bar.dart';
 import 'package:acroworld/presentation/shells/shell_desktop_layout.dart';
+import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,6 +36,23 @@ class MainPageShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool isCreator = ref.watch(userRoleProvider);
     final currentLocation = GoRouterState.of(context).uri.path;
+    
+    // Sync the navigation provider with the current route
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (isCreator) {
+        // Update creator navigation provider
+        final creatorIndex = _creatorPaths.indexOf(currentLocation);
+        if (creatorIndex != -1) {
+          ref.read(creatorNavigationProvider.notifier).setIndex(creatorIndex);
+        }
+      } else {
+        // Update user navigation provider
+        final userIndex = _userPaths.indexOf(currentLocation);
+        if (userIndex != -1) {
+          ref.read(navigationProvider.notifier).setIndex(userIndex);
+        }
+      }
+    });
     
     if (Responsive.isDesktop(context)) {
       return ShellDesktopLayout(isCreator: isCreator, child: child);
