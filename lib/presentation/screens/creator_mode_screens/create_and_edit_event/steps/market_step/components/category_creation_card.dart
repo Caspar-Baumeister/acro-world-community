@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/presentation/components/buttons/custom_icon_button.dart';
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_option_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/booking_option_creation_card.dart';
@@ -176,24 +175,59 @@ class CategoryCreationCard extends ConsumerWidget {
 
           const SizedBox(height: AppDimensions.spacingMedium),
 
-          // Button to add a new booking option to this category
-          ModernButton(
-            text: 'Add Ticket',
-            onPressed: () {
-              buildMortal(
-                context,
-                AddOrEditBookingOptionModal(
-                  onFinished: (BookingOption bookingOption) {
-                    ref
-                        .read(eventCreationAndEditingProvider.notifier)
-                        .addBookingOption(
-                          bookingOption,
-                        );
-                  },
-                  categoryID: bookingCategory.id!,
+          // Button to add a new booking option to this category - smaller icon button
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                style: BorderStyle.solid,
+                width: 1,
+              ),
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+            ),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  buildMortal(
+                    context,
+                    AddOrEditBookingOptionModal(
+                      onFinished: (BookingOption bookingOption) {
+                        ref
+                            .read(eventCreationAndEditingProvider.notifier)
+                            .addBookingOption(bookingOption);
+                      },
+                      categoryID: bookingCategory.id!,
+                    ),
+                  );
+                },
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingMedium,
+                    vertical: AppDimensions.spacingSmall,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.add,
+                        size: AppDimensions.iconSizeSmall,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(width: AppDimensions.spacingSmall),
+                      Text(
+                        'Add Ticket',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              );
-            },
+              ),
+            ),
           ),
         ],
       ),

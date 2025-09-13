@@ -1,5 +1,4 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_check_box.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_category_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
@@ -34,6 +33,80 @@ class MarketStepTicketSection extends ConsumerWidget {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            // Explanation section with info button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                  ),
+                ),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Ticket Categories & Tickets",
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: AppDimensions.spacingSmall),
+                          Text(
+                            "Categories like 'Early Bird' or 'Teacher' can have multiple ticket types. For example, Early Bird can have 'Full Festival', 'One Day', etc.",
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              height: 1.4,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppDimensions.spacingSmall),
+                    IconButton(
+                      icon: Icon(
+                        Icons.info_outline,
+                        size: AppDimensions.iconSizeSmall,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text("Understanding Ticket Categories"),
+                            content: const Text(
+                              "Ticket categories help you organize different types of tickets for your event:\n\n"
+                              "• Categories (like 'Early Bird', 'Teacher', 'VIP') set the total number of tickets available\n"
+                              "• Each category can have multiple ticket types (like 'Full Festival', 'One Day', 'Weekend Pass')\n"
+                              "• This helps you manage different pricing and availability for different groups\n\n"
+                              "Example: 'Early Bird' category with 100 tickets total, containing:\n"
+                              "• Early Bird Full Festival (50 tickets)\n"
+                              "• Early Bird One Day (30 tickets)\n"
+                              "• Early Bird Weekend Pass (20 tickets)",
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text("Got it"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacingMedium),
+            
             // List of existing categories
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
@@ -77,42 +150,68 @@ class MarketStepTicketSection extends ConsumerWidget {
                 );
               },
             ),
-            ModernButton(
-              text: 'Add Ticket-Category',
-              isFilled: true,
-              onPressed: () {
-                buildMortal(
-                  context,
-                  AddOrEditBookingCategoryModal(
-                    onFinished: (BookingCategoryModel bookingCategory) {
-                      // Add a new category to the provider.
-                      // The provider logic should also update the total tickets internally.
-                      ref
-                          .read(eventCreationAndEditingProvider.notifier)
-                          .addCategory(
-                            bookingCategory,
-                          );
-                    },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: AppDimensions.spacingSmall),
-            // little infobox if no categories are added yet
-            if (eventState.bookingCategories.isEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppDimensions.spacingLarge),
-                child: Text(
-                  "Ticket categories are used to limit the number of tickets available for any group of tickets like Early Bird, Regular, Teacher or Helpers. You need to add at least one category to be able to create tickets.",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context)
-                            .colorScheme
-                            .onSurface
-                            .withOpacity(0.7),
+            // Add category button - smaller icon button
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                       ),
-                ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            buildMortal(
+                              context,
+                              AddOrEditBookingCategoryModal(
+                                onFinished: (BookingCategoryModel bookingCategory) {
+                                  ref
+                                      .read(eventCreationAndEditingProvider.notifier)
+                                      .addCategory(bookingCategory);
+                                },
+                              ),
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimensions.spacingMedium,
+                              vertical: AppDimensions.spacingSmall,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  size: AppDimensions.iconSizeSmall,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const SizedBox(width: AppDimensions.spacingSmall),
+                                Text(
+                                  'Add Category',
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context).colorScheme.primary,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
             const SizedBox(height: AppDimensions.spacingMedium),
             Padding(
               padding: const EdgeInsets.symmetric(
