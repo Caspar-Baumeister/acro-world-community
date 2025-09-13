@@ -19,9 +19,6 @@ class OccurrenceStep extends ConsumerStatefulWidget {
 }
 
 class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
-  void _onNext() {
-    widget.onFinished();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -125,40 +122,6 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                   );
                 }),
           ),
-          const SizedBox(height: AppDimensions.spacingMedium),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                constraints: Responsive.isDesktop(context)
-                    ? const BoxConstraints(maxWidth: 200)
-                    : null,
-                child: ModernButton(
-                  onPressed: () {
-                    ref
-                        .read(eventCreationAndEditingProvider.notifier)
-                        .setPage(0);
-                    setState(() {});
-                  },
-                  text: "Previous",
-                  width: MediaQuery.of(context).size.width * 0.3,
-                ),
-              ),
-              const SizedBox(width: AppDimensions.spacingMedium),
-              Container(
-                constraints: Responsive.isDesktop(context)
-                    ? const BoxConstraints(maxWidth: 200)
-                    : null,
-                child: ModernButton(
-                  onPressed: _onNext,
-                  text: "Next",
-                  isFilled: true,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppDimensions.spacingLarge),
         ],
       ),
     );
