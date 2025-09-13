@@ -603,11 +603,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
   static final upsertClass = gql("""
     mutation UpsertClass(
       \$class: classes_insert_input!,
-      \$recurring_patterns: [recurring_patterns_insert_input!]!,
-      \$class_teachers: [class_teachers_insert_input!]!,
-      \$class_owners: [class_owners_insert_input!]!,
-      \$booking_categories: [booking_category_insert_input!]!,
-      \$questions: [questions_insert_input!]!,
       \$delete_recurring_pattern_ids: [uuid!]!,
       \$delete_booking_option_ids: [uuid!]!,
       \$delete_booking_category_ids: [uuid!]!,
@@ -667,65 +662,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         is_cash_allowed
         max_booking_slots
         timezone
-      }
-
-      insert_recurring_patterns(objects: \$recurring_patterns) {
-        affected_rows
-        returning {
-          id
-          class_id
-          day_of_week
-          start_date
-          end_date
-          start_time
-          end_time
-          recurring_every_x_weeks
-          is_recurring
-        }
-      }
-
-      insert_class_teachers(objects: \$class_teachers) {
-        affected_rows
-        returning {
-          id
-          class_id
-          teacher_id
-        }
-      }
-
-      insert_class_owners(objects: \$class_owners) {
-        affected_rows
-        returning {
-          id
-          class_id
-          teacher_id
-          is_payment_receiver
-        }
-      }
-
-      insert_booking_category(objects: \$booking_categories) {
-        affected_rows
-        returning {
-          id
-          name
-          class_id
-          contingent
-          description
-        }
-      }
-
-      insert_questions(objects: \$questions) {
-        affected_rows
-        returning {
-          id
-          allow_multiple_answers
-          is_required
-          position
-          question
-          question_type
-          title
-          event_id
-        }
       }
     }
   """);

@@ -65,5 +65,74 @@ class ClassUpsertInput {
           "type": "Point",
           "coordinates": [location.longitude, location.latitude]
         },
+        "recurring_patterns": {
+          "data": recurringPatterns.map((e) => e.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "recurring_patterns_pkey",
+            "update_columns": [
+              "id",
+              "class_id",
+              "day_of_week",
+              "start_date",
+              "end_date",
+              "start_time",
+              "end_time",
+              "recurring_every_x_weeks",
+              "is_recurring"
+            ]
+          }
+        },
+        "class_teachers": {
+          "data": classTeachers.map((e) => e.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "class_teachers_pkey",
+            "update_columns": [
+              "id",
+              "class_id",
+              "teacher_id",
+            ]
+          }
+        },
+        "class_owners": {
+          "data": classOwners.map((e) => e.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "class_owners_pkey",
+            "update_columns": [
+              "id",
+              "class_id",
+              "teacher_id",
+              "is_payment_receiver"
+            ]
+          }
+        },
+        "booking_categories": {
+          "data": bookingCategories.map((b) => b.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "booking_category_pkey",
+            "update_columns": [
+              "id",
+              "name",
+              "class_id",
+              "contingent",
+              "description"
+            ]
+          }
+        },
+        "questions": {
+          "data": questions.map((q) => q.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "question_pkey",
+            "update_columns": [
+              "id",
+              "allow_multiple_answers",
+              "is_required",
+              "position",
+              "question",
+              "question_type",
+              "title",
+              "event_id"
+            ]
+          }
+        },
       };
 }
