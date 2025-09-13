@@ -134,6 +134,11 @@ class ClassesRepository {
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
         "class": input.toJson(),
+        "recurring_patterns": input.recurringPatterns.map((e) => e.toJson()).toList(),
+        "class_teachers": input.classTeachers.map((e) => e.toJson()).toList(),
+        "class_owners": input.classOwners.map((e) => e.toJson()).toList(),
+        "booking_categories": input.bookingCategories.map((b) => b.toJson()).toList(),
+        "questions": input.questions.map((q) => q.toJson()).toList(),
         "delete_recurring_pattern_ids": deleteRecurringPatternIds,
         "delete_booking_category_ids": deleteBookingCategoryIds,
         "delete_class_teacher_ids": deleteClassTeacherIds,
