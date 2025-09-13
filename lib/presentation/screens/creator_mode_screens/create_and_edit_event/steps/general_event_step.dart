@@ -251,10 +251,13 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       const SizedBox(height: AppDimensions.spacingMedium),
                       // choose from country
                       // choose from country
-                      CountryPicker(
-                        key: ValueKey('country_${eventState.countryCode}'), // Force rebuild when country changes
-                        // now pass the ISO code, not the name:
-                        selectedCountryCode: eventState.countryCode,
+                      Builder(
+                        builder: (context) {
+                          print('🔍 UI DEBUG - CountryPicker selectedCountryCode: "${eventState.countryCode}"');
+                          return CountryPicker(
+                            key: ValueKey('country_${eventState.countryCode}'), // Force rebuild when country changes
+                            // now pass the ISO code, not the name:
+                            selectedCountryCode: eventState.countryCode,
                         onCountrySelected: (String? code, String? name) {
                           // code: e.g. "US", name: e.g. "United States"
                           ref
@@ -268,6 +271,8 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                               .read(eventCreationAndEditingProvider.notifier)
                               .setRegion(null);
                         },
+                          );
+                        },
                       ),
 
                       // only show regions once we have a valid countryCode
@@ -275,15 +280,20 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         Padding(
                           padding: const EdgeInsets.only(
                               top: AppDimensions.spacingMedium),
-                          child: RegionPicker(
-                            key: ValueKey('region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
-                            countryCode: eventState.countryCode!,
-                            selectedRegion: eventState.region,
+                          child: Builder(
+                            builder: (context) {
+                              print('🔍 UI DEBUG - RegionPicker countryCode: "${eventState.countryCode}", selectedRegion: "${eventState.region}"');
+                              return RegionPicker(
+                                key: ValueKey('region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
+                                countryCode: eventState.countryCode!,
+                                selectedRegion: eventState.region,
                             onRegionSelected: (String? region) {
                               ref
                                   .read(
                                       eventCreationAndEditingProvider.notifier)
                                   .setRegion(region);
+                            },
+                              );
                             },
                           ),
                         ),
