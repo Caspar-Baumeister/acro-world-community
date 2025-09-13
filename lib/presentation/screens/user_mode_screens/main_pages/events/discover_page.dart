@@ -28,7 +28,7 @@ class DiscoverPage extends StatelessWidget {
         CustomFloatingActionButton(
           title: "Insert Event",
           subtitle: "Add your class or workshop",
-          onPressed: () => context.pushNamed(profileRoute),
+          onPressed: () => context.goNamed(profileRoute),
           backgroundColor: colorScheme.tertiary,
           textColor: Colors.white,
         ),
