@@ -1,6 +1,7 @@
 import 'package:acroworld/presentation/components/progress/compact_progress_bar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/community_step.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/description_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
@@ -39,25 +40,35 @@ class _CreateAndEditEventPageState
     final userAsync = ref.watch(userRiverpodProvider);
 
     final List<Widget> pages = [
-      // second page
+      // Step 1: General Event Details
       GeneralEventStep(
         onFinished: () {
           ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
           setState(() {});
         },
       ),
-      OccurrenceStep(
+      // Step 2: Description
+      DescriptionStep(
         onFinished: () {
           ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
           setState(() {});
         },
       ),
-      CommunityStep(
+      // Step 3: Occurrences
+      OccurrenceStep(
         onFinished: () {
           ref.read(eventCreationAndEditingProvider.notifier).setPage(3);
           setState(() {});
         },
       ),
+      // Step 4: Community
+      CommunityStep(
+        onFinished: () {
+          ref.read(eventCreationAndEditingProvider.notifier).setPage(4);
+          setState(() {});
+        },
+      ),
+      // Step 5: Market
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {
@@ -109,7 +120,8 @@ class _CreateAndEditEventPageState
     // Define step titles
     const stepTitles = [
       "Event Details",
-      "Occurrences", 
+      "Description",
+      "Occurrences",
       "Community",
       "Booking Information",
     ];

@@ -77,18 +77,20 @@ class _CreateNewEventFromExistingModalState
                       : "Continue"),
               onPressed: () async {
                 print('🔍 MODAL DEBUG - Button pressed');
-                print('🔍 MODAL DEBUG - Selected option: ${currentOption?.value}');
-                
+                print(
+                    '🔍 MODAL DEBUG - Selected option: ${currentOption?.value}');
+
                 Navigator.of(context).pop();
                 if (currentOption?.value != null &&
                     currentOption?.value != "Without template") {
-                  print('🔍 MODAL DEBUG - Loading template: ${currentOption!.value}');
-                  
+                  print(
+                      '🔍 MODAL DEBUG - Loading template: ${currentOption!.value}');
+
                   // Load template FIRST, then navigate
                   await ref
                       .read(eventCreationAndEditingProvider.notifier)
                       .setClassFromExisting(currentOption!.value, false, true);
-                  
+
                   print('🔍 MODAL DEBUG - Template loaded, navigating to form');
                   context.pushNamed(createEditEventRoute,
                       queryParameters: {'isEditing': 'false'});

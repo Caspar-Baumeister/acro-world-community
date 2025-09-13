@@ -377,7 +377,8 @@ class EventCreationAndEditingNotifier
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
         countryCode: getCountryCode(
             templateClassModel.country), // Convert country name to country code
-        region: templateClassModel.city, // Use city as region (e.g., "State of Berlin")
+        region: templateClassModel
+            .city, // Use city as region (e.g., "State of Berlin")
         isLoading: false,
         errorMessage: null,
       );
@@ -394,7 +395,8 @@ class EventCreationAndEditingNotifier
       print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
       print(
           '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
-      print('🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');

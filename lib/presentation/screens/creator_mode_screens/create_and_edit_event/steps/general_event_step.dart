@@ -7,11 +7,9 @@ import 'package:acroworld/presentation/components/input/input_field_component.da
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
@@ -208,21 +206,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                                         Theme.of(context).colorScheme.primary),
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
-                      ModernButton(
-                        text: "Edit event description",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            EditDescriptionPageRoute(
-                              initialText: eventState.description,
-                              onTextUpdated: (String text) {
-                                _descriptionController.text = text;
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _locationNameController,
                         labelText: 'Location name',
@@ -308,14 +291,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                                 .read(eventCreationAndEditingProvider.notifier)
                                 .setEventType(value);
                           }
-                        },
-                      ),
-                      const SizedBox(height: AppDimensions.spacingMedium),
-                      CustomSettingComponent(
-                        title: 'Questions',
-                        content: "${eventState.questions.length} questions",
-                        onPressed: () {
-                          Navigator.of(context).push(QuestionPageRoute());
                         },
                       ),
                     ],
