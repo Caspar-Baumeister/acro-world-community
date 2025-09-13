@@ -365,11 +365,21 @@ class EventCreationAndEditingNotifier
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
       print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
-      print('🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
+      print(
+          '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
 
       // Convert country name to country code
+      // Note: templateClassModel.country might already be a country code, not a name
       final countryCode = getCountryCode(templateClassModel.country);
       print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
+      
+      // If getCountryCode returns null, the country might already be a code
+      final finalCountryCode = countryCode ?? templateClassModel.country;
+      print('🔍 TEMPLATE DEBUG - Final country code: $finalCountryCode');
+      
+      // Also try to get country name from code if we have a code
+      final countryName = getCountryName(templateClassModel.country);
+      print('🔍 TEMPLATE DEBUG - Country name from code: $countryName');
 
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
@@ -389,8 +399,7 @@ class EventCreationAndEditingNotifier
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
-        countryCode: getCountryCode(
-            templateClassModel.country), // Convert country name to country code
+        countryCode: finalCountryCode, // Use final country code (handles both name and code)
         region: templateClassModel
             .city, // Use city as region (e.g., "State of Berlin")
         isLoading: false,
@@ -411,9 +420,12 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
       print(
           '🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
-      print('🔍 TEMPLATE DEBUG - getCountryCode result: ${getCountryCode(templateClassModel.country)}');
-      print('🔍 TEMPLATE DEBUG - templateClassModel.country value: "${templateClassModel.country}"');
-      print('🔍 TEMPLATE DEBUG - templateClassModel.city value: "${templateClassModel.city}"');
+      print(
+          '🔍 TEMPLATE DEBUG - getCountryCode result: ${getCountryCode(templateClassModel.country)}');
+      print(
+          '🔍 TEMPLATE DEBUG - templateClassModel.country value: "${templateClassModel.country}"');
+      print(
+          '🔍 TEMPLATE DEBUG - templateClassModel.city value: "${templateClassModel.city}"');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');
