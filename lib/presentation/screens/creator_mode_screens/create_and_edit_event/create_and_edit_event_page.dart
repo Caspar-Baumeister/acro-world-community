@@ -197,6 +197,7 @@ class _CreateAndEditEventPageState
             currentStep: eventState.currentPage,
             totalSteps: pages.length,
             currentStepTitle: stepTitles[eventState.currentPage],
+            isLoading: eventState.isLoading,
             onBackPressed: eventState.currentPage > 0
                 ? () {
                     ref
@@ -228,24 +229,65 @@ class _CreateAndEditEventPageState
                       setState(() {});
                     }
                   }
-                : () async {
+                : eventState.isLoading
+                    ? null // Disable button while loading
+                    : () async {
                     // Final step - create the event
+                    final eventState = ref.read(eventCreationAndEditingProvider);
                     final creatorNotifier = ref.read(creatorProvider.notifier);
                     final creatorState = ref.read(creatorProvider);
 
-                    if (creatorState.activeTeacher == null ||
-                        creatorState.activeTeacher!.id == null) {
-                      print(
-                          "No active teacher found, trying to set from token");
-                      await creatorNotifier.setCreatorFromToken();
+                    // Validate payment setup
+                    bool isStripeEnabled = creatorState.activeTeacher != null &&
+                        creatorState.activeTeacher!.stripeId != null &&
+                        creatorState.activeTeacher!.isStripeEnabled == true;
+
+                    if (!isStripeEnabled && !eventState.isCashAllowed && eventState.bookingCategories.isNotEmpty) {
+                      showErrorToast("Please enable Stripe or allow cash payments to create tickets");
+                      return;
                     }
 
-                    if (creatorState.activeTeacher?.id != null) {
-                      ref
+                    if (creatorState.activeTeacher == null ||
+                        creatorState.activeTeacher!.id == null) {
+                      print("No active teacher found, trying to set from token");
+                      await creatorNotifier.setCreatorFromToken().then((success) {
+                        if (!success) {
+                          showErrorToast("Session Expired, refreshing session");
+                          return;
+                        }
+                      });
+                    }
+
+                    // Create the event
+                    if (widget.isEditing) {
+                      await ref
                           .read(eventCreationAndEditingProvider.notifier)
-                          .saveEvent();
+                          .updateClass(creatorState.activeTeacher!.id!);
                     } else {
-                      showErrorToast("No active teacher found");
+                      await ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .createClass(creatorState.activeTeacher!.id!);
+                    }
+
+                    // Check if creation was successful
+                    final finalEventState = ref.read(eventCreationAndEditingProvider);
+                    if (finalEventState.errorMessage == null) {
+                      showSuccessToast(
+                          "Event ${widget.isEditing ? "updated" : "created"} successfully");
+                      
+                      // Navigate back to My Events page
+                      context.goNamed(myEventsRoute);
+                      
+                      // Refresh the events list
+                      final userAsync = ref.read(userRiverpodProvider);
+                      if (userAsync.value?.id != null) {
+                        ref
+                            .read(teacherEventsProvider.notifier)
+                            .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+                      }
+                    } else {
+                      // Show error message
+                      showErrorToast(finalEventState.errorMessage!);
                     }
                   },
           ),

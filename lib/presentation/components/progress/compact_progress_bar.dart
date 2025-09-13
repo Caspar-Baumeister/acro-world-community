@@ -8,6 +8,7 @@ class CompactProgressBar extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final VoidCallback? onClosePressed;
   final VoidCallback? onNextPressed;
+  final bool isLoading;
 
   const CompactProgressBar({
     super.key,
@@ -17,6 +18,7 @@ class CompactProgressBar extends StatelessWidget {
     this.onBackPressed,
     this.onClosePressed,
     this.onNextPressed,
+    this.isLoading = false,
   });
 
   @override
@@ -102,7 +104,7 @@ class CompactProgressBar extends StatelessWidget {
               // Next button
               if (onNextPressed != null)
                 TextButton(
-                  onPressed: onNextPressed,
+                  onPressed: isLoading ? null : onNextPressed,
                   style: TextButton.styleFrom(
                     foregroundColor: colorScheme.primary,
                     backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
@@ -112,12 +114,21 @@ class CompactProgressBar extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: Text(
-                    currentStep < totalSteps - 1 ? 'Next' : 'Create',
-                    style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: isLoading
+                      ? SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                          ),
+                        )
+                      : Text(
+                          currentStep < totalSteps - 1 ? 'Next' : 'Create',
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 )
               else
                 const SizedBox(width: 16),
