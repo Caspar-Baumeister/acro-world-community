@@ -80,7 +80,6 @@ class _CreateNewEventFromExistingModalState
                 print(
                     '🔍 MODAL DEBUG - Selected option: ${currentOption?.value}');
 
-                Navigator.of(context).pop();
                 if (currentOption?.value != null &&
                     currentOption?.value != "Without template") {
                   print(
@@ -92,13 +91,23 @@ class _CreateNewEventFromExistingModalState
                       .setClassFromExisting(currentOption!.value, false, true);
 
                   print('🔍 MODAL DEBUG - Template loaded, navigating to form');
-                  context.pushNamed(createEditEventRoute,
-                      queryParameters: {'isEditing': 'false'});
+                  // Close modal first, then navigate
+                  Navigator.of(context).pop();
+                  // Use a post-frame callback to ensure navigation happens after modal is closed
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.pushNamed(createEditEventRoute,
+                        queryParameters: {'isEditing': 'false'});
+                  });
                 } else {
                   print('🔍 MODAL DEBUG - Creating without template');
                   ref.read(eventCreationAndEditingProvider.notifier).clear();
-                  context.pushNamed(createEditEventRoute,
-                      queryParameters: {'isEditing': 'false'});
+                  // Close modal first, then navigate
+                  Navigator.of(context).pop();
+                  // Use a post-frame callback to ensure navigation happens after modal is closed
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    context.pushNamed(createEditEventRoute,
+                        queryParameters: {'isEditing': 'false'});
+                  });
                 }
               },
             ),
