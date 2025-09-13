@@ -1,5 +1,13 @@
 import 'dart:typed_data';
 
+import 'package:acroworld/data/graphql/input/booking_category_input.dart';
+import 'package:acroworld/data/graphql/input/booking_option_input.dart';
+import 'package:acroworld/data/graphql/input/class_owner_input.dart';
+import 'package:acroworld/data/graphql/input/class_teacher_input.dart';
+import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
+import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
+import 'package:acroworld/data/graphql/input/question_input.dart';
+import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
@@ -11,6 +19,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
@@ -264,18 +273,9 @@ class EventCreationAndEditingNotifier
       // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       // final success = await repository.createClass(state.classModel!);
 
-      // if (success) {
-      if (true) {
-        state = state.copyWith(isLoading: false);
-        CustomErrorHandler.logDebug('Event saved successfully');
-        return true;
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to save event',
-        );
-        return false;
-      }
+      state = state.copyWith(isLoading: false);
+      CustomErrorHandler.logDebug('Event saved successfully');
+      return true;
     } catch (e) {
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
@@ -536,67 +536,111 @@ class EventCreationAndEditingNotifier
     state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
-  /// Create class
+  String _timeStringFromTimeOfDay(TimeOfDay time) {
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    return '$hour:$minute:00'; // Assuming seconds are always 00
+  }
+
+  /// Create class using the working upsertClass approach
   Future<void> createClass(String creatorId) async {
     try {
-      print("🚀 DEBUG: Starting event creation...");
+      print("🚀 DEBUG: Starting event creation with upsertClass...");
       print("🚀 DEBUG: Creator ID (Teacher): $creatorId");
       print("🚀 DEBUG: Event state: ${state.toString()}");
 
       state = state.copyWith(isLoading: true, errorMessage: null);
 
       // Import the repository
-      final repository =
-          ClassesRepository(apiService: GraphQLClientSingleton());
+      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
 
-      // Prepare the variables for the mutation
-      final variables = <String, dynamic>{
-        'name': state.title,
-        'description': state.description,
-        'imageUrl': state.existingImageUrl ?? '',
-        'eventType':
-            _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
-        'location': state.location != null
-            ? [state.location!.longitude, state.location!.latitude]
-            : [0.0, 0.0],
-        'locationName': state.locationName ?? '',
-        'timezone': 'UTC', // TODO: Get user's timezone
-        'urlSlug': state.slug,
-        'recurringPatterns':
-            state.recurringPatterns.map((pattern) => pattern.toJson()).toList(),
-        'classOwners': [
-          {
-            'teacher_id': creatorId,
-            'is_payment_receiver': true,
-          }
-        ],
-        'classTeachers': state.pendingInviteTeachers
-            .map((teacher) => {
-                  'teacher_id': teacher.id,
-                })
-            .toList(),
-        'max_booking_slots': state.maxBookingSlots,
-        'location_country': state.countryCode,
-        'location_city': state.region,
-        'is_cash_allowed': state.isCashAllowed,
-      };
+      // Create ClassOwnerInput for the creator
+      final classOwner = ClassOwnerInput(
+        id: const Uuid().v4(),
+        teacherId: creatorId, // This is the teacher ID, not user ID
+        isPaymentReceiver: true,
+      );
 
-      print(
-          "🚀 DEBUG: Event type mapping: ${state.eventType} -> ${_mapEventTypeToApiValue(_stringToEventType(state.eventType))}");
-      print("🚀 DEBUG: Mutation variables: $variables");
+      // Create ClassUpsertInput following the working pattern
+      final classUpsertInput = ClassUpsertInput(
+        id: const Uuid().v4(),
+        name: state.title,
+        description: state.description,
+        imageUrl: state.existingImageUrl ?? '',
+        timezone: 'UTC', // TODO: Get user's timezone
+        urlSlug: state.slug,
+        isCashAllowed: state.isCashAllowed,
+        location: state.location ?? const LatLng(0.0, 0.0),
+        locationName: state.locationName,
+        locationCity: state.region,
+        locationCountry: state.countryCode,
+        eventType: _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
+        maxBookingSlots: state.maxBookingSlots,
+        recurringPatterns: state.recurringPatterns.map((pattern) => RecurringPatternInput(
+          id: pattern.id ?? const Uuid().v4(),
+          dayOfWeek: pattern.dayOfWeek,
+          startDate: pattern.startDate?.toIso8601String() ?? '',
+          endDate: pattern.endDate?.toIso8601String(),
+          startTime: _timeStringFromTimeOfDay(pattern.startTime),
+          endTime: _timeStringFromTimeOfDay(pattern.endTime),
+          recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+          isRecurring: pattern.isRecurring ?? false,
+        )).toList(),
+        classOwners: [classOwner], // Include the class owner
+        classTeachers: state.pendingInviteTeachers.map((teacher) => ClassTeacherInput(
+          id: const Uuid().v4(),
+          teacherId: teacher.id!,
+        )).toList(),
+        bookingCategories: state.bookingCategories.map((category) => BookingCategoryInput(
+          id: category.id ?? const Uuid().v4(),
+          name: category.name,
+          contingent: category.contingent,
+          description: category.description ?? '',
+          bookingOptions: state.bookingOptions
+              .where((option) => option.bookingCategoryId == category.id)
+              .map((option) => BookingOptionInput(
+                id: option.id ?? const Uuid().v4(),
+                title: option.title ?? '',
+                subtitle: option.subtitle ?? '',
+                price: option.price ?? 0,
+                discount: option.discount ?? 0,
+                currency: option.currency.value,
+              )).toList(),
+        )).toList(),
+        questions: state.questions.map((question) => QuestionInput(
+          id: question.id ?? const Uuid().v4(),
+          allowMultipleAnswers: question.isMultipleChoice ?? false,
+          isRequired: question.isRequired ?? false,
+          position: 0, // TODO: Set proper position
+          question: question.question ?? '',
+          title: question.title ?? '',
+          questionType: question.type ?? QuestionType.text,
+          multipleChoiceOptions: question.choices?.map((choice) => MultipleChoiceOptionInput(
+            id: choice.id ?? const Uuid().v4(),
+            optionText: choice.optionText ?? '',
+            position: 0, // TODO: Set proper position
+          )).toList() ?? [],
+        )).toList(),
+      );
 
-      // Create the class
-      print("🚀 DEBUG: Calling repository.createClass()...");
-      final createdClass = await repository.createClass(variables);
+      print("🚀 DEBUG: ClassUpsertInput created successfully");
+      print("🚀 DEBUG: Class owner teacher ID: ${classOwner.teacherId}");
+
+      // Create the class using upsertClass
+      print("🚀 DEBUG: Calling repository.upsertClass()...");
+      final createdClass = await repository.upsertClass(
+        classUpsertInput,
+        [], // questionIdsToDelete
+        [], // recurringPatternIdsToDelete
+        [], // deleteClassTeacherIds
+        [], // deleteBookingOptionIds
+        [], // deleteBookingCategoryIds
+      );
 
       print("🚀 DEBUG: Repository call completed successfully!");
       print("🚀 DEBUG: Created class ID: ${createdClass.id}");
       print("🚀 DEBUG: Created class name: ${createdClass.name}");
       print("🚀 DEBUG: Created class slug: ${createdClass.urlSlug}");
-
-      // TODO: Create booking categories and options
-      // This would require additional API calls to create the ticket categories and options
-      print("🚀 DEBUG: Skipping booking categories creation for now...");
 
       state = state.copyWith(
         isLoading: false,
@@ -605,6 +649,7 @@ class EventCreationAndEditingNotifier
 
       print("🚀 DEBUG: State updated - isLoading: false, errorMessage: null");
       print("🚀 DEBUG: Event creation completed successfully!");
+
     } catch (e) {
       print("❌ DEBUG: Error creating event: $e");
       state = state.copyWith(

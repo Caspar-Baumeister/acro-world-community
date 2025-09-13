@@ -375,7 +375,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         recurring_patterns: {
           data: \$recurringPatterns
         }
-   
         class_owners: {
           data: \$classOwners
         }
@@ -386,19 +385,274 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
       }
     ) {
       id
-      name
-      url_slug
-      description
-      image_url
-      event_type
-      location_name
-      location_country
-      location_city
-      is_cash_allowed
-      max_booking_slots
-      timezone
     }
   }
+  """);
+
+  /*mutation UpsertClasses {
+  delete_recurring_patterns(where:{id: {_in: []}}) {
+    affected_rows
+  }
+  delete_booking_category(where:{id: {_in: []}}) {
+    affected_rows
+  }
+  delete_questions(where:{id: {_in: []}}) {
+    affected_rows
+  }
+  insert_classes_one(
+    on_conflict: {
+      constraint: classes_pkey,
+      update_columns:[
+        id,
+        name,
+        pricing,
+        description,
+        image_url,
+        location_city,
+        location_country,
+        event_type,
+        timezone,
+        url_slug
+      ],
+    },
+    object: {
+      id: "4e0126ee-d86e-4a8a-96e6-71a29a05b614",
+      name: "Testtttt", 
+      pricing: "", 
+      description: "Test", 
+      image_url: "", 
+      is_cash_allowed: false, 
+      location_name: "Location Name",
+      location_city: "City", 
+      location_country: "Country", 
+      event_type: Classes, 
+      timezone: "", 
+      url_slug: "testeinzweidreiiiii",
+      location: {
+       type: "Point",
+       coordinates: [13.4050, 52.5200]
+      },
+      recurring_patterns: {
+        on_conflict: {
+          constraint: recurring_patterns_pkey,
+          update_columns: [
+            id,
+            class_id,
+            day_of_week,
+            start_date,
+            end_date,
+            start_time,
+            end_time
+            recurring_every_x_weeks,
+            is_recurring
+          ]
+        },
+        data: [
+          {
+            id: "e3e70aed-be44-478a-8236-04b053d67223",
+            day_of_week: 0,
+            start_date: "2025-07-25T15:30:00Z",
+            end_date: "2025-07-25T15:30:00Z",
+            start_time: "10:00",
+            end_time: "12:00",
+            recurring_every_x_weeks: 2,
+            is_recurring: false
+          }
+        ]
+      },
+      class_owners: {
+        on_conflict: {
+          constraint: class_owners_pkey,
+          update_columns: [
+            id,
+            class_id,
+            teacher_id,
+            is_payment_receiver
+          ]
+        },
+        data: {
+          id: "6a65645e-7a79-43ba-9d80-42cb8dd8a2a8",
+          teacher_id: "58b60fd3-9e3c-499e-aa3b-b4668cde6b5a",
+          is_payment_receiver: true
+        }
+      },
+      booking_categories: {
+          on_conflict: 
+            {
+              constraint: booking_category_pkey, 
+              update_columns: 
+                [
+                  id, 
+                  name, 
+                  class_id, 
+                  contingent, 
+                  description
+                ]
+            }, 
+          data: 
+          [
+            {
+              id: "b6a2c45e-ff38-424d-826a-f171252394cf", 
+              name: "Test", 
+              contingent: 10, 
+              description: "Test",
+              booking_options: {
+                on_conflict: {
+                  constraint: booking_option_pkey,
+                  update_columns: [
+                    id,
+                    title,
+                    subtitle,
+                    price,
+                    discount,
+                    currency
+                  ]
+                }
+                data: [
+                  {
+                    id: "6b9a2dbd-6cf4-42c8-aa2c-de8151e5ff2f",
+                    title: "Booking option test",
+                    subtitle: "Booking option subtitle",
+                    price: 150,
+                    discount: 0,
+                    currency: "EUR"
+                  }
+                ]
+              }
+          	}
+          ]
+        }, 
+      questions: {
+        on_conflict: {
+          constraint: question_pkey,
+          update_columns: [
+						id,
+            allow_multiple_answers,
+            is_required,
+            position,
+            question,
+            question_type,
+            title,
+            event_id
+          ]
+        }
+        data: 
+          [
+            {
+              id: "c8734e4a-145b-459f-ad6d-80236f6acdd6",
+              allow_multiple_answers: false, 
+              is_required: false, 
+              position: 1, 
+              question: "Yes?", 
+              title: "Noo",
+              question_type: TEXT
+              multiple_choice_options: {
+                on_conflict: {
+                  constraint: multiple_choice_option_pkey
+                  update_columns: [
+                    id,
+                    option_text,
+                    position
+                  ]
+                },
+                data: [
+                  {
+                    id: "d3fcac5d-b70a-4166-8779-b251baf1b543",
+                    option_text: "Test option",
+                    position: 0
+                  }
+                ]
+              }
+            }
+          ]
+    }
+  }) {
+    name
+    class_events {
+      start_date
+      end_date
+    }
+    recurring_patterns {
+      id
+      start_date
+      end_date
+      start_time
+      end_time
+    }
+    booking_categories {
+      id
+      description
+      contingent
+      class_id
+      booking_options {
+        id
+        title
+        subtitle
+      }
+    }
+    questions {
+      id
+      title
+      question
+      event_id
+    }
+  }
+}
+ */
+
+  static final upsertClass = gql("""
+    mutation UpsertClass(
+      \$class: classes_insert_input!,
+      \$delete_recurring_pattern_ids: [uuid!]!,
+      \$delete_booking_option_ids: [uuid!]!,
+      \$delete_booking_category_ids: [uuid!]!,
+      \$delete_class_teacher_ids: [uuid!]!,
+      \$delete_question_ids: [uuid!]!
+    ) {
+      delete_recurring_patterns(where: {id: {_in: \$delete_recurring_pattern_ids}}) {
+        affected_rows
+      }
+
+      delete_booking_option(where: {id: {_in: \$delete_booking_option_ids}}) {
+        affected_rows
+      }
+
+      delete_booking_category(where: {id: {_in: \$delete_booking_category_ids}}) {
+        affected_rows
+      }
+      
+      delete_class_teachers(where: {id: {_in: \$delete_class_teacher_ids}}) {
+        affected_rows
+      }
+
+      delete_questions(where: {id: {_in: \$delete_question_ids}}) {
+        affected_rows
+      }
+
+      insert_classes_one(
+        object: \$class,
+        on_conflict: {
+          constraint: classes_pkey,
+          update_columns: [
+            id,
+            name,
+            pricing,
+            description,
+            image_url,
+            location_city,
+            location_name,
+            location_country,
+            is_cash_allowed,
+            max_booking_slots,
+            event_type,
+            timezone,
+            url_slug,
+          ]
+        }
+      ) {
+        id
+      }
+    }
   """);
 
   static final updateClassWithRecurringPatterns = gql("""
@@ -629,72 +883,4 @@ mutation deleteAccount{
     success
   }
 }""");
-
-  /// Comments ///
-
-  static final insertComment = gql("""
-mutation insertComment(\$content: String!, \$rating: Int!, \$teacher_id: uuid!, \$user_id: uuid!) {
-  insert_comments_one(object: {
-    content: \$content
-    rating: \$rating
-    teacher_id: \$teacher_id
-    user_id: \$user_id
-  }) {
-    id
-    content
-    rating
-    created_at
-    updated_at
-    teacher_id
-    user_id
-    user {
-      id
-      name
-      image_url
-    }
-    teacher {
-      id
-      name
-    }
-  }
-}
-""");
-
-  static final updateComment = gql("""
-mutation updateComment(\$id: uuid!, \$content: String!, \$rating: Int!) {
-  update_comments_by_pk(
-    pk_columns: {id: \$id}
-    _set: {
-      content: \$content
-      rating: \$rating
-      updated_at: "now()"
-    }
-  ) {
-    id
-    content
-    rating
-    created_at
-    updated_at
-    teacher_id
-    user_id
-    user {
-      id
-      name
-      image_url
-    }
-    teacher {
-      id
-      name
-    }
-  }
-}
-""");
-
-  static final deleteComment = gql("""
-mutation deleteComment(\$id: uuid!) {
-  delete_comments_by_pk(id: \$id) {
-    id
-  }
-}
-""");
 }

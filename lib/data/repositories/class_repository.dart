@@ -1,3 +1,4 @@
+import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
@@ -82,108 +83,23 @@ class ClassesRepository {
     }
   }
 
-  // Optimized method for My Events page with caching and minimal data
-  Future<Map<String, dynamic>> getMyEventsOptimized(
-      int limit, int offset, Map where) async {
-    QueryOptions queryOptions = QueryOptions(
-      document: Queries.getMyEventsOptimized,
-      fetchPolicy: FetchPolicy.cacheFirst, // Use cache first for better performance
-      variables: {
-        "limit": limit,
-        "offset": offset,
-        "where": where,
-      },
-    );
-
-    final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
-
-    // Check for a valid response
-    if (result.hasException == true) {
-      throw Exception(
-          'Failed to load my events. result: ${result.exception?.raw ?? result}');
-    }
-
-    List<ClassModel> classes = [];
-
-    if (result.data != null && result.data!["classes"] != null) {
-      try {
-        classes = List<ClassModel>.from(
-          result.data!['classes'].map((json) => ClassModel.fromJson(json)),
-        );
-
-        return {
-          "classes": classes,
-        };
-      } catch (e) {
-        throw Exception('Failed to parse my events: $e');
-      }
-    } else {
-      throw Exception('Failed to load my events, no data, with result $result');
-    }
-  }
-
   // creates a new class
   Future<ClassModel> createClass(Map<String, dynamic> variables) async {
-    print("🏗️ DEBUG: Repository createClass called");
-    print("🏗️ DEBUG: Variables: $variables");
-    print("🏗️ DEBUG: urlSlug: ${variables["urlSlug"]}");
-    
+    print("urlSlug: ${variables["urlSlug"]}");
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertClassWithRecurringPatterns,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: variables,
     );
 
-    print("🏗️ DEBUG: Mutation options created, calling GraphQL client...");
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
-    print("🏗️ DEBUG: GraphQL mutation completed");
-    print("🏗️ DEBUG: Has exception: ${result.hasException}");
-    print("🏗️ DEBUG: Data: ${result.data}");
-
     // Check for a valid response
     if (result.hasException) {
-      print("❌ DEBUG: Exception result: $result");
+      print("exeption result $result");
       throw Exception(
           'Failed to create class. Status code: ${result.exception?.raw.toString()}');
-    }
-
-    if (result.data != null && result.data!["insert_classes_one"] != null) {
-      print("🏗️ DEBUG: Data is valid, parsing class model...");
-      try {
-        final classModel = ClassModel.fromJson(result.data!['insert_classes_one']);
-        print("🏗️ DEBUG: Class model parsed successfully");
-        print("🏗️ DEBUG: Class ID: ${classModel.id}");
-        print("🏗️ DEBUG: Class name: ${classModel.name}");
-        return classModel;
-      } catch (e) {
-        print("❌ DEBUG: Failed to parse class: $e");
-        throw Exception('Failed to parse class: $e');
-      }
-    } else {
-      print("❌ DEBUG: No data or insert_classes_one is null");
-      print("❌ DEBUG: Data: ${result.data}");
-      throw Exception('Failed to create class');
-    }
-  }
-
-  // updates a class
-  Future<ClassModel> updateClass(Map<String, dynamic> variables) async {
-    MutationOptions mutationOptions = MutationOptions(
-      document: Mutations.updateClassWithRecurringPatterns,
-      fetchPolicy: FetchPolicy.networkOnly,
-      variables: variables,
-    );
-
-    final graphQLClient = GraphQLClientSingleton().client;
-    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
-
-    // Check for a valid response
-    if (result.hasException) {
-      throw Exception(
-          'Failed to update class. Status code: ${result.exception?.raw.toString()}');
     }
 
     if (result.data != null && result.data!["insert_classes_one"] != null) {
@@ -193,7 +109,66 @@ class ClassesRepository {
         throw Exception('Failed to parse class: $e');
       }
     } else {
-      throw Exception('Failed to update class ${result.data ?? result}');
+      throw Exception('Failed to create class');
+    }
+  }
+
+  Future<ClassModel> upsertClass(
+    ClassUpsertInput input,
+    List<String> deleteQuestionIds,
+    List<String> deleteRecurringPatternIds,
+    List<String> deleteClassTeacherIds,
+    List<String> deleteBookingOptionIds,
+    List<String> deleteBookingCategoryIds,
+  ) async {
+    pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
+        'upsertClass ${input.toJson()}');
+    print('deleteQuestionIds $deleteQuestionIds');
+    print('deleteRecurringPatternIds $deleteRecurringPatternIds');
+    print('deleteClassTeacherIds $deleteClassTeacherIds');
+    print('deleteBookingOptionIds $deleteBookingOptionIds');
+    print('deleteBookingCategoryIds $deleteBookingCategoryIds');
+
+    MutationOptions mutationOptions = MutationOptions(
+      document: Mutations.upsertClass,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "class": input.toJson(),
+        "delete_recurring_pattern_ids": deleteRecurringPatternIds,
+        "delete_booking_category_ids": deleteBookingCategoryIds,
+        "delete_class_teacher_ids": deleteClassTeacherIds,
+        "delete_booking_option_ids": deleteBookingOptionIds,
+        "delete_question_ids": deleteQuestionIds
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      print("exeption result $result");
+      throw Exception(
+          'Failed to create class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["insert_classes_one"] != null) {
+      try {
+        return ClassModel.fromJson(result.data!['insert_classes_one']);
+      } catch (e) {
+        throw Exception('Failed to parse class: $e');
+      }
+    } else {
+      throw Exception('Failed to create class');
+    }
+  }
+
+  void pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
+      String text) {
+    const int chunkSize = 800;
+    for (int i = 0; i < text.length; i += chunkSize) {
+      print(text.substring(
+          i, i + chunkSize > text.length ? text.length : i + chunkSize));
     }
   }
 
