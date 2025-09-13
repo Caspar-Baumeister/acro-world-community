@@ -338,6 +338,14 @@ class EventCreationAndEditingNotifier
         // Don't set id, urlSlug, createdAt, updatedAt - these will be generated
       );
 
+      // Debug: Print template data
+      print('🔍 TEMPLATE DEBUG - Loading template: $slug');
+      print('🔍 TEMPLATE DEBUG - Template name: ${templateClassModel.name}');
+      print('🔍 TEMPLATE DEBUG - Template description: ${templateClassModel.description}');
+      print('🔍 TEMPLATE DEBUG - Template locationName: ${templateClassModel.locationName}');
+      print('🔍 TEMPLATE DEBUG - Template imageUrl: ${templateClassModel.imageUrl}');
+      print('🔍 TEMPLATE DEBUG - Template eventType: ${templateClassModel.eventType?.name}');
+
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
         title: templateClassModel.name ?? '',
@@ -354,6 +362,13 @@ class EventCreationAndEditingNotifier
         isLoading: false,
         errorMessage: null,
       );
+
+      // Debug: Print state after setting
+      print('🔍 TEMPLATE DEBUG - State title: ${state.title}');
+      print('🔍 TEMPLATE DEBUG - State description: ${state.description}');
+      print('🔍 TEMPLATE DEBUG - State locationName: ${state.locationName}');
+      print('🔍 TEMPLATE DEBUG - State existingImageUrl: ${state.existingImageUrl}');
+      print('🔍 TEMPLATE DEBUG - State eventType: ${state.eventType}');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');

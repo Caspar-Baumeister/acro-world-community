@@ -15,9 +15,9 @@ import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_r
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class GeneralEventStep extends ConsumerStatefulWidget {
   const GeneralEventStep({super.key, required this.onFinished});
@@ -44,15 +44,20 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
         TextEditingController(text: eventState.locationName);
     _titleController = TextEditingController(text: eventState.title);
     _slugController = TextEditingController(text: eventState.slug);
-    _descriptionController = TextEditingController(text: eventState.description);
+    _descriptionController =
+        TextEditingController(text: eventState.description);
 
     // add listener to update provider
     _descriptionController.addListener(() {
-      ref.read(eventCreationAndEditingProvider.notifier).setDescription(_descriptionController.text);
+      ref
+          .read(eventCreationAndEditingProvider.notifier)
+          .setDescription(_descriptionController.text);
     });
 
     _locationNameController.addListener(() {
-      ref.read(eventCreationAndEditingProvider.notifier).setLocationName(_locationNameController.text);
+      ref
+          .read(eventCreationAndEditingProvider.notifier)
+          .setLocationName(_locationNameController.text);
     });
   }
 
@@ -61,18 +66,32 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     super.didChangeDependencies();
     // Update controllers when provider state changes (e.g., when template is loaded)
     final eventState = ref.watch(eventCreationAndEditingProvider);
-    
+
+    // Debug: Print form state
+    print('🔍 FORM DEBUG - didChangeDependencies called');
+    print('🔍 FORM DEBUG - Provider title: "${eventState.title}"');
+    print('🔍 FORM DEBUG - Provider description: "${eventState.description}"');
+    print('🔍 FORM DEBUG - Provider locationName: "${eventState.locationName}"');
+    print('🔍 FORM DEBUG - Provider existingImageUrl: "${eventState.existingImageUrl}"');
+    print('🔍 FORM DEBUG - Controller title: "${_titleController.text}"');
+    print('🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
+    print('🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
+
     // Only update if the values have actually changed to avoid cursor jumping
     if (_titleController.text != eventState.title) {
+      print('🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${eventState.title}"');
       _titleController.text = eventState.title;
     }
     if (_slugController.text != eventState.slug) {
+      print('🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${eventState.slug}"');
       _slugController.text = eventState.slug;
     }
     if (_descriptionController.text != eventState.description) {
+      print('🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${eventState.description}"');
       _descriptionController.text = eventState.description;
     }
     if (_locationNameController.text != (eventState.locationName ?? '')) {
+      print('🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${eventState.locationName ?? ''}"');
       _locationNameController.text = eventState.locationName ?? '';
     }
   }
@@ -114,7 +133,9 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                           currentImage: eventState.eventImage,
                           existingImageUrl: eventState.existingImageUrl,
                           onImageSelected: (Uint8List image) {
-                            ref.read(eventCreationAndEditingProvider.notifier).setEventImage(image);
+                            ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .setEventImage(image);
                           },
                         ),
                       ),
@@ -122,15 +143,21 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       InputFieldComponent(
                         controller: _titleController,
                         onEditingComplete: () {
-                          ref.read(eventCreationAndEditingProvider.notifier).setTitle(_titleController.text);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setTitle(_titleController.text);
                           if (_slugController.text.isEmpty) {
                             String slug = _titleController.text
                                 .toLowerCase()
                                 .replaceAll(' ', '-')
                                 .replaceAll(RegExp(r'[^a-z0-9-]'), '');
                             _slugController.text = slug;
-                            ref.read(eventCreationAndEditingProvider.notifier).setSlug(slug);
-                            ref.read(eventCreationAndEditingProvider.notifier).checkSlugAvailability();
+                            ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .setSlug(slug);
+                            ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .checkSlugAvailability();
                           }
                         },
                         labelText: 'Event Title',
@@ -143,8 +170,12 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         controller: _slugController,
                         labelText: 'URL Slug',
                         onEditingComplete: () {
-                          ref.read(eventCreationAndEditingProvider.notifier).setSlug(_slugController.text);
-                          ref.read(eventCreationAndEditingProvider.notifier).checkSlugAvailability();
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setSlug(_slugController.text);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .checkSlugAvailability();
                         },
                         footnoteText: eventState.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
@@ -195,9 +226,13 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                             eventState.locationDescription,
                         onLocationSelected:
                             (LatLng location, String? locationDescription) {
-                          ref.read(eventCreationAndEditingProvider.notifier).setLocation(location);
-                          ref.read(eventCreationAndEditingProvider.notifier).setLocationDescription(
-                              locationDescription ?? '');
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setLocation(location);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setLocationDescription(
+                                  locationDescription ?? '');
                         },
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
@@ -208,10 +243,16 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         selectedCountryCode: eventState.countryCode,
                         onCountrySelected: (String? code, String? name) {
                           // code: e.g. "US", name: e.g. "United States"
-                          ref.read(eventCreationAndEditingProvider.notifier).setCountryCode(code);
-                          ref.read(eventCreationAndEditingProvider.notifier).setCountry(name);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setCountryCode(code);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setCountry(name);
                           // clear out any previously selected region:
-                          ref.read(eventCreationAndEditingProvider.notifier).setRegion(null);
+                          ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .setRegion(null);
                         },
                       ),
 
@@ -224,7 +265,10 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                             countryCode: eventState.countryCode!,
                             selectedRegion: eventState.region,
                             onRegionSelected: (String? region) {
-                              ref.read(eventCreationAndEditingProvider.notifier).setRegion(region);
+                              ref
+                                  .read(
+                                      eventCreationAndEditingProvider.notifier)
+                                  .setRegion(region);
                             },
                           ),
                         ),
@@ -247,7 +291,9 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         beatifyValueFunction: splitCamelCaseToLower,
                         setOption: (String? value) {
                           if (value != null) {
-                            ref.read(eventCreationAndEditingProvider.notifier).setEventType(value);
+                            ref
+                                .read(eventCreationAndEditingProvider.notifier)
+                                .setEventType(value);
                           }
                         },
                       ),
@@ -269,17 +315,17 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                    constraints: Responsive.isDesktop(context)
-                        ? const BoxConstraints(maxWidth: 200)
-                        : null,
-                    child: ModernButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      text: "Cancel",
-                      width: MediaQuery.of(context).size.width * 0.3,
-                    ),
+                  constraints: Responsive.isDesktop(context)
+                      ? const BoxConstraints(maxWidth: 200)
+                      : null,
+                  child: ModernButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    text: "Cancel",
+                    width: MediaQuery.of(context).size.width * 0.3,
                   ),
+                ),
                 const SizedBox(width: AppDimensions.spacingMedium),
                 Container(
                   constraints: Responsive.isDesktop(context)
@@ -360,10 +406,18 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       _errorMessage = null;
     });
 
-    ref.read(eventCreationAndEditingProvider.notifier).setTitle(_titleController.text);
-    ref.read(eventCreationAndEditingProvider.notifier).setSlug(_slugController.text);
-    ref.read(eventCreationAndEditingProvider.notifier).setDescription(_descriptionController.text);
-    ref.read(eventCreationAndEditingProvider.notifier).setLocationName(_locationNameController.text);
+    ref
+        .read(eventCreationAndEditingProvider.notifier)
+        .setTitle(_titleController.text);
+    ref
+        .read(eventCreationAndEditingProvider.notifier)
+        .setSlug(_slugController.text);
+    ref
+        .read(eventCreationAndEditingProvider.notifier)
+        .setDescription(_descriptionController.text);
+    ref
+        .read(eventCreationAndEditingProvider.notifier)
+        .setLocationName(_locationNameController.text);
     widget.onFinished();
   }
 }
