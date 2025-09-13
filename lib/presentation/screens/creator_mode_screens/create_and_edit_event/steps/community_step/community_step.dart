@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_amount_notifies_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_header.dart';
@@ -6,7 +5,6 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_selected_teachers_section.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/sections/community_step_teacher_suggestion_section.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,7 +41,6 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
     return Container(
       padding: EdgeInsets.symmetric(
         horizontal: AppDimensions.spacingMedium,
@@ -77,39 +74,6 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
             ),
           ),
           CommunityStepAmountNotifiesComponent(),
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  constraints: Responsive.isDesktop(context)
-                      ? const BoxConstraints(maxWidth: 200)
-                      : null,
-                  child: ModernButton(
-                    onPressed: () {
-                      ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
-                      setState(() {});
-                    },
-                    text: "Previous",
-                    width: MediaQuery.of(context).size.width * 0.3,
-                  ),
-                ),
-                const SizedBox(width: AppDimensions.spacingMedium),
-                Container(
-                  constraints: Responsive.isDesktop(context)
-                      ? const BoxConstraints(maxWidth: 400)
-                      : null,
-                  child: ModernButton(
-                    onPressed: _onNext,
-                    text: "Next",
-                    isFilled: true,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppDimensions.spacingMedium),
           DisplayErrorMessageComponent(errorMessage: _errorMessage)
           // wrap the invited teachers
         ],
@@ -117,7 +81,4 @@ class _CommunityStepState extends ConsumerState<CommunityStep> {
     );
   }
 
-  void _onNext() {
-    widget.onFinished();
-  }
 }

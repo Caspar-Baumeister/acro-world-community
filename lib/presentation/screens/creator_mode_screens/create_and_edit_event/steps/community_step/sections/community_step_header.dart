@@ -11,8 +11,11 @@ class CommunityStepHeader extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: Text(
-          "Invite teachers to your event. The more teachers you invite, the more user will see your event.\n\nKeep in mind, that teachers have to accept your invitation.",
-          style: Theme.of(context).textTheme.bodySmall),
+          "Invite teachers who teach at your event to reach their audience and make your event more attractive. Each teacher brings their followers and community to your event.\n\nTeachers will need to accept your invitation to be featured.",
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+            height: 1.4,
+          )),
     );
   }
 }
