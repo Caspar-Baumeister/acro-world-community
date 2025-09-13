@@ -49,13 +49,10 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: eventState.recurringPatterns.length +
-                    (eventState.classModel?.classEvents?.length ?? 0),
+                itemCount: eventState.recurringPatterns.length,
                 itemBuilder: (context, index) {
-                  // Show recurring patterns first
-                  if (index < eventState.recurringPatterns.length) {
-                    RecurringPatternModel pattern =
-                        eventState.recurringPatterns[index];
+                  RecurringPatternModel pattern =
+                      eventState.recurringPatterns[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppDimensions.spacingLarge,
@@ -111,10 +108,12 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                                 builder: (context) =>
                                                     AddOrEditRecurringPatternPage(
                                                   onFinished:
-                                                      (RecurringPatternModel recurringPattern) {
+                                                      (RecurringPatternModel
+                                                          recurringPattern) {
                                                     ref
-                                                        .read(eventCreationAndEditingProvider
-                                                            .notifier)
+                                                        .read(
+                                                            eventCreationAndEditingProvider
+                                                                .notifier)
                                                         .editRecurringPattern(
                                                           index,
                                                           recurringPattern,
@@ -138,25 +137,32 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                               context: context,
                                               builder: (BuildContext context) {
                                                 return AlertDialog(
-                                                  title: const Text('Delete Occurrence'),
+                                                  title: const Text(
+                                                      'Delete Occurrence'),
                                                   content: const Text(
                                                       'Are you sure you want to delete this occurrence? This action cannot be undone.'),
                                                   actions: [
                                                     TextButton(
                                                       onPressed: () {
-                                                        Navigator.of(context).pop();
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
-                                                      child: const Text('Cancel'),
+                                                      child:
+                                                          const Text('Cancel'),
                                                     ),
                                                     TextButton(
                                                       onPressed: () {
                                                         ref
-                                                            .read(eventCreationAndEditingProvider
-                                                                .notifier)
-                                                            .removeRecurringPattern(index);
-                                                        Navigator.of(context).pop();
+                                                            .read(
+                                                                eventCreationAndEditingProvider
+                                                                    .notifier)
+                                                            .removeRecurringPattern(
+                                                                index);
+                                                        Navigator.of(context)
+                                                            .pop();
                                                       },
-                                                      child: const Text('Delete'),
+                                                      child:
+                                                          const Text('Delete'),
                                                     ),
                                                   ],
                                                 );
@@ -165,7 +171,9 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                           },
                                           icon: Icon(
                                             Icons.delete,
-                                            color: Theme.of(context).colorScheme.error,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .error,
                                           ))
                                     ],
                                   )
@@ -174,85 +182,6 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                               pattern.isRecurring == true
                                   ? ReccurringPatternInfo(pattern)
                                   : SingleOccurenceInfo(pattern),
-                              const SizedBox(
-                                  height: AppDimensions.spacingSmall),
-                            ],
-                          )),
-                    );
-                  } else {
-                    // Show actual class_events
-                    final classEventIndex =
-                        index - eventState.recurringPatterns.length;
-                    final classEvent =
-                        eventState.classModel?.classEvents?[classEventIndex];
-                    if (classEvent == null) return const SizedBox.shrink();
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.spacingLarge,
-                      ),
-                      child: FloatingButton(
-                          insideText: "",
-                          onPressed: () {
-                            // For now, just show a message that this is a generated event
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text(
-                                    'This is a generated event occurrence from a recurring pattern'),
-                              ),
-                            );
-                          },
-                          headerText: "",
-                          insideWidget: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Generated Event Occurrence",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary)),
-                                  Row(
-                                    children: [
-                                      Icon(
-                                        Icons.event,
-                                        color: Theme.of(context).colorScheme.primary,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        "Read-only",
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodySmall!
-                                            .copyWith(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .onSurfaceVariant,
-                                              fontStyle: FontStyle.italic,
-                                            ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                              const SizedBox(
-                                  height: AppDimensions.spacingSmall),
-                              Text(
-                                "Date: ${classEvent.startDate}",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              if (classEvent.endDate != null)
-                                Text(
-                                  "End: ${classEvent.endDate}",
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
                               const SizedBox(
                                   height: AppDimensions.spacingSmall),
                             ],
