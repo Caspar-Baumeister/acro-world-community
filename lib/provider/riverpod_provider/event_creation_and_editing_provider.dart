@@ -364,6 +364,8 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
+      print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
+      print('🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
 
       // Convert country name to country code
       final countryCode = getCountryCode(templateClassModel.country);
@@ -409,6 +411,9 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
       print(
           '🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
+      print('🔍 TEMPLATE DEBUG - getCountryCode result: ${getCountryCode(templateClassModel.country)}');
+      print('🔍 TEMPLATE DEBUG - templateClassModel.country value: "${templateClassModel.country}"');
+      print('🔍 TEMPLATE DEBUG - templateClassModel.city value: "${templateClassModel.city}"');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');
