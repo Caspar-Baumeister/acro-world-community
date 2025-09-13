@@ -273,9 +273,9 @@ class EventCreationAndEditingNotifier
       // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       // final success = await repository.createClass(state.classModel!);
 
-        state = state.copyWith(isLoading: false);
-        CustomErrorHandler.logDebug('Event saved successfully');
-        return true;
+      state = state.copyWith(isLoading: false);
+      CustomErrorHandler.logDebug('Event saved successfully');
+      return true;
     } catch (e) {
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
@@ -414,11 +414,11 @@ class EventCreationAndEditingNotifier
           'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
-    state = EventCreationAndEditingState(
-      classModel: _createEmptyClassModel(),
+      state = EventCreationAndEditingState(
+        classModel: _createEmptyClassModel(),
         isLoading: false,
         errorMessage: 'Failed to load template: ${e.toString()}',
-    );
+      );
     }
   }
 
