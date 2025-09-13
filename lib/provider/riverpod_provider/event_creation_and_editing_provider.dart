@@ -341,10 +341,20 @@ class EventCreationAndEditingNotifier
       // Debug: Print template data
       print('🔍 TEMPLATE DEBUG - Loading template: $slug');
       print('🔍 TEMPLATE DEBUG - Template name: ${templateClassModel.name}');
-      print('🔍 TEMPLATE DEBUG - Template description: ${templateClassModel.description}');
-      print('🔍 TEMPLATE DEBUG - Template locationName: ${templateClassModel.locationName}');
-      print('🔍 TEMPLATE DEBUG - Template imageUrl: ${templateClassModel.imageUrl}');
-      print('🔍 TEMPLATE DEBUG - Template eventType: ${templateClassModel.eventType?.name}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template description: ${templateClassModel.description}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template locationName: ${templateClassModel.locationName}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template imageUrl: ${templateClassModel.imageUrl}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template eventType: ${templateClassModel.eventType?.name}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template city: ${templateClassModel.city}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
 
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
@@ -359,6 +369,8 @@ class EventCreationAndEditingNotifier
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
+        countryCode: templateClassModel.country, // Map country to countryCode
+        region: null, // Region is not available in ClassModel, will be set separately if needed
         isLoading: false,
         errorMessage: null,
       );
@@ -367,8 +379,12 @@ class EventCreationAndEditingNotifier
       print('🔍 TEMPLATE DEBUG - State title: ${state.title}');
       print('🔍 TEMPLATE DEBUG - State description: ${state.description}');
       print('🔍 TEMPLATE DEBUG - State locationName: ${state.locationName}');
-      print('🔍 TEMPLATE DEBUG - State existingImageUrl: ${state.existingImageUrl}');
+      print(
+          '🔍 TEMPLATE DEBUG - State existingImageUrl: ${state.existingImageUrl}');
       print('🔍 TEMPLATE DEBUG - State eventType: ${state.eventType}');
+      print('🔍 TEMPLATE DEBUG - State countryCode: ${state.countryCode}');
+      print('🔍 TEMPLATE DEBUG - State region: ${state.region}');
+      print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');
