@@ -75,11 +75,11 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
               bottom: 10,
               right: 10,
               child: CircleAvatar(
-                backgroundColor: Theme.of(context).colorScheme.onSurface,
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 radius: AppDimensions.iconSizeMedium,
                 child: Icon(
                   Icons.camera_alt,
-                  color: Theme.of(context).colorScheme.onSurface,
+                  color: Theme.of(context).colorScheme.primary,
                   size: AppDimensions.iconSizeSmall,
                 ),
               ),

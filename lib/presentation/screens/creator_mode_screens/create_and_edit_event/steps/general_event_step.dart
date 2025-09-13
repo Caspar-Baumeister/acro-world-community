@@ -135,8 +135,8 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                     children: [
                       Container(
                         alignment: Alignment.center,
-                        width: 300,
-                        height: 300,
+                        width: 250,
+                        height: 250,
                         child: EventImahePickerComponent(
                           currentImage: eventState.eventImage,
                           existingImageUrl: eventState.existingImageUrl,
