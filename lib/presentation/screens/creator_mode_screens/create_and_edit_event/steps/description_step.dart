@@ -143,32 +143,6 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                       ),
                       
                       const SizedBox(height: AppDimensions.spacingLarge),
-                      
-                      // Preview section
-                      if (eventState.description.isNotEmpty) ...[
-                        Text(
-                          'Preview',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppDimensions.spacingSmall),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-                            ),
-                          ),
-                          child: Text(
-                            _stripHtml(eventState.description),
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ),
-                      ],
                     ],
                   ),
                 ),
@@ -176,35 +150,42 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
               
               const SizedBox(height: AppDimensions.spacingLarge),
               
-              // Action buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    constraints: Responsive.isDesktop(context)
-                        ? const BoxConstraints(maxWidth: 200)
-                        : null,
-                    child: ModernButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      text: "Cancel",
-                      width: MediaQuery.of(context).size.width * 0.3,
-                    ),
+              // Action buttons with safe area
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    bottom: AppDimensions.spacingMedium,
                   ),
-                  const SizedBox(width: AppDimensions.spacingMedium),
-                  Container(
-                    constraints: Responsive.isDesktop(context)
-                        ? const BoxConstraints(maxWidth: 400)
-                        : null,
-                    child: ModernButton(
-                      onPressed: _onNext,
-                      text: "Next",
-                      isFilled: true,
-                      width: MediaQuery.of(context).size.width * 0.3,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        constraints: Responsive.isDesktop(context)
+                            ? const BoxConstraints(maxWidth: 200)
+                            : null,
+                        child: ModernButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                          text: "Cancel",
+                          width: MediaQuery.of(context).size.width * 0.3,
+                        ),
+                      ),
+                      const SizedBox(width: AppDimensions.spacingMedium),
+                      Container(
+                        constraints: Responsive.isDesktop(context)
+                            ? const BoxConstraints(maxWidth: 400)
+                            : null,
+                        child: ModernButton(
+                          onPressed: _onNext,
+                          text: "Next",
+                          isFilled: true,
+                          width: MediaQuery.of(context).size.width * 0.3,
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ],
           ),
@@ -213,15 +194,4 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
     );
   }
 
-  String _stripHtml(String htmlString) {
-    // Simple HTML tag removal for preview
-    return htmlString
-        .replaceAll(RegExp(r'<[^>]*>'), '')
-        .replaceAll('&nbsp;', ' ')
-        .replaceAll('&amp;', '&')
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
-        .replaceAll('&quot;', '"')
-        .trim();
-  }
 }
