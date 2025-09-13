@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
@@ -298,37 +297,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                 ),
               ),
             ),
-            const SizedBox(height: AppDimensions.spacingLarge),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  constraints: Responsive.isDesktop(context)
-                      ? const BoxConstraints(maxWidth: 200)
-                      : null,
-                  child: ModernButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    text: "Cancel",
-                    width: MediaQuery.of(context).size.width * 0.3,
-                  ),
-                ),
-                const SizedBox(width: AppDimensions.spacingMedium),
-                Container(
-                  constraints: Responsive.isDesktop(context)
-                      ? const BoxConstraints(maxWidth: 400)
-                      : null,
-                  child: ModernButton(
-                    onPressed: _onNext,
-                    text: "Next",
-                    isFilled: true,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppDimensions.spacingSmall),
             DisplayErrorMessageComponent(errorMessage: _errorMessage),
           ],
         ),
@@ -336,72 +304,4 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     );
   }
 
-  void _onNext() {
-    setState(() {
-      _errorMessage = null;
-    });
-    final eventState = ref.read(eventCreationAndEditingProvider);
-    if (eventState.eventImage == null && eventState.existingImageUrl == null) {
-      setState(() {
-        _errorMessage = 'Please select an image for your event';
-      });
-    } else if (_titleController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a title for your event';
-      });
-    } else if (_slugController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a slug for your event';
-      });
-    } else if (eventState.location == null) {
-      setState(() {
-        _errorMessage = 'Please select a location for your event';
-      });
-    } else if (eventState.locationName == null) {
-      setState(() {
-        _errorMessage = 'Please enter a location name for your event';
-      });
-    } else if (eventState.isSlugValid == false) {
-      setState(() {
-        _errorMessage =
-            'Please use only lowercase letters, numbers, and hyphens';
-      });
-    } else if (eventState.isSlugAvailable == false) {
-      setState(() {
-        _errorMessage = 'This slug is already taken';
-      });
-    } else if (eventState.eventType == null) {
-      setState(() {
-        _errorMessage = 'Please select an event type';
-      });
-    }
-
-    if (_errorMessage != null) {
-      _scrollController.animateTo(
-        // max scroll extent
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeInOut,
-      );
-      return;
-    }
-
-    setState(() {
-      _errorMessage = null;
-    });
-
-    ref
-        .read(eventCreationAndEditingProvider.notifier)
-        .setTitle(_titleController.text);
-    ref
-        .read(eventCreationAndEditingProvider.notifier)
-        .setSlug(_slugController.text);
-    ref
-        .read(eventCreationAndEditingProvider.notifier)
-        .setDescription(_descriptionController.text);
-    ref
-        .read(eventCreationAndEditingProvider.notifier)
-        .setLocationName(_locationNameController.text);
-    widget.onFinished();
-  }
 }

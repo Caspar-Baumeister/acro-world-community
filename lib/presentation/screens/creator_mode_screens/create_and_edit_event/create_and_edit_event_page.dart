@@ -34,6 +34,60 @@ class _CreateAndEditEventPageState
     super.initState();
   }
 
+  void _validateGeneralStep() {
+    final eventState = ref.read(eventCreationAndEditingProvider);
+    
+    if (eventState.eventImage == null && eventState.existingImageUrl == null) {
+      showErrorToast('Please select an image for your event');
+      return;
+    }
+    if (eventState.title.isEmpty) {
+      showErrorToast('Please enter a title for your event');
+      return;
+    }
+    if (eventState.slug.isEmpty) {
+      showErrorToast('Please enter a slug for your event');
+      return;
+    }
+    if (eventState.location == null) {
+      showErrorToast('Please select a location for your event');
+      return;
+    }
+    if (eventState.locationName == null) {
+      showErrorToast('Please enter a location name for your event');
+      return;
+    }
+    if (eventState.isSlugValid == false) {
+      showErrorToast('Please use only lowercase letters, numbers, and hyphens');
+      return;
+    }
+    if (eventState.isSlugAvailable == false) {
+      showErrorToast('This slug is already taken');
+      return;
+    }
+    if (eventState.eventType == null) {
+      showErrorToast('Please select an event type');
+      return;
+    }
+    
+    // All validations passed, advance to next step
+    ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
+    setState(() {});
+  }
+
+  void _validateDescriptionStep() {
+    final eventState = ref.read(eventCreationAndEditingProvider);
+    
+    if (eventState.description.trim().isEmpty) {
+      showErrorToast('Please enter a description for your event');
+      return;
+    }
+    
+    // Validation passed, advance to next step
+    ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
@@ -154,6 +208,39 @@ class _CreateAndEditEventPageState
             onClosePressed: () {
               Navigator.of(context).pop();
             },
+            onNextPressed: eventState.currentPage < pages.length - 1
+                ? () {
+                    // Trigger validation for the current step
+                    // Each step will validate and call onFinished if valid
+                    if (eventState.currentPage == 0) {
+                      // General step - validate required fields
+                      _validateGeneralStep();
+                    } else if (eventState.currentPage == 1) {
+                      // Description step - validate description
+                      _validateDescriptionStep();
+                    } else {
+                      // Other steps - just advance
+                      ref.read(eventCreationAndEditingProvider.notifier).setPage(eventState.currentPage + 1);
+                      setState(() {});
+                    }
+                  }
+                : () async {
+                    // Final step - create the event
+                    final creatorNotifier = ref.read(creatorProvider.notifier);
+                    final creatorState = ref.read(creatorProvider);
+
+                    if (creatorState.activeTeacher == null ||
+                        creatorState.activeTeacher!.id == null) {
+                      print("No active teacher found, trying to set from token");
+                      await creatorNotifier.setCreatorFromToken();
+                    }
+
+                    if (creatorState.activeTeacher?.id != null) {
+                      ref.read(eventCreationAndEditingProvider.notifier).saveEvent();
+                    } else {
+                      showErrorToast("No active teacher found");
+                    }
+                  },
           ),
           Expanded(
             child: pages[eventState.currentPage],

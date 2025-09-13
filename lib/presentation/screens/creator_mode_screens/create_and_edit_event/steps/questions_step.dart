@@ -57,57 +57,18 @@ class QuestionsStep extends ConsumerWidget {
             
             const SizedBox(height: AppDimensions.spacingMedium),
             
-            // Action buttons with safe area
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppDimensions.spacingMedium,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      constraints: Responsive.isDesktop(context)
-                          ? const BoxConstraints(maxWidth: 200)
-                          : null,
-                      child: ModernButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        text: "Cancel",
-                        width: MediaQuery.of(context).size.width * 0.3,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimensions.spacingMedium),
-                    Container(
-                      constraints: Responsive.isDesktop(context)
-                          ? const BoxConstraints(maxWidth: 200)
-                          : null,
-                      child: ModernButton(
-                        onPressed: () {
-                          buildMortal(context, AskQuestionModal());
-                        },
-                        text: "Add Question",
-                        isFilled: true,
-                        width: MediaQuery.of(context).size.width * 0.3,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimensions.spacingMedium),
-                    Container(
-                      constraints: Responsive.isDesktop(context)
-                          ? const BoxConstraints(maxWidth: 200)
-                          : null,
-                      child: ModernButton(
-                        onPressed: () {
-                          onFinished();
-                        },
-                        text: "Next",
-                        isFilled: true,
-                        width: MediaQuery.of(context).size.width * 0.3,
-                      ),
-                    ),
-                  ],
-                ),
+            // Add Question button
+            Container(
+              constraints: Responsive.isDesktop(context)
+                  ? const BoxConstraints(maxWidth: 200)
+                  : null,
+              child: ModernButton(
+                onPressed: () {
+                  buildMortal(context, AskQuestionModal());
+                },
+                text: "Add Question",
+                isFilled: true,
+                width: MediaQuery.of(context).size.width * 0.6,
               ),
             ),
           ],

@@ -7,6 +7,7 @@ class CompactProgressBar extends StatelessWidget {
   final String? currentStepTitle;
   final VoidCallback? onBackPressed;
   final VoidCallback? onClosePressed;
+  final VoidCallback? onNextPressed;
 
   const CompactProgressBar({
     super.key,
@@ -15,6 +16,7 @@ class CompactProgressBar extends StatelessWidget {
     this.currentStepTitle,
     this.onBackPressed,
     this.onClosePressed,
+    this.onNextPressed,
   });
 
   @override
@@ -82,6 +84,25 @@ class CompactProgressBar extends StatelessWidget {
                   ],
                 ),
               ),
+
+              // Next button
+              if (onNextPressed != null)
+                TextButton(
+                  onPressed: onNextPressed,
+                  style: TextButton.styleFrom(
+                    foregroundColor: colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    minimumSize: const Size(0, 32),
+                  ),
+                  child: Text(
+                    currentStep < totalSteps - 1 ? 'Next' : 'Create',
+                    style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                )
+              else
+                const SizedBox(width: 16),
 
               // Close button
               if (onClosePressed != null)

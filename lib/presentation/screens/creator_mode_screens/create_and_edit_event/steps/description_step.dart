@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -44,23 +43,6 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
     super.dispose();
   }
 
-  void _onNext() {
-    _controller.getText().then((text) {
-      if (text.trim().isEmpty) {
-        // Show error message
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please enter a description for your event'),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return;
-      }
-      
-      ref.read(eventCreationAndEditingProvider.notifier).setDescription(text);
-      widget.onFinished();
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,45 +138,6 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
               ),
             ),
             
-            const SizedBox(height: AppDimensions.spacingMedium),
-            
-            // Action buttons with safe area
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: AppDimensions.spacingMedium,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      constraints: Responsive.isDesktop(context)
-                          ? const BoxConstraints(maxWidth: 200)
-                          : null,
-                      child: ModernButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        text: "Cancel",
-                        width: MediaQuery.of(context).size.width * 0.3,
-                      ),
-                    ),
-                    const SizedBox(width: AppDimensions.spacingMedium),
-                    Container(
-                      constraints: Responsive.isDesktop(context)
-                          ? const BoxConstraints(maxWidth: 400)
-                          : null,
-                      child: ModernButton(
-                        onPressed: _onNext,
-                        text: "Next",
-                        isFilled: true,
-                        width: MediaQuery.of(context).size.width * 0.3,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
           ],
         ),
       ),
