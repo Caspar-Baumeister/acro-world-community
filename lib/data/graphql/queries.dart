@@ -251,6 +251,19 @@ query getMyEventsOptimized(\$limit: Int!, \$offset: Int!, \$where: classes_bool_
       }
       is_owner
     }
+    class_owners {
+      teacher {
+        id
+        name
+        user_id
+        images(where: {is_profile_picture: {_eq: true}}, limit: 1) {
+          image {
+            url
+          }
+        }
+      }
+      is_payment_receiver
+    }
     class_flags(where: {is_active: {_eq: true}}) {
       id
       user_id
