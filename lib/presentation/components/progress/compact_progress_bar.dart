@@ -107,6 +107,7 @@ class CompactProgressBar extends StatelessWidget {
           
           // Progress bar
           Container(
+            width: double.infinity,
             height: 4,
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
