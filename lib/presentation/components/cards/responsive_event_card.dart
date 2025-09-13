@@ -54,12 +54,9 @@ class ResponsiveEventCard extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: isHighlighted
-              ? colorScheme.primaryContainer
+              ? colorScheme.primaryContainer.withOpacity(0.1)
               : colorScheme.surface,
           borderRadius: BorderRadius.circular(12),
-          border: isHighlighted
-              ? Border.all(color: colorScheme.primary, width: 2)
-              : null,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

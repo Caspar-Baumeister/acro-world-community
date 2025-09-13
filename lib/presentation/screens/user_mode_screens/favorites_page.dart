@@ -192,12 +192,13 @@ class _FavoritesBodyState extends State<FavoritesBody> {
 
     // Group events by month
     final Map<String, List<ClassEvent>> eventsByMonth = {};
-    
+
     for (final event in widget.state.events) {
       if (event.startDate != null) {
         final date = DateTime.parse(event.startDate!);
-        final monthKey = '${date.year}-${date.month.toString().padLeft(2, '0')}';
-        
+        final monthKey =
+            '${date.year}-${date.month.toString().padLeft(2, '0')}';
+
         if (!eventsByMonth.containsKey(monthKey)) {
           eventsByMonth[monthKey] = [];
         }
@@ -235,24 +236,25 @@ class _FavoritesBodyState extends State<FavoritesBody> {
               monthYear: monthYear,
               isFirst: index == 0,
             ),
-            
+
             // Horizontal scrollable events for this month
-                                SizedBox(
-                      height: 200, // Updated to match smaller cards
-                      child: ResponsiveEventList(
-                        events: monthEvents.map((event) => EventCardData.fromClassEvent(event)).toList(),
-                        isGridMode: false,
-                        isLoading: false,
-                      ),
-                    ),
-            
-            const SizedBox(height: 8),
+            SizedBox(
+              // Updated to match smaller cards
+              child: ResponsiveEventList(
+                events: monthEvents
+                    .map((event) => EventCardData.fromClassEvent(event))
+                    .toList(),
+                isGridMode: false,
+                isLoading: false,
+              ),
+            ),
+
+            const SizedBox(height: 200),
           ],
         );
       },
     );
   }
-
 
   String _getMonthYear(DateTime date) {
     const months = [
