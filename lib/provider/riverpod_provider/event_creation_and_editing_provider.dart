@@ -552,7 +552,8 @@ class EventCreationAndEditingNotifier
       state = state.copyWith(isLoading: true, errorMessage: null);
 
       // Import the repository
-      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
 
       // Create ClassOwnerInput for the creator
       final classOwner = ClassOwnerInput(
@@ -576,51 +577,64 @@ class EventCreationAndEditingNotifier
         locationCountry: state.countryCode,
         eventType: _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
         maxBookingSlots: state.maxBookingSlots,
-        recurringPatterns: state.recurringPatterns.map((pattern) => RecurringPatternInput(
-          id: pattern.id ?? const Uuid().v4(),
-          dayOfWeek: pattern.dayOfWeek,
-          startDate: pattern.startDate?.toIso8601String() ?? '',
-          endDate: pattern.endDate?.toIso8601String(),
-          startTime: _timeStringFromTimeOfDay(pattern.startTime),
-          endTime: _timeStringFromTimeOfDay(pattern.endTime),
-          recurringEveryXWeeks: pattern.recurringEveryXWeeks,
-          isRecurring: pattern.isRecurring ?? false,
-        )).toList(),
+        recurringPatterns: state.recurringPatterns
+            .map((pattern) => RecurringPatternInput(
+                  id: pattern.id ?? const Uuid().v4(),
+                  dayOfWeek: pattern.dayOfWeek,
+                  startDate: pattern.startDate?.toIso8601String() ?? '',
+                  endDate: pattern.endDate?.toIso8601String(),
+                  startTime: _timeStringFromTimeOfDay(pattern.startTime),
+                  endTime: _timeStringFromTimeOfDay(pattern.endTime),
+                  recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+                  isRecurring: pattern.isRecurring ?? false,
+                ))
+            .toList(),
         classOwners: [classOwner], // Include the class owner
-        classTeachers: state.pendingInviteTeachers.map((teacher) => ClassTeacherInput(
-          id: const Uuid().v4(),
-          teacherId: teacher.id!,
-        )).toList(),
-        bookingCategories: state.bookingCategories.map((category) => BookingCategoryInput(
-          id: category.id ?? const Uuid().v4(),
-          name: category.name,
-          contingent: category.contingent,
-          description: category.description ?? '',
-          bookingOptions: state.bookingOptions
-              .where((option) => option.bookingCategoryId == category.id)
-              .map((option) => BookingOptionInput(
-                id: option.id ?? const Uuid().v4(),
-                title: option.title ?? '',
-                subtitle: option.subtitle ?? '',
-                price: option.price ?? 0,
-                discount: option.discount ?? 0,
-                currency: option.currency.value,
-              )).toList(),
-        )).toList(),
-        questions: state.questions.map((question) => QuestionInput(
-          id: question.id ?? const Uuid().v4(),
-          allowMultipleAnswers: question.isMultipleChoice ?? false,
-          isRequired: question.isRequired ?? false,
-          position: 0, // TODO: Set proper position
-          question: question.question ?? '',
-          title: question.title ?? '',
-          questionType: question.type ?? QuestionType.text,
-          multipleChoiceOptions: question.choices?.map((choice) => MultipleChoiceOptionInput(
-            id: choice.id ?? const Uuid().v4(),
-            optionText: choice.optionText ?? '',
-            position: 0, // TODO: Set proper position
-          )).toList() ?? [],
-        )).toList(),
+        classTeachers: state.pendingInviteTeachers
+            .map((teacher) => ClassTeacherInput(
+                  id: const Uuid().v4(),
+                  teacherId: teacher.id!,
+                ))
+            .toList(),
+        bookingCategories: state.bookingCategories
+            .map((category) => BookingCategoryInput(
+                  id: category.id ?? const Uuid().v4(),
+                  name: category.name,
+                  contingent: category.contingent,
+                  description: category.description ?? '',
+                  bookingOptions: state.bookingOptions
+                      .where(
+                          (option) => option.bookingCategoryId == category.id)
+                      .map((option) => BookingOptionInput(
+                            id: option.id ?? const Uuid().v4(),
+                            title: option.title ?? '',
+                            subtitle: option.subtitle ?? '',
+                            price: option.price ?? 0,
+                            discount: option.discount ?? 0,
+                            currency: option.currency.value,
+                          ))
+                      .toList(),
+                ))
+            .toList(),
+        questions: state.questions
+            .map((question) => QuestionInput(
+                  id: question.id ?? const Uuid().v4(),
+                  allowMultipleAnswers: question.isMultipleChoice ?? false,
+                  isRequired: question.isRequired ?? false,
+                  position: 0, // TODO: Set proper position
+                  question: question.question ?? '',
+                  title: question.title ?? '',
+                  questionType: question.type ?? QuestionType.text,
+                  multipleChoiceOptions: question.choices
+                          ?.map((choice) => MultipleChoiceOptionInput(
+                                id: choice.id ?? const Uuid().v4(),
+                                optionText: choice.optionText ?? '',
+                                position: 0, // TODO: Set proper position
+                              ))
+                          .toList() ??
+                      [],
+                ))
+            .toList(),
       );
 
       print("🚀 DEBUG: ClassUpsertInput created successfully");
@@ -649,7 +663,6 @@ class EventCreationAndEditingNotifier
 
       print("🚀 DEBUG: State updated - isLoading: false, errorMessage: null");
       print("🚀 DEBUG: Event creation completed successfully!");
-
     } catch (e) {
       print("❌ DEBUG: Error creating event: $e");
       state = state.copyWith(

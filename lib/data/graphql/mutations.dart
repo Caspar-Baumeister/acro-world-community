@@ -655,6 +655,40 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     }
   """);
 
+  // Comment mutations
+  static final insertCommentMutation = gql("""
+    mutation InsertComment(\$comment: String!, \$teacher_id: uuid!, \$user_id: uuid!) {
+      insert_comments_one(object: {comment: \$comment, teacher_id: \$teacher_id, user_id: \$user_id}) {
+        id
+        comment
+        created_at
+        user {
+          id
+          name
+          image_url
+        }
+      }
+    }
+  """);
+
+  static final updateCommentMutation = gql("""
+    mutation UpdateComment(\$id: uuid!, \$comment: String!) {
+      update_comments_by_pk(pk_columns: {id: \$id}, _set: {comment: \$comment}) {
+        id
+        comment
+        updated_at
+      }
+    }
+  """);
+
+  static final deleteCommentMutation = gql("""
+    mutation DeleteComment(\$id: uuid!) {
+      delete_comments_by_pk(id: \$id) {
+        id
+      }
+    }
+  """);
+
   static final updateClassWithRecurringPatterns = gql("""
   mutation UpdateClassWithRecurringPatterns(
     \$id: uuid!,

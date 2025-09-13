@@ -111,7 +111,7 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
       final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       
       // Use optimized method for better performance
-      final repositoryReturn = await repository.getMyEventsOptimized(
+      final repositoryReturn = await repository.getClassesLazyAsTeacher(
         _limit,
         myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
         {

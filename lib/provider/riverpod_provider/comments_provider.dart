@@ -132,7 +132,7 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
       if (commentId != null) {
         // Update existing comment
         result = await _client.mutate(MutationOptions(
-          document: Mutations.updateComment,
+          document: Mutations.updateCommentMutation,
           variables: {
             'id': commentId,
             'content': content,
@@ -142,7 +142,7 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
       } else {
         // Create new comment
         result = await _client.mutate(MutationOptions(
-          document: Mutations.insertComment,
+          document: Mutations.insertCommentMutation,
           variables: {
             'content': content,
             'rating': rating,
@@ -175,7 +175,7 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
       String commentId, String content, int rating) async {
     try {
       final result = await _client.mutate(MutationOptions(
-        document: Mutations.updateComment,
+        document: Mutations.updateCommentMutation,
         variables: {
           'id': commentId,
           'content': content,
@@ -200,7 +200,7 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
   Future<void> deleteComment(String commentId) async {
     try {
       final result = await _client.mutate(MutationOptions(
-        document: Mutations.deleteComment,
+        document: Mutations.deleteCommentMutation,
         variables: {
           'id': commentId,
         },
