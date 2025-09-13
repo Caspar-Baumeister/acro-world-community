@@ -1,4 +1,4 @@
-import 'package:acroworld/presentation/components/custom_easy_stepper.dart';
+import 'package:acroworld/presentation/components/progress/compact_progress_bar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/community_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
@@ -9,7 +9,6 @@ import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -107,43 +106,33 @@ class _CreateAndEditEventPageState
           })
     ];
 
+    // Define step titles
+    const stepTitles = [
+      "Event Details",
+      "Occurrences", 
+      "Community",
+      "Booking Information",
+    ];
+
     return BasePage(
       makeScrollable: false,
       child: Column(
         children: [
-          Stack(
-            children: [
-              CustomEasyStepper(
-                  activeStep: eventState.currentPage,
-                  onStepReached: (_) {},
-                  setStep: (index) {
-                    if (index < eventState.currentPage) {
-                      ref
-                          .read(eventCreationAndEditingProvider.notifier)
-                          .setPage(index);
-                      setState(() {});
-                    }
-                  },
-                  steps: const [
-                    "General",
-                    "Occurences",
-                    "Community",
-                    "Booking",
-                  ]),
-              Positioned(
-                left: 0,
-                top: 0,
-                child: IconButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  icon: const Icon(
-                    Icons.close,
-                    size: AppDimensions.iconSizeLarge,
-                  ),
-                ),
-              )
-            ],
+          CompactProgressBar(
+            currentStep: eventState.currentPage,
+            totalSteps: pages.length,
+            currentStepTitle: stepTitles[eventState.currentPage],
+            onBackPressed: eventState.currentPage > 0
+                ? () {
+                    ref
+                        .read(eventCreationAndEditingProvider.notifier)
+                        .setPage(eventState.currentPage - 1);
+                    setState(() {});
+                  }
+                : null,
+            onClosePressed: () {
+              Navigator.of(context).pop();
+            },
           ),
           Expanded(
             child: pages[eventState.currentPage],
