@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
@@ -32,6 +33,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   late TextEditingController _locationNameController;
   String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
+  Timer? _slugDebounceTimer;
 
   @override
   void initState() {
@@ -55,6 +57,49 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       ref
           .read(eventCreationAndEditingProvider.notifier)
           .setLocationName(_locationNameController.text);
+    });
+
+    _titleController.addListener(() {
+      ref
+          .read(eventCreationAndEditingProvider.notifier)
+          .setTitle(_titleController.text);
+      // Auto-generate slug from title if slug is empty
+      if (_slugController.text.isEmpty) {
+        String slug = _titleController.text
+            .toLowerCase()
+            .replaceAll(' ', '-')
+            .replaceAll(RegExp(r'[^a-z0-9-]'), '');
+        _slugController.text = slug;
+        ref
+            .read(eventCreationAndEditingProvider.notifier)
+            .setSlug(slug);
+        ref
+            .read(eventCreationAndEditingProvider.notifier)
+            .checkSlugAvailability();
+      }
+    });
+
+    _slugController.addListener(() {
+      ref
+          .read(eventCreationAndEditingProvider.notifier)
+          .setSlug(_slugController.text);
+      
+      // Cancel previous timer
+      _slugDebounceTimer?.cancel();
+      
+      // Check slug availability in real-time with debouncing
+      if (_slugController.text.isNotEmpty) {
+        _slugDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+          ref
+              .read(eventCreationAndEditingProvider.notifier)
+              .checkSlugAvailability();
+        });
+      } else {
+        // Clear validation state when field is empty
+        ref
+            .read(eventCreationAndEditingProvider.notifier)
+            .clearSlugValidation();
+      }
     });
   }
 
@@ -106,6 +151,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
 
   @override
   void dispose() {
+    _slugDebounceTimer?.cancel();
     _titleController.dispose();
     _slugController.dispose();
     _descriptionController.dispose();
@@ -150,24 +196,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _titleController,
-                        onEditingComplete: () {
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .setTitle(_titleController.text);
-                          if (_slugController.text.isEmpty) {
-                            String slug = _titleController.text
-                                .toLowerCase()
-                                .replaceAll(' ', '-')
-                                .replaceAll(RegExp(r'[^a-z0-9-]'), '');
-                            _slugController.text = slug;
-                            ref
-                                .read(eventCreationAndEditingProvider.notifier)
-                                .setSlug(slug);
-                            ref
-                                .read(eventCreationAndEditingProvider.notifier)
-                                .checkSlugAvailability();
-                          }
-                        },
                         labelText: 'Event Title',
                         validator: (p0) =>
                             p0!.isEmpty ? 'Name cannot be empty' : null,
@@ -177,14 +205,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       InputFieldComponent(
                         controller: _slugController,
                         labelText: 'Unique Identifier',
-                        onEditingComplete: () {
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .setSlug(_slugController.text);
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .checkSlugAvailability();
-                        },
                         footnoteText: eventState.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
                             : (eventState.isSlugAvailable == false

@@ -447,6 +447,11 @@ class EventCreationAndEditingNotifier
     state = state.copyWith(isSlugValid: true, isSlugAvailable: true);
   }
 
+  /// Clear slug validation state
+  void clearSlugValidation() {
+    state = state.copyWith(isSlugValid: null, isSlugAvailable: null);
+  }
+
   /// Set location
   void setLocation(LatLng? location) {
     state = state.copyWith(location: location);
