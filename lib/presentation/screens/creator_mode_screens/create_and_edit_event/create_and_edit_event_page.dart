@@ -233,7 +233,8 @@ class _CreateAndEditEventPageState
                     ? null // Disable button while loading
                     : () async {
                         // Final step - create the event
-                        print("🎯 DEBUG: Create button pressed - starting event creation flow");
+                        print(
+                            "🎯 DEBUG: Create button pressed - starting event creation flow");
                         final eventState =
                             ref.read(eventCreationAndEditingProvider);
                         final creatorNotifier =
@@ -242,13 +243,18 @@ class _CreateAndEditEventPageState
 
                         print("🎯 DEBUG: Event state before creation:");
                         print("🎯 DEBUG: - Title: ${eventState.title}");
-                        print("🎯 DEBUG: - Description: ${eventState.description}");
+                        print(
+                            "🎯 DEBUG: - Description: ${eventState.description}");
                         print("🎯 DEBUG: - Slug: ${eventState.slug}");
                         print("🎯 DEBUG: - Location: ${eventState.location}");
-                        print("🎯 DEBUG: - Event Type: ${eventState.eventType}");
-                        print("🎯 DEBUG: - Recurring Patterns: ${eventState.recurringPatterns.length}");
-                        print("🎯 DEBUG: - Booking Categories: ${eventState.bookingCategories.length}");
-                        print("🎯 DEBUG: - Pending Teachers: ${eventState.pendingInviteTeachers.length}");
+                        print(
+                            "🎯 DEBUG: - Event Type: ${eventState.eventType}");
+                        print(
+                            "🎯 DEBUG: - Recurring Patterns: ${eventState.recurringPatterns.length}");
+                        print(
+                            "🎯 DEBUG: - Booking Categories: ${eventState.bookingCategories.length}");
+                        print(
+                            "🎯 DEBUG: - Pending Teachers: ${eventState.pendingInviteTeachers.length}");
 
                         // Validate payment setup
                         bool isStripeEnabled = creatorState.activeTeacher !=
@@ -258,13 +264,16 @@ class _CreateAndEditEventPageState
 
                         print("🎯 DEBUG: Payment validation:");
                         print("🎯 DEBUG: - Stripe enabled: $isStripeEnabled");
-                        print("🎯 DEBUG: - Cash allowed: ${eventState.isCashAllowed}");
-                        print("🎯 DEBUG: - Booking categories: ${eventState.bookingCategories.length}");
+                        print(
+                            "🎯 DEBUG: - Cash allowed: ${eventState.isCashAllowed}");
+                        print(
+                            "🎯 DEBUG: - Booking categories: ${eventState.bookingCategories.length}");
 
                         if (!isStripeEnabled &&
                             !eventState.isCashAllowed &&
                             eventState.bookingCategories.isNotEmpty) {
-                          print("❌ DEBUG: Payment validation failed - no payment method");
+                          print(
+                              "❌ DEBUG: Payment validation failed - no payment method");
                           showErrorToast(
                               "Please enable Stripe or allow cash payments to create tickets");
                           return;
@@ -272,12 +281,14 @@ class _CreateAndEditEventPageState
 
                         if (creatorState.activeTeacher == null ||
                             creatorState.activeTeacher!.id == null) {
-                          print("🎯 DEBUG: No active teacher found, trying to set from token");
+                          print(
+                              "🎯 DEBUG: No active teacher found, trying to set from token");
                           await creatorNotifier
                               .setCreatorFromToken()
                               .then((success) {
                             if (!success) {
-                              print("❌ DEBUG: Failed to set creator from token");
+                              print(
+                                  "❌ DEBUG: Failed to set creator from token");
                               showErrorToast(
                                   "Session Expired, refreshing session");
                               return;
@@ -285,7 +296,8 @@ class _CreateAndEditEventPageState
                           });
                         }
 
-                        print("🎯 DEBUG: Creator ID: ${creatorState.activeTeacher?.id}");
+                        print(
+                            "🎯 DEBUG: Creator ID: ${creatorState.activeTeacher?.id}");
 
                         // Create the event
                         print("🎯 DEBUG: Starting event creation...");
@@ -305,11 +317,13 @@ class _CreateAndEditEventPageState
                         // Check if creation was successful
                         final finalEventState =
                             ref.read(eventCreationAndEditingProvider);
-                        
+
                         print("🎯 DEBUG: Checking creation result:");
-                        print("🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
-                        print("🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
-                        
+                        print(
+                            "🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
+                        print(
+                            "🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
+
                         if (finalEventState.errorMessage == null) {
                           print("✅ DEBUG: Event creation successful!");
                           showSuccessToast(
@@ -330,7 +344,8 @@ class _CreateAndEditEventPageState
                           }
                         } else {
                           // Show error message
-                          print("❌ DEBUG: Event creation failed: ${finalEventState.errorMessage}");
+                          print(
+                              "❌ DEBUG: Event creation failed: ${finalEventState.errorMessage}");
                           showErrorToast(finalEventState.errorMessage!);
                         }
                       },

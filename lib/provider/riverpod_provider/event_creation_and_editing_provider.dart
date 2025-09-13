@@ -452,6 +452,50 @@ class EventCreationAndEditingNotifier
     state = state.copyWith(isSlugValid: null, isSlugAvailable: null);
   }
 
+  /// Convert String to EventType enum
+  EventType? _stringToEventType(String? eventTypeString) {
+    if (eventTypeString == null) return null;
+    
+    switch (eventTypeString) {
+      case 'Workshops':
+        return EventType.Workshops;
+      case 'FestivalsAndCons':
+        return EventType.FestivalsAndCons;
+      case 'Retreats':
+        return EventType.Retreats;
+      case 'Jams':
+        return EventType.Jams;
+      case 'Classes':
+        return EventType.Classes;
+      case 'Trainings':
+        return EventType.Trainings;
+      default:
+        return EventType.Workshops;
+    }
+  }
+
+  /// Map EventType enum to API expected values
+  String _mapEventTypeToApiValue(EventType? eventType) {
+    if (eventType == null) return 'Workshops';
+    
+    switch (eventType) {
+      case EventType.Workshops:
+        return 'Workshops';
+      case EventType.FestivalsAndCons:
+        return 'FestivalsAndCons';
+      case EventType.Retreats:
+        return 'Retreats';
+      case EventType.Jams:
+        return 'Jams';
+      case EventType.Classes:
+        return 'Classes';
+      case EventType.Trainings:
+        return 'Trainings';
+      default:
+        return 'Workshops';
+    }
+  }
+
   /// Set location
   void setLocation(LatLng? location) {
     state = state.copyWith(location: location);
@@ -498,57 +542,62 @@ class EventCreationAndEditingNotifier
       print("🚀 DEBUG: Starting event creation...");
       print("🚀 DEBUG: Creator ID: $creatorId");
       print("🚀 DEBUG: Event state: ${state.toString()}");
-      
+
       state = state.copyWith(isLoading: true, errorMessage: null);
-      
+
       // Import the repository
-      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
-      
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+
       // Prepare the variables for the mutation
       final variables = <String, dynamic>{
         'name': state.title,
         'description': state.description,
         'imageUrl': state.existingImageUrl ?? '',
-        'eventType': state.eventType?.toString().toUpperCase() ?? 'WORKSHOP',
-        'location': state.location != null 
+        'eventType': _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
+        'location': state.location != null
             ? [state.location!.longitude, state.location!.latitude]
             : [0.0, 0.0],
         'locationName': state.locationName ?? '',
         'timezone': 'UTC', // TODO: Get user's timezone
         'urlSlug': state.slug,
-        'recurringPatterns': state.recurringPatterns.map((pattern) => pattern.toJson()).toList(),
+        'recurringPatterns':
+            state.recurringPatterns.map((pattern) => pattern.toJson()).toList(),
         'classOwners': [
           {
             'teacher_id': creatorId,
             'is_payment_receiver': true,
           }
         ],
-        'classTeachers': state.pendingInviteTeachers.map((teacher) => {
-          'teacher_id': teacher.id,
-        }).toList(),
+        'classTeachers': state.pendingInviteTeachers
+            .map((teacher) => {
+                  'teacher_id': teacher.id,
+                })
+            .toList(),
         'max_booking_slots': state.maxBookingSlots,
         'location_country': state.countryCode,
         'location_city': state.region,
         'is_cash_allowed': state.isCashAllowed,
       };
-      
+
+      print(
+          "🚀 DEBUG: Event type mapping: ${state.eventType} -> ${_mapEventTypeToApiValue(_stringToEventType(state.eventType))}");
       print("🚀 DEBUG: Mutation variables: $variables");
-      
+
       // Create the class
       final createdClass = await repository.createClass(variables);
-      
+
       print("🚀 DEBUG: Class created successfully with ID: ${createdClass.id}");
-      
+
       // TODO: Create booking categories and options
       // This would require additional API calls to create the ticket categories and options
-      
+
       state = state.copyWith(
         isLoading: false,
         errorMessage: null,
       );
-      
+
       print("🚀 DEBUG: Event creation completed successfully!");
-      
     } catch (e) {
       print("❌ DEBUG: Error creating event: $e");
       state = state.copyWith(
