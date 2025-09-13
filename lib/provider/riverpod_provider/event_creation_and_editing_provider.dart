@@ -10,6 +10,7 @@ import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
+import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
@@ -349,12 +350,15 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template imageUrl: ${templateClassModel.imageUrl}');
       print(
           '🔍 TEMPLATE DEBUG - Template eventType: ${templateClassModel.eventType?.name}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template city: ${templateClassModel.city}');
+      print('🔍 TEMPLATE DEBUG - Template city: ${templateClassModel.city}');
       print(
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
+      
+      // Convert country name to country code
+      final countryCode = getCountryCode(templateClassModel.country);
+      print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
 
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
@@ -363,14 +367,17 @@ class EventCreationAndEditingNotifier
         locationName: templateClassModel.locationName,
         existingImageUrl: templateClassModel.imageUrl,
         location: templateClassModel.location?.toLatLng(),
+        locationDescription:
+            templateClassModel.locationName, // Use locationName as description
         eventType: templateClassModel.eventType?.name,
         isCashAllowed: templateClassModel.isCashAllowed ?? false,
         maxBookingSlots: templateClassModel.maxBookingSlots,
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
-        countryCode: templateClassModel.country, // Map country to countryCode
-        region: null, // Region is not available in ClassModel, will be set separately if needed
+        countryCode: getCountryCode(templateClassModel.country), // Convert country name to country code
+        region:
+            null, // Region is not available in ClassModel, will be set separately if needed
         isLoading: false,
         errorMessage: null,
       );
@@ -385,6 +392,8 @@ class EventCreationAndEditingNotifier
       print('🔍 TEMPLATE DEBUG - State countryCode: ${state.countryCode}');
       print('🔍 TEMPLATE DEBUG - State region: ${state.region}');
       print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
+      print(
+          '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');

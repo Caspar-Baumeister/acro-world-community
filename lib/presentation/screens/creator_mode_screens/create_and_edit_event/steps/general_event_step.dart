@@ -71,27 +71,38 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     print('🔍 FORM DEBUG - didChangeDependencies called');
     print('🔍 FORM DEBUG - Provider title: "${eventState.title}"');
     print('🔍 FORM DEBUG - Provider description: "${eventState.description}"');
-    print('🔍 FORM DEBUG - Provider locationName: "${eventState.locationName}"');
-    print('🔍 FORM DEBUG - Provider existingImageUrl: "${eventState.existingImageUrl}"');
+    print(
+        '🔍 FORM DEBUG - Provider locationName: "${eventState.locationName}"');
+    print(
+        '🔍 FORM DEBUG - Provider existingImageUrl: "${eventState.existingImageUrl}"');
+    print('🔍 FORM DEBUG - Provider countryCode: "${eventState.countryCode}"');
+    print('🔍 FORM DEBUG - Provider region: "${eventState.region}"');
+    print('🔍 FORM DEBUG - Provider location: "${eventState.location}"');
     print('🔍 FORM DEBUG - Controller title: "${_titleController.text}"');
-    print('🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
-    print('🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
+    print(
+        '🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
+    print(
+        '🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
 
     // Only update if the values have actually changed to avoid cursor jumping
     if (_titleController.text != eventState.title) {
-      print('🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${eventState.title}"');
+      print(
+          '🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${eventState.title}"');
       _titleController.text = eventState.title;
     }
     if (_slugController.text != eventState.slug) {
-      print('🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${eventState.slug}"');
+      print(
+          '🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${eventState.slug}"');
       _slugController.text = eventState.slug;
     }
     if (_descriptionController.text != eventState.description) {
-      print('🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${eventState.description}"');
+      print(
+          '🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${eventState.description}"');
       _descriptionController.text = eventState.description;
     }
     if (_locationNameController.text != (eventState.locationName ?? '')) {
-      print('🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${eventState.locationName ?? ''}"');
+      print(
+          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${eventState.locationName ?? ''}"');
       _locationNameController.text = eventState.locationName ?? '';
     }
   }
@@ -239,6 +250,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       // choose from country
                       // choose from country
                       CountryPicker(
+                        key: ValueKey('country_${eventState.countryCode}'), // Force rebuild when country changes
                         // now pass the ISO code, not the name:
                         selectedCountryCode: eventState.countryCode,
                         onCountrySelected: (String? code, String? name) {
@@ -262,6 +274,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                           padding: const EdgeInsets.only(
                               top: AppDimensions.spacingMedium),
                           child: RegionPicker(
+                            key: ValueKey('region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
                             countryCode: eventState.countryCode!,
                             selectedRegion: eventState.region,
                             onRegionSelected: (String? region) {
