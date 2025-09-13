@@ -355,7 +355,7 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
-      
+
       // Convert country name to country code
       final countryCode = getCountryCode(templateClassModel.country);
       print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
@@ -375,9 +375,9 @@ class EventCreationAndEditingNotifier
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
-        countryCode: getCountryCode(templateClassModel.country), // Convert country name to country code
-        region:
-            null, // Region is not available in ClassModel, will be set separately if needed
+        countryCode: getCountryCode(
+            templateClassModel.country), // Convert country name to country code
+        region: templateClassModel.city, // Use city as region (e.g., "State of Berlin")
         isLoading: false,
         errorMessage: null,
       );
@@ -394,6 +394,7 @@ class EventCreationAndEditingNotifier
       print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
       print(
           '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
+      print('🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
 
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');
