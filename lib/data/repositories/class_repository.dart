@@ -125,30 +125,46 @@ class ClassesRepository {
 
   // creates a new class
   Future<ClassModel> createClass(Map<String, dynamic> variables) async {
-    print("urlSlug: ${variables["urlSlug"]}");
+    print("🏗️ DEBUG: Repository createClass called");
+    print("🏗️ DEBUG: Variables: $variables");
+    print("🏗️ DEBUG: urlSlug: ${variables["urlSlug"]}");
+    
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.insertClassWithRecurringPatterns,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: variables,
     );
 
+    print("🏗️ DEBUG: Mutation options created, calling GraphQL client...");
     final graphQLClient = GraphQLClientSingleton().client;
     QueryResult<Object?> result = await graphQLClient.mutate(mutationOptions);
 
+    print("🏗️ DEBUG: GraphQL mutation completed");
+    print("🏗️ DEBUG: Has exception: ${result.hasException}");
+    print("🏗️ DEBUG: Data: ${result.data}");
+
     // Check for a valid response
     if (result.hasException) {
-      print("exeption result $result");
+      print("❌ DEBUG: Exception result: $result");
       throw Exception(
           'Failed to create class. Status code: ${result.exception?.raw.toString()}');
     }
 
     if (result.data != null && result.data!["insert_classes_one"] != null) {
+      print("🏗️ DEBUG: Data is valid, parsing class model...");
       try {
-        return ClassModel.fromJson(result.data!['insert_classes_one']);
+        final classModel = ClassModel.fromJson(result.data!['insert_classes_one']);
+        print("🏗️ DEBUG: Class model parsed successfully");
+        print("🏗️ DEBUG: Class ID: ${classModel.id}");
+        print("🏗️ DEBUG: Class name: ${classModel.name}");
+        return classModel;
       } catch (e) {
+        print("❌ DEBUG: Failed to parse class: $e");
         throw Exception('Failed to parse class: $e');
       }
     } else {
+      print("❌ DEBUG: No data or insert_classes_one is null");
+      print("❌ DEBUG: Data: ${result.data}");
       throw Exception('Failed to create class');
     }
   }

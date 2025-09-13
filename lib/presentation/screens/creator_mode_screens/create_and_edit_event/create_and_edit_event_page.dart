@@ -314,15 +314,19 @@ class _CreateAndEditEventPageState
                         }
                         print("🎯 DEBUG: Event creation call completed");
 
+                        // Wait a moment for state to update
+                        await Future.delayed(const Duration(milliseconds: 100));
+
                         // Check if creation was successful
                         final finalEventState =
                             ref.read(eventCreationAndEditingProvider);
 
-                        print("🎯 DEBUG: Checking creation result:");
+                        print("🎯 DEBUG: Checking creation result after delay:");
                         print(
                             "🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
                         print(
                             "🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
+                        print("🎯 DEBUG: - State toString: ${finalEventState.toString()}");
 
                         if (finalEventState.errorMessage == null) {
                           print("✅ DEBUG: Event creation successful!");
@@ -331,16 +335,29 @@ class _CreateAndEditEventPageState
 
                           // Navigate back to My Events page
                           print("🎯 DEBUG: Navigating to My Events page");
-                          context.goNamed(myEventsRoute);
+                          try {
+                            context.goNamed(myEventsRoute);
+                            print("🎯 DEBUG: Navigation successful");
+                          } catch (e) {
+                            print("❌ DEBUG: Navigation failed: $e");
+                          }
 
                           // Refresh the events list
                           final userAsync = ref.read(userRiverpodProvider);
+                          print("🎯 DEBUG: User async value: ${userAsync.value?.id}");
                           if (userAsync.value?.id != null) {
-                            print("🎯 DEBUG: Refreshing events list");
-                            ref
-                                .read(teacherEventsProvider.notifier)
-                                .fetchMyEvents(userAsync.value!.id!,
-                                    isRefresh: true);
+                            print("🎯 DEBUG: Refreshing events list for user: ${userAsync.value!.id}");
+                            try {
+                              await ref
+                                  .read(teacherEventsProvider.notifier)
+                                  .fetchMyEvents(userAsync.value!.id!,
+                                      isRefresh: true);
+                              print("🎯 DEBUG: Events list refresh completed");
+                            } catch (e) {
+                              print("❌ DEBUG: Events list refresh failed: $e");
+                            }
+                          } else {
+                            print("❌ DEBUG: No user ID found, cannot refresh events list");
                           }
                         } else {
                           // Show error message

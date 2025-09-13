@@ -455,7 +455,7 @@ class EventCreationAndEditingNotifier
   /// Convert String to EventType enum
   EventType? _stringToEventType(String? eventTypeString) {
     if (eventTypeString == null) return null;
-    
+
     switch (eventTypeString) {
       case 'Workshops':
         return EventType.Workshops;
@@ -477,7 +477,7 @@ class EventCreationAndEditingNotifier
   /// Map EventType enum to API expected values
   String _mapEventTypeToApiValue(EventType? eventType) {
     if (eventType == null) return 'Workshops';
-    
+
     switch (eventType) {
       case EventType.Workshops:
         return 'Workshops';
@@ -554,7 +554,8 @@ class EventCreationAndEditingNotifier
         'name': state.title,
         'description': state.description,
         'imageUrl': state.existingImageUrl ?? '',
-        'eventType': _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
+        'eventType':
+            _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
         'location': state.location != null
             ? [state.location!.longitude, state.location!.latitude]
             : [0.0, 0.0],
@@ -585,18 +586,24 @@ class EventCreationAndEditingNotifier
       print("🚀 DEBUG: Mutation variables: $variables");
 
       // Create the class
+      print("🚀 DEBUG: Calling repository.createClass()...");
       final createdClass = await repository.createClass(variables);
-
-      print("🚀 DEBUG: Class created successfully with ID: ${createdClass.id}");
-
+      
+      print("🚀 DEBUG: Repository call completed successfully!");
+      print("🚀 DEBUG: Created class ID: ${createdClass.id}");
+      print("🚀 DEBUG: Created class name: ${createdClass.name}");
+      print("🚀 DEBUG: Created class slug: ${createdClass.urlSlug}");
+      
       // TODO: Create booking categories and options
       // This would require additional API calls to create the ticket categories and options
-
+      print("🚀 DEBUG: Skipping booking categories creation for now...");
+      
       state = state.copyWith(
         isLoading: false,
         errorMessage: null,
       );
-
+      
+      print("🚀 DEBUG: State updated - isLoading: false, errorMessage: null");
       print("🚀 DEBUG: Event creation completed successfully!");
     } catch (e) {
       print("❌ DEBUG: Error creating event: $e");
