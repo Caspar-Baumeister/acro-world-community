@@ -397,8 +397,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
       is_cash_allowed
       max_booking_slots
       timezone
-      created_at
-      updated_at
     }
   }
   """);
