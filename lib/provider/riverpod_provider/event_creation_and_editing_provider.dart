@@ -273,9 +273,9 @@ class EventCreationAndEditingNotifier
       // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       // final success = await repository.createClass(state.classModel!);
 
-      state = state.copyWith(isLoading: false);
-      CustomErrorHandler.logDebug('Event saved successfully');
-      return true;
+        state = state.copyWith(isLoading: false);
+        CustomErrorHandler.logDebug('Event saved successfully');
+        return true;
     } catch (e) {
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
@@ -316,7 +316,8 @@ class EventCreationAndEditingNotifier
       // Create a class model - preserve original data for editing, clear for template creation
       final templateClassModel = ClassModel(
         id: isEditing ? classModel.id : null, // Preserve ID for editing
-        urlSlug: isEditing ? classModel.urlSlug : null, // Preserve slug for editing
+        urlSlug:
+            isEditing ? classModel.urlSlug : null, // Preserve slug for editing
         description: classModel.description,
         imageUrl: classModel.imageUrl,
         location: classModel.location,
@@ -329,16 +330,22 @@ class EventCreationAndEditingNotifier
         eventType: classModel.eventType,
         city: classModel.city,
         country: classModel.country,
-        classEvents: isEditing ? classModel.classEvents : null, // Preserve events for editing
-        questions: List<QuestionModel>.from(classModel.questions), // Copy questions
+        classEvents: isEditing
+            ? classModel.classEvents
+            : null, // Preserve events for editing
+        questions:
+            List<QuestionModel>.from(classModel.questions), // Copy questions
         bookingCategories: classModel.bookingCategories,
-        classFlags: isEditing ? classModel.classFlags : null, // Preserve flags for editing
+        classFlags: isEditing
+            ? classModel.classFlags
+            : null, // Preserve flags for editing
         isCashAllowed: classModel.isCashAllowed,
-        createdBy: isEditing ? classModel.createdBy : null, // Preserve creator for editing
+        createdBy: isEditing
+            ? classModel.createdBy
+            : null, // Preserve creator for editing
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
-        createdAt: isEditing ? classModel.createdAt : null, // Preserve timestamps for editing
-        updatedAt: isEditing ? classModel.updatedAt : null,
+        // Note: createdAt and updatedAt are not available in ClassModel
       );
 
       // Debug: Print template data
@@ -365,7 +372,9 @@ class EventCreationAndEditingNotifier
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
         title: templateClassModel.name ?? '',
-        slug: isEditing ? (templateClassModel.urlSlug ?? '') : '', // Preserve slug for editing
+        slug: isEditing
+            ? (templateClassModel.urlSlug ?? '')
+            : '', // Preserve slug for editing
         description: templateClassModel.description ?? '',
         locationName: templateClassModel.locationName,
         existingImageUrl: templateClassModel.imageUrl,
@@ -405,11 +414,11 @@ class EventCreationAndEditingNotifier
           'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
-      state = EventCreationAndEditingState(
-        classModel: _createEmptyClassModel(),
+    state = EventCreationAndEditingState(
+      classModel: _createEmptyClassModel(),
         isLoading: false,
         errorMessage: 'Failed to load template: ${e.toString()}',
-      );
+    );
     }
   }
 
