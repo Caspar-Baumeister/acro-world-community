@@ -102,19 +102,73 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primary)),
-                                  IconButton(
-                                      onPressed: () {
-                                        ref
-                                            .read(
-                                                eventCreationAndEditingProvider
-                                                    .notifier)
-                                            .removeRecurringPattern(index);
-                                      },
-                                      icon: Icon(
-                                        Icons.delete,
-                                        color:
-                                            Theme.of(context).colorScheme.error,
-                                      ))
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    AddOrEditRecurringPatternPage(
+                                                  onFinished:
+                                                      (RecurringPatternModel recurringPattern) {
+                                                    ref
+                                                        .read(eventCreationAndEditingProvider
+                                                            .notifier)
+                                                        .editRecurringPattern(
+                                                          index,
+                                                          recurringPattern,
+                                                        );
+                                                  },
+                                                  recurringPattern: pattern,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          icon: Icon(
+                                            Icons.edit,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary,
+                                          )),
+                                      IconButton(
+                                          onPressed: () {
+                                            // Show confirmation dialog
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text('Delete Occurrence'),
+                                                  content: const Text(
+                                                      'Are you sure you want to delete this occurrence? This action cannot be undone.'),
+                                                  actions: [
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: const Text('Cancel'),
+                                                    ),
+                                                    TextButton(
+                                                      onPressed: () {
+                                                        ref
+                                                            .read(eventCreationAndEditingProvider
+                                                                .notifier)
+                                                            .removeRecurringPattern(index);
+                                                        Navigator.of(context).pop();
+                                                      },
+                                                      child: const Text('Delete'),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          icon: Icon(
+                                            Icons.delete,
+                                            color: Theme.of(context).colorScheme.error,
+                                          ))
+                                    ],
+                                  )
                                 ],
                               ),
                               pattern.isRecurring == true
@@ -165,10 +219,26 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .primary)),
-                                  Icon(
-                                    Icons.event,
-                                    color:
-                                        Theme.of(context).colorScheme.primary,
+                                  Row(
+                                    children: [
+                                      Icon(
+                                        Icons.event,
+                                        color: Theme.of(context).colorScheme.primary,
+                                      ),
+                                      const SizedBox(width: 8),
+                                      Text(
+                                        "Read-only",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .onSurfaceVariant,
+                                              fontStyle: FontStyle.italic,
+                                            ),
+                                      )
+                                    ],
                                   )
                                 ],
                               ),
