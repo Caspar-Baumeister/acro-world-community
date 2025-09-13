@@ -105,8 +105,12 @@ class CompactProgressBar extends StatelessWidget {
                   onPressed: onNextPressed,
                   style: TextButton.styleFrom(
                     foregroundColor: colorScheme.primary,
+                    backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     minimumSize: const Size(0, 32),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                   ),
                   child: Text(
                     currentStep < totalSteps - 1 ? 'Next' : 'Create',
