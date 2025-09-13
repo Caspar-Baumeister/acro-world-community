@@ -370,11 +370,21 @@ class EventCreationAndEditingNotifier
 
       // Convert country name to country code
       // Note: templateClassModel.country might already be a country code, not a name
-      final countryCode = getCountryCode(templateClassModel.country);
-      print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
+      print('🔍 TEMPLATE DEBUG - About to call getCountryCode with: "${templateClassModel.country}"');
       
-      // If getCountryCode returns null, the country might already be a code
-      final finalCountryCode = countryCode ?? templateClassModel.country;
+      // Check if it's already a country code (2 letters) or a country name
+      String? finalCountryCode;
+      if (templateClassModel.country != null && templateClassModel.country!.length == 2) {
+        // It's likely already a country code
+        finalCountryCode = templateClassModel.country!.toUpperCase();
+        print('🔍 TEMPLATE DEBUG - Detected country code: $finalCountryCode');
+      } else {
+        // It's likely a country name, convert to code
+        final countryCode = getCountryCode(templateClassModel.country);
+        print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
+        finalCountryCode = countryCode ?? templateClassModel.country;
+      }
+      
       print('🔍 TEMPLATE DEBUG - Final country code: $finalCountryCode');
       
       // Also try to get country name from code if we have a code
@@ -399,7 +409,8 @@ class EventCreationAndEditingNotifier
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
         recurringPatterns: templateClassModel.recurringPatterns ?? [],
-        countryCode: finalCountryCode, // Use final country code (handles both name and code)
+        countryCode:
+            finalCountryCode, // Use final country code (handles both name and code)
         region: templateClassModel
             .city, // Use city as region (e.g., "State of Berlin")
         isLoading: false,
