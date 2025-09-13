@@ -353,10 +353,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       setState(() {
         _errorMessage = 'Please enter a slug for your event';
       });
-    } else if (_descriptionController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a description for your event';
-      });
     } else if (eventState.location == null) {
       setState(() {
         _errorMessage = 'Please select a location for your event';

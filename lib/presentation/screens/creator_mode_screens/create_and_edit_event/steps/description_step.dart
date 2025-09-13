@@ -46,6 +46,17 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
 
   void _onNext() {
     _controller.getText().then((text) {
+      if (text.trim().isEmpty) {
+        // Show error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please enter a description for your event'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      
       ref.read(eventCreationAndEditingProvider.notifier).setDescription(text);
       widget.onFinished();
     });

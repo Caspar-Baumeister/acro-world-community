@@ -5,6 +5,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/general_event_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/market_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/questions_step.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
@@ -54,21 +55,28 @@ class _CreateAndEditEventPageState
           setState(() {});
         },
       ),
-      // Step 3: Occurrences
-      OccurrenceStep(
+      // Step 3: Questions
+      QuestionsStep(
         onFinished: () {
           ref.read(eventCreationAndEditingProvider.notifier).setPage(3);
           setState(() {});
         },
       ),
-      // Step 4: Community
-      CommunityStep(
+      // Step 4: Occurrences
+      OccurrenceStep(
         onFinished: () {
           ref.read(eventCreationAndEditingProvider.notifier).setPage(4);
           setState(() {});
         },
       ),
-      // Step 5: Market
+      // Step 5: Community
+      CommunityStep(
+        onFinished: () {
+          ref.read(eventCreationAndEditingProvider.notifier).setPage(5);
+          setState(() {});
+        },
+      ),
+      // Step 6: Market
       MarketStep(
           isEditing: widget.isEditing,
           onFinished: () async {
@@ -121,6 +129,7 @@ class _CreateAndEditEventPageState
     const stepTitles = [
       "Event Details",
       "Description",
+      "Questions",
       "Occurrences",
       "Community",
       "Booking Information",
