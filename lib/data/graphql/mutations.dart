@@ -607,7 +607,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
       \$class_teachers: [class_teachers_insert_input!]!,
       \$class_owners: [class_owners_insert_input!]!,
       \$booking_categories: [booking_category_insert_input!]!,
-      \$questions: [question_insert_input!]!,
+      \$questions: [questions_insert_input!]!,
       \$delete_recurring_pattern_ids: [uuid!]!,
       \$delete_booking_option_ids: [uuid!]!,
       \$delete_booking_category_ids: [uuid!]!,
