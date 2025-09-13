@@ -36,7 +36,7 @@ class _CreateAndEditEventPageState
 
   void _validateGeneralStep() {
     final eventState = ref.read(eventCreationAndEditingProvider);
-    
+
     if (eventState.eventImage == null && eventState.existingImageUrl == null) {
       showErrorToast('Please select an image for your event');
       return;
@@ -69,7 +69,7 @@ class _CreateAndEditEventPageState
       showErrorToast('Please select an event type');
       return;
     }
-    
+
     // All validations passed, advance to next step
     ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
     setState(() {});
@@ -77,12 +77,12 @@ class _CreateAndEditEventPageState
 
   void _validateDescriptionStep() {
     final eventState = ref.read(eventCreationAndEditingProvider);
-    
+
     if (eventState.description.trim().isEmpty) {
       showErrorToast('Please enter a description for your event');
       return;
     }
-    
+
     // Validation passed, advance to next step
     ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
     setState(() {});
@@ -205,9 +205,11 @@ class _CreateAndEditEventPageState
                     setState(() {});
                   }
                 : null,
-            onClosePressed: () {
-              Navigator.of(context).pop();
-            },
+            onClosePressed: eventState.currentPage == 0
+                ? () {
+                    Navigator.of(context).pop();
+                  }
+                : null,
             onNextPressed: eventState.currentPage < pages.length - 1
                 ? () {
                     // Trigger validation for the current step
@@ -220,7 +222,9 @@ class _CreateAndEditEventPageState
                       _validateDescriptionStep();
                     } else {
                       // Other steps - just advance
-                      ref.read(eventCreationAndEditingProvider.notifier).setPage(eventState.currentPage + 1);
+                      ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .setPage(eventState.currentPage + 1);
                       setState(() {});
                     }
                   }
@@ -231,12 +235,15 @@ class _CreateAndEditEventPageState
 
                     if (creatorState.activeTeacher == null ||
                         creatorState.activeTeacher!.id == null) {
-                      print("No active teacher found, trying to set from token");
+                      print(
+                          "No active teacher found, trying to set from token");
                       await creatorNotifier.setCreatorFromToken();
                     }
 
                     if (creatorState.activeTeacher?.id != null) {
-                      ref.read(eventCreationAndEditingProvider.notifier).saveEvent();
+                      ref
+                          .read(eventCreationAndEditingProvider.notifier)
+                          .saveEvent();
                     } else {
                       showErrorToast("No active teacher found");
                     }

@@ -103,24 +103,6 @@ class CompactProgressBar extends StatelessWidget {
                 )
               else
                 const SizedBox(width: 16),
-
-              // Close button
-              if (onClosePressed != null)
-                IconButton(
-                  onPressed: onClosePressed,
-                  icon: Icon(
-                    Icons.close,
-                    size: 20,
-                    color: colorScheme.onSurface,
-                  ),
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(
-                    minWidth: 32,
-                    minHeight: 32,
-                  ),
-                )
-              else
-                const SizedBox(width: 32),
             ],
           ),
 
