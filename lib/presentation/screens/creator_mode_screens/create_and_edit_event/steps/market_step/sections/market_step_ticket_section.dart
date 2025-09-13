@@ -38,11 +38,19 @@ class MarketStepTicketSection extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    width: 1.5,
                   ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Row(
@@ -218,11 +226,20 @@ class MarketStepTicketSection extends ConsumerWidget {
                   horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  color: Theme.of(context).colorScheme.surface,
                   borderRadius:
                       BorderRadius.circular(AppDimensions.radiusLarge),
-                  border:
-                      Border.all(color: Theme.of(context).colorScheme.outline),
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
                 padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Row(
@@ -263,15 +280,19 @@ class MarketStepTicketSection extends ConsumerWidget {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Allow cash payments"),
+                                    title: const Text("Cash Payment Option"),
                                     content: const Text(
-                                      "Cash bookings automatically create a 'to be paid' object in your booking overview and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include them in statistics.",
+                                      "When enabled, participants can reserve tickets without paying upfront. Here's how it works:\n\n"
+                                      "• Participants book tickets and pay cash on arrival\n"
+                                      "• You manually confirm payment in your booking dashboard\n"
+                                      "• Check-in shows if payment was received\n\n"
+                                      "⚠️ Important: Cash bookings can block spots from paying customers, and participants have no obligation to attend after booking.",
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.of(context).pop(),
-                                        child: const Text("OK"),
+                                        child: const Text("Got it"),
                                       ),
                                     ],
                                   ),
