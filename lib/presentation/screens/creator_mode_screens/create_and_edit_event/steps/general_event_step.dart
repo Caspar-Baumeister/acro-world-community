@@ -57,6 +57,27 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update controllers when provider state changes (e.g., when template is loaded)
+    final eventState = ref.watch(eventCreationAndEditingProvider);
+    
+    // Only update if the values have actually changed to avoid cursor jumping
+    if (_titleController.text != eventState.title) {
+      _titleController.text = eventState.title;
+    }
+    if (_slugController.text != eventState.slug) {
+      _slugController.text = eventState.slug;
+    }
+    if (_descriptionController.text != eventState.description) {
+      _descriptionController.text = eventState.description;
+    }
+    if (_locationNameController.text != (eventState.locationName ?? '')) {
+      _locationNameController.text = eventState.locationName ?? '';
+    }
+  }
+
+  @override
   void dispose() {
     _titleController.dispose();
     _slugController.dispose();

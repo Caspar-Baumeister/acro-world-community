@@ -306,11 +306,12 @@ class EventCreationAndEditingNotifier
       String slug, bool isEditing, bool setFromTemplate) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
-      
+
       // Fetch the class data by slug
-      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
       final classModel = await repository.getClassBySlug(slug);
-      
+
       // Create a new class model based on the template but clear the ID and slug
       final templateClassModel = ClassModel(
         description: classModel.description,
@@ -326,7 +327,8 @@ class EventCreationAndEditingNotifier
         city: classModel.city,
         country: classModel.country,
         classEvents: null, // Clear events for new class
-        questions: List<QuestionModel>.from(classModel.questions), // Copy questions
+        questions:
+            List<QuestionModel>.from(classModel.questions), // Copy questions
         bookingCategories: classModel.bookingCategories,
         classFlags: null, // Clear flags for new class
         isCashAllowed: classModel.isCashAllowed,
@@ -335,14 +337,26 @@ class EventCreationAndEditingNotifier
         maxBookingSlots: classModel.maxBookingSlots,
         // Don't set id, urlSlug, createdAt, updatedAt - these will be generated
       );
-      
+
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
+        title: templateClassModel.name ?? '',
+        description: templateClassModel.description ?? '',
+        locationName: templateClassModel.locationName,
+        existingImageUrl: templateClassModel.imageUrl,
+        location: templateClassModel.location?.toLatLng(),
+        eventType: templateClassModel.eventType?.name,
+        isCashAllowed: templateClassModel.isCashAllowed ?? false,
+        maxBookingSlots: templateClassModel.maxBookingSlots,
+        questions: List<QuestionModel>.from(templateClassModel.questions),
+        bookingCategories: templateClassModel.bookingCategories ?? [],
+        recurringPatterns: templateClassModel.recurringPatterns ?? [],
         isLoading: false,
         errorMessage: null,
       );
-      
-      CustomErrorHandler.logDebug('Template loaded successfully from slug: $slug');
+
+      CustomErrorHandler.logDebug(
+          'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
       state = EventCreationAndEditingState(
