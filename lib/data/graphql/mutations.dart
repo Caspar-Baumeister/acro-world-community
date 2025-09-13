@@ -714,7 +714,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         }
       }
 
-      insert_question(objects: \$questions) {
+      insert_questions(objects: \$questions) {
         affected_rows
         returning {
           id
