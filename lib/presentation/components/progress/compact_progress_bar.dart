@@ -43,12 +43,26 @@ class CompactProgressBar extends StatelessWidget {
           // Header row with back/close buttons and step info
           Row(
             children: [
-              // Back button (only show if not on first step)
+              // Back button (only show if not on first step) or Close button (only on first step)
               if (currentStep > 0 && onBackPressed != null)
                 IconButton(
                   onPressed: onBackPressed,
                   icon: Icon(
                     Icons.arrow_back_ios,
+                    size: 20,
+                    color: colorScheme.onSurface,
+                  ),
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(
+                    minWidth: 32,
+                    minHeight: 32,
+                  ),
+                )
+              else if (currentStep == 0 && onClosePressed != null)
+                IconButton(
+                  onPressed: onClosePressed,
+                  icon: Icon(
+                    Icons.close,
                     size: 20,
                     color: colorScheme.onSurface,
                   ),
