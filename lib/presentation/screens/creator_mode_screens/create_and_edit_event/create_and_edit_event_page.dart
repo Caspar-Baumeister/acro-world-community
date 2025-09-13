@@ -232,64 +232,108 @@ class _CreateAndEditEventPageState
                 : eventState.isLoading
                     ? null // Disable button while loading
                     : () async {
-                    // Final step - create the event
-                    final eventState = ref.read(eventCreationAndEditingProvider);
-                    final creatorNotifier = ref.read(creatorProvider.notifier);
-                    final creatorState = ref.read(creatorProvider);
+                        // Final step - create the event
+                        print("🎯 DEBUG: Create button pressed - starting event creation flow");
+                        final eventState =
+                            ref.read(eventCreationAndEditingProvider);
+                        final creatorNotifier =
+                            ref.read(creatorProvider.notifier);
+                        final creatorState = ref.read(creatorProvider);
 
-                    // Validate payment setup
-                    bool isStripeEnabled = creatorState.activeTeacher != null &&
-                        creatorState.activeTeacher!.stripeId != null &&
-                        creatorState.activeTeacher!.isStripeEnabled == true;
+                        print("🎯 DEBUG: Event state before creation:");
+                        print("🎯 DEBUG: - Title: ${eventState.title}");
+                        print("🎯 DEBUG: - Description: ${eventState.description}");
+                        print("🎯 DEBUG: - Slug: ${eventState.slug}");
+                        print("🎯 DEBUG: - Location: ${eventState.location}");
+                        print("🎯 DEBUG: - Event Type: ${eventState.eventType}");
+                        print("🎯 DEBUG: - Recurring Patterns: ${eventState.recurringPatterns.length}");
+                        print("🎯 DEBUG: - Booking Categories: ${eventState.bookingCategories.length}");
+                        print("🎯 DEBUG: - Pending Teachers: ${eventState.pendingInviteTeachers.length}");
 
-                    if (!isStripeEnabled && !eventState.isCashAllowed && eventState.bookingCategories.isNotEmpty) {
-                      showErrorToast("Please enable Stripe or allow cash payments to create tickets");
-                      return;
-                    }
+                        // Validate payment setup
+                        bool isStripeEnabled = creatorState.activeTeacher !=
+                                null &&
+                            creatorState.activeTeacher!.stripeId != null &&
+                            creatorState.activeTeacher!.isStripeEnabled == true;
 
-                    if (creatorState.activeTeacher == null ||
-                        creatorState.activeTeacher!.id == null) {
-                      print("No active teacher found, trying to set from token");
-                      await creatorNotifier.setCreatorFromToken().then((success) {
-                        if (!success) {
-                          showErrorToast("Session Expired, refreshing session");
+                        print("🎯 DEBUG: Payment validation:");
+                        print("🎯 DEBUG: - Stripe enabled: $isStripeEnabled");
+                        print("🎯 DEBUG: - Cash allowed: ${eventState.isCashAllowed}");
+                        print("🎯 DEBUG: - Booking categories: ${eventState.bookingCategories.length}");
+
+                        if (!isStripeEnabled &&
+                            !eventState.isCashAllowed &&
+                            eventState.bookingCategories.isNotEmpty) {
+                          print("❌ DEBUG: Payment validation failed - no payment method");
+                          showErrorToast(
+                              "Please enable Stripe or allow cash payments to create tickets");
                           return;
                         }
-                      });
-                    }
 
-                    // Create the event
-                    if (widget.isEditing) {
-                      await ref
-                          .read(eventCreationAndEditingProvider.notifier)
-                          .updateClass(creatorState.activeTeacher!.id!);
-                    } else {
-                      await ref
-                          .read(eventCreationAndEditingProvider.notifier)
-                          .createClass(creatorState.activeTeacher!.id!);
-                    }
+                        if (creatorState.activeTeacher == null ||
+                            creatorState.activeTeacher!.id == null) {
+                          print("🎯 DEBUG: No active teacher found, trying to set from token");
+                          await creatorNotifier
+                              .setCreatorFromToken()
+                              .then((success) {
+                            if (!success) {
+                              print("❌ DEBUG: Failed to set creator from token");
+                              showErrorToast(
+                                  "Session Expired, refreshing session");
+                              return;
+                            }
+                          });
+                        }
 
-                    // Check if creation was successful
-                    final finalEventState = ref.read(eventCreationAndEditingProvider);
-                    if (finalEventState.errorMessage == null) {
-                      showSuccessToast(
-                          "Event ${widget.isEditing ? "updated" : "created"} successfully");
-                      
-                      // Navigate back to My Events page
-                      context.goNamed(myEventsRoute);
-                      
-                      // Refresh the events list
-                      final userAsync = ref.read(userRiverpodProvider);
-                      if (userAsync.value?.id != null) {
-                        ref
-                            .read(teacherEventsProvider.notifier)
-                            .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
-                      }
-                    } else {
-                      // Show error message
-                      showErrorToast(finalEventState.errorMessage!);
-                    }
-                  },
+                        print("🎯 DEBUG: Creator ID: ${creatorState.activeTeacher?.id}");
+
+                        // Create the event
+                        print("🎯 DEBUG: Starting event creation...");
+                        if (widget.isEditing) {
+                          print("🎯 DEBUG: Updating existing event");
+                          await ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .updateClass(creatorState.activeTeacher!.id!);
+                        } else {
+                          print("🎯 DEBUG: Creating new event");
+                          await ref
+                              .read(eventCreationAndEditingProvider.notifier)
+                              .createClass(creatorState.activeTeacher!.id!);
+                        }
+                        print("🎯 DEBUG: Event creation call completed");
+
+                        // Check if creation was successful
+                        final finalEventState =
+                            ref.read(eventCreationAndEditingProvider);
+                        
+                        print("🎯 DEBUG: Checking creation result:");
+                        print("🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
+                        print("🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
+                        
+                        if (finalEventState.errorMessage == null) {
+                          print("✅ DEBUG: Event creation successful!");
+                          showSuccessToast(
+                              "Event ${widget.isEditing ? "updated" : "created"} successfully");
+
+                          // Navigate back to My Events page
+                          print("🎯 DEBUG: Navigating to My Events page");
+                          context.goNamed(myEventsRoute);
+
+                          // Refresh the events list
+                          final userAsync = ref.read(userRiverpodProvider);
+                          if (userAsync.value?.id != null) {
+                            print("🎯 DEBUG: Refreshing events list");
+                            ref
+                                .read(teacherEventsProvider.notifier)
+                                .fetchMyEvents(userAsync.value!.id!,
+                                    isRefresh: true);
+                          }
+                        } else {
+                          // Show error message
+                          print("❌ DEBUG: Event creation failed: ${finalEventState.errorMessage}");
+                          showErrorToast(finalEventState.errorMessage!);
+                        }
+                      },
           ),
           Expanded(
             child: pages[eventState.currentPage],

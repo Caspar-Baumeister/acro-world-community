@@ -492,14 +492,70 @@ class EventCreationAndEditingNotifier
     state = state.copyWith(isCashAllowed: !state.isCashAllowed);
   }
 
-  /// Create class (simplified version)
+  /// Create class
   Future<void> createClass(String creatorId) async {
-    // TODO: Implement full createClass logic
-    // For now, just set loading state
-    state = state.copyWith(isLoading: true);
-    // Simulate async operation
-    await Future.delayed(const Duration(seconds: 1));
-    state = state.copyWith(isLoading: false);
+    try {
+      print("🚀 DEBUG: Starting event creation...");
+      print("🚀 DEBUG: Creator ID: $creatorId");
+      print("🚀 DEBUG: Event state: ${state.toString()}");
+      
+      state = state.copyWith(isLoading: true, errorMessage: null);
+      
+      // Import the repository
+      final repository = ClassesRepository(apiService: GraphQLClientSingleton());
+      
+      // Prepare the variables for the mutation
+      final variables = <String, dynamic>{
+        'name': state.title,
+        'description': state.description,
+        'imageUrl': state.existingImageUrl ?? '',
+        'eventType': state.eventType?.toString().toUpperCase() ?? 'WORKSHOP',
+        'location': state.location != null 
+            ? [state.location!.longitude, state.location!.latitude]
+            : [0.0, 0.0],
+        'locationName': state.locationName ?? '',
+        'timezone': 'UTC', // TODO: Get user's timezone
+        'urlSlug': state.slug,
+        'recurringPatterns': state.recurringPatterns.map((pattern) => pattern.toJson()).toList(),
+        'classOwners': [
+          {
+            'teacher_id': creatorId,
+            'is_payment_receiver': true,
+          }
+        ],
+        'classTeachers': state.pendingInviteTeachers.map((teacher) => {
+          'teacher_id': teacher.id,
+        }).toList(),
+        'max_booking_slots': state.maxBookingSlots,
+        'location_country': state.countryCode,
+        'location_city': state.region,
+        'is_cash_allowed': state.isCashAllowed,
+      };
+      
+      print("🚀 DEBUG: Mutation variables: $variables");
+      
+      // Create the class
+      final createdClass = await repository.createClass(variables);
+      
+      print("🚀 DEBUG: Class created successfully with ID: ${createdClass.id}");
+      
+      // TODO: Create booking categories and options
+      // This would require additional API calls to create the ticket categories and options
+      
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: null,
+      );
+      
+      print("🚀 DEBUG: Event creation completed successfully!");
+      
+    } catch (e) {
+      print("❌ DEBUG: Error creating event: $e");
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to create event: ${e.toString()}',
+      );
+    }
   }
 
   /// Update class (simplified version)
