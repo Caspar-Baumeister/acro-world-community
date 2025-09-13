@@ -21,9 +21,9 @@ class CompactProgressBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     final progress = (currentStep + 1) / totalSteps;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
@@ -58,7 +58,7 @@ class CompactProgressBar extends StatelessWidget {
                 )
               else
                 const SizedBox(width: 32),
-              
+
               // Step title and progress info
               Expanded(
                 child: Column(
@@ -82,7 +82,7 @@ class CompactProgressBar extends StatelessWidget {
                   ],
                 ),
               ),
-              
+
               // Close button
               if (onClosePressed != null)
                 IconButton(
@@ -102,15 +102,15 @@ class CompactProgressBar extends StatelessWidget {
                 const SizedBox(width: 32),
             ],
           ),
-          
+
           const SizedBox(height: 12),
-          
+
           // Progress bar
           Container(
             width: double.infinity,
             height: 4,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
+              color: colorScheme.outline.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(2),
             ),
             child: FractionallySizedBox(
