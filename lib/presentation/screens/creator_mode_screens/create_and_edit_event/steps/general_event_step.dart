@@ -176,7 +176,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _slugController,
-                        labelText: 'URL Slug',
+                        labelText: 'Unique Identifier',
                         onEditingComplete: () {
                           ref
                               .read(eventCreationAndEditingProvider.notifier)
@@ -188,8 +188,8 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         footnoteText: eventState.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
                             : (eventState.isSlugAvailable == false
-                                ? "This slug is already taken"
-                                : 'This will be used in the URL of your event page'),
+                                ? "This identifier is already taken"
+                                : 'A unique identifier for your event (e.g., "my-acro-workshop-2024"). This will be used in the event URL and must be unique.'),
                         isFootnoteError: eventState.isSlugAvailable == false ||
                             eventState.isSlugValid == false,
                         textInputAction: TextInputAction.next,

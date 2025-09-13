@@ -46,7 +46,7 @@ class _CreateAndEditEventPageState
       return;
     }
     if (eventState.slug.isEmpty) {
-      showErrorToast('Please enter a slug for your event');
+      showErrorToast('Please enter a unique identifier for your event');
       return;
     }
     if (eventState.location == null) {
@@ -62,7 +62,7 @@ class _CreateAndEditEventPageState
       return;
     }
     if (eventState.isSlugAvailable == false) {
-      showErrorToast('This slug is already taken');
+      showErrorToast('This identifier is already taken');
       return;
     }
     if (eventState.eventType == null) {
