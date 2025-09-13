@@ -370,11 +370,13 @@ class EventCreationAndEditingNotifier
 
       // Convert country name to country code
       // Note: templateClassModel.country might already be a country code, not a name
-      print('🔍 TEMPLATE DEBUG - About to call getCountryCode with: "${templateClassModel.country}"');
-      
+      print(
+          '🔍 TEMPLATE DEBUG - About to call getCountryCode with: "${templateClassModel.country}"');
+
       // Check if it's already a country code (2 letters) or a country name
       String? finalCountryCode;
-      if (templateClassModel.country != null && templateClassModel.country!.length == 2) {
+      if (templateClassModel.country != null &&
+          templateClassModel.country!.length == 2) {
         // It's likely already a country code
         finalCountryCode = templateClassModel.country!.toUpperCase();
         print('🔍 TEMPLATE DEBUG - Detected country code: $finalCountryCode');
@@ -384,9 +386,9 @@ class EventCreationAndEditingNotifier
         print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
         finalCountryCode = countryCode ?? templateClassModel.country;
       }
-      
+
       print('🔍 TEMPLATE DEBUG - Final country code: $finalCountryCode');
-      
+
       // Also try to get country name from code if we have a code
       final countryName = getCountryName(templateClassModel.country);
       print('🔍 TEMPLATE DEBUG - Country name from code: $countryName');

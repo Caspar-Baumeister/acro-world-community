@@ -70,9 +70,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
             .replaceAll(' ', '-')
             .replaceAll(RegExp(r'[^a-z0-9-]'), '');
         _slugController.text = slug;
-        ref
-            .read(eventCreationAndEditingProvider.notifier)
-            .setSlug(slug);
+        ref.read(eventCreationAndEditingProvider.notifier).setSlug(slug);
         ref
             .read(eventCreationAndEditingProvider.notifier)
             .checkSlugAvailability();
@@ -83,10 +81,10 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       ref
           .read(eventCreationAndEditingProvider.notifier)
           .setSlug(_slugController.text);
-      
+
       // Cancel previous timer
       _slugDebounceTimer?.cancel();
-      
+
       // Check slug availability in real-time with debouncing
       if (_slugController.text.isNotEmpty) {
         _slugDebounceTimer = Timer(const Duration(milliseconds: 500), () {
@@ -253,24 +251,29 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       // choose from country
                       Builder(
                         builder: (context) {
-                          print('🔍 UI DEBUG - CountryPicker selectedCountryCode: "${eventState.countryCode}"');
+                          print(
+                              '🔍 UI DEBUG - CountryPicker selectedCountryCode: "${eventState.countryCode}"');
                           return CountryPicker(
-                            key: ValueKey('country_${eventState.countryCode}'), // Force rebuild when country changes
+                            key: ValueKey(
+                                'country_${eventState.countryCode}'), // Force rebuild when country changes
                             // now pass the ISO code, not the name:
                             selectedCountryCode: eventState.countryCode,
-                        onCountrySelected: (String? code, String? name) {
-                          // code: e.g. "US", name: e.g. "United States"
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .setCountryCode(code);
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .setCountry(name);
-                          // clear out any previously selected region:
-                          ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .setRegion(null);
-                        },
+                            onCountrySelected: (String? code, String? name) {
+                              // code: e.g. "US", name: e.g. "United States"
+                              ref
+                                  .read(
+                                      eventCreationAndEditingProvider.notifier)
+                                  .setCountryCode(code);
+                              ref
+                                  .read(
+                                      eventCreationAndEditingProvider.notifier)
+                                  .setCountry(name);
+                              // clear out any previously selected region:
+                              ref
+                                  .read(
+                                      eventCreationAndEditingProvider.notifier)
+                                  .setRegion(null);
+                            },
                           );
                         },
                       ),
@@ -282,17 +285,19 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                               top: AppDimensions.spacingMedium),
                           child: Builder(
                             builder: (context) {
-                              print('🔍 UI DEBUG - RegionPicker countryCode: "${eventState.countryCode}", selectedRegion: "${eventState.region}"');
+                              print(
+                                  '🔍 UI DEBUG - RegionPicker countryCode: "${eventState.countryCode}", selectedRegion: "${eventState.region}"');
                               return RegionPicker(
-                                key: ValueKey('region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
+                                key: ValueKey(
+                                    'region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
                                 countryCode: eventState.countryCode!,
                                 selectedRegion: eventState.region,
-                            onRegionSelected: (String? region) {
-                              ref
-                                  .read(
-                                      eventCreationAndEditingProvider.notifier)
-                                  .setRegion(region);
-                            },
+                                onRegionSelected: (String? region) {
+                                  ref
+                                      .read(eventCreationAndEditingProvider
+                                          .notifier)
+                                      .setRegion(region);
+                                },
                               );
                             },
                           ),
@@ -333,5 +338,4 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       ),
     );
   }
-
 }

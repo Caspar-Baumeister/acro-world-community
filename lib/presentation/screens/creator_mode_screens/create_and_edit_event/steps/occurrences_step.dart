@@ -19,7 +19,6 @@ class OccurrenceStep extends ConsumerStatefulWidget {
 }
 
 class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
-
   @override
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
@@ -50,7 +49,8 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: eventState.recurringPatterns.length + (eventState.classModel?.classEvents?.length ?? 0),
+                itemCount: eventState.recurringPatterns.length +
+                    (eventState.classModel?.classEvents?.length ?? 0),
                 itemBuilder: (context, index) {
                   // Show recurring patterns first
                   if (index < eventState.recurringPatterns.length) {
@@ -87,47 +87,52 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                    pattern.isRecurring == true
-                                        ? "Recurring pattern"
-                                        : "Single occurence",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary)),
-                                IconButton(
-                                    onPressed: () {
-                                      ref
-                                          .read(eventCreationAndEditingProvider
-                                              .notifier)
-                                          .removeRecurringPattern(index);
-                                    },
-                                    icon: Icon(
-                                      Icons.delete,
-                                      color:
-                                          Theme.of(context).colorScheme.error,
-                                    ))
-                              ],
-                            ),
-                            pattern.isRecurring == true
-                                ? ReccurringPatternInfo(pattern)
-                                : SingleOccurenceInfo(pattern),
-                            const SizedBox(height: AppDimensions.spacingSmall),
-                          ],
-                        )),
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                      pattern.isRecurring == true
+                                          ? "Recurring pattern"
+                                          : "Single occurence",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary)),
+                                  IconButton(
+                                      onPressed: () {
+                                        ref
+                                            .read(
+                                                eventCreationAndEditingProvider
+                                                    .notifier)
+                                            .removeRecurringPattern(index);
+                                      },
+                                      icon: Icon(
+                                        Icons.delete,
+                                        color:
+                                            Theme.of(context).colorScheme.error,
+                                      ))
+                                ],
+                              ),
+                              pattern.isRecurring == true
+                                  ? ReccurringPatternInfo(pattern)
+                                  : SingleOccurenceInfo(pattern),
+                              const SizedBox(
+                                  height: AppDimensions.spacingSmall),
+                            ],
+                          )),
                     );
                   } else {
                     // Show actual class_events
-                    final classEventIndex = index - eventState.recurringPatterns.length;
-                    final classEvent = eventState.classModel?.classEvents?[classEventIndex];
+                    final classEventIndex =
+                        index - eventState.recurringPatterns.length;
+                    final classEvent =
+                        eventState.classModel?.classEvents?[classEventIndex];
                     if (classEvent == null) return const SizedBox.shrink();
-                    
+
                     return Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: AppDimensions.spacingLarge,
@@ -138,7 +143,8 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                             // For now, just show a message that this is a generated event
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('This is a generated event occurrence from a recurring pattern'),
+                                content: Text(
+                                    'This is a generated event occurrence from a recurring pattern'),
                               ),
                             );
                           },
@@ -147,25 +153,27 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text(
-                                    "Generated Event Occurrence",
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleLarge!
-                                        .copyWith(
-                                            fontWeight: FontWeight.bold,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary)),
+                                  Text("Generated Event Occurrence",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .titleLarge!
+                                          .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .primary)),
                                   Icon(
                                     Icons.event,
-                                    color: Theme.of(context).colorScheme.primary,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
                                   )
                                 ],
                               ),
-                              const SizedBox(height: AppDimensions.spacingSmall),
+                              const SizedBox(
+                                  height: AppDimensions.spacingSmall),
                               Text(
                                 "Date: ${classEvent.startDate}",
                                 style: Theme.of(context).textTheme.bodyMedium,
@@ -175,7 +183,8 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                   "End: ${classEvent.endDate}",
                                   style: Theme.of(context).textTheme.bodyMedium,
                                 ),
-                              const SizedBox(height: AppDimensions.spacingSmall),
+                              const SizedBox(
+                                  height: AppDimensions.spacingSmall),
                             ],
                           )),
                     );
