@@ -36,7 +36,7 @@ class MainPageShell extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     bool isCreator = ref.watch(userRoleProvider);
     final currentLocation = GoRouterState.of(context).uri.path;
-    
+
     // Sync the navigation provider with the current route
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (isCreator) {
@@ -53,11 +53,11 @@ class MainPageShell extends ConsumerWidget {
         }
       }
     });
-    
+
     if (Responsive.isDesktop(context)) {
       return ShellDesktopLayout(isCreator: isCreator, child: child);
     }
-    
+
     // Determine which floating button to show based on current route
     Widget? floatingButton;
     if (isCreator && currentLocation == '/creator-profile') {
@@ -67,7 +67,7 @@ class MainPageShell extends ConsumerWidget {
       // Show creator mode button only on user profile page
       floatingButton = const FloatingCreatorModeButton();
     }
-    
+
     return Scaffold(
       body: Stack(
         children: [

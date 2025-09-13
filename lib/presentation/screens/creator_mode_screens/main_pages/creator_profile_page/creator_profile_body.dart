@@ -1,6 +1,6 @@
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/analytics_dashboard.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/creator_stripe_connect_button.dart';
-import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/edit_creator_profile_button.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -51,12 +51,7 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
           children: [
             // Analytics Dashboard
             const AnalyticsDashboard(),
-            
-            creatorState.activeTeacher != null
-                ? EditCreatorProfileButton(
-                    teacher: creatorState.activeTeacher!,
-                  )
-                : Container(),
+
             Padding(
               padding: const EdgeInsets.only(
                 left: AppDimensions.spacingMedium,
@@ -64,10 +59,16 @@ class _CreatorProfileBodyState extends ConsumerState<CreatorProfileBody> {
               child: Text("Settings",
                   style: Theme.of(context).textTheme.headlineMedium),
             ),
+            const SizedBox(height: AppDimensions.spacingLarge),
+            creatorState.activeTeacher != null
+                ? EditCreatorProfileButton(
+                    teacher: creatorState.activeTeacher!,
+                  )
+                : Container(),
             const SizedBox(height: AppDimensions.spacingSmall),
             CreatorStripeConnectButton(),
             SizedBox(height: AppDimensions.spacingLarge),
-            
+
             // Bottom padding to prevent content from being hidden behind floating button
             SizedBox(height: 80), // Space for floating button + padding
           ],
