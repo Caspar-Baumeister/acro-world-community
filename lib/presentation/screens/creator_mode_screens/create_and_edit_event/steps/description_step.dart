@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -56,9 +55,21 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
     
-    return BasePage(
-      makeScrollable: false,
-      child: Container(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Description'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ],
+      ),
+      body: Container(
         constraints: Responsive.isDesktop(context)
             ? const BoxConstraints(maxWidth: 800)
             : null,
@@ -68,87 +79,87 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
           ),
           child: Column(
             children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.spacingMedium,
+                ),
+                child: Column(
+                  children: [
+                    Text(
+                      'Event Description',
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: AppDimensions.spacingSmall),
+                    Text(
+                      'Write a detailed description for your event. Use the toolbar below to format your text.',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              ),
+              
+              // Rich text editor - takes most of the space
               Expanded(
-                child: SingleChildScrollView(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Header
-                      Text(
-                        'Event Description',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimensions.spacingSmall),
-                      Text(
-                        'Write a detailed description for your event. Use the toolbar below to format your text.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: AppDimensions.spacingLarge),
-                      
-                      // Rich text editor
+                      // Toolbar
                       Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
-                          ),
-                          borderRadius: BorderRadius.circular(12),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.spacingSmall,
+                          vertical: AppDimensions.spacingSmall,
                         ),
-                        child: Column(
-                          children: [
-                            // Toolbar
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: AppDimensions.spacingSmall,
-                                vertical: AppDimensions.spacingSmall,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                                borderRadius: const BorderRadius.only(
-                                  topLeft: Radius.circular(12),
-                                  topRight: Radius.circular(12),
-                                ),
-                              ),
-                              child: ToolBar(
-                                controller: _controller,
-                                toolBarConfig: customToolBarList,
-                              ),
-                            ),
-                            
-                            // Editor
-                            Container(
-                              height: 400,
-                              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-                              decoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.surface,
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(12),
-                                  bottomRight: Radius.circular(12),
-                                ),
-                              ),
-                              child: QuillHtmlEditor(
-                                text: eventState.description,
-                                controller: _controller,
-                                minHeight: 350,
-                                inputAction: InputAction.newline,
-                              ),
-                            ),
-                          ],
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(12),
+                            topRight: Radius.circular(12),
+                          ),
+                        ),
+                        child: ToolBar(
+                          controller: _controller,
+                          toolBarConfig: customToolBarList,
                         ),
                       ),
                       
-                      const SizedBox(height: AppDimensions.spacingLarge),
+                      // Editor - flexible height
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surface,
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(12),
+                              bottomRight: Radius.circular(12),
+                            ),
+                          ),
+                          child: QuillHtmlEditor(
+                            text: eventState.description,
+                            controller: _controller,
+                            minHeight: 200,
+                            inputAction: InputAction.newline,
+                          ),
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
               
-              const SizedBox(height: AppDimensions.spacingLarge),
+              const SizedBox(height: AppDimensions.spacingMedium),
               
               // Action buttons with safe area
               SafeArea(
