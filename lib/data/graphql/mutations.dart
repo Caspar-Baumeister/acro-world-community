@@ -358,7 +358,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$location_country: String
     \$location_city: String
     \$is_cash_allowed: Boolean
-    \$created_by_id: uuid!
   ) {
     insert_classes_one(
       object: {
@@ -384,7 +383,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
           data: \$classTeachers
         }
         max_booking_slots: \$max_booking_slots
-        created_by_id: \$created_by_id
       }
     ) {
       id

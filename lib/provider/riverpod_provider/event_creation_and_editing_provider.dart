@@ -579,7 +579,6 @@ class EventCreationAndEditingNotifier
         'location_country': state.countryCode,
         'location_city': state.region,
         'is_cash_allowed': state.isCashAllowed,
-        'created_by_id': creatorId,
       };
 
       print(
