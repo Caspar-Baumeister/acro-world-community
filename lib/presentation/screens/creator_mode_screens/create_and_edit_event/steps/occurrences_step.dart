@@ -50,42 +50,44 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: eventState.recurringPatterns.length,
+                itemCount: eventState.recurringPatterns.length + (eventState.classModel?.classEvents?.length ?? 0),
                 itemBuilder: (context, index) {
-                  RecurringPatternModel pattern =
-                      eventState.recurringPatterns[index];
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppDimensions.spacingLarge,
-                    ),
-                    child: FloatingButton(
-                        insideText: "",
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  AddOrEditRecurringPatternPage(
-                                onFinished:
-                                    (RecurringPatternModel recurringPattern) {
-                                  ref
-                                      .read(eventCreationAndEditingProvider
-                                          .notifier)
-                                      .editRecurringPattern(
-                                        index,
-                                        recurringPattern,
-                                      );
-                                },
-                                recurringPattern: pattern,
+                  // Show recurring patterns first
+                  if (index < eventState.recurringPatterns.length) {
+                    RecurringPatternModel pattern =
+                        eventState.recurringPatterns[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.spacingLarge,
+                      ),
+                      child: FloatingButton(
+                          insideText: "",
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    AddOrEditRecurringPatternPage(
+                                  onFinished:
+                                      (RecurringPatternModel recurringPattern) {
+                                    ref
+                                        .read(eventCreationAndEditingProvider
+                                            .notifier)
+                                        .editRecurringPattern(
+                                          index,
+                                          recurringPattern,
+                                        );
+                                  },
+                                  recurringPattern: pattern,
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        headerText: "",
-                        insideWidget: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            );
+                          },
+                          headerText: "",
+                          insideWidget: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                     pattern.isRecurring == true
@@ -119,7 +121,65 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                             const SizedBox(height: AppDimensions.spacingSmall),
                           ],
                         )),
-                  );
+                    );
+                  } else {
+                    // Show actual class_events
+                    final classEventIndex = index - eventState.recurringPatterns.length;
+                    final classEvent = eventState.classModel?.classEvents?[classEventIndex];
+                    if (classEvent == null) return const SizedBox.shrink();
+                    
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: AppDimensions.spacingLarge,
+                      ),
+                      child: FloatingButton(
+                          insideText: "",
+                          onPressed: () {
+                            // For now, just show a message that this is a generated event
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('This is a generated event occurrence from a recurring pattern'),
+                              ),
+                            );
+                          },
+                          headerText: "",
+                          insideWidget: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Generated Event Occurrence",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary)),
+                                  Icon(
+                                    Icons.event,
+                                    color: Theme.of(context).colorScheme.primary,
+                                  )
+                                ],
+                              ),
+                              const SizedBox(height: AppDimensions.spacingSmall),
+                              Text(
+                                "Date: ${classEvent.startDate}",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              if (classEvent.endDate != null)
+                                Text(
+                                  "End: ${classEvent.endDate}",
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              const SizedBox(height: AppDimensions.spacingSmall),
+                            ],
+                          )),
+                    );
+                  }
                 }),
           ),
         ],
