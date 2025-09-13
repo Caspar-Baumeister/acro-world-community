@@ -110,7 +110,7 @@ class CompactProgressBar extends StatelessWidget {
             width: double.infinity,
             height: 4,
             decoration: BoxDecoration(
-              color: colorScheme.outline.withValues(alpha: 0.2),
+              color: colorScheme.outline.withValues(alpha: 0.3),
               borderRadius: BorderRadius.circular(2),
             ),
             child: FractionallySizedBox(
