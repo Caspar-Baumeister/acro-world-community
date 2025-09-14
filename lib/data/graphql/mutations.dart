@@ -639,6 +639,7 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
             pricing,
             description,
             image_url,
+            location,
             location_city,
             location_name,
             location_country,

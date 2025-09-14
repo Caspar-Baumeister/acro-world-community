@@ -273,9 +273,9 @@ class EventCreationAndEditingNotifier
       // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       // final success = await repository.createClass(state.classModel!);
 
-        state = state.copyWith(isLoading: false);
-        CustomErrorHandler.logDebug('Event saved successfully');
-        return true;
+      state = state.copyWith(isLoading: false);
+      CustomErrorHandler.logDebug('Event saved successfully');
+      return true;
     } catch (e) {
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
@@ -352,8 +352,9 @@ class EventCreationAndEditingNotifier
 
       // Copy recurring patterns directly from the fetched class (following main branch approach)
       final recurringPatternsFromClass = classModel.recurringPatterns ?? [];
-      print('🔍 TEMPLATE DEBUG - Recurring patterns from class: ${recurringPatternsFromClass.length}');
-      
+      print(
+          '🔍 TEMPLATE DEBUG - Recurring patterns from class: ${recurringPatternsFromClass.length}');
+
       // Debug: Print template data
       print('🔍 TEMPLATE DEBUG - Loading template: $slug');
       print('🔍 TEMPLATE DEBUG - Template name: ${templateClassModel.name}');
@@ -370,9 +371,12 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
-      print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns: ${classModel.recurringPatterns}');
-      print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns.length: ${classModel.recurringPatterns?.length}');
-      print('🔍 TEMPLATE DEBUG - Recurring patterns to use: ${recurringPatternsFromClass.length}');
+      print(
+          '🔍 TEMPLATE DEBUG - Original classModel recurringPatterns: ${classModel.recurringPatterns}');
+      print(
+          '🔍 TEMPLATE DEBUG - Original classModel recurringPatterns.length: ${classModel.recurringPatterns?.length}');
+      print(
+          '🔍 TEMPLATE DEBUG - Recurring patterns to use: ${recurringPatternsFromClass.length}');
       print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
       print(
           '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
@@ -457,11 +461,11 @@ class EventCreationAndEditingNotifier
           'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
-    state = EventCreationAndEditingState(
-      classModel: _createEmptyClassModel(),
+      state = EventCreationAndEditingState(
+        classModel: _createEmptyClassModel(),
         isLoading: false,
         errorMessage: 'Failed to load template: ${e.toString()}',
-    );
+      );
     }
   }
 
