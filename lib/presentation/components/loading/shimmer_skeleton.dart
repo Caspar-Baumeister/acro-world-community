@@ -91,48 +91,114 @@ class EventCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    
     return Skeletonizer(
       enabled: true,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      effect: const ShimmerEffect(
+        baseColor: Color(0xFFE0E0E0),
+        highlightColor: Color(0xFFF5F5F5),
+        duration: Duration(milliseconds: 1500),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withOpacity(0.1),
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
         child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
+          padding: const EdgeInsets.all(12),
+          child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: double.infinity,
-                height: 120,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(8),
+              // Card Image skeleton using Bone.square
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Bone.square(
+                  size: MediaQuery.of(context).size.width * 0.25,
                 ),
               ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: 150,
-                height: 16,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                width: 100,
-                height: 14,
-                decoration: BoxDecoration(
-                  color: Colors.grey,
-                  borderRadius: BorderRadius.circular(4),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Title skeleton with flag badge
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Bone.text(
+                            words: 2,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Flag badge skeleton
+                        Bone(
+                          width: 20,
+                          height: 16,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        const SizedBox(width: 4),
+                        Bone.icon(size: 16),
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    // Location skeleton
+                    Bone.text(
+                      words: 1,
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 8),
+                    // Teacher chips skeleton
+                    Row(
+                      children: [
+                        Bone(
+                          width: 60,
+                          height: 32,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        const SizedBox(width: 5),
+                        Bone(
+                          width: 80,
+                          height: 32,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Next occurrence skeleton
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Bone.text(
+                              words: 1,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(width: 4),
+                            Bone.text(
+                              words: 1,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        Bone.text(
+                          words: 1,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
