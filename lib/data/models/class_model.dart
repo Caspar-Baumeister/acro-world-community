@@ -112,6 +112,9 @@ class ClassModel {
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
+    print('🔍 CLASSMODEL DEBUG - JSON keys: ${json.keys.toList()}');
+    print('🔍 CLASSMODEL DEBUG - recurring_patterns in JSON: ${json["recurring_patterns"]}');
+    
     createdBy =
         json['created_by'] != null ? User.fromJson(json['created_by']) : null;
 
