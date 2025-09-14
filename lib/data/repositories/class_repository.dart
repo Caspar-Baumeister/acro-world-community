@@ -36,6 +36,7 @@ class ClassesRepository {
         // Debug: Print the raw response to see recurring_patterns
         print('🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
         print('🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
+        print('🔍 GRAPHQL DEBUG - About to call ClassModel.fromJson');
         return ClassModel.fromJson(result.data!['classes'][0]);
       } catch (e) {
         throw Exception('Failed to parse class: $e');
