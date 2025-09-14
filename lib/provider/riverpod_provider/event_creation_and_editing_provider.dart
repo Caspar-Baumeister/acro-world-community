@@ -305,7 +305,8 @@ class EventCreationAndEditingNotifier
   /// Set class from existing slug for template creation
   Future<void> setClassFromExisting(
       String slug, bool isEditing, bool setFromTemplate) async {
-    print('🔍 SETCLASS DEBUG - Method called with slug: $slug, isEditing: $isEditing, setFromTemplate: $setFromTemplate');
+    print(
+        '🔍 SETCLASS DEBUG - Method called with slug: $slug, isEditing: $isEditing, setFromTemplate: $setFromTemplate');
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 

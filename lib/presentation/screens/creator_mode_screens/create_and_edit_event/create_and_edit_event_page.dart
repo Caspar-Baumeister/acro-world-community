@@ -17,10 +17,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class CreateAndEditEventPage extends ConsumerStatefulWidget {
-  const CreateAndEditEventPage({super.key, required this.isEditing});
+  const CreateAndEditEventPage({
+    super.key, 
+    required this.isEditing,
+    this.eventSlug,
+  });
 
   // can either edit the existing event or use it as a template to create a new event
   final bool isEditing;
+  final String? eventSlug;
 
   @override
   ConsumerState<CreateAndEditEventPage> createState() =>
@@ -32,6 +37,14 @@ class _CreateAndEditEventPageState
   @override
   void initState() {
     super.initState();
+    
+    // Load existing event data when editing
+    if (widget.isEditing && widget.eventSlug != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(eventCreationAndEditingProvider.notifier)
+            .setClassFromExisting(widget.eventSlug!, true, false);
+      });
+    }
   }
 
   void _validateGeneralStep() {

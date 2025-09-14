@@ -51,7 +51,10 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                 // use widgetsbinding to push the next page
 
                 context.pushNamed(createEditEventRoute,
-                    queryParameters: {'isEditing': 'true'});
+                    queryParameters: {
+                      'isEditing': 'true',
+                      'eventSlug': classModel.urlSlug!,
+                    });
               },
             ),
             ListTile(

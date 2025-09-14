@@ -205,7 +205,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (ctx, state) {
             // default to create; to edit, pass isEditing=true in queryParams
             final isEditing = state.uri.queryParameters['isEditing'] == 'true';
-            return CreateAndEditEventPage(isEditing: isEditing);
+            final eventSlug = state.uri.queryParameters['eventSlug'];
+            return CreateAndEditEventPage(
+              isEditing: isEditing,
+              eventSlug: eventSlug,
+            );
           },
         ),
         GoRoute(
