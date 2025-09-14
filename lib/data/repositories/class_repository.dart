@@ -33,6 +33,9 @@ class ClassesRepository {
 
     if (result.data != null && result.data!["classes"].length > 0) {
       try {
+        // Debug: Print the raw response to see recurring_patterns
+        print('🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
+        print('🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
         return ClassModel.fromJson(result.data!['classes'][0]);
       } catch (e) {
         throw Exception('Failed to parse class: $e');

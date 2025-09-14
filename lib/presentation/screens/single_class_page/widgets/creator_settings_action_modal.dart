@@ -50,11 +50,10 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                 Navigator.of(context).pop();
                 // use widgetsbinding to push the next page
 
-                context.pushNamed(createEditEventRoute,
-                    queryParameters: {
-                      'isEditing': 'true',
-                      'eventSlug': classModel.urlSlug!,
-                    });
+                context.pushNamed(createEditEventRoute, queryParameters: {
+                  'isEditing': 'true',
+                  'eventSlug': classModel.urlSlug!,
+                });
               },
             ),
             ListTile(
