@@ -187,7 +187,6 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                             ],
                           )),
                     );
-                  }
                 }),
           ),
         ],
