@@ -347,10 +347,13 @@ class EventCreationAndEditingNotifier
             : null, // Preserve creator for editing
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
-        recurringPatterns: classModel.recurringPatterns, // Copy recurring patterns
         // Note: createdAt and updatedAt are not available in ClassModel
       );
 
+      // Copy recurring patterns directly from the fetched class (following main branch approach)
+      final recurringPatternsFromClass = classModel.recurringPatterns ?? [];
+      print('🔍 TEMPLATE DEBUG - Recurring patterns from class: ${recurringPatternsFromClass.length}');
+      
       // Debug: Print template data
       print('🔍 TEMPLATE DEBUG - Loading template: $slug');
       print('🔍 TEMPLATE DEBUG - Template name: ${templateClassModel.name}');
@@ -367,12 +370,9 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template recurringPatterns: ${templateClassModel.recurringPatterns}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template recurringPatterns.length: ${templateClassModel.recurringPatterns?.length}');
       print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns: ${classModel.recurringPatterns}');
       print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns.length: ${classModel.recurringPatterns?.length}');
+      print('🔍 TEMPLATE DEBUG - Recurring patterns to use: ${recurringPatternsFromClass.length}');
       print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
       print(
           '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
@@ -419,7 +419,7 @@ class EventCreationAndEditingNotifier
         maxBookingSlots: templateClassModel.maxBookingSlots,
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: templateClassModel.bookingCategories ?? [],
-        recurringPatterns: templateClassModel.recurringPatterns ?? [],
+        recurringPatterns: recurringPatternsFromClass,
         countryCode:
             finalCountryCode, // Use final country code (handles both name and code)
         region: templateClassModel
