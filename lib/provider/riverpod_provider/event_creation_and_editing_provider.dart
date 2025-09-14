@@ -273,9 +273,9 @@ class EventCreationAndEditingNotifier
       // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
       // final success = await repository.createClass(state.classModel!);
 
-      state = state.copyWith(isLoading: false);
-      CustomErrorHandler.logDebug('Event saved successfully');
-      return true;
+        state = state.copyWith(isLoading: false);
+        CustomErrorHandler.logDebug('Event saved successfully');
+        return true;
     } catch (e) {
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
@@ -347,6 +347,7 @@ class EventCreationAndEditingNotifier
             : null, // Preserve creator for editing
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
+        recurringPatterns: classModel.recurringPatterns, // Copy recurring patterns
         // Note: createdAt and updatedAt are not available in ClassModel
       );
 
@@ -370,6 +371,8 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template recurringPatterns: ${templateClassModel.recurringPatterns}');
       print(
           '🔍 TEMPLATE DEBUG - Template recurringPatterns.length: ${templateClassModel.recurringPatterns?.length}');
+      print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns: ${classModel.recurringPatterns}');
+      print('🔍 TEMPLATE DEBUG - Original classModel recurringPatterns.length: ${classModel.recurringPatterns?.length}');
       print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
       print(
           '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
@@ -454,11 +457,11 @@ class EventCreationAndEditingNotifier
           'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
-      state = EventCreationAndEditingState(
-        classModel: _createEmptyClassModel(),
+    state = EventCreationAndEditingState(
+      classModel: _createEmptyClassModel(),
         isLoading: false,
         errorMessage: 'Failed to load template: ${e.toString()}',
-      );
+    );
     }
   }
 

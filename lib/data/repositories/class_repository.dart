@@ -34,18 +34,22 @@ class ClassesRepository {
     if (result.data != null && result.data!["classes"].length > 0) {
       try {
         // Debug: Print the raw response to see recurring_patterns
-        print('🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
-        print('🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
+        print(
+            '🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
+        print(
+            '🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
         print('🔍 GRAPHQL DEBUG - About to call ClassModel.fromJson');
-        
+
         final classData = result.data!['classes'][0];
         print('🔍 GRAPHQL DEBUG - classData type: ${classData.runtimeType}');
         print('🔍 GRAPHQL DEBUG - classData keys: ${classData.keys.toList()}');
-        
+
         final parsedClass = ClassModel.fromJson(classData);
-        print('🔍 GRAPHQL DEBUG - Parsed class recurringPatterns: ${parsedClass.recurringPatterns}');
-        print('🔍 GRAPHQL DEBUG - Parsed class recurringPatterns.length: ${parsedClass.recurringPatterns?.length}');
-        
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns: ${parsedClass.recurringPatterns}');
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns.length: ${parsedClass.recurringPatterns?.length}');
+
         return parsedClass;
       } catch (e, stackTrace) {
         print('🔍 GRAPHQL DEBUG - Error parsing class: $e');
