@@ -22,6 +22,17 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
   @override
   Widget build(BuildContext context) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
+
+    // Debug prints for recurring patterns
+    print(
+        '🔍 OCCURRENCES DEBUG - eventState.recurringPatterns.length: ${eventState.recurringPatterns.length}');
+    print(
+        '🔍 OCCURRENCES DEBUG - eventState.recurringPatterns: ${eventState.recurringPatterns}');
+    print(
+        '🔍 OCCURRENCES DEBUG - eventState.classModel?.recurringPatterns?.length: ${eventState.classModel?.recurringPatterns?.length}');
+    print(
+        '🔍 OCCURRENCES DEBUG - eventState.classModel?.recurringPatterns: ${eventState.classModel?.recurringPatterns}');
+
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -53,140 +64,136 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                 itemBuilder: (context, index) {
                   RecurringPatternModel pattern =
                       eventState.recurringPatterns[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.spacingLarge,
-                      ),
-                      child: FloatingButton(
-                          insideText: "",
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    AddOrEditRecurringPatternPage(
-                                  onFinished:
-                                      (RecurringPatternModel recurringPattern) {
-                                    ref
-                                        .read(eventCreationAndEditingProvider
-                                            .notifier)
-                                        .editRecurringPattern(
-                                          index,
-                                          recurringPattern,
-                                        );
-                                  },
-                                  recurringPattern: pattern,
-                                ),
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.spacingLarge,
+                    ),
+                    child: FloatingButton(
+                        insideText: "",
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  AddOrEditRecurringPatternPage(
+                                onFinished:
+                                    (RecurringPatternModel recurringPattern) {
+                                  ref
+                                      .read(eventCreationAndEditingProvider
+                                          .notifier)
+                                      .editRecurringPattern(
+                                        index,
+                                        recurringPattern,
+                                      );
+                                },
+                                recurringPattern: pattern,
                               ),
-                            );
-                          },
-                          headerText: "",
-                          insideWidget: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                      pattern.isRecurring == true
-                                          ? "Recurring pattern"
-                                          : "Single occurence",
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .titleLarge!
-                                          .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .primary)),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    AddOrEditRecurringPatternPage(
-                                                  onFinished:
-                                                      (RecurringPatternModel
-                                                          recurringPattern) {
-                                                    ref
-                                                        .read(
-                                                            eventCreationAndEditingProvider
-                                                                .notifier)
-                                                        .editRecurringPattern(
-                                                          index,
-                                                          recurringPattern,
-                                                        );
-                                                  },
-                                                  recurringPattern: pattern,
-                                                ),
+                            ),
+                          );
+                        },
+                        headerText: "",
+                        insideWidget: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                    pattern.isRecurring == true
+                                        ? "Recurring pattern"
+                                        : "Single occurence",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .titleLarge!
+                                        .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary)),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddOrEditRecurringPatternPage(
+                                                onFinished:
+                                                    (RecurringPatternModel
+                                                        recurringPattern) {
+                                                  ref
+                                                      .read(
+                                                          eventCreationAndEditingProvider
+                                                              .notifier)
+                                                      .editRecurringPattern(
+                                                        index,
+                                                        recurringPattern,
+                                                      );
+                                                },
+                                                recurringPattern: pattern,
                                               ),
-                                            );
-                                          },
-                                          icon: Icon(
-                                            Icons.edit,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary,
-                                          )),
-                                      IconButton(
-                                          onPressed: () {
-                                            // Show confirmation dialog
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                      'Delete Occurrence'),
-                                                  content: const Text(
-                                                      'Are you sure you want to delete this occurrence? This action cannot be undone.'),
-                                                  actions: [
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child:
-                                                          const Text('Cancel'),
-                                                    ),
-                                                    TextButton(
-                                                      onPressed: () {
-                                                        ref
-                                                            .read(
-                                                                eventCreationAndEditingProvider
-                                                                    .notifier)
-                                                            .removeRecurringPattern(
-                                                                index);
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                      },
-                                                      child:
-                                                          const Text('Delete'),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          icon: Icon(
-                                            Icons.delete,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .error,
-                                          ))
-                                    ],
-                                  )
-                                ],
-                              ),
-                              pattern.isRecurring == true
-                                  ? ReccurringPatternInfo(pattern)
-                                  : SingleOccurenceInfo(pattern),
-                              const SizedBox(
-                                  height: AppDimensions.spacingSmall),
-                            ],
-                          )),
-                    );
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        )),
+                                    IconButton(
+                                        onPressed: () {
+                                          // Show confirmation dialog
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Delete Occurrence'),
+                                                content: const Text(
+                                                    'Are you sure you want to delete this occurrence? This action cannot be undone.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      ref
+                                                          .read(
+                                                              eventCreationAndEditingProvider
+                                                                  .notifier)
+                                                          .removeRecurringPattern(
+                                                              index);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('Delete'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ))
+                                  ],
+                                )
+                              ],
+                            ),
+                            pattern.isRecurring == true
+                                ? ReccurringPatternInfo(pattern)
+                                : SingleOccurenceInfo(pattern),
+                            const SizedBox(height: AppDimensions.spacingSmall),
+                          ],
+                        )),
+                  );
                 }),
           ),
         ],

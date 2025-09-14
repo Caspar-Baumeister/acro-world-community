@@ -305,6 +305,7 @@ class EventCreationAndEditingNotifier
   /// Set class from existing slug for template creation
   Future<void> setClassFromExisting(
       String slug, bool isEditing, bool setFromTemplate) async {
+    print('🔍 SETCLASS DEBUG - Method called with slug: $slug, isEditing: $isEditing, setFromTemplate: $setFromTemplate');
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -364,6 +365,10 @@ class EventCreationAndEditingNotifier
           '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
       print(
           '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template recurringPatterns: ${templateClassModel.recurringPatterns}');
+      print(
+          '🔍 TEMPLATE DEBUG - Template recurringPatterns.length: ${templateClassModel.recurringPatterns?.length}');
       print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
       print(
           '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
@@ -431,6 +436,10 @@ class EventCreationAndEditingNotifier
       print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
       print(
           '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
+      print(
+          '🔍 TEMPLATE DEBUG - State recurringPatterns: ${state.recurringPatterns}');
+      print(
+          '🔍 TEMPLATE DEBUG - State recurringPatterns.length: ${state.recurringPatterns.length}');
       print(
           '🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
       print(
