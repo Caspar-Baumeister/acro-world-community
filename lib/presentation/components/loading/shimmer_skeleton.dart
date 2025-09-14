@@ -93,7 +93,7 @@ class EventCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Skeletonizer(
       enabled: true,
       effect: const ShimmerEffect(
@@ -137,7 +137,8 @@ class EventCardSkeleton extends StatelessWidget {
                         Expanded(
                           child: Bone.text(
                             words: 2,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w600),
                           ),
                         ),
                         const SizedBox(width: 8),
