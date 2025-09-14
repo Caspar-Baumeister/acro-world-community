@@ -107,7 +107,7 @@ class AnalyticsChart extends StatelessWidget {
     }
 
     final maxValue = dataPoints.map((e) => e.value).reduce((a, b) => a > b ? a : b);
-    final minValue = dataPoints.map((e) => e.value).reduce((a, b) => a < b ? a : b);
+    final minValue = 0.0; // Always start y-axis at 0
     final range = maxValue - minValue;
 
     return CustomPaint(
@@ -212,13 +212,20 @@ class _ChartWithAxesPainter extends CustomPainter {
       axisPaint,
     );
 
-    // Draw Y-axis labels
-    final ySteps = 5;
+    // Draw Y-axis labels with smart step calculation
+    final ySteps = _calculateOptimalSteps(maxValue);
+    final Set<String> usedLabels = {}; // Track used labels to avoid duplicates
+    
     for (int i = 0; i <= ySteps; i++) {
       final value = minValue + (range * i / ySteps);
       final y = chartBottom - (i * chartHeight / ySteps);
       
       final label = _formatValue(value);
+      
+      // Skip if we've already used this label
+      if (usedLabels.contains(label)) continue;
+      usedLabels.add(label);
+      
       textPainter.text = TextSpan(
         text: label,
         style: TextStyle(
@@ -296,13 +303,30 @@ class _ChartWithAxesPainter extends CustomPainter {
     }
   }
 
+  int _calculateOptimalSteps(double maxValue) {
+    // Calculate optimal number of steps based on max value
+    if (maxValue <= 1) return 4; // 0, 0.25, 0.5, 0.75, 1
+    if (maxValue <= 5) return 5; // 0, 1, 2, 3, 4, 5
+    if (maxValue <= 10) return 5; // 0, 2, 4, 6, 8, 10
+    if (maxValue <= 50) return 5; // 0, 10, 20, 30, 40, 50
+    if (maxValue <= 100) return 5; // 0, 20, 40, 60, 80, 100
+    return 5; // Default to 5 steps for larger values
+  }
+
   String _formatValue(double value) {
+    // Round to reasonable step sizes for better y-axis labels
     if (value >= 1000000) {
       return '${(value / 1000000).toStringAsFixed(1)}M';
     } else if (value >= 1000) {
       return '${(value / 1000).toStringAsFixed(1)}K';
+    } else if (value >= 100) {
+      return value.round().toString();
+    } else if (value >= 10) {
+      return value.round().toString();
+    } else if (value >= 1) {
+      return value.toStringAsFixed(1);
     } else {
-      return value.toInt().toString();
+      return value.toStringAsFixed(1);
     }
   }
 
