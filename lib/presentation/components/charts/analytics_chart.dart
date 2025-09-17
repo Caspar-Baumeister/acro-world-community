@@ -93,27 +93,30 @@ class AnalyticsChart extends StatelessWidget {
     );
   }
 
-
   Widget _buildChartWithAxes(BuildContext context, ColorScheme colorScheme) {
     if (dataPoints.isEmpty) {
       return Center(
         child: Text(
           'No data available',
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
+                color: colorScheme.onSurfaceVariant,
+              ),
         ),
       );
     }
 
-    final maxValue = dataPoints.map((e) => e.value).reduce((a, b) => a > b ? a : b);
+    final maxValue =
+        dataPoints.map((e) => e.value).reduce((a, b) => a > b ? a : b);
     final minValue = 0.0; // Always start y-axis at 0
-    final range = maxValue - minValue;
+    
+    // If all values are 0, set a reasonable range for better visualization
+    final adjustedMaxValue = maxValue == 0.0 ? 10.0 : maxValue;
+    final range = adjustedMaxValue - minValue;
 
     return CustomPaint(
       painter: _ChartWithAxesPainter(
         dataPoints: dataPoints,
-        maxValue: maxValue,
+        maxValue: adjustedMaxValue,
         minValue: minValue,
         range: range,
         primaryColor: primaryColor,
@@ -148,7 +151,6 @@ class ChartDataPoint {
     required this.date,
   });
 }
-
 
 class _ChartWithAxesPainter extends CustomPainter {
   final List<ChartDataPoint> dataPoints;
@@ -215,19 +217,19 @@ class _ChartWithAxesPainter extends CustomPainter {
     // Draw Y-axis labels with smart step calculation
     final ySteps = _calculateOptimalSteps(maxValue);
     final Set<String> usedLabels = {}; // Track used labels to avoid duplicates
-    
+
     for (int i = 0; i <= ySteps; i++) {
       final value = minValue + (range * i / ySteps);
       final y = chartBottom - (i * chartHeight / ySteps);
-      
+
       // Round the value to get clean step numbers
       final roundedValue = _roundToNiceNumber(value);
       final label = _formatValue(roundedValue);
-      
+
       // Skip if we've already used this label
       if (usedLabels.contains(label)) continue;
       usedLabels.add(label);
-      
+
       textPainter.text = TextSpan(
         text: label,
         style: TextStyle(
@@ -245,7 +247,7 @@ class _ChartWithAxesPainter extends CustomPainter {
     // Draw X-axis labels
     for (int i = 0; i < dataPoints.length; i++) {
       final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-      
+
       textPainter.text = TextSpan(
         text: dataPoints[i].label,
         style: TextStyle(
@@ -267,7 +269,11 @@ class _ChartWithAxesPainter extends CustomPainter {
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
       final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-      final normalizedValue = range > 0 ? (point.value - minValue) / range : 0.5;
+      
+      // If all values are 0, position line at the bottom (y-axis = 0)
+      final normalizedValue = point.value == 0.0 && maxValue == 0.0 
+          ? 0.0 
+          : (range > 0 ? (point.value - minValue) / range : 0.5);
       final y = chartBottom - (normalizedValue * chartHeight);
 
       if (i == 0) {
@@ -298,7 +304,11 @@ class _ChartWithAxesPainter extends CustomPainter {
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
       final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-      final normalizedValue = range > 0 ? (point.value - minValue) / range : 0.5;
+      
+      // If all values are 0, position points at the bottom (y-axis = 0)
+      final normalizedValue = point.value == 0.0 && maxValue == 0.0 
+          ? 0.0 
+          : (range > 0 ? (point.value - minValue) / range : 0.5);
       final y = chartBottom - (normalizedValue * chartHeight);
 
       canvas.drawCircle(Offset(x, y), 4, pointPaint);
@@ -308,12 +318,24 @@ class _ChartWithAxesPainter extends CustomPainter {
   int _calculateOptimalSteps(double maxValue) {
     // Calculate optimal number of steps based on max value
     // Always use 5 steps for clean, round numbers
-    if (maxValue <= 1) return 4; // 0, 1 (special case for very small values)
-    if (maxValue <= 5) return 5; // 0, 1, 2, 3, 4, 5
-    if (maxValue <= 10) return 5; // 0, 2, 4, 6, 8, 10
-    if (maxValue <= 20) return 4; // 0, 5, 10, 15, 20
-    if (maxValue <= 50) return 5; // 0, 10, 20, 30, 40, 50
-    if (maxValue <= 100) return 5; // 0, 20, 40, 60, 80, 100
+    if (maxValue <= 1) {
+      return 4; // 0, 1 (special case for very small values)
+    }
+    if (maxValue <= 5) {
+      return 5; // 0, 1, 2, 3, 4, 5
+    }
+    if (maxValue <= 10) {
+      return 5; // 0, 2, 4, 6, 8, 10
+    }
+    if (maxValue <= 20) {
+      return 4; // 0, 5, 10, 15, 20
+    }
+    if (maxValue <= 50) {
+      return 5; // 0, 10, 20, 30, 40, 50
+    }
+    if (maxValue <= 100) {
+      return 5; // 0, 20, 40, 60, 80, 100
+    }
     return 5; // Default to 5 steps for larger values
   }
 
@@ -322,10 +344,17 @@ class _ChartWithAxesPainter extends CustomPainter {
     if (value <= 1) return value.round().toDouble();
     if (value <= 5) return value.round().toDouble();
     if (value <= 10) return (value / 2).round() * 2.0; // Round to even numbers
-    if (value <= 20) return (value / 5).round() * 5.0; // Round to multiples of 5
-    if (value <= 50) return (value / 10).round() * 10.0; // Round to multiples of 10
-    if (value <= 100) return (value / 20).round() * 20.0; // Round to multiples of 20
-    return (value / 50).round() * 50.0; // Round to multiples of 50 for larger values
+    if (value <= 20) {
+      return (value / 5).round() * 5.0; // Round to multiples of 5
+    }
+    if (value <= 50) {
+      return (value / 10).round() * 10.0; // Round to multiples of 10
+    }
+    if (value <= 100) {
+      return (value / 20).round() * 20.0; // Round to multiples of 20
+    }
+    return (value / 50).round() *
+        50.0; // Round to multiples of 50 for larger values
   }
 
   String _formatValue(double value) {
