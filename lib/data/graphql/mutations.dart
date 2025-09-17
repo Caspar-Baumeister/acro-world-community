@@ -636,7 +636,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
           update_columns: [
             id,
             name,
-            pricing,
             description,
             image_url,
             location,

@@ -46,6 +46,7 @@ class EventCreationAndEditingState {
   final String? region;
   final String? eventType;
   final bool isCashAllowed;
+  final bool isEditing;
   final List<TeacherModel> pendingInviteTeachers;
   final int? maxBookingSlots;
   final List<RecurringPatternModel> recurringPatterns;
@@ -74,6 +75,7 @@ class EventCreationAndEditingState {
     this.region,
     this.eventType,
     this.isCashAllowed = false,
+    this.isEditing = false,
     this.pendingInviteTeachers = const [],
     this.maxBookingSlots,
     this.recurringPatterns = const [],
@@ -112,6 +114,7 @@ class EventCreationAndEditingState {
     String? region,
     String? eventType,
     bool? isCashAllowed,
+    bool? isEditing,
     List<TeacherModel>? pendingInviteTeachers,
     int? maxBookingSlots,
     List<RecurringPatternModel>? recurringPatterns,
@@ -139,6 +142,7 @@ class EventCreationAndEditingState {
       region: region ?? this.region,
       eventType: eventType ?? this.eventType,
       isCashAllowed: isCashAllowed ?? this.isCashAllowed,
+      isEditing: isEditing ?? this.isEditing,
       pendingInviteTeachers:
           pendingInviteTeachers ?? this.pendingInviteTeachers,
       maxBookingSlots: maxBookingSlots ?? this.maxBookingSlots,
@@ -450,7 +454,11 @@ class EventCreationAndEditingNotifier
       }
 
       // Prepare teachers list from class for pending invites/owners display
-      final List<TeacherModel> copiedTeachers = classModel.teachers;
+      final List<TeacherModel> copiedTeachers = classModel.classTeachers
+              ?.where((classTeacher) => classTeacher.teacher != null)
+              .map((classTeacher) => classTeacher.teacher!)
+              .toList() ??
+          [];
 
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
@@ -466,6 +474,7 @@ class EventCreationAndEditingNotifier
             templateClassModel.locationName, // Use locationName as description
         eventType: templateClassModel.eventType?.name,
         isCashAllowed: templateClassModel.isCashAllowed ?? false,
+        isEditing: isEditing, // Set the isEditing flag
         maxBookingSlots: templateClassModel.maxBookingSlots,
         questions: List<QuestionModel>.from(templateClassModel.questions),
         bookingCategories: copiedCategories,
@@ -795,15 +804,168 @@ class EventCreationAndEditingNotifier
 
   /// Update class
   Future<void> updateClass(String creatorId) async {
-    // Use the same logic as createClass since upsertClass handles both create and update
-    await createClass(creatorId);
+    try {
+      print("🚀 DEBUG: Starting event update with upsertClass...");
+      print("🚀 DEBUG: Creator ID (Teacher): $creatorId");
+      print("🚀 DEBUG: Event state: ${state.toString()}");
+      print("🚀 DEBUG: Is editing: ${state.isEditing}");
+      print("🚀 DEBUG: Class ID: ${state.classModel?.id}");
+
+      state = state.copyWith(isLoading: true, errorMessage: null);
+
+      // Import the repository
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+
+      // Create ClassOwnerInput for the creator
+      final classOwner = ClassOwnerInput(
+        id: const Uuid().v4(),
+        teacherId: creatorId, // This is the teacher ID, not user ID
+        isPaymentReceiver: true,
+      );
+
+      // Use existing class ID for editing, generate new one for creation
+      final classId = state.isEditing && state.classModel?.id != null
+          ? state.classModel!.id!
+          : const Uuid().v4();
+
+      print("🚀 DEBUG: Using class ID: $classId");
+
+      // Create ClassUpsertInput following the working pattern
+      final classUpsertInput = ClassUpsertInput(
+        id: classId, // Use existing ID for editing
+        name: state.title,
+        description: state.description,
+        imageUrl: state.existingImageUrl ?? '',
+        timezone: 'UTC', // TODO: Get user's timezone
+        urlSlug: state.slug,
+        isCashAllowed: state.isCashAllowed,
+        location: state.location ?? const LatLng(0.0, 0.0),
+        locationName: state.locationName,
+        locationCity: state.region,
+        locationCountry: state.countryCode,
+        eventType: state.eventType,
+        maxBookingSlots: state.maxBookingSlots,
+        recurringPatterns: state.recurringPatterns
+            .map((pattern) => RecurringPatternInput(
+                  id: pattern.id ?? const Uuid().v4(),
+                  dayOfWeek: pattern.dayOfWeek,
+                  startDate: pattern.startDate?.toIso8601String() ?? '',
+                  endDate: pattern.endDate?.toIso8601String(),
+                  startTime: _timeStringFromTimeOfDay(pattern.startTime),
+                  endTime: _timeStringFromTimeOfDay(pattern.endTime),
+                  recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+                  isRecurring: pattern.isRecurring ?? false,
+                ))
+            .toList(),
+        classOwners: [classOwner], // Include the class owner
+        classTeachers: state.pendingInviteTeachers
+            .map((teacher) => ClassTeacherInput(
+                  id: const Uuid().v4(),
+                  teacherId: teacher.id!,
+                ))
+            .toList(),
+        bookingCategories: state.bookingCategories
+            .map((category) => BookingCategoryInput(
+                  id: category.id ?? const Uuid().v4(),
+                  name: category.name,
+                  contingent: category.contingent,
+                  description: category.description ?? '',
+                  bookingOptions: state.bookingOptions
+                      .where(
+                          (option) => option.bookingCategoryId == category.id)
+                      .map((option) => BookingOptionInput(
+                            id: option.id ?? const Uuid().v4(),
+                            title: option.title ?? '',
+                            subtitle: option.subtitle ?? '',
+                            price: option.price ?? 0,
+                            discount: option.discount ?? 0,
+                            currency: option.currency.value,
+                          ))
+                      .toList(),
+                ))
+            .toList(),
+        questions: state.questions
+            .map((question) => QuestionInput(
+                  id: question.id ?? const Uuid().v4(),
+                  allowMultipleAnswers: question.isMultipleChoice ?? false,
+                  isRequired: question.isRequired ?? false,
+                  position: 0, // TODO: Set proper position
+                  question: question.question ?? '',
+                  title: question.title ?? '',
+                  questionType: question.type ?? QuestionType.text,
+                  multipleChoiceOptions: question.choices != null
+                      ? question.choices!
+                          .map((choice) => MultipleChoiceOptionInput(
+                                id: choice.id ?? const Uuid().v4(),
+                                optionText: choice.optionText ?? '',
+                                position: choice.position ?? 0,
+                              ))
+                          .toList()
+                      : [],
+                ))
+            .toList(),
+      );
+
+      print("🚀 DEBUG: Calling repository.upsertClass...");
+      print("🚀 DEBUG: ClassUpsertInput: ${classUpsertInput.toJson()}");
+
+      // Call the repository method
+      final createdClass = await repository.upsertClass(
+        classUpsertInput,
+        [], // deleteQuestionIds - empty for now
+        [], // deleteRecurringPatternIds - empty for now
+        [], // deleteClassTeacherIds - empty for now
+        [], // deleteBookingOptionIds - empty for now
+        [], // deleteBookingCategoryIds - empty for now
+      );
+
+      print("🎯 DEBUG: Event update call completed");
+      print("🎯 DEBUG: Checking update result after delay:");
+
+      // Add a small delay to ensure state is updated
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      print("🎯 DEBUG: - Error message: ${state.errorMessage}");
+      print("🎯 DEBUG: - Is loading: ${state.isLoading}");
+      print("🎯 DEBUG: - State toString: ${state.toString()}");
+
+      if (createdClass.id != null) {
+        print(
+            "✅ DEBUG: Event updated successfully with ID: ${createdClass.id}");
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: null,
+        );
+        print("🎯 DEBUG: State updated after successful update");
+      } else {
+        print("❌ DEBUG: Event update failed: No ID returned");
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: 'Failed to update event: No ID returned',
+        );
+      }
+    } catch (e) {
+      print("❌ DEBUG: Error updating event: $e");
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: 'Failed to update event: $e',
+      );
+      print("❌ DEBUG: Event update failed: ${state.errorMessage}");
+    }
   }
 
   /// Add pending invite teacher
   void addPendingInviteTeacher(TeacherModel teacher) {
-    final updatedTeachers = List<TeacherModel>.from(state.pendingInviteTeachers)
-      ..add(teacher);
-    state = state.copyWith(pendingInviteTeachers: updatedTeachers);
+    // Check if teacher is already in the list to avoid duplicates
+    final existingTeacher =
+        state.pendingInviteTeachers.where((t) => t.id == teacher.id).isNotEmpty;
+
+    if (!existingTeacher) {
+      final updatedTeachers =
+          List<TeacherModel>.from(state.pendingInviteTeachers)..add(teacher);
+      state = state.copyWith(pendingInviteTeachers: updatedTeachers);
+    }
   }
 
   /// Remove pending invite teacher

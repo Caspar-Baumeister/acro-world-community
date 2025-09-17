@@ -112,8 +112,8 @@ class SingleClassBody extends StatelessWidget {
                             .where((e) => e.teacher != null)
                             .map((e) => e.teacher!),
                       ),
-                      isCompact: classTeachers.length > 2,
-                      maxItems: 3,
+                      isCompact: false, // Always use full vertical layout
+                      maxItems: classTeachers.length, // Show all teachers
                     ),
                     const SizedBox(height: 24),
                     const CustomDivider(),

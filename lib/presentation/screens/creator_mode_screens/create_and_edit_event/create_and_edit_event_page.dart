@@ -212,6 +212,7 @@ class _CreateAndEditEventPageState
             totalSteps: pages.length,
             currentStepTitle: stepTitles[eventState.currentPage],
             isLoading: eventState.isLoading,
+            finalStepButtonText: widget.isEditing ? 'Update' : 'Create',
             onBackPressed: eventState.currentPage > 0
                 ? () {
                     ref
