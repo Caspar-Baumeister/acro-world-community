@@ -180,17 +180,6 @@ class ProfileBody extends ConsumerWidget {
                         },
                       ),
 
-                      const SizedBox(height: 12),
-
-                      _buildDangerButton(
-                        context: context,
-                        icon: Icons.delete_forever_rounded,
-                        title: "Delete Account",
-                        onTap: () {
-                          _showDeleteAccountDialog(context, ref);
-                        },
-                      ),
-
                       const SizedBox(height: 24),
 
                       // Version

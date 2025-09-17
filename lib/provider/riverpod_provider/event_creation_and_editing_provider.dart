@@ -406,6 +406,52 @@ class EventCreationAndEditingNotifier
       final countryName = getCountryName(templateClassModel.country);
       print('🔍 TEMPLATE DEBUG - Country name from code: $countryName');
 
+      // Build booking categories and options for state
+      final List<BookingCategoryModel> copiedCategories = [];
+      final List<BookingOption> copiedOptions = [];
+
+      if (classModel.bookingCategories != null) {
+        for (final category in classModel.bookingCategories!) {
+          // Determine category id handling
+          final String newCategoryId = isEditing
+              ? (category.id ?? const Uuid().v4())
+              : const Uuid().v4();
+
+          // Copy category with potentially new id
+          final BookingCategoryModel newCat = BookingCategoryModel(
+            id: newCategoryId,
+            name: category.name,
+            description: category.description,
+            contingent: category.contingent,
+            bookingOptions: [],
+          );
+
+          // Copy options inside
+          final options = category.bookingOptions ?? [];
+          for (final option in options) {
+            final String newOptionId = isEditing
+                ? (option.id ?? const Uuid().v4())
+                : const Uuid().v4();
+            final BookingOption newOpt = BookingOption(
+              id: newOptionId,
+              bookingCategoryId: newCategoryId,
+              title: option.title,
+              subtitle: option.subtitle,
+              price: option.price,
+              discount: option.discount,
+              currency: option.currency,
+            );
+            copiedOptions.add(newOpt);
+            newCat.bookingOptions = [...(newCat.bookingOptions ?? []), newOpt];
+          }
+
+          copiedCategories.add(newCat);
+        }
+      }
+
+      // Prepare teachers list from class for pending invites/owners display
+      final List<TeacherModel> copiedTeachers = classModel.teachers;
+
       state = EventCreationAndEditingState(
         classModel: templateClassModel,
         title: templateClassModel.name ?? '',
@@ -422,7 +468,9 @@ class EventCreationAndEditingNotifier
         isCashAllowed: templateClassModel.isCashAllowed ?? false,
         maxBookingSlots: templateClassModel.maxBookingSlots,
         questions: List<QuestionModel>.from(templateClassModel.questions),
-        bookingCategories: templateClassModel.bookingCategories ?? [],
+        bookingCategories: copiedCategories,
+        bookingOptions: copiedOptions,
+        pendingInviteTeachers: copiedTeachers,
         recurringPatterns: recurringPatternsFromClass,
         countryCode:
             finalCountryCode, // Use final country code (handles both name and code)
