@@ -220,7 +220,9 @@ class _ChartWithAxesPainter extends CustomPainter {
       final value = minValue + (range * i / ySteps);
       final y = chartBottom - (i * chartHeight / ySteps);
       
-      final label = _formatValue(value);
+      // Round the value to get clean step numbers
+      final roundedValue = _roundToNiceNumber(value);
+      final label = _formatValue(roundedValue);
       
       // Skip if we've already used this label
       if (usedLabels.contains(label)) continue;
@@ -305,28 +307,35 @@ class _ChartWithAxesPainter extends CustomPainter {
 
   int _calculateOptimalSteps(double maxValue) {
     // Calculate optimal number of steps based on max value
-    if (maxValue <= 1) return 4; // 0, 0.25, 0.5, 0.75, 1
+    // Always use 5 steps for clean, round numbers
+    if (maxValue <= 1) return 4; // 0, 1 (special case for very small values)
     if (maxValue <= 5) return 5; // 0, 1, 2, 3, 4, 5
     if (maxValue <= 10) return 5; // 0, 2, 4, 6, 8, 10
+    if (maxValue <= 20) return 4; // 0, 5, 10, 15, 20
     if (maxValue <= 50) return 5; // 0, 10, 20, 30, 40, 50
     if (maxValue <= 100) return 5; // 0, 20, 40, 60, 80, 100
     return 5; // Default to 5 steps for larger values
   }
 
+  double _roundToNiceNumber(double value) {
+    // Round to nice, clean numbers for y-axis labels
+    if (value <= 1) return value.round().toDouble();
+    if (value <= 5) return value.round().toDouble();
+    if (value <= 10) return (value / 2).round() * 2.0; // Round to even numbers
+    if (value <= 20) return (value / 5).round() * 5.0; // Round to multiples of 5
+    if (value <= 50) return (value / 10).round() * 10.0; // Round to multiples of 10
+    if (value <= 100) return (value / 20).round() * 20.0; // Round to multiples of 20
+    return (value / 50).round() * 50.0; // Round to multiples of 50 for larger values
+  }
+
   String _formatValue(double value) {
-    // Round to reasonable step sizes for better y-axis labels
+    // Always return whole numbers for y-axis labels
     if (value >= 1000000) {
-      return '${(value / 1000000).toStringAsFixed(1)}M';
+      return '${(value / 1000000).round()}M';
     } else if (value >= 1000) {
-      return '${(value / 1000).toStringAsFixed(1)}K';
-    } else if (value >= 100) {
-      return value.round().toString();
-    } else if (value >= 10) {
-      return value.round().toString();
-    } else if (value >= 1) {
-      return value.toStringAsFixed(1);
+      return '${(value / 1000).round()}K';
     } else {
-      return value.toStringAsFixed(1);
+      return value.round().toString();
     }
   }
 
