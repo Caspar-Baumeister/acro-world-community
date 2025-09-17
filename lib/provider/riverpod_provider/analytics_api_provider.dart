@@ -300,6 +300,62 @@ List<ChartDataPoint> _createChartDataPoints(
   String timePeriod,
 ) {
   final data = <ChartDataPoint>[];
+  final now = DateTime.now();
+  
+  // For "this_year", ensure all 12 months are shown
+  if (timePeriod == 'this_year') {
+    for (int i = 1; i <= 12; i++) {
+      final monthName = _getMonthName(i);
+      final value = groupedData[monthName] is int 
+          ? groupedData[monthName]?.toDouble() ?? 0.0 
+          : groupedData[monthName]?.toDouble() ?? 0.0;
+      
+      data.add(ChartDataPoint(
+        label: monthName,
+        value: value,
+        date: DateTime(now.year, i, 1),
+      ));
+    }
+    return data;
+  }
+  
+  // For "this_month", ensure all days of the month are shown
+  if (timePeriod == 'this_month') {
+    final daysInMonth = DateTime(now.year, now.month + 1, 0).day;
+    for (int i = 1; i <= daysInMonth; i++) {
+      final dayKey = i.toString();
+      final value = groupedData[dayKey] is int 
+          ? groupedData[dayKey]?.toDouble() ?? 0.0 
+          : groupedData[dayKey]?.toDouble() ?? 0.0;
+      
+      data.add(ChartDataPoint(
+        label: dayKey,
+        value: value,
+        date: DateTime(now.year, now.month, i),
+      ));
+    }
+    return data;
+  }
+  
+  // For "last_7_days", ensure all 7 days are shown
+  if (timePeriod == 'last_7_days') {
+    for (int i = 6; i >= 0; i--) {
+      final day = now.subtract(Duration(days: i));
+      final dayLabel = _getDayLabel(day);
+      final value = groupedData[dayLabel] is int 
+          ? groupedData[dayLabel]?.toDouble() ?? 0.0 
+          : groupedData[dayLabel]?.toDouble() ?? 0.0;
+      
+      data.add(ChartDataPoint(
+        label: dayLabel,
+        value: value,
+        date: day,
+      ));
+    }
+    return data;
+  }
+  
+  // For other time periods, use the existing logic
   final sortedKeys = groupedData.keys.toList()..sort();
   
   for (final key in sortedKeys) {
