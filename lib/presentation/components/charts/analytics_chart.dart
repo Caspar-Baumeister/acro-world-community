@@ -108,7 +108,7 @@ class AnalyticsChart extends StatelessWidget {
     final maxValue =
         dataPoints.map((e) => e.value).reduce((a, b) => a > b ? a : b);
     final minValue = 0.0; // Always start y-axis at 0
-    
+
     // If all values are 0, set a reasonable range for better visualization
     final adjustedMaxValue = maxValue == 0.0 ? 10.0 : maxValue;
     final range = adjustedMaxValue - minValue;
@@ -269,10 +269,10 @@ class _ChartWithAxesPainter extends CustomPainter {
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
       final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-      
+
       // If all values are 0, position line at the bottom (y-axis = 0)
-      final normalizedValue = point.value == 0.0 && maxValue == 0.0 
-          ? 0.0 
+      final normalizedValue = point.value == 0.0 && maxValue == 0.0
+          ? 0.0
           : (range > 0 ? (point.value - minValue) / range : 0.5);
       final y = chartBottom - (normalizedValue * chartHeight);
 
@@ -304,10 +304,10 @@ class _ChartWithAxesPainter extends CustomPainter {
     for (int i = 0; i < dataPoints.length; i++) {
       final point = dataPoints[i];
       final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-      
+
       // If all values are 0, position points at the bottom (y-axis = 0)
-      final normalizedValue = point.value == 0.0 && maxValue == 0.0 
-          ? 0.0 
+      final normalizedValue = point.value == 0.0 && maxValue == 0.0
+          ? 0.0
           : (range > 0 ? (point.value - minValue) / range : 0.5);
       final y = chartBottom - (normalizedValue * chartHeight);
 

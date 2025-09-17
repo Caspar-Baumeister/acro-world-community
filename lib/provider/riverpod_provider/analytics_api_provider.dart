@@ -192,8 +192,10 @@ List<ChartDataPoint> _groupRevenueByDate(
     if (bookingDate.isAfter(dateRange['start']!) &&
         bookingDate.isBefore(dateRange['end']!)) {
       final dateKey = _getDateKey(bookingDate, timePeriod);
-      final amount = booking.amount; // Already a double
-      revenueByDate[dateKey] = (revenueByDate[dateKey] ?? 0.0) + amount;
+      final amountCents = booking.amount; // cents from API
+      final amountEuros =
+          (amountCents is int ? amountCents.toDouble() : amountCents) / 100.0;
+      revenueByDate[dateKey] = (revenueByDate[dateKey] ?? 0.0) + amountEuros;
     }
   }
 
@@ -207,8 +209,8 @@ List<ChartDataPoint> _generatePageViewsData(String timePeriod) {
 
   switch (timePeriod) {
     case 'today':
-      // 4-hour intervals for today (12 AM to 8 PM)
-      for (int hour = 0; hour <= 20; hour += 4) {
+      // 4-hour intervals for today (12 AM to 12 PM)
+      for (int hour = 0; hour <= 12; hour += 4) {
         final hourLabel = _formatHourAmPm(hour);
         data.add(ChartDataPoint(
           label: hourLabel,
@@ -218,9 +220,9 @@ List<ChartDataPoint> _generatePageViewsData(String timePeriod) {
       }
       break;
     case 'yesterday':
-      // 4-hour intervals for yesterday (12 AM to 8 PM)
+      // 4-hour intervals for yesterday (12 AM to 12 PM)
       final yesterday = now.subtract(const Duration(days: 1));
-      for (int hour = 0; hour <= 20; hour += 4) {
+      for (int hour = 0; hour <= 12; hour += 4) {
         final hourLabel = _formatHourAmPm(hour);
         data.add(ChartDataPoint(
           label: hourLabel,
@@ -241,13 +243,15 @@ List<ChartDataPoint> _generatePageViewsData(String timePeriod) {
       }
       break;
     case 'last_30_days':
-      // Weekly data for last 30 days
-      for (int i = 4; i >= 0; i--) {
-        final week = now.subtract(Duration(days: i * 7));
+      // 6-day ticks across last 30 days using dd.MM labels
+      final start = DateTime(now.year, now.month, now.day)
+          .subtract(const Duration(days: 30));
+      for (int i = 0; i <= 30; i += 6) {
+        final tickDate = start.add(Duration(days: i));
         data.add(ChartDataPoint(
-          label: 'Week ${5 - i}',
-          value: 500 + (4 - i) * 100 + (4 - i) % 2 * 200,
-          date: week,
+          label: _formatDayMonth(tickDate),
+          value: 500 + i * 5, // simple variation
+          date: tickDate,
         ));
       }
       break;
@@ -301,12 +305,14 @@ String _getDateKey(DateTime date, String timePeriod) {
     case 'last_7_days':
       return _getDayLabel(date);
     case 'last_30_days':
-      // Group by weeks
-      final daysSinceStart = date
-          .difference(DateTime.now().subtract(const Duration(days: 30)))
-          .inDays;
-      final weekNumber = (daysSinceStart ~/ 7) + 1;
-      return 'Week $weekNumber';
+      // Group into 6 buckets over the last 30 days with labels as start dates (dd.MM)
+      final now = DateTime.now();
+      final start = DateTime(now.year, now.month, now.day)
+          .subtract(const Duration(days: 30));
+      final daysFromStart = date.difference(start).inDays.clamp(0, 30);
+      final bucketIndex = (daysFromStart ~/ 6).clamp(0, 5);
+      final bucketStartDate = start.add(Duration(days: bucketIndex * 6));
+      return _formatDayMonth(bucketStartDate);
     case 'this_month':
       return '${date.day}';
     case 'this_year':
@@ -326,9 +332,9 @@ List<ChartDataPoint> _createChartDataPoints(
   final data = <ChartDataPoint>[];
   final now = DateTime.now();
 
-  // For "today", show 4-hour intervals from 12 AM to 8 PM
+  // For "today", show 4-hour intervals from 12 AM to 12 PM
   if (timePeriod == 'today') {
-    for (int hour = 0; hour <= 20; hour += 4) {
+    for (int hour = 0; hour <= 12; hour += 4) {
       final hourLabel = _formatHourAmPm(hour);
       final value = groupedData[hourLabel] is int
           ? groupedData[hourLabel]?.toDouble() ?? 0.0
@@ -343,10 +349,10 @@ List<ChartDataPoint> _createChartDataPoints(
     return data;
   }
 
-  // For "yesterday", show 4-hour intervals from 12 AM to 8 PM
+  // For "yesterday", show 4-hour intervals from 12 AM to 12 PM
   if (timePeriod == 'yesterday') {
     final yesterday = now.subtract(const Duration(days: 1));
-    for (int hour = 0; hour <= 20; hour += 4) {
+    for (int hour = 0; hour <= 12; hour += 4) {
       final hourLabel = _formatHourAmPm(hour);
       final value = groupedData[hourLabel] is int
           ? groupedData[hourLabel]?.toDouble() ?? 0.0
@@ -379,19 +385,21 @@ List<ChartDataPoint> _createChartDataPoints(
     return data;
   }
 
-  // For "last_30_days", show weekly intervals
+  // For "last_30_days", show fixed dates every 6 days ending today
   if (timePeriod == 'last_30_days') {
-    for (int i = 4; i >= 0; i--) {
-      final week = now.subtract(Duration(days: i * 7));
-      final weekLabel = 'Week ${5 - i}';
-      final value = groupedData[weekLabel] is int
-          ? groupedData[weekLabel]?.toDouble() ?? 0.0
-          : groupedData[weekLabel]?.toDouble() ?? 0.0;
+    final start = DateTime(now.year, now.month, now.day)
+        .subtract(const Duration(days: 30));
+    for (int i = 0; i <= 30; i += 6) {
+      final tickDate = start.add(Duration(days: i));
+      final label = _formatDayMonth(tickDate);
+      final value = groupedData[label] is int
+          ? groupedData[label]?.toDouble() ?? 0.0
+          : groupedData[label]?.toDouble() ?? 0.0;
 
       data.add(ChartDataPoint(
-        label: weekLabel,
+        label: label,
         value: value,
-        date: week,
+        date: tickDate,
       ));
     }
     return data;
@@ -534,4 +542,10 @@ String _getMonthName(int month) {
     default:
       return "Month";
   }
+}
+
+String _formatDayMonth(DateTime date) {
+  final dd = date.day.toString().padLeft(2, '0');
+  final mm = date.month.toString().padLeft(2, '0');
+  return '$dd.$mm';
 }
