@@ -1,7 +1,7 @@
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/events_search_and_filter.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
@@ -72,7 +72,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
   @override
   Widget build(BuildContext context) {
     final eventsState = ref.watch(teacherEventsProvider);
-    
+
     return Column(
       children: [
         // Search and filter
@@ -122,7 +122,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
     }
 
     final filteredEvents = _getFilteredEvents(eventsState.myCreatedEvents);
-    
+
     if (filteredEvents.isEmpty) {
       return _buildEmptyState(eventsState);
     }
@@ -143,10 +143,13 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
     );
   }
 
-  Widget _buildEventsList(TeacherEventsState ev, List<ClassModel> filteredEvents) {
+  Widget _buildEventsList(
+      TeacherEventsState ev, List<ClassModel> filteredEvents) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: filteredEvents.length + (ev.canFetchMoreMyEvents ? 1 : 0) + 1, // +1 for bottom padding
+      itemCount: filteredEvents.length +
+          (ev.canFetchMoreMyEvents ? 1 : 0) +
+          1, // +1 for bottom padding
       itemBuilder: (ctx, i) {
         if (i == filteredEvents.length) {
           // Load more button
@@ -161,8 +164,8 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
                   child: Text(
                     "Load more",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
               ),
@@ -170,12 +173,12 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
           }
           return const SizedBox.shrink();
         }
-        
+
         if (i == filteredEvents.length + (ev.canFetchMoreMyEvents ? 1 : 0)) {
           // Bottom padding for floating button
           return const SizedBox(height: 80);
         }
-        
+
         final cls = filteredEvents[i];
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
@@ -193,28 +196,22 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
       // Search filter
       if (_searchQuery.isNotEmpty) {
         final query = _searchQuery.toLowerCase();
-        final matchesSearch = event.name?.toLowerCase().contains(query) == true ||
-            event.locationName?.toLowerCase().contains(query) == true ||
-            event.city?.toLowerCase().contains(query) == true ||
-            event.country?.toLowerCase().contains(query) == true;
+        final matchesSearch =
+            event.name?.toLowerCase().contains(query) == true ||
+                event.locationName?.toLowerCase().contains(query) == true ||
+                event.city?.toLowerCase().contains(query) == true ||
+                event.country?.toLowerCase().contains(query) == true;
         if (!matchesSearch) return false;
       }
-      
+
       // Status filter - using amountUpcomingEvents as a proxy for active status
-      switch (_selectedFilter) {
-        case 'active':
-          return (event.amountUpcomingEvents ?? 0) > 0;
-        case 'draft':
-          return (event.amountUpcomingEvents ?? 0) == 0;
-        case 'completed':
-          // TODO: Implement completed logic based on end date
-          return false;
-        case 'all':
-        default:
-          return true;
+      // Only Active or All
+      if (_selectedFilter == 'active') {
+        return (event.amountUpcomingEvents ?? 0) > 0;
       }
+      return true; // 'all'
     }).toList();
-    
+
     return filtered;
   }
 
@@ -251,7 +248,9 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
           ),
           const SizedBox(height: 16),
           ModernButton(
-            text: _searchQuery.isNotEmpty || _selectedFilter != 'all' ? "Clear Filters" : "Refresh",
+            text: _searchQuery.isNotEmpty || _selectedFilter != 'all'
+                ? "Clear Filters"
+                : "Refresh",
             onPressed: () {
               if (_searchQuery.isNotEmpty || _selectedFilter != 'all') {
                 setState(() {

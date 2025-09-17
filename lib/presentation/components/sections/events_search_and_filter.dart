@@ -1,5 +1,6 @@
-import 'package:acroworld/presentation/components/input/modern_search_bar.dart' hide ModernFilterChip;
 import 'package:acroworld/presentation/components/filters/modern_filter_chip.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart'
+    hide ModernFilterChip;
 import 'package:flutter/material.dart';
 
 class EventsSearchAndFilter extends StatefulWidget {
@@ -77,20 +78,7 @@ class _EventsSearchAndFilterState extends State<EventsSearchAndFilter> {
                   onTap: () => widget.onFilterChanged("active"),
                   icon: Icons.event,
                 ),
-                const SizedBox(width: 8),
-                ModernFilterChip(
-                  label: "Draft",
-                  isSelected: widget.selectedFilter == "draft",
-                  onTap: () => widget.onFilterChanged("draft"),
-                  icon: Icons.edit,
-                ),
-                const SizedBox(width: 8),
-                ModernFilterChip(
-                  label: "Completed",
-                  isSelected: widget.selectedFilter == "completed",
-                  onTap: () => widget.onFilterChanged("completed"),
-                  icon: Icons.check_circle,
-                ),
+                // Removed Draft and Completed per requirement: only Active or All
               ],
             ),
           ),
