@@ -204,27 +204,27 @@ List<ChartDataPoint> _groupRevenueByDate(
 List<ChartDataPoint> _generatePageViewsData(String timePeriod) {
   final now = DateTime.now();
   final data = <ChartDataPoint>[];
-  
+
   switch (timePeriod) {
     case 'today':
-      // 2-hour intervals for today (00:00 to 22:00)
-      for (int hour = 0; hour <= 22; hour += 2) {
-        final hourLabel = '${hour.toString().padLeft(2, '0')}:00';
+      // 4-hour intervals for today (12 AM to 8 PM)
+      for (int hour = 0; hour <= 20; hour += 4) {
+        final hourLabel = _formatHourAmPm(hour);
         data.add(ChartDataPoint(
           label: hourLabel,
-          value: 50 + (hour ~/ 2) * 10 + (hour ~/ 2) % 3 * 20,
+          value: 50 + (hour ~/ 4) * 12 + (hour ~/ 4) % 3 * 20,
           date: DateTime(now.year, now.month, now.day, hour),
         ));
       }
       break;
     case 'yesterday':
-      // 2-hour intervals for yesterday (00:00 to 22:00)
+      // 4-hour intervals for yesterday (12 AM to 8 PM)
       final yesterday = now.subtract(const Duration(days: 1));
-      for (int hour = 0; hour <= 22; hour += 2) {
-        final hourLabel = '${hour.toString().padLeft(2, '0')}:00';
+      for (int hour = 0; hour <= 20; hour += 4) {
+        final hourLabel = _formatHourAmPm(hour);
         data.add(ChartDataPoint(
           label: hourLabel,
-          value: 40 + (hour ~/ 2) * 8 + (hour ~/ 2) % 2 * 15,
+          value: 40 + (hour ~/ 4) * 10 + (hour ~/ 4) % 2 * 15,
           date: DateTime(yesterday.year, yesterday.month, yesterday.day, hour),
         ));
       }
@@ -285,7 +285,7 @@ List<ChartDataPoint> _generatePageViewsData(String timePeriod) {
       }
       break;
   }
-  
+
   return data;
 }
 
@@ -294,14 +294,17 @@ String _getDateKey(DateTime date, String timePeriod) {
   switch (timePeriod) {
     case 'today':
     case 'yesterday':
-      // Group by 2-hour intervals: 0-1:59 -> 00:00, 2-3:59 -> 02:00, etc.
-      final hour = (date.hour ~/ 2) * 2;
-      return '${hour.toString().padLeft(2, '0')}:00';
+      // Group by 4-hour intervals: 0-3:59 -> 12 AM, 4-7:59 -> 4 AM, etc.
+      final bucketStartHour = (date.hour ~/ 4) * 4;
+      final label = _formatHourAmPm(bucketStartHour);
+      return label;
     case 'last_7_days':
       return _getDayLabel(date);
     case 'last_30_days':
       // Group by weeks
-      final daysSinceStart = date.difference(DateTime.now().subtract(const Duration(days: 30))).inDays;
+      final daysSinceStart = date
+          .difference(DateTime.now().subtract(const Duration(days: 30)))
+          .inDays;
       final weekNumber = (daysSinceStart ~/ 7) + 1;
       return 'Week $weekNumber';
     case 'this_month':
@@ -323,10 +326,10 @@ List<ChartDataPoint> _createChartDataPoints(
   final data = <ChartDataPoint>[];
   final now = DateTime.now();
 
-  // For "today", show 2-hour intervals from 12 AM to 10 PM
+  // For "today", show 4-hour intervals from 12 AM to 8 PM
   if (timePeriod == 'today') {
-    for (int hour = 0; hour <= 22; hour += 2) {
-      final hourLabel = '${hour.toString().padLeft(2, '0')}:00';
+    for (int hour = 0; hour <= 20; hour += 4) {
+      final hourLabel = _formatHourAmPm(hour);
       final value = groupedData[hourLabel] is int
           ? groupedData[hourLabel]?.toDouble() ?? 0.0
           : groupedData[hourLabel]?.toDouble() ?? 0.0;
@@ -340,11 +343,11 @@ List<ChartDataPoint> _createChartDataPoints(
     return data;
   }
 
-  // For "yesterday", show 2-hour intervals from 12 AM to 10 PM
+  // For "yesterday", show 4-hour intervals from 12 AM to 8 PM
   if (timePeriod == 'yesterday') {
     final yesterday = now.subtract(const Duration(days: 1));
-    for (int hour = 0; hour <= 22; hour += 2) {
-      final hourLabel = '${hour.toString().padLeft(2, '0')}:00';
+    for (int hour = 0; hour <= 20; hour += 4) {
+      final hourLabel = _formatHourAmPm(hour);
       final value = groupedData[hourLabel] is int
           ? groupedData[hourLabel]?.toDouble() ?? 0.0
           : groupedData[hourLabel]?.toDouble() ?? 0.0;
@@ -460,6 +463,13 @@ List<ChartDataPoint> _createChartDataPoints(
   }
 
   return data;
+}
+
+String _formatHourAmPm(int hour24) {
+  final int h = hour24 % 24;
+  final int display = h == 0 ? 12 : (h > 12 ? h - 12 : h);
+  final String period = h < 12 ? 'AM' : 'PM';
+  return '${display.toString()}:00 $period';
 }
 
 /// Get day label
