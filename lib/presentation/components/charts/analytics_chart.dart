@@ -6,6 +6,7 @@ class AnalyticsChart extends StatelessWidget {
   final String subtitle;
   final List<ChartDataPoint> dataPoints;
   final Color primaryColor;
+  final List<AxisTick>? xTicks;
 
   const AnalyticsChart({
     super.key,
@@ -14,6 +15,7 @@ class AnalyticsChart extends StatelessWidget {
     required this.subtitle,
     required this.dataPoints,
     this.primaryColor = Colors.blue,
+    this.xTicks,
   });
 
   @override
@@ -121,6 +123,7 @@ class AnalyticsChart extends StatelessWidget {
         range: range,
         primaryColor: primaryColor,
         colorScheme: colorScheme,
+        xTicks: xTicks,
       ),
       size: Size.infinite,
     );
@@ -159,6 +162,7 @@ class _ChartWithAxesPainter extends CustomPainter {
   final double range;
   final Color primaryColor;
   final ColorScheme colorScheme;
+  final List<AxisTick>? xTicks;
 
   _ChartWithAxesPainter({
     required this.dataPoints,
@@ -167,6 +171,7 @@ class _ChartWithAxesPainter extends CustomPainter {
     required this.range,
     required this.primaryColor,
     required this.colorScheme,
+    this.xTicks,
   });
 
   @override
@@ -244,22 +249,39 @@ class _ChartWithAxesPainter extends CustomPainter {
       );
     }
 
-    // Draw X-axis labels
-    for (int i = 0; i < dataPoints.length; i++) {
-      final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
-
-      textPainter.text = TextSpan(
-        text: dataPoints[i].label,
-        style: TextStyle(
-          color: colorScheme.onSurfaceVariant,
-          fontSize: 10,
-        ),
-      );
-      textPainter.layout();
-      textPainter.paint(
-        canvas,
-        Offset(x - textPainter.width / 2, chartBottom + 5),
-      );
+    // Draw X-axis labels (use decoupled ticks if provided)
+    if (xTicks != null && xTicks!.isNotEmpty) {
+      for (final tick in xTicks!) {
+        final x = chartLeft + (tick.position.clamp(0.0, 1.0) * chartWidth);
+        textPainter.text = TextSpan(
+          text: tick.label,
+          style: TextStyle(
+            color: colorScheme.onSurfaceVariant,
+            fontSize: 10,
+          ),
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(x - textPainter.width / 2, chartBottom + 5),
+        );
+      }
+    } else {
+      for (int i = 0; i < dataPoints.length; i++) {
+        final x = chartLeft + (i * chartWidth / (dataPoints.length - 1));
+        textPainter.text = TextSpan(
+          text: dataPoints[i].label,
+          style: TextStyle(
+            color: colorScheme.onSurfaceVariant,
+            fontSize: 10,
+          ),
+        );
+        textPainter.layout();
+        textPainter.paint(
+          canvas,
+          Offset(x - textPainter.width / 2, chartBottom + 5),
+        );
+      }
     }
 
     // Draw chart
@@ -370,4 +392,11 @@ class _ChartWithAxesPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
+}
+
+class AxisTick {
+  final double position; // 0.0..1.0
+  final String label;
+
+  const AxisTick({required this.position, required this.label});
 }

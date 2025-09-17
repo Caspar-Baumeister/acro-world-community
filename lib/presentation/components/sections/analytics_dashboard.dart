@@ -65,6 +65,7 @@ class AnalyticsDashboard extends ConsumerWidget {
   Widget _buildChart(AnalyticsState analyticsState, List<ChartDataPoint> dataPoints) {
     final total = dataPoints.isEmpty ? 0.0 : dataPoints.map((e) => e.value).reduce((a, b) => a + b);
     final value = _formatValue(total, analyticsState.selectedMetric);
+    final ticks = _buildTicks(analyticsState.selectedTimePeriod, dataPoints);
     
     return AnalyticsChart(
       title: analyticsState.currentTitle,
@@ -72,7 +73,57 @@ class AnalyticsDashboard extends ConsumerWidget {
       subtitle: analyticsState.currentSubtitle,
       dataPoints: dataPoints,
       primaryColor: analyticsState.currentColor,
+      xTicks: ticks,
     );
+  }
+
+  List<AxisTick> _buildTicks(String period, List<ChartDataPoint> points) {
+    if (points.isEmpty) return [];
+    final n = points.length - 1;
+    double posAtIndex(int idx) => n == 0 ? 0.0 : idx / n;
+
+    switch (period) {
+      case 'today':
+      case 'yesterday':
+        // 4 ticks at indices representing 12 AM, 8 AM, 4 PM, 12 PM over a 24h scale → positions 0, 8/24, 16/24, 12/24
+        return [
+          AxisTick(position: 0.0, label: '12 AM'),
+          AxisTick(position: 8 / 24, label: '8 AM'),
+          AxisTick(position: 16 / 24, label: '4 PM'),
+          AxisTick(position: 12 / 24, label: '12 PM'),
+        ];
+      case 'last_7_days':
+        // 7 ticks for each day label already in points
+        return List.generate(points.length, (i) => AxisTick(position: posAtIndex(i), label: points[i].label));
+      case 'last_30_days':
+        // 6 ticks evenly spaced: indices 0,6,12,18,24,30
+        final indices = [0, 6, 12, 18, 24, 30].where((i) => i <= n).toList();
+        return indices
+            .map((i) => AxisTick(position: posAtIndex(i), label: points[i].label))
+            .toList();
+      case 'this_month':
+        // 1,7,14,21,last
+        final idx1 = 0;
+        final idx7 = points.length > 6 ? 6 : n;
+        final idx14 = points.length > 13 ? 13 : n;
+        final idx21 = points.length > 20 ? 20 : n;
+        final idxLast = n;
+        final indices = {idx1, idx7, idx14, idx21, idxLast}.toList()..sort();
+        return indices.map((i) => AxisTick(position: posAtIndex(i), label: points[i].label)).toList();
+      case 'this_year':
+        // Jan, Apr, Jul, Oct, Dec → indices 0,3,6,9,11 if available
+        final base = [0, 3, 6, 9, 11].where((i) => i <= n).toList();
+        return base.map((i) => AxisTick(position: posAtIndex(i), label: points[i].label)).toList();
+      case 'all_time':
+        // 4 evenly spaced year ticks
+        final count = 4;
+        return List.generate(count, (i) {
+          final idx = ((n) * (i / (count - 1))).round();
+          return AxisTick(position: posAtIndex(idx), label: points[idx].label);
+        });
+      default:
+        return [];
+    }
   }
 
   Widget _buildLoadingChart(AnalyticsState analyticsState) {
