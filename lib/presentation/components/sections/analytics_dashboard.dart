@@ -20,18 +20,20 @@ class AnalyticsDashboard extends ConsumerWidget {
         // Time Period Dropdown
         TimePeriodDropdown(
           selectedPeriod: analyticsState.selectedTimePeriod,
-          onPeriodChanged: (period) => analyticsNotifier.updateSelectedTimePeriod(period),
+          onPeriodChanged: (period) =>
+              analyticsNotifier.updateSelectedTimePeriod(period),
         ),
-        
+
         // Analytics Chart
         _buildAnalyticsChart(ref, analyticsState),
-        
+
         // Filter Section
         AnalyticsFilterSection(
           selectedMetric: analyticsState.selectedMetric,
-          onMetricChanged: (metric) => analyticsNotifier.updateSelectedMetric(metric),
+          onMetricChanged: (metric) =>
+              analyticsNotifier.updateSelectedMetric(metric),
         ),
-        
+
         const SizedBox(height: 16),
       ],
     );
@@ -40,33 +42,46 @@ class AnalyticsDashboard extends ConsumerWidget {
   Widget _buildAnalyticsChart(WidgetRef ref, AnalyticsState analyticsState) {
     switch (analyticsState.selectedMetric) {
       case "page_views":
-        return ref.watch(pageViewsAnalyticsProvider(analyticsState.selectedTimePeriod)).when(
-          data: (dataPoints) => _buildChart(analyticsState, dataPoints),
-          loading: () => _buildLoadingChart(analyticsState),
-          error: (error, stack) => _buildErrorChart(analyticsState, error.toString()),
-        );
+        return ref
+            .watch(
+                pageViewsAnalyticsProvider(analyticsState.selectedTimePeriod))
+            .when(
+              data: (dataPoints) => _buildChart(analyticsState, dataPoints),
+              loading: () => _buildLoadingChart(analyticsState),
+              error: (error, stack) =>
+                  _buildErrorChart(analyticsState, error.toString()),
+            );
       case "revenue":
-        return ref.watch(revenueAnalyticsProvider(analyticsState.selectedTimePeriod)).when(
-          data: (dataPoints) => _buildChart(analyticsState, dataPoints),
-          loading: () => _buildLoadingChart(analyticsState),
-          error: (error, stack) => _buildErrorChart(analyticsState, error.toString()),
-        );
+        return ref
+            .watch(revenueAnalyticsProvider(analyticsState.selectedTimePeriod))
+            .when(
+              data: (dataPoints) => _buildChart(analyticsState, dataPoints),
+              loading: () => _buildLoadingChart(analyticsState),
+              error: (error, stack) =>
+                  _buildErrorChart(analyticsState, error.toString()),
+            );
       case "bookings":
-        return ref.watch(bookingsAnalyticsProvider(analyticsState.selectedTimePeriod)).when(
-          data: (dataPoints) => _buildChart(analyticsState, dataPoints),
-          loading: () => _buildLoadingChart(analyticsState),
-          error: (error, stack) => _buildErrorChart(analyticsState, error.toString()),
-        );
+        return ref
+            .watch(bookingsAnalyticsProvider(analyticsState.selectedTimePeriod))
+            .when(
+              data: (dataPoints) => _buildChart(analyticsState, dataPoints),
+              loading: () => _buildLoadingChart(analyticsState),
+              error: (error, stack) =>
+                  _buildErrorChart(analyticsState, error.toString()),
+            );
       default:
         return _buildChart(analyticsState, []);
     }
   }
 
-  Widget _buildChart(AnalyticsState analyticsState, List<ChartDataPoint> dataPoints) {
-    final total = dataPoints.isEmpty ? 0.0 : dataPoints.map((e) => e.value).reduce((a, b) => a + b);
+  Widget _buildChart(
+      AnalyticsState analyticsState, List<ChartDataPoint> dataPoints) {
+    final total = dataPoints.isEmpty
+        ? 0.0
+        : dataPoints.map((e) => e.value).reduce((a, b) => a + b);
     final value = _formatValue(total, analyticsState.selectedMetric);
     final ticks = _buildTicks(analyticsState.selectedTimePeriod, dataPoints);
-    
+
     return AnalyticsChart(
       title: analyticsState.currentTitle,
       value: value,
@@ -86,20 +101,23 @@ class AnalyticsDashboard extends ConsumerWidget {
       case 'today':
       case 'yesterday':
         // 4 ticks at indices representing 12 AM, 8 AM, 4 PM, 12 PM over a 24h scale → positions 0, 8/24, 16/24, 12/24
+        // Show last label at the end of the axis (1.0) instead of midpoint
         return [
           AxisTick(position: 0.0, label: '12 AM'),
           AxisTick(position: 8 / 24, label: '8 AM'),
           AxisTick(position: 16 / 24, label: '4 PM'),
-          AxisTick(position: 12 / 24, label: '12 PM'),
+          AxisTick(position: 1.0, label: '12 PM'),
         ];
       case 'last_7_days':
         // 7 ticks for each day label already in points
-        return List.generate(points.length, (i) => AxisTick(position: posAtIndex(i), label: points[i].label));
+        return List.generate(points.length,
+            (i) => AxisTick(position: posAtIndex(i), label: points[i].label));
       case 'last_30_days':
         // 6 ticks evenly spaced: indices 0,6,12,18,24,30
         final indices = [0, 6, 12, 18, 24, 30].where((i) => i <= n).toList();
         return indices
-            .map((i) => AxisTick(position: posAtIndex(i), label: points[i].label))
+            .map((i) =>
+                AxisTick(position: posAtIndex(i), label: points[i].label))
             .toList();
       case 'this_month':
         // 1,7,14,21,last
@@ -109,11 +127,17 @@ class AnalyticsDashboard extends ConsumerWidget {
         final idx21 = points.length > 20 ? 20 : n;
         final idxLast = n;
         final indices = {idx1, idx7, idx14, idx21, idxLast}.toList()..sort();
-        return indices.map((i) => AxisTick(position: posAtIndex(i), label: points[i].label)).toList();
+        return indices
+            .map((i) =>
+                AxisTick(position: posAtIndex(i), label: points[i].label))
+            .toList();
       case 'this_year':
         // Jan, Apr, Jul, Oct, Dec → indices 0,3,6,9,11 if available
         final base = [0, 3, 6, 9, 11].where((i) => i <= n).toList();
-        return base.map((i) => AxisTick(position: posAtIndex(i), label: points[i].label)).toList();
+        return base
+            .map((i) =>
+                AxisTick(position: posAtIndex(i), label: points[i].label))
+            .toList();
       case 'all_time':
         // 4 evenly spaced year ticks
         final count = 4;
