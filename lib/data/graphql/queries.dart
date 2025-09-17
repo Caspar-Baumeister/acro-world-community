@@ -441,6 +441,13 @@ query getClassById(\$url_slug: String!) {
 }
  """);
 
+  // Check if a class url slug is available
+  static final isSlugAvailable = gql("""
+query IsSlugAvailable(\$slug: String!) {
+  classes(where: {url_slug: {_eq: \$slug}}) { id }
+}
+""");
+
   static final isClassFavorited = gql("""
 query isClassFavorited(\$class_id: uuid!, \$user_id: uuid!) {
    class_favorits(where: {user_id: {_eq: \$user_id}}, class_id: {_eq: \$class_id}}) {

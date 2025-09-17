@@ -61,6 +61,23 @@ class ClassesRepository {
     }
   }
 
+  // Check if a url slug is already taken (returns true if available)
+  Future<bool> isSlugAvailable(String slug) async {
+    final graphQLClient = GraphQLClientSingleton().client;
+    final options = QueryOptions(
+      document: Queries.isSlugAvailable,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"slug": slug},
+    );
+    final result = await graphQLClient.query(options);
+    if (result.hasException) {
+      throw Exception(
+          'Failed to check slug availability: ${result.exception?.raw.toString()}');
+    }
+    final List classes = (result.data?['classes'] as List?) ?? [];
+    return classes.isEmpty; // available if none found
+  }
+
   // Fetches classes with teacher privileges for displaying list of classes
   Future<Map<String, dynamic>> getClassesLazyAsTeacher(
       int limit, int offset, Map where) async {

@@ -501,9 +501,23 @@ class EventCreationAndEditingNotifier
 
   /// Check slug availability (simplified version)
   Future<void> checkSlugAvailability() async {
-    // TODO: Implement actual slug availability check
-    // For now, just set as valid
-    state = state.copyWith(isSlugValid: true, isSlugAvailable: true);
+    final slug = state.slug.trim();
+    // Basic format validation: lowercase letters, numbers, hyphens
+    final isValid = RegExp(r'^[a-z0-9-]+$').hasMatch(slug) && slug.isNotEmpty;
+    if (!isValid) {
+      state = state.copyWith(isSlugValid: false, isSlugAvailable: null);
+      return;
+    }
+
+    try {
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+      final available = await repository.isSlugAvailable(slug);
+      state = state.copyWith(isSlugValid: true, isSlugAvailable: available);
+    } catch (e) {
+      CustomErrorHandler.logError('Slug availability check failed: $e');
+      state = state.copyWith(isSlugValid: true, isSlugAvailable: null);
+    }
   }
 
   /// Clear slug validation state
