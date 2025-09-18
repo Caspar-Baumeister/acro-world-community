@@ -159,13 +159,15 @@ class ClassOwner {
 class ClassTeachers {
   TeacherModel? teacher;
   bool? isOwner;
+  bool? hasAccepted;
 
-  ClassTeachers({this.teacher, this.isOwner});
+  ClassTeachers({this.teacher, this.isOwner, this.hasAccepted});
 
   ClassTeachers.fromJson(Map<String, dynamic> json) {
     teacher =
         json['teacher'] != null ? TeacherModel.fromJson(json['teacher']) : null;
     isOwner = json['is_owner'];
+    hasAccepted = json['has_accepted'];
   }
 }
 

@@ -296,6 +296,7 @@ query userBookings {
             teacher {
               name
             }
+            has_accepted
           }
         }
       }

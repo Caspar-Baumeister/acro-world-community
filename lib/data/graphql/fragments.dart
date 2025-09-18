@@ -109,6 +109,7 @@ class Fragments {
           $teacherFragmentAllInfo
         }
         is_owner
+        has_accepted
       }
       class_owners {
         teacher {
@@ -160,6 +161,7 @@ class Fragments {
           $teacherFragmentLazy
         }
         is_owner
+        has_accepted
       }
       class_levels {
         level {
