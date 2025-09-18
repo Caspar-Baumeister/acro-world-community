@@ -12,6 +12,26 @@ class ClassesRepository {
 
   ClassesRepository({required this.apiService});
 
+  // Get count of pending invites for a teacher user (by user_id)
+  Future<int?> getPendingInvitesCount(String userId) async {
+    final queryOptions = QueryOptions(
+      document: Queries.getPendingTeacherInvitesCount,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        'user_id': userId,
+      },
+    );
+
+    final client = apiService.client;
+    final result = await client.query(queryOptions);
+    if (result.hasException) {
+      return 0;
+    }
+    return result.data?['class_teachers_aggregate']?['aggregate']?['count']
+            as int? ??
+        0;
+  }
+
 // Fetches class with full information
   Future<ClassModel> getClassBySlug(String slug) async {
     QueryOptions queryOptions = QueryOptions(

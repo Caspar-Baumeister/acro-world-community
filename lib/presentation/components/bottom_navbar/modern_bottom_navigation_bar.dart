@@ -19,7 +19,7 @@ class ModernBottomNavigationBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
@@ -67,12 +67,14 @@ class ModernNavigationBarItem {
     required this.selectedIcon,
     required this.label,
     this.disabled = false,
+    this.badgeCount,
   });
 
   final IconData icon;
   final IconData selectedIcon;
   final String label;
   final bool disabled;
+  final int? badgeCount;
 }
 
 class _ModernNavigationItem extends StatefulWidget {
@@ -131,11 +133,11 @@ class _ModernNavigationItemState extends State<_ModernNavigationItem>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     final iconColor = widget.isSelected
         ? colorScheme.primary
         : colorScheme.onSurface.withOpacity(0.6);
-    
+
     final labelColor = widget.isSelected
         ? colorScheme.primary
         : colorScheme.onSurface.withOpacity(0.6);
@@ -171,12 +173,42 @@ class _ModernNavigationItemState extends State<_ModernNavigationItem>
                               : Colors.transparent,
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        child: Icon(
-                          widget.isSelected
-                              ? widget.item.selectedIcon
-                              : widget.item.icon,
-                          color: iconColor,
-                          size: 24,
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            Icon(
+                              widget.isSelected
+                                  ? widget.item.selectedIcon
+                                  : widget.item.icon,
+                              color: iconColor,
+                              size: 24,
+                            ),
+                            if ((widget.item.badgeCount ?? 0) > 0)
+                              Positioned(
+                                right: -4,
+                                top: -4,
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5, vertical: 1),
+                                  decoration: BoxDecoration(
+                                    color: Theme.of(context).colorScheme.error,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Text(
+                                    (widget.item.badgeCount!).toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .labelSmall
+                                        ?.copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onError,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                  ),
+                                ),
+                              ),
+                          ],
                         ),
                       ),
                       const SizedBox(height: 4),

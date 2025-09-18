@@ -3,9 +3,12 @@ import 'package:acroworld/presentation/components/cards/modern_booking_card.dart
 import 'package:acroworld/presentation/components/sections/bookings_search_and_filter.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
+import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
@@ -13,9 +16,49 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BasePage(
-        appBar: const CustomAppbarSimple(
+        appBar: CustomAppbarSimple(
           title: "Bookings",
           isBackButton: false,
+          actions: [
+            Builder(builder: (context) {
+              final teacherEventsState = ref.watch(teacherEventsProvider);
+              final count = teacherEventsState.pendingInvitesCount;
+              return Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.notifications_none_rounded),
+                    onPressed: () {
+                      context.goNamed(invitesRoute);
+                    },
+                  ),
+                  if (count > 0)
+                    Positioned(
+                      right: 8,
+                      top: 8,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.error,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          count.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .labelSmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onError,
+                                fontWeight: FontWeight.w700,
+                              ),
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            })
+          ],
         ),
         makeScrollable: false,
         child: DashboardBody());

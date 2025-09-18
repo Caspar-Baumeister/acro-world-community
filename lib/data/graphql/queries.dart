@@ -632,6 +632,20 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   }
 }""");
 
+  // Count pending event invitations for a teacher (has_accepted is null)
+  static final getPendingTeacherInvitesCount = gql("""
+  query GetPendingTeacherInvitesCount(\$user_id: uuid!) {
+    class_teachers_aggregate(
+      where: {
+        has_accepted: {_is_null: true},
+        teacher: {user_id: {_eq: \$user_id}}
+      }
+    ) {
+      aggregate { count }
+    }
+  }
+  """);
+
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
       users(limit: \$limit, offset: \$offset) {
