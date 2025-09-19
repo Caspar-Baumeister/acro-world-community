@@ -1,5 +1,8 @@
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/data/repositories/class_repository.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// State for event invitations (taking part in functionality)
@@ -11,6 +14,7 @@ class EventInvitationsState {
   final String? error;
   final String searchQuery;
   final String selectedFilter; // 'all', 'approved', 'pending', 'rejected'
+  final String? userId;
 
   const EventInvitationsState({
     this.invitations = const [],
@@ -20,6 +24,7 @@ class EventInvitationsState {
     this.error,
     this.searchQuery = '',
     this.selectedFilter = 'all',
+    this.userId,
   });
 
   EventInvitationsState copyWith({
@@ -30,6 +35,7 @@ class EventInvitationsState {
     String? error,
     String? searchQuery,
     String? selectedFilter,
+    String? userId,
   }) {
     return EventInvitationsState(
       invitations: invitations ?? this.invitations,
@@ -39,21 +45,27 @@ class EventInvitationsState {
       error: error ?? this.error,
       searchQuery: searchQuery ?? this.searchQuery,
       selectedFilter: selectedFilter ?? this.selectedFilter,
+      userId: userId ?? this.userId,
     );
   }
 }
 
 /// Event invitations provider notifier
 class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
-  EventInvitationsNotifier(this._teacherEventsNotifier) : super(const EventInvitationsState());
+  EventInvitationsNotifier()
+      : _classesRepository =
+            ClassesRepository(apiService: GraphQLClientSingleton()),
+        super(const EventInvitationsState());
 
-  final TeacherEventsNotifier _teacherEventsNotifier;
+  final ClassesRepository _classesRepository;
 
   /// Fetch event invitations with search and filter
   Future<void> fetchInvitations({
     String? searchQuery,
     String? filter,
     bool isRefresh = false,
+    String? userId,
+    String? teacherId,
   }) async {
     if (isRefresh) {
       state = state.copyWith(loading: true, error: null);
@@ -62,23 +74,48 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
     }
 
     try {
-      // Use the existing teacher events provider to get participating events
-      final teacherEventsState = _teacherEventsNotifier.state;
-      
-      // Filter the participating events based on search and filter
+      // Fetch from backend the classes where the user is invited
+      final currentUserId = userId ?? state.userId;
+      if (currentUserId == null) {
+        throw Exception('User id missing for event invitations fetch');
+      }
+      if (teacherId == null) {
+        throw Exception('Teacher ID missing for event invitations fetch');
+      }
+
+      // Fetch invitations using teacher_id and exclude own classes
+      final invitedClassTeachers =
+          await _classesRepository.getInvitedClassesByTeacherId(
+        teacherId: teacherId,
+        userId: currentUserId,
+        statusFilter: (filter ?? state.selectedFilter) == 'all'
+            ? null
+            : (filter ?? state.selectedFilter),
+      );
+
+      // Convert ClassTeachers to ClassModel for compatibility
+      final invited = invitedClassTeachers
+          .where((ct) => ct.classModel != null)
+          .map((ct) => ct.classModel!)
+          .toList();
+
       final filteredInvitations = _filterInvitations(
-        teacherEventsState.myParticipatingEvents,
+        invited,
         searchQuery ?? state.searchQuery,
         filter ?? state.selectedFilter,
+        currentUserId,
       );
-      
+
       state = state.copyWith(
-        invitations: isRefresh ? filteredInvitations : [...state.invitations, ...filteredInvitations],
+        invitations: isRefresh
+            ? filteredInvitations
+            : [...state.invitations, ...filteredInvitations],
         loading: false,
         isLoadingMore: false,
-        canFetchMore: teacherEventsState.canFetchMoreParticipatingEvents,
+        canFetchMore: false,
         searchQuery: searchQuery ?? state.searchQuery,
         selectedFilter: filter ?? state.selectedFilter,
+        userId: currentUserId,
       );
     } catch (e) {
       state = state.copyWith(
@@ -86,6 +123,29 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
         isLoadingMore: false,
         error: e.toString(),
       );
+    }
+  }
+
+  /// Accept or reject an invitation
+  Future<bool> setInvitationAcceptance({
+    required String classId,
+    required String teacherId,
+    required bool hasAccepted,
+  }) async {
+    try {
+      final ok = await _classesRepository.setInvitationAcceptance(
+        classId: classId,
+        teacherId: teacherId,
+        hasAccepted: hasAccepted,
+      );
+      if (ok) {
+        // Refresh participating events so UI updates
+        // We cannot trigger fetch here without user id; rely on outer flow
+      }
+      return ok;
+    } catch (e, s) {
+      CustomErrorHandler.captureException(e, stackTrace: s);
+      return false;
     }
   }
 
@@ -102,7 +162,7 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
   /// Fetch more invitations (pagination)
   Future<void> fetchMore() async {
     if (state.isLoadingMore || !state.canFetchMore) return;
-    
+
     await fetchInvitations(
       searchQuery: state.searchQuery,
       filter: state.selectedFilter,
@@ -114,47 +174,70 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
     List<ClassModel> invitations,
     String searchQuery,
     String selectedFilter,
+    String? userId,
   ) {
-    return invitations.where((invitation) {
+    // Keep only classes that include this user as teacher
+    final mine = userId == null
+        ? invitations
+        : invitations
+            .where((c) =>
+                c.classTeachers?.any((t) => t.teacher?.userId == userId) ==
+                true)
+            .toList();
+
+    // Debug distribution of hasAccepted for this user only
+    int nullCount = 0, trueCount = 0, falseCount = 0;
+    for (final c in mine) {
+      final rel = c.classTeachers?.firstWhere(
+              (t) => t.teacher?.userId == userId,
+              orElse: () => ClassTeachers()) ??
+          ClassTeachers();
+      if (rel.hasAccepted == null) nullCount++;
+      if (rel.hasAccepted == true) trueCount++;
+      if (rel.hasAccepted == false) falseCount++;
+    }
+    CustomErrorHandler.logDebug(
+        'Invites (mine) total=${mine.length}, pending=$nullCount, accepted=$trueCount, rejected=$falseCount');
+
+    return mine.where((invitation) {
       // Search filter
       if (searchQuery.isNotEmpty) {
         final query = searchQuery.toLowerCase();
-        final matchesSearch = invitation.name?.toLowerCase().contains(query) == true ||
+        final matchesSearch = invitation.name?.toLowerCase().contains(query) ==
+                true ||
             invitation.locationName?.toLowerCase().contains(query) == true ||
             invitation.city?.toLowerCase().contains(query) == true ||
             invitation.country?.toLowerCase().contains(query) == true;
         if (!matchesSearch) return false;
       }
-      
-      // Status filter - for now, we'll use mock status since the real status
-      // would need to come from the invitation system
+
+      // Status filter based on has_accepted across class_teachers
+      bool? status;
+      if (invitation.classTeachers != null) {
+        final mineRel = invitation.classTeachers!.firstWhere(
+            (t) => t.teacher?.userId == userId,
+            orElse: () => ClassTeachers());
+        status = mineRel.hasAccepted;
+      }
+
       switch (selectedFilter) {
         case 'approved':
-          return _getInvitationStatus(invitation) == 'approved';
+          return status == true;
         case 'pending':
-          return _getInvitationStatus(invitation) == 'pending';
+          return status == null;
         case 'rejected':
-          return _getInvitationStatus(invitation) == 'rejected';
+          return status == false;
         case 'all':
         default:
           return true;
       }
     }).toList();
   }
-
-  /// Get invitation status - this is mock for now
-  /// In a real implementation, this would come from the invitation system
-  String _getInvitationStatus(ClassModel invitation) {
-    // Mock status based on some criteria
-    // In reality, this would come from the invitation data
-    final hash = invitation.id?.hashCode ?? 0;
-    final statuses = ['approved', 'pending', 'rejected'];
-    return statuses[hash.abs() % statuses.length];
-  }
 }
 
 /// Event invitations provider
-final eventInvitationsProvider = StateNotifierProvider<EventInvitationsNotifier, EventInvitationsState>((ref) {
-  final teacherEventsNotifier = ref.watch(teacherEventsProvider.notifier);
-  return EventInvitationsNotifier(teacherEventsNotifier);
+final eventInvitationsProvider =
+    StateNotifierProvider<EventInvitationsNotifier, EventInvitationsState>(
+        (ref) {
+  return EventInvitationsNotifier();
 });

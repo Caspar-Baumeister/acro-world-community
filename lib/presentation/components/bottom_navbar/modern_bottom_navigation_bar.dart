@@ -191,7 +191,10 @@ class _ModernNavigationItemState extends State<_ModernNavigationItem>
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5, vertical: 1),
                                   decoration: BoxDecoration(
-                                    color: Theme.of(context).colorScheme.error,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .error
+                                        .withOpacity(0.4),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(

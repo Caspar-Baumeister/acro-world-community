@@ -340,6 +340,22 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     }
   """);
 
+  // Update a class_teachers row to accept or reject an invitation
+  static final updateClassTeacherAcceptance = gql("""
+    mutation UpdateClassTeacherAcceptance(
+      \$class_id: uuid!,
+      \$teacher_id: uuid!,
+      \$hasAccepted: Boolean!
+    ) {
+      update_class_teachers(
+        where: {class_id: {_eq: \$class_id}, teacher_id: {_eq: \$teacher_id}},
+        _set: {has_accepted: \$hasAccepted}
+      ) {
+        affected_rows
+      }
+    }
+  """);
+
 // class_owners: {data: {teacher_id: "6d76a0f1-8e33-40f5-a300-505329d30ae0", is_payment_receiver: false}},
   static final insertClassWithRecurringPatterns = gql("""
   mutation InsertClassWithRecurringPatterns(

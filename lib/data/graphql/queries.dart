@@ -633,18 +633,66 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
 }""");
 
   // Count pending event invitations for a teacher (has_accepted is null)
+  // Excludes classes created by the current user
   static final getPendingTeacherInvitesCount = gql("""
-  query GetPendingTeacherInvitesCount(\$user_id: uuid!) {
+  query GetPendingTeacherInvitesCount(\$teacher_id: uuid!, \$user_id: uuid!) {
     class_teachers_aggregate(
       where: {
         has_accepted: {_is_null: true},
-        teacher: {user_id: {_eq: \$user_id}}
+        teacher_id: {_eq: \$teacher_id},
+        class_id: {_is_null: false},
+        class: {created_by_id: {_neq: \$user_id}}
       }
     ) {
       aggregate { count }
     }
   }
   """);
+
+  // Fetch invitations via class_teachers for a specific teacher_id
+  // Excludes classes created by the current user
+  static final getInvitedClassesByTeacherId = gql("""
+query getInvitedClassesByTeacherId(\$teacher_id: uuid!, \$user_id: uuid!, \$whereAccepted: class_teachers_bool_exp!) {
+  class_teachers(
+    where: {
+      _and: [
+        {teacher_id: {_eq: \$teacher_id}},
+        {class_id: {_is_null: false}},
+        {class: {created_by_id: {_neq: \$user_id}}},
+        \$whereAccepted
+      ]
+    },
+    order_by: {created_at: desc}
+  ) {
+    id
+    has_accepted
+    is_owner
+    teacher {
+      id
+      name
+      user_id
+    }
+    class {
+      ${Fragments.classFragmentLazy}
+      class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
+        id
+        start_date
+        is_highlighted
+      }
+      class_events_aggregate(where: {end_date: {_gte: now}}) {
+        aggregate {
+          count
+        }
+      }
+      class_flags {
+        id
+        is_active
+        user_id
+      }
+    }
+  }
+}
+""");
 
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {

@@ -3,7 +3,7 @@ import 'package:acroworld/presentation/components/cards/modern_booking_card.dart
 import 'package:acroworld/presentation/components/sections/bookings_search_and_filter.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +21,7 @@ class DashboardPage extends ConsumerWidget {
           isBackButton: false,
           actions: [
             Builder(builder: (context) {
-              final teacherEventsState = ref.watch(teacherEventsProvider);
-              final count = teacherEventsState.pendingInvitesCount;
+              final count = ref.watch(pendingInvitesBadgeProvider);
               return Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -32,7 +31,7 @@ class DashboardPage extends ConsumerWidget {
                       context.goNamed(invitesRoute);
                     },
                   ),
-                  if (count > 0)
+                  if (count != null && count > 0)
                     Positioned(
                       right: 8,
                       top: 8,

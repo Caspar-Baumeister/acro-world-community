@@ -112,24 +112,6 @@ class ClassModel {
       this.classLevels});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
-    print('🔍 CLASSMODEL DEBUG - JSON keys: ${json.keys.toList()}');
-    print(
-        '🔍 CLASSMODEL DEBUG - recurring_patterns in JSON: ${json["recurring_patterns"]}');
-    print(
-        '🔍 CLASSMODEL DEBUG - recurring_patterns type: ${json["recurring_patterns"].runtimeType}');
-    print(
-        '🔍 CLASSMODEL DEBUG - recurring_patterns is null: ${json["recurring_patterns"] == null}');
-
-    // Check for alternative field names
-    print('🔍 CLASSMODEL DEBUG - Checking for alternative field names:');
-    print(
-        '🔍 CLASSMODEL DEBUG - recurringPatterns: ${json["recurringPatterns"]}');
-    print(
-        '🔍 CLASSMODEL DEBUG - recurringPatterns type: ${json["recurringPatterns"].runtimeType}');
-    print('🔍 CLASSMODEL DEBUG - patterns: ${json["patterns"]}');
-    print(
-        '🔍 CLASSMODEL DEBUG - patterns type: ${json["patterns"].runtimeType}');
-
     createdBy =
         json['created_by'] != null ? User.fromJson(json['created_by']) : null;
 
@@ -147,8 +129,6 @@ class ClassModel {
       });
       print(
           '🔍 CLASSMODEL DEBUG - Final recurringPatterns count: ${recurringPatterns!.length}');
-    } else {
-      print('🔍 CLASSMODEL DEBUG - recurring_patterns is null, not processing');
     }
     if (json['class_events'] != null) {
       classEvents = <ClassEvent>[];

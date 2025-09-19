@@ -1,6 +1,8 @@
 import 'package:acroworld/presentation/components/bottom_navbar/modern_bottom_navigation_bar.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,8 +19,23 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
         .watch(creatorNavigationProvider); // Listen to the navigation provider
     print("Selected index creator: $selectedIndex");
     final notifier = ref.read(creatorNavigationProvider.notifier);
+    final pendingCount = ref.watch(pendingInvitesBadgeProvider);
 
-    final pendingCount = ref.watch(teacherEventsProvider).pendingInvitesCount;
+    // Trigger initial fetch of pending invites only once when teacherId is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final hasPrefetched = ref.read(creatorInvitesPrefetchProvider);
+      if (!hasPrefetched) {
+        final userId = ref.read(userRiverpodProvider).value?.id;
+        final teacherId = ref.read(creatorProvider).activeTeacher?.id;
+
+        if (userId != null && teacherId != null) {
+          ref
+              .read(pendingInvitesBadgeProvider.notifier)
+              .fetchPendingCount(teacherId, userId);
+          ref.read(creatorInvitesPrefetchProvider.notifier).state = true;
+        }
+      }
+    });
 
     return ModernBottomNavigationBar(
       selectedIndex: selectedIndex,
@@ -41,7 +58,7 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
           icon: IconLibrary.invites.icon,
           selectedIcon: IconLibrary.invites.icon,
           label: "Invitations",
-          badgeCount: pendingCount > 0 ? pendingCount : null,
+          badgeCount: pendingCount,
         ),
         ModernNavigationBarItem(
           icon: IconLibrary.profile.icon,

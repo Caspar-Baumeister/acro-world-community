@@ -4,6 +4,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -12,24 +13,113 @@ class ClassesRepository {
 
   ClassesRepository({required this.apiService});
 
-  // Get count of pending invites for a teacher user (by user_id)
-  Future<int?> getPendingInvitesCount(String userId) async {
+  // Get count of pending invites for a teacher user (by teacher_id)
+  // Excludes classes created by the current user
+  Future<int?> getPendingInvitesCount(String teacherId, String userId) async {
     final queryOptions = QueryOptions(
       document: Queries.getPendingTeacherInvitesCount,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
+        'teacher_id': teacherId,
         'user_id': userId,
       },
     );
 
     final client = apiService.client;
     final result = await client.query(queryOptions);
+
     if (result.hasException) {
+      CustomErrorHandler.logDebug(
+          '🔍 REPOSITORY DEBUG - GraphQL exception: ${result.exception}');
       return 0;
     }
-    return result.data?['class_teachers_aggregate']?['aggregate']?['count']
-            as int? ??
-        0;
+
+    final aggregateData = result.data?['class_teachers_aggregate'];
+    final count = aggregateData?['aggregate']?['count'] as int? ?? 0;
+
+    // Keep the aggregate count for debugging
+    CustomErrorHandler.logDebug(
+        '🔍 REPOSITORY DEBUG - Pending invites count: $count');
+
+    return count;
+  }
+
+  // Get invites by teacher_id from class_teachers root
+  // Excludes classes created by the current user
+  Future<List<ClassTeachers>> getInvitedClassesByTeacherId({
+    required String teacherId,
+    required String userId,
+    String? statusFilter,
+  }) async {
+    Map<String, dynamic> whereAccepted = {};
+    switch (statusFilter) {
+      case 'pending':
+        whereAccepted = {
+          "has_accepted": {"_is_null": true}
+        };
+        break;
+      case 'approved':
+        whereAccepted = {
+          "has_accepted": {"_eq": true}
+        };
+        break;
+      case 'rejected':
+        whereAccepted = {
+          "has_accepted": {"_eq": false}
+        };
+        break;
+      default:
+        whereAccepted = {};
+    }
+
+    final options = QueryOptions(
+      document: Queries.getInvitedClassesByTeacherId,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "teacher_id": teacherId,
+        "user_id": userId,
+        "whereAccepted": whereAccepted
+      },
+    );
+    final result = await apiService.client.query(options);
+    if (result.hasException) {
+      throw Exception(
+          'Failed to fetch invites by teacher_id: ${result.exception}');
+    }
+    final List list = (result.data?['class_teachers'] as List?) ?? [];
+    return list
+        .map((e) => ClassTeachers.fromJson(e as Map<String, dynamic>))
+        .where(
+            (ct) => ct.classModel != null) // Filter out entries with null class
+        .toList();
+  }
+
+  // Accept or reject a class invitation for the current teacher
+  Future<bool> setInvitationAcceptance({
+    required String classId,
+    required String teacherId,
+    required bool hasAccepted,
+  }) async {
+    final options = MutationOptions(
+      document: Mutations.updateClassTeacherAcceptance,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        'class_id': classId,
+        'teacher_id': teacherId,
+        'hasAccepted': hasAccepted,
+      },
+    );
+
+    final client = apiService.client;
+    final result = await client.mutate(options);
+    if (result.hasException) {
+      CustomErrorHandler.logError(
+          'Failed to update invitation: ${result.exception}');
+      return false;
+    }
+    final int affected =
+        (result.data?['update_class_teachers']?['affected_rows'] as int?) ?? 0;
+    return affected > 0;
   }
 
 // Fetches class with full information

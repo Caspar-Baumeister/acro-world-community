@@ -5,22 +5,24 @@ import 'package:flutter/material.dart';
 class EventInvitationCard extends StatelessWidget {
   final ClassModel invitation;
   final String status; // 'approved', 'pending', 'rejected'
-  final VoidCallback? onTap;
+  final VoidCallback? onAccept;
+  final VoidCallback? onReject;
 
   const EventInvitationCard({
     super.key,
     required this.invitation,
     required this.status,
-    this.onTap,
+    this.onAccept,
+    this.onReject,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return GestureDetector(
-      onTap: onTap,
+      onTap: () => _showInvitationDialog(context),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
@@ -46,8 +48,6 @@ class EventInvitationCard extends StatelessWidget {
               Expanded(
                 child: _buildContentSection(context, theme, colorScheme),
               ),
-              // Status section
-              _buildStatusSection(context, theme, colorScheme),
             ],
           ),
         ),
@@ -113,10 +113,12 @@ class EventInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildContentSection(
+      BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     final eventName = invitation.name ?? "Unknown Event";
-    final location = invitation.locationName ?? invitation.city ?? "Unknown Location";
-    
+    final location =
+        invitation.locationName ?? invitation.city ?? "Unknown Location";
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -156,24 +158,168 @@ class EventInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Icon(
-          _getStatusIcon(),
-          color: _getStatusColor(colorScheme),
-          size: 24,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          status,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: _getStatusColor(colorScheme),
-            fontWeight: FontWeight.w600,
+  void _showInvitationDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Event Invitation',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Event info
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Event image
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Container(
+                      width: 60,
+                      height: 60,
+                      color: colorScheme.surfaceContainerHighest,
+                      child: invitation.imageUrl != null
+                          ? CustomCachedNetworkImage(
+                              imageUrl: invitation.imageUrl!,
+                              width: 60,
+                              height: 60,
+                            )
+                          : Icon(
+                              Icons.event,
+                              color: colorScheme.onSurfaceVariant,
+                              size: 24,
+                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Event details
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          invitation.name ?? "Unknown Event",
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          invitation.locationName ??
+                              invitation.city ??
+                              "Unknown Location",
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              // Status info
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: _getStatusColor(colorScheme).withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(
+                    color: _getStatusColor(colorScheme).withOpacity(0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      _getStatusIcon(),
+                      color: _getStatusColor(colorScheme),
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Status: ${status.toUpperCase()}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: _getStatusColor(colorScheme),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              // Notification text
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: colorScheme.primaryContainer.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.notifications,
+                      color: colorScheme.primary,
+                      size: 20,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        'You will be shown as a teacher in this event and your followers will be notified.',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          actions: status == 'pending'
+              ? [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onReject?.call();
+                    },
+                    child: Text(
+                      'Reject',
+                      style: TextStyle(color: colorScheme.error),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      onAccept?.call();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                    ),
+                    child: const Text('Accept'),
+                  ),
+                ]
+              : [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('Close'),
+                  ),
+                ],
+        );
+      },
     );
   }
 

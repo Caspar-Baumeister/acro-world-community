@@ -1,8 +1,10 @@
+import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/cards/event_invitation_card.dart';
 import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/event_invitations_search_and_filter.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/event_invitations_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,27 +13,23 @@ class EventInvitationsSection extends ConsumerStatefulWidget {
   const EventInvitationsSection({super.key});
 
   @override
-  ConsumerState<EventInvitationsSection> createState() => _EventInvitationsSectionState();
+  ConsumerState<EventInvitationsSection> createState() =>
+      _EventInvitationsSectionState();
 }
 
-class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSection> {
+class _EventInvitationsSectionState
+    extends ConsumerState<EventInvitationsSection> {
   @override
   void initState() {
     super.initState();
-    // Fetch initial participating events and then filter them
+    // Fetch initial invitations
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final userState = ref.read(userRiverpodProvider);
       userState.whenData((user) {
         if (user?.id != null) {
-          // First fetch the participating events
-          ref.read(teacherEventsProvider.notifier).fetchMyEvents(
-            user!.id!,
-            myEvents: false,
-            isRefresh: true,
-          ).then((_) {
-            // Then fetch the filtered invitations
-            ref.read(eventInvitationsProvider.notifier).fetchInvitations(isRefresh: true);
-          });
+          // Fetch the filtered invitations directly
+          ref.read(eventInvitationsProvider.notifier).fetchInvitations(
+              isRefresh: true, userId: user!.id!, teacherId: _getTeacherId());
         }
       });
     });
@@ -48,42 +46,58 @@ class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSectio
           searchQuery: invitationsState.searchQuery,
           selectedFilter: invitationsState.selectedFilter,
           onSearchChanged: (query) {
-            ref.read(eventInvitationsProvider.notifier).updateSearchQuery(query);
+            ref
+                .read(eventInvitationsProvider.notifier)
+                .updateSearchQuery(query);
             // Debounce search
             Future.delayed(const Duration(milliseconds: 500), () {
               if (mounted) {
                 ref.read(eventInvitationsProvider.notifier).fetchInvitations(
-                  searchQuery: query,
-                  filter: invitationsState.selectedFilter,
-                  isRefresh: true,
-                );
+                      searchQuery: query,
+                      filter: invitationsState.selectedFilter,
+                      isRefresh: true,
+                      teacherId: _getTeacherId(),
+                    );
               }
             });
           },
           onFilterChanged: (filter) {
             ref.read(eventInvitationsProvider.notifier).updateFilter(filter);
+            final user = ref.read(userRiverpodProvider).value;
             ref.read(eventInvitationsProvider.notifier).fetchInvitations(
-              searchQuery: invitationsState.searchQuery,
-              filter: filter,
-              isRefresh: true,
-            );
+                  searchQuery: invitationsState.searchQuery,
+                  filter: filter,
+                  isRefresh: true,
+                  userId: user?.id,
+                  teacherId: _getTeacherId(),
+                );
           },
           onSearchSubmitted: (query) {
+            final user = ref.read(userRiverpodProvider).value;
             ref.read(eventInvitationsProvider.notifier).fetchInvitations(
-              searchQuery: query,
-              filter: invitationsState.selectedFilter,
-              isRefresh: true,
-            );
+                  searchQuery: query,
+                  filter: invitationsState.selectedFilter,
+                  isRefresh: true,
+                  userId: user?.id,
+                  teacherId: _getTeacherId(),
+                );
           },
         ),
         // Invitations list
         Expanded(
           child: RefreshIndicator(
-            onRefresh: () => ref.read(eventInvitationsProvider.notifier).fetchInvitations(
-              searchQuery: invitationsState.searchQuery,
-              filter: invitationsState.selectedFilter,
-              isRefresh: true,
-            ),
+            onRefresh: () {
+              final user = ref.read(userRiverpodProvider).value;
+              return ref
+                  .read(eventInvitationsProvider.notifier)
+                  .fetchInvitations(
+                    searchQuery: invitationsState.searchQuery,
+                    filter: invitationsState.selectedFilter,
+                    isRefresh: true,
+                    userId: user?.id,
+                    teacherId: _getTeacherId(),
+                  );
+            },
             child: _buildInvitationsList(invitationsState),
           ),
         ),
@@ -106,21 +120,24 @@ class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSectio
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: state.invitations.length + (state.canFetchMore ? 1 : 0) + 1, // +1 for bottom padding
+      itemCount: state.invitations.length +
+          (state.canFetchMore ? 1 : 0) +
+          1, // +1 for bottom padding
       itemBuilder: (context, index) {
         if (index == state.invitations.length) {
           // Load more button
           if (state.canFetchMore) {
             return GestureDetector(
-              onTap: () => ref.read(eventInvitationsProvider.notifier).fetchMore(),
+              onTap: () =>
+                  ref.read(eventInvitationsProvider.notifier).fetchMore(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Center(
                   child: Text(
                     "Load more",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
               ),
@@ -128,21 +145,22 @@ class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSectio
           }
           return const SizedBox.shrink();
         }
-        
+
         if (index == state.invitations.length + (state.canFetchMore ? 1 : 0)) {
           // Bottom padding for floating button
           return const SizedBox(height: 80);
         }
-        
+
         final invitation = state.invitations[index];
-        final status = _getInvitationStatus(invitation);
-        
+        final status = _statusFromHasAccepted(invitation);
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 16),
           child: EventInvitationCard(
             invitation: invitation,
             status: status,
-            onTap: () => _onTap(invitation),
+            onAccept: () => _onDecision(invitation, true),
+            onReject: () => _onDecision(invitation, false),
           ),
         );
       },
@@ -199,7 +217,9 @@ class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSectio
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: () => ref.read(eventInvitationsProvider.notifier).fetchInvitations(isRefresh: true),
+            onPressed: () => ref
+                .read(eventInvitationsProvider.notifier)
+                .fetchInvitations(isRefresh: true),
             child: const Text('Retry'),
           ),
         ],
@@ -233,16 +253,48 @@ class _EventInvitationsSectionState extends ConsumerState<EventInvitationsSectio
     );
   }
 
-  String _getInvitationStatus(dynamic invitation) {
-    // Mock status based on some criteria
-    // In reality, this would come from the invitation data
-    final hash = invitation.id?.hashCode ?? 0;
-    final statuses = ['approved', 'pending', 'rejected'];
-    return statuses[hash.abs() % statuses.length];
+  String _statusFromHasAccepted(ClassModel c) {
+    // If any relation is pending, mark pending; else if any true, approved; else if any false, rejected
+    if (c.classTeachers?.any((t) => t.hasAccepted == null) == true)
+      return 'pending';
+    if (c.classTeachers?.any((t) => t.hasAccepted == true) == true)
+      return 'approved';
+    if (c.classTeachers?.any((t) => t.hasAccepted == false) == true)
+      return 'rejected';
+    return 'pending';
   }
 
-  void _onTap(dynamic invitation) {
-    // TODO: Navigate to event details
-    // This would be similar to the existing navigation logic
+  Future<void> _onDecision(ClassModel c, bool accept) async {
+    final user = ref.read(userRiverpodProvider).value;
+    final teacherId = user?.teacherProfile?.id ?? user?.teacherId;
+    if (teacherId == null || c.id == null) return;
+
+    final ok = await ref
+        .read(eventInvitationsProvider.notifier)
+        .setInvitationAcceptance(
+          classId: c.id!,
+          teacherId: teacherId,
+          hasAccepted: accept,
+        );
+    if (ok) {
+      // Refresh invitations after accepting/rejecting
+      await ref.read(eventInvitationsProvider.notifier).fetchInvitations(
+            isRefresh: true,
+            teacherId: _getTeacherId(),
+          );
+
+      // Also refresh the badge count
+      final user = ref.read(userRiverpodProvider).value;
+      if (user?.id != null && _getTeacherId() != null) {
+        ref
+            .read(pendingInvitesBadgeProvider.notifier)
+            .fetchPendingCount(_getTeacherId()!, user!.id!);
+      }
+    }
+  }
+
+  String? _getTeacherId() {
+    final creatorState = ref.read(creatorProvider);
+    return creatorState.activeTeacher?.id;
   }
 }

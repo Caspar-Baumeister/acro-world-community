@@ -14,8 +14,6 @@ class TeacherEventsState {
   final bool isInitialized;
   final bool canFetchMoreMyEvents;
   final bool canFetchMoreParticipatingEvents;
-  final int pendingInvitesCount;
-
   const TeacherEventsState({
     this.loading = true,
     this.myCreatedEvents = const [],
@@ -25,7 +23,6 @@ class TeacherEventsState {
     this.isInitialized = false,
     this.canFetchMoreMyEvents = true,
     this.canFetchMoreParticipatingEvents = true,
-    this.pendingInvitesCount = 0,
   });
 
   TeacherEventsState copyWith({
@@ -37,7 +34,6 @@ class TeacherEventsState {
     bool? isInitialized,
     bool? canFetchMoreMyEvents,
     bool? canFetchMoreParticipatingEvents,
-    int? pendingInvitesCount,
   }) {
     return TeacherEventsState(
       loading: loading ?? this.loading,
@@ -51,7 +47,6 @@ class TeacherEventsState {
       canFetchMoreMyEvents: canFetchMoreMyEvents ?? this.canFetchMoreMyEvents,
       canFetchMoreParticipatingEvents: canFetchMoreParticipatingEvents ??
           this.canFetchMoreParticipatingEvents,
-      pendingInvitesCount: pendingInvitesCount ?? this.pendingInvitesCount,
     );
   }
 }
@@ -92,7 +87,7 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
 
   /// Fetch my events
   Future<void> fetchMyEvents(String userId,
-      {bool isRefresh = true, bool myEvents = true}) async {
+      {bool isRefresh = true, bool myEvents = true, String? teacherId}) async {
     // Set loading state immediately for better UX
     state = state.copyWith(isInitialized: true, loading: true);
 
@@ -163,12 +158,6 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
       parseStopwatch.stop();
       CustomErrorHandler.logDebug(
           'Data parsing took ${parseStopwatch.elapsedMilliseconds}ms');
-
-      // Fetch pending invites count (has_accepted is null for this teacher)
-      try {
-        final countResult = await repository.getPendingInvitesCount(userId);
-        state = state.copyWith(pendingInvitesCount: countResult ?? 0);
-      } catch (_) {}
 
       if (myEvents) {
         final updatedEvents =
