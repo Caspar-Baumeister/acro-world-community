@@ -528,10 +528,10 @@ class ResponsiveEventListSkeleton extends StatelessWidget {
 
   Widget _buildHorizontalSkeleton(BuildContext context) {
     return SizedBox(
-      height: 200,
+      height: 260.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         itemCount: itemCount,
         itemBuilder: (context, index) {
           return const ResponsiveEventCardSkeleton(isGridMode: false);

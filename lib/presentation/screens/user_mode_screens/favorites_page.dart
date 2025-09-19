@@ -238,18 +238,15 @@ class _FavoritesBodyState extends State<FavoritesBody> {
             ),
 
             // Horizontal scrollable events for this month
-            SizedBox(
-              // Updated to match smaller cards
-              child: ResponsiveEventList(
-                events: monthEvents
-                    .map((event) => EventCardData.fromClassEvent(event))
-                    .toList(),
-                isGridMode: false,
-                isLoading: false,
-              ),
+            ResponsiveEventList(
+              events: monthEvents
+                  .map((event) => EventCardData.fromClassEvent(event))
+                  .toList(),
+              isGridMode: false,
+              isLoading: widget.state.isLoading,
             ),
 
-            const SizedBox(height: 200),
+            const SizedBox(height: 24),
           ],
         );
       },
