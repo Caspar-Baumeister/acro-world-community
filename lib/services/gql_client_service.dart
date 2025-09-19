@@ -137,6 +137,8 @@ class CustomAuthLink extends Link {
         }
         headers['authorization'] = 'Bearer $token';
         headers['x-hasura-role'] = roleWithHighestPrivileges;
+        CustomErrorHandler.logDebug(
+            '🔍 AUTH DEBUG - Using role: $roleWithHighestPrivileges for operation: ${request.operation.operationName}');
       } catch (e, stackTrace) {
         await CustomErrorHandler.captureException(e, stackTrace: stackTrace);
       }

@@ -42,7 +42,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
   /// Get stripe login link
   Future<String?> getStripeLoginLink() async {
     try {
-      final stripeRepository = StripeRepository(apiService: GraphQLClientSingleton());
+      final stripeRepository =
+          StripeRepository(apiService: GraphQLClientSingleton());
       final stripeLoginLink = await stripeRepository.getStripeLoginLink();
       CustomErrorHandler.logDebug("stripeLoginLink: $stripeLoginLink");
       return stripeLoginLink;
@@ -58,7 +59,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
     String? defaultCurrency,
   }) async {
     try {
-      final stripeRepository = StripeRepository(apiService: GraphQLClientSingleton());
+      final stripeRepository =
+          StripeRepository(apiService: GraphQLClientSingleton());
       final stripeLoginLink = await stripeRepository.createStripeUser(
         countryCode: countryCode,
         defaultCurrency: defaultCurrency,
@@ -66,7 +68,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
       CustomErrorHandler.logDebug("stripeLoginLink: $stripeLoginLink");
       return stripeLoginLink;
     } catch (e, s) {
-      CustomErrorHandler.logError('Error creating stripe user: $e', stackTrace: s);
+      CustomErrorHandler.logError('Error creating stripe user: $e',
+          stackTrace: s);
       return null;
     }
   }
@@ -79,13 +82,17 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
   /// Set creator from token
   Future<bool> setCreatorFromToken() async {
     CustomErrorHandler.logDebug("setting creator from token");
-    
+
     final token = await TokenSingletonService().getToken();
     if (token == null) {
       CustomErrorHandler.logDebug("no token");
       state = state.copyWith(activeTeacher: null);
       return false;
     }
+
+    // Update GraphQL client to use TeacherUser role for creator features
+    GraphQLClientSingleton().updateClient(true);
+    CustomErrorHandler.logDebug("Updated GraphQL client to teacher mode");
 
     state = state.copyWith(isLoading: true);
 
@@ -97,7 +104,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
       ));
 
       if (result.hasException) {
-        CustomErrorHandler.logError('Error fetching teacher: ${result.exception}');
+        CustomErrorHandler.logError(
+            'Error fetching teacher: ${result.exception}');
         state = state.copyWith(isLoading: false, activeTeacher: null);
         return false;
       }
@@ -108,7 +116,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
         return false;
       }
 
-      final teacher = TeacherModel.fromJson(result.data!["me"][0]["teacher_profile"]);
+      final teacher =
+          TeacherModel.fromJson(result.data!["me"][0]["teacher_profile"]);
       state = state.copyWith(
         activeTeacher: teacher,
         isLoading: false,
@@ -116,7 +125,8 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
       CustomErrorHandler.logDebug("Creator set successfully");
       return true;
     } catch (e, s) {
-      CustomErrorHandler.logError('Error in setCreatorFromToken: $e', stackTrace: s);
+      CustomErrorHandler.logError('Error in setCreatorFromToken: $e',
+          stackTrace: s);
       state = state.copyWith(isLoading: false, activeTeacher: null);
       return false;
     }
@@ -132,6 +142,7 @@ class CreatorNotifier extends StateNotifier<CreatorState> {
 }
 
 /// Provider for creator state
-final creatorProvider = StateNotifierProvider<CreatorNotifier, CreatorState>((ref) {
+final creatorProvider =
+    StateNotifierProvider<CreatorNotifier, CreatorState>((ref) {
   return CreatorNotifier();
 });
