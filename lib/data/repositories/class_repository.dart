@@ -72,6 +72,17 @@ class ClassesRepository {
         whereAccepted = {};
     }
 
+    // DEBUG: Log GraphQL query details
+    CustomErrorHandler.logDebug(
+        '🔍 GRAPHQL QUERY DEBUG - getInvitedClassesByTeacherId:');
+    CustomErrorHandler.logDebug(
+        '  - Query Document: getInvitedClassesByTeacherId');
+    CustomErrorHandler.logDebug('  - Variables:');
+    CustomErrorHandler.logDebug('    * teacher_id: $teacherId');
+    CustomErrorHandler.logDebug('    * user_id: $userId');
+    CustomErrorHandler.logDebug('    * whereAccepted: $whereAccepted');
+    CustomErrorHandler.logDebug('  - Status Filter Applied: $statusFilter');
+
     final options = QueryOptions(
       document: Queries.getInvitedClassesByTeacherId,
       fetchPolicy: FetchPolicy.networkOnly,
@@ -82,16 +93,80 @@ class ClassesRepository {
       },
     );
     final result = await apiService.client.query(options);
+
+    // DEBUG: Log GraphQL response
+    CustomErrorHandler.logDebug('🔍 GRAPHQL RESPONSE DEBUG:');
+    CustomErrorHandler.logDebug('  - Has Exception: ${result.hasException}');
     if (result.hasException) {
-      throw Exception(
-          'Failed to fetch invites by teacher_id: ${result.exception}');
+      CustomErrorHandler.logDebug('  - Exception: ${result.exception}');
     }
     final List list = (result.data?['class_teachers'] as List?) ?? [];
-    return list
+    CustomErrorHandler.logDebug('  - Raw Data Count: ${list.length}');
+
+    // DEBUG: Log raw response data
+    if (list.isNotEmpty) {
+      CustomErrorHandler.logDebug('  - Raw Response Data:');
+      for (int i = 0; i < list.length; i++) {
+        final item = list[i] as Map<String, dynamic>;
+        CustomErrorHandler.logDebug('    Entry $i:');
+        CustomErrorHandler.logDebug('      - id: ${item['id']}');
+        CustomErrorHandler.logDebug(
+            '      - has_accepted: ${item['has_accepted']}');
+        CustomErrorHandler.logDebug('      - is_owner: ${item['is_owner']}');
+        CustomErrorHandler.logDebug('      - teacher: ${item['teacher']}');
+        if (item['class'] != null) {
+          final classData = item['class'] as Map<String, dynamic>;
+          CustomErrorHandler.logDebug('      - class.id: ${classData['id']}');
+          CustomErrorHandler.logDebug(
+              '      - class.name: ${classData['name']}');
+          CustomErrorHandler.logDebug(
+              '      - class.created_by_id: ${classData['created_by_id']}');
+        } else {
+          CustomErrorHandler.logDebug('      - class: null');
+        }
+      }
+    }
+
+    final parsedResults = list
         .map((e) => ClassTeachers.fromJson(e as Map<String, dynamic>))
         .where(
             (ct) => ct.classModel != null) // Filter out entries with null class
         .toList();
+
+    CustomErrorHandler.logDebug(
+        '  - Parsed Results Count: ${parsedResults.length}');
+    CustomErrorHandler.logDebug(
+        '  - Results after null class filter: ${parsedResults.length}');
+
+    // DEBUG: Log parsed results details
+    if (parsedResults.isNotEmpty) {
+      CustomErrorHandler.logDebug('  - Parsed Results Details:');
+      for (int i = 0; i < parsedResults.length; i++) {
+        final ct = parsedResults[i];
+        CustomErrorHandler.logDebug('    Parsed Entry $i:');
+        CustomErrorHandler.logDebug(
+            '      - ClassTeachers.has_accepted: ${ct.hasAccepted}');
+        CustomErrorHandler.logDebug(
+            '      - ClassTeachers.is_owner: ${ct.isOwner}');
+        if (ct.classModel != null) {
+          CustomErrorHandler.logDebug(
+              '      - ClassModel.id: ${ct.classModel!.id}');
+          CustomErrorHandler.logDebug(
+              '      - ClassModel.name: ${ct.classModel!.name}');
+          CustomErrorHandler.logDebug(
+              '      - ClassModel.createdBy: ${ct.classModel!.createdBy?.id}');
+        } else {
+          CustomErrorHandler.logDebug('      - ClassModel: null');
+        }
+      }
+    }
+
+    if (result.hasException) {
+      throw Exception(
+          'Failed to fetch invites by teacher_id: ${result.exception}');
+    }
+
+    return parsedResults;
   }
 
   // Accept or reject a class invitation for the current teacher

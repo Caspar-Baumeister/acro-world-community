@@ -83,14 +83,25 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
         throw Exception('Teacher ID missing for event invitations fetch');
       }
 
+      // DEBUG: Log all inputs
+      final statusFilter = (filter ?? state.selectedFilter) == 'all'
+          ? null
+          : (filter ?? state.selectedFilter);
+
+      CustomErrorHandler.logDebug('🔍 EVENT INVITATIONS DEBUG - Inputs:');
+      CustomErrorHandler.logDebug('  - Teacher ID: $teacherId');
+      CustomErrorHandler.logDebug('  - User ID: $currentUserId');
+      CustomErrorHandler.logDebug('  - Status Filter: $statusFilter');
+      CustomErrorHandler.logDebug(
+          '  - Search Query: ${searchQuery ?? state.searchQuery}');
+      CustomErrorHandler.logDebug('  - Is Refresh: $isRefresh');
+
       // Fetch invitations using teacher_id and exclude own classes
       final invitedClassTeachers =
           await _classesRepository.getInvitedClassesByTeacherId(
         teacherId: teacherId,
         userId: currentUserId,
-        statusFilter: (filter ?? state.selectedFilter) == 'all'
-            ? null
-            : (filter ?? state.selectedFilter),
+        statusFilter: statusFilter,
       );
 
       // Convert ClassTeachers to ClassModel for compatibility
@@ -99,12 +110,18 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
           .map((ct) => ct.classModel!)
           .toList();
 
+      CustomErrorHandler.logDebug(
+          '  - Invited Classes Count (before filtering): ${invited.length}');
+
       final filteredInvitations = _filterInvitations(
         invited,
         searchQuery ?? state.searchQuery,
         filter ?? state.selectedFilter,
         currentUserId,
       );
+
+      CustomErrorHandler.logDebug(
+          '  - Final Filtered Invitations Count: ${filteredInvitations.length}');
 
       state = state.copyWith(
         invitations: isRefresh
@@ -199,7 +216,17 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
     CustomErrorHandler.logDebug(
         'Invites (mine) total=${mine.length}, pending=$nullCount, accepted=$trueCount, rejected=$falseCount');
 
-    return mine.where((invitation) {
+    // DEBUG: Log detailed filtering process
+    CustomErrorHandler.logDebug('🔍 FILTERING DEBUG - _filterInvitations():');
+    CustomErrorHandler.logDebug(
+        '  - Input invitations count: ${invitations.length}');
+    CustomErrorHandler.logDebug('  - User ID for filtering: $userId');
+    CustomErrorHandler.logDebug('  - Search Query: "$searchQuery"');
+    CustomErrorHandler.logDebug('  - Selected Filter: "$selectedFilter"');
+    CustomErrorHandler.logDebug(
+        '  - Mine (after user filter) count: ${mine.length}');
+
+    final filteredResults = mine.where((invitation) {
       // Search filter
       if (searchQuery.isNotEmpty) {
         final query = searchQuery.toLowerCase();
@@ -208,7 +235,11 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
             invitation.locationName?.toLowerCase().contains(query) == true ||
             invitation.city?.toLowerCase().contains(query) == true ||
             invitation.country?.toLowerCase().contains(query) == true;
-        if (!matchesSearch) return false;
+        if (!matchesSearch) {
+          CustomErrorHandler.logDebug(
+              '    - Filtered out by search: ${invitation.name}');
+          return false;
+        }
       }
 
       // Status filter based on has_accepted across class_teachers
@@ -220,18 +251,34 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
         status = mineRel.hasAccepted;
       }
 
+      bool matchesFilter;
       switch (selectedFilter) {
         case 'approved':
-          return status == true;
+          matchesFilter = status == true;
+          break;
         case 'pending':
-          return status == null;
+          matchesFilter = status == null;
+          break;
         case 'rejected':
-          return status == false;
+          matchesFilter = status == false;
+          break;
         case 'all':
         default:
-          return true;
+          matchesFilter = true;
+          break;
       }
+
+      if (!matchesFilter) {
+        CustomErrorHandler.logDebug(
+            '    - Filtered out by status filter: ${invitation.name} (status: $status, filter: $selectedFilter)');
+      }
+
+      return matchesFilter;
     }).toList();
+
+    CustomErrorHandler.logDebug(
+        '  - Final filtered results count: ${filteredResults.length}');
+    return filteredResults;
   }
 }
 

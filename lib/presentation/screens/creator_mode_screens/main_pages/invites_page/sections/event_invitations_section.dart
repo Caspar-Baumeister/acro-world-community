@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/cards/event_invitation_card.dart';
 import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/event_invitations_search_and_filter.dart';
@@ -27,9 +28,19 @@ class _EventInvitationsSectionState
       final userState = ref.read(userRiverpodProvider);
       userState.whenData((user) {
         if (user?.id != null) {
+          final teacherId = _getTeacherId();
+          CustomErrorHandler.logDebug(
+              '🔍 INITIAL FETCH DEBUG - EventInvitationsSection.initState():');
+          CustomErrorHandler.logDebug('  - User ID: ${user!.id}');
+          CustomErrorHandler.logDebug('  - Teacher ID: $teacherId');
+          CustomErrorHandler.logDebug('  - About to call fetchInvitations...');
+
           // Fetch the filtered invitations directly
           ref.read(eventInvitationsProvider.notifier).fetchInvitations(
-              isRefresh: true, userId: user!.id!, teacherId: _getTeacherId());
+              isRefresh: true, userId: user.id, teacherId: teacherId);
+        } else {
+          CustomErrorHandler.logDebug(
+              '🔍 INITIAL FETCH DEBUG - User ID is null, skipping fetch');
         }
       });
     });
@@ -295,6 +306,13 @@ class _EventInvitationsSectionState
 
   String? _getTeacherId() {
     final creatorState = ref.read(creatorProvider);
-    return creatorState.activeTeacher?.id;
+    final teacherId = creatorState.activeTeacher?.id;
+    CustomErrorHandler.logDebug('🔍 TEACHER ID DEBUG - _getTeacherId():');
+    CustomErrorHandler.logDebug(
+        '  - Creator State: ${creatorState.activeTeacher}');
+    CustomErrorHandler.logDebug('  - Active Teacher ID: $teacherId');
+    CustomErrorHandler.logDebug(
+        '  - Active Teacher User ID: ${creatorState.activeTeacher?.userId}');
+    return teacherId;
   }
 }

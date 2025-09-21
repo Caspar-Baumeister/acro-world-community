@@ -673,7 +673,16 @@ query getInvitedClassesByTeacherId(\$teacher_id: uuid!, \$user_id: uuid!, \$wher
       user_id
     }
     class {
-      ${Fragments.classFragmentLazy}
+      id
+      name
+      description
+      image_url
+      location_name
+      location_city
+      location_country
+      url_slug
+      created_at
+      created_by_id
       class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
         id
         start_date
