@@ -299,7 +299,7 @@ class _EventInvitationsSectionState
       if (user?.id != null && _getTeacherId() != null) {
         ref
             .read(pendingInvitesBadgeProvider.notifier)
-            .fetchPendingCount(_getTeacherId()!, user!.id!);
+            .fetchPendingCount(user!.id!);
       }
     }
   }

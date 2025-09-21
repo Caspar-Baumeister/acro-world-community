@@ -13,17 +13,18 @@ class ClassesRepository {
 
   ClassesRepository({required this.apiService});
 
-  // Get count of pending invites for a teacher user (by teacher_id)
+  // Get count of pending invites for a teacher user (by user_id)
   // Excludes classes created by the current user
-  Future<int?> getPendingInvitesCount(String teacherId, String userId) async {
+  Future<int?> getPendingInvitesCount(String userId) async {
     final queryOptions = QueryOptions(
       document: Queries.getPendingTeacherInvitesCount,
       fetchPolicy: FetchPolicy.networkOnly,
       variables: {
-        'teacher_id': teacherId,
         'user_id': userId,
       },
     );
+
+    print("variables getPendingInvitesCount: ${queryOptions.variables}");
 
     final client = apiService.client;
     final result = await client.query(queryOptions);
@@ -33,6 +34,8 @@ class ClassesRepository {
           '🔍 REPOSITORY DEBUG - GraphQL exception: ${result.exception}');
       return 0;
     }
+
+    print("result getPendingInvitesCount: ${result.data}");
 
     final aggregateData = result.data?['class_teachers_aggregate'];
     final count = aggregateData?['aggregate']?['count'] as int? ?? 0;
@@ -44,10 +47,9 @@ class ClassesRepository {
     return count;
   }
 
-  // Get invites by teacher_id from class_teachers root
+  // Get invites by user_id from class_teachers root
   // Excludes classes created by the current user
   Future<List<ClassTeachers>> getInvitedClassesByTeacherId({
-    required String teacherId,
     required String userId,
     String? statusFilter,
   }) async {
@@ -78,7 +80,6 @@ class ClassesRepository {
     CustomErrorHandler.logDebug(
         '  - Query Document: getInvitedClassesByTeacherId');
     CustomErrorHandler.logDebug('  - Variables:');
-    CustomErrorHandler.logDebug('    * teacher_id: $teacherId');
     CustomErrorHandler.logDebug('    * user_id: $userId');
     CustomErrorHandler.logDebug('    * whereAccepted: $whereAccepted');
     CustomErrorHandler.logDebug('  - Status Filter Applied: $statusFilter');
@@ -86,11 +87,7 @@ class ClassesRepository {
     final options = QueryOptions(
       document: Queries.getInvitedClassesByTeacherId,
       fetchPolicy: FetchPolicy.networkOnly,
-      variables: {
-        "teacher_id": teacherId,
-        "user_id": userId,
-        "whereAccepted": whereAccepted
-      },
+      variables: {"user_id": userId, "whereAccepted": whereAccepted},
     );
     final result = await apiService.client.query(options);
 

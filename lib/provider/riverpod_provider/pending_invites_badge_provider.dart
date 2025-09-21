@@ -11,12 +11,9 @@ class PendingInvitesBadgeNotifier extends StateNotifier<int?> {
   final ClassesRepository _classesRepository;
 
   /// Fetch the pending invites count for the current teacher
-  Future<void> fetchPendingCount(String teacherId, String userId) async {
+  Future<void> fetchPendingCount(String userId) async {
     try {
-      final count = await _classesRepository.getPendingInvitesCount(
-        teacherId,
-        userId,
-      );
+      final count = await _classesRepository.getPendingInvitesCount(userId);
 
       // Only show badge if count > 0, otherwise set to null
       state = count != null && count > 0 ? count : null;

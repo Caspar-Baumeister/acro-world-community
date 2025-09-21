@@ -96,10 +96,9 @@ class EventInvitationsNotifier extends StateNotifier<EventInvitationsState> {
           '  - Search Query: ${searchQuery ?? state.searchQuery}');
       CustomErrorHandler.logDebug('  - Is Refresh: $isRefresh');
 
-      // Fetch invitations using teacher_id and exclude own classes
+      // Fetch invitations using user_id and exclude own classes
       final invitedClassTeachers =
           await _classesRepository.getInvitedClassesByTeacherId(
-        teacherId: teacherId,
         userId: currentUserId,
         statusFilter: statusFilter,
       );

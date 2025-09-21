@@ -31,7 +31,7 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
         if (userId != null && teacherId != null) {
           ref
               .read(pendingInvitesBadgeProvider.notifier)
-              .fetchPendingCount(teacherId, userId);
+              .fetchPendingCount(userId);
           ref.read(creatorInvitesPrefetchProvider.notifier).state = true;
         }
       }

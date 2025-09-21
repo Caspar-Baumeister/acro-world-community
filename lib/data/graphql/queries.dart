@@ -635,11 +635,11 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   // Count pending event invitations for a teacher (has_accepted is null)
   // Excludes classes created by the current user
   static final getPendingTeacherInvitesCount = gql("""
-  query GetPendingTeacherInvitesCount(\$teacher_id: uuid!, \$user_id: uuid!) {
+  query GetPendingTeacherInvitesCount(\$user_id: uuid!) {
     class_teachers_aggregate(
       where: {
         has_accepted: {_is_null: true},
-        teacher_id: {_eq: \$teacher_id},
+        teacher: {user_id: {_eq: \$user_id}},
         class_id: {_is_null: false},
         class: {created_by_id: {_neq: \$user_id}}
       }
@@ -652,11 +652,11 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   // Fetch invitations via class_teachers for a specific teacher_id
   // Excludes classes created by the current user
   static final getInvitedClassesByTeacherId = gql("""
-query getInvitedClassesByTeacherId(\$teacher_id: uuid!, \$user_id: uuid!, \$whereAccepted: class_teachers_bool_exp!) {
+query getInvitedClassesByTeacherId(\$user_id: uuid!, \$whereAccepted: class_teachers_bool_exp!) {
   class_teachers(
     where: {
       _and: [
-        {teacher_id: {_eq: \$teacher_id}},
+        {teacher: {user_id: {_eq: \$user_id}}},
         {class_id: {_is_null: false}},
         {class: {created_by_id: {_neq: \$user_id}}},
         \$whereAccepted
