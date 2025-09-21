@@ -9,6 +9,8 @@ class UserBookingModel {
   String? bookingTitle;
   String? status;
   String? locationName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   UserBookingModel({
     required this.classEventId,
@@ -21,6 +23,8 @@ class UserBookingModel {
     required this.bookingTitle,
     required this.status,
     this.locationName,
+    this.createdAt,
+    this.updatedAt,
   });
 
   // Factory constructor for creating a new UserBookingModel instance from a map.
@@ -28,6 +32,8 @@ class UserBookingModel {
     // define the start and end date if they are not null
     DateTime? startDate;
     DateTime? endDate;
+    DateTime? createdAt;
+    DateTime? updatedAt;
 
     if (json['class_event']?['start_date'] != null) {
       try {
@@ -43,6 +49,20 @@ class UserBookingModel {
         print("error while parsing end date: $e");
       }
     }
+    if (json['created_at'] != null) {
+      try {
+        createdAt = DateTime.parse(json['created_at']);
+      } catch (e) {
+        print("error while parsing created_at: $e");
+      }
+    }
+    if (json['updated_at'] != null) {
+      try {
+        updatedAt = DateTime.parse(json['updated_at']);
+      } catch (e) {
+        print("error while parsing updated_at: $e");
+      }
+    }
 
     return UserBookingModel(
       classEventId: json['class_event']?['id'] as String?,
@@ -55,6 +75,8 @@ class UserBookingModel {
       endDate: endDate ?? DateTime.now(),
       bookingTitle: json['booking_option']?['title'] as String?,
       urlSlug: json['class_event']?['class']?['url_slug'] as String?,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }
