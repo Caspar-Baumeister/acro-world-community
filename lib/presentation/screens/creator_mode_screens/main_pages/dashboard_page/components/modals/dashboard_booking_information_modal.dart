@@ -126,11 +126,7 @@ class DashboardBookingInformationModal extends ConsumerWidget {
                     }),
               ),
 
-            ModernButton(
-                text: "Close",
-                onPressed: () {
-                  Navigator.of(context).pop();
-                }),
+            // Removed bottom Close button to streamline the modal UI
           ],
         ),
       ),

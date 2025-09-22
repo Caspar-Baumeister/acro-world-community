@@ -1,5 +1,4 @@
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class BookingStatusTile extends StatelessWidget {
@@ -58,7 +57,7 @@ class BookingStatusTile extends StatelessWidget {
           }(),
           style: Theme.of(context)
               .textTheme
-              .labelMedium!
+              .labelSmall!
               .copyWith(color: Theme.of(context).colorScheme.onPrimary),
         ),
       ),

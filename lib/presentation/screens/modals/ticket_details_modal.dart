@@ -264,13 +264,16 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
           ),
         ),
 
-        // Status overlay
+        // Status overlay (consistent size/placement)
         Positioned(
           top: AppDimensions.spacingMedium,
           right: AppDimensions.spacingMedium,
-          child: StatusOverlay(
-            status: widget.booking.status ?? "Unknown",
-            isCompact: false,
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(minWidth: 92),
+            child: StatusOverlay(
+              status: widget.booking.status ?? "Unknown",
+              isCompact: false,
+            ),
           ),
         ),
       ],

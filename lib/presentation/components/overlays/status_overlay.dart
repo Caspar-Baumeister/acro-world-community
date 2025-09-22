@@ -21,9 +21,21 @@ class StatusOverlay extends StatelessWidget {
         vertical: isCompact ? 2 : AppDimensions.spacingExtraSmall,
       ),
       decoration: BoxDecoration(
-        color: statusInfo.color,
+        // Slightly translucent to feel lighter over imagery
+        color: statusInfo.color.withOpacity(0.92),
         borderRadius:
             BorderRadius.circular(isCompact ? 8 : AppDimensions.radiusMedium),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.12),
+            blurRadius: 6,
+            offset: const Offset(0, 2),
+          ),
+        ],
+        border: Border.all(
+          color: Colors.white.withOpacity(0.8),
+          width: isCompact ? 0.5 : 0.8,
+        ),
       ),
       child: Text(
         statusInfo.text,
@@ -32,6 +44,9 @@ class StatusOverlay extends StatelessWidget {
           fontSize: isCompact ? 10 : 12,
           fontWeight: FontWeight.w600,
         ),
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        softWrap: false,
       ),
     );
   }
