@@ -8,7 +8,7 @@ class AnalyticsState {
   final bool isLoading;
 
   const AnalyticsState({
-    this.selectedMetric = "page_views",
+    this.selectedMetric = "revenue",
     this.selectedTimePeriod = "last_7_days",
     this.isLoading = false,
   });
@@ -24,15 +24,15 @@ class AnalyticsState {
       isLoading: isLoading ?? this.isLoading,
     );
   }
-  
+
   String get currentTitle {
     switch (selectedMetric) {
-      case "page_views":
-        return "Page Views";
       case "revenue":
         return "Revenue";
       case "bookings":
         return "Bookings";
+      case "page_views":
+        return "Page Views";
       default:
         return "Analytics";
     }
@@ -61,12 +61,12 @@ class AnalyticsState {
 
   Color get currentColor {
     switch (selectedMetric) {
-      case "page_views":
-        return Colors.blue;
       case "revenue":
         return Colors.green;
       case "bookings":
         return Colors.orange;
+      case "page_views":
+        return Colors.blue;
       default:
         return Colors.blue;
     }
@@ -87,6 +87,7 @@ class AnalyticsNotifier extends StateNotifier<AnalyticsState> {
 }
 
 /// Provider for analytics state
-final analyticsProvider = StateNotifierProvider<AnalyticsNotifier, AnalyticsState>((ref) {
+final analyticsProvider =
+    StateNotifierProvider<AnalyticsNotifier, AnalyticsState>((ref) {
   return AnalyticsNotifier();
 });

@@ -39,7 +39,10 @@ class ClassEventBooking {
         symbol = currency;
       }
     }
-    return "${(amount / 100).toStringAsFixed(2)}$symbol";
+    if (bookingOption?.price == null) {
+      return "N/A";
+    }
+    return "${((bookingOption?.price?.toDouble() ?? 0) / 100.00).toStringAsFixed(2)}$symbol";
   }
 
   // implementing copyWith method only for changing the status

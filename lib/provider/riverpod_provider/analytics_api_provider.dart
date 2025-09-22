@@ -192,9 +192,11 @@ List<ChartDataPoint> _groupRevenueByDate(
     if (bookingDate.isAfter(dateRange['start']!) &&
         bookingDate.isBefore(dateRange['end']!)) {
       final dateKey = _getDateKey(bookingDate, timePeriod);
-      final amountCents = booking.amount; // cents from API
-      final amountEuros =
-          (amountCents is int ? amountCents.toDouble() : amountCents) / 100.0;
+      // Use bookingOption.price (cents) instead of booking.amount
+      final priceCents = booking.bookingOption?.price;
+      final amountEuros = priceCents == null
+          ? 0.0
+          : (priceCents is int ? priceCents.toDouble() : priceCents) / 100.0;
       revenueByDate[dateKey] = (revenueByDate[dateKey] ?? 0.0) + amountEuros;
     }
   }

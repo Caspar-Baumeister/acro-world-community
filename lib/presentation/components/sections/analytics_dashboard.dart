@@ -41,16 +41,6 @@ class AnalyticsDashboard extends ConsumerWidget {
 
   Widget _buildAnalyticsChart(WidgetRef ref, AnalyticsState analyticsState) {
     switch (analyticsState.selectedMetric) {
-      case "page_views":
-        return ref
-            .watch(
-                pageViewsAnalyticsProvider(analyticsState.selectedTimePeriod))
-            .when(
-              data: (dataPoints) => _buildChart(analyticsState, dataPoints),
-              loading: () => _buildLoadingChart(analyticsState),
-              error: (error, stack) =>
-                  _buildErrorChart(analyticsState, error.toString()),
-            );
       case "revenue":
         return ref
             .watch(revenueAnalyticsProvider(analyticsState.selectedTimePeriod))
@@ -69,6 +59,48 @@ class AnalyticsDashboard extends ConsumerWidget {
               error: (error, stack) =>
                   _buildErrorChart(analyticsState, error.toString()),
             );
+      case "page_views":
+        // Show "Coming soon" overlay for page views
+        return Stack(
+          children: [
+            ref
+                .watch(pageViewsAnalyticsProvider(
+                    analyticsState.selectedTimePeriod))
+                .when(
+                  data: (dataPoints) => _buildChart(analyticsState, dataPoints),
+                  loading: () => _buildLoadingChart(analyticsState),
+                  error: (error, stack) =>
+                      _buildErrorChart(analyticsState, error.toString()),
+                ),
+            Positioned.fill(
+              child: Container(
+                color: Colors.black.withOpacity(0.25),
+                alignment: Alignment.center,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.15),
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: const Text(
+                    "Coming soon",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ),
+            )
+          ],
+        );
       default:
         return _buildChart(analyticsState, []);
     }

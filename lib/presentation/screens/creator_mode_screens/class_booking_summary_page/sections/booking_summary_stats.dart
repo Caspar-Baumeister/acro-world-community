@@ -14,12 +14,16 @@ class BookingSummaryStats extends StatelessWidget {
 
     // Calculate stats
     final totalBookings = bookings.length;
-    final totalRevenue = bookings.fold<double>(0, (sum, booking) => sum + booking.amount);
-    final confirmedBookings = bookings.where((b) => b.status == "Confirmed").length;
-    final waitingBookings = bookings.where((b) => b.status == "WaitingForPayment").length;
+    final totalRevenue = bookings.fold<double>(
+        0, (sum, booking) => sum + (booking.bookingOption?.price ?? 0));
+    final confirmedBookings =
+        bookings.where((b) => b.status == "Confirmed").length;
+    final waitingBookings =
+        bookings.where((b) => b.status == "WaitingForPayment").length;
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
+      margin:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surface,
