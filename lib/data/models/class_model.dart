@@ -60,6 +60,22 @@ class ClassModel {
     return [];
   }
 
+  /// Determines if this class can accept bookings
+  bool get isBookable {
+    // Must have booking options
+    if (bookingOptions.isEmpty) {
+      return false;
+    }
+
+    // Must have payment capability (Stripe teacher OR cash payment allowed)
+    final stripeId = owner?.teacher?.stripeId;
+    final isStripeEnabled = owner?.teacher?.isStripeEnabled;
+    final hasStripeTeacher = stripeId != null && isStripeEnabled == true;
+    final allowsCash = isCashAllowed == true;
+
+    return hasStripeTeacher || allowsCash;
+  }
+
   bool flaggedByUser(String userId) {
     return classFlags?.any((element) =>
             element.userId == userId && element.isActive == true) ??

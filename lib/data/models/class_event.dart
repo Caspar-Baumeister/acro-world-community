@@ -22,6 +22,26 @@ class ClassEvent {
   DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
 
+  /// Determines if this event can accept bookings
+  bool get isBookable {
+    // Must have booking slots configured
+    if (maxBookingSlots == null || availableBookingSlots == null) {
+      return false;
+    }
+
+    // Must have available slots
+    if (availableBookingSlots! <= 0) {
+      return false;
+    }
+
+    // Must have a class model that is bookable
+    if (classModel == null) {
+      return false;
+    }
+
+    return classModel!.isBookable;
+  }
+
   ClassEventBookingStatus get bookingStatus {
     if (isCancelled!) {
       return ClassEventBookingStatus.canceled;

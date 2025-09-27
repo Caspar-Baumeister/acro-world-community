@@ -55,8 +55,12 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
 
         // Handle auth case
         if (userId == null) {
+          // Check if event is bookable to show appropriate text even when not logged in
+          final isEventBookable = widget.classEvent?.isBookable ?? false;
+          final buttonText = isEventBookable ? "Book now" : "Calendar";
+
           return SimpleFloatingButton(
-            text: "Book now",
+            text: buttonText,
             onPressed: () => _handleAuthRequired(context),
           );
         }
@@ -71,6 +75,16 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
 
         // Handle no event case
         if (widget.classEvent == null) {
+          return SimpleFloatingButton(
+            text: "Calendar",
+            onPressed: () => _showCalendarModal(context),
+          );
+        }
+
+        // Check if event is bookable
+        final isEventBookable = widget.classEvent!.isBookable;
+
+        if (!isEventBookable) {
           return SimpleFloatingButton(
             text: "Calendar",
             onPressed: () => _showCalendarModal(context),

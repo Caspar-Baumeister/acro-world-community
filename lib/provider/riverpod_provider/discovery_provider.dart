@@ -65,15 +65,19 @@ class DiscoveryState {
       allEventTypes: allEventTypes ?? this.allEventTypes,
       allCountries: allCountries ?? this.allCountries,
       allRegionsByCountry: allRegionsByCountry ?? this.allRegionsByCountry,
-      filteredEventOccurences: filteredEventOccurences ?? this.filteredEventOccurences,
+      filteredEventOccurences:
+          filteredEventOccurences ?? this.filteredEventOccurences,
       filterCountries: filterCountries ?? this.filterCountries,
       filterRegions: filterRegions ?? this.filterRegions,
       filterCategories: filterCategories ?? this.filterCategories,
       filterDates: filterDates ?? this.filterDates,
       isOnlyBookableFilter: isOnlyBookableFilter ?? this.isOnlyBookableFilter,
-      isOnlyHighlightedFilter: isOnlyHighlightedFilter ?? this.isOnlyHighlightedFilter,
-      isOnlyFollowedTeacherFilter: isOnlyFollowedTeacherFilter ?? this.isOnlyFollowedTeacherFilter,
-      isOnlyCloseToMeFilter: isOnlyCloseToMeFilter ?? this.isOnlyCloseToMeFilter,
+      isOnlyHighlightedFilter:
+          isOnlyHighlightedFilter ?? this.isOnlyHighlightedFilter,
+      isOnlyFollowedTeacherFilter:
+          isOnlyFollowedTeacherFilter ?? this.isOnlyFollowedTeacherFilter,
+      isOnlyCloseToMeFilter:
+          isOnlyCloseToMeFilter ?? this.isOnlyCloseToMeFilter,
       loading: loading ?? this.loading,
     );
   }
@@ -105,14 +109,7 @@ class DiscoveryState {
   }
 
   List<ClassEvent> getBookableEvents() {
-    return allEventOccurences
-        .where((event) =>
-            event.maxBookingSlots != null &&
-            event.availableBookingSlots != null &&
-            event.classModel?.bookingOptions != null &&
-            event.classModel!.bookingOptions.isNotEmpty &&
-            event.availableBookingSlots! > 0)
-        .toList();
+    return allEventOccurences.where((event) => event.isBookable).toList();
   }
 
   List<String> getRegionsForSelectedCountries() {
@@ -189,28 +186,22 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
     }
 
     if (state.isOnlyBookableFilter) {
-      filteredEvents = filteredEvents
-          .where((event) =>
-              event.maxBookingSlots != null &&
-              event.availableBookingSlots != null &&
-              event.classModel?.bookingOptions != null &&
-              event.classModel!.bookingOptions.isNotEmpty &&
-              event.availableBookingSlots! > 0)
-          .toList();
+      filteredEvents =
+          filteredEvents.where((event) => event.isBookable).toList();
     }
 
     if (state.isOnlyHighlightedFilter) {
-      filteredEvents = filteredEvents
-          .where((event) => event.isHighlighted == true)
-          .toList();
+      filteredEvents =
+          filteredEvents.where((event) => event.isHighlighted == true).toList();
     }
 
     state = state.copyWith(filteredEventOccurences: filteredEvents);
   }
 
   Future<void> fetchAllEventOccurences({bool? isNetworkOnly}) async {
-    CustomErrorHandler.logDebug('DiscoveryNotifier: Fetching all event occurrences');
-    
+    CustomErrorHandler.logDebug(
+        'DiscoveryNotifier: Fetching all event occurrences');
+
     if (isNetworkOnly == false) {
       state = state.copyWith(loading: true);
     }
@@ -220,7 +211,7 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
         fetchPolicy: isNetworkOnly == false
             ? FetchPolicy.cacheAndNetwork
             : FetchPolicy.networkOnly);
-    
+
     try {
       final graphQLClient = GraphQLClientSingleton().client;
       QueryResult<Object?> result = await graphQLClient.query(options);
@@ -240,13 +231,15 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
           List<DateTime> allDates = List.from(state.allDates);
           List<EventType> allEventTypes = List.from(state.allEventTypes);
           List<String> allCountries = List.from(state.allCountries);
-          Map<String, List<String>> allRegionsByCountry = Map.from(state.allRegionsByCountry);
+          Map<String, List<String>> allRegionsByCountry =
+              Map.from(state.allRegionsByCountry);
 
           for (var newEvent in newEvents) {
             try {
               if (newEvent.startDate != null) {
                 final newDate = DateTime.parse(newEvent.startDate!);
-                bool isInInitialDates = isDateMonthAndYearInList(allDates, newDate);
+                bool isInInitialDates =
+                    isDateMonthAndYearInList(allDates, newDate);
                 if (!isInInitialDates) {
                   allDates.add(newDate);
                 }
@@ -280,7 +273,8 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
             int index = allEvents.indexWhere((existingEvent) =>
                 existingEvent.classId == newEvent.classId &&
                 existingEvent.recurringPattern?.isRecurring == true &&
-                existingEvent.recurringPattern?.id == newEvent.recurringPattern?.id);
+                existingEvent.recurringPattern?.id ==
+                    newEvent.recurringPattern?.id);
 
             if (index != -1) {
               if (newEvent.startDateDT.isBefore(allEvents[index].startDateDT)) {
@@ -313,16 +307,17 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   }
 
   void changeActiveEventDates(DateTime changeDate) {
-    CustomErrorHandler.logDebug('DiscoveryNotifier: Changing active event dates');
+    CustomErrorHandler.logDebug(
+        'DiscoveryNotifier: Changing active event dates');
     List<DateTime> newFilterDates = List.from(state.filterDates);
-    
+
     if (isDateMonthAndYearInList(newFilterDates, changeDate)) {
       newFilterDates.removeWhere((date) =>
           date.month == changeDate.month && date.year == changeDate.year);
     } else {
       newFilterDates.add(changeDate);
     }
-    
+
     state = state.copyWith(filterDates: newFilterDates);
     setActiveEvents();
   }
@@ -330,13 +325,13 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   void changeActiveCategory(EventType changeCategory) {
     CustomErrorHandler.logDebug('DiscoveryNotifier: Changing active category');
     List<EventType> newFilterCategories = List.from(state.filterCategories);
-    
+
     if (newFilterCategories.contains(changeCategory)) {
       newFilterCategories.remove(changeCategory);
     } else {
       newFilterCategories.add(changeCategory);
     }
-    
+
     state = state.copyWith(filterCategories: newFilterCategories);
     setActiveEvents();
   }
@@ -344,13 +339,13 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   void changeActiveCountry(String changeCountry) {
     CustomErrorHandler.logDebug('DiscoveryNotifier: Changing active country');
     List<String> newFilterCountries = List.from(state.filterCountries);
-    
+
     if (newFilterCountries.contains(changeCountry)) {
       newFilterCountries.remove(changeCountry);
     } else {
       newFilterCountries.add(changeCountry);
     }
-    
+
     state = state.copyWith(filterCountries: newFilterCountries);
     setActiveEvents();
   }
@@ -358,20 +353,22 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   void changeActiveRegion(String region) {
     CustomErrorHandler.logDebug('DiscoveryNotifier: Changing active region');
     List<String> newFilterRegions = List.from(state.filterRegions);
-    
+
     if (newFilterRegions.contains(region)) {
       newFilterRegions.remove(region);
     } else {
       newFilterRegions.add(region);
     }
-    
+
     state = state.copyWith(filterRegions: newFilterRegions);
     setActiveEvents();
   }
 
   void setToOnlyHighlightedFilter() {
-    CustomErrorHandler.logDebug('DiscoveryNotifier: Toggling highlighted filter');
-    state = state.copyWith(isOnlyHighlightedFilter: !state.isOnlyHighlightedFilter);
+    CustomErrorHandler.logDebug(
+        'DiscoveryNotifier: Toggling highlighted filter');
+    state =
+        state.copyWith(isOnlyHighlightedFilter: !state.isOnlyHighlightedFilter);
     setActiveEvents();
   }
 
@@ -382,12 +379,15 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
   }
 
   void setToOnlyFollowedTeacherFilter() {
-    CustomErrorHandler.logDebug('DiscoveryNotifier: Toggling followed teacher filter');
-    state = state.copyWith(isOnlyFollowedTeacherFilter: !state.isOnlyFollowedTeacherFilter);
+    CustomErrorHandler.logDebug(
+        'DiscoveryNotifier: Toggling followed teacher filter');
+    state = state.copyWith(
+        isOnlyFollowedTeacherFilter: !state.isOnlyFollowedTeacherFilter);
     setActiveEvents();
   }
 }
 
-final discoveryProvider = StateNotifierProvider<DiscoveryNotifier, DiscoveryState>((ref) {
+final discoveryProvider =
+    StateNotifierProvider<DiscoveryNotifier, DiscoveryState>((ref) {
   return DiscoveryNotifier();
 });
