@@ -85,6 +85,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
     required String email,
     required String password,
     required bool isNewsletter,
+    String? imageUrl,
   }) async {
     state = const AsyncValue.loading();
     try {
@@ -93,6 +94,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
         password,
         name,
         isNewsletterEnabled: isNewsletter,
+        imageUrl: imageUrl,
       ) as Map<String, dynamic>;
 
       if (response['errors'] != null) {

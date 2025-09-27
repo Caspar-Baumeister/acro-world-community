@@ -68,15 +68,30 @@ class DatabaseService {
   }
 
   Future registerApi(String email, String password, String name,
-      {bool? isNewsletterEnabled}) async {
+      {bool? isNewsletterEnabled, String? imageUrl}) async {
     try {
+      // Build the input object dynamically
+      final inputParts = <String>[
+        'email: "$email"',
+        'password: "$password"',
+        'name: "$name"',
+        'isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}',
+      ];
+
+      // Add imageUrl if provided
+      if (imageUrl != null && imageUrl.isNotEmpty) {
+        inputParts.add('imageUrl: "$imageUrl"');
+      }
+
+      final inputString = inputParts.join(', ');
+
       final response = await http.post(uri,
           headers: {
             'content-type': 'application/json',
           },
           body: json.encode({
             'query':
-                """mutation MyMutation {register_v2(input: {email: "$email", password: "$password", name: "$name", isNewsletterEnabled: ${isNewsletterEnabled == true ? "true" : "false"}}){token refreshToken}}"""
+                """mutation MyMutation {register_v2(input: {$inputString}){token refreshToken}}"""
           }));
       return jsonDecode(response.body.toString());
     } catch (e, s) {

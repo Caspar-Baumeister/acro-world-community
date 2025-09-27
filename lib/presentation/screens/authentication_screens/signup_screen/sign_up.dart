@@ -6,11 +6,14 @@ import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/components/input/user_image_picker.dart';
+// TODO: UNCOMMENT WHEN READY TO IMPLEMENT IMAGE UPLOAD DURING REGISTRATION
+// import 'package:acroworld/presentation/components/input/user_image_picker.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
+import 'package:acroworld/services/user_image_service.dart';
+// TODO: UNCOMMENT WHEN READY TO IMPLEMENT IMAGE UPLOAD DURING REGISTRATION
+// import 'package:acroworld/services/user_image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -79,40 +82,31 @@ class _SignUpState extends ConsumerState<SignUp> {
     }
 
     try {
-      // 1. Register the user
-      await ref.read(authProvider.notifier).register(
-            name: nameController.text.trim(),
-            email: emailController.text.trim(),
-            password: passwordController.text,
-            isNewsletter: isNewsletter,
-          );
+      String? imageUrl;
 
-      if (!mounted) return;
-
-      // 2. Upload profile image if selected
+      // 1. Upload profile image first if selected
       if (_selectedImageBytes != null) {
         setState(() {
           _isUploadingImage = true;
         });
 
         try {
-          // Use the UserNotifier method to ensure state is properly updated
-          final success = await ref
-              .read(userNotifierProvider.notifier)
-              .uploadAndUpdateImage(_selectedImageBytes!);
+          // Generate a temporary user ID for the image path
+          // This will be used to create a unique path for the image
+          final tempUserId = DateTime.now().millisecondsSinceEpoch.toString();
+          final imagePath = 'user-images/$tempUserId/profile.png';
 
-          if (!success) {
-            showErrorToast("Failed to upload profile image");
-          } else {
-            // Wait a moment for the database to be fully updated
-            await Future.delayed(const Duration(milliseconds: 500));
-            
-            // Refresh user data to ensure it's up to date
-            ref.invalidate(userNotifierProvider);
-          }
+          // Upload image directly to Firebase Storage
+          final imageUploadService = ImageUploadService();
+          imageUrl = await imageUploadService.uploadImage(
+            _selectedImageBytes!,
+            path: imagePath,
+          );
+          print('📝 DEBUG: SignUp - Image uploaded successfully: $imageUrl');
         } catch (e) {
           // Don't fail registration if image upload fails
           print('Warning: Failed to upload profile image: $e');
+          imageUrl = null;
         } finally {
           if (mounted) {
             setState(() {
@@ -121,6 +115,17 @@ class _SignUpState extends ConsumerState<SignUp> {
           }
         }
       }
+
+      // 2. Register the user with the image URL (if uploaded successfully)
+      await ref.read(authProvider.notifier).register(
+            name: nameController.text.trim(),
+            email: emailController.text.trim(),
+            password: passwordController.text,
+            isNewsletter: isNewsletter,
+            imageUrl: imageUrl,
+          );
+
+      if (!mounted) return;
 
       // 3. Navigate to next screen
       if (widget.redirectAfter != null) {

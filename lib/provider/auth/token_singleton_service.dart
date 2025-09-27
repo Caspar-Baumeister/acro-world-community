@@ -139,9 +139,9 @@ class TokenSingletonService {
 
   // REGISTER //
   Future<Map> register(String email, String password, String name,
-      {bool? isNewsletterEnabled}) async {
+      {bool? isNewsletterEnabled, String? imageUrl}) async {
     var response = await DatabaseService().registerApi(email, password, name,
-        isNewsletterEnabled: isNewsletterEnabled);
+        isNewsletterEnabled: isNewsletterEnabled, imageUrl: imageUrl);
     if (response["data"]?["register_v2"]?["token"] != null) {
       String token = response["data"]["register_v2"]["token"];
       final userCredential =
