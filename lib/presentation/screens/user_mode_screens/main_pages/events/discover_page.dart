@@ -1,17 +1,21 @@
 import 'package:acroworld/presentation/components/buttons/floating_action_button.dart';
 import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
+import 'package:acroworld/presentation/screens/modals/insert_event_explanation_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_appbar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_dashboard_body.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_on_discover_body.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
-import 'package:acroworld/routing/route_names.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class DiscoverPage extends StatelessWidget {
   const DiscoverPage({super.key});
+
+  void _showInsertEventModal(BuildContext context) {
+    buildMortal(context, const InsertEventExplanationModal());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +32,7 @@ class DiscoverPage extends StatelessWidget {
         CustomFloatingActionButton(
           title: "Insert Event",
           subtitle: "Add your class or workshop",
-          onPressed: () => context.goNamed(profileRoute),
+          onPressed: () => _showInsertEventModal(context),
           backgroundColor: colorScheme.tertiary,
           textColor: Colors.white,
         ),
