@@ -179,6 +179,7 @@ class _FavoritesBodyState extends State<FavoritesBody> {
             Expanded(
               child: _buildEventsByMonth(),
             ),
+            const SizedBox(height: 80),
           ],
         ),
       ),

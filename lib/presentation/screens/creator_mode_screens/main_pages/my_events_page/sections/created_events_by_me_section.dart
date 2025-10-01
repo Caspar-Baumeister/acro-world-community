@@ -112,6 +112,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
             child: _buildEventsContent(eventsState),
           ),
         ),
+        const SizedBox(height: 80),
       ],
     );
   }

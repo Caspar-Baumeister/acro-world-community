@@ -11,10 +11,12 @@ class EmailInvitationsSection extends ConsumerStatefulWidget {
   const EmailInvitationsSection({super.key});
 
   @override
-  ConsumerState<EmailInvitationsSection> createState() => _EmailInvitationsSectionState();
+  ConsumerState<EmailInvitationsSection> createState() =>
+      _EmailInvitationsSectionState();
 }
 
-class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSection> {
+class _EmailInvitationsSectionState
+    extends ConsumerState<EmailInvitationsSection> {
   String _searchQuery = '';
   String _selectedFilter = 'all';
 
@@ -67,24 +69,28 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
             child: _buildInvitationsList(invitesState, invitesNotifier),
           ),
         ),
+        const SizedBox(height: 80),
       ],
     );
   }
 
-  Widget _buildInvitationsList(InvitesState invitesState, InvitesNotifier invitesNotifier) {
+  Widget _buildInvitationsList(
+      InvitesState invitesState, InvitesNotifier invitesNotifier) {
     if (invitesState.loading) {
       return _buildLoadingState();
     }
 
     final filteredInvites = _getFilteredInvites(invitesState.invites);
-    
+
     if (filteredInvites.isEmpty) {
       return _buildEmptyState(invitesNotifier);
     }
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      itemCount: filteredInvites.length + (invitesState.canFetchMore ? 1 : 0) + 1, // +1 for bottom padding
+      itemCount: filteredInvites.length +
+          (invitesState.canFetchMore ? 1 : 0) +
+          1, // +1 for bottom padding
       itemBuilder: (context, index) {
         if (index == filteredInvites.length) {
           // Load more button
@@ -99,8 +105,8 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
                   child: Text(
                     "Load more",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
                   ),
                 ),
               ),
@@ -108,12 +114,13 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
           }
           return const SizedBox.shrink();
         }
-        
-        if (index == filteredInvites.length + (invitesState.canFetchMore ? 1 : 0)) {
+
+        if (index ==
+            filteredInvites.length + (invitesState.canFetchMore ? 1 : 0)) {
           // Bottom padding for floating button
           return const SizedBox(height: 80);
         }
-        
+
         final invite = filteredInvites[index];
         return ModernEmailInvitationCard(
           invitation: invite,
@@ -133,13 +140,13 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
         final teacherName = invite.invitedUser?.name?.toLowerCase() ?? '';
         final email = invite.email?.toLowerCase() ?? '';
         final eventName = invite.classModel?.name?.toLowerCase() ?? '';
-        
+
         final matchesSearch = teacherName.contains(query) ||
             email.contains(query) ||
             eventName.contains(query);
         if (!matchesSearch) return false;
       }
-      
+
       // Status filter
       switch (_selectedFilter) {
         case 'confirmed':
@@ -170,7 +177,7 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
 
   Widget _buildEmptyState(InvitesNotifier invitesNotifier) {
     final hasFilters = _searchQuery.isNotEmpty || _selectedFilter != 'all';
-    
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -182,12 +189,14 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
           ),
           const SizedBox(height: 16),
           Text(
-            hasFilters ? 'No invitations match your search' : 'No email invitations found',
+            hasFilters
+                ? 'No invitations match your search'
+                : 'No email invitations found',
             style: Theme.of(context).textTheme.headlineSmall,
           ),
           const SizedBox(height: 8),
           Text(
-            hasFilters 
+            hasFilters
                 ? 'Try adjusting your search or filters'
                 : 'You haven\'t sent any email invitations yet',
             style: Theme.of(context).textTheme.bodyMedium,
@@ -211,5 +220,4 @@ class _EmailInvitationsSectionState extends ConsumerState<EmailInvitationsSectio
       ),
     );
   }
-
 }

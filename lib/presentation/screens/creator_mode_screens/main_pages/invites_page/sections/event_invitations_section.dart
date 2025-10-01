@@ -112,6 +112,7 @@ class _EventInvitationsSectionState
             child: _buildInvitationsList(invitationsState),
           ),
         ),
+        const SizedBox(height: 80),
       ],
     );
   }

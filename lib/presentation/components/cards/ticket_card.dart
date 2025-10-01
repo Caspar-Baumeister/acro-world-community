@@ -54,9 +54,7 @@ class TicketCard extends StatelessWidget {
                     // Event title
                     Text(
                       booking.eventName ?? "Unknown Event",
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: theme.textTheme.titleMedium,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -66,14 +64,22 @@ class TicketCard extends StatelessWidget {
                     // Booking title
                     if (booking.bookingTitle != null &&
                         booking.bookingTitle!.isNotEmpty)
-                      Text(
-                        booking.bookingTitle!,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface.withOpacity(0.7),
+                      Row(children: [
+                        Icon(
+                          Icons.confirmation_number_rounded,
+                          size: 16,
+                          color: colorScheme.onSurface.withOpacity(0.5),
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                        const SizedBox(width: 4),
+                        Text(
+                          booking.bookingTitle!,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ]),
 
                     const SizedBox(height: 8),
 
@@ -90,9 +96,7 @@ class TicketCard extends StatelessWidget {
                           child: Text(
                             _formatDateRange(
                                 booking.startDate, booking.endDate),
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface.withOpacity(0.7),
-                            ),
+                            style: theme.textTheme.bodySmall,
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -213,9 +217,9 @@ class TicketCard extends StatelessWidget {
     if (start.day == end.day &&
         start.month == end.month &&
         start.year == end.year) {
-      return '${DateFormat('EEEE, d MMM yyyy').format(start)} • ${DateFormat('h:mm a').format(start)} - ${DateFormat('h:mm a').format(end)}';
+      return '${DateFormat('EE, d MMM yy').format(start)} • ${DateFormat('h:mm a').format(start)} - ${DateFormat('h:mm a').format(end)}';
     } else {
-      return '${DateFormat('d MMM').format(start)} - ${DateFormat('d MMM yyyy').format(end)}';
+      return '${DateFormat('d MMM').format(start)} - ${DateFormat('d MMM yy').format(end)}';
     }
   }
 

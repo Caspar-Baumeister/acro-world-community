@@ -80,7 +80,7 @@ class DatabaseService {
 
       // Add imageUrl if provided
       if (imageUrl != null && imageUrl.isNotEmpty) {
-        inputParts.add('imageUrl: "$imageUrl"');
+        inputParts.add('image_url: "$imageUrl"');
       }
 
       final inputString = inputParts.join(', ');
