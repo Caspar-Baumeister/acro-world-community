@@ -13,6 +13,23 @@ class TeacherStatistics {
     required this.totalReviews,
   });
 
+  /// Create a copy of this TeacherStatistics with updated values
+  TeacherStatistics copyWith({
+    int? totalEvents,
+    int? eventsParticipated,
+    int? timesBooked,
+    double? averageRating,
+    int? totalReviews,
+  }) {
+    return TeacherStatistics(
+      totalEvents: totalEvents ?? this.totalEvents,
+      eventsParticipated: eventsParticipated ?? this.eventsParticipated,
+      timesBooked: timesBooked ?? this.timesBooked,
+      averageRating: averageRating ?? this.averageRating,
+      totalReviews: totalReviews ?? this.totalReviews,
+    );
+  }
+
   factory TeacherStatistics.fromJson(Map<String, dynamic> json) {
     return TeacherStatistics(
       totalEvents: json['totalEvents'] as int? ?? 0,

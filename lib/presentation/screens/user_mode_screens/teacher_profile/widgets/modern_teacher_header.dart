@@ -279,73 +279,67 @@ class ModernTeacherHeader extends ConsumerWidget {
                 // Statistics row
                 Consumer(
                   builder: (context, ref, child) {
-                    final statisticsAsync =
+                    final state =
                         ref.watch(teacherStatisticsProvider(teacher.id!));
+                    final notifier = ref.read(
+                        teacherStatisticsNotifierProvider(teacher.id!)
+                            .notifier);
 
-                    return statisticsAsync.when(
-                      data: (statistics) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildStatItem(
-                            context,
-                            "Events",
-                            statistics.totalEvents.toString(),
-                            Icons.event,
-                          ),
-                          _buildStatItem(
-                            context,
-                            "Rating",
-                            statistics.averageRating > 0
-                                ? statistics.averageRating.toStringAsFixed(1)
-                                : "N/A",
-                            Icons.star,
-                          ),
-                          _buildStatItem(
-                            context,
-                            "Reviews",
-                            statistics.totalReviews.toString(),
-                            Icons.rate_review,
-                          ),
-                          _buildStatItem(
-                            context,
-                            "Participated",
-                            statistics.eventsParticipated.toString(),
-                            Icons.event_available,
-                          ),
-                          _buildStatItem(
-                            context,
-                            "Booked",
-                            statistics.timesBooked.toString(),
-                            Icons.book_online,
-                          ),
-                        ],
-                      ),
-                      loading: () => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildStatItem(context, "Events", "...", Icons.event),
-                          _buildStatItem(context, "Rating", "...", Icons.star),
-                          _buildStatItem(
-                              context, "Reviews", "...", Icons.rate_review),
-                          _buildStatItem(context, "Participated", "...",
-                              Icons.event_available),
-                          _buildStatItem(
-                              context, "Booked", "...", Icons.book_online),
-                        ],
-                      ),
-                      error: (error, stack) => Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildStatItem(context, "Events", "0", Icons.event),
-                          _buildStatItem(context, "Rating", "N/A", Icons.star),
-                          _buildStatItem(
-                              context, "Reviews", "0", Icons.rate_review),
-                          _buildStatItem(context, "Participated", "0",
-                              Icons.event_available),
-                          _buildStatItem(
-                              context, "Booked", "0", Icons.book_online),
-                        ],
-                      ),
+                    print(
+                        '🎨 [TeacherStats] UI rendering statistics state: $state');
+
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        _buildStatItem(
+                          context,
+                          "Events",
+                          state.statistics.totalEvents.toString(),
+                          Icons.event,
+                          isLoading: state.isLoadingStat('events'),
+                          error: state.getErrorForStat('events'),
+                          onRetry: () => notifier.loadEventsStats(),
+                        ),
+                        _buildStatItem(
+                          context,
+                          "Rating",
+                          state.statistics.averageRating > 0
+                              ? state.statistics.averageRating
+                                  .toStringAsFixed(1)
+                              : "N/A",
+                          Icons.star,
+                          isLoading: state.isLoadingStat('comments'),
+                          error: state.getErrorForStat('comments'),
+                          onRetry: () => notifier.loadCommentsStats(),
+                        ),
+                        _buildStatItem(
+                          context,
+                          "Reviews",
+                          state.statistics.totalReviews.toString(),
+                          Icons.rate_review,
+                          isLoading: state.isLoadingStat('comments'),
+                          error: state.getErrorForStat('comments'),
+                          onRetry: () => notifier.loadCommentsStats(),
+                        ),
+                        _buildStatItem(
+                          context,
+                          "Participated",
+                          state.statistics.eventsParticipated.toString(),
+                          Icons.event_available,
+                          isLoading: state.isLoadingStat('participated'),
+                          error: state.getErrorForStat('participated'),
+                          onRetry: () => notifier.loadParticipatedStats(),
+                        ),
+                        _buildStatItem(
+                          context,
+                          "Booked",
+                          state.statistics.timesBooked.toString(),
+                          Icons.book_online,
+                          isLoading: state.isLoadingStat('bookings'),
+                          error: state.getErrorForStat('bookings'),
+                          onRetry: () => notifier.loadBookingsStats(),
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -393,39 +387,63 @@ class ModernTeacherHeader extends ConsumerWidget {
     BuildContext context,
     String label,
     String value,
-    IconData icon,
-  ) {
+    IconData icon, {
+    bool isLoading = false,
+    String? error,
+    VoidCallback? onRetry,
+  }) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
+    return GestureDetector(
+      onTap: onRetry,
+      child: Column(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: BoxDecoration(
+              color: error != null
+                  ? colorScheme.errorContainer.withOpacity(0.1)
+                  : colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8),
+              border: error != null
+                  ? Border.all(color: colorScheme.error.withOpacity(0.3))
+                  : null,
+            ),
+            child: isLoading
+                ? SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        error != null ? colorScheme.error : colorScheme.primary,
+                      ),
+                    ),
+                  )
+                : Icon(
+                    icon,
+                    size: 20,
+                    color:
+                        error != null ? colorScheme.error : colorScheme.primary,
+                  ),
           ),
-          child: Icon(
-            icon,
-            size: 20,
-            color: colorScheme.primary,
+          const SizedBox(height: 4),
+          Text(
+            isLoading ? '...' : value,
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: error != null ? colorScheme.error : null,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w600,
+          Text(
+            label,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
           ),
-        ),
-        Text(
-          label,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

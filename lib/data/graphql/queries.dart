@@ -836,7 +836,7 @@ query getUserCommentForTeacher(\$teacher_id: uuid!, \$user_id: uuid!) {
 
   static final getTeacherEventsStats = gql("""
 query getTeacherEventsStats(\$teacher_id: uuid!) {
-  classes_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
+  class_events_aggregate(where: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
     aggregate {
       count
     }
@@ -846,7 +846,7 @@ query getTeacherEventsStats(\$teacher_id: uuid!) {
 
   static final getTeacherParticipatedEventsStats = gql("""
 query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
-  class_events_aggregate(where: {class: {teacher_id: {_eq: \$teacher_id}}}) {
+  class_events_aggregate(where: {class: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
     aggregate {
       count
     }
@@ -856,7 +856,7 @@ query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
 
   static final getTeacherBookingsStats = gql("""
 query getTeacherBookingsStats(\$teacher_id: uuid!) {
-  class_event_bookings_aggregate(where: {class_event: {class: {teacher_id: {_eq: \$teacher_id}}}}) {
+  class_event_bookings_aggregate(where: {class_event: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}}}) {
     aggregate {
       count
     }
