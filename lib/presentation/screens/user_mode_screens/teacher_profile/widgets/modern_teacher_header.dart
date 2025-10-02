@@ -187,27 +187,19 @@ class ModernTeacherHeader extends ConsumerWidget {
                         children: [
                           Row(
                             children: [
-                              Text(
-                                teacher.name ?? "No name",
-                                style: theme.textTheme.headlineSmall?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                              Expanded(
+                                child: Text(
+                                  teacher.name ?? "No name",
+                                  style:
+                                      theme.textTheme.headlineSmall?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
                               ),
-                              const SizedBox(width: 8),
-                              // Verification badge
-                              Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                  color: colorScheme.primary,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: Icon(
-                                  Icons.verified,
-                                  size: 16,
-                                  color: colorScheme.onPrimary,
-                                ),
-                              ),
-                              const Spacer(),
+                              const SizedBox(width: 2),
+
                               // Follow button
                               GestureDetector(
                                 onTap: onFollowPressed,
