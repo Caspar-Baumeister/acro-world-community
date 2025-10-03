@@ -692,6 +692,8 @@ class EventCreationAndEditingNotifier
         isPaymentReceiver: true,
       );
 
+      print('bookingCategories ${state.bookingCategories}');
+
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
         id: const Uuid().v4(),
@@ -706,7 +708,9 @@ class EventCreationAndEditingNotifier
         locationCity: state.region,
         locationCountry: state.countryCode,
         eventType: _mapEventTypeToApiValue(_stringToEventType(state.eventType)),
-        maxBookingSlots: state.maxBookingSlots,
+        maxBookingSlots: state.bookingCategories
+            .map((category) => category.contingent)
+            .reduce((a, b) => a + b),
         recurringPatterns: state.recurringPatterns
             .map((pattern) => RecurringPatternInput(
                   id: pattern.id ?? const Uuid().v4(),
@@ -845,7 +849,9 @@ class EventCreationAndEditingNotifier
         locationCity: state.region,
         locationCountry: state.countryCode,
         eventType: state.eventType,
-        maxBookingSlots: state.maxBookingSlots,
+        maxBookingSlots: state.bookingCategories
+            .map((category) => category.contingent)
+            .reduce((a, b) => a + b),
         recurringPatterns: state.recurringPatterns
             .map((pattern) => RecurringPatternInput(
                   id: pattern.id ?? const Uuid().v4(),
