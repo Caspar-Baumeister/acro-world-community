@@ -92,9 +92,6 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
     state = const TeacherEventsState();
     _offset = 0;
   }
-
-  /// Test constructor for unit tests
-  TeacherEventsNotifier.test() : super(const TeacherEventsState());
 }
 
 /// Provider for teacher events state
