@@ -38,6 +38,7 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
   bool _isSubmittingComment = false;
   String? _existingCommentId;
   bool _isEditMode = false;
+  bool _showReviewForm = false;
 
   @override
   void initState() {
@@ -368,240 +369,296 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
                     }
 
                     return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: colorScheme.surface,
-                          borderRadius: BorderRadius.circular(16),
-                          border: Border.all(
-                            color: colorScheme.outline.withOpacity(0.2),
-                            width: 1,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _isEditMode
-                                    ? 'Edit Your Review'
-                                    : 'Leave a Review',
-                                style: theme.textTheme.titleMedium?.copyWith(
-                                  fontWeight: FontWeight.w600,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
+                        children: [
+                          if (!_showReviewForm) ...[
+                            // Show comment button
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  setState(() {
+                                    _showReviewForm = true;
+                                  });
+                                },
+                                icon: Icon(
+                                  existingComment != null
+                                      ? Icons.edit
+                                      : Icons.comment_outlined,
+                                ),
+                                label: Text(
+                                  existingComment != null
+                                      ? 'Edit Comment'
+                                      : 'Comment',
+                                ),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorScheme.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                    vertical: 12,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
                                 ),
                               ),
-                              if (_isEditMode) ...[
-                                const SizedBox(height: 8),
-                                Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    color: colorScheme.primary.withOpacity(0.1),
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(
-                                      color:
-                                          colorScheme.primary.withOpacity(0.3),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.info_outline,
-                                        color: colorScheme.primary,
-                                        size: 20,
-                                      ),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          'You already have a review for this teacher. You can edit or delete it below.',
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                            color: colorScheme.primary,
+                            ),
+                          ] else ...[
+                            // Show review form
+                            Container(
+                              decoration: BoxDecoration(
+                                color: colorScheme.surface,
+                                borderRadius: BorderRadius.circular(16),
+                                border: Border.all(
+                                  color: colorScheme.outline.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            _isEditMode
+                                                ? 'Edit Your Review'
+                                                : 'Leave a Review',
+                                            style: theme.textTheme.titleMedium
+                                                ?.copyWith(
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              _showReviewForm = false;
+                                            });
+                                          },
+                                          icon: const Icon(Icons.close),
+                                        ),
+                                      ],
+                                    ),
+                                    if (_isEditMode) ...[
+                                      const SizedBox(height: 8),
+                                      Container(
+                                        padding: const EdgeInsets.all(12),
+                                        decoration: BoxDecoration(
+                                          color: colorScheme.primary
+                                              .withOpacity(0.1),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                          border: Border.all(
+                                            color: colorScheme.primary
+                                                .withOpacity(0.3),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.info_outline,
+                                              color: colorScheme.primary,
+                                              size: 20,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                'You already have a review for this teacher. You can edit or delete it below.',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                  color: colorScheme.primary,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
-                                  ),
-                                ),
-                              ],
-                              const SizedBox(height: 12),
-                              TextField(
-                                controller: _commentController,
-                                decoration: InputDecoration(
-                                  hintText: 'Share your experience...',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color:
-                                          colorScheme.outline.withOpacity(0.2),
-                                    ),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color:
-                                          colorScheme.outline.withOpacity(0.2),
-                                    ),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    borderSide: BorderSide(
-                                      color: colorScheme.primary,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  contentPadding: const EdgeInsets.all(16),
-                                ),
-                                maxLines: 3,
-                              ),
-                              const SizedBox(height: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Star rating selector
-                                  StarRatingWidget(
-                                    onRatingChanged: (rating) {
-                                      setState(() {
-                                        _selectedRating = rating;
-                                      });
-                                    },
-                                    initialRating: _selectedRating,
-                                    size: 24,
-                                  ),
-                                  const SizedBox(height: 12),
-                                  Wrap(
-                                    spacing: 8,
-                                    runSpacing: 8,
-                                    children: [
-                                      if (_isEditMode) ...[
-                                        TextButton(
-                                          onPressed: _isSubmittingComment
-                                              ? null
-                                              : () => _deleteComment(),
-                                          child: Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              color: colorScheme.error,
-                                            ),
+                                    const SizedBox(height: 12),
+                                    TextField(
+                                      controller: _commentController,
+                                      decoration: InputDecoration(
+                                        hintText: 'Share your experience...',
+                                        border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: colorScheme.outline
+                                                .withOpacity(0.2),
                                           ),
                                         ),
-                                        TextButton(
-                                          onPressed: _isSubmittingComment
-                                              ? null
-                                              : () {
-                                                  setState(() {
-                                                    _isEditMode = false;
-                                                    _existingCommentId = null;
-                                                    _commentController.clear();
-                                                    _selectedRating = 0;
-                                                  });
-                                                },
-                                          child: Text(
-                                            'Cancel',
-                                            style: TextStyle(
-                                              color:
-                                                  colorScheme.onSurfaceVariant,
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: colorScheme.outline
+                                                .withOpacity(0.2),
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(12),
+                                          borderSide: BorderSide(
+                                            color: colorScheme.primary,
+                                            width: 2,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 16,
+                                        ),
+                                      ),
+                                      maxLines: 4,
+                                      maxLength: 500,
+                                    ),
+                                    const SizedBox(height: 16),
+                                    StarRatingWidget(
+                                      initialRating: _selectedRating,
+                                      onRatingChanged: (rating) {
+                                        setState(() {
+                                          _selectedRating = rating;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(height: 16),
+                                    Row(
+                                      children: [
+                                        if (_isEditMode) ...[
+                                          IconButton(
+                                            onPressed: _isSubmittingComment
+                                                ? null
+                                                : () => _deleteComment(),
+                                            icon: Icon(
+                                              Icons.delete_outline,
+                                              color: colorScheme.error,
                                             ),
+                                            tooltip: 'Delete review',
+                                          ),
+                                          const SizedBox(width: 8),
+                                        ],
+                                        Expanded(
+                                          flex: 2,
+                                          child: ElevatedButton(
+                                            onPressed: _canSubmit()
+                                                ? () => _submitComment()
+                                                : null,
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  colorScheme.primary,
+                                              foregroundColor: Colors.white,
+                                              disabledBackgroundColor:
+                                                  colorScheme
+                                                      .surfaceContainerHighest,
+                                              disabledForegroundColor:
+                                                  colorScheme.onSurfaceVariant,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                horizontal: 24,
+                                                vertical: 12,
+                                              ),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
+                                            ),
+                                            child: _isSubmittingComment
+                                                ? const SizedBox(
+                                                    width: 16,
+                                                    height: 16,
+                                                    child:
+                                                        CircularProgressIndicator(
+                                                      strokeWidth: 2,
+                                                      valueColor:
+                                                          AlwaysStoppedAnimation<
+                                                                  Color>(
+                                                              Colors.white),
+                                                    ),
+                                                  )
+                                                : Text(_isEditMode
+                                                    ? 'Update'
+                                                    : 'Submit'),
                                           ),
                                         ),
                                       ],
-                                      ElevatedButton(
-                                        onPressed: _isSubmittingComment
-                                            ? null
-                                            : _canSubmit()
-                                                ? () => _submitComment()
-                                                : () {
-                                                    ScaffoldMessenger.of(
-                                                            context)
-                                                        .showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                            'Please select a rating and enter a comment'),
-                                                        backgroundColor:
-                                                            Colors.orange,
-                                                      ),
-                                                    );
-                                                  },
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: (_canSubmit() &&
-                                                  !_isSubmittingComment)
-                                              ? colorScheme.primary
-                                              : colorScheme.outline
-                                                  .withOpacity(0.3),
-                                          foregroundColor: (_canSubmit() &&
-                                                  !_isSubmittingComment)
-                                              ? colorScheme.onPrimary
-                                              : colorScheme.onSurface
-                                                  .withOpacity(0.5),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                        ),
-                                        child: _isSubmittingComment
-                                            ? const SizedBox(
-                                                width: 16,
-                                                height: 16,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  strokeWidth: 2,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(Colors.white),
-                                                ),
-                                              )
-                                            : Text(_isEditMode
-                                                ? 'Update'
-                                                : 'Submit'),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ],
-                          ),
-                        ),
+                            ),
+                          ],
+                        ],
                       ),
                     );
                   },
                   loading: () => Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: colorScheme.outline.withOpacity(0.2),
-                          width: 1,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: null, // Disabled while loading
+                        icon: const SizedBox(
+                          width: 16,
+                          height: 16,
+                          child: CircularProgressIndicator(strokeWidth: 2),
                         ),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(16),
-                        child: Center(
-                          child: CircularProgressIndicator(),
+                        label: const Text('Loading...'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),
                   ),
                   error: (error, stack) => Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Container(
                       decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(16),
+                        color: colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: colorScheme.outline.withOpacity(0.2),
+                          color: colorScheme.error.withOpacity(0.3),
                           width: 1,
                         ),
                       ),
                       child: Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(
-                          'Error loading comment form: $error',
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: colorScheme.error,
-                          ),
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              color: colorScheme.error,
+                              size: 24,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Error loading comment form',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: colorScheme.error,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Tap to retry',
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: colorScheme.error.withOpacity(0.8),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
