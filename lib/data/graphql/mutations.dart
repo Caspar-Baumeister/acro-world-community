@@ -659,10 +659,11 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
 
   // Comment mutations
   static final insertCommentMutation = gql("""
-    mutation InsertComment(\$comment: String!, \$teacher_id: uuid!, \$user_id: uuid!) {
-      insert_comments_one(object: {comment: \$comment, teacher_id: \$teacher_id, user_id: \$user_id}) {
+    mutation InsertComment(\$content: String!, \$rating: Int!, \$teacher_id: uuid!, \$user_id: uuid!) {
+      insert_comments_one(object: {content: \$content, rating: \$rating, teacher_id: \$teacher_id, user_id: \$user_id}) {
         id
-        comment
+        content
+        rating
         created_at
         user {
           id
@@ -674,10 +675,11 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
   """);
 
   static final updateCommentMutation = gql("""
-    mutation UpdateComment(\$id: uuid!, \$comment: String!) {
-      update_comments_by_pk(pk_columns: {id: \$id}, _set: {comment: \$comment}) {
+    mutation UpdateComment(\$id: uuid!, \$content: String!, \$rating: Int!) {
+      update_comments_by_pk(pk_columns: {id: \$id}, _set: {content: \$content, rating: \$rating}) {
         id
-        comment
+        content
+        rating
         updated_at
       }
     }
