@@ -2,7 +2,6 @@ import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/data/repositories/invitation_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// State for invites
@@ -55,30 +54,6 @@ class InvitesNotifier extends StateNotifier<InvitesState> {
             InvitationRepository(apiService: GraphQLClientSingleton()),
         super(const InvitesState());
 
-  /// Invite a user by email
-  Future<bool> inviteByEmail(String email) async {
-    if (await checkIfInviteIsPossible(email) == false) {
-      return false;
-    }
-
-    try {
-      final result = await _invitationRepository.inviteByEmail(email);
-      if (result) {
-        showSuccessToast("Invitation sent to $email");
-        // Fetch invitations again to show the new one
-        await getInvitations(isRefresh: true);
-        return true;
-      } else {
-        showErrorToast("Failed to send invitation to $email");
-        return false;
-      }
-    } catch (e, s) {
-      showErrorToast(e.toString());
-      CustomErrorHandler.captureException(e, stackTrace: s);
-      return false;
-    }
-  }
-
   /// Get invitations
   Future<void> getInvitations({bool isRefresh = true}) async {
     state = state.copyWith(loading: true, error: null);
@@ -121,18 +96,6 @@ class InvitesNotifier extends StateNotifier<InvitesState> {
   Future<void> fetchMore() async {
     if (state.canFetchMore && !state.loading) {
       await getInvitations(isRefresh: false);
-    }
-  }
-
-  /// Check if invite is possible
-  Future<bool> checkIfInviteIsPossible(String email) async {
-    try {
-      final result = await _invitationRepository.checkInvitePossibility(email);
-      return !(result["isInvitedByYou"] ?? false) &&
-          !(result["isAlreadyRegistered"] ?? false);
-    } catch (e) {
-      CustomErrorHandler.logError('Error checking if invite is possible: $e');
-      return false;
     }
   }
 

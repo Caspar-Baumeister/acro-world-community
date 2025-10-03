@@ -55,18 +55,6 @@ query getAnswersOfUserAndEventOccurence(\$user_id: uuid!, \$event_occurence_id: 
 
   /// INVITES ///
 
-  // check if email is already invited or registered
-  static final checkInvitePossible = gql("""
-    query CheckEmail(\$email: String!) {
-      users(where: {email: {_eq: \$email}}) {
-        id
-      }
-      created_invites(where: {email: {_eq: \$email}}) {
-        id
-      }
-    }
-  """);
-
   // getInvites
   static final getCreatedInvitesPageableQuery = gql("""
 query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
@@ -295,7 +283,6 @@ query userBookings {
             teacher {
               name
             }
-            has_accepted
           }
         }
       }
@@ -637,7 +624,6 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
   query GetPendingTeacherInvitesCount(\$user_id: uuid!) {
     class_teachers_aggregate(
       where: {
-        has_accepted: {_is_null: true},
         teacher: {user_id: {_eq: \$user_id}},
         class_id: {_is_null: false},
         class: {created_by_id: {_neq: \$user_id}}
