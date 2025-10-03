@@ -13,7 +13,7 @@ class CustomAppbarSimple extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return BaseAppbar(
-      title: Text(title ?? "", style: Theme.of(context).textTheme.headlineSmall),
+      title: Text(title ?? "", style: Theme.of(context).textTheme.titleMedium),
       actions: actions,
       leading: isBackButton
           ? IconButton(
