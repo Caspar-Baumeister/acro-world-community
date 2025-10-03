@@ -2,8 +2,7 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
-  /// CATHEGORIES ///
-
+  /// CATEGORIES ///
   static final getConfirmedBookingsForCategoryAggregate = gql("""
 query getConfirmedBookingsForCategory(\$category_id: uuid!, \$class_event_id: uuid!) {
   class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: \$category_id}}, _and: {class_event_id: {_eq: \$class_event_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}}) {
@@ -648,60 +647,6 @@ query getClassesByTeacherId(\$teacher_id: uuid) {
     }
   }
   """);
-
-  // Fetch invitations via class_teachers for a specific teacher_id
-  // Excludes classes created by the current user
-  static final getInvitedClassesByTeacherId = gql("""
-query getInvitedClassesByTeacherId(\$user_id: uuid!, \$whereAccepted: class_teachers_bool_exp!) {
-  class_teachers(
-    where: {
-      _and: [
-        {teacher: {user_id: {_eq: \$user_id}}},
-        {class_id: {_is_null: false}},
-        {class: {created_by_id: {_neq: \$user_id}}},
-        \$whereAccepted
-      ]
-    },
-    order_by: {created_at: desc}
-  ) {
-    id
-    has_accepted
-    is_owner
-    teacher {
-      id
-      name
-      user_id
-    }
-    class {
-      id
-      name
-      description
-      image_url
-      location_name
-      location_city
-      location_country
-      url_slug
-      created_at
-      created_by_id
-      class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
-        id
-        start_date
-        is_highlighted
-      }
-      class_events_aggregate(where: {end_date: {_gte: now}}) {
-        aggregate {
-          count
-        }
-      }
-      class_flags {
-        id
-        is_active
-        user_id
-      }
-    }
-  }
-}
-""");
 
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {

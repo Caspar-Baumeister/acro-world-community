@@ -17,7 +17,7 @@ class ModernEmailInvitationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -55,28 +55,26 @@ class ModernEmailInvitationCard extends StatelessWidget {
   }
 
   Widget _buildImageSection(BuildContext context, ColorScheme colorScheme) {
-    final isConfirmed = invitation.confirmationStatus.toLowerCase() == "confirmed";
+    final isConfirmed =
+        invitation.confirmationStatus.toLowerCase() == "confirmed";
     final teacherImageUrl = invitation.invitedUser?.imageUrl;
-    final isEventInvitation = invitation.classModel != null;
-    
+
     return Stack(
       children: [
-        // Event image, teacher image, or anonymous placeholder
+        // Teacher image or anonymous placeholder
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Container(
             width: 80,
             height: 80,
             color: colorScheme.surfaceContainerHighest,
-            child: isEventInvitation
-                ? _buildEventImage(colorScheme)
-                : (isConfirmed && teacherImageUrl != null)
-                    ? CustomCachedNetworkImage(
-                        imageUrl: teacherImageUrl,
-                        width: 80,
-                        height: 80,
-                      )
-                    : _buildAnonymousPlaceholder(colorScheme),
+            child: (isConfirmed && teacherImageUrl != null)
+                ? CustomCachedNetworkImage(
+                    imageUrl: teacherImageUrl,
+                    width: 80,
+                    height: 80,
+                  )
+                : _buildAnonymousPlaceholder(colorScheme),
           ),
         ),
         // Status badge
@@ -86,28 +84,6 @@ class ModernEmailInvitationCard extends StatelessWidget {
           child: _buildStatusBadge(context, colorScheme),
         ),
       ],
-    );
-  }
-
-  Widget _buildEventImage(ColorScheme colorScheme) {
-    final eventImageUrl = invitation.classModel?.imageUrl;
-    return eventImageUrl != null
-        ? CustomCachedNetworkImage(
-            imageUrl: eventImageUrl,
-            width: 80,
-            height: 80,
-          )
-        : _buildEventPlaceholder(colorScheme);
-  }
-
-  Widget _buildEventPlaceholder(ColorScheme colorScheme) {
-    return Container(
-      color: colorScheme.surfaceContainerHighest,
-      child: Icon(
-        Icons.event,
-        color: colorScheme.onSurfaceVariant,
-        size: 32,
-      ),
     );
   }
 
@@ -126,10 +102,10 @@ class ModernEmailInvitationCard extends StatelessWidget {
     final status = invitation.confirmationStatus;
     final isConfirmed = status.toLowerCase() == "confirmed";
     final isPending = status.toLowerCase() == "pending";
-    
+
     Color badgeColor;
     String badgeText;
-    
+
     if (isConfirmed) {
       badgeColor = Colors.green;
       badgeText = "Confirmed";
@@ -140,7 +116,7 @@ class ModernEmailInvitationCard extends StatelessWidget {
       badgeColor = Colors.red;
       badgeText = status;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
@@ -158,12 +134,12 @@ class ModernEmailInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
-    final teacherName = invitation.invitedUser?.name ?? invitation.email ?? "Unknown";
-    final eventName = invitation.classModel?.name ?? "Unknown Event";
+  Widget _buildContentSection(
+      BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+    final teacherName =
+        invitation.invitedUser?.name ?? invitation.email ?? "Unknown";
     final invitedAt = getDatedMMHHmm(DateTime.parse(invitation.createdAt));
-    final isEventInvitation = invitation.classModel != null;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -178,9 +154,9 @@ class ModernEmailInvitationCard extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Event name or invitation type
+        // Invitation type
         Text(
-          isEventInvitation ? eventName : "Email Invitation",
+          "Email Invitation",
           style: theme.textTheme.bodyMedium?.copyWith(
             color: colorScheme.onSurfaceVariant,
             fontWeight: FontWeight.w500,
@@ -200,14 +176,15 @@ class ModernEmailInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusSection(BuildContext context, ThemeData theme, ColorScheme colorScheme) {
+  Widget _buildStatusSection(
+      BuildContext context, ThemeData theme, ColorScheme colorScheme) {
     final status = invitation.confirmationStatus;
     final isConfirmed = status.toLowerCase() == "confirmed";
     final isPending = status.toLowerCase() == "pending";
-    
+
     Color statusColor;
     IconData statusIcon;
-    
+
     if (isConfirmed) {
       statusColor = Colors.green;
       statusIcon = Icons.check_circle;
@@ -218,7 +195,7 @@ class ModernEmailInvitationCard extends StatelessWidget {
       statusColor = Colors.red;
       statusIcon = Icons.cancel;
     }
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
