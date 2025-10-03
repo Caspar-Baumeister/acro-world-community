@@ -131,58 +131,25 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
 
       if (commentId != null) {
         // Update existing comment
-        final updateVariables = {
-          'id': commentId,
-          'content': content,
-          'rating': rating,
-        };
-
-        print('🔄 [UPDATE COMMENT] Starting update mutation:');
-        print('  📝 Comment ID: $commentId');
-        print('  💬 Content: "$content"');
-        print('  ⭐ Rating: $rating');
-        print('  📋 Variables: $updateVariables');
-        print('  📄 Mutation: ${Mutations.updateCommentMutation}');
-
         result = await _client.mutate(MutationOptions(
           document: Mutations.updateCommentMutation,
-          variables: updateVariables,
+          variables: {
+            'id': commentId,
+            'content': content,
+            'rating': rating,
+          },
         ));
-
-        print('✅ [UPDATE COMMENT] Mutation completed:');
-        print('  🚨 Has Exception: ${result.hasException}');
-        if (result.hasException) {
-          print('  ❌ Exception: ${result.exception}');
-        }
-        print('  📊 Data: ${result.data}');
       } else {
         // Create new comment
-        final insertVariables = {
-          'content': content,
-          'rating': rating,
-          'teacher_id': teacherId,
-          'user_id': currentUser,
-        };
-
-        print('🆕 [CREATE COMMENT] Starting insert mutation:');
-        print('  💬 Content: "$content"');
-        print('  ⭐ Rating: $rating');
-        print('  👨‍🏫 Teacher ID: $teacherId');
-        print('  👤 User ID: $currentUser');
-        print('  📋 Variables: $insertVariables');
-        print('  📄 Mutation: ${Mutations.insertCommentMutation}');
-
         result = await _client.mutate(MutationOptions(
           document: Mutations.insertCommentMutation,
-          variables: insertVariables,
+          variables: {
+            'content': content,
+            'rating': rating,
+            'teacher_id': teacherId,
+            'user_id': currentUser,
+          },
         ));
-
-        print('✅ [CREATE COMMENT] Mutation completed:');
-        print('  🚨 Has Exception: ${result.hasException}');
-        if (result.hasException) {
-          print('  ❌ Exception: ${result.exception}');
-        }
-        print('  📊 Data: ${result.data}');
       }
 
       if (result.hasException) {
@@ -207,29 +174,14 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
   Future<void> updateComment(
       String commentId, String content, int rating) async {
     try {
-      final updateVariables = {
-        'id': commentId,
-        'content': content,
-        'rating': rating,
-      };
-
-      print('🔄 [STANDALONE UPDATE] Starting standalone update mutation:');
-      print('  📝 Comment ID: $commentId');
-      print('  💬 Content: "$content"');
-      print('  ⭐ Rating: $rating');
-      print('  📋 Variables: $updateVariables');
-
       final result = await _client.mutate(MutationOptions(
         document: Mutations.updateCommentMutation,
-        variables: updateVariables,
+        variables: {
+          'id': commentId,
+          'content': content,
+          'rating': rating,
+        },
       ));
-
-      print('✅ [STANDALONE UPDATE] Mutation completed:');
-      print('  🚨 Has Exception: ${result.hasException}');
-      if (result.hasException) {
-        print('  ❌ Exception: ${result.exception}');
-      }
-      print('  📊 Data: ${result.data}');
 
       if (result.hasException) {
         state = AsyncValue.error(result.exception!, StackTrace.current);
@@ -247,25 +199,12 @@ class CommentsNotifier extends StateNotifier<AsyncValue<List<ReviewModel>>> {
 
   Future<void> deleteComment(String commentId) async {
     try {
-      final deleteVariables = {
-        'id': commentId,
-      };
-
-      print('🗑️ [DELETE COMMENT] Starting delete mutation:');
-      print('  📝 Comment ID: $commentId');
-      print('  📋 Variables: $deleteVariables');
-
       final result = await _client.mutate(MutationOptions(
         document: Mutations.deleteCommentMutation,
-        variables: deleteVariables,
+        variables: {
+          'id': commentId,
+        },
       ));
-
-      print('✅ [DELETE COMMENT] Mutation completed:');
-      print('  🚨 Has Exception: ${result.hasException}');
-      if (result.hasException) {
-        print('  ❌ Exception: ${result.exception}');
-      }
-      print('  📊 Data: ${result.data}');
 
       if (result.hasException) {
         state = AsyncValue.error(result.exception!, StackTrace.current);
