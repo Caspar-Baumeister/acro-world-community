@@ -1,5 +1,6 @@
 // ignore_for_file: file_names
 
+import 'package:acroworld/environment.dart';
 import 'package:acroworld/routing/custom_go_router.dart';
 import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
@@ -15,7 +16,7 @@ class RouterApp extends ConsumerWidget {
     final goRouter = ref.watch(routerProvider);
     return MaterialApp.router(
       routerConfig: goRouter,
-      debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: AppEnvironment.isDev,
       theme: AppTheme.light(),
     );
   }
