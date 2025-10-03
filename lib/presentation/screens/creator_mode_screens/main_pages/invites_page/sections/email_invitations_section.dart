@@ -69,7 +69,6 @@ class _EmailInvitationsSectionState
             child: _buildInvitationsList(invitesState, invitesNotifier),
           ),
         ),
-        const SizedBox(height: 80),
       ],
     );
   }
