@@ -8,45 +8,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class TeacherEventsState {
   final bool loading;
   final List<ClassModel> myCreatedEvents;
-  final List<ClassModel> myParticipatingEvents;
   final bool isLoadingMyEvents;
-  final bool isLoadingParticipatingEvents;
   final bool isInitialized;
   final bool canFetchMoreMyEvents;
-  final bool canFetchMoreParticipatingEvents;
   const TeacherEventsState({
     this.loading = true,
     this.myCreatedEvents = const [],
-    this.myParticipatingEvents = const [],
     this.isLoadingMyEvents = false,
-    this.isLoadingParticipatingEvents = false,
     this.isInitialized = false,
     this.canFetchMoreMyEvents = true,
-    this.canFetchMoreParticipatingEvents = true,
   });
 
   TeacherEventsState copyWith({
     bool? loading,
     List<ClassModel>? myCreatedEvents,
-    List<ClassModel>? myParticipatingEvents,
     bool? isLoadingMyEvents,
-    bool? isLoadingParticipatingEvents,
     bool? isInitialized,
     bool? canFetchMoreMyEvents,
-    bool? canFetchMoreParticipatingEvents,
   }) {
     return TeacherEventsState(
       loading: loading ?? this.loading,
       myCreatedEvents: myCreatedEvents ?? this.myCreatedEvents,
-      myParticipatingEvents:
-          myParticipatingEvents ?? this.myParticipatingEvents,
       isLoadingMyEvents: isLoadingMyEvents ?? this.isLoadingMyEvents,
-      isLoadingParticipatingEvents:
-          isLoadingParticipatingEvents ?? this.isLoadingParticipatingEvents,
       isInitialized: isInitialized ?? this.isInitialized,
       canFetchMoreMyEvents: canFetchMoreMyEvents ?? this.canFetchMoreMyEvents,
-      canFetchMoreParticipatingEvents: canFetchMoreParticipatingEvents ??
-          this.canFetchMoreParticipatingEvents,
     );
   }
 }
@@ -55,7 +40,6 @@ class TeacherEventsState {
 class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
   static const int _limit = 10;
   int _offsetMyEvent = 0;
-  int _offsetParticipatingEvent = 0;
 
   TeacherEventsNotifier() : super(const TeacherEventsState()) {
     _initialize();
@@ -67,47 +51,29 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
   }
 
   /// Fetch more events
-  Future<void> fetchMore(String userId, {bool myEvents = true}) async {
-    if (myEvents) {
-      state = state.copyWith(isLoadingMyEvents: true);
-      _offsetMyEvent += _limit;
-    } else {
-      state = state.copyWith(isLoadingParticipatingEvents: true);
-      _offsetParticipatingEvent += _limit;
-    }
+  Future<void> fetchMore(String userId) async {
+    state = state.copyWith(isLoadingMyEvents: true);
+    _offsetMyEvent += _limit;
 
-    await fetchMyEvents(userId, isRefresh: false, myEvents: myEvents);
+    await fetchMyEvents(userId, isRefresh: false);
 
-    if (myEvents) {
-      state = state.copyWith(isLoadingMyEvents: false);
-    } else {
-      state = state.copyWith(isLoadingParticipatingEvents: false);
-    }
+    state = state.copyWith(isLoadingMyEvents: false);
   }
 
-  /// Fetch my events
-  Future<void> fetchMyEvents(String userId,
-      {bool isRefresh = true, bool myEvents = true, String? teacherId}) async {
+  /// Fetch my created events
+  Future<void> fetchMyEvents(String userId, {bool isRefresh = true}) async {
     // Set loading state immediately for better UX
     state = state.copyWith(isInitialized: true, loading: true);
 
     CustomErrorHandler.logDebug(
-        'Starting to fetch ${myEvents ? 'created' : 'participating'} events for user: $userId');
+        'Starting to fetch created events for user: $userId');
 
     if (isRefresh) {
-      if (myEvents) {
-        _offsetMyEvent = 0;
-        state = state.copyWith(
-          canFetchMoreMyEvents: true,
-          myCreatedEvents: [],
-        );
-      } else {
-        _offsetParticipatingEvent = 0;
-        state = state.copyWith(
-          canFetchMoreParticipatingEvents: true,
-          myParticipatingEvents: [],
-        );
-      }
+      _offsetMyEvent = 0;
+      state = state.copyWith(
+        canFetchMoreMyEvents: true,
+        myCreatedEvents: [],
+      );
     }
 
     try {
@@ -118,34 +84,20 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
       // Use optimized method for better performance
       final repositoryReturn = await repository.getClassesLazyAsTeacher(
         _limit,
-        myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
+        _offsetMyEvent,
         {
           "_or": [
-            if (myEvents)
-              {
-                "created_by_id": {"_eq": userId}
-              },
-            if (myEvents)
-              {
-                "class_owners": {
-                  "teacher": {
-                    "user_id": {"_eq": userId}
-                  }
-                }
-              },
-            if (!myEvents)
-              {
-                "class_teachers": {
-                  "teacher": {
-                    "user_id": {"_eq": userId}
-                  }
-                }
-              },
-          ],
-          if (!myEvents)
-            "_not": {
+            {
               "created_by_id": {"_eq": userId}
             },
+            {
+              "class_owners": {
+                "teacher": {
+                  "user_id": {"_eq": userId}
+                }
+              }
+            },
+          ],
         },
       );
 
@@ -159,26 +111,15 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
       CustomErrorHandler.logDebug(
           'Data parsing took ${parseStopwatch.elapsedMilliseconds}ms');
 
-      if (myEvents) {
-        final updatedEvents =
-            isRefresh ? events : [...state.myCreatedEvents, ...events];
-        state = state.copyWith(
-          myCreatedEvents: updatedEvents,
-          canFetchMoreMyEvents: events.length == _limit,
-          loading: false,
-        );
-      } else {
-        final updatedEvents =
-            isRefresh ? events : [...state.myParticipatingEvents, ...events];
-        state = state.copyWith(
-          myParticipatingEvents: updatedEvents,
-          canFetchMoreParticipatingEvents: events.length == _limit,
-          loading: false,
-        );
-      }
+      final updatedEvents =
+          isRefresh ? events : [...state.myCreatedEvents, ...events];
+      state = state.copyWith(
+        myCreatedEvents: updatedEvents,
+        canFetchMoreMyEvents: events.length == _limit,
+        loading: false,
+      );
 
-      CustomErrorHandler.logDebug(
-          'Fetched ${events.length} ${myEvents ? 'created' : 'participating'} events');
+      CustomErrorHandler.logDebug('Fetched ${events.length} created events');
     } catch (e) {
       CustomErrorHandler.logError(
           'Error fetching my events with optimized query: $e');
@@ -191,56 +132,32 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
 
         final repositoryReturn = await repository.getClassesLazyAsTeacher(
           _limit,
-          myEvents ? _offsetMyEvent : _offsetParticipatingEvent,
+          _offsetMyEvent,
           {
             "_or": [
-              if (myEvents)
-                {
-                  "created_by_id": {"_eq": userId}
-                },
-              if (myEvents)
-                {
-                  "class_owners": {
-                    "teacher": {
-                      "user_id": {"_eq": userId}
-                    }
-                  }
-                },
-              if (!myEvents)
-                {
-                  "class_teachers": {
-                    "teacher": {
-                      "user_id": {"_eq": userId}
-                    }
-                  }
-                },
-            ],
-            if (!myEvents)
-              "_not": {
+              {
                 "created_by_id": {"_eq": userId}
               },
+              {
+                "class_owners": {
+                  "teacher": {
+                    "user_id": {"_eq": userId}
+                  }
+                }
+              },
+            ],
           },
         );
 
         final events = List<ClassModel>.from(repositoryReturn["classes"]);
 
-        if (myEvents) {
-          final updatedEvents =
-              isRefresh ? events : [...state.myCreatedEvents, ...events];
-          state = state.copyWith(
-            myCreatedEvents: updatedEvents,
-            canFetchMoreMyEvents: events.length == _limit,
-            loading: false,
-          );
-        } else {
-          final updatedEvents =
-              isRefresh ? events : [...state.myParticipatingEvents, ...events];
-          state = state.copyWith(
-            myParticipatingEvents: updatedEvents,
-            canFetchMoreParticipatingEvents: events.length == _limit,
-            loading: false,
-          );
-        }
+        final updatedEvents =
+            isRefresh ? events : [...state.myCreatedEvents, ...events];
+        state = state.copyWith(
+          myCreatedEvents: updatedEvents,
+          canFetchMoreMyEvents: events.length == _limit,
+          loading: false,
+        );
 
         CustomErrorHandler.logDebug(
             'Fallback query successful, fetched ${events.length} events');
@@ -256,7 +173,6 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
   void cleanUp() {
     state = const TeacherEventsState();
     _offsetMyEvent = 0;
-    _offsetParticipatingEvent = 0;
   }
 
   /// Test constructor for unit tests
