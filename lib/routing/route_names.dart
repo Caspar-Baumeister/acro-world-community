@@ -13,7 +13,6 @@ const String singleEventWrapperRoute = 'single-event-wrapper';
 const String singleEventPageRoute = 'single-event';
 const String accountSettingsRoute = 'account-settings';
 const String editUserDataRoute = 'edit-userdata';
-const String essentialsRoute = 'essentials';
 const String placeSearchRoute = 'place-search';
 const String verifyEmailRoute = 'verify-email';
 

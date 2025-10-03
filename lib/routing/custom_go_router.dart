@@ -20,7 +20,6 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/m
 import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/favorites_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/activities_page.dart';
@@ -258,13 +257,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (context, state) => const ConfirmEmailPage(),
         ),
 
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/essentials',
-          name: essentialsRoute,
-          pageBuilder: (ctx, state) =>
-              NoTransitionPage(child: const EssentialsPage()),
-        ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: '/map',

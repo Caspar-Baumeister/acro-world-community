@@ -139,12 +139,6 @@ class ProfileBody extends ConsumerWidget {
                       ),
                       _buildSettingsItem(
                         context: context,
-                        icon: Icons.backpack_rounded,
-                        title: "Essentials",
-                        onTap: () => context.pushNamed(essentialsRoute),
-                      ),
-                      _buildSettingsItem(
-                        context: context,
                         icon: Icons.chat_bubble_outline_rounded,
                         title: "Feedback & Bugs",
                         onTap: () => showCupertinoModalPopup(

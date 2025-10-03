@@ -1,5 +1,5 @@
-import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -50,13 +50,6 @@ class SettingsDrawer extends ConsumerWidget {
               icon: Icons.account_circle_outlined,
               text: "Account Settings",
               onTap: () => context.pushNamed(accountSettingsRoute),
-            ),
-
-            _buildMenuItem(
-              context: context,
-              icon: Icons.backpack_rounded,
-              text: "Essentials",
-              onTap: () => context.pushNamed(essentialsRoute),
             ),
 
             _buildMenuItem(
@@ -180,7 +173,8 @@ class SettingsDrawer extends ConsumerWidget {
                 const Spacer(),
                 Icon(
                   Icons.chevron_right_rounded,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
                   size: 20,
                 ),
               ],
