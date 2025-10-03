@@ -184,7 +184,7 @@ class _CreateAndEditEventPageState
               if (userAsync.value?.id != null) {
                 ref
                     .read(teacherEventsProvider.notifier)
-                    .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+                    .fetchEvents(userAsync.value!.id!, isRefresh: true);
               }
             } else {
               // if not successful, show an error message
@@ -369,7 +369,7 @@ class _CreateAndEditEventPageState
                             try {
                               await ref
                                   .read(teacherEventsProvider.notifier)
-                                  .fetchMyEvents(userAsync.value!.id!,
+                                  .fetchEvents(userAsync.value!.id!,
                                       isRefresh: true);
                               print("🎯 DEBUG: Events list refresh completed");
                             } catch (e) {

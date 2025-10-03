@@ -60,7 +60,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
       if (!_didInit) {
         ref
             .read(teacherEventsProvider.notifier)
-            .fetchMyEvents(widget.userId, isRefresh: true)
+            .fetchEvents(widget.userId, isRefresh: true)
             .catchError((e, st) {
           CustomErrorHandler.captureException(e, stackTrace: st);
         });
@@ -108,7 +108,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
           child: RefreshIndicator(
             onRefresh: () => ref
                 .read(teacherEventsProvider.notifier)
-                .fetchMyEvents(widget.userId, isRefresh: true),
+                .fetchEvents(widget.userId, isRefresh: true),
             child: _buildEventsContent(eventsState),
           ),
         ),
@@ -122,7 +122,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
       return _buildLoadingState();
     }
 
-    final filteredEvents = _getFilteredEvents(eventsState.myCreatedEvents);
+    final filteredEvents = _getFilteredEvents(eventsState.events);
 
     if (filteredEvents.isEmpty) {
       return _buildEmptyState(eventsState);
@@ -149,12 +149,12 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: filteredEvents.length +
-          (ev.canFetchMoreMyEvents ? 1 : 0) +
+          (ev.canFetchMore ? 1 : 0) +
           1, // +1 for bottom padding
       itemBuilder: (ctx, i) {
         if (i == filteredEvents.length) {
           // Load more button
-          if (ev.canFetchMoreMyEvents) {
+          if (ev.canFetchMore) {
             return GestureDetector(
               onTap: () => ref
                   .read(teacherEventsProvider.notifier)
@@ -175,7 +175,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
           return const SizedBox.shrink();
         }
 
-        if (i == filteredEvents.length + (ev.canFetchMoreMyEvents ? 1 : 0)) {
+        if (i == filteredEvents.length + (ev.canFetchMore ? 1 : 0)) {
           // Bottom padding for floating button
           return const SizedBox(height: 80);
         }
@@ -261,7 +261,7 @@ class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
               } else {
                 ref
                     .read(teacherEventsProvider.notifier)
-                    .fetchMyEvents(widget.userId, isRefresh: true);
+                    .fetchEvents(widget.userId, isRefresh: true);
               }
             },
           ),

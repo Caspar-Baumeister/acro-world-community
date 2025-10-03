@@ -24,7 +24,7 @@ class _CreateNewEventFromExistingModalState
   @override
   Widget build(BuildContext context) {
     final teacherEventsState = ref.watch(teacherEventsProvider);
-    var items = teacherEventsState.myCreatedEvents
+    var items = teacherEventsState.events
         .where((element) => element.urlSlug != null && element.name != null)
         .map((event) => OptionObjects(event.urlSlug!, event.name!))
         .toList();

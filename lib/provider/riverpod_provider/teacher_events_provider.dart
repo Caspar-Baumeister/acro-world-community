@@ -7,31 +7,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// State for teacher events management
 class TeacherEventsState {
   final bool loading;
-  final List<ClassModel> myCreatedEvents;
-  final bool isLoadingMyEvents;
-  final bool isInitialized;
-  final bool canFetchMoreMyEvents;
+  final List<ClassModel> events;
+  final bool canFetchMore;
+
   const TeacherEventsState({
     this.loading = true,
-    this.myCreatedEvents = const [],
-    this.isLoadingMyEvents = false,
-    this.isInitialized = false,
-    this.canFetchMoreMyEvents = true,
+    this.events = const [],
+    this.canFetchMore = true,
   });
 
   TeacherEventsState copyWith({
     bool? loading,
-    List<ClassModel>? myCreatedEvents,
-    bool? isLoadingMyEvents,
-    bool? isInitialized,
-    bool? canFetchMoreMyEvents,
+    List<ClassModel>? events,
+    bool? canFetchMore,
   }) {
     return TeacherEventsState(
       loading: loading ?? this.loading,
-      myCreatedEvents: myCreatedEvents ?? this.myCreatedEvents,
-      isLoadingMyEvents: isLoadingMyEvents ?? this.isLoadingMyEvents,
-      isInitialized: isInitialized ?? this.isInitialized,
-      canFetchMoreMyEvents: canFetchMoreMyEvents ?? this.canFetchMoreMyEvents,
+      events: events ?? this.events,
+      canFetchMore: canFetchMore ?? this.canFetchMore,
     );
   }
 }
@@ -39,52 +32,31 @@ class TeacherEventsState {
 /// Notifier for teacher events state management
 class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
   static const int _limit = 10;
-  int _offsetMyEvent = 0;
+  int _offset = 0;
 
-  TeacherEventsNotifier() : super(const TeacherEventsState()) {
-    _initialize();
-  }
-
-  /// Initialize the provider
-  void _initialize() {
-    state = state.copyWith(loading: true);
-  }
+  TeacherEventsNotifier() : super(const TeacherEventsState());
 
   /// Fetch more events
   Future<void> fetchMore(String userId) async {
-    state = state.copyWith(isLoadingMyEvents: true);
-    _offsetMyEvent += _limit;
-
-    await fetchMyEvents(userId, isRefresh: false);
-
-    state = state.copyWith(isLoadingMyEvents: false);
+    _offset += _limit;
+    await fetchEvents(userId, isRefresh: false);
   }
 
-  /// Fetch my created events
-  Future<void> fetchMyEvents(String userId, {bool isRefresh = true}) async {
-    // Set loading state immediately for better UX
-    state = state.copyWith(isInitialized: true, loading: true);
-
-    CustomErrorHandler.logDebug(
-        'Starting to fetch created events for user: $userId');
+  /// Fetch created events
+  Future<void> fetchEvents(String userId, {bool isRefresh = true}) async {
+    state = state.copyWith(loading: true);
 
     if (isRefresh) {
-      _offsetMyEvent = 0;
-      state = state.copyWith(
-        canFetchMoreMyEvents: true,
-        myCreatedEvents: [],
-      );
+      _offset = 0;
+      state = state.copyWith(events: []);
     }
 
     try {
-      final stopwatch = Stopwatch()..start();
       final repository =
           ClassesRepository(apiService: GraphQLClientSingleton());
-
-      // Use optimized method for better performance
       final repositoryReturn = await repository.getClassesLazyAsTeacher(
         _limit,
-        _offsetMyEvent,
+        _offset,
         {
           "_or": [
             {
@@ -101,78 +73,24 @@ class TeacherEventsNotifier extends StateNotifier<TeacherEventsState> {
         },
       );
 
-      stopwatch.stop();
-      CustomErrorHandler.logDebug(
-          'GraphQL query took ${stopwatch.elapsedMilliseconds}ms');
-
-      final parseStopwatch = Stopwatch()..start();
       final events = List<ClassModel>.from(repositoryReturn["classes"]);
-      parseStopwatch.stop();
-      CustomErrorHandler.logDebug(
-          'Data parsing took ${parseStopwatch.elapsedMilliseconds}ms');
+      final updatedEvents = isRefresh ? events : [...state.events, ...events];
 
-      final updatedEvents =
-          isRefresh ? events : [...state.myCreatedEvents, ...events];
       state = state.copyWith(
-        myCreatedEvents: updatedEvents,
-        canFetchMoreMyEvents: events.length == _limit,
+        events: updatedEvents,
+        canFetchMore: events.length == _limit,
         loading: false,
       );
-
-      CustomErrorHandler.logDebug('Fetched ${events.length} created events');
     } catch (e) {
-      CustomErrorHandler.logError(
-          'Error fetching my events with optimized query: $e');
-
-      // Fallback to original query if optimized one fails
-      try {
-        CustomErrorHandler.logDebug('Falling back to original query...');
-        final repository =
-            ClassesRepository(apiService: GraphQLClientSingleton());
-
-        final repositoryReturn = await repository.getClassesLazyAsTeacher(
-          _limit,
-          _offsetMyEvent,
-          {
-            "_or": [
-              {
-                "created_by_id": {"_eq": userId}
-              },
-              {
-                "class_owners": {
-                  "teacher": {
-                    "user_id": {"_eq": userId}
-                  }
-                }
-              },
-            ],
-          },
-        );
-
-        final events = List<ClassModel>.from(repositoryReturn["classes"]);
-
-        final updatedEvents =
-            isRefresh ? events : [...state.myCreatedEvents, ...events];
-        state = state.copyWith(
-          myCreatedEvents: updatedEvents,
-          canFetchMoreMyEvents: events.length == _limit,
-          loading: false,
-        );
-
-        CustomErrorHandler.logDebug(
-            'Fallback query successful, fetched ${events.length} events');
-      } catch (fallbackError) {
-        CustomErrorHandler.logError(
-            'Fallback query also failed: $fallbackError');
-        state = state.copyWith(loading: false);
-      }
+      CustomErrorHandler.logError('Error fetching events: $e');
+      state = state.copyWith(loading: false);
     }
   }
 
   /// Clean up the provider
   void cleanUp() {
     state = const TeacherEventsState();
-    _offsetMyEvent = 0;
+    _offset = 0;
   }
 
   /// Test constructor for unit tests

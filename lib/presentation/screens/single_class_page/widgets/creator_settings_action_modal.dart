@@ -194,7 +194,7 @@ class CreatorSettingsActionModal extends ConsumerWidget {
                           if (value) {
                             showSuccessToast("Flags resolved, reload page");
                             // TODO: Fix ref usage in callback
-                            // teacherEventsNotifier.fetchMyEvents(userId, isRefresh: true);
+                            // teacherEventsNotifier.fetchEvents(userId, isRefresh: true);
                             Navigator.of(context).pop();
                           } else {
                             throw Exception("value not true");
@@ -255,7 +255,7 @@ class DeleteClassModal extends ConsumerWidget {
 
                     ref
                         .read(teacherEventsProvider.notifier)
-                        .fetchMyEvents(userAsync.value!.id!, isRefresh: true);
+                        .fetchEvents(userAsync.value!.id!, isRefresh: true);
                     // Navigator.of(context).pushAndRemoveUntil(
                     //     MyEventsPageRoute(), (route) => false);
                     context.replaceNamed(myEventsRoute);
