@@ -29,7 +29,6 @@ class TeacherEventsSection extends StatelessWidget {
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-
         if (result.hasException) {
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -103,37 +102,16 @@ class TeacherEventsSection extends StatelessWidget {
         List<ClassModel> classes = [];
 
         try {
-          print(
-              '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection parsing classes:');
-          print('  classes data: ${result.data!["classes"]}');
-          print('  classes count: ${result.data!["classes"]?.length ?? 0}');
-
           result.data!["classes"]
               .forEach((clas) => classes.add(ClassModel.fromJson(clas)));
-
-          print(
-              '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection parsed classes:');
-          print('  parsed classes count: ${classes.length}');
-          for (int i = 0; i < classes.length && i < 3; i++) {
-            print(
-                '  class[$i]: id=${classes[i].id}, name=${classes[i].name}, urlSlug=${classes[i].urlSlug}');
-          }
         } catch (e) {
-          print(
-              '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection Parse Error: $e');
           CustomErrorHandler.captureException(e.toString(),
               stackTrace: StackTrace.current);
         }
 
         classes = classes.where((element) => element.urlSlug != null).toList();
 
-        print(
-            '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection final filtered classes:');
-        print('  filtered classes count: ${classes.length}');
-
         if (classes.isEmpty) {
-          print(
-              '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection showing empty state');
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             padding: const EdgeInsets.all(24),
@@ -170,8 +148,6 @@ class TeacherEventsSection extends StatelessWidget {
           );
         }
 
-        print(
-            '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection rendering events list with ${classes.length} classes');
         return Container(
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           child: Column(
@@ -214,8 +190,6 @@ class TeacherEventsSection extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: classes.length,
                   itemBuilder: (context, index) {
-                    print(
-                        '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection rendering class card $index: ${classes[index].name}');
                     return Padding(
                       padding: const EdgeInsets.only(right: 12),
                       child: ModernClassCard(
