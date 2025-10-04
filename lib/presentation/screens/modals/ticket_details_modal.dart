@@ -1,6 +1,10 @@
+import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/overlays/status_overlay.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/helper_functions/share_event.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
@@ -85,28 +89,42 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
               child: Row(
                 children: [
                   Expanded(
-                    child: OutlinedButton.icon(
+                    child: ModernButton(
+                      text: "Share",
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text("Share functionality coming soon"),
-                          ),
+                        // Create ClassEvent from UserBookingModel data
+                        final classEvent = ClassEvent(
+                          id: widget.booking.classEventId,
+                          startDate: widget.booking.startDate.toIso8601String(),
+                          endDate: widget.booking.endDate.toIso8601String(),
                         );
+
+                        // Create ClassModel from UserBookingModel data
+                        final classModel = ClassModel(
+                          id: widget.booking.classId,
+                          name: widget.booking.eventName,
+                          imageUrl: widget.booking.eventImage,
+                          locationName: widget.booking.locationName,
+                          urlSlug: widget.booking.urlSlug,
+                          questions: [], // Empty list since we don't have question data
+                        );
+
+                        shareEvent(classEvent, classModel);
                       },
-                      icon: const Icon(Icons.share),
-                      label: const Text("Share"),
+                      isFilled: false,
                     ),
                   ),
                   const SizedBox(width: AppDimensions.spacingMedium),
                   Expanded(
-                    child: ElevatedButton.icon(
+                    child: ModernButton(
+                      text: "",
                       onPressed: () {
                         setState(() {
                           _showQRCode = !_showQRCode;
                         });
                       },
-                      icon: Icon(_showQRCode ? Icons.info : Icons.qr_code),
-                      label: Text(_showQRCode ? "Details" : "View QR"),
+                      isFilled: true,
+                      icon: _showQRCode ? Icons.info : Icons.qr_code,
                     ),
                   ),
                 ],

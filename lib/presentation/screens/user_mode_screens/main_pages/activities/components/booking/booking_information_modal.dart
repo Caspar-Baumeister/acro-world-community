@@ -7,10 +7,9 @@ import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/email_helper.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/share_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 
 class BookingInformationModal extends StatelessWidget {
   const BookingInformationModal(
@@ -22,23 +21,6 @@ class BookingInformationModal extends StatelessWidget {
   final ClassEvent classEvent;
   final String userId;
   final ClassEventBooking booking;
-
-  void shareEvent(ClassEvent classEvent, ClassModel clas) {
-    String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
-    if (classEvent.id != null) {
-      deeplinkUrl += "?event=${classEvent.id!}";
-    }
-    final String content = '''
-Hi, 
-I just booked ${clas.name} 
-on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)} 
-in the AcroWorld app
-
-You can join me here: $deeplinkUrl
-''';
-
-    Share.share(content);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +45,7 @@ You can join me here: $deeplinkUrl
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
             Text(
-              "You have successfully booked ${clas.name} on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)}",
+              "You have successfully booked ${clas.name} on ${getDateStringMonthDay(classEvent.startDateDT)}",
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
