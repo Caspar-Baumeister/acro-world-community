@@ -19,7 +19,10 @@ class CustomCheckWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         CustomCheckBox(
-            onTap: () => setChecked(!isChecked), isChecked: isChecked),
+          onTap: () => setChecked(!isChecked),
+          isChecked: isChecked,
+          size: 20, // Larger default size for better visibility
+        ),
         const SizedBox(width: AppDimensions.spacingSmall),
         Flexible(
             child: GestureDetector(
