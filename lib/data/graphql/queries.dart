@@ -623,7 +623,12 @@ query getClassEventsByClassId (\$class_id: uuid) {
 
   static final getClassesByTeacherId = gql("""
 query getClassesByTeacherId(\$teacher_id: uuid) {
-  classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
+  classes(where: {
+    _or: [
+      {class_teachers: {teacher_id: {_eq: \$teacher_id}}},
+      {class_owners: {teacher_id: {_eq: \$teacher_id}}}
+    ]
+  }) {
     ${Fragments.classFragmentAllInfo}
   }
 }""");

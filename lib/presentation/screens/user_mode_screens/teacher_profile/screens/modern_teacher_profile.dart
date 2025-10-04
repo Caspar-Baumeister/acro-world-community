@@ -256,7 +256,13 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
 
           // Events Section
           SliverToBoxAdapter(
-            child: TeacherEventsSection(teacherId: widget.teacher.id!),
+            child: Builder(
+              builder: (context) {
+                print(
+                    '🔍 TEACHER EVENTS DEBUG - ModernTeacherProfile passing teacherId to TeacherEventsSection: ${widget.teacher.id}');
+                return TeacherEventsSection(teacherId: widget.teacher.id!);
+              },
+            ),
           ),
 
           // Reviews Section
