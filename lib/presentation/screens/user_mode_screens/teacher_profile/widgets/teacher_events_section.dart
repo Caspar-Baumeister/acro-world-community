@@ -21,33 +21,16 @@ class TeacherEventsSection extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    print('🔍 TEACHER EVENTS DEBUG - TeacherEventsSection build called:');
-    print('  teacherId: $teacherId');
-
-    final queryVariables = {"teacher_id": teacherId};
-    print('🔍 TEACHER EVENTS DEBUG - Query Variables:');
-    print('  variables: $queryVariables');
-    print('🔍 TEACHER EVENTS DEBUG - Query Document:');
-    print('  document: getClassesByTeacherId');
-
     return Query(
       options: QueryOptions(
         document: Queries.getClassesByTeacherId,
         fetchPolicy: FetchPolicy.networkOnly,
-        variables: queryVariables,
+        variables: {"teacher_id": teacherId},
       ),
       builder: (QueryResult result,
           {VoidCallback? refetch, FetchMore? fetchMore}) {
-        print('🔍 TEACHER EVENTS DEBUG - TeacherEventsSection Query result:');
-        print('  hasException: ${result.hasException}');
-        print('  isLoading: ${result.isLoading}');
-        print('  data: ${result.data}');
-        print('🔍 TEACHER EVENTS DEBUG - Full Query Response:');
-        print('  Full result: $result');
 
         if (result.hasException) {
-          print(
-              '🔍 TEACHER EVENTS DEBUG - TeacherEventsSection Exception: ${result.exception}');
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             padding: const EdgeInsets.all(16),
@@ -65,7 +48,6 @@ class TeacherEventsSection extends StatelessWidget {
         }
 
         if (result.isLoading || result.data == null) {
-          print('🔍 TEACHER EVENTS DEBUG - TeacherEventsSection Loading state');
           return Container(
             margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Column(
