@@ -28,6 +28,8 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/event_search_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/teacher_search_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
@@ -119,6 +121,18 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: favoritesRoute,
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const FavoritesPage()),
+              ),
+              GoRoute(
+                path: '/event-search',
+                name: eventSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const EventSearchPage()),
+              ),
+              GoRoute(
+                path: '/teacher-search',
+                name: teacherSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const TeacherSearchPage()),
               ),
             ]),
         ////////////////////
