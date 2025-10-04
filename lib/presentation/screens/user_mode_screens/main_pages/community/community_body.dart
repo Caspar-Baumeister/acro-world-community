@@ -8,21 +8,52 @@ class CommunityBody extends ConsumerWidget {
   const CommunityBody({
     super.key,
     required this.teachers,
+    this.canFetchMore = false,
+    this.isLoadingMore = false,
+    this.onLoadMore,
   });
 
   final List<TeacherModel> teachers;
+  final bool canFetchMore;
+  final bool isLoadingMore;
+  final VoidCallback? onLoadMore;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final filteredTeachers =
+        teachers.where((t) => t.type != "Anonymous").toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: AppDimensions.spacingSmall),
-        ...teachers.where((t) => t.type != "Anonymous").map((teacher) {
+        ...filteredTeachers.map((teacher) {
           return TeacherCard(
             teacher: teacher,
           );
         }),
+        if (canFetchMore) ...[
+          const SizedBox(height: AppDimensions.spacingMedium),
+          Center(
+            child: GestureDetector(
+              onTap: isLoadingMore ? null : onLoadMore,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingSmall,
+                  vertical: AppDimensions.spacingExtraSmall,
+                ),
+                child: isLoadingMore
+                    ? const CircularProgressIndicator()
+                    : Text(
+                        "Load more",
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                            ),
+                      ),
+              ),
+            ),
+          ),
+        ],
         const SizedBox(height: AppDimensions.spacingMedium),
       ],
     );

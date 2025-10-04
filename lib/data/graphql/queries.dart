@@ -536,8 +536,13 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
   """);
 
   static final getTeacherForList = gql("""
-    query getTeacherForList(\$user_id: uuid, \$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+    query getTeacherForList(\$user_id: uuid, \$search: String!, \$limit: Int, \$offset: Int) {
+      teachers(
+        limit: \$limit, 
+        offset: \$offset,
+        order_by: {user_likes_aggregate: {count: desc}}, 
+        where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}
+      ) {
         ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
@@ -551,8 +556,13 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
     }""");
 
   static final getTeacherForListWithoutUserID = gql("""
-    query getTeacherForList(\$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+    query getTeacherForList(\$search: String!, \$limit: Int, \$offset: Int) {
+      teachers(
+        limit: \$limit, 
+        offset: \$offset,
+        order_by: {user_likes_aggregate: {count: desc}}, 
+        where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}
+      ) {
          ${Fragments.teacherFragmentAllInfo}
         user_likes_aggregate {
           aggregate {
