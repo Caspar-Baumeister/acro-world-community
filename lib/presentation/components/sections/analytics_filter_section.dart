@@ -19,19 +19,19 @@ class AnalyticsFilterSection extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         child: Row(
           children: [
-            // Order: Revenue, Bookings, Page Views (last)
-            ModernFilterChip(
-              label: "Revenue",
-              isSelected: selectedMetric == "revenue",
-              onTap: () => onMetricChanged("revenue"),
-              icon: Icons.attach_money,
-            ),
-            const SizedBox(width: 8),
+            // Order: Bookings, Revenue, Page Views (last)
             ModernFilterChip(
               label: "Bookings",
               isSelected: selectedMetric == "bookings",
               onTap: () => onMetricChanged("bookings"),
               icon: Icons.event,
+            ),
+            const SizedBox(width: 8),
+            ModernFilterChip(
+              label: "Revenue",
+              isSelected: selectedMetric == "revenue",
+              onTap: () => onMetricChanged("revenue"),
+              icon: Icons.attach_money,
             ),
             const SizedBox(width: 8),
             ModernFilterChip(

@@ -8,7 +8,7 @@ class AnalyticsState {
   final bool isLoading;
 
   const AnalyticsState({
-    this.selectedMetric = "revenue",
+    this.selectedMetric = "bookings",
     this.selectedTimePeriod = "last_7_days",
     this.isLoading = false,
   });
