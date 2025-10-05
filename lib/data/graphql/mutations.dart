@@ -919,4 +919,22 @@ mutation deleteAccount{
     success
   }
 }""");
+
+  // Invitation mutations
+  static final acceptInviteMutation = gql("""
+    mutation AcceptInvite(\$invite_id: String!) {
+      accept_invite(invite_id: \$invite_id) {
+        success
+      }
+    }
+  """);
+
+  static final updateInviteStatusMutation = gql("""
+    mutation UpdateInviteStatus(\$id: uuid!, \$confirmation_status: confirmation_status_enum!) {
+      update_invites_by_pk(pk_columns: {id: \$id}, _set: {confirmation_status: \$confirmation_status}) {
+        id
+        confirmation_status
+      }
+    }
+  """);
 }

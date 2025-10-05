@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/components/cards/modern_email_invitation_
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/email_invitations_search_and_filter.dart';
 import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -142,8 +143,21 @@ class _EmailInvitationsSectionState
         final invite = filteredInvites[index];
         return ModernEmailInvitationCard(
           invitation: invite,
-          onTap: () {
-            // TODO: Navigate to invitation details
+          onStatusChanged: () async {
+            // Refresh the invites list when status changes
+            final userAsync = ref.read(userRiverpodProvider);
+            userAsync.whenData((user) {
+              if (user != null) {
+                // Refresh the invites list
+                ref
+                    .read(invitesProvider.notifier)
+                    .getInvitations(isRefresh: true, userId: user.id!);
+                // Refresh the pending invites badge
+                ref
+                    .read(pendingInvitesBadgeProvider.notifier)
+                    .fetchPendingCount(user.id!);
+              }
+            });
           },
         );
       },

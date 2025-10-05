@@ -2,16 +2,20 @@ import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
+import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/modals/invitation_details_modal.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
 class ModernEmailInvitationCard extends StatelessWidget {
   final InvitationModel invitation;
   final VoidCallback? onTap;
+  final VoidCallback? onStatusChanged;
 
   const ModernEmailInvitationCard({
     super.key,
     required this.invitation,
     this.onTap,
+    this.onStatusChanged,
   });
 
   @override
@@ -21,7 +25,13 @@ class ModernEmailInvitationCard extends StatelessWidget {
     final classModel = invitation.classModel;
 
     return GestureDetector(
-      onTap: onTap,
+      onTap: () {
+        if (onTap != null) {
+          onTap!();
+        } else if (invitation.confirmationStatus.toLowerCase() == "pending") {
+          _showInvitationModal(context);
+        }
+      },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         decoration: BoxDecoration(
@@ -251,6 +261,16 @@ class ModernEmailInvitationCard extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  void _showInvitationModal(BuildContext context) {
+    buildMortal(
+      context,
+      InvitationDetailsModal(
+        invitation: invitation,
+        onStatusChanged: onStatusChanged,
+      ),
     );
   }
 }
