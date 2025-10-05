@@ -32,9 +32,15 @@ class EditCreatorProfileButton extends StatelessWidget {
                 children: [
                   Text(
                     teacher.name.toString(),
-                    style: Theme.of(context).textTheme.titleLarge,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium!
+                        .copyWith(fontWeight: FontWeight.bold),
                   ),
-                  const Text("Edit profile"),
+                  Text(
+                    "Edit profile",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
                 ],
               ),
             ),
