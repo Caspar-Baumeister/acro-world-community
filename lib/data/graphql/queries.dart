@@ -95,7 +95,7 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
     order_by: { created_at: desc }
     where: { 
       invited_user_id: { _eq: \$user_id },
-      entity: { _eq: "class" }
+      entity: { _eq: class }
     }
   ) {
     id
@@ -107,7 +107,27 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
       name
     }
     class {
+      id
       name
+      image_url
+      location_city
+      location_country
+      created_by {
+        name
+      }
+      class_teachers {
+        teacher {
+          name
+        }
+      }
+      class_events(
+        where: { start_date: { _gte: "now()" } }
+        order_by: { start_date: asc }
+        limit: 1
+      ) {
+        start_date
+        end_date
+      }
     }
     event {
       name
@@ -116,7 +136,7 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
   invites_aggregate(
     where: { 
       invited_user_id: { _eq: \$user_id },
-      entity: { _eq: "class" }
+      entity: { _eq: class }
     }
   ) {
     aggregate {
@@ -133,7 +153,7 @@ query GetPendingInvitesCount(\$user_id: uuid!) {
     where: { 
       invited_user_id: { _eq: \$user_id },
       confirmation_status: { _eq: Pending },
-      entity: { _eq: "class" }
+      entity: { _eq: class }
     }
   ) {
     aggregate {

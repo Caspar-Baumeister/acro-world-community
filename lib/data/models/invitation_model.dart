@@ -9,6 +9,7 @@ class InvitationModel {
   final String createdAt;
   final User? invitedUser;
   final ClassModel? classModel;
+  final User? createdBy;
 
   InvitationModel({
     required this.id,
@@ -18,6 +19,7 @@ class InvitationModel {
     required this.createdAt,
     this.invitedUser,
     this.classModel,
+    this.createdBy,
   });
 
   factory InvitationModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,8 @@ class InvitationModel {
           : null,
       classModel:
           json['class'] != null ? ClassModel.fromJson(json['class']) : null,
+      createdBy:
+          json['created_by'] != null ? User.fromJson(json['created_by']) : null,
     );
   }
 }

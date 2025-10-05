@@ -1,6 +1,7 @@
+import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/invitation_model.dart';
+import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
-import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 
 class ModernEmailInvitationCard extends StatelessWidget {
@@ -17,6 +18,7 @@ class ModernEmailInvitationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final classModel = invitation.classModel;
 
     return GestureDetector(
       onTap: onTap,
@@ -38,15 +40,14 @@ class ModernEmailInvitationCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Teacher image with status badge
-              _buildImageSection(context, colorScheme),
+              // Class image with confirmation status badge
+              _buildImageSection(context, colorScheme, classModel),
               const SizedBox(width: 12),
               // Main content
               Expanded(
-                child: _buildContentSection(context, theme, colorScheme),
+                child: _buildContentSection(
+                    context, theme, colorScheme, classModel),
               ),
-              // Status section
-              _buildStatusSection(context, theme, colorScheme),
             ],
           ),
         ),
@@ -54,51 +55,49 @@ class ModernEmailInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildImageSection(BuildContext context, ColorScheme colorScheme) {
-    final isConfirmed =
-        invitation.confirmationStatus.toLowerCase() == "confirmed";
-    final teacherImageUrl = invitation.invitedUser?.imageUrl;
-
+  Widget _buildImageSection(
+      BuildContext context, ColorScheme colorScheme, ClassModel? classModel) {
     return Stack(
       children: [
-        // Teacher image or anonymous placeholder
+        // Class image or placeholder
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: Container(
             width: 80,
             height: 80,
             color: colorScheme.surfaceContainerHighest,
-            child: (isConfirmed && teacherImageUrl != null)
+            child: (classModel?.imageUrl != null)
                 ? CustomCachedNetworkImage(
-                    imageUrl: teacherImageUrl,
+                    imageUrl: classModel!.imageUrl!,
                     width: 80,
                     height: 80,
                   )
-                : _buildAnonymousPlaceholder(colorScheme),
+                : _buildClassPlaceholder(colorScheme),
           ),
         ),
-        // Status badge
+        // Confirmation status badge
         Positioned(
           top: 4,
           right: 4,
-          child: _buildStatusBadge(context, colorScheme),
+          child: _buildConfirmationBadge(context, colorScheme),
         ),
       ],
     );
   }
 
-  Widget _buildAnonymousPlaceholder(ColorScheme colorScheme) {
+  Widget _buildClassPlaceholder(ColorScheme colorScheme) {
     return Container(
       color: colorScheme.surfaceContainerHighest,
       child: Icon(
-        Icons.person_outline,
+        Icons.class_outlined,
         color: colorScheme.onSurfaceVariant,
         size: 32,
       ),
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context, ColorScheme colorScheme) {
+  Widget _buildConfirmationBadge(
+      BuildContext context, ColorScheme colorScheme) {
     final status = invitation.confirmationStatus;
     final isConfirmed = status.toLowerCase() == "confirmed";
     final isPending = status.toLowerCase() == "pending";
@@ -134,82 +133,121 @@ class ModernEmailInvitationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildContentSection(
-      BuildContext context, ThemeData theme, ColorScheme colorScheme) {
-    final teacherName =
-        invitation.invitedUser?.name ?? invitation.email ?? "Unknown";
-    final invitedAt = getDatedMMHHmm(DateTime.parse(invitation.createdAt));
+  Widget _buildContentSection(BuildContext context, ThemeData theme,
+      ColorScheme colorScheme, ClassModel? classModel) {
+    // Handle case where class is null
+    if (classModel == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "No Class Information",
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: colorScheme.onSurface,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "Class details not available",
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      );
+    }
+
+    final className = classModel.name ?? "Untitled Class";
+    final location =
+        classModel.locationName ?? classModel.city ?? "Location TBD";
+    final teachers = classModel.teachers;
+    final nextEvent = classModel.classEvents?.isNotEmpty == true
+        ? classModel.classEvents!.first
+        : null;
+    final invitedBy = invitation.createdBy?.name ?? "Unknown";
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Teacher name
+        // Class name
         Text(
-          teacherName,
+          className,
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w600,
             color: colorScheme.onSurface,
-          ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-        const SizedBox(height: 4),
-        // Invitation type
-        Text(
-          "Email Invitation",
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
           ),
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
-        // Invited at
+        // Location
         Text(
-          "Invited: $invitedAt",
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
+          location,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: colorScheme.onSurfaceVariant,
           ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStatusSection(
-      BuildContext context, ThemeData theme, ColorScheme colorScheme) {
-    final status = invitation.confirmationStatus;
-    final isConfirmed = status.toLowerCase() == "confirmed";
-    final isPending = status.toLowerCase() == "pending";
-
-    Color statusColor;
-    IconData statusIcon;
-
-    if (isConfirmed) {
-      statusColor = Colors.green;
-      statusIcon = Icons.check_circle;
-    } else if (isPending) {
-      statusColor = Colors.orange;
-      statusIcon = Icons.schedule;
-    } else {
-      statusColor = Colors.red;
-      statusIcon = Icons.cancel;
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Icon(
-          statusIcon,
-          color: statusColor,
-          size: 24,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 4),
+        // Teachers
+        if (teachers.isNotEmpty) ...[
+          Row(
+            children: [
+              Icon(
+                Icons.person_outline,
+                size: 14,
+                color: colorScheme.onSurfaceVariant,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  teachers.map((t) => t.name ?? "Unknown").join(", "),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+        ],
+        // Next event date or invited by
+        if (nextEvent?.startDate != null) ...[
+          Row(
+            children: [
+              Icon(
+                Icons.schedule,
+                size: 14,
+                color: colorScheme.primary,
+              ),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  DateTimeService.getDateString(
+                      nextEvent!.startDate, nextEvent.endDate),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: colorScheme.primary,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+        ],
+        // Invited by
         Text(
-          status,
+          "Invited by: $invitedBy",
           style: theme.textTheme.bodySmall?.copyWith(
-            color: statusColor,
-            fontWeight: FontWeight.w600,
+            color: colorScheme.onSurfaceVariant.withOpacity(0.7),
           ),
         ),
       ],
