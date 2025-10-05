@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/bottom_navbar/modern_bottom_navigation_bar.dart';
-import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -21,20 +20,16 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
     final notifier = ref.read(creatorNavigationProvider.notifier);
     final pendingCount = ref.watch(pendingInvitesBadgeProvider);
 
-    // Trigger initial fetch of pending invites only once when teacherId is available
+    // Initialize pending invites badge when creator mode is active
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final hasPrefetched = ref.read(creatorInvitesPrefetchProvider);
-      if (!hasPrefetched) {
-        final userId = ref.read(userRiverpodProvider).value?.id;
-        final teacherId = ref.read(creatorProvider).activeTeacher?.id;
-
-        if (userId != null && teacherId != null) {
+      final userAsync = ref.read(userRiverpodProvider);
+      userAsync.whenData((user) {
+        if (user?.id != null) {
           ref
               .read(pendingInvitesBadgeProvider.notifier)
-              .fetchPendingCount(userId);
-          ref.read(creatorInvitesPrefetchProvider.notifier).state = true;
+              .fetchPendingCount(user!.id!);
         }
-      }
+      });
     });
 
     return ModernBottomNavigationBar(

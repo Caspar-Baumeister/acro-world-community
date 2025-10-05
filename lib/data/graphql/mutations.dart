@@ -219,8 +219,6 @@ mutation CreateDirectChargePaymentSheet(\$classEventId: String!, \$amount: Float
 }
 """);
 
-  /// INVITATIONS ///
-
   /// CLASSES ///
   // cancel a class event
   static final cancelClassEvent = gql(r"""

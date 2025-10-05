@@ -55,20 +55,52 @@ query getAnswersOfUserAndEventOccurence(\$user_id: uuid!, \$event_occurence_id: 
 
   /// INVITES ///
 
-  // getInvites
-  static final getCreatedInvitesPageableQuery = gql("""
-query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
-  created_invites(
+  // getInvites - COMMENTED OUT FOR LATER USE
+  // static final getCreatedInvitesPageableQuery = gql("""
+  // query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
+  //   created_invites(
+  //     limit: \$limit
+  //     offset: \$offset
+  //     order_by: { created_at: desc }
+  //   ) {
+  //     id
+  //     email
+  //     confirmation_status
+  //     entity
+  //     created_at
+  //     invited_user {
+  //       name
+  //     }
+  //     class {
+  //       name
+  //     }
+  //     event {
+  //       name
+  //     }
+  //   }
+  //   created_invites_aggregate {
+  //     aggregate {
+  //       count
+  //     }
+  //   }
+  // }
+  // """);
+
+  // getInvites - NEW: Get invites where current user is the invited user
+  static final getInvitedInvitesPageableQuery = gql("""
+query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
+  invites(
     limit: \$limit
     offset: \$offset
     order_by: { created_at: desc }
+    where: { invited_user_id: { _eq: \$user_id } }
   ) {
     id
     email
     confirmation_status
     entity
     created_at
-    invited_user {
+    created_by {
       name
     }
     class {
@@ -78,7 +110,27 @@ query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
       name
     }
   }
-  created_invites_aggregate {
+  invites_aggregate(
+    where: { 
+      invited_user_id: { _eq: \$user_id }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  // getPendingInvitesCount - Get count of pending invites for badge
+  static final getPendingInvitesCountQuery = gql("""
+query GetPendingInvitesCount(\$user_id: uuid!) {
+  invites_aggregate(
+    where: { 
+      invited_user_id: { _eq: \$user_id },
+      confirmation_status: { _eq: Pending }
+    }
+  ) {
     aggregate {
       count
     }

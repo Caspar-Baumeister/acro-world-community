@@ -194,7 +194,7 @@ class _ModernNavigationItemState extends State<_ModernNavigationItem>
                                     color: Theme.of(context)
                                         .colorScheme
                                         .error
-                                        .withOpacity(0.4),
+                                        .withOpacity(0.8),
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(

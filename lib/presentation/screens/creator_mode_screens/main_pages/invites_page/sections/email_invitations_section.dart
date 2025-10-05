@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/components/cards/modern_email_invitation_
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/sections/email_invitations_search_and_filter.dart';
 import 'package:acroworld/provider/riverpod_provider/invites_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,57 +25,75 @@ class _EmailInvitationsSectionState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final invitesNotifier = ref.read(invitesProvider.notifier);
-      final invitesState = ref.read(invitesProvider);
+      final userAsync = ref.read(userRiverpodProvider);
+      userAsync.whenData((user) {
+        if (user != null) {
+          final invitesNotifier = ref.read(invitesProvider.notifier);
+          final invitesState = ref.read(invitesProvider);
 
-      if (invitesState.invites.isEmpty) {
-        invitesNotifier.getInvitations(isRefresh: true);
-      }
+          if (invitesState.invites.isEmpty) {
+            invitesNotifier.getInvitations(isRefresh: true, userId: user.id!);
+          }
+        }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    final userAsync = ref.watch(userRiverpodProvider);
     final invitesState = ref.watch(invitesProvider);
     final invitesNotifier = ref.read(invitesProvider.notifier);
 
-    return Column(
-      children: [
-        // Search and filter
-        EmailInvitationsSearchAndFilter(
-          searchQuery: _searchQuery,
-          selectedFilter: _selectedFilter,
-          onSearchChanged: (query) {
-            setState(() {
-              _searchQuery = query;
-            });
-          },
-          onFilterChanged: (filter) {
-            setState(() {
-              _selectedFilter = filter;
-            });
-          },
-          onSearchSubmitted: (query) {
-            setState(() {
-              _searchQuery = query;
-            });
-          },
-        ),
-        // Invitations list
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () async {
-              await invitesNotifier.getInvitations(isRefresh: true);
-            },
-            child: _buildInvitationsList(invitesState, invitesNotifier),
-          ),
-        ),
-      ],
+    return userAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (error, stack) => Center(child: Text('Error: $error')),
+      data: (user) {
+        if (user == null) {
+          return const Center(child: Text('Please log in to view invitations'));
+        }
+
+        return Column(
+          children: [
+            // Search and filter
+            EmailInvitationsSearchAndFilter(
+              searchQuery: _searchQuery,
+              selectedFilter: _selectedFilter,
+              onSearchChanged: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+              onFilterChanged: (filter) {
+                setState(() {
+                  _selectedFilter = filter;
+                });
+              },
+              onSearchSubmitted: (query) {
+                setState(() {
+                  _searchQuery = query;
+                });
+              },
+            ),
+            // Invitations list
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await invitesNotifier.getInvitations(
+                      isRefresh: true, userId: user.id!);
+                },
+                child: _buildInvitationsList(
+                    invitesState, invitesNotifier, user.id!),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  Widget _buildInvitationsList(
-      InvitesState invitesState, InvitesNotifier invitesNotifier) {
+  Widget _buildInvitationsList(InvitesState invitesState,
+      InvitesNotifier invitesNotifier, String userId) {
     if (invitesState.loading) {
       return _buildLoadingState();
     }
@@ -82,7 +101,7 @@ class _EmailInvitationsSectionState
     final filteredInvites = _getFilteredInvites(invitesState.invites);
 
     if (filteredInvites.isEmpty) {
-      return _buildEmptyState(invitesNotifier);
+      return _buildEmptyState(invitesNotifier, userId);
     }
 
     return ListView.builder(
@@ -96,7 +115,7 @@ class _EmailInvitationsSectionState
           if (invitesState.canFetchMore) {
             return GestureDetector(
               onTap: () async {
-                await invitesNotifier.fetchMore();
+                await invitesNotifier.fetchMore(userId: userId);
               },
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -174,7 +193,7 @@ class _EmailInvitationsSectionState
     );
   }
 
-  Widget _buildEmptyState(InvitesNotifier invitesNotifier) {
+  Widget _buildEmptyState(InvitesNotifier invitesNotifier, String userId) {
     final hasFilters = _searchQuery.isNotEmpty || _selectedFilter != 'all';
 
     return Center(
@@ -211,7 +230,8 @@ class _EmailInvitationsSectionState
                   _selectedFilter = 'all';
                 });
               } else {
-                await invitesNotifier.getInvitations(isRefresh: true);
+                await invitesNotifier.getInvitations(
+                    isRefresh: true, userId: userId);
               }
             },
           ),
