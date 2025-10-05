@@ -93,7 +93,10 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
     limit: \$limit
     offset: \$offset
     order_by: { created_at: desc }
-    where: { invited_user_id: { _eq: \$user_id } }
+    where: { 
+      invited_user_id: { _eq: \$user_id },
+      entity: { _eq: "class" }
+    }
   ) {
     id
     email
@@ -112,7 +115,8 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
   }
   invites_aggregate(
     where: { 
-      invited_user_id: { _eq: \$user_id }
+      invited_user_id: { _eq: \$user_id },
+      entity: { _eq: "class" }
     }
   ) {
     aggregate {
@@ -128,7 +132,8 @@ query GetPendingInvitesCount(\$user_id: uuid!) {
   invites_aggregate(
     where: { 
       invited_user_id: { _eq: \$user_id },
-      confirmation_status: { _eq: Pending }
+      confirmation_status: { _eq: Pending },
+      entity: { _eq: "class" }
     }
   ) {
     aggregate {
