@@ -135,19 +135,6 @@ class EventValidation {
     return null;
   }
 
-  // Booking categories validation
-  static String? validateBookingCategories(List<dynamic> categories) {
-    if (categories.isEmpty) {
-      return 'At least one booking category is required';
-    }
-    for (final category in categories) {
-      if (category.contingent == null || category.contingent <= 0) {
-        return 'Booking categories must have a valid contingent';
-      }
-    }
-    return null;
-  }
-
   // Comprehensive event validation
   static Map<String, String?> validateEvent({
     required String title,
@@ -160,8 +147,6 @@ class EventValidation {
     required String? region,
     required Uint8List? image,
     required String? existingImageUrl,
-    required List<dynamic> bookingCategories,
-    required List<dynamic> recurringPatterns,
   }) {
     return {
       'title': validateTitle(title),
@@ -173,7 +158,6 @@ class EventValidation {
       'countryCode': validateCountryCode(countryCode),
       'region': validateRegion(region),
       'image': validateImage(image, existingImageUrl),
-      'bookingCategories': validateBookingCategories(bookingCategories),
     };
   }
 
