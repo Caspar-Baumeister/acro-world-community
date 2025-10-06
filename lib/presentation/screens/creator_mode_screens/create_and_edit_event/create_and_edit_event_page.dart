@@ -50,55 +50,70 @@ class _CreateAndEditEventPageState
 
   void _validateGeneralStep() {
     final eventState = ref.read(eventCreationAndEditingProvider);
+    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
 
-    if (eventState.eventImage == null && eventState.existingImageUrl == null) {
-      showErrorToast('Please select an image for your event');
+    // Use comprehensive validation
+    final validations = notifier.validateEventData();
+
+    // Check specific fields for general step
+    final titleError = validations['title'];
+    final slugError = validations['slug'];
+    final locationError = validations['location'];
+    final locationNameError = validations['locationName'];
+    final eventTypeError = validations['eventType'];
+    final imageError = validations['image'];
+
+    if (titleError != null) {
+      showErrorToast(titleError);
       return;
     }
-    if (eventState.title.isEmpty) {
-      showErrorToast('Please enter a title for your event');
+    if (slugError != null) {
+      showErrorToast(slugError);
       return;
     }
-    if (eventState.slug.isEmpty) {
-      showErrorToast('Please enter a unique identifier for your event');
+    if (locationError != null) {
+      showErrorToast(locationError);
       return;
     }
-    if (eventState.location == null) {
-      showErrorToast('Please select a location for your event');
+    if (locationNameError != null) {
+      showErrorToast(locationNameError);
       return;
     }
-    if (eventState.locationName == null) {
-      showErrorToast('Please enter a location name for your event');
+    if (eventTypeError != null) {
+      showErrorToast(eventTypeError);
       return;
     }
+    if (imageError != null) {
+      showErrorToast(imageError);
+      return;
+    }
+
+    // Check slug validation (includes both format and availability)
     if (eventState.isSlugValid == false) {
-      showErrorToast('Please use only lowercase letters, numbers, and hyphens');
-      return;
-    }
-    if (eventState.isSlugAvailable == false) {
-      showErrorToast('This identifier is already taken');
-      return;
-    }
-    if (eventState.eventType == null) {
-      showErrorToast('Please select an event type');
+      showErrorToast(eventState.errorMessage ??
+          'Please check slug format and availability');
       return;
     }
 
     // All validations passed, advance to next step
-    ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
+    notifier.setPage(1);
     setState(() {});
   }
 
   void _validateDescriptionStep() {
-    final eventState = ref.read(eventCreationAndEditingProvider);
+    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
 
-    if (eventState.description.trim().isEmpty) {
-      showErrorToast('Please enter a description for your event');
+    // Use comprehensive validation for description
+    final validations = notifier.validateEventData();
+    final descriptionError = validations['description'];
+
+    if (descriptionError != null) {
+      showErrorToast(descriptionError);
       return;
     }
 
     // Validation passed, advance to next step
-    ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
+    notifier.setPage(2);
     setState(() {});
   }
 

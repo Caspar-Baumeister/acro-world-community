@@ -19,6 +19,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
+import 'package:acroworld/utils/validation/event_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
@@ -124,6 +125,7 @@ class EventCreationAndEditingState {
   }) {
     return EventCreationAndEditingState(
       currentPage: currentPage ?? this.currentPage,
+      isSlugValid: isSlugValid ?? this.isSlugValid,
       classModel: classModel ?? this.classModel,
       bookingCategories: bookingCategories ?? this.bookingCategories,
       bookingOptions: bookingOptions ?? this.bookingOptions,
@@ -250,32 +252,84 @@ class EventCreationAndEditingNotifier
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
-      // TODO: Implement validateSlug method in ClassesRepository
-      // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
-      // final isValid = await repository.validateSlug(slug);
+      // Basic format validation: lowercase letters, numbers, hyphens
+      final isValidFormat =
+          RegExp(r'^[a-z0-9-]+$').hasMatch(slug) && slug.isNotEmpty;
+
+      if (!isValidFormat) {
+        state = state.copyWith(
+          isSlugValid: false,
+          isSlugAvailable: false,
+          isLoading: false,
+          errorMessage:
+              'Slug can only contain lowercase letters, numbers, and hyphens',
+        );
+        return;
+      }
+
+      // Always check availability via repository
+      final repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+      final isAvailable = await repository.isSlugAvailable(slug);
+
+      // Only set as valid if format is correct AND available
+      final isValid = isValidFormat && isAvailable;
 
       state = state.copyWith(
-        // isSlugValid: isValid,
+        isSlugValid: isValid,
+        isSlugAvailable: isAvailable,
         isLoading: false,
+        errorMessage: isValid
+            ? null
+            : (isAvailable
+                ? 'Invalid slug format'
+                : 'This identifier is already taken'),
       );
     } catch (e) {
       CustomErrorHandler.logError('Error validating slug: $e');
       state = state.copyWith(
         isSlugValid: false,
+        isSlugAvailable: false,
         isLoading: false,
-        errorMessage: 'Error validating slug',
+        errorMessage: 'Error validating slug: ${e.toString()}',
       );
     }
   }
 
   /// Save event
-  Future<bool> saveEvent() async {
+  Future<bool> saveEvent(String creatorId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
-      // TODO: Fix createClass method signature
-      // final repository = ClassesRepository(apiService: GraphQLClientSingleton());
-      // final success = await repository.createClass(state.classModel!);
+      // Validate event data before saving
+      if (!isEventDataValid()) {
+        final firstError = getFirstValidationError();
+        state = state.copyWith(
+          isLoading: false,
+          errorMessage: firstError ?? 'Event data validation failed',
+        );
+        CustomErrorHandler.logError('Event validation failed: $firstError');
+        return false;
+      }
+
+      // Validate slug availability for new events
+      if (!state.isEditing) {
+        if (state.isSlugValid != true) {
+          state = state.copyWith(
+            isLoading: false,
+            errorMessage:
+                'Please ensure slug is valid and available before saving',
+          );
+          CustomErrorHandler.logError('Slug not validated for new event');
+          return false;
+        }
+      }
+
+      if (state.isEditing) {
+        await updateClass(creatorId);
+      } else {
+        await createClass(creatorId);
+      }
 
       state = state.copyWith(isLoading: false);
       CustomErrorHandler.logDebug('Event saved successfully');
@@ -284,7 +338,7 @@ class EventCreationAndEditingNotifier
       CustomErrorHandler.logError('Error saving event: $e');
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Error saving event',
+        errorMessage: 'Failed to save event: ${e.toString()}',
       );
       return false;
     }
@@ -309,8 +363,6 @@ class EventCreationAndEditingNotifier
   /// Set class from existing slug for template creation
   Future<void> setClassFromExisting(
       String slug, bool isEditing, bool setFromTemplate) async {
-    print(
-        '🔍 SETCLASS DEBUG - Method called with slug: $slug, isEditing: $isEditing, setFromTemplate: $setFromTemplate');
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -356,59 +408,19 @@ class EventCreationAndEditingNotifier
 
       // Copy recurring patterns directly from the fetched class (following main branch approach)
       final recurringPatternsFromClass = classModel.recurringPatterns ?? [];
-      print(
-          '🔍 TEMPLATE DEBUG - Recurring patterns from class: ${recurringPatternsFromClass.length}');
-
-      // Debug: Print template data
-      print('🔍 TEMPLATE DEBUG - Loading template: $slug');
-      print('🔍 TEMPLATE DEBUG - Template name: ${templateClassModel.name}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template description: ${templateClassModel.description}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template locationName: ${templateClassModel.locationName}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template imageUrl: ${templateClassModel.imageUrl}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template eventType: ${templateClassModel.eventType?.name}');
-      print('🔍 TEMPLATE DEBUG - Template city: ${templateClassModel.city}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template country: ${templateClassModel.country}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template location: ${templateClassModel.location}');
-      print(
-          '🔍 TEMPLATE DEBUG - Original classModel recurringPatterns: ${classModel.recurringPatterns}');
-      print(
-          '🔍 TEMPLATE DEBUG - Original classModel recurringPatterns.length: ${classModel.recurringPatterns?.length}');
-      print(
-          '🔍 TEMPLATE DEBUG - Recurring patterns to use: ${recurringPatternsFromClass.length}');
-      print('🔍 TEMPLATE DEBUG - Raw classModel.city: ${classModel.city}');
-      print(
-          '🔍 TEMPLATE DEBUG - Raw classModel.country: ${classModel.country}');
 
       // Convert country name to country code
       // Note: templateClassModel.country might already be a country code, not a name
-      print(
-          '🔍 TEMPLATE DEBUG - About to call getCountryCode with: "${templateClassModel.country}"');
-
-      // Check if it's already a country code (2 letters) or a country name
       String? finalCountryCode;
       if (templateClassModel.country != null &&
           templateClassModel.country!.length == 2) {
         // It's likely already a country code
         finalCountryCode = templateClassModel.country!.toUpperCase();
-        print('🔍 TEMPLATE DEBUG - Detected country code: $finalCountryCode');
       } else {
         // It's likely a country name, convert to code
         final countryCode = getCountryCode(templateClassModel.country);
-        print('🔍 TEMPLATE DEBUG - Converted country code: $countryCode');
         finalCountryCode = countryCode ?? templateClassModel.country;
       }
-
-      print('🔍 TEMPLATE DEBUG - Final country code: $finalCountryCode');
-
-      // Also try to get country name from code if we have a code
-      final countryName = getCountryName(templateClassModel.country);
-      print('🔍 TEMPLATE DEBUG - Country name from code: $countryName');
 
       // Build booking categories and options for state
       final List<BookingCategoryModel> copiedCategories = [];
@@ -489,31 +501,6 @@ class EventCreationAndEditingNotifier
         errorMessage: null,
       );
 
-      // Debug: Print state after setting
-      print('🔍 TEMPLATE DEBUG - State title: ${state.title}');
-      print('🔍 TEMPLATE DEBUG - State description: ${state.description}');
-      print('🔍 TEMPLATE DEBUG - State locationName: ${state.locationName}');
-      print(
-          '🔍 TEMPLATE DEBUG - State existingImageUrl: ${state.existingImageUrl}');
-      print('🔍 TEMPLATE DEBUG - State eventType: ${state.eventType}');
-      print('🔍 TEMPLATE DEBUG - State countryCode: ${state.countryCode}');
-      print('🔍 TEMPLATE DEBUG - State region: ${state.region}');
-      print('🔍 TEMPLATE DEBUG - State location: ${state.location}');
-      print(
-          '🔍 TEMPLATE DEBUG - State locationDescription: ${state.locationDescription}');
-      print(
-          '🔍 TEMPLATE DEBUG - State recurringPatterns: ${state.recurringPatterns}');
-      print(
-          '🔍 TEMPLATE DEBUG - State recurringPatterns.length: ${state.recurringPatterns.length}');
-      print(
-          '🔍 TEMPLATE DEBUG - Template city used as region: ${templateClassModel.city}');
-      print(
-          '🔍 TEMPLATE DEBUG - getCountryCode result: ${getCountryCode(templateClassModel.country)}');
-      print(
-          '🔍 TEMPLATE DEBUG - templateClassModel.country value: "${templateClassModel.country}"');
-      print(
-          '🔍 TEMPLATE DEBUG - templateClassModel.city value: "${templateClassModel.city}"');
-
       CustomErrorHandler.logDebug(
           'Template loaded successfully from slug: $slug');
     } catch (e) {
@@ -580,6 +567,40 @@ class EventCreationAndEditingNotifier
   /// Clear slug validation state
   void clearSlugValidation() {
     state = state.copyWith(isSlugValid: null, isSlugAvailable: null);
+  }
+
+  /// Validate all event data
+  Map<String, String?> validateEventData() {
+    return EventValidation.validateEvent(
+      title: state.title,
+      slug: state.slug,
+      description: state.description,
+      locationName: state.locationName,
+      location: state.location,
+      eventType: state.eventType,
+      countryCode: state.countryCode,
+      region: state.region,
+      image: state.eventImage,
+      existingImageUrl: state.existingImageUrl,
+    );
+  }
+
+  /// Check if event data is valid
+  bool isEventDataValid() {
+    final validations = validateEventData();
+    return EventValidation.isValid(validations);
+  }
+
+  /// Get first validation error
+  String? getFirstValidationError() {
+    final validations = validateEventData();
+    return EventValidation.getFirstError(validations);
+  }
+
+  /// Get all validation errors
+  List<String> getAllValidationErrors() {
+    final validations = validateEventData();
+    return EventValidation.getAllErrors(validations);
   }
 
   /// Convert String to EventType enum
@@ -675,10 +696,8 @@ class EventCreationAndEditingNotifier
   /// Create class using the working upsertClass approach
   Future<void> createClass(String creatorId) async {
     try {
-      print("🚀 DEBUG: Starting event creation with upsertClass...");
-      print("🚀 DEBUG: Creator ID (Teacher): $creatorId");
-      print("🚀 DEBUG: Event state: ${state.toString()}");
-
+      CustomErrorHandler.logDebug(
+          "Starting event creation with upsertClass for creator: $creatorId");
       state = state.copyWith(isLoading: true, errorMessage: null);
 
       // Import the repository
@@ -691,8 +710,6 @@ class EventCreationAndEditingNotifier
         teacherId: creatorId, // This is the teacher ID, not user ID
         isPaymentReceiver: true,
       );
-
-      print('bookingCategories ${state.bookingCategories}');
 
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
@@ -771,11 +788,7 @@ class EventCreationAndEditingNotifier
             .toList(),
       );
 
-      print("🚀 DEBUG: ClassUpsertInput created successfully");
-      print("🚀 DEBUG: Class owner teacher ID: ${classOwner.teacherId}");
-
       // Create the class using upsertClass
-      print("🚀 DEBUG: Calling repository.upsertClass()...");
       final createdClass = await repository.upsertClass(
         classUpsertInput,
         [], // questionIdsToDelete
@@ -785,20 +798,15 @@ class EventCreationAndEditingNotifier
         [], // deleteBookingCategoryIds
       );
 
-      print("🚀 DEBUG: Repository call completed successfully!");
-      print("🚀 DEBUG: Created class ID: ${createdClass.id}");
-      print("🚀 DEBUG: Created class name: ${createdClass.name}");
-      print("🚀 DEBUG: Created class slug: ${createdClass.urlSlug}");
-
       state = state.copyWith(
         isLoading: false,
         errorMessage: null,
       );
 
-      print("🚀 DEBUG: State updated - isLoading: false, errorMessage: null");
-      print("🚀 DEBUG: Event creation completed successfully!");
+      CustomErrorHandler.logDebug(
+          "Event creation completed successfully. Class ID: ${createdClass.id}");
     } catch (e) {
-      print("❌ DEBUG: Error creating event: $e");
+      CustomErrorHandler.logError("Error creating event: $e");
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to create event: ${e.toString()}',
@@ -809,12 +817,8 @@ class EventCreationAndEditingNotifier
   /// Update class
   Future<void> updateClass(String creatorId) async {
     try {
-      print("🚀 DEBUG: Starting event update with upsertClass...");
-      print("🚀 DEBUG: Creator ID (Teacher): $creatorId");
-      print("🚀 DEBUG: Event state: ${state.toString()}");
-      print("🚀 DEBUG: Is editing: ${state.isEditing}");
-      print("🚀 DEBUG: Class ID: ${state.classModel?.id}");
-
+      CustomErrorHandler.logDebug(
+          "Starting event update with upsertClass for creator: $creatorId");
       state = state.copyWith(isLoading: true, errorMessage: null);
 
       // Import the repository
@@ -832,8 +836,6 @@ class EventCreationAndEditingNotifier
       final classId = state.isEditing && state.classModel?.id != null
           ? state.classModel!.id!
           : const Uuid().v4();
-
-      print("🚀 DEBUG: Using class ID: $classId");
 
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
@@ -913,9 +915,6 @@ class EventCreationAndEditingNotifier
             .toList(),
       );
 
-      print("🚀 DEBUG: Calling repository.upsertClass...");
-      print("🚀 DEBUG: ClassUpsertInput: ${classUpsertInput.toJson()}");
-
       // Call the repository method
       final createdClass = await repository.upsertClass(
         classUpsertInput,
@@ -926,38 +925,25 @@ class EventCreationAndEditingNotifier
         [], // deleteBookingCategoryIds - empty for now
       );
 
-      print("🎯 DEBUG: Event update call completed");
-      print("🎯 DEBUG: Checking update result after delay:");
-
-      // Add a small delay to ensure state is updated
-      await Future.delayed(const Duration(milliseconds: 100));
-
-      print("🎯 DEBUG: - Error message: ${state.errorMessage}");
-      print("🎯 DEBUG: - Is loading: ${state.isLoading}");
-      print("🎯 DEBUG: - State toString: ${state.toString()}");
-
       if (createdClass.id != null) {
-        print(
-            "✅ DEBUG: Event updated successfully with ID: ${createdClass.id}");
         state = state.copyWith(
           isLoading: false,
           errorMessage: null,
         );
-        print("🎯 DEBUG: State updated after successful update");
+        CustomErrorHandler.logDebug(
+            "Event updated successfully with ID: ${createdClass.id}");
       } else {
-        print("❌ DEBUG: Event update failed: No ID returned");
         state = state.copyWith(
           isLoading: false,
           errorMessage: 'Failed to update event: No ID returned',
         );
       }
     } catch (e) {
-      print("❌ DEBUG: Error updating event: $e");
+      CustomErrorHandler.logError("Error updating event: $e");
       state = state.copyWith(
         isLoading: false,
-        errorMessage: 'Failed to update event: $e',
+        errorMessage: 'Failed to update event: ${e.toString()}',
       );
-      print("❌ DEBUG: Event update failed: ${state.errorMessage}");
     }
   }
 
