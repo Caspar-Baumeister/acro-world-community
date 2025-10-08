@@ -16,6 +16,7 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
+import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:acroworld/utils/validation/event_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -125,8 +126,7 @@ class EventCreationCoordinatorNotifier
         isCashAllowed: classModel.isCashAllowed,
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
-        questions:
-            classModel.questions, // TODO: Fix questions field requirement
+        questions: classModel.questions,
       );
 
       // Copy recurring patterns directly from the fetched class
@@ -211,9 +211,8 @@ class EventCreationCoordinatorNotifier
 
       ref.read(eventLocationProvider.notifier).setFromTemplate(
             locationName: templateClassModel.locationName,
-            location: null, // TODO: Fix Location to LatLng conversion
-            locationDescription:
-                null, // TODO: Add locationDescription to ClassModel
+            location: templateClassModel.location?.toLatLng(),
+            locationDescription: templateClassModel.locationName,
             countryCode: finalCountryCode,
             region: templateClassModel.city, // Use city as region
           );
@@ -292,7 +291,7 @@ class EventCreationCoordinatorNotifier
     return EventValidation.getAllErrors(validations);
   }
 
-  /// Save event - placeholder for now
+  /// Save event (create or update)
   Future<bool> saveEvent(String creatorId) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
@@ -366,13 +365,26 @@ class EventCreationCoordinatorNotifier
       final schedule = ref.read(eventScheduleProvider);
       final teachers = ref.read(eventTeachersProvider);
 
+      // Get timezone based on location
+      String timezone = 'Europe/Berlin'; // Default
+      if (location.location != null) {
+        try {
+          timezone = await getTimezone(
+            location.location!.latitude,
+            location.location!.longitude,
+          );
+        } catch (e) {
+          CustomErrorHandler.logError('Failed to get timezone: $e');
+        }
+      }
+
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
         id: const Uuid().v4(),
         name: basicInfo.title,
         description: basicInfo.description,
         imageUrl: basicInfo.existingImageUrl ?? '',
-        timezone: 'UTC', // TODO: Get user's timezone
+        timezone: timezone,
         urlSlug: basicInfo.slug,
         isCashAllowed: booking.isCashAllowed,
         location: location.location ?? const LatLng(0.0, 0.0),
@@ -423,25 +435,29 @@ class EventCreationCoordinatorNotifier
                       .toList(),
                 ))
             .toList(),
-        questions: questions.questions
-            .map((question) => QuestionInput(
-                  id: question.id ?? const Uuid().v4(),
-                  allowMultipleAnswers: question.isMultipleChoice ?? false,
-                  isRequired: question.isRequired ?? false,
-                  position: 0, // TODO: Set proper position
-                  question: question.question ?? '',
-                  title: question.title ?? '',
-                  questionType: question.type ?? QuestionType.text,
-                  multipleChoiceOptions: question.choices
-                          ?.map((choice) => MultipleChoiceOptionInput(
-                                id: choice.id ?? const Uuid().v4(),
-                                optionText: choice.optionText ?? '',
-                                position: 0, // TODO: Set proper position
-                              ))
-                          .toList() ??
-                      [],
-                ))
-            .toList(),
+        questions: questions.questions.asMap().entries.map((entry) {
+          final index = entry.key;
+          final question = entry.value;
+          return QuestionInput(
+            id: question.id ?? const Uuid().v4(),
+            allowMultipleAnswers: question.isMultipleChoice ?? false,
+            isRequired: question.isRequired ?? false,
+            position: index,
+            question: question.question ?? '',
+            title: question.title ?? '',
+            questionType: question.type ?? QuestionType.text,
+            multipleChoiceOptions: question.choices
+                    ?.asMap()
+                    .entries
+                    .map((choiceEntry) => MultipleChoiceOptionInput(
+                          id: choiceEntry.value.id ?? const Uuid().v4(),
+                          optionText: choiceEntry.value.optionText ?? '',
+                          position: choiceEntry.key,
+                        ))
+                    .toList() ??
+                [],
+          );
+        }).toList(),
       );
 
       // Create the class using upsertClass
@@ -501,13 +517,26 @@ class EventCreationCoordinatorNotifier
           ? state.classModel!.id!
           : const Uuid().v4();
 
+      // Get timezone based on location
+      String timezone = 'Europe/Berlin'; // Default
+      if (location.location != null) {
+        try {
+          timezone = await getTimezone(
+            location.location!.latitude,
+            location.location!.longitude,
+          );
+        } catch (e) {
+          CustomErrorHandler.logError('Failed to get timezone: $e');
+        }
+      }
+
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
         id: classId, // Use existing ID for editing
         name: basicInfo.title,
         description: basicInfo.description,
         imageUrl: basicInfo.existingImageUrl ?? '',
-        timezone: 'UTC', // TODO: Get user's timezone
+        timezone: timezone,
         urlSlug: basicInfo.slug,
         isCashAllowed: booking.isCashAllowed,
         location: location.location ?? const LatLng(0.0, 0.0),
@@ -557,26 +586,29 @@ class EventCreationCoordinatorNotifier
                       .toList(),
                 ))
             .toList(),
-        questions: questions.questions
-            .map((question) => QuestionInput(
-                  id: question.id ?? const Uuid().v4(),
-                  allowMultipleAnswers: question.isMultipleChoice ?? false,
-                  isRequired: question.isRequired ?? false,
-                  position: 0, // TODO: Set proper position
-                  question: question.question ?? '',
-                  title: question.title ?? '',
-                  questionType: question.type ?? QuestionType.text,
-                  multipleChoiceOptions: question.choices != null
-                      ? question.choices!
-                          .map((choice) => MultipleChoiceOptionInput(
-                                id: choice.id ?? const Uuid().v4(),
-                                optionText: choice.optionText ?? '',
-                                position: choice.position ?? 0,
-                              ))
-                          .toList()
-                      : [],
-                ))
-            .toList(),
+        questions: questions.questions.asMap().entries.map((entry) {
+          final index = entry.key;
+          final question = entry.value;
+          return QuestionInput(
+            id: question.id ?? const Uuid().v4(),
+            allowMultipleAnswers: question.isMultipleChoice ?? false,
+            isRequired: question.isRequired ?? false,
+            position: index,
+            question: question.question ?? '',
+            title: question.title ?? '',
+            questionType: question.type ?? QuestionType.text,
+            multipleChoiceOptions: question.choices
+                    ?.asMap()
+                    .entries
+                    .map((choiceEntry) => MultipleChoiceOptionInput(
+                          id: choiceEntry.value.id ?? const Uuid().v4(),
+                          optionText: choiceEntry.value.optionText ?? '',
+                          position: choiceEntry.key,
+                        ))
+                    .toList() ??
+                [],
+          );
+        }).toList(),
       );
 
       // Call the repository method

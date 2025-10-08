@@ -218,6 +218,11 @@ class Fragments {
   stripe_id
   is_stripe_enabled
   
+  user {
+    id
+    email
+    name
+  }
   user_likes_aggregate {
     aggregate {
       count

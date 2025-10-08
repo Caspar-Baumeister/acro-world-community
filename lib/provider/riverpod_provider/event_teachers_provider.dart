@@ -51,9 +51,9 @@ class EventTeachersNotifier extends StateNotifier<EventTeachersState> {
   }
 
   /// Remove pending invite teacher
-  void removePendingInviteTeacher(TeacherModel teacher) {
+  void removePendingInviteTeacher(String teacherId) {
     final teachers = List<TeacherModel>.from(state.pendingInviteTeachers);
-    teachers.removeWhere((t) => t.id == teacher.id);
+    teachers.removeWhere((t) => t.id == teacherId);
     state = state.copyWith(pendingInviteTeachers: teachers);
   }
 

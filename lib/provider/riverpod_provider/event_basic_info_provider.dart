@@ -1,6 +1,5 @@
 import 'dart:typed_data';
 
-import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
@@ -174,11 +173,6 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
       existingImageUrl: existingImageUrl,
       eventImage: null,
     );
-  }
-
-  /// Update class model - placeholder for compatibility
-  void updateClassModel(ClassModel? classModel) {
-    // TODO: Add classModel to EventBasicInfoState if needed
   }
 
   /// Check slug availability (simplified version)
