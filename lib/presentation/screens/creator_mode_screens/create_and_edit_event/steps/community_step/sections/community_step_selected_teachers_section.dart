@@ -21,22 +21,44 @@ class CommunityStepSelectedTeachersSection extends ConsumerWidget {
       }
     }
 
+    // Build list of widgets: teachers + email invites
+    final List<Widget> inviteWidgets = [];
+
+    // Add teacher widgets
+    inviteWidgets.addAll(
+      uniqueTeachers.values.map((teacher) {
+        return TeacherOption(
+          teacher: teacher,
+          onDelete: () {
+            ref
+                .read(eventCreationAndEditingProvider.notifier)
+                .removePendingInviteTeacher(teacher.id!);
+          },
+        );
+      }).toList(),
+    );
+
+    // Add email invitation widgets
+    inviteWidgets.addAll(
+      eventState.pendingEmailInvites.map((email) {
+        return TeacherOption.email(
+          email: email,
+          onDelete: () {
+            ref
+                .read(eventCreationAndEditingProvider.notifier)
+                .removeEmailInvite(email);
+          },
+        );
+      }).toList(),
+    );
+
     return Container(
       constraints: BoxConstraints(
         minHeight: MediaQuery.of(context).size.height * 0.3,
       ),
       child: Wrap(
         spacing: 3,
-        children: uniqueTeachers.values.map((teacher) {
-          return TeacherOption(
-            teacher: teacher,
-            onDelete: () {
-              ref
-                  .read(eventCreationAndEditingProvider.notifier)
-                  .removePendingInviteTeacher(teacher.id!);
-            },
-          );
-        }).toList(),
+        children: inviteWidgets,
       ),
     );
   }

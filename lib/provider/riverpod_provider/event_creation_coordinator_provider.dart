@@ -1,11 +1,11 @@
 import 'package:acroworld/data/graphql/input/booking_category_input.dart';
 import 'package:acroworld/data/graphql/input/booking_option_input.dart';
 import 'package:acroworld/data/graphql/input/class_owner_input.dart';
-import 'package:acroworld/data/graphql/input/class_teacher_input.dart';
 import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
 import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
+import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
@@ -20,6 +20,7 @@ import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:acroworld/utils/validation/event_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
@@ -363,7 +364,6 @@ class EventCreationCoordinatorNotifier
       final booking = ref.read(eventBookingProvider);
       final questions = ref.read(eventQuestionsProvider);
       final schedule = ref.read(eventScheduleProvider);
-      final teachers = ref.read(eventTeachersProvider);
 
       // Get timezone based on location
       String timezone = 'Europe/Berlin'; // Default
@@ -409,12 +409,7 @@ class EventCreationCoordinatorNotifier
                 ))
             .toList(),
         classOwners: [classOwner], // Include the class owner
-        classTeachers: teachers.pendingInviteTeachers
-            .map((teacher) => ClassTeacherInput(
-                  id: const Uuid().v4(),
-                  teacherId: teacher.id!,
-                ))
-            .toList(),
+        classTeachers: [], // Teachers will be invited separately after class creation
         bookingCategories: booking.bookingCategories
             .map((category) => BookingCategoryInput(
                   id: category.id ?? const Uuid().v4(),
@@ -470,6 +465,11 @@ class EventCreationCoordinatorNotifier
         [], // deleteBookingCategoryIds
       );
 
+      // Send invitations to teachers after class creation
+      if (createdClass.id != null) {
+        await _sendTeacherInvitations(createdClass.id!);
+      }
+
       state = state.copyWith(
         isLoading: false,
         errorMessage: null,
@@ -510,7 +510,6 @@ class EventCreationCoordinatorNotifier
       final booking = ref.read(eventBookingProvider);
       final questions = ref.read(eventQuestionsProvider);
       final schedule = ref.read(eventScheduleProvider);
-      final teachers = ref.read(eventTeachersProvider);
 
       // Use existing class ID for editing, generate new one for creation
       final classId = state.isEditing && state.classModel?.id != null
@@ -560,12 +559,7 @@ class EventCreationCoordinatorNotifier
                 ))
             .toList(),
         classOwners: [classOwner], // Include the class owner
-        classTeachers: teachers.pendingInviteTeachers
-            .map((teacher) => ClassTeacherInput(
-                  id: const Uuid().v4(),
-                  teacherId: teacher.id!,
-                ))
-            .toList(),
+        classTeachers: [], // Teachers will be invited separately after class creation
         bookingCategories: booking.bookingCategories
             .map((category) => BookingCategoryInput(
                   id: category.id ?? const Uuid().v4(),
@@ -622,6 +616,9 @@ class EventCreationCoordinatorNotifier
       );
 
       if (createdClass.id != null) {
+        // Send invitations to teachers after class update
+        await _sendTeacherInvitations(createdClass.id!);
+
         state = state.copyWith(
           isLoading: false,
           errorMessage: null,
@@ -692,6 +689,76 @@ class EventCreationCoordinatorNotifier
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute:00'; // Assuming seconds are always 00
+  }
+
+  /// Send teacher invitations after class creation
+  Future<void> _sendTeacherInvitations(String classId) async {
+    try {
+      final teachers = ref.read(eventTeachersProvider);
+      final client = GraphQLClientSingleton().client;
+
+      // Send invitations to selected teachers (with user accounts)
+      for (final teacher in teachers.pendingInviteTeachers) {
+        if (teacher.email != null) {
+          try {
+            final result = await client.mutate(
+              MutationOptions(
+                document: Mutations.inviteToClassMutation,
+                variables: {
+                  'email': teacher.email!,
+                  'entity': 'class',
+                  'entity_id': classId,
+                  'userId': teacher.userId,
+                },
+              ),
+            );
+
+            if (result.hasException) {
+              CustomErrorHandler.logError(
+                  'Failed to invite teacher ${teacher.name}: ${result.exception}');
+            } else {
+              CustomErrorHandler.logDebug(
+                  'Successfully invited teacher ${teacher.name} to class $classId');
+            }
+          } catch (e) {
+            CustomErrorHandler.logError(
+                'Error inviting teacher ${teacher.name}: $e');
+          }
+        } else {
+          CustomErrorHandler.logError(
+              'Teacher ${teacher.name} has no email, skipping invitation');
+        }
+      }
+
+      // Send email invitations (for users without teacher accounts)
+      for (final email in teachers.pendingEmailInvites) {
+        try {
+          final result = await client.mutate(
+            MutationOptions(
+              document: Mutations.inviteToClassMutation,
+              variables: {
+                'email': email,
+                'entity': 'class',
+                'entity_id': classId,
+                // userId is null for email-only invitations
+              },
+            ),
+          );
+
+          if (result.hasException) {
+            CustomErrorHandler.logError(
+                'Failed to invite email $email: ${result.exception}');
+          } else {
+            CustomErrorHandler.logDebug(
+                'Successfully invited email $email to class $classId');
+          }
+        } catch (e) {
+          CustomErrorHandler.logError('Error inviting email $email: $e');
+        }
+      }
+    } catch (e) {
+      CustomErrorHandler.logError('Error sending teacher invitations: $e');
+    }
   }
 
   /// Reset all providers

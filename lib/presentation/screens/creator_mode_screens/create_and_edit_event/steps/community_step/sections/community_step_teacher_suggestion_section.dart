@@ -17,40 +17,62 @@ class CommunityStepTeacherSuggestionSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final eventState = ref.watch(eventCreationAndEditingProvider);
+    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
+
+    // Check if query is a valid email
+    final isValidEmail = _isValidEmail(query);
+
     return SingleChildScrollView(
       child: query.isNotEmpty
-          ? TeacherSuggestionsQuery(
-              query: query,
-              alreadySelectedIds: eventState
-                  .pendingInviteTeachers
-                  .map((e) => e.id!)
-                  .toList(),
-              onTeacherSelected: (TeacherModel teacher) {
-                ref.read(eventCreationAndEditingProvider.notifier)
-                    .addPendingInviteTeacher(teacher);
-                teacherQueryController.clear();
-              },
-              variables: (String query) {
-                return {
-                  'limit': 10,
-                  'offset': 0,
-                  'where': {
-                    '_or': [
-                      {
-                        'name': {'_ilike': '$query%'}
-                      },
-                      {
-                        'user': {
-                          'email': {'_ilike': '$query%'}
-                        }
-                      },
-                    ],
+          ? Column(
+              children: [
+                TeacherSuggestionsQuery(
+                  query: query,
+                  alreadySelectedIds: eventState.pendingInviteTeachers
+                      .map((e) => e.id!)
+                      .toList(),
+                  onTeacherSelected: (TeacherModel teacher) {
+                    notifier.addPendingInviteTeacher(teacher);
+                    teacherQueryController.clear();
                   },
-                };
-              },
-              identifier: 'teachers',
+                  variables: (String query) {
+                    return {
+                      'limit': 10,
+                      'offset': 0,
+                      'where': {
+                        '_or': [
+                          {
+                            'name': {'_ilike': '$query%'}
+                          },
+                          {
+                            'user': {
+                              'email': {'_ilike': '$query%'}
+                            }
+                          },
+                        ],
+                      },
+                    };
+                  },
+                  identifier: 'teachers',
+                  showEmailInviteOption: isValidEmail,
+                  onEmailInvite: isValidEmail
+                      ? () {
+                          notifier.addEmailInvite(query);
+                          teacherQueryController.clear();
+                        }
+                      : null,
+                )
+              ],
             )
           : Container(),
     );
+  }
+
+  /// Validate email format
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
   }
 }

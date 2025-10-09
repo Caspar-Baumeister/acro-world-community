@@ -1,4 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
+import 'package:acroworld/data/models/user_model.dart';
 
 class TeacherModel {
   String? id;
@@ -13,11 +14,15 @@ class TeacherModel {
   String? type;
   List<Images>? images;
   String? userId;
+  User? user;
   bool? likedByUser;
   num? likes;
   String? stripeId;
   bool? isStripeEnabled;
   num? individualCommission;
+
+  /// Get email from user object
+  String? get email => user?.email;
 
   // get the profile image of the teacher
   String? get profilImgUrl {
@@ -56,6 +61,7 @@ class TeacherModel {
       this.slug,
       this.images,
       this.userId,
+      this.user,
       this.isStripeEnabled,
       this.stripeId,
       this.likedByUser,
@@ -81,6 +87,7 @@ class TeacherModel {
     }
 
     userId = json['user_id'];
+    user = json['user'] != null ? User.fromJson(json['user']) : null;
     if (json['user_likes'] != null) {
       likedByUser = json['user_likes'].length > 0 ? true : false;
     }

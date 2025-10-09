@@ -4,11 +4,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// State for event teachers information
 class EventTeachersState {
   final List<TeacherModel> pendingInviteTeachers;
+  final List<String> pendingEmailInvites;
   final bool isLoading;
   final String? errorMessage;
 
   const EventTeachersState({
     this.pendingInviteTeachers = const [],
+    this.pendingEmailInvites = const [],
     this.isLoading = false,
     this.errorMessage,
   });
@@ -24,12 +26,14 @@ class EventTeachersState {
 
   EventTeachersState copyWith({
     List<TeacherModel>? pendingInviteTeachers,
+    List<String>? pendingEmailInvites,
     bool? isLoading,
     String? errorMessage,
   }) {
     return EventTeachersState(
       pendingInviteTeachers:
           pendingInviteTeachers ?? this.pendingInviteTeachers,
+      pendingEmailInvites: pendingEmailInvites ?? this.pendingEmailInvites,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -60,6 +64,46 @@ class EventTeachersNotifier extends StateNotifier<EventTeachersState> {
   /// Clear all pending invite teachers
   void clearPendingInviteTeachers() {
     state = state.copyWith(pendingInviteTeachers: []);
+  }
+
+  /// Add email invitation
+  void addEmailInvite(String email) {
+    // Validate email format
+    if (!_isValidEmail(email)) {
+      return;
+    }
+
+    // Check for duplicates
+    if (!state.pendingEmailInvites.contains(email)) {
+      final emails = List<String>.from(state.pendingEmailInvites);
+      emails.add(email);
+      state = state.copyWith(pendingEmailInvites: emails);
+    }
+  }
+
+  /// Remove email invitation
+  void removeEmailInvite(String email) {
+    final emails = List<String>.from(state.pendingEmailInvites);
+    emails.remove(email);
+    state = state.copyWith(pendingEmailInvites: emails);
+  }
+
+  /// Clear all email invitations
+  void clearEmailInvites() {
+    state = state.copyWith(pendingEmailInvites: []);
+  }
+
+  /// Validate email format
+  bool _isValidEmail(String email) {
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    return emailRegex.hasMatch(email);
+  }
+
+  /// Check if string is a valid email
+  bool isValidEmail(String email) {
+    return _isValidEmail(email);
   }
 
   /// Set pending invite teachers

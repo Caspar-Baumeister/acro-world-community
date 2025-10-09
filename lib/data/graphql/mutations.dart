@@ -922,12 +922,21 @@ mutation deleteAccount{
 
   // Invitation mutations
   static final acceptInviteMutation = gql("""
-    mutation AcceptInvite(\$invite_id: String!) {
-      accept_invite(invite_id: \$invite_id) {
-        success
-      }
-    }
-  """);
+mutation AcceptInvite(\$invite_id: String!) {
+  accept_invite(invite_id: \$invite_id) {
+    success
+  }
+}
+""");
+
+  // inviteToClass - Invite a teacher to a class
+  static final inviteToClassMutation = gql("""
+mutation InviteToClass(\$email: String!, \$entity: String!, \$entity_id: String!, \$userId: String) {
+  invite(email: \$email, entity: \$entity, entity_id: \$entity_id, userId: \$userId) {
+    success
+  }
+}
+""");
 
   static final updateInviteStatusMutation = gql("""
     mutation UpdateInviteStatus(\$id: uuid!, \$confirmation_status: confirmation_status_enum!) {

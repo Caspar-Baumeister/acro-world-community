@@ -49,6 +49,7 @@ class EventCreationAndEditingState {
   final bool isCashAllowed;
   final bool isEditing;
   final List<TeacherModel> pendingInviteTeachers;
+  final List<String> pendingEmailInvites;
   final int? maxBookingSlots;
   final List<RecurringPatternModel> recurringPatterns;
   final RecurringPatternModel? recurrentPattern;
@@ -78,6 +79,7 @@ class EventCreationAndEditingState {
     this.isCashAllowed = false,
     this.isEditing = false,
     this.pendingInviteTeachers = const [],
+    this.pendingEmailInvites = const [],
     this.maxBookingSlots,
     this.recurringPatterns = const [],
     this.recurrentPattern,
@@ -117,6 +119,7 @@ class EventCreationAndEditingState {
     bool? isCashAllowed,
     bool? isEditing,
     List<TeacherModel>? pendingInviteTeachers,
+    List<String>? pendingEmailInvites,
     int? maxBookingSlots,
     List<RecurringPatternModel>? recurringPatterns,
     RecurringPatternModel? recurrentPattern,
@@ -147,6 +150,7 @@ class EventCreationAndEditingState {
       isEditing: isEditing ?? this.isEditing,
       pendingInviteTeachers:
           pendingInviteTeachers ?? this.pendingInviteTeachers,
+      pendingEmailInvites: pendingEmailInvites ?? this.pendingEmailInvites,
       maxBookingSlots: maxBookingSlots ?? this.maxBookingSlots,
       recurringPatterns: recurringPatterns ?? this.recurringPatterns,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
@@ -965,6 +969,31 @@ class EventCreationAndEditingNotifier
     final updatedTeachers = List<TeacherModel>.from(state.pendingInviteTeachers)
       ..removeWhere((teacher) => teacher.id == teacherId);
     state = state.copyWith(pendingInviteTeachers: updatedTeachers);
+  }
+
+  /// Add email invitation
+  void addEmailInvite(String email) {
+    // Validate email format
+    final emailRegex = RegExp(
+      r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
+    );
+    if (!emailRegex.hasMatch(email)) {
+      return;
+    }
+
+    // Check for duplicates
+    if (!state.pendingEmailInvites.contains(email)) {
+      final emails = List<String>.from(state.pendingEmailInvites);
+      emails.add(email);
+      state = state.copyWith(pendingEmailInvites: emails);
+    }
+  }
+
+  /// Remove email invitation
+  void removeEmailInvite(String email) {
+    final emails = List<String>.from(state.pendingEmailInvites);
+    emails.remove(email);
+    state = state.copyWith(pendingEmailInvites: emails);
   }
 
   /// Set max booking slots

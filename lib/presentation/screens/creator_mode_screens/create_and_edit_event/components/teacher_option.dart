@@ -3,14 +3,24 @@ import 'package:acroworld/presentation/components/images/custom_avatar_cached_ne
 import 'package:flutter/material.dart';
 
 class TeacherOption extends StatelessWidget {
-  final TeacherModel teacher;
+  final TeacherModel? teacher;
+  final String? email;
   final VoidCallback? onDelete;
+  final bool isEmailInvite;
 
   const TeacherOption({
     super.key,
     required this.teacher,
     this.onDelete,
-  });
+  })  : email = null,
+        isEmailInvite = false;
+
+  const TeacherOption.email({
+    super.key,
+    required this.email,
+    this.onDelete,
+  })  : teacher = null,
+        isEmailInvite = true;
 
   @override
   Widget build(BuildContext context) {
@@ -43,26 +53,45 @@ class TeacherOption extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // Profile image
-                CustomAvatarCachedNetworkImage(
-                  imageUrl: teacher.profilImgUrl ?? "",
-                  radius: 40,
-                ),
+                // Profile image or email icon
+                if (isEmailInvite)
+                  Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: colorScheme.primaryContainer,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.email_outlined,
+                      color: colorScheme.onPrimaryContainer,
+                      size: 20,
+                    ),
+                  )
+                else
+                  CustomAvatarCachedNetworkImage(
+                    imageUrl: teacher?.profilImgUrl ?? "",
+                    radius: 40,
+                  ),
                 const SizedBox(width: 12),
-                // Name and followers
+                // Name/Email and info
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        teacher.name ?? "Unknown Teacher",
+                        isEmailInvite
+                            ? email!
+                            : (teacher?.name ?? "Unknown Teacher"),
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
                       ),
                       const SizedBox(height: 4),
                       Text(
-                        "${teacher.likes?.toString() ?? "0"} followers",
+                        isEmailInvite
+                            ? "Pending email invitation"
+                            : "${teacher?.likes?.toString() ?? "0"} followers",
                         style: theme.textTheme.bodySmall?.copyWith(
                           color: colorScheme.onSurfaceVariant,
                         ),
