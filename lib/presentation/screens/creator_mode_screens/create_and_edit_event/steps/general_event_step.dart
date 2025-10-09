@@ -9,7 +9,8 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_basic_info_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_location_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
@@ -38,31 +39,29 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   @override
   void initState() {
     super.initState();
-    final eventState = ref.read(eventCreationAndEditingProvider);
+    final basicInfo = ref.read(eventBasicInfoProvider);
+    final location = ref.read(eventLocationProvider);
     _locationNameController =
-        TextEditingController(text: eventState.locationName);
-    _titleController = TextEditingController(text: eventState.title);
-    _slugController = TextEditingController(text: eventState.slug);
-    _descriptionController =
-        TextEditingController(text: eventState.description);
+        TextEditingController(text: location.locationName);
+    _titleController = TextEditingController(text: basicInfo.title);
+    _slugController = TextEditingController(text: basicInfo.slug);
+    _descriptionController = TextEditingController(text: basicInfo.description);
 
     // add listener to update provider
     _descriptionController.addListener(() {
       ref
-          .read(eventCreationAndEditingProvider.notifier)
+          .read(eventBasicInfoProvider.notifier)
           .setDescription(_descriptionController.text);
     });
 
     _locationNameController.addListener(() {
       ref
-          .read(eventCreationAndEditingProvider.notifier)
+          .read(eventLocationProvider.notifier)
           .setLocationName(_locationNameController.text);
     });
 
     _titleController.addListener(() {
-      ref
-          .read(eventCreationAndEditingProvider.notifier)
-          .setTitle(_titleController.text);
+      ref.read(eventBasicInfoProvider.notifier).setTitle(_titleController.text);
       // Auto-generate slug from title if slug is empty
       if (_slugController.text.isEmpty) {
         String slug = _titleController.text
@@ -70,17 +69,13 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
             .replaceAll(' ', '-')
             .replaceAll(RegExp(r'[^a-z0-9-]'), '');
         _slugController.text = slug;
-        ref.read(eventCreationAndEditingProvider.notifier).setSlug(slug);
-        ref
-            .read(eventCreationAndEditingProvider.notifier)
-            .checkSlugAvailability();
+        ref.read(eventBasicInfoProvider.notifier).setSlug(slug);
+        ref.read(eventBasicInfoProvider.notifier).checkSlugAvailability();
       }
     });
 
     _slugController.addListener(() {
-      ref
-          .read(eventCreationAndEditingProvider.notifier)
-          .setSlug(_slugController.text);
+      ref.read(eventBasicInfoProvider.notifier).setSlug(_slugController.text);
 
       // Cancel previous timer
       _slugDebounceTimer?.cancel();
@@ -88,15 +83,11 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       // Check slug availability in real-time with debouncing
       if (_slugController.text.isNotEmpty) {
         _slugDebounceTimer = Timer(const Duration(milliseconds: 500), () {
-          ref
-              .read(eventCreationAndEditingProvider.notifier)
-              .checkSlugAvailability();
+          ref.read(eventBasicInfoProvider.notifier).checkSlugAvailability();
         });
       } else {
         // Clear validation state when field is empty
-        ref
-            .read(eventCreationAndEditingProvider.notifier)
-            .clearSlugValidation();
+        ref.read(eventBasicInfoProvider.notifier).clearSlugValidation();
       }
     });
   }
@@ -105,19 +96,19 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     // Update controllers when provider state changes (e.g., when template is loaded)
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final basicInfo = ref.watch(eventBasicInfoProvider);
+    final location = ref.watch(eventLocationProvider);
 
     // Debug: Print form state
     print('🔍 FORM DEBUG - didChangeDependencies called');
-    print('🔍 FORM DEBUG - Provider title: "${eventState.title}"');
-    print('🔍 FORM DEBUG - Provider description: "${eventState.description}"');
+    print('🔍 FORM DEBUG - Provider title: "${basicInfo.title}"');
+    print('🔍 FORM DEBUG - Provider description: "${basicInfo.description}"');
+    print('🔍 FORM DEBUG - Provider locationName: "${location.locationName}"');
     print(
-        '🔍 FORM DEBUG - Provider locationName: "${eventState.locationName}"');
-    print(
-        '🔍 FORM DEBUG - Provider existingImageUrl: "${eventState.existingImageUrl}"');
-    print('🔍 FORM DEBUG - Provider countryCode: "${eventState.countryCode}"');
-    print('🔍 FORM DEBUG - Provider region: "${eventState.region}"');
-    print('🔍 FORM DEBUG - Provider location: "${eventState.location}"');
+        '🔍 FORM DEBUG - Provider existingImageUrl: "${basicInfo.existingImageUrl}"');
+    print('🔍 FORM DEBUG - Provider countryCode: "${location.countryCode}"');
+    print('🔍 FORM DEBUG - Provider region: "${location.region}"');
+    print('🔍 FORM DEBUG - Provider location: "${location.location}"');
     print('🔍 FORM DEBUG - Controller title: "${_titleController.text}"');
     print(
         '🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
@@ -125,25 +116,25 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
         '🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
 
     // Only update if the values have actually changed to avoid cursor jumping
-    if (_titleController.text != eventState.title) {
+    if (_titleController.text != basicInfo.title) {
       print(
-          '🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${eventState.title}"');
-      _titleController.text = eventState.title;
+          '🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${basicInfo.title}"');
+      _titleController.text = basicInfo.title;
     }
-    if (_slugController.text != eventState.slug) {
+    if (_slugController.text != basicInfo.slug) {
       print(
-          '🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${eventState.slug}"');
-      _slugController.text = eventState.slug;
+          '🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${basicInfo.slug}"');
+      _slugController.text = basicInfo.slug;
     }
-    if (_descriptionController.text != eventState.description) {
+    if (_descriptionController.text != basicInfo.description) {
       print(
-          '🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${eventState.description}"');
-      _descriptionController.text = eventState.description;
+          '🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${basicInfo.description}"');
+      _descriptionController.text = basicInfo.description;
     }
-    if (_locationNameController.text != (eventState.locationName ?? '')) {
+    if (_locationNameController.text != (location.locationName ?? '')) {
       print(
-          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${eventState.locationName ?? ''}"');
-      _locationNameController.text = eventState.locationName ?? '';
+          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${location.locationName ?? ''}"');
+      _locationNameController.text = location.locationName ?? '';
     }
   }
 
@@ -159,7 +150,8 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final basicInfo = ref.watch(eventBasicInfoProvider);
+    final location = ref.watch(eventLocationProvider);
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -182,11 +174,11 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         width: 250,
                         height: 250,
                         child: EventImahePickerComponent(
-                          currentImage: eventState.eventImage,
-                          existingImageUrl: eventState.existingImageUrl,
+                          currentImage: basicInfo.eventImage,
+                          existingImageUrl: basicInfo.existingImageUrl,
                           onImageSelected: (Uint8List image) {
                             ref
-                                .read(eventCreationAndEditingProvider.notifier)
+                                .read(eventBasicInfoProvider.notifier)
                                 .setEventImage(image);
                           },
                         ),
@@ -203,19 +195,19 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       InputFieldComponent(
                         controller: _slugController,
                         labelText: 'Unique Identifier',
-                        footnoteText: eventState.isSlugValid == false
+                        footnoteText: basicInfo.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
-                            : (eventState.isSlugAvailable == false
+                            : (basicInfo.isSlugAvailable == false
                                 ? "This identifier is already taken"
                                 : 'A unique identifier for your event (e.g., "my-acro-workshop-2024"). This will be used in the event URL and must be unique.'),
-                        isFootnoteError: eventState.isSlugAvailable == false ||
-                            eventState.isSlugValid == false,
+                        isFootnoteError: basicInfo.isSlugAvailable == false ||
+                            basicInfo.isSlugValid == false,
                         textInputAction: TextInputAction.next,
-                        suffixIcon: eventState.isSlugAvailable == null &&
-                                eventState.isSlugValid == null
+                        suffixIcon: basicInfo.isSlugAvailable == null &&
+                                basicInfo.isSlugValid == null
                             ? null
-                            : (eventState.isSlugAvailable == false ||
-                                    eventState.isSlugValid == false)
+                            : (basicInfo.isSlugAvailable == false ||
+                                    basicInfo.isSlugValid == false)
                                 ? Icon(Icons.error,
                                     color: Theme.of(context).colorScheme.error)
                                 : Icon(Icons.check_circle,
@@ -232,16 +224,16 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),
                       CustomLocationInputComponent(
-                        currentLocation: eventState.location,
+                        currentLocation: location.location,
                         currentLoactionDescription:
-                            eventState.locationDescription,
+                            location.locationDescription,
                         onLocationSelected:
                             (LatLng location, String? locationDescription) {
                           ref
-                              .read(eventCreationAndEditingProvider.notifier)
+                              .read(eventLocationProvider.notifier)
                               .setLocation(location);
                           ref
-                              .read(eventCreationAndEditingProvider.notifier)
+                              .read(eventLocationProvider.notifier)
                               .setLocationDescription(
                                   locationDescription ?? '');
                         },
@@ -252,51 +244,51 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       Builder(
                         builder: (context) {
                           print(
-                              '🔍 UI DEBUG - CountryPicker selectedCountryCode: "${eventState.countryCode}"');
+                              '🔍 UI DEBUG - CountryPicker selectedCountryCode: "${location.countryCode}"');
                           return CountryPicker(
                             key: ValueKey(
-                                'country_${eventState.countryCode}'), // Force rebuild when country changes
+                                'country_${location.countryCode}'), // Force rebuild when country changes
                             // now pass the ISO code, not the name:
-                            selectedCountryCode: eventState.countryCode,
+                            selectedCountryCode: location.countryCode,
                             onCountrySelected: (String? code, String? name) {
                               // code: e.g. "US", name: e.g. "United States"
+                              if (code != null) {
+                                ref
+                                    .read(eventLocationProvider.notifier)
+                                    .setCountryCode(code);
+                              }
                               ref
-                                  .read(
-                                      eventCreationAndEditingProvider.notifier)
-                                  .setCountryCode(code);
-                              ref
-                                  .read(
-                                      eventCreationAndEditingProvider.notifier)
+                                  .read(eventLocationProvider.notifier)
                                   .setCountry(name);
                               // clear out any previously selected region:
                               ref
-                                  .read(
-                                      eventCreationAndEditingProvider.notifier)
-                                  .setRegion(null);
+                                  .read(eventLocationProvider.notifier)
+                                  .setRegion('');
                             },
                           );
                         },
                       ),
 
                       // only show regions once we have a valid countryCode
-                      if (eventState.countryCode != null)
+                      if (location.countryCode != null)
                         Padding(
                           padding: const EdgeInsets.only(
                               top: AppDimensions.spacingMedium),
                           child: Builder(
                             builder: (context) {
                               print(
-                                  '🔍 UI DEBUG - RegionPicker countryCode: "${eventState.countryCode}", selectedRegion: "${eventState.region}"');
+                                  '🔍 UI DEBUG - RegionPicker countryCode: "${location.countryCode}", selectedRegion: "${location.region}"');
                               return RegionPicker(
                                 key: ValueKey(
-                                    'region_${eventState.countryCode}_${eventState.region}'), // Force rebuild when region changes
-                                countryCode: eventState.countryCode!,
-                                selectedRegion: eventState.region,
+                                    'region_${location.countryCode}_${location.region}'), // Force rebuild when region changes
+                                countryCode: location.countryCode!,
+                                selectedRegion: location.region,
                                 onRegionSelected: (String? region) {
-                                  ref
-                                      .read(eventCreationAndEditingProvider
-                                          .notifier)
-                                      .setRegion(region);
+                                  if (region != null) {
+                                    ref
+                                        .read(eventLocationProvider.notifier)
+                                        .setRegion(region);
+                                  }
                                 },
                               );
                             },
@@ -306,7 +298,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       const SizedBox(height: AppDimensions.spacingMedium),
                       CustomQueryOptionInputComponent(
                         hintText: 'What kind of event is it?',
-                        currentOption: eventState.eventType,
+                        currentOption: basicInfo.eventType,
                         identifier: 'event_type',
                         valueIdentifier: "value",
                         query: QueryOptions(
@@ -322,7 +314,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         setOption: (String? value) {
                           if (value != null) {
                             ref
-                                .read(eventCreationAndEditingProvider.notifier)
+                                .read(eventBasicInfoProvider.notifier)
                                 .setEventType(value);
                           }
                         },

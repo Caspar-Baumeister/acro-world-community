@@ -7,7 +7,11 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/occurrences_step.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/questions_step.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_basic_info_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_booking_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_coordinator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_schedule_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_teachers_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -42,18 +46,18 @@ class _CreateAndEditEventPageState
     if (widget.isEditing && widget.eventSlug != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ref
-            .read(eventCreationAndEditingProvider.notifier)
-            .setClassFromExisting(widget.eventSlug!, true, false);
+            .read(eventCreationCoordinatorProvider.notifier)
+            .loadExistingClass(widget.eventSlug!, true, false);
       });
     }
   }
 
   void _validateGeneralStep() {
-    final eventState = ref.read(eventCreationAndEditingProvider);
-    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
+    final basicInfo = ref.read(eventBasicInfoProvider);
+    final coordinator = ref.read(eventCreationCoordinatorProvider.notifier);
 
     // Use comprehensive validation
-    final validations = notifier.validateEventData();
+    final validations = coordinator.validateEventData();
 
     // Check specific fields for general step
     final titleError = validations['title'];
@@ -89,22 +93,22 @@ class _CreateAndEditEventPageState
     }
 
     // Check slug validation (includes both format and availability)
-    if (eventState.isSlugValid == false) {
-      showErrorToast(eventState.errorMessage ??
+    if (basicInfo.isSlugValid == false) {
+      showErrorToast(basicInfo.errorMessage ??
           'Please check slug format and availability');
       return;
     }
 
     // All validations passed, advance to next step
-    notifier.setPage(1);
+    coordinator.setPage(1);
     setState(() {});
   }
 
   void _validateDescriptionStep() {
-    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
+    final coordinator = ref.read(eventCreationCoordinatorProvider.notifier);
 
     // Use comprehensive validation for description
-    final validations = notifier.validateEventData();
+    final validations = coordinator.validateEventData();
     final descriptionError = validations['description'];
 
     if (descriptionError != null) {
@@ -113,13 +117,13 @@ class _CreateAndEditEventPageState
     }
 
     // Validation passed, advance to next step
-    notifier.setPage(2);
+    coordinator.setPage(2);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final coordinatorState = ref.watch(eventCreationCoordinatorProvider);
 
     final userAsync = ref.watch(userRiverpodProvider);
 
@@ -127,35 +131,35 @@ class _CreateAndEditEventPageState
       // Step 1: General Event Details
       GeneralEventStep(
         onFinished: () {
-          ref.read(eventCreationAndEditingProvider.notifier).setPage(1);
+          ref.read(eventCreationCoordinatorProvider.notifier).setPage(1);
           setState(() {});
         },
       ),
       // Step 2: Description
       DescriptionStep(
         onFinished: () {
-          ref.read(eventCreationAndEditingProvider.notifier).setPage(2);
+          ref.read(eventCreationCoordinatorProvider.notifier).setPage(2);
           setState(() {});
         },
       ),
       // Step 3: Questions
       QuestionsStep(
         onFinished: () {
-          ref.read(eventCreationAndEditingProvider.notifier).setPage(3);
+          ref.read(eventCreationCoordinatorProvider.notifier).setPage(3);
           setState(() {});
         },
       ),
       // Step 4: Occurrences
       OccurrenceStep(
         onFinished: () {
-          ref.read(eventCreationAndEditingProvider.notifier).setPage(4);
+          ref.read(eventCreationCoordinatorProvider.notifier).setPage(4);
           setState(() {});
         },
       ),
       // Step 5: Community
       CommunityStep(
         onFinished: () {
-          ref.read(eventCreationAndEditingProvider.notifier).setPage(5);
+          ref.read(eventCreationCoordinatorProvider.notifier).setPage(5);
           setState(() {});
         },
       ),
@@ -178,19 +182,12 @@ class _CreateAndEditEventPageState
             }
 
             // create a new event
-            if (widget.isEditing) {
-              await ref
-                  .read(eventCreationAndEditingProvider.notifier)
-                  .updateClass(creatorState.activeTeacher!.id!);
-            } else {
-              // print the current user role
+            final coordinator =
+                ref.read(eventCreationCoordinatorProvider.notifier);
+            final success =
+                await coordinator.saveEvent(creatorState.activeTeacher!.id!);
 
-              await ref
-                  .read(eventCreationAndEditingProvider.notifier)
-                  .createClass(creatorState.activeTeacher!.id!);
-            }
-
-            if (eventState.errorMessage == null) {
+            if (success) {
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
               // if successful, pop the page
@@ -203,7 +200,10 @@ class _CreateAndEditEventPageState
               }
             } else {
               // if not successful, show an error message
-              showErrorToast(eventState.errorMessage!);
+              final coordinatorState =
+                  ref.read(eventCreationCoordinatorProvider);
+              showErrorToast(
+                  coordinatorState.errorMessage ?? 'Failed to save event');
             }
           })
     ];
@@ -223,68 +223,68 @@ class _CreateAndEditEventPageState
       child: Column(
         children: [
           CompactProgressBar(
-            currentStep: eventState.currentPage,
+            currentStep: coordinatorState.currentPage,
             totalSteps: pages.length,
-            currentStepTitle: stepTitles[eventState.currentPage],
-            isLoading: eventState.isLoading,
+            currentStepTitle: stepTitles[coordinatorState.currentPage],
+            isLoading: coordinatorState.isLoading,
             finalStepButtonText: widget.isEditing ? 'Update' : 'Create',
-            onBackPressed: eventState.currentPage > 0
+            onBackPressed: coordinatorState.currentPage > 0
                 ? () {
                     ref
-                        .read(eventCreationAndEditingProvider.notifier)
-                        .setPage(eventState.currentPage - 1);
+                        .read(eventCreationCoordinatorProvider.notifier)
+                        .setPage(coordinatorState.currentPage - 1);
                     setState(() {});
                   }
                 : null,
-            onClosePressed: eventState.currentPage == 0
+            onClosePressed: coordinatorState.currentPage == 0
                 ? () {
                     Navigator.of(context).pop();
                   }
                 : null,
-            onNextPressed: eventState.currentPage < pages.length - 1
+            onNextPressed: coordinatorState.currentPage < pages.length - 1
                 ? () {
                     // Trigger validation for the current step
                     // Each step will validate and call onFinished if valid
-                    if (eventState.currentPage == 0) {
+                    if (coordinatorState.currentPage == 0) {
                       // General step - validate required fields
                       _validateGeneralStep();
-                    } else if (eventState.currentPage == 1) {
+                    } else if (coordinatorState.currentPage == 1) {
                       // Description step - validate description
                       _validateDescriptionStep();
                     } else {
                       // Other steps - just advance
                       ref
-                          .read(eventCreationAndEditingProvider.notifier)
-                          .setPage(eventState.currentPage + 1);
+                          .read(eventCreationCoordinatorProvider.notifier)
+                          .setPage(coordinatorState.currentPage + 1);
                       setState(() {});
                     }
                   }
-                : eventState.isLoading
+                : coordinatorState.isLoading
                     ? null // Disable button while loading
                     : () async {
                         // Final step - create the event
                         print(
                             "🎯 DEBUG: Create button pressed - starting event creation flow");
-                        final eventState =
-                            ref.read(eventCreationAndEditingProvider);
+                        final basicInfo = ref.read(eventBasicInfoProvider);
+                        final booking = ref.read(eventBookingProvider);
+                        final schedule = ref.read(eventScheduleProvider);
+                        final teachers = ref.read(eventTeachersProvider);
                         final creatorNotifier =
                             ref.read(creatorProvider.notifier);
                         final creatorState = ref.read(creatorProvider);
 
                         print("🎯 DEBUG: Event state before creation:");
-                        print("🎯 DEBUG: - Title: ${eventState.title}");
+                        print("🎯 DEBUG: - Title: ${basicInfo.title}");
                         print(
-                            "🎯 DEBUG: - Description: ${eventState.description}");
-                        print("🎯 DEBUG: - Slug: ${eventState.slug}");
-                        print("🎯 DEBUG: - Location: ${eventState.location}");
+                            "🎯 DEBUG: - Description: ${basicInfo.description}");
+                        print("🎯 DEBUG: - Slug: ${basicInfo.slug}");
+                        print("🎯 DEBUG: - Event Type: ${basicInfo.eventType}");
                         print(
-                            "🎯 DEBUG: - Event Type: ${eventState.eventType}");
+                            "🎯 DEBUG: - Recurring Patterns: ${schedule.recurringPatterns.length}");
                         print(
-                            "🎯 DEBUG: - Recurring Patterns: ${eventState.recurringPatterns.length}");
+                            "🎯 DEBUG: - Booking Categories: ${booking.bookingCategories.length}");
                         print(
-                            "🎯 DEBUG: - Booking Categories: ${eventState.bookingCategories.length}");
-                        print(
-                            "🎯 DEBUG: - Pending Teachers: ${eventState.pendingInviteTeachers.length}");
+                            "🎯 DEBUG: - Pending Teachers: ${teachers.pendingInviteTeachers.length}");
 
                         // Validate payment setup
                         bool isStripeEnabled = creatorState.activeTeacher !=
@@ -295,13 +295,13 @@ class _CreateAndEditEventPageState
                         print("🎯 DEBUG: Payment validation:");
                         print("🎯 DEBUG: - Stripe enabled: $isStripeEnabled");
                         print(
-                            "🎯 DEBUG: - Cash allowed: ${eventState.isCashAllowed}");
+                            "🎯 DEBUG: - Cash allowed: ${booking.isCashAllowed}");
                         print(
-                            "🎯 DEBUG: - Booking categories: ${eventState.bookingCategories.length}");
+                            "🎯 DEBUG: - Booking categories: ${booking.bookingCategories.length}");
 
                         if (!isStripeEnabled &&
-                            !eventState.isCashAllowed &&
-                            eventState.bookingCategories.isNotEmpty) {
+                            !booking.isCashAllowed &&
+                            booking.bookingCategories.isNotEmpty) {
                           print(
                               "❌ DEBUG: Payment validation failed - no payment method");
                           showErrorToast(
@@ -331,36 +331,27 @@ class _CreateAndEditEventPageState
 
                         // Create the event
                         print("🎯 DEBUG: Starting event creation...");
-                        if (widget.isEditing) {
-                          print("🎯 DEBUG: Updating existing event");
-                          await ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .updateClass(creatorState.activeTeacher!.id!);
-                        } else {
-                          print("🎯 DEBUG: Creating new event");
-                          await ref
-                              .read(eventCreationAndEditingProvider.notifier)
-                              .createClass(creatorState.activeTeacher!.id!);
-                        }
+                        final coordinator =
+                            ref.read(eventCreationCoordinatorProvider.notifier);
+                        final success = await coordinator
+                            .saveEvent(creatorState.activeTeacher!.id!);
                         print("🎯 DEBUG: Event creation call completed");
 
                         // Wait a moment for state to update
                         await Future.delayed(const Duration(milliseconds: 100));
 
                         // Check if creation was successful
-                        final finalEventState =
-                            ref.read(eventCreationAndEditingProvider);
+                        final finalCoordinatorState =
+                            ref.read(eventCreationCoordinatorProvider);
 
                         print(
                             "🎯 DEBUG: Checking creation result after delay:");
                         print(
-                            "🎯 DEBUG: - Error message: ${finalEventState.errorMessage}");
+                            "🎯 DEBUG: - Error message: ${finalCoordinatorState.errorMessage}");
                         print(
-                            "🎯 DEBUG: - Is loading: ${finalEventState.isLoading}");
-                        print(
-                            "🎯 DEBUG: - State toString: ${finalEventState.toString()}");
+                            "🎯 DEBUG: - Is loading: ${finalCoordinatorState.isLoading}");
 
-                        if (finalEventState.errorMessage == null) {
+                        if (success) {
                           print("✅ DEBUG: Event creation successful!");
                           showSuccessToast(
                               "Event ${widget.isEditing ? "updated" : "created"} successfully");
@@ -397,13 +388,14 @@ class _CreateAndEditEventPageState
                         } else {
                           // Show error message
                           print(
-                              "❌ DEBUG: Event creation failed: ${finalEventState.errorMessage}");
-                          showErrorToast(finalEventState.errorMessage!);
+                              "❌ DEBUG: Event creation failed: ${finalCoordinatorState.errorMessage}");
+                          showErrorToast(finalCoordinatorState.errorMessage ??
+                              'Failed to save event');
                         }
                       },
           ),
           Expanded(
-            child: pages[eventState.currentPage],
+            child: pages[coordinatorState.currentPage],
           ),
         ],
       ),

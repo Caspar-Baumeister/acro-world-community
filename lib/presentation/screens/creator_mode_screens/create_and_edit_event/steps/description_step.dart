@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_basic_info_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -36,8 +36,8 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   @override
   void initState() {
     super.initState();
-    final eventState = ref.read(eventCreationAndEditingProvider);
-    _controller.setText(eventState.description);
+    final basicInfo = ref.read(eventBasicInfoProvider);
+    _controller.setText(basicInfo.description);
 
     // Set up periodic saving of description
     _saveTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
@@ -55,7 +55,7 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   void _saveDescription() async {
     try {
       final text = await _controller.getText();
-      ref.read(eventCreationAndEditingProvider.notifier).setDescription(text);
+      ref.read(eventBasicInfoProvider.notifier).setDescription(text);
     } catch (e) {
       // Ignore errors during text extraction
     }
@@ -63,7 +63,7 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
 
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final basicInfo = ref.watch(eventBasicInfoProvider);
 
     return Container(
       constraints: Responsive.isDesktop(context)
@@ -149,7 +149,7 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                           ),
                         ),
                         child: QuillHtmlEditor(
-                          text: eventState.description,
+                          text: basicInfo.description,
                           controller: _controller,
                           minHeight: 300,
                           inputAction: InputAction.newline,

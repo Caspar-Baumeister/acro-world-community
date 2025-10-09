@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/teacher_suggestions_query.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -16,8 +16,8 @@ class CommunityStepTeacherSuggestionSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
-    final notifier = ref.read(eventCreationAndEditingProvider.notifier);
+    final teachersState = ref.watch(eventTeachersProvider);
+    final notifier = ref.read(eventTeachersProvider.notifier);
 
     // Check if query is a valid email
     final isValidEmail = _isValidEmail(query);
@@ -28,7 +28,7 @@ class CommunityStepTeacherSuggestionSection extends ConsumerWidget {
               children: [
                 TeacherSuggestionsQuery(
                   query: query,
-                  alreadySelectedIds: eventState.pendingInviteTeachers
+                  alreadySelectedIds: teachersState.pendingInviteTeachers
                       .map((e) => e.id!)
                       .toList(),
                   onTeacherSelected: (TeacherModel teacher) {

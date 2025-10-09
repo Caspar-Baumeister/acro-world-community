@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/teacher_option.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_teachers_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,11 +11,11 @@ class CommunityStepSelectedTeachersSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final teachersState = ref.watch(eventTeachersProvider);
 
     // Ensure uniqueness by filtering duplicates based on teacher ID
     final uniqueTeachers = <String, TeacherModel>{};
-    for (final teacher in eventState.pendingInviteTeachers) {
+    for (final teacher in teachersState.pendingInviteTeachers) {
       if (teacher.id != null) {
         uniqueTeachers[teacher.id!] = teacher;
       }
@@ -31,7 +31,7 @@ class CommunityStepSelectedTeachersSection extends ConsumerWidget {
           teacher: teacher,
           onDelete: () {
             ref
-                .read(eventCreationAndEditingProvider.notifier)
+                .read(eventTeachersProvider.notifier)
                 .removePendingInviteTeacher(teacher.id!);
           },
         );
@@ -40,13 +40,11 @@ class CommunityStepSelectedTeachersSection extends ConsumerWidget {
 
     // Add email invitation widgets
     inviteWidgets.addAll(
-      eventState.pendingEmailInvites.map((email) {
+      teachersState.pendingEmailInvites.map((email) {
         return TeacherOption.email(
           email: email,
           onDelete: () {
-            ref
-                .read(eventCreationAndEditingProvider.notifier)
-                .removeEmailInvite(email);
+            ref.read(eventTeachersProvider.notifier).removeEmailInvite(email);
           },
         );
       }).toList(),
