@@ -10,9 +10,7 @@ import 'package:acroworld/presentation/screens/authentication_screens/forgot_pas
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/class_booking_summary_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/creator_profile_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/dashboard_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/invites_page.dart';
@@ -210,25 +208,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               eventSlug: eventSlug,
             );
           },
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/edit-description',
-          name: editDescriptionRoute,
-          builder: (ctx, state) {
-            final initialText = state.pathParameters['initialText'] ?? '';
-            // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
-            return EditClassDescriptionPage(
-              initialText: initialText,
-              onTextUpdated: (newText) {/* … */},
-            );
-          },
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/question',
-          name: questionRoute,
-          builder: (ctx, state) => const QuestionPage(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
