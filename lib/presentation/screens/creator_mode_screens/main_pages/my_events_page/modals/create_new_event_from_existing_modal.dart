@@ -76,21 +76,13 @@ class _CreateNewEventFromExistingModalState
                       ? "Continue without template"
                       : "Continue"),
               onPressed: () async {
-                print('🔍 MODAL DEBUG - Button pressed');
-                print(
-                    '🔍 MODAL DEBUG - Selected option: ${currentOption?.value}');
-
                 if (currentOption?.value != null &&
                     currentOption?.value != "Without template") {
-                  print(
-                      '🔍 MODAL DEBUG - Loading template: ${currentOption!.value}');
-
                   // Load template FIRST, then navigate
                   await ref
                       .read(eventCreationCoordinatorProvider.notifier)
-                      .loadExistingClass(currentOption!.value, false, true);
+                      .loadExistingClass(currentOption!.value, false);
 
-                  print('🔍 MODAL DEBUG - Template loaded, navigating to form');
                   // Close modal first, then navigate
                   Navigator.of(context).pop();
                   // Use a post-frame callback to ensure navigation happens after modal is closed
@@ -99,7 +91,6 @@ class _CreateNewEventFromExistingModalState
                         queryParameters: {'isEditing': 'false'});
                   });
                 } else {
-                  print('🔍 MODAL DEBUG - Creating without template');
                   ref.read(eventCreationCoordinatorProvider.notifier).reset();
                   // Close modal first, then navigate
                   Navigator.of(context).pop();

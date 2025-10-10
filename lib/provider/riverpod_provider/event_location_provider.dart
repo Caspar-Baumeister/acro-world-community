@@ -22,25 +22,35 @@ class EventLocationState {
   });
 
   EventLocationState copyWith({
-    String? locationName,
-    LatLng? location,
-    String? locationDescription,
-    String? countryCode,
-    String? region,
+    Object? locationName = _undefined,
+    Object? location = _undefined,
+    Object? locationDescription = _undefined,
+    Object? countryCode = _undefined,
+    Object? region = _undefined,
     bool? isLoading,
-    String? errorMessage,
+    Object? errorMessage = _undefined,
   }) {
     return EventLocationState(
-      locationName: locationName ?? this.locationName,
-      location: location ?? this.location,
-      locationDescription: locationDescription ?? this.locationDescription,
-      countryCode: countryCode ?? this.countryCode,
-      region: region ?? this.region,
+      locationName: locationName == _undefined
+          ? this.locationName
+          : locationName as String?,
+      location: location == _undefined ? this.location : location as LatLng?,
+      locationDescription: locationDescription == _undefined
+          ? this.locationDescription
+          : locationDescription as String?,
+      countryCode:
+          countryCode == _undefined ? this.countryCode : countryCode as String?,
+      region: region == _undefined ? this.region : region as String?,
       isLoading: isLoading ?? this.isLoading,
-      errorMessage: errorMessage ?? this.errorMessage,
+      errorMessage: errorMessage == _undefined
+          ? this.errorMessage
+          : errorMessage as String?,
     );
   }
 }
+
+// Sentinel value to distinguish between "not provided" and "set to null"
+const _undefined = Object();
 
 /// Notifier for event location information
 class EventLocationNotifier extends StateNotifier<EventLocationState> {
@@ -67,14 +77,8 @@ class EventLocationNotifier extends StateNotifier<EventLocationState> {
   }
 
   /// Set region/city
-  void setRegion(String region) {
+  void setRegion(String? region) {
     state = state.copyWith(region: region);
-  }
-
-  /// Set country
-  void setCountry(String? country) {
-    // TODO: Implement country setting logic
-    state = state.copyWith(countryCode: country);
   }
 
   /// Set all location data at once

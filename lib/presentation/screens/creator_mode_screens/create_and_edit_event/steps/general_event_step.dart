@@ -262,14 +262,11 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                                 ref
                                     .read(eventLocationProvider.notifier)
                                     .setCountryCode(code);
+                                // Clear out any previously selected region when country changes
+                                ref
+                                    .read(eventLocationProvider.notifier)
+                                    .setRegion(null);
                               }
-                              ref
-                                  .read(eventLocationProvider.notifier)
-                                  .setCountry(name);
-                              // clear out any previously selected region:
-                              ref
-                                  .read(eventLocationProvider.notifier)
-                                  .setRegion('');
                             },
                           );
                         },
