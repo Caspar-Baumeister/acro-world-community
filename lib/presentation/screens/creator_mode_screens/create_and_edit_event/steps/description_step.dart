@@ -19,6 +19,9 @@ class DescriptionStep extends ConsumerStatefulWidget {
 class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   final QuillEditorController _controller = QuillEditorController();
   Timer? _saveTimer;
+  bool _isInitialized = false;
+  String _lastLoadedDescription = '';
+
   final customToolBarList = [
     ToolBarStyle.bold,
     ToolBarStyle.italic,
@@ -36,6 +39,17 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   @override
   void initState() {
     super.initState();
+
+    // Load initial description after controller is ready
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final basicInfo = ref.read(eventBasicInfoProvider);
+      if (basicInfo.description.isNotEmpty && !_isInitialized) {
+        await _controller.setText(basicInfo.description);
+        _lastLoadedDescription = basicInfo.description;
+        _isInitialized = true;
+      }
+    });
+
     // Set up periodic saving of description
     _saveTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       _saveDescription();
@@ -45,13 +59,19 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Update controller when provider state changes (e.g., when template is loaded)
+
+    // Only update if description changed from external source (e.g., template load)
+    // and we're not currently editing
     final basicInfo = ref.watch(eventBasicInfoProvider);
 
-    if (basicInfo.description.isNotEmpty) {
-      print(
-          '🔍 DESCRIPTION DEBUG - Setting description: "${basicInfo.description}"');
-      _controller.setText(basicInfo.description);
+    if (basicInfo.description.isNotEmpty &&
+        basicInfo.description != _lastLoadedDescription &&
+        _isInitialized) {
+      // Description changed from external source, update editor
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await _controller.setText(basicInfo.description);
+        _lastLoadedDescription = basicInfo.description;
+      });
     }
   }
 
