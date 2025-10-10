@@ -39,8 +39,10 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   @override
   void initState() {
     super.initState();
+
     final basicInfo = ref.read(eventBasicInfoProvider);
     final location = ref.read(eventLocationProvider);
+
     _locationNameController =
         TextEditingController(text: location.locationName);
     _titleController = TextEditingController(text: basicInfo.title);
@@ -95,46 +97,29 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
     // Update controllers when provider state changes (e.g., when template is loaded)
     final basicInfo = ref.watch(eventBasicInfoProvider);
     final location = ref.watch(eventLocationProvider);
 
-    // Debug: Print form state
-    print('🔍 FORM DEBUG - didChangeDependencies called');
-    print('🔍 FORM DEBUG - Provider title: "${basicInfo.title}"');
-    print('🔍 FORM DEBUG - Provider slug: "${basicInfo.slug}"');
-    print('🔍 FORM DEBUG - Provider description: "${basicInfo.description}"');
-    print('🔍 FORM DEBUG - Provider locationName: "${location.locationName}"');
-    print('🔍 FORM DEBUG - Controller title: "${_titleController.text}"');
-    print('🔍 FORM DEBUG - Controller slug: "${_slugController.text}"');
-    print(
-        '🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
-    print(
-        '🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
-
     // Update controllers when provider data is available and different from current values
     if (basicInfo.title.isNotEmpty &&
         _titleController.text != basicInfo.title) {
-      print(
-          '🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${basicInfo.title}"');
       _titleController.text = basicInfo.title;
     }
+
     if (basicInfo.slug.isNotEmpty && _slugController.text != basicInfo.slug) {
-      print(
-          '🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${basicInfo.slug}"');
       _slugController.text = basicInfo.slug;
     }
+
     if (basicInfo.description.isNotEmpty &&
         _descriptionController.text != basicInfo.description) {
-      print(
-          '🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${basicInfo.description}"');
       _descriptionController.text = basicInfo.description;
     }
+
     if (location.locationName != null &&
         location.locationName!.isNotEmpty &&
         _locationNameController.text != location.locationName) {
-      print(
-          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${location.locationName}"');
       _locationNameController.text = location.locationName!;
     }
   }
@@ -153,6 +138,28 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   Widget build(BuildContext context) {
     final basicInfo = ref.watch(eventBasicInfoProvider);
     final location = ref.watch(eventLocationProvider);
+
+    // Listen to provider changes and update controllers
+    ref.listen<EventBasicInfoState>(eventBasicInfoProvider, (previous, next) {
+      if (next.title.isNotEmpty && _titleController.text != next.title) {
+        _titleController.text = next.title;
+      }
+      if (next.slug.isNotEmpty && _slugController.text != next.slug) {
+        _slugController.text = next.slug;
+      }
+      if (next.description.isNotEmpty &&
+          _descriptionController.text != next.description) {
+        _descriptionController.text = next.description;
+      }
+    });
+
+    ref.listen<EventLocationState>(eventLocationProvider, (previous, next) {
+      if (next.locationName != null &&
+          next.locationName!.isNotEmpty &&
+          _locationNameController.text != next.locationName) {
+        _locationNameController.text = next.locationName!;
+      }
+    });
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
@@ -244,8 +251,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                       // choose from country
                       Builder(
                         builder: (context) {
-                          print(
-                              '🔍 UI DEBUG - CountryPicker selectedCountryCode: "${location.countryCode}"');
                           return CountryPicker(
                             key: ValueKey(
                                 'country_${location.countryCode}'), // Force rebuild when country changes
@@ -277,8 +282,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                               top: AppDimensions.spacingMedium),
                           child: Builder(
                             builder: (context) {
-                              print(
-                                  '🔍 UI DEBUG - RegionPicker countryCode: "${location.countryCode}", selectedRegion: "${location.region}"');
                               return RegionPicker(
                                 key: ValueKey(
                                     'region_${location.countryCode}_${location.region}'), // Force rebuild when region changes

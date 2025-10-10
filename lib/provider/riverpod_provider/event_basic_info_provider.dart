@@ -5,6 +5,8 @@ import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'event_creation_coordinator_provider.dart';
+
 /// State for basic event information
 class EventBasicInfoState {
   final String title;
@@ -60,7 +62,9 @@ class EventBasicInfoState {
 
 /// Notifier for basic event information
 class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
-  EventBasicInfoNotifier() : super(const EventBasicInfoState());
+  final Ref? ref;
+
+  EventBasicInfoNotifier({this.ref}) : super(const EventBasicInfoState());
 
   /// Set event title
   void setTitle(String title) {
@@ -165,13 +169,17 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
     required String? eventType,
     required String? existingImageUrl,
   }) {
-    state = state.copyWith(
+    state = EventBasicInfoState(
       title: title,
       slug: slug,
       description: description,
       eventType: eventType,
       existingImageUrl: existingImageUrl,
       eventImage: null,
+      isSlugValid: null,
+      isSlugAvailable: null,
+      isLoading: false,
+      errorMessage: null,
     );
   }
 
@@ -183,6 +191,23 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
     if (!isValid) {
       state = state.copyWith(isSlugValid: false, isSlugAvailable: null);
       return;
+    }
+
+    // If editing and slug matches original, skip availability check
+    if (ref != null) {
+      try {
+        final coordinator = ref!.read(eventCreationCoordinatorProvider);
+        if (coordinator.isEditing &&
+            coordinator.originalSlug != null &&
+            slug.toLowerCase() == coordinator.originalSlug!.toLowerCase()) {
+          CustomErrorHandler.logDebug(
+              'Slug matches original when editing, marking as available');
+          state = state.copyWith(isSlugValid: true, isSlugAvailable: true);
+          return;
+        }
+      } catch (e) {
+        CustomErrorHandler.logError('Error checking coordinator state: $e');
+      }
     }
 
     try {
@@ -200,5 +225,5 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
 /// Provider for basic event information
 final eventBasicInfoProvider =
     StateNotifierProvider<EventBasicInfoNotifier, EventBasicInfoState>((ref) {
-  return EventBasicInfoNotifier();
+  return EventBasicInfoNotifier(ref: ref);
 });

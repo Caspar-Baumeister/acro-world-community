@@ -38,6 +38,7 @@ class EventCreationCoordinatorState {
   final ClassModel? classModel;
   final bool isLoading;
   final String? errorMessage;
+  final String? originalSlug; // Store original slug for editing
 
   const EventCreationCoordinatorState({
     this.currentPage = 0,
@@ -45,6 +46,7 @@ class EventCreationCoordinatorState {
     this.classModel,
     this.isLoading = false,
     this.errorMessage,
+    this.originalSlug,
   });
 
   EventCreationCoordinatorState copyWith({
@@ -53,6 +55,7 @@ class EventCreationCoordinatorState {
     ClassModel? classModel,
     bool? isLoading,
     String? errorMessage,
+    String? originalSlug,
   }) {
     return EventCreationCoordinatorState(
       currentPage: currentPage ?? this.currentPage,
@@ -60,6 +63,7 @@ class EventCreationCoordinatorState {
       classModel: classModel ?? this.classModel,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
+      originalSlug: originalSlug ?? this.originalSlug,
     );
   }
 }
@@ -102,8 +106,7 @@ class EventCreationCoordinatorNotifier
   }
 
   /// Load existing class for editing or template creation
-  Future<void> loadExistingClass(
-      String slug, bool isEditing, bool setFromTemplate) async {
+  Future<void> loadExistingClass(String slug, bool isEditing) async {
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
@@ -245,10 +248,10 @@ class EventCreationCoordinatorNotifier
         isEditing: isEditing,
         isLoading: false,
         errorMessage: null,
+        originalSlug: isEditing
+            ? classModel.urlSlug
+            : null, // Store original slug when editing
       );
-
-      CustomErrorHandler.logDebug(
-          'Template loaded successfully from slug: $slug');
     } catch (e) {
       CustomErrorHandler.logError('Error loading template: $e');
       state = state.copyWith(

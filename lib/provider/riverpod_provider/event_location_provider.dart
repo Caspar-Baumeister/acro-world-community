@@ -118,12 +118,14 @@ class EventLocationNotifier extends StateNotifier<EventLocationState> {
     required String? countryCode,
     required String? region,
   }) {
-    state = state.copyWith(
+    state = EventLocationState(
       locationName: locationName,
       location: location,
       locationDescription: locationDescription,
       countryCode: countryCode,
       region: region,
+      isLoading: false,
+      errorMessage: null,
     );
   }
 }
