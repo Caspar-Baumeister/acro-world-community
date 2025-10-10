@@ -5,7 +5,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_schedule_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,17 +21,13 @@ class OccurrenceStep extends ConsumerStatefulWidget {
 class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
   @override
   Widget build(BuildContext context) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final scheduleState = ref.watch(eventScheduleProvider);
 
     // Debug prints for recurring patterns
     print(
-        '🔍 OCCURRENCES DEBUG - eventState.recurringPatterns.length: ${eventState.recurringPatterns.length}');
+        '🔍 OCCURRENCES DEBUG - scheduleState.recurringPatterns.length: ${scheduleState.recurringPatterns.length}');
     print(
-        '🔍 OCCURRENCES DEBUG - eventState.recurringPatterns: ${eventState.recurringPatterns}');
-    print(
-        '🔍 OCCURRENCES DEBUG - eventState.classModel?.recurringPatterns?.length: ${eventState.classModel?.recurringPatterns?.length}');
-    print(
-        '🔍 OCCURRENCES DEBUG - eventState.classModel?.recurringPatterns: ${eventState.classModel?.recurringPatterns}');
+        '🔍 OCCURRENCES DEBUG - scheduleState.recurringPatterns: ${scheduleState.recurringPatterns}');
 
     return Container(
       constraints: Responsive.isDesktop(context)
@@ -47,7 +43,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                     builder: (context) => AddOrEditRecurringPatternPage(
                       onFinished: (RecurringPatternModel recurringPattern) {
                         ref
-                            .read(eventCreationAndEditingProvider.notifier)
+                            .read(eventScheduleProvider.notifier)
                             .addRecurringPattern(
                               recurringPattern,
                             );
@@ -60,10 +56,10 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount: eventState.recurringPatterns.length,
+                itemCount: scheduleState.recurringPatterns.length,
                 itemBuilder: (context, index) {
                   RecurringPatternModel pattern =
-                      eventState.recurringPatterns[index];
+                      scheduleState.recurringPatterns[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: AppDimensions.spacingLarge,
@@ -78,8 +74,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                 onFinished:
                                     (RecurringPatternModel recurringPattern) {
                                   ref
-                                      .read(eventCreationAndEditingProvider
-                                          .notifier)
+                                      .read(eventScheduleProvider.notifier)
                                       .editRecurringPattern(
                                         index,
                                         recurringPattern,
@@ -122,7 +117,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                                         recurringPattern) {
                                                   ref
                                                       .read(
-                                                          eventCreationAndEditingProvider
+                                                          eventScheduleProvider
                                                               .notifier)
                                                       .editRecurringPattern(
                                                         index,
@@ -163,7 +158,7 @@ class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
                                                     onPressed: () {
                                                       ref
                                                           .read(
-                                                              eventCreationAndEditingProvider
+                                                              eventScheduleProvider
                                                                   .notifier)
                                                           .removeRecurringPattern(
                                                               index);

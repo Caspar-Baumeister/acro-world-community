@@ -4,7 +4,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_create_stripe_account_section.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_booking_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class MarketStepTicketSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final bookingState = ref.watch(eventBookingProvider);
     // Userprovider is only for the ticket section.
     // We'll check if the user teacher account has a stripe account
     final creatorState = ref.watch(creatorProvider);
@@ -35,18 +35,22 @@ class MarketStepTicketSection extends ConsumerWidget {
           children: [
             // Explanation section with info button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusMedium),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      color:
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -61,18 +65,25 @@ class MarketStepTicketSection extends ConsumerWidget {
                         children: [
                           Text(
                             "Ticket Categories & Tickets",
-                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
                           const SizedBox(height: AppDimensions.spacingSmall),
                           Text(
                             "Categories like 'Early Bird' or 'Teacher' can have multiple ticket types. For example, Early Bird can have 'Full Festival', 'One Day', etc.",
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              height: 1.4,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.4,
+                                    ),
                           ),
                         ],
                       ),
@@ -88,7 +99,8 @@ class MarketStepTicketSection extends ConsumerWidget {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text("Understanding Ticket Categories"),
+                            title:
+                                const Text("Understanding Ticket Categories"),
                             content: const Text(
                               "Ticket categories help you organize different types of tickets for your event:\n\n"
                               "• Categories (like 'Early Bird', 'Teacher', 'VIP') set the total number of tickets available\n"
@@ -114,14 +126,14 @@ class MarketStepTicketSection extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppDimensions.spacingMedium),
-            
+
             // List of existing categories
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount: eventState.bookingCategories.length,
+              itemCount: bookingState.bookingCategories.length,
               itemBuilder: (context, index) {
-                final bookingCategory = eventState.bookingCategories[index];
+                final bookingCategory = bookingState.bookingCategories[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -137,7 +149,7 @@ class MarketStepTicketSection extends ConsumerWidget {
                             // Update category in the provider
                             // The provider logic should also update the total tickets internally.
                             ref
-                                .read(eventCreationAndEditingProvider.notifier)
+                                .read(eventBookingProvider.notifier)
                                 .editCategory(
                                   index,
                                   updatedCategory,
@@ -151,7 +163,7 @@ class MarketStepTicketSection extends ConsumerWidget {
                       // Remove category from the provider
                       // The provider logic should also update the total tickets internally.
                       ref
-                          .read(eventCreationAndEditingProvider.notifier)
+                          .read(eventBookingProvider.notifier)
                           .removeCategory(index);
                     },
                   ),
@@ -160,18 +172,23 @@ class MarketStepTicketSection extends ConsumerWidget {
             ),
             // Add category button - smaller icon button
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingLarge),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
               child: Row(
                 children: [
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withOpacity(0.3),
                           style: BorderStyle.solid,
                           width: 1,
                         ),
-                        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusMedium),
                       ),
                       child: Material(
                         color: Colors.transparent,
@@ -180,15 +197,17 @@ class MarketStepTicketSection extends ConsumerWidget {
                             buildMortal(
                               context,
                               AddOrEditBookingCategoryModal(
-                                onFinished: (BookingCategoryModel bookingCategory) {
+                                onFinished:
+                                    (BookingCategoryModel bookingCategory) {
                                   ref
-                                      .read(eventCreationAndEditingProvider.notifier)
+                                      .read(eventBookingProvider.notifier)
                                       .addCategory(bookingCategory);
                                 },
                               ),
                             );
                           },
-                          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+                          borderRadius:
+                              BorderRadius.circular(AppDimensions.radiusMedium),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppDimensions.spacingMedium,
@@ -202,13 +221,19 @@ class MarketStepTicketSection extends ConsumerWidget {
                                   size: AppDimensions.iconSizeSmall,
                                   color: Theme.of(context).colorScheme.primary,
                                 ),
-                                const SizedBox(width: AppDimensions.spacingSmall),
+                                const SizedBox(
+                                    width: AppDimensions.spacingSmall),
                                 Text(
                                   'Add Category',
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Theme.of(context).colorScheme.primary,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                 ),
                               ],
                             ),
@@ -230,12 +255,14 @@ class MarketStepTicketSection extends ConsumerWidget {
                   borderRadius:
                       BorderRadius.circular(AppDimensions.radiusLarge),
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
                     width: 1.5,
                   ),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      color:
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -246,10 +273,10 @@ class MarketStepTicketSection extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomCheckBox(
-                      isChecked: eventState.isCashAllowed,
+                      isChecked: bookingState.isCashAllowed,
                       onTap: () {
                         ref
-                            .read(eventCreationAndEditingProvider.notifier)
+                            .read(eventBookingProvider.notifier)
                             .switchAllowCashPayments();
                       },
                     ),

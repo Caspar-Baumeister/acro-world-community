@@ -3,7 +3,7 @@ import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.da
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/ask_question_modal.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_questions_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -51,10 +51,10 @@ class CurrentQuestionSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
+    final questionsState = ref.watch(eventQuestionsProvider);
     return Container(
       padding: EdgeInsets.all(AppDimensions.spacingSmall),
-      child: eventState.questions.isEmpty
+      child: questionsState.questions.isEmpty
           ? Center(
               child: Padding(
                 padding: EdgeInsets.all(AppDimensions.spacingExtraLarge),
@@ -68,17 +68,17 @@ class CurrentQuestionSection extends ConsumerWidget {
               padding: const EdgeInsets.all(AppDimensions.spacingSmall),
               onReorder: (oldIndex, newIndex) {
                 ref
-                    .read(eventCreationAndEditingProvider.notifier)
+                    .read(eventQuestionsProvider.notifier)
                     .reorderQuestions(oldIndex, newIndex);
               },
-              children: List.generate(eventState.questions.length, (index) {
-                final item = eventState.questions[index];
+              children: List.generate(questionsState.questions.length, (index) {
+                final item = questionsState.questions[index];
                 return Dismissible(
                   key:
                       ValueKey(item.id), // Ensure the key is unique and stable.
                   direction: DismissDirection.endToStart,
                   onDismissed: (direction) => ref
-                      .read(eventCreationAndEditingProvider.notifier)
+                      .read(eventQuestionsProvider.notifier)
                       .removeQuestion(index),
                   background: Container(
                     alignment: Alignment.centerRight,

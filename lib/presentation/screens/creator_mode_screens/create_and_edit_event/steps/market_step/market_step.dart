@@ -2,7 +2,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_e
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_booking_provider.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,8 +31,9 @@ class _MarketStepState extends ConsumerState<MarketStep> {
 
     _maxAmountTicketController.addListener(() {
       if (_maxAmountTicketController.text != "") {
-        ref.read(eventCreationAndEditingProvider.notifier).setMaxBookingSlots(
-            int.parse(_maxAmountTicketController.text));
+        ref
+            .read(eventBookingProvider.notifier)
+            .setMaxBookingSlots(int.parse(_maxAmountTicketController.text));
       }
     });
 
@@ -63,7 +64,6 @@ class _MarketStepState extends ConsumerState<MarketStep> {
       ),
     );
   }
-
 }
 
 void showNoPaymentMethodDialog(BuildContext context, VoidCallback onContinue) {
