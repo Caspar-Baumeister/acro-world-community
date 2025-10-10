@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/ask_question_modal.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_questions_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -34,29 +34,29 @@ class QuestionsStep extends ConsumerWidget {
                   Text(
                     'Event Questions',
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
+                          fontWeight: FontWeight.w600,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: AppDimensions.spacingSmall),
                   Text(
                     'Add questions that participants need to answer when booking your event.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                    ),
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-            
+
             // Questions list
             Expanded(
               child: CurrentQuestionSection(),
             ),
-            
+
             const SizedBox(height: AppDimensions.spacingMedium),
-            
+
             // Add Question button
             Container(
               constraints: Responsive.isDesktop(context)
@@ -79,13 +79,15 @@ class QuestionsStep extends ConsumerWidget {
 }
 
 class CurrentQuestionSection extends ConsumerWidget {
+  const CurrentQuestionSection({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final eventState = ref.watch(eventCreationAndEditingProvider);
-    
+    final questionsState = ref.watch(eventQuestionsProvider);
+
     return Container(
       padding: const EdgeInsets.all(AppDimensions.spacingSmall),
-      child: eventState.questions.isEmpty
+      child: questionsState.questions.isEmpty
           ? Center(
               child: Padding(
                 padding: const EdgeInsets.all(AppDimensions.spacingExtraLarge),
@@ -101,16 +103,18 @@ class CurrentQuestionSection extends ConsumerWidget {
                     Text(
                       "No questions added yet",
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: AppDimensions.spacingSmall),
                     Text(
                       "Click 'Add Question' below to create questions for participants",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -121,11 +125,11 @@ class CurrentQuestionSection extends ConsumerWidget {
               padding: const EdgeInsets.all(AppDimensions.spacingSmall),
               onReorder: (oldIndex, newIndex) {
                 ref
-                    .read(eventCreationAndEditingProvider.notifier)
+                    .read(eventQuestionsProvider.notifier)
                     .reorderQuestions(oldIndex, newIndex);
               },
-              children: List.generate(eventState.questions.length, (index) {
-                final question = eventState.questions[index];
+              children: List.generate(questionsState.questions.length, (index) {
+                final question = questionsState.questions[index];
                 return Card(
                   key: ValueKey(question.id),
                   margin: const EdgeInsets.symmetric(
@@ -139,14 +143,15 @@ class CurrentQuestionSection extends ConsumerWidget {
                     title: Text(
                       question.question ?? '',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
+                            fontWeight: FontWeight.w500,
+                          ),
                     ),
                     subtitle: Text(
                       question.type?.toString() ?? 'Text',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      ),
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
                     ),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -156,14 +161,14 @@ class CurrentQuestionSection extends ConsumerWidget {
                             Icons.edit,
                             color: Theme.of(context).colorScheme.primary,
                           ),
-                        onPressed: () {
-                          buildMortal(
-                            context,
-                            AskQuestionModal(
-                              editQuestion: question,
-                            ),
-                          );
-                        },
+                          onPressed: () {
+                            buildMortal(
+                              context,
+                              AskQuestionModal(
+                                editQuestion: question,
+                              ),
+                            );
+                          },
                         ),
                         IconButton(
                           icon: Icon(
@@ -172,7 +177,7 @@ class CurrentQuestionSection extends ConsumerWidget {
                           ),
                           onPressed: () {
                             ref
-                                .read(eventCreationAndEditingProvider.notifier)
+                                .read(eventQuestionsProvider.notifier)
                                 .removeQuestion(index);
                           },
                         ),

@@ -342,7 +342,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
     \$classOwners: [class_owners_insert_input!]!
-    \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
     \$location_country: String
     \$location_city: String
@@ -366,9 +365,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
         }
         class_owners: {
           data: \$classOwners
-        }
-        class_teachers: {
-          data: \$classTeachers
         }
         max_booking_slots: \$max_booking_slots
       }
@@ -705,7 +701,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
     \$urlSlug: String!,
     \$recurringPatterns: [recurring_patterns_insert_input!]!,
     \$classOwners: [class_owners_insert_input!]!
-    \$classTeachers: [class_teachers_insert_input!]!
     \$max_booking_slots: Int
     \$location_city: String
     \$is_cash_allowed: Boolean
@@ -737,9 +732,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
        
         class_owners: {
           data: \$classOwners
-        },
-        class_teachers: {
-          data: \$classTeachers
         },
         max_booking_slots: \$max_booking_slots
       }

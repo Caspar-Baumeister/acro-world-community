@@ -4,7 +4,6 @@ import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
@@ -40,15 +39,10 @@ class CreatorSettingsActionModal extends ConsumerWidget {
               title: const Text("Edit"),
               leading:
                   Icon(Icons.edit, color: Theme.of(context).iconTheme.color),
-              onTap: () async {
-                // Perform the asynchronous operation
-                await ref
-                    .read(eventCreationAndEditingProvider.notifier)
-                    .setClassFromExisting(classModel.urlSlug!, true, false);
-
-                // Now pop the current widget and push the next page safely
+              onTap: () {
+                // Close modal and navigate to edit page
+                // The edit page will load the event data automatically
                 Navigator.of(context).pop();
-                // use widgetsbinding to push the next page
 
                 context.pushNamed(createEditEventRoute, queryParameters: {
                   'isEditing': 'true',

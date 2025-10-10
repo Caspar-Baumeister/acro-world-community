@@ -36,13 +36,23 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   @override
   void initState() {
     super.initState();
-    final basicInfo = ref.read(eventBasicInfoProvider);
-    _controller.setText(basicInfo.description);
-
     // Set up periodic saving of description
     _saveTimer = Timer.periodic(const Duration(seconds: 2), (timer) {
       _saveDescription();
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Update controller when provider state changes (e.g., when template is loaded)
+    final basicInfo = ref.watch(eventBasicInfoProvider);
+
+    if (basicInfo.description.isNotEmpty) {
+      print(
+          '🔍 DESCRIPTION DEBUG - Setting description: "${basicInfo.description}"');
+      _controller.setText(basicInfo.description);
+    }
   }
 
   @override

@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/provider/riverpod_provider/event_creation_and_editing_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_creation_coordinator_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
@@ -87,8 +87,8 @@ class _CreateNewEventFromExistingModalState
 
                   // Load template FIRST, then navigate
                   await ref
-                      .read(eventCreationAndEditingProvider.notifier)
-                      .setClassFromExisting(currentOption!.value, false, true);
+                      .read(eventCreationCoordinatorProvider.notifier)
+                      .loadExistingClass(currentOption!.value, false, true);
 
                   print('🔍 MODAL DEBUG - Template loaded, navigating to form');
                   // Close modal first, then navigate
@@ -100,7 +100,7 @@ class _CreateNewEventFromExistingModalState
                   });
                 } else {
                   print('🔍 MODAL DEBUG - Creating without template');
-                  ref.read(eventCreationAndEditingProvider.notifier).clear();
+                  ref.read(eventCreationCoordinatorProvider.notifier).reset();
                   // Close modal first, then navigate
                   Navigator.of(context).pop();
                   // Use a post-frame callback to ensure navigation happens after modal is closed

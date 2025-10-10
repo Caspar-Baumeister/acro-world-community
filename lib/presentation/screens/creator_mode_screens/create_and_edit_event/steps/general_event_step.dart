@@ -102,39 +102,40 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     // Debug: Print form state
     print('🔍 FORM DEBUG - didChangeDependencies called');
     print('🔍 FORM DEBUG - Provider title: "${basicInfo.title}"');
+    print('🔍 FORM DEBUG - Provider slug: "${basicInfo.slug}"');
     print('🔍 FORM DEBUG - Provider description: "${basicInfo.description}"');
     print('🔍 FORM DEBUG - Provider locationName: "${location.locationName}"');
-    print(
-        '🔍 FORM DEBUG - Provider existingImageUrl: "${basicInfo.existingImageUrl}"');
-    print('🔍 FORM DEBUG - Provider countryCode: "${location.countryCode}"');
-    print('🔍 FORM DEBUG - Provider region: "${location.region}"');
-    print('🔍 FORM DEBUG - Provider location: "${location.location}"');
     print('🔍 FORM DEBUG - Controller title: "${_titleController.text}"');
+    print('🔍 FORM DEBUG - Controller slug: "${_slugController.text}"');
     print(
         '🔍 FORM DEBUG - Controller description: "${_descriptionController.text}"');
     print(
         '🔍 FORM DEBUG - Controller locationName: "${_locationNameController.text}"');
 
-    // Only update if the values have actually changed to avoid cursor jumping
-    if (_titleController.text != basicInfo.title) {
+    // Update controllers when provider data is available and different from current values
+    if (basicInfo.title.isNotEmpty &&
+        _titleController.text != basicInfo.title) {
       print(
           '🔍 FORM DEBUG - Updating title controller from "${_titleController.text}" to "${basicInfo.title}"');
       _titleController.text = basicInfo.title;
     }
-    if (_slugController.text != basicInfo.slug) {
+    if (basicInfo.slug.isNotEmpty && _slugController.text != basicInfo.slug) {
       print(
           '🔍 FORM DEBUG - Updating slug controller from "${_slugController.text}" to "${basicInfo.slug}"');
       _slugController.text = basicInfo.slug;
     }
-    if (_descriptionController.text != basicInfo.description) {
+    if (basicInfo.description.isNotEmpty &&
+        _descriptionController.text != basicInfo.description) {
       print(
           '🔍 FORM DEBUG - Updating description controller from "${_descriptionController.text}" to "${basicInfo.description}"');
       _descriptionController.text = basicInfo.description;
     }
-    if (_locationNameController.text != (location.locationName ?? '')) {
+    if (location.locationName != null &&
+        location.locationName!.isNotEmpty &&
+        _locationNameController.text != location.locationName) {
       print(
-          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${location.locationName ?? ''}"');
-      _locationNameController.text = location.locationName ?? '';
+          '🔍 FORM DEBUG - Updating locationName controller from "${_locationNameController.text}" to "${location.locationName}"');
+      _locationNameController.text = location.locationName!;
     }
   }
 
