@@ -289,6 +289,7 @@ const Map<String, String> allCountries = {
   'ST': 'Sao Tome and Principe',
   'SA': 'Saudi Arabia',
   'SC': 'Seychelles',
+  'SG': 'Singapore',
   'SL': 'Sierra Leone',
   'SK': 'Slovakia',
   'SI': 'Slovenia',

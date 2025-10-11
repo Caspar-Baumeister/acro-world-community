@@ -34,6 +34,23 @@ class CategoryCreationCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bookingState = ref.watch(eventBookingProvider);
 
+    print(
+        '🎟️ CARD DEBUG - Building CategoryCreationCard for: ${bookingCategory.name}');
+    print('🎟️ CARD DEBUG - bookingCategory.id: ${bookingCategory.id}');
+    print(
+        '🎟️ CARD DEBUG - Total booking options in state: ${bookingState.bookingOptions.length}');
+
+    final matchingOptions = bookingState.bookingOptions
+        .where((option) => option.bookingCategoryId == bookingCategory.id)
+        .toList();
+
+    print(
+        '🎟️ CARD DEBUG - Matching options for this category: ${matchingOptions.length}');
+    for (var opt in bookingState.bookingOptions) {
+      print(
+          '🎟️ CARD DEBUG - Option: ${opt.title}, CategoryID: ${opt.bookingCategoryId}, Matches: ${opt.bookingCategoryId == bookingCategory.id}');
+    }
+
     return Container(
       padding: const EdgeInsets.all(AppDimensions.spacingMedium),
       decoration: BoxDecoration(

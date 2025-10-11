@@ -168,12 +168,37 @@ class EventBookingNotifier extends StateNotifier<EventBookingState> {
     required int? maxBookingSlots,
     required bool isCashAllowed,
   }) {
+    print('🎟️ PROVIDER DEBUG - setFromTemplate called');
+    print(
+        '🎟️ PROVIDER DEBUG - bookingCategories: ${bookingCategories.length}');
+    print('🎟️ PROVIDER DEBUG - bookingOptions: ${bookingOptions.length}');
+    print('🎟️ PROVIDER DEBUG - maxBookingSlots: $maxBookingSlots');
+    print('🎟️ PROVIDER DEBUG - isCashAllowed: $isCashAllowed');
+
+    for (int i = 0; i < bookingCategories.length; i++) {
+      final cat = bookingCategories[i];
+      print(
+          '🎟️ PROVIDER DEBUG - Category $i: ${cat.name} (ID: ${cat.id}, Contingent: ${cat.contingent})');
+    }
+
+    for (int i = 0; i < bookingOptions.length; i++) {
+      final opt = bookingOptions[i];
+      print(
+          '🎟️ PROVIDER DEBUG - Option $i: ${opt.title} (ID: ${opt.id}, CategoryID: ${opt.bookingCategoryId}, Price: ${opt.price})');
+    }
+
     state = state.copyWith(
       bookingCategories: bookingCategories,
       bookingOptions: bookingOptions,
       maxBookingSlots: maxBookingSlots,
       isCashAllowed: isCashAllowed,
     );
+
+    print('🎟️ PROVIDER DEBUG - State updated!');
+    print(
+        '🎟️ PROVIDER DEBUG - state.bookingCategories: ${state.bookingCategories.length}');
+    print(
+        '🎟️ PROVIDER DEBUG - state.bookingOptions: ${state.bookingOptions.length}');
   }
 }
 

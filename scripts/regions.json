@@ -36,55 +36,41 @@
     "Panjshir"
   ],
   "AL": [
-    "Berat County",
-    "Dibër County",
-    "Elbasan County",
-    "Gjirokastër County",
-    "Korçë County",
-    "Kukës County",
     "Durrës County",
     "Fier County",
     "Lezhë County",
     "Shkodër County",
     "Tirana",
-    "Vlorë County"
+    "Vlorë County",
+    "Berat County",
+    "Dibër County",
+    "Elbasan County",
+    "Gjirokastër County",
+    "Korçë County",
+    "Kukës County"
   ],
   "DZ": [
-    "Tamanrasset",
     "Ouargla",
     "Illizi",
     "Tindouf",
+    "Tamanrasset",
     "Bordj Badji Mokhtar",
     "Beni Abbes",
     "In Guezzam",
     "In Salah",
-    "Djanet",
-    "Laghouat",
-    "Naama",
-    "El Oued",
     "El Bayadh",
     "Djelfa",
-    "Bechar",
+    "Béchar",
+    "Naama",
+    "Laghouat",
+    "El Oued",
     "Timimoun",
     "El Menia",
-    "Mostaganem",
-    "Mila",
-    "Medea",
-    "Mascara",
-    "Souk Ahras",
-    "Skikda",
-    "Sidi Bel Abbès",
+    "Sidi Bel Abbes",
     "Setif",
     "Saida",
     "Relizane",
     "Oum el Bouaghi",
-    "Oran",
-    "Msila",
-    "Ghardaia",
-    "El Tarf",
-    "Khenchela",
-    "Jijel",
-    "Guelma",
     "Constantine",
     "Chlef",
     "Boumerdes",
@@ -92,22 +78,36 @@
     "Bordj Bou Arreridj",
     "Blida",
     "Biskra",
-    "Béjaïa",
+    "Bejaia",
     "Batna",
-    "Annaba",
-    "Algiers",
-    "Aïn Témouchent",
-    "Aïn Defla",
+    "Oran",
+    "Msila",
+    "Mostaganem",
+    "Mila",
+    "Medea",
+    "Mascara",
+    "Khenchela",
+    "Jijel",
+    "Guelma",
+    "Ghardaia",
+    "El Tarf",
+    "Tiaret",
+    "Tébessa",
+    "Souk Ahras",
+    "Skikda",
     "Tlemcen",
     "Tizi Ouzou",
     "Tissemsilt",
     "Tipaza",
-    "Tiaret",
-    "Tébessa",
+    "Annaba",
+    "Algiers",
+    "Aïn Témouchent",
+    "Aïn Defla",
     "Touggourt",
     "El Mghair",
     "Ouled Djellal",
-    "Adrar"
+    "Adrar",
+    "Djanet"
   ],
   "AD": [
     "Escaldes-Engordany",
@@ -331,7 +331,12 @@
     "Central Andros",
     "Central Eleuthera"
   ],
-  "BH": ["Muharraq", "Manama", "Southern Governorate", "Northern Governorate"],
+  "BH": [
+    "Muharraq",
+    "Manama",
+    "Southern Governorate",
+    "Northern Governorate"
+  ],
   "BD": [
     "Dhaka Division",
     "Chittagong",
@@ -364,7 +369,11 @@
     "Brest",
     "Vitebsk"
   ],
-  "BE": ["Wallonia", "Flanders", "Brussels Capital"],
+  "BE": [
+    "Wallonia",
+    "Flanders",
+    "Brussels Capital"
+  ],
   "BZ": [
     "Corozal District",
     "Cayo District",
@@ -433,7 +442,11 @@
     "Oruro",
     "Chuquisaca Department"
   ],
-  "BA": ["Federation of B&H", "Srpska", "Brčko"],
+  "BA": [
+    "Federation of B&H",
+    "Srpska",
+    "Brčko"
+  ],
   "BW": [
     "Kgalagadi",
     "Central",
@@ -481,7 +494,12 @@
     "Amazonas",
     "Goiás"
   ],
-  "BN": ["Tutong", "Temburong", "Brunei-Muara", "Belait"],
+  "BN": [
+    "Tutong",
+    "Temburong",
+    "Brunei-Muara",
+    "Belait"
+  ],
   "BG": [
     "Gabrovo",
     "Kardzhali",
@@ -767,7 +785,11 @@
     "Risaralda Department",
     "Quindío Department"
   ],
-  "KM": ["Mohéli", "Grande Comore", "Ndzuwani"],
+  "KM": [
+    "Mohéli",
+    "Grande Comore",
+    "Ndzuwani"
+  ],
   "CR": [
     "Puntarenas Province",
     "Cartago Province",
@@ -818,8 +840,14 @@
     "Mayabeque",
     "Provincia de Camagüey"
   ],
-
-  "CY": ["Pafos", "Nicosia", "Limassol", "Larnaka", "Keryneia", "Ammochostos"],
+  "CY": [
+    "Pafos",
+    "Nicosia",
+    "Limassol",
+    "Larnaka",
+    "Keryneia",
+    "Ammochostos"
+  ],
   "CZ": [
     "South Moravian",
     "Jihočeský kraj",
@@ -887,7 +915,14 @@
     "Zealand",
     "South Denmark"
   ],
-  "DJ": ["Tadjourah", "Obock", "Dikhil", "Arta", "Djibouti", "Ali Sabieh"],
+  "DJ": [
+    "Tadjourah",
+    "Obock",
+    "Dikhil",
+    "Arta",
+    "Djibouti",
+    "Ali Sabieh"
+  ],
   "DM": [
     "Saint Peter Parish",
     "Saint Paul Parish",
@@ -1062,9 +1097,27 @@
     "South Ethiopia Regional State",
     "South West Ethiopia Peoples' Region"
   ],
-  "FO": ["Eysturoy", "Vágar", "Suðuroy", "Streymoy", "Sandoy", "Norðoyar"],
-  "FM": ["Yap State", "Pohnpei State", "Chuuk", "State of Kosrae"],
-  "FJ": ["Western", "Eastern", "Northern", "Central", "Rotuma"],
+  "FO": [
+    "Eysturoy",
+    "Vágar",
+    "Suðuroy",
+    "Streymoy",
+    "Sandoy",
+    "Norðoyar"
+  ],
+  "FM": [
+    "Yap State",
+    "Pohnpei State",
+    "Chuuk",
+    "State of Kosrae"
+  ],
+  "FJ": [
+    "Western",
+    "Eastern",
+    "Northern",
+    "Central",
+    "Rotuma"
+  ],
   "FI": [
     "Lapland",
     "Kainuu",
@@ -1192,7 +1245,13 @@
     "West Macedonia",
     "Attica"
   ],
-  "GL": ["Sermersooq", "Avannaata", "Kujalleq", "Qeqqata", "Qeqertalik"],
+  "GL": [
+    "Sermersooq",
+    "Avannaata",
+    "Kujalleq",
+    "Qeqqata",
+    "Qeqertalik"
+  ],
   "GD": [
     "Saint Patrick Parish",
     "Saint Mark Parish",
@@ -1202,7 +1261,9 @@
     "Saint Andrew Parish",
     "Carriacou and Petite Martinique"
   ],
-  "GP": ["Guadeloupe"],
+  "GP": [
+    "Guadeloupe"
+  ],
   "GT": [
     "Petén",
     "Chiquimula",
@@ -1492,7 +1553,12 @@
     "Sulaymaniyah",
     "Halabja Governorate"
   ],
-  "IE": ["Connacht", "Leinster", "Ulster", "Munster"],
+  "IE": [
+    "Connacht",
+    "Leinster",
+    "Ulster",
+    "Munster"
+  ],
   "IM": [
     "Ballaugh",
     "Braddan",
@@ -1717,7 +1783,11 @@
     "Nairobi County",
     "Narok County"
   ],
-  "KI": ["Gilbert Islands", "Line Islands", "Phoenix Islands"],
+  "KI": [
+    "Gilbert Islands",
+    "Line Islands",
+    "Phoenix Islands"
+  ],
   "XK": [
     "Gjilan",
     "Mitrovica",
@@ -1948,7 +2018,11 @@
     "Fitovinany Region",
     "Vatovavy Region"
   ],
-  "MW": ["Central Region", "Southern Region", "Northern Region"],
+  "MW": [
+    "Central Region",
+    "Southern Region",
+    "Northern Region"
+  ],
   "MY": [
     "Sarawak",
     "Sabah",
@@ -2231,7 +2305,9 @@
     "Gagauzia",
     "Dubăsari District"
   ],
-  "MC": ["Municipality of Monaco"],
+  "MC": [
+    "Municipality of Monaco"
+  ],
   "MN": [
     "Dornogovi Province",
     "Eastern",
@@ -2563,7 +2639,12 @@
     "Debarca",
     "Grad Skopje"
   ],
-  "MP": ["Northern Islands", "Rota", "Saipan", "Tinian"],
+  "MP": [
+    "Northern Islands",
+    "Rota",
+    "Saipan",
+    "Tinian"
+  ],
   "NO": [
     "Nordland",
     "Innlandet",
@@ -2929,7 +3010,11 @@
     "Western Province",
     "Southern Province"
   ],
-  "SH": ["Ascension", "Tristan da Cunha", "Saint Helena"],
+  "SH": [
+    "Ascension",
+    "Tristan da Cunha",
+    "Saint Helena"
+  ],
   "KN": [
     "Trinity Palmetto Point",
     "Middle Island",
@@ -2958,7 +3043,10 @@
     "Anse-la-Raye",
     "Canaries"
   ],
-  "PM": ["Commune de Saint-Pierre", "Miquelon-Langlade"],
+  "PM": [
+    "Commune de Saint-Pierre",
+    "Miquelon-Langlade"
+  ],
   "VC": [
     "Saint Patrick Parish",
     "Saint George Parish",
@@ -2991,7 +3079,10 @@
     "Serravalle",
     "Chiesanuova"
   ],
-  "ST": ["São Tomé Island", "Príncipe"],
+  "ST": [
+    "São Tomé Island",
+    "Príncipe"
+  ],
   "SA": [
     "Mecca Region",
     "Tabuk Region",
@@ -3036,6 +3127,13 @@
     "Ile Perseverance I",
     "Ile Perseverance II",
     "Outer Islands"
+  ],
+  "SG": [
+    "Central Region",
+    "East Region",
+    "North Region",
+    "North-East Region",
+    "West Region"
   ],
   "SL": [
     "Northern Province",
@@ -3374,7 +3472,11 @@
     "Eastern Province",
     "Northern Province"
   ],
-  "PS": ["West Bank", "Gaza Strip", "Judea and Samaria Area"],
+  "PS": [
+    "West Bank",
+    "Gaza Strip",
+    "Judea and Samaria Area"
+  ],
   "SD": [
     "North Kordofan",
     "Al Jazīrah",
@@ -3407,7 +3509,10 @@
     "Coronie District",
     "Commewijne District"
   ],
-  "SJ": ["Svalbard", "Jan Mayen"],
+  "SJ": [
+    "Svalbard",
+    "Jan Mayen"
+  ],
   "SE": [
     "Norrbotten",
     "Kronoberg",
@@ -3475,7 +3580,12 @@
     "As-Suwayda",
     "Quneitra"
   ],
-  "TW": ["Fukien", "Taiwan", "Kaohsiung", "Taipei"],
+  "TW": [
+    "Fukien",
+    "Taiwan",
+    "Kaohsiung",
+    "Taipei"
+  ],
   "TJ": [
     "Viloyati Sughd",
     "Gorno-Badakhshan",
@@ -3610,9 +3720,25 @@
     "Ermera",
     "Viqueque"
   ],
-  "TG": ["Savanes", "Plateaux", "Maritime", "Centrale", "Kara"],
-  "TK": ["Nukunonu", "Atafu", "Fakaofo"],
-  "TO": ["Vava‘u", "Tongatapu", "Ha‘apai", "ʻEua", "Niuas"],
+  "TG": [
+    "Savanes",
+    "Plateaux",
+    "Maritime",
+    "Centrale",
+    "Kara"
+  ],
+  "TK": [
+    "Nukunonu",
+    "Atafu",
+    "Fakaofo"
+  ],
+  "TO": [
+    "Vava‘u",
+    "Tongatapu",
+    "Ha‘apai",
+    "ʻEua",
+    "Niuas"
+  ],
   "TT": [
     "San Fernando",
     "Port of Spain",
@@ -3656,7 +3782,14 @@
     "Manouba",
     "Tozeur Governorate"
   ],
-  "TM": ["Lebap", "Mary", "Balkan", "Ahal", "Daşoguz Welaýaty", "Ashgabat"],
+  "TM": [
+    "Lebap",
+    "Mary",
+    "Balkan",
+    "Ahal",
+    "Daşoguz Welaýaty",
+    "Ashgabat"
+  ],
   "TV": [
     "Nui",
     "Nanumea",
@@ -3941,7 +4074,14 @@
     "Bukhara",
     "Karakalpakstan"
   ],
-  "VU": ["Torba", "Malampa", "Tafea", "Sanma", "Penama", "Shefa Province"],
+  "VU": [
+    "Torba",
+    "Malampa",
+    "Tafea",
+    "Sanma",
+    "Penama",
+    "Shefa Province"
+  ],
   "VE": [
     "Dependencias Federales",
     "Amazonas",
@@ -4034,8 +4174,14 @@
     "An Giang Province",
     "Hậu Giang"
   ],
-  "WF": ["Uvéa", "Sigave", "Alo"],
-  "EH": ["Dakhla-Oued Ed-Dahab"],
+  "WF": [
+    "Uvéa",
+    "Sigave",
+    "Alo"
+  ],
+  "EH": [
+    "Dakhla-Oued Ed-Dahab"
+  ],
   "YE": [
     "Muhafazat Hadramaout",
     "Al Jawf",

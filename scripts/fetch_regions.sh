@@ -29,7 +29,7 @@ COUNTRIES=(
   "NZ" "NI" "NE" "NG" "KP" "MK" "MP" "NO"
   "OM" "PK" "PW" "PA" "PG" "PY" "PE" "PH" "PL"
   "PT" "QA" "CG" "RO" "RU" "RW" "SH" "KN" "LC"
-  "PM" "VC" "WS" "SM" "ST" "SA" "SC" "SL" "SK"
+  "PM" "VC" "WS" "SM" "ST" "SA" "SC" "SG" "SL" "SK"
   "SI" "SB" "SO" "ZA" "KR" "SS" "ES"
   "LK" "PS" "SD" "SR" "SJ" "SE" "CH" "SY" "TW" "TJ"
   "TZ" "TH" "TL" "TG" "TK" "TO" "TT" "TN" "TM"

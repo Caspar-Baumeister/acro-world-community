@@ -14,6 +14,7 @@ import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/data/repositories/class_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/services/profile_creation_service.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
@@ -152,32 +153,64 @@ class EventCreationCoordinatorNotifier
       final List<BookingCategoryModel> copiedCategories = [];
       final List<BookingOption> copiedOptions = [];
 
+      print('🎟️ BOOKING DEBUG - Starting to copy booking categories...');
+      print(
+          '🎟️ BOOKING DEBUG - classModel.bookingCategories: ${classModel.bookingCategories?.length ?? 0}');
+
       if (classModel.bookingCategories != null) {
         for (final category in classModel.bookingCategories!) {
+          print('🎟️ BOOKING DEBUG - Processing category: ${category.name}');
+          print('🎟️ BOOKING DEBUG - Category ID (original): ${category.id}');
+          print(
+              '🎟️ BOOKING DEBUG - Category contingent: ${category.contingent}');
+          print(
+              '🎟️ BOOKING DEBUG - Category has ${category.bookingOptions?.length ?? 0} options');
+
+          // Generate a temporary ID for this category so options can reference it
+          final tempCategoryId = const Uuid().v4();
+
           final copiedCategory = BookingCategoryModel(
-            id: null, // Clear ID for template creation
+            id: tempCategoryId, // ✅ FIXED: Use temp ID instead of null
             name: category.name,
             description: category.description,
             contingent: category.contingent,
           );
           copiedCategories.add(copiedCategory);
 
+          print(
+              '🎟️ BOOKING DEBUG - ✅ Created copied category with NEW temp ID: $tempCategoryId');
+
           // Copy associated booking options
           if (category.bookingOptions != null) {
             for (final option in category.bookingOptions!) {
+              print('🎟️ BOOKING DEBUG - Processing option: ${option.title}');
+              print('🎟️ BOOKING DEBUG - Option ID (original): ${option.id}');
+              print(
+                  '🎟️ BOOKING DEBUG - Option bookingCategoryId (original): ${option.bookingCategoryId}');
+              print('🎟️ BOOKING DEBUG - Option price: ${option.price}');
+
               final copiedOption = BookingOption(
                 id: null, // Clear ID for template creation
                 title: option.title,
                 subtitle: option.subtitle,
                 price: option.price,
                 currency: option.currency,
-                bookingCategoryId: category.id,
+                bookingCategoryId:
+                    tempCategoryId, // ✅ FIXED: Use the NEW temp category ID!
               );
               copiedOptions.add(copiedOption);
+
+              print(
+                  '🎟️ BOOKING DEBUG - ✅ Created copied option with NEW bookingCategoryId: $tempCategoryId');
             }
           }
         }
       }
+
+      print(
+          '🎟️ BOOKING DEBUG - Final copied categories: ${copiedCategories.length}');
+      print(
+          '🎟️ BOOKING DEBUG - Final copied options: ${copiedOptions.length}');
 
       // Copy questions
       final List<QuestionModel> copiedQuestions = [];
@@ -381,12 +414,15 @@ class EventCreationCoordinatorNotifier
         }
       }
 
+      // Upload event image if new one selected
+      final imageUrl = await _uploadImage();
+
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
         id: const Uuid().v4(),
         name: basicInfo.title,
         description: basicInfo.description,
-        imageUrl: basicInfo.existingImageUrl ?? '',
+        imageUrl: imageUrl,
         timezone: timezone,
         urlSlug: basicInfo.slug,
         isCashAllowed: booking.isCashAllowed,
@@ -532,12 +568,15 @@ class EventCreationCoordinatorNotifier
         }
       }
 
+      // Upload event image if new one selected
+      final imageUrl = await _uploadImage();
+
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
         id: classId, // Use existing ID for editing
         name: basicInfo.title,
         description: basicInfo.description,
-        imageUrl: basicInfo.existingImageUrl ?? '',
+        imageUrl: imageUrl,
         timezone: timezone,
         urlSlug: basicInfo.slug,
         isCashAllowed: booking.isCashAllowed,
@@ -692,6 +731,48 @@ class EventCreationCoordinatorNotifier
     final hour = time.hour.toString().padLeft(2, '0');
     final minute = time.minute.toString().padLeft(2, '0');
     return '$hour:$minute:00'; // Assuming seconds are always 00
+  }
+
+  /// Upload image to Firebase Storage
+  Future<String> _uploadImage() async {
+    final basicInfo = ref.read(eventBasicInfoProvider);
+
+    String? imageUrl;
+    if (basicInfo.eventImage == null && basicInfo.existingImageUrl != null) {
+      // No new image selected, use existing URL
+      imageUrl = basicInfo.existingImageUrl;
+    } else if (basicInfo.eventImage != null) {
+      // New image selected, upload it
+      imageUrl = await _uploadEventImage();
+    } else {
+      // No image at all
+      imageUrl = '';
+    }
+    return imageUrl ?? '';
+  }
+
+  /// Upload event image bytes to Firebase Storage
+  Future<String?> _uploadEventImage() async {
+    final basicInfo = ref.read(eventBasicInfoProvider);
+
+    if (basicInfo.eventImage == null) {
+      CustomErrorHandler.logError("Event image was null");
+      return null;
+    }
+
+    try {
+      final imageService = ImageUploadService();
+      final imageUrl = await imageService.uploadImage(
+        basicInfo.eventImage!,
+        path: 'events/images/${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      CustomErrorHandler.logDebug(
+          'Event image uploaded successfully: $imageUrl');
+      return imageUrl;
+    } catch (e) {
+      CustomErrorHandler.logError('Error uploading event image: $e');
+      return null;
+    }
   }
 
   /// Send teacher invitations after class creation
