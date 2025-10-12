@@ -46,8 +46,8 @@ class EventValidation {
     if (description.trim().length < 10) {
       return 'Description must be at least 10 characters';
     }
-    if (description.trim().length > 2000) {
-      return 'Description must be less than 2000 characters';
+    if (description.trim().length > 10000) {
+      return 'Description must be less than 10000 characters';
     }
     return null;
   }

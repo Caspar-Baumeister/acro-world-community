@@ -24,13 +24,13 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   String _lastLoadedDescription = '';
 
   final customToolBarList = [
+    ToolBarStyle.undo,
+    ToolBarStyle.redo,
     ToolBarStyle.bold,
     ToolBarStyle.italic,
     ToolBarStyle.underline,
     ToolBarStyle.strike,
     ToolBarStyle.size,
-    ToolBarStyle.headerOne,
-    ToolBarStyle.headerTwo,
     ToolBarStyle.color,
     ToolBarStyle.background,
     ToolBarStyle.align,
@@ -38,17 +38,6 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
     ToolBarStyle.listOrdered,
     ToolBarStyle.link,
     ToolBarStyle.image,
-    ToolBarStyle.video,
-    ToolBarStyle.blockQuote,
-    ToolBarStyle.codeBlock,
-    ToolBarStyle.indentMinus,
-    ToolBarStyle.indentAdd,
-    ToolBarStyle.directionRtl,
-    ToolBarStyle.directionLtr,
-    ToolBarStyle.clean,
-    ToolBarStyle.clearHistory,
-    ToolBarStyle.undo,
-    ToolBarStyle.redo,
   ];
 
   @override
@@ -143,7 +132,6 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                   children: [
                     // Toolbar - scrollable
                     Container(
-                      height: 50,
                       decoration: BoxDecoration(
                         color: Theme.of(context)
                             .colorScheme
@@ -153,22 +141,12 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                           topRight: Radius.circular(12),
                         ),
                       ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppDimensions.spacingSmall,
-                          vertical: AppDimensions.spacingSmall,
-                        ),
-                        child: IntrinsicWidth(
-                          child: ToolBar(
-                            controller: _controller,
-                            toolBarConfig: customToolBarList,
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            direction: Axis.horizontal,
-                            toolBarColor: Colors.transparent,
-                            mainAxisSize: MainAxisSize.min,
-                          ),
-                        ),
+                      child: ToolBar(
+                        controller: _controller,
+                        toolBarConfig: customToolBarList,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        toolBarColor: Colors.transparent,
+                        mainAxisSize: MainAxisSize.min,
                       ),
                     ),
 
