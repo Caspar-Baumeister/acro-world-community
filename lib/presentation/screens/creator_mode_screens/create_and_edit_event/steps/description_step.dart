@@ -20,34 +20,45 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
   final QuillEditorController _controller = QuillEditorController();
   Timer? _saveTimer;
   bool _isInitialized = false;
+  bool _editorLoaded = false;
   String _lastLoadedDescription = '';
 
   final customToolBarList = [
     ToolBarStyle.bold,
     ToolBarStyle.italic,
-    ToolBarStyle.align,
+    ToolBarStyle.underline,
+    ToolBarStyle.strike,
+    ToolBarStyle.size,
+    ToolBarStyle.headerOne,
+    ToolBarStyle.headerTwo,
     ToolBarStyle.color,
     ToolBarStyle.background,
+    ToolBarStyle.align,
     ToolBarStyle.listBullet,
     ToolBarStyle.listOrdered,
-    ToolBarStyle.clean,
-    ToolBarStyle.addTable,
-    ToolBarStyle.editTable,
     ToolBarStyle.link,
+    ToolBarStyle.image,
+    ToolBarStyle.video,
+    ToolBarStyle.blockQuote,
+    ToolBarStyle.codeBlock,
+    ToolBarStyle.indentMinus,
+    ToolBarStyle.indentAdd,
+    ToolBarStyle.directionRtl,
+    ToolBarStyle.directionLtr,
+    ToolBarStyle.clean,
+    ToolBarStyle.clearHistory,
+    ToolBarStyle.undo,
+    ToolBarStyle.redo,
   ];
 
   @override
   void initState() {
     super.initState();
 
-    // Load initial description after controller is ready
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final basicInfo = ref.read(eventBasicInfoProvider);
-      if (basicInfo.description.isNotEmpty && !_isInitialized) {
-        await _controller.setText(basicInfo.description);
-        _lastLoadedDescription = basicInfo.description;
-        _isInitialized = true;
-      }
+    // Listen for when editor is loaded
+    _controller.onEditorLoaded(() {
+      _editorLoaded = true;
+      _loadInitialDescription();
     });
 
     // Set up periodic saving of description
@@ -56,17 +67,28 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
     });
   }
 
+  void _loadInitialDescription() async {
+    if (_isInitialized || !_editorLoaded) return;
+
+    final basicInfo = ref.read(eventBasicInfoProvider);
+    if (basicInfo.description.isNotEmpty) {
+      await _controller.setText(basicInfo.description);
+      _lastLoadedDescription = basicInfo.description;
+      _isInitialized = true;
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
 
     // Only update if description changed from external source (e.g., template load)
-    // and we're not currently editing
     final basicInfo = ref.watch(eventBasicInfoProvider);
 
     if (basicInfo.description.isNotEmpty &&
         basicInfo.description != _lastLoadedDescription &&
-        _isInitialized) {
+        _isInitialized &&
+        _editorLoaded) {
       // Description changed from external source, update editor
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await _controller.setText(basicInfo.description);
@@ -105,33 +127,7 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
         ),
         child: Column(
           children: [
-            // Header - compact
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: AppDimensions.spacingSmall,
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    'Event Description',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppDimensions.spacingSmall),
-                  Text(
-                    'Write a detailed description for your event. Use the toolbar below to format your text.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
-
-            // Rich text editor - takes most of the space
+            // Rich text editor - takes all available space
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
@@ -145,12 +141,9 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                 ),
                 child: Column(
                   children: [
-                    // Toolbar
+                    // Toolbar - scrollable
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: AppDimensions.spacingSmall,
-                        vertical: AppDimensions.spacingSmall,
-                      ),
+                      height: 50,
                       decoration: BoxDecoration(
                         color: Theme.of(context)
                             .colorScheme
@@ -160,9 +153,22 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                           topRight: Radius.circular(12),
                         ),
                       ),
-                      child: ToolBar(
-                        controller: _controller,
-                        toolBarConfig: customToolBarList,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: AppDimensions.spacingSmall,
+                          vertical: AppDimensions.spacingSmall,
+                        ),
+                        child: IntrinsicWidth(
+                          child: ToolBar(
+                            controller: _controller,
+                            toolBarConfig: customToolBarList,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            direction: Axis.horizontal,
+                            toolBarColor: Colors.transparent,
+                            mainAxisSize: MainAxisSize.min,
+                          ),
+                        ),
                       ),
                     ),
 
