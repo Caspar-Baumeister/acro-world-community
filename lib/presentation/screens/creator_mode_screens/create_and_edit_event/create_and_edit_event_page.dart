@@ -274,74 +274,68 @@ class _CreateAndEditEventPageState
                       setState(() {});
                     }
                   }
-                : coordinatorState.isLoading
-                    ? null // Disable button while loading
-                    : () async {
-                        // Final step - create the event
-                        final booking = ref.read(eventBookingProvider);
-                        final creatorNotifier =
-                            ref.read(creatorProvider.notifier);
-                        final creatorState = ref.read(creatorProvider);
+                : () async {
+                    // Final step - create the event
+                    final booking = ref.read(eventBookingProvider);
+                    final creatorNotifier = ref.read(creatorProvider.notifier);
+                    final creatorState = ref.read(creatorProvider);
 
-                        // Validate payment setup
-                        bool isStripeEnabled = creatorState.activeTeacher !=
-                                null &&
-                            creatorState.activeTeacher!.stripeId != null &&
-                            creatorState.activeTeacher!.isStripeEnabled == true;
+                    // Validate payment setup
+                    bool isStripeEnabled = creatorState.activeTeacher != null &&
+                        creatorState.activeTeacher!.stripeId != null &&
+                        creatorState.activeTeacher!.isStripeEnabled == true;
 
-                        if (!isStripeEnabled &&
-                            !booking.isCashAllowed &&
-                            booking.bookingCategories.isNotEmpty) {
-                          showErrorToast(
-                              "Please enable Stripe or allow cash payments to create tickets");
+                    if (!isStripeEnabled &&
+                        !booking.isCashAllowed &&
+                        booking.bookingCategories.isNotEmpty) {
+                      showErrorToast(
+                          "Please enable Stripe or allow cash payments to create tickets");
+                      return;
+                    }
+
+                    if (creatorState.activeTeacher == null ||
+                        creatorState.activeTeacher!.id == null) {
+                      await creatorNotifier
+                          .setCreatorFromToken()
+                          .then((success) {
+                        if (!success) {
+                          showErrorToast("Session Expired, refreshing session");
                           return;
                         }
+                      });
+                    }
 
-                        if (creatorState.activeTeacher == null ||
-                            creatorState.activeTeacher!.id == null) {
-                          await creatorNotifier
-                              .setCreatorFromToken()
-                              .then((success) {
-                            if (!success) {
-                              showErrorToast(
-                                  "Session Expired, refreshing session");
-                              return;
-                            }
-                          });
-                        }
+                    // Create the event
+                    final coordinator =
+                        ref.read(eventCreationCoordinatorProvider.notifier);
+                    final success = await coordinator
+                        .saveEvent(creatorState.activeTeacher!.id!);
 
-                        // Create the event
-                        final coordinator =
-                            ref.read(eventCreationCoordinatorProvider.notifier);
-                        final success = await coordinator
-                            .saveEvent(creatorState.activeTeacher!.id!);
+                    if (success) {
+                      showSuccessToast(
+                          "Event ${widget.isEditing ? "updated" : "created"} successfully");
 
-                        if (success) {
-                          showSuccessToast(
-                              "Event ${widget.isEditing ? "updated" : "created"} successfully");
+                      // Reset page to first step for next time
+                      coordinator.setPage(0);
 
-                          // Reset page to first step for next time
-                          coordinator.setPage(0);
+                      // Navigate back to My Events page
+                      context.goNamed(myEventsRoute);
 
-                          // Navigate back to My Events page
-                          context.goNamed(myEventsRoute);
-
-                          // Refresh the events list
-                          final userAsync = ref.read(userRiverpodProvider);
-                          if (userAsync.value?.id != null) {
-                            await ref
-                                .read(teacherEventsProvider.notifier)
-                                .fetchEvents(userAsync.value!.id!,
-                                    isRefresh: true);
-                          }
-                        } else {
-                          // Show error message
-                          final finalCoordinatorState =
-                              ref.read(eventCreationCoordinatorProvider);
-                          showErrorToast(finalCoordinatorState.errorMessage ??
-                              'Failed to save event');
-                        }
-                      },
+                      // Refresh the events list
+                      final userAsync = ref.read(userRiverpodProvider);
+                      if (userAsync.value?.id != null) {
+                        await ref
+                            .read(teacherEventsProvider.notifier)
+                            .fetchEvents(userAsync.value!.id!, isRefresh: true);
+                      }
+                    } else {
+                      // Show error message
+                      final finalCoordinatorState =
+                          ref.read(eventCreationCoordinatorProvider);
+                      showErrorToast(finalCoordinatorState.errorMessage ??
+                          'Failed to save event');
+                    }
+                  },
           ),
           Expanded(
             child: pages[coordinatorState.currentPage],
