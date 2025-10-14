@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/dialogs/confirmation_dialog.dart';
 import 'package:acroworld/presentation/components/progress/compact_progress_bar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/community_step/community_step.dart';
@@ -234,8 +235,25 @@ class _CreateAndEditEventPageState
                   }
                 : null,
             onClosePressed: coordinatorState.currentPage == 0
-                ? () {
-                    Navigator.of(context).pop();
+                ? () async {
+                    // Show warning dialog before closing
+                    final shouldClose = await ConfirmationDialog.show(
+                      context: context,
+                      title: widget.isEditing
+                          ? 'Discard Changes?'
+                          : 'Cancel Event Creation?',
+                      message: widget.isEditing
+                          ? 'Are you sure you want to discard your changes? All unsaved changes will be lost.'
+                          : 'Are you sure you want to cancel? All entered information will be lost.',
+                      confirmText: 'Discard',
+                      cancelText: 'Continue Editing',
+                      icon: Icons.warning_amber_rounded,
+                      isDestructive: true,
+                    );
+
+                    if (shouldClose == true && context.mounted) {
+                      Navigator.of(context).pop();
+                    }
                   }
                 : null,
             onNextPressed: coordinatorState.currentPage < pages.length - 1
@@ -301,6 +319,9 @@ class _CreateAndEditEventPageState
                         if (success) {
                           showSuccessToast(
                               "Event ${widget.isEditing ? "updated" : "created"} successfully");
+
+                          // Reset page to first step for next time
+                          coordinator.setPage(0);
 
                           // Navigate back to My Events page
                           context.goNamed(myEventsRoute);

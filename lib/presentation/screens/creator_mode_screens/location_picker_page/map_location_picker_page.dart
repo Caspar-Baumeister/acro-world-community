@@ -110,6 +110,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                                 query = value;
                               });
                             },
+                            showFilterButton: false,
                           ),
                         ),
                         // const SetToUserLocationWidget(),

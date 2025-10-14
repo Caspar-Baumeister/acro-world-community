@@ -119,7 +119,7 @@ class SingleClassBody extends StatelessWidget {
                     const CustomDivider(),
                   ],
                 )
-              : Container(),
+              : const SizedBox.shrink(), // Minimal space when no teachers
 
           classe.location?.coordinates?[1] != null &&
                   classe.location?.coordinates?[0] != null
@@ -156,6 +156,42 @@ class SingleClassBody extends StatelessWidget {
                             ),
                           )
                         : Container(),
+                    // Show country and region if available
+                    if (classe.city != null || classe.country != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_city,
+                              size: 14,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                            ),
+                            const SizedBox(width: 4),
+                            Expanded(
+                              child: Text(
+                                [
+                                  if (classe.city != null) classe.city!,
+                                  if (classe.country != null) classe.country!,
+                                ].join(', '),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall!
+                                    .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      letterSpacing: -0.3,
+                                    ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
