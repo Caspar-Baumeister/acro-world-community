@@ -1,12 +1,9 @@
 import 'package:acroworld/data/models/user_model.dart';
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class InsertEventExplanationModal extends ConsumerWidget {
@@ -52,11 +49,6 @@ class InsertEventExplanationModal extends ConsumerWidget {
                         }
                       },
                     ),
-
-                    const SizedBox(height: AppDimensions.spacingSmall),
-
-                    // Action Button
-                    _buildActionButton(context, ref),
                   ],
                 ),
               ),
@@ -735,20 +727,6 @@ class InsertEventExplanationModal extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildActionButton(BuildContext context, WidgetRef ref) {
-    return SizedBox(
-      width: double.infinity,
-      child: ModernButton(
-        text: 'Upload now',
-        onPressed: () {
-          Navigator.of(context).pop();
-          context.goNamed(profileRoute);
-        },
-        icon: Icons.person,
-      ),
     );
   }
 }
