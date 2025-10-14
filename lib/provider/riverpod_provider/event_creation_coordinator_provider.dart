@@ -448,7 +448,6 @@ class EventCreationCoordinatorNotifier
                 ))
             .toList(),
         classOwners: [classOwner], // Include the class owner
-        classTeachers: [], // Teachers will be invited separately after class creation
         bookingCategories: booking.bookingCategories
             .map((category) => BookingCategoryInput(
                   id: category.id ?? const Uuid().v4(),
@@ -601,7 +600,6 @@ class EventCreationCoordinatorNotifier
                 ))
             .toList(),
         classOwners: [classOwner], // Include the class owner
-        classTeachers: [], // Teachers will be invited separately after class creation
         bookingCategories: booking.bookingCategories
             .map((category) => BookingCategoryInput(
                   id: category.id ?? const Uuid().v4(),
