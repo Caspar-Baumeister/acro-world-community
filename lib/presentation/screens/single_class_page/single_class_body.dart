@@ -139,59 +139,57 @@ class SingleClassBody extends StatelessWidget {
                         )
                       ],
                     ),
-                    classe.locationName != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text(
-                              classe.locationName!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    letterSpacing: -0.5,
-                                    height: 1.1,
+                    // Location name and country/region in a modern chip-like design
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (classe.locationName != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    classe.locationName!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          letterSpacing: -0.5,
+                                          height: 1.1,
+                                        ),
                                   ),
-                            ),
-                          )
-                        : Container(),
-                    // Show country and region if available
-                    if (classe.city != null || classe.country != null)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.location_city,
-                              size: 14,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                            ),
-                            const SizedBox(width: 4),
-                            Expanded(
-                              child: Text(
-                                [
-                                  if (classe.city != null) classe.city!,
-                                  if (classe.country != null) classe.country!,
-                                ].join(', '),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall!
-                                    .copyWith(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .onSurfaceVariant,
-                                      letterSpacing: -0.3,
-                                    ),
-                              ),
-                            ),
-                          ],
+                                ),
+                              // Country and region chips
+                              if (classe.city != null || classe.country != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Wrap(
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: [
+                                      if (classe.city != null)
+                                        _buildLocationChip(
+                                          context,
+                                          classe.city!,
+                                          Icons.location_city,
+                                        ),
+                                      if (classe.country != null)
+                                        _buildLocationChip(
+                                          context,
+                                          classe.country!,
+                                          Icons.public,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
                     const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
@@ -239,6 +237,41 @@ class SingleClassBody extends StatelessWidget {
         ],
       ),
     ));
+  }
+
+  Widget _buildLocationChip(BuildContext context, String label, IconData icon) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 14,
+            color: colorScheme.primary,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
