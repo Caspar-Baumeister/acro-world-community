@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
 
+/// Button size enum
+enum ButtonSize {
+  small,
+  medium,
+  large,
+}
+
 /// Modern button component with consistent styling
 class ModernButton extends StatelessWidget {
   final String text;
@@ -14,6 +21,7 @@ class ModernButton extends StatelessWidget {
   final double? height;
   final EdgeInsetsGeometry? padding;
   final BorderRadius? borderRadius;
+  final ButtonSize size;
 
   const ModernButton({
     super.key,
@@ -29,12 +37,43 @@ class ModernButton extends StatelessWidget {
     this.height,
     this.padding,
     this.borderRadius,
+    this.size = ButtonSize.medium,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+
+    // Determine size-based values
+    final double buttonHeight;
+    final double iconSize;
+    final TextStyle? textStyle;
+    final EdgeInsetsGeometry defaultPadding;
+
+    switch (size) {
+      case ButtonSize.small:
+        buttonHeight = 36;
+        iconSize = 16;
+        textStyle = theme.textTheme.labelMedium;
+        defaultPadding =
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+        break;
+      case ButtonSize.medium:
+        buttonHeight = 48;
+        iconSize = 18;
+        textStyle = theme.textTheme.labelLarge;
+        defaultPadding =
+            const EdgeInsets.symmetric(horizontal: 24, vertical: 12);
+        break;
+      case ButtonSize.large:
+        buttonHeight = 56;
+        iconSize = 20;
+        textStyle = theme.textTheme.titleMedium;
+        defaultPadding =
+            const EdgeInsets.symmetric(horizontal: 32, vertical: 16);
+        break;
+    }
 
     // Determine colors based on button type
     Color bgColor;
@@ -59,7 +98,7 @@ class ModernButton extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      height: height ?? 48,
+      height: height ?? buttonHeight,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
@@ -76,8 +115,7 @@ class ModernButton extends StatelessWidget {
               width: isOutlined ? 1.5 : 0,
             ),
           ),
-          padding: padding ??
-              const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          padding: padding ?? defaultPadding,
         ),
         child: isLoading
             ? SizedBox(
@@ -92,12 +130,12 @@ class ModernButton extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (icon != null) ...[
-                    Icon(icon, size: 18),
+                    Icon(icon, size: iconSize),
                     const SizedBox(width: 8),
                   ],
                   Text(
                     text,
-                    style: theme.textTheme.labelLarge?.copyWith(
+                    style: textStyle?.copyWith(
                       color: fgColor,
                       fontWeight: FontWeight.w600,
                     ),

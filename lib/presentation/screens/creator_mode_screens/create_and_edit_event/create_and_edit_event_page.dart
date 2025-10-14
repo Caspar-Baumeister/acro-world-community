@@ -246,7 +246,7 @@ class _CreateAndEditEventPageState
                           ? 'Are you sure you want to discard your changes? All unsaved changes will be lost.'
                           : 'Are you sure you want to cancel? All entered information will be lost.',
                       confirmText: 'Discard',
-                      cancelText: 'Continue Editing',
+                      cancelText: 'Continue',
                       icon: Icons.warning_amber_rounded,
                       isDestructive: true,
                     );

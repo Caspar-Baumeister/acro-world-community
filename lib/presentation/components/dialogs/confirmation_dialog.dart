@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
@@ -25,34 +26,49 @@ class ConfirmationDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Dialog(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: 400),
+        padding: const EdgeInsets.all(AppDimensions.spacingLarge),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Icon
-            if (icon != null)
-              Icon(
-                icon,
-                color: iconColor ??
-                    (isDestructive
-                        ? Theme.of(context).colorScheme.error
-                        : Theme.of(context).colorScheme.primary),
-                size: 48,
+            if (icon != null) ...[
+              Container(
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+                decoration: BoxDecoration(
+                  color: (iconColor ??
+                          (isDestructive
+                              ? colorScheme.error
+                              : colorScheme.primary))
+                      .withOpacity(0.1),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusMedium),
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor ??
+                      (isDestructive ? colorScheme.error : colorScheme.primary),
+                  size: 40,
+                ),
               ),
-            if (icon != null)
-              const SizedBox(height: AppDimensions.spacingMedium),
+              const SizedBox(height: AppDimensions.spacingLarge),
+            ],
 
             // Title
             Text(
               title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: theme.textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppDimensions.spacingSmall),
@@ -60,50 +76,42 @@ class ConfirmationDialog extends StatelessWidget {
             // Message
             Text(
               message,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.7),
-                  ),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+                height: 1.4,
+              ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: AppDimensions.spacingLarge),
 
             // Action buttons
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 // Cancel button
                 Expanded(
-                  child: OutlinedButton(
+                  child: ModernButton(
+                    text: cancelText,
                     onPressed: () => Navigator.of(context).pop(false),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppDimensions.spacingSmall,
-                      ),
-                    ),
-                    child: Text(cancelText),
+                    isFilled: false,
+                    isOutlined: true,
+                    size: ButtonSize.small,
                   ),
                 ),
-                const SizedBox(width: AppDimensions.spacingSmall),
+                const SizedBox(width: AppDimensions.spacingMedium),
 
                 // Confirm button
                 Expanded(
-                  child: ElevatedButton(
+                  child: ModernButton(
+                    text: confirmText,
                     onPressed: () => Navigator.of(context).pop(true),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: isDestructive
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.primary,
-                      foregroundColor: isDestructive
-                          ? Theme.of(context).colorScheme.onError
-                          : Theme.of(context).colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppDimensions.spacingSmall,
-                      ),
-                    ),
-                    child: Text(confirmText),
+                    isFilled: !isDestructive,
+                    isOutlined: isDestructive,
+                    backgroundColor:
+                        isDestructive ? colorScheme.error : colorScheme.primary,
+                    textColor: isDestructive
+                        ? colorScheme.error
+                        : colorScheme.onPrimary,
+                    size: ButtonSize.small,
                   ),
                 ),
               ],
@@ -127,6 +135,7 @@ class ConfirmationDialog extends StatelessWidget {
   }) {
     return showDialog<bool>(
       context: context,
+      barrierDismissible: true,
       builder: (context) => ConfirmationDialog(
         title: title,
         message: message,
