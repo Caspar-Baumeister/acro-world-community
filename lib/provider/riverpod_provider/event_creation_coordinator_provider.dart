@@ -153,19 +153,8 @@ class EventCreationCoordinatorNotifier
       final List<BookingCategoryModel> copiedCategories = [];
       final List<BookingOption> copiedOptions = [];
 
-      print('🎟️ BOOKING DEBUG - Starting to copy booking categories...');
-      print(
-          '🎟️ BOOKING DEBUG - classModel.bookingCategories: ${classModel.bookingCategories?.length ?? 0}');
-
       if (classModel.bookingCategories != null) {
         for (final category in classModel.bookingCategories!) {
-          print('🎟️ BOOKING DEBUG - Processing category: ${category.name}');
-          print('🎟️ BOOKING DEBUG - Category ID (original): ${category.id}');
-          print(
-              '🎟️ BOOKING DEBUG - Category contingent: ${category.contingent}');
-          print(
-              '🎟️ BOOKING DEBUG - Category has ${category.bookingOptions?.length ?? 0} options');
-
           // Preserve original ID for editing, generate new for template creation
           final categoryId = isEditing ? category.id : const Uuid().v4();
 
@@ -177,18 +166,9 @@ class EventCreationCoordinatorNotifier
           );
           copiedCategories.add(copiedCategory);
 
-          print(
-              '🎟️ BOOKING DEBUG - ✅ Created copied category with ID: $categoryId (isEditing: $isEditing)');
-
           // Copy associated booking options
           if (category.bookingOptions != null) {
             for (final option in category.bookingOptions!) {
-              print('🎟️ BOOKING DEBUG - Processing option: ${option.title}');
-              print('🎟️ BOOKING DEBUG - Option ID (original): ${option.id}');
-              print(
-                  '🎟️ BOOKING DEBUG - Option bookingCategoryId (original): ${option.bookingCategoryId}');
-              print('🎟️ BOOKING DEBUG - Option price: ${option.price}');
-
               final copiedOption = BookingOption(
                 id: isEditing ? option.id : null, // Preserve ID for editing
                 title: option.title,
@@ -198,18 +178,10 @@ class EventCreationCoordinatorNotifier
                 bookingCategoryId: categoryId,
               );
               copiedOptions.add(copiedOption);
-
-              print(
-                  '🎟️ BOOKING DEBUG - ✅ Created copied option with ID: ${copiedOption.id} (isEditing: $isEditing)');
             }
           }
         }
       }
-
-      print(
-          '🎟️ BOOKING DEBUG - Final copied categories: ${copiedCategories.length}');
-      print(
-          '🎟️ BOOKING DEBUG - Final copied options: ${copiedOptions.length}');
 
       // Copy questions
       final List<QuestionModel> copiedQuestions = [];
@@ -685,26 +657,6 @@ class EventCreationCoordinatorNotifier
         }).toList(),
       );
 
-      // Calculate deletions by comparing old vs new data
-      print('🗑️ DELETION DEBUG - ========================================');
-      print('🗑️ DELETION DEBUG - CALCULATING DELETIONS');
-      print('🗑️ DELETION DEBUG - isEditing: ${state.isEditing}');
-
-      // Calculate question deletions
-      print('🗑️ DELETION DEBUG - --- QUESTIONS ---');
-      print(
-          '🗑️ DELETION DEBUG - Old Questions: ${questions.oldQuestions.length}');
-      for (var i = 0; i < questions.oldQuestions.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Old[$i]: ID=${questions.oldQuestions[i].id}');
-      }
-      print(
-          '🗑️ DELETION DEBUG - New Questions: ${questions.questions.length}');
-      for (var i = 0; i < questions.questions.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   New[$i]: ID=${questions.questions[i].id}');
-      }
-
       final List<String> questionIdsToDelete = state.isEditing
           ? questions.oldQuestions
               .where((oldQuestion) => !questions.questions
@@ -712,26 +664,6 @@ class EventCreationCoordinatorNotifier
               .map((question) => question.id!)
               .toList()
           : [];
-      print(
-          '🗑️ DELETION DEBUG - Questions to Delete: ${questionIdsToDelete.length}');
-      for (var i = 0; i < questionIdsToDelete.length; i++) {
-        print('🗑️ DELETION DEBUG -   Delete[$i]: ${questionIdsToDelete[i]}');
-      }
-
-      // Calculate recurring pattern deletions
-      print('🗑️ DELETION DEBUG - --- RECURRING PATTERNS ---');
-      print(
-          '🗑️ DELETION DEBUG - Old Patterns: ${schedule.oldRecurringPatterns.length}');
-      for (var i = 0; i < schedule.oldRecurringPatterns.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Old[$i]: ID=${schedule.oldRecurringPatterns[i].id}');
-      }
-      print(
-          '🗑️ DELETION DEBUG - New Patterns: ${schedule.recurringPatterns.length}');
-      for (var i = 0; i < schedule.recurringPatterns.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   New[$i]: ID=${schedule.recurringPatterns[i].id}');
-      }
 
       final List<String> recurringPatternIdsToDelete = state.isEditing
           ? schedule.oldRecurringPatterns
@@ -740,27 +672,6 @@ class EventCreationCoordinatorNotifier
               .map((pattern) => pattern.id!)
               .toList()
           : [];
-      print(
-          '🗑️ DELETION DEBUG - Patterns to Delete: ${recurringPatternIdsToDelete.length}');
-      for (var i = 0; i < recurringPatternIdsToDelete.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Delete[$i]: ${recurringPatternIdsToDelete[i]}');
-      }
-
-      // Calculate booking category deletions
-      print('🗑️ DELETION DEBUG - --- BOOKING CATEGORIES ---');
-      print(
-          '🗑️ DELETION DEBUG - Old Categories: ${booking.oldBookingCategories.length}');
-      for (var i = 0; i < booking.oldBookingCategories.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Old[$i]: ID=${booking.oldBookingCategories[i].id}, Name=${booking.oldBookingCategories[i].name}');
-      }
-      print(
-          '🗑️ DELETION DEBUG - New Categories: ${booking.bookingCategories.length}');
-      for (var i = 0; i < booking.bookingCategories.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   New[$i]: ID=${booking.bookingCategories[i].id}, Name=${booking.bookingCategories[i].name}');
-      }
 
       final List<String> bookingCategoryIdsToDelete = state.isEditing
           ? booking.oldBookingCategories
@@ -769,27 +680,6 @@ class EventCreationCoordinatorNotifier
               .map((category) => category.id!)
               .toList()
           : [];
-      print(
-          '🗑️ DELETION DEBUG - Categories to Delete: ${bookingCategoryIdsToDelete.length}');
-      for (var i = 0; i < bookingCategoryIdsToDelete.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Delete[$i]: ${bookingCategoryIdsToDelete[i]}');
-      }
-
-      // Calculate booking option deletions
-      print('🗑️ DELETION DEBUG - --- BOOKING OPTIONS ---');
-      print(
-          '🗑️ DELETION DEBUG - Old Options: ${booking.oldBookingOptions.length}');
-      for (var i = 0; i < booking.oldBookingOptions.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Old[$i]: ID=${booking.oldBookingOptions[i].id}, Title=${booking.oldBookingOptions[i].title}');
-      }
-      print(
-          '🗑️ DELETION DEBUG - New Options: ${booking.bookingOptions.length}');
-      for (var i = 0; i < booking.bookingOptions.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   New[$i]: ID=${booking.bookingOptions[i].id}, Title=${booking.bookingOptions[i].title}');
-      }
 
       final List<String> bookingOptionIdsToDelete = state.isEditing
           ? booking.oldBookingOptions
@@ -798,27 +688,6 @@ class EventCreationCoordinatorNotifier
               .map((option) => option.id!)
               .toList()
           : [];
-      print(
-          '🗑️ DELETION DEBUG - Options to Delete: ${bookingOptionIdsToDelete.length}');
-      for (var i = 0; i < bookingOptionIdsToDelete.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Delete[$i]: ${bookingOptionIdsToDelete[i]}');
-      }
-
-      // Calculate class teacher deletions
-      print('🗑️ DELETION DEBUG - --- CLASS TEACHERS ---');
-      print(
-          '🗑️ DELETION DEBUG - Old Teachers: ${teachers.oldClassTeachers.length}');
-      for (var i = 0; i < teachers.oldClassTeachers.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Old[$i]: ID=${teachers.oldClassTeachers[i].id}, TeacherID=${teachers.oldClassTeachers[i].teacher?.id}');
-      }
-      print(
-          '🗑️ DELETION DEBUG - New Teachers: ${teachers.pendingInviteTeachers.length}');
-      for (var i = 0; i < teachers.pendingInviteTeachers.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   New[$i]: ID=${teachers.pendingInviteTeachers[i].id}');
-      }
 
       final List<String> classTeacherIdsToDelete = state.isEditing
           ? teachers.oldClassTeachers
@@ -827,59 +696,7 @@ class EventCreationCoordinatorNotifier
               .map((classTeacher) => classTeacher.id!)
               .toList()
           : [];
-      print(
-          '🗑️ DELETION DEBUG - Teachers to Delete: ${classTeacherIdsToDelete.length}');
-      for (var i = 0; i < classTeacherIdsToDelete.length; i++) {
-        print(
-            '🗑️ DELETION DEBUG -   Delete[$i]: ${classTeacherIdsToDelete[i]}');
-      }
 
-      print('🗑️ DELETION DEBUG - ========================================');
-      print('🗑️ DELETION DEBUG - SENDING TO REPOSITORY');
-      print(
-          '🗑️ DELETION DEBUG - questionIdsToDelete: ${questionIdsToDelete.length} items');
-      if (questionIdsToDelete.isNotEmpty) {
-        for (var i = 0; i < questionIdsToDelete.length; i++) {
-          print(
-              '🗑️ DELETION DEBUG -   questionIdsToDelete[$i]: ${questionIdsToDelete[i]}');
-        }
-      }
-      print(
-          '🗑️ DELETION DEBUG - recurringPatternIdsToDelete: ${recurringPatternIdsToDelete.length} items');
-      if (recurringPatternIdsToDelete.isNotEmpty) {
-        for (var i = 0; i < recurringPatternIdsToDelete.length; i++) {
-          print(
-              '🗑️ DELETION DEBUG -   recurringPatternIdsToDelete[$i]: ${recurringPatternIdsToDelete[i]}');
-        }
-      }
-      print(
-          '🗑️ DELETION DEBUG - classTeacherIdsToDelete: ${classTeacherIdsToDelete.length} items');
-      if (classTeacherIdsToDelete.isNotEmpty) {
-        for (var i = 0; i < classTeacherIdsToDelete.length; i++) {
-          print(
-              '🗑️ DELETION DEBUG -   classTeacherIdsToDelete[$i]: ${classTeacherIdsToDelete[i]}');
-        }
-      }
-      print(
-          '🗑️ DELETION DEBUG - bookingOptionIdsToDelete: ${bookingOptionIdsToDelete.length} items');
-      if (bookingOptionIdsToDelete.isNotEmpty) {
-        for (var i = 0; i < bookingOptionIdsToDelete.length; i++) {
-          print(
-              '🗑️ DELETION DEBUG -   bookingOptionIdsToDelete[$i]: ${bookingOptionIdsToDelete[i]}');
-        }
-      }
-      print(
-          '🗑️ DELETION DEBUG - bookingCategoryIdsToDelete: ${bookingCategoryIdsToDelete.length} items');
-      if (bookingCategoryIdsToDelete.isNotEmpty) {
-        for (var i = 0; i < bookingCategoryIdsToDelete.length; i++) {
-          print(
-              '🗑️ DELETION DEBUG -   bookingCategoryIdsToDelete[$i]: ${bookingCategoryIdsToDelete[i]}');
-        }
-      }
-      print('🗑️ DELETION DEBUG - ========================================');
-
-      // Call the repository method
-      print('🗑️ DELETION DEBUG - Calling repository.upsertClass()...');
       final createdClass = await repository.upsertClass(
         classUpsertInput,
         questionIdsToDelete,
@@ -888,9 +705,6 @@ class EventCreationCoordinatorNotifier
         bookingOptionIdsToDelete,
         bookingCategoryIdsToDelete,
       );
-
-      print('🗑️ DELETION DEBUG - Repository call completed successfully');
-      print('🗑️ DELETION DEBUG - Created class ID: ${createdClass.id}');
 
       if (createdClass.id != null) {
         // Send invitations to teachers after class update
