@@ -105,6 +105,11 @@ class EventQuestionsNotifier extends StateNotifier<EventQuestionsState> {
       oldQuestions: questions, // Set as old questions for editing
     );
   }
+
+  /// Set old questions (snapshot for deletion tracking)
+  void setOldQuestions(List<QuestionModel> questions) {
+    state = state.copyWith(oldQuestions: questions);
+  }
 }
 
 /// Provider for event questions information

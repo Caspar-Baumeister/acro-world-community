@@ -4,12 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// State for event scheduling information
 class EventScheduleState {
   final List<RecurringPatternModel> recurringPatterns;
+  final List<RecurringPatternModel>
+      oldRecurringPatterns; // Snapshot for deletion tracking
   final RecurringPatternModel? recurrentPattern;
   final bool isLoading;
   final String? errorMessage;
 
   const EventScheduleState({
     this.recurringPatterns = const [],
+    this.oldRecurringPatterns = const [],
     this.recurrentPattern,
     this.isLoading = false,
     this.errorMessage,
@@ -17,12 +20,14 @@ class EventScheduleState {
 
   EventScheduleState copyWith({
     List<RecurringPatternModel>? recurringPatterns,
+    List<RecurringPatternModel>? oldRecurringPatterns,
     RecurringPatternModel? recurrentPattern,
     bool? isLoading,
     String? errorMessage,
   }) {
     return EventScheduleState(
       recurringPatterns: recurringPatterns ?? this.recurringPatterns,
+      oldRecurringPatterns: oldRecurringPatterns ?? this.oldRecurringPatterns,
       recurrentPattern: recurrentPattern ?? this.recurrentPattern,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -108,6 +113,11 @@ class EventScheduleNotifier extends StateNotifier<EventScheduleState> {
       recurringPatterns: recurringPatterns,
       recurrentPattern: recurrentPattern,
     );
+  }
+
+  /// Set old recurring patterns (snapshot for deletion tracking)
+  void setOldRecurringPatterns(List<RecurringPatternModel> patterns) {
+    state = state.copyWith(oldRecurringPatterns: patterns);
   }
 }
 

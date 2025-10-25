@@ -177,13 +177,15 @@ class ClassOwner {
 }
 
 class ClassTeachers {
+  String? id;
   TeacherModel? teacher;
   bool? isOwner;
   ClassModel? classModel;
 
-  ClassTeachers({this.teacher, this.isOwner, this.classModel});
+  ClassTeachers({this.id, this.teacher, this.isOwner, this.classModel});
 
   ClassTeachers.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
     teacher =
         json['teacher'] != null ? TeacherModel.fromJson(json['teacher']) : null;
     isOwner = json['is_owner'];

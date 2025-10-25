@@ -6,6 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class EventBookingState {
   final List<BookingCategoryModel> bookingCategories;
   final List<BookingOption> bookingOptions;
+  final List<BookingCategoryModel>
+      oldBookingCategories; // Snapshot for deletion tracking
+  final List<BookingOption> oldBookingOptions; // Snapshot for deletion tracking
   final int? maxBookingSlots;
   final bool isCashAllowed;
   final bool isLoading;
@@ -14,6 +17,8 @@ class EventBookingState {
   const EventBookingState({
     this.bookingCategories = const [],
     this.bookingOptions = const [],
+    this.oldBookingCategories = const [],
+    this.oldBookingOptions = const [],
     this.maxBookingSlots,
     this.isCashAllowed = false,
     this.isLoading = false,
@@ -23,6 +28,8 @@ class EventBookingState {
   EventBookingState copyWith({
     List<BookingCategoryModel>? bookingCategories,
     List<BookingOption>? bookingOptions,
+    List<BookingCategoryModel>? oldBookingCategories,
+    List<BookingOption>? oldBookingOptions,
     int? maxBookingSlots,
     bool? isCashAllowed,
     bool? isLoading,
@@ -31,6 +38,8 @@ class EventBookingState {
     return EventBookingState(
       bookingCategories: bookingCategories ?? this.bookingCategories,
       bookingOptions: bookingOptions ?? this.bookingOptions,
+      oldBookingCategories: oldBookingCategories ?? this.oldBookingCategories,
+      oldBookingOptions: oldBookingOptions ?? this.oldBookingOptions,
       maxBookingSlots: maxBookingSlots ?? this.maxBookingSlots,
       isCashAllowed: isCashAllowed ?? this.isCashAllowed,
       isLoading: isLoading ?? this.isLoading,
@@ -199,6 +208,17 @@ class EventBookingNotifier extends StateNotifier<EventBookingState> {
         '🎟️ PROVIDER DEBUG - state.bookingCategories: ${state.bookingCategories.length}');
     print(
         '🎟️ PROVIDER DEBUG - state.bookingOptions: ${state.bookingOptions.length}');
+  }
+
+  /// Set old booking data (snapshot for deletion tracking)
+  void setOldBookingData({
+    required List<BookingCategoryModel> categories,
+    required List<BookingOption> options,
+  }) {
+    state = state.copyWith(
+      oldBookingCategories: categories,
+      oldBookingOptions: options,
+    );
   }
 }
 

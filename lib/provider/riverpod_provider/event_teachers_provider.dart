@@ -1,3 +1,4 @@
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -5,12 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class EventTeachersState {
   final List<TeacherModel> pendingInviteTeachers;
   final List<String> pendingEmailInvites;
+  final List<ClassTeachers> oldClassTeachers; // Snapshot for deletion tracking
   final bool isLoading;
   final String? errorMessage;
 
   const EventTeachersState({
     this.pendingInviteTeachers = const [],
     this.pendingEmailInvites = const [],
+    this.oldClassTeachers = const [],
     this.isLoading = false,
     this.errorMessage,
   });
@@ -27,6 +30,7 @@ class EventTeachersState {
   EventTeachersState copyWith({
     List<TeacherModel>? pendingInviteTeachers,
     List<String>? pendingEmailInvites,
+    List<ClassTeachers>? oldClassTeachers,
     bool? isLoading,
     String? errorMessage,
   }) {
@@ -34,6 +38,7 @@ class EventTeachersState {
       pendingInviteTeachers:
           pendingInviteTeachers ?? this.pendingInviteTeachers,
       pendingEmailInvites: pendingEmailInvites ?? this.pendingEmailInvites,
+      oldClassTeachers: oldClassTeachers ?? this.oldClassTeachers,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
     );
@@ -135,6 +140,11 @@ class EventTeachersNotifier extends StateNotifier<EventTeachersState> {
     required List<TeacherModel> pendingInviteTeachers,
   }) {
     state = state.copyWith(pendingInviteTeachers: pendingInviteTeachers);
+  }
+
+  /// Set old class teachers (snapshot for deletion tracking)
+  void setOldClassTeachers(List<ClassTeachers> classTeachers) {
+    state = state.copyWith(oldClassTeachers: classTeachers);
   }
 }
 
