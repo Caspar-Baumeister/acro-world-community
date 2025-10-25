@@ -497,7 +497,7 @@ class EventCreationCoordinatorNotifier
         }).toList(),
       );
 
-      // Create the class using upsertClass
+      // Create the class using upsertClass (For newly created classes there is nothing to delete)
       final createdClass = await repository.upsertClass(
         classUpsertInput,
         [], // questionIdsToDelete

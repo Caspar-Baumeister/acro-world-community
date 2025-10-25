@@ -194,11 +194,6 @@ class ClassesRepository {
   ) async {
     pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
         'upsertClass ${input.toJson()}');
-    print('deleteQuestionIds $deleteQuestionIds');
-    print('deleteRecurringPatternIds $deleteRecurringPatternIds');
-    print('deleteClassTeacherIds $deleteClassTeacherIds');
-    print('deleteBookingOptionIds $deleteBookingOptionIds');
-    print('deleteBookingCategoryIds $deleteBookingCategoryIds');
 
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.upsertClass,
