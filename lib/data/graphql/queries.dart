@@ -95,7 +95,7 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
     order_by: { created_at: desc }
     where: { 
       invited_user_id: { _eq: \$user_id },
-      entity: { _eq: class }
+      entity: { _eq: class_teacher }
     }
   ) {
     id
@@ -136,7 +136,7 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
   invites_aggregate(
     where: { 
       invited_user_id: { _eq: \$user_id },
-      entity: { _eq: class }
+      entity: { _eq: class_teacher }
     }
   ) {
     aggregate {
@@ -153,7 +153,7 @@ query GetPendingInvitesCount(\$user_id: uuid!) {
     where: { 
       invited_user_id: { _eq: \$user_id },
       confirmation_status: { _eq: Pending },
-      entity: { _eq: class }
+      entity: { _eq: class_teacher }
     }
   ) {
     aggregate {

@@ -2,7 +2,8 @@ plugins {
     id "com.android.application"
     id "dev.flutter.flutter-gradle-plugin"
     id "org.jetbrains.kotlin.android"
-    id "com.google.gms.google-services"
+    // NOTE: do NOT apply com.google.gms.google-services here (plugins{} runs early,
+    // the plugin expects google-services.json to already exist). We'll apply it later.
 }
 
 def localProperties = new Properties()
@@ -13,15 +14,8 @@ if (localPropertiesFile.exists()) {
     }
 }
 
-def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
-if (flutterVersionCode == null) {
-    flutterVersionCode = '1'
-}
-
-def flutterVersionName = localProperties.getProperty('flutter.versionName')
-if (flutterVersionName == null) {
-    flutterVersionName = '1.0'
-}
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode') ?: '1'
+def flutterVersionName = localProperties.getProperty('flutter.versionName') ?: '1.0'
 
 def keystoreProperties = new Properties()
 def keystorePropertiesFile = rootProject.file('key.properties')
@@ -29,10 +23,67 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+// -----------------------------
+// --- Transient google-services.json handling
+// -----------------------------
+// We pick the flavor from the requested Gradle task names (e.g. assembleProd, installDev, etc.)
+// and copy the corresponding google-services-<flavor>.json into this module's folder
+// as google-services.json *before* applying the google-services plugin. The file is deleted
+// when the build finishes so nothing is persisted in the repo.
+
+def startTasks = gradle.startParameter.taskNames.join(' ').toLowerCase()
+def chosenFlavor = null
+if (startTasks.contains("prod") || startTasks.contains("release")) {
+    chosenFlavor = "prod"
+} else if (startTasks.contains("dev") || startTasks.contains("debug")) {
+    chosenFlavor = "dev"
+}
+
+// path to candidate files (these should exist in your repo)
+def devJson = file("$projectDir/google-services-dev.json")
+def prodJson = file("$projectDir/google-services-prod.json")
+def transientFile = file("$projectDir/google-services.json")
+
+if (chosenFlavor != null) {
+    println ">>> Build requested tasks: ${startTasks}"
+    println ">>> Detected flavor: ${chosenFlavor}. Preparing transient google-services.json..."
+
+    def srcFile = (chosenFlavor == "prod") ? prodJson : devJson
+    if (!srcFile.exists()) {
+        println ">>> WARNING: ${srcFile.path} not found. Build may fail if google-services.json is required."
+    } else {
+        // Copy to module directory (transient). If already exists, overwrite it.
+        srcFile.withInputStream { input ->
+            transientFile.withOutputStream { out ->
+                out << input
+            }
+        }
+        println ">>> Copied ${srcFile.name} -> ${transientFile.path}"
+    }
+
+    // Ensure cleanup after the build (successful or failed)
+    gradle.buildFinished { result ->
+        if (transientFile.exists()) {
+            try {
+                transientFile.delete()
+                println ">>> Deleted transient google-services.json"
+            } catch(Exception e) {
+                println ">>> Failed to delete transient google-services.json: ${e}"
+            }
+        }
+    }
+} else {
+    println ">>> No flavor detected from task names (${startTasks}). No transient google-services.json copied."
+    // If you want a default behavior, uncomment and set defaultFlavor:
+    // chosenFlavor = "dev" ; // and perform the copy above
+}
+// -----------------------------
+// End transient handling
+// -----------------------------
 
 android {
     namespace 'com.community.acroworld'
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -48,9 +99,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.community.acroworld"
-        minSdkVersion 23
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 35
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -60,23 +110,25 @@ android {
         }
     }
 
-   signingConfigs {
-       release {
-           keyAlias keystoreProperties['keyAlias']
-           keyPassword keystoreProperties['keyPassword']
-           storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
-           storePassword keystoreProperties['storePassword']
-       }
-   }
-   buildTypes {
-       release {
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile keystoreProperties['storeFile'] ? file(keystoreProperties['storeFile']) : null
+            storePassword keystoreProperties['storePassword']
+        }
+    }
+
+    buildTypes {
+        release {
             signingConfig signingConfigs.release
             minifyEnabled false
             shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-       }
-   }
-   buildFeatures {
+        }
+    }
+
+    buildFeatures {
         buildConfig true
     }
 }
@@ -90,4 +142,7 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:28.4.2')
 }
 
-
+// Now apply the Google Services plugin (after our transient copy attempt).
+// If google-services.json was copied above, the plugin will pick it up; otherwise plugin will
+// look for the file and fail (which is correct if you really didn't provide any json).
+apply plugin: 'com.google.gms.google-services'

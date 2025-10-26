@@ -16,3 +16,6 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+// DO NOT apply the google services plugin at root level
+// (it is applied in android/app/build.gradle after the transient copy)

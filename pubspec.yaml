@@ -97,8 +97,8 @@ scripts:
 
   build-prod: flutter build api --flavor prod --dart-define=app.flavor=prod
 
-  run-android-dev: flutter run --dart-define=app.flavor=dev
-  run-android-prod: flutter run --dart-define=app.flavor=prod --release
+  run:android:dev: flutter run --dart-define=app.flavor=dev
+  run:android:prod: flutter run --dart-define=app.flavor=prod --release
 
 flutter:
   uses-material-design: true
