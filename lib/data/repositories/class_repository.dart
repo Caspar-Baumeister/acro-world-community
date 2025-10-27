@@ -204,7 +204,7 @@ class ClassesRepository {
         "delete_booking_category_ids": deleteBookingCategoryIds,
         "delete_class_teacher_ids": deleteClassTeacherIds,
         "delete_booking_option_ids": deleteBookingOptionIds,
-        "delete_question_ids": deleteQuestionIds
+        "delete_question_ids": deleteQuestionIds,
       },
     );
 

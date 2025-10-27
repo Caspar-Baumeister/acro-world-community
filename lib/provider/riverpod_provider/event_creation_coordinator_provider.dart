@@ -2,6 +2,8 @@ import 'package:acroworld/data/graphql/input/booking_category_input.dart';
 import 'package:acroworld/data/graphql/input/booking_option_input.dart';
 import 'package:acroworld/data/graphql/input/class_owner_input.dart';
 import 'package:acroworld/data/graphql/input/class_upsert_input.dart';
+import 'package:acroworld/data/graphql/input/invite_entity.dart';
+import 'package:acroworld/data/graphql/input/invite_input.dart';
 import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
@@ -399,6 +401,7 @@ class EventCreationCoordinatorNotifier
       final booking = ref.read(eventBookingProvider);
       final questions = ref.read(eventQuestionsProvider);
       final schedule = ref.read(eventScheduleProvider);
+      final eventTeachers = ref.read(eventTeachersProvider);
 
       // Get timezone based on location
       String timezone = 'Europe/Berlin'; // Default
@@ -424,78 +427,94 @@ class EventCreationCoordinatorNotifier
               .reduce((a, b) => a + b);
 
       // Create ClassUpsertInput following the working pattern
+      final classId = const Uuid().v4();
       final classUpsertInput = ClassUpsertInput(
-        id: const Uuid().v4(),
-        name: basicInfo.title,
-        description: basicInfo.description,
-        imageUrl: imageUrl,
-        timezone: timezone,
-        urlSlug: basicInfo.slug,
-        isCashAllowed: booking.isCashAllowed,
-        location: location.location ?? const LatLng(0.0, 0.0),
-        locationName: location.locationName,
-        locationCity: location.region,
-        locationCountry: location.countryCode,
-        eventType:
-            _mapEventTypeToApiValue(_stringToEventType(basicInfo.eventType)),
-        maxBookingSlots: maxBookingSlots,
-        recurringPatterns: schedule.recurringPatterns
-            .map((pattern) => RecurringPatternInput(
-                  id: pattern.id ?? const Uuid().v4(),
-                  dayOfWeek: pattern.dayOfWeek,
-                  startDate: pattern.startDate?.toIso8601String() ?? '',
-                  endDate: pattern.endDate?.toIso8601String(),
-                  startTime: _timeStringFromTimeOfDay(pattern.startTime),
-                  endTime: _timeStringFromTimeOfDay(pattern.endTime),
-                  recurringEveryXWeeks: pattern.recurringEveryXWeeks,
-                  isRecurring: pattern.isRecurring ?? false,
-                ))
-            .toList(),
-        classOwners: [classOwner], // Include the class owner
-        bookingCategories: booking.bookingCategories
-            .map((category) => BookingCategoryInput(
-                  id: category.id ?? const Uuid().v4(),
-                  name: category.name,
-                  contingent: category.contingent,
-                  description: category.description ?? '',
-                  bookingOptions: booking.bookingOptions
-                      .where(
-                          (option) => option.bookingCategoryId == category.id)
-                      .map((option) => BookingOptionInput(
-                            id: option.id ?? const Uuid().v4(),
-                            title: option.title ?? '',
-                            subtitle: option.subtitle ?? '',
-                            price: option.price ?? 0,
-                            discount: option.discount ?? 0,
-                            currency: option.currency.value,
+          id: classId,
+          name: basicInfo.title,
+          description: basicInfo.description,
+          imageUrl: imageUrl,
+          timezone: timezone,
+          urlSlug: basicInfo.slug,
+          isCashAllowed: booking.isCashAllowed,
+          location: location.location ?? const LatLng(0.0, 0.0),
+          locationName: location.locationName,
+          locationCity: location.region,
+          locationCountry: location.countryCode,
+          eventType:
+              _mapEventTypeToApiValue(_stringToEventType(basicInfo.eventType)),
+          maxBookingSlots: maxBookingSlots,
+          recurringPatterns: schedule.recurringPatterns
+              .map((pattern) => RecurringPatternInput(
+                    id: pattern.id ?? const Uuid().v4(),
+                    dayOfWeek: pattern.dayOfWeek,
+                    startDate: pattern.startDate?.toIso8601String() ?? '',
+                    endDate: pattern.endDate?.toIso8601String(),
+                    startTime: _timeStringFromTimeOfDay(pattern.startTime),
+                    endTime: _timeStringFromTimeOfDay(pattern.endTime),
+                    recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+                    isRecurring: pattern.isRecurring ?? false,
+                  ))
+              .toList(),
+          classOwners: [classOwner], // Include the class owner
+          bookingCategories: booking.bookingCategories
+              .map((category) => BookingCategoryInput(
+                    id: category.id ?? const Uuid().v4(),
+                    name: category.name,
+                    contingent: category.contingent,
+                    description: category.description ?? '',
+                    bookingOptions: booking.bookingOptions
+                        .where(
+                            (option) => option.bookingCategoryId == category.id)
+                        .map((option) => BookingOptionInput(
+                              id: option.id ?? const Uuid().v4(),
+                              title: option.title ?? '',
+                              subtitle: option.subtitle ?? '',
+                              price: option.price ?? 0,
+                              discount: option.discount ?? 0,
+                              currency: option.currency.value,
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
+          questions: questions.questions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final question = entry.value;
+            return QuestionInput(
+              id: question.id ?? const Uuid().v4(),
+              allowMultipleAnswers: question.isMultipleChoice ?? false,
+              isRequired: question.isRequired ?? false,
+              position: index,
+              question: question.question ?? '',
+              title: question.title ?? '',
+              questionType: question.type ?? QuestionType.text,
+              multipleChoiceOptions: question.choices
+                      ?.asMap()
+                      .entries
+                      .map((choiceEntry) => MultipleChoiceOptionInput(
+                            id: choiceEntry.value.id ?? const Uuid().v4(),
+                            optionText: choiceEntry.value.optionText ?? '',
+                            position: choiceEntry.key,
                           ))
-                      .toList(),
-                ))
-            .toList(),
-        questions: questions.questions.asMap().entries.map((entry) {
-          final index = entry.key;
-          final question = entry.value;
-          return QuestionInput(
-            id: question.id ?? const Uuid().v4(),
-            allowMultipleAnswers: question.isMultipleChoice ?? false,
-            isRequired: question.isRequired ?? false,
-            position: index,
-            question: question.question ?? '',
-            title: question.title ?? '',
-            questionType: question.type ?? QuestionType.text,
-            multipleChoiceOptions: question.choices
-                    ?.asMap()
-                    .entries
-                    .map((choiceEntry) => MultipleChoiceOptionInput(
-                          id: choiceEntry.value.id ?? const Uuid().v4(),
-                          optionText: choiceEntry.value.optionText ?? '',
-                          position: choiceEntry.key,
-                        ))
-                    .toList() ??
-                [],
-          );
-        }).toList(),
-      );
+                      .toList() ??
+                  [],
+            );
+          }).toList(),
+          invites: [
+            ...eventTeachers.pendingEmailInvites.map(
+              (email) => InviteInput(
+                id: const Uuid().v4(),
+                email: email,
+                entity: InviteEntity.classTeacher,
+              ),
+            ),
+            ...eventTeachers.pendingInviteTeachers.map(
+              (teacher) => InviteInput(
+                id: const Uuid().v4(),
+                invitedUserId: teacher.id,
+                entity: InviteEntity.classTeacher,
+              ),
+            ),
+          ]);
 
       // Create the class using upsertClass (For newly created classes there is nothing to delete)
       final createdClass = await repository.upsertClass(
@@ -506,11 +525,6 @@ class EventCreationCoordinatorNotifier
         [], // deleteBookingOptionIds
         [], // deleteBookingCategoryIds
       );
-
-      // Send invitations to teachers after class creation
-      if (createdClass.id != null) {
-        await _sendTeacherInvitations(createdClass.id!);
-      }
 
       state = state.copyWith(
         isLoading: false,
@@ -552,6 +566,7 @@ class EventCreationCoordinatorNotifier
       final booking = ref.read(eventBookingProvider);
       final questions = ref.read(eventQuestionsProvider);
       final schedule = ref.read(eventScheduleProvider);
+      final eventTeachers = ref.read(eventTeachersProvider);
 
       // Get teachers data
       final teachers = ref.read(eventTeachersProvider);
@@ -586,76 +601,91 @@ class EventCreationCoordinatorNotifier
 
       // Create ClassUpsertInput following the working pattern
       final classUpsertInput = ClassUpsertInput(
-        id: classId, // Use existing ID for editing
-        name: basicInfo.title,
-        description: basicInfo.description,
-        imageUrl: imageUrl,
-        timezone: timezone,
-        urlSlug: basicInfo.slug,
-        isCashAllowed: booking.isCashAllowed,
-        location: location.location ?? const LatLng(0.0, 0.0),
-        locationName: location.locationName,
-        locationCity: location.region,
-        locationCountry: location.countryCode,
-        eventType: basicInfo.eventType,
-        maxBookingSlots: maxBookingSlots,
-        recurringPatterns: schedule.recurringPatterns
-            .map((pattern) => RecurringPatternInput(
-                  id: pattern.id ?? const Uuid().v4(),
-                  dayOfWeek: pattern.dayOfWeek,
-                  startDate: pattern.startDate?.toIso8601String() ?? '',
-                  endDate: pattern.endDate?.toIso8601String(),
-                  startTime: _timeStringFromTimeOfDay(pattern.startTime),
-                  endTime: _timeStringFromTimeOfDay(pattern.endTime),
-                  recurringEveryXWeeks: pattern.recurringEveryXWeeks,
-                  isRecurring: pattern.isRecurring ?? false,
-                ))
-            .toList(),
-        classOwners: [classOwner], // Include the class owner
-        bookingCategories: booking.bookingCategories
-            .map((category) => BookingCategoryInput(
-                  id: category.id ?? const Uuid().v4(),
-                  name: category.name,
-                  contingent: category.contingent,
-                  description: category.description ?? '',
-                  bookingOptions: booking.bookingOptions
-                      .where(
-                          (option) => option.bookingCategoryId == category.id)
-                      .map((option) => BookingOptionInput(
-                            id: option.id ?? const Uuid().v4(),
-                            title: option.title ?? '',
-                            subtitle: option.subtitle ?? '',
-                            price: option.price ?? 0,
-                            discount: option.discount ?? 0,
-                            currency: option.currency.value,
+          id: classId, // Use existing ID for editing
+          name: basicInfo.title,
+          description: basicInfo.description,
+          imageUrl: imageUrl,
+          timezone: timezone,
+          urlSlug: basicInfo.slug,
+          isCashAllowed: booking.isCashAllowed,
+          location: location.location ?? const LatLng(0.0, 0.0),
+          locationName: location.locationName,
+          locationCity: location.region,
+          locationCountry: location.countryCode,
+          eventType: basicInfo.eventType,
+          maxBookingSlots: maxBookingSlots,
+          recurringPatterns: schedule.recurringPatterns
+              .map((pattern) => RecurringPatternInput(
+                    id: pattern.id ?? const Uuid().v4(),
+                    dayOfWeek: pattern.dayOfWeek,
+                    startDate: pattern.startDate?.toIso8601String() ?? '',
+                    endDate: pattern.endDate?.toIso8601String(),
+                    startTime: _timeStringFromTimeOfDay(pattern.startTime),
+                    endTime: _timeStringFromTimeOfDay(pattern.endTime),
+                    recurringEveryXWeeks: pattern.recurringEveryXWeeks,
+                    isRecurring: pattern.isRecurring ?? false,
+                  ))
+              .toList(),
+          classOwners: [classOwner], // Include the class owner
+          bookingCategories: booking.bookingCategories
+              .map((category) => BookingCategoryInput(
+                    id: category.id ?? const Uuid().v4(),
+                    name: category.name,
+                    contingent: category.contingent,
+                    description: category.description ?? '',
+                    bookingOptions: booking.bookingOptions
+                        .where(
+                            (option) => option.bookingCategoryId == category.id)
+                        .map((option) => BookingOptionInput(
+                              id: option.id ?? const Uuid().v4(),
+                              title: option.title ?? '',
+                              subtitle: option.subtitle ?? '',
+                              price: option.price ?? 0,
+                              discount: option.discount ?? 0,
+                              currency: option.currency.value,
+                            ))
+                        .toList(),
+                  ))
+              .toList(),
+          questions: questions.questions.asMap().entries.map((entry) {
+            final index = entry.key;
+            final question = entry.value;
+            return QuestionInput(
+              id: question.id ?? const Uuid().v4(),
+              allowMultipleAnswers: question.isMultipleChoice ?? false,
+              isRequired: question.isRequired ?? false,
+              position: index,
+              question: question.question ?? '',
+              title: question.title ?? '',
+              questionType: question.type ?? QuestionType.text,
+              multipleChoiceOptions: question.choices
+                      ?.asMap()
+                      .entries
+                      .map((choiceEntry) => MultipleChoiceOptionInput(
+                            id: choiceEntry.value.id ?? const Uuid().v4(),
+                            optionText: choiceEntry.value.optionText ?? '',
+                            position: choiceEntry.key,
                           ))
-                      .toList(),
-                ))
-            .toList(),
-        questions: questions.questions.asMap().entries.map((entry) {
-          final index = entry.key;
-          final question = entry.value;
-          return QuestionInput(
-            id: question.id ?? const Uuid().v4(),
-            allowMultipleAnswers: question.isMultipleChoice ?? false,
-            isRequired: question.isRequired ?? false,
-            position: index,
-            question: question.question ?? '',
-            title: question.title ?? '',
-            questionType: question.type ?? QuestionType.text,
-            multipleChoiceOptions: question.choices
-                    ?.asMap()
-                    .entries
-                    .map((choiceEntry) => MultipleChoiceOptionInput(
-                          id: choiceEntry.value.id ?? const Uuid().v4(),
-                          optionText: choiceEntry.value.optionText ?? '',
-                          position: choiceEntry.key,
-                        ))
-                    .toList() ??
-                [],
-          );
-        }).toList(),
-      );
+                      .toList() ??
+                  [],
+            );
+          }).toList(),
+          invites: [
+            ...eventTeachers.pendingEmailInvites.map(
+              (email) => InviteInput(
+                id: const Uuid().v4(),
+                email: email,
+                entity: InviteEntity.classTeacher,
+              ),
+            ),
+            ...eventTeachers.pendingInviteTeachers.map(
+              (teacher) => InviteInput(
+                id: const Uuid().v4(),
+                invitedUserId: teacher.id,
+                entity: InviteEntity.classTeacher,
+              ),
+            ),
+          ]);
 
       final List<String> questionIdsToDelete = state.isEditing
           ? questions.oldQuestions
@@ -697,7 +727,7 @@ class EventCreationCoordinatorNotifier
               .toList()
           : [];
 
-      final createdClass = await repository.upsertClass(
+      await repository.upsertClass(
         classUpsertInput,
         questionIdsToDelete,
         recurringPatternIdsToDelete,
@@ -705,23 +735,6 @@ class EventCreationCoordinatorNotifier
         bookingOptionIdsToDelete,
         bookingCategoryIdsToDelete,
       );
-
-      if (createdClass.id != null) {
-        // Send invitations to teachers after class update
-        await _sendTeacherInvitations(createdClass.id!);
-
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: null,
-        );
-        CustomErrorHandler.logDebug(
-            "Event updated successfully with ID: ${createdClass.id}");
-      } else {
-        state = state.copyWith(
-          isLoading: false,
-          errorMessage: 'Failed to update event: No ID returned',
-        );
-      }
     } catch (e) {
       CustomErrorHandler.logError("Error updating event: $e");
       state = state.copyWith(
@@ -821,76 +834,6 @@ class EventCreationCoordinatorNotifier
     } catch (e) {
       CustomErrorHandler.logError('Error uploading event image: $e');
       return null;
-    }
-  }
-
-  /// Send teacher invitations after class creation
-  Future<void> _sendTeacherInvitations(String classId) async {
-    try {
-      final teachers = ref.read(eventTeachersProvider);
-      final client = GraphQLClientSingleton().client;
-
-      // Send invitations to selected teachers (with user accounts)
-      for (final teacher in teachers.pendingInviteTeachers) {
-        if (teacher.email != null) {
-          try {
-            final result = await client.mutate(
-              MutationOptions(
-                document: Mutations.inviteToClassMutation,
-                variables: {
-                  'email': teacher.email!,
-                  'entity': 'class',
-                  'entity_id': classId,
-                  'userId': teacher.userId,
-                },
-              ),
-            );
-
-            if (result.hasException) {
-              CustomErrorHandler.logError(
-                  'Failed to invite teacher ${teacher.name}: ${result.exception}');
-            } else {
-              CustomErrorHandler.logDebug(
-                  'Successfully invited teacher ${teacher.name} to class $classId');
-            }
-          } catch (e) {
-            CustomErrorHandler.logError(
-                'Error inviting teacher ${teacher.name}: $e');
-          }
-        } else {
-          CustomErrorHandler.logError(
-              'Teacher ${teacher.name} has no email, skipping invitation');
-        }
-      }
-
-      // Send email invitations (for users without teacher accounts)
-      for (final email in teachers.pendingEmailInvites) {
-        try {
-          final result = await client.mutate(
-            MutationOptions(
-              document: Mutations.inviteToClassMutation,
-              variables: {
-                'email': email,
-                'entity': 'class',
-                'entity_id': classId,
-                // userId is null for email-only invitations
-              },
-            ),
-          );
-
-          if (result.hasException) {
-            CustomErrorHandler.logError(
-                'Failed to invite email $email: ${result.exception}');
-          } else {
-            CustomErrorHandler.logDebug(
-                'Successfully invited email $email to class $classId');
-          }
-        } catch (e) {
-          CustomErrorHandler.logError('Error inviting email $email: $e');
-        }
-      }
-    } catch (e) {
-      CustomErrorHandler.logError('Error sending teacher invitations: $e');
     }
   }
 

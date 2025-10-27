@@ -533,27 +533,6 @@ mutation createStripeUser(\$countryCode: String, \$defaultCurrency: String) {
   }
 """);
 
-  // entityType -> "class_teacher"
-  // entityId -> class_id
-  // email can be null if you invite a user that is already registered
-  static final inviteMutation = gql("""
-  mutation Invite(
-    \$entityId: String,
-    \$entityType: String,
-    \$email: String,
-    \$userId: String
-  ) {
-    invite(
-      entity_id: \$entityId,
-      entity: \$entityType,
-      email: \$email,
-      userId: \$userId
-    ) {
-      success
-    }
-  }
-""");
-
   static final createPaymentSheet = gql("""
 mutation CreatePaymentSheet(\$bookingOptionId: String!, \$classEventId: String!) {
   create_payment_sheet(
