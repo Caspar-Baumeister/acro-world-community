@@ -7,7 +7,6 @@ import 'package:acroworld/data/graphql/input/invite_input.dart';
 import 'package:acroworld/data/graphql/input/multiple_choice_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
-import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_model.dart';
@@ -23,7 +22,6 @@ import 'package:acroworld/utils/helper_functions/time_zone_api.dart';
 import 'package:acroworld/utils/validation/event_validation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
 
@@ -510,7 +508,7 @@ class EventCreationCoordinatorNotifier
             ...eventTeachers.pendingInviteTeachers.map(
               (teacher) => InviteInput(
                 id: const Uuid().v4(),
-                invitedUserId: teacher.id,
+                invitedUserId: teacher.userId,
                 entity: InviteEntity.classTeacher,
               ),
             ),
@@ -681,7 +679,7 @@ class EventCreationCoordinatorNotifier
             ...eventTeachers.pendingInviteTeachers.map(
               (teacher) => InviteInput(
                 id: const Uuid().v4(),
-                invitedUserId: teacher.id,
+                invitedUserId: teacher.userId,
                 entity: InviteEntity.classTeacher,
               ),
             ),
