@@ -105,6 +105,7 @@ class Fragments {
       location_city
       website_url
       class_teachers {
+        id
         teacher {
           $teacherFragmentAllInfo
         }
@@ -156,6 +157,7 @@ class Fragments {
       url_slug
       name
       class_teachers {
+        id
         teacher {
           $teacherFragmentLazy
         }
