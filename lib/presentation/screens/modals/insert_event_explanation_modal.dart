@@ -2,9 +2,9 @@ import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class InsertEventExplanationModal extends ConsumerWidget {
   const InsertEventExplanationModal({super.key});
@@ -204,34 +204,27 @@ class InsertEventExplanationModal extends ConsumerWidget {
         ),
         const SizedBox(height: AppDimensions.spacingSmall),
         Text(
-          'If you want to learn more about it, you have questions or you need help setting it up, ',
+          'If you want to learn more about it, you have questions or you need help setting it up, contact us on Instagram: ',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
         ),
         GestureDetector(
           onTap: () async {
-            // Open email client
-            final Uri emailUri = Uri(
-              scheme: 'mailto',
-              path: 'info@acroworld.de',
-              query: 'subject=Help with Creator Setup',
-            );
             try {
-              await launchUrl(emailUri);
+              await customLaunch('https://www.instagram.com/acroworld_app/');
             } catch (e) {
-              // Show a snackbar if email client can't be opened
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Could not open email client'),
+                    content: Text('Could not open Instagram'),
                   ),
                 );
               }
             }
           },
           child: Text(
-            'get in touch',
+            '@acroworld_app',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.primary,
                   decoration: TextDecoration.underline,
@@ -341,34 +334,27 @@ class InsertEventExplanationModal extends ConsumerWidget {
         ),
         const SizedBox(height: AppDimensions.spacingSmall),
         Text(
-          'If you want to learn more about it, you have questions or you need help setting it up, ',
+          'If you want to learn more about it, you have questions or you need help setting it up, contact us on Instagram: ',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
         ),
         GestureDetector(
           onTap: () async {
-            // Open email client
-            final Uri emailUri = Uri(
-              scheme: 'mailto',
-              path: 'info@acroworld.de',
-              query: 'subject=Help with Creator Setup',
-            );
             try {
-              await launchUrl(emailUri);
+              await customLaunch('https://www.instagram.com/acroworld_app/');
             } catch (e) {
-              // Show a snackbar if email client can't be opened
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Could not open email client'),
+                    content: Text('Could not open Instagram'),
                   ),
                 );
               }
             }
           },
           child: Text(
-            'get in touch',
+            '@acroworld_app',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.primary,
                   decoration: TextDecoration.underline,
@@ -479,34 +465,27 @@ class InsertEventExplanationModal extends ConsumerWidget {
         ),
         const SizedBox(height: AppDimensions.spacingSmall),
         Text(
-          'If you want to learn more about it, you have questions or you need help setting it up, ',
+          'If you want to learn more about it, you have questions or you need help setting it up, contact us on Instagram: ',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
         ),
         GestureDetector(
           onTap: () async {
-            // Open email client
-            final Uri emailUri = Uri(
-              scheme: 'mailto',
-              path: 'info@acroworld.de',
-              query: 'subject=Help with Creator Setup',
-            );
             try {
-              await launchUrl(emailUri);
+              await customLaunch('https://www.instagram.com/acroworld_app/');
             } catch (e) {
-              // Show a snackbar if email client can't be opened
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Could not open email client'),
+                    content: Text('Could not open Instagram'),
                   ),
                 );
               }
             }
           },
           child: Text(
-            'get in touch',
+            '@acroworld_app',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.primary,
                   decoration: TextDecoration.underline,
@@ -608,34 +587,27 @@ class InsertEventExplanationModal extends ConsumerWidget {
         ),
         const SizedBox(height: AppDimensions.spacingSmall),
         Text(
-          'If you want to learn more about it, you have questions or you need help setting it up, ',
+          'If you want to learn more about it, you have questions or you need help setting it up, contact us on Instagram: ',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: colorScheme.onSurface.withOpacity(0.7),
               ),
         ),
         GestureDetector(
           onTap: () async {
-            // Open email client
-            final Uri emailUri = Uri(
-              scheme: 'mailto',
-              path: 'info@acroworld.de',
-              query: 'subject=Help with Creator Setup',
-            );
             try {
-              await launchUrl(emailUri);
+              await customLaunch('https://www.instagram.com/acroworld_app/');
             } catch (e) {
-              // Show a snackbar if email client can't be opened
               if (context.mounted) {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Could not open email client'),
+                    content: Text('Could not open Instagram'),
                   ),
                 );
               }
             }
           },
           child: Text(
-            'get in touch',
+            '@acroworld_app',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: colorScheme.primary,
                   decoration: TextDecoration.underline,
