@@ -6,6 +6,7 @@ import 'package:acroworld/presentation/screens/modals/ticket_details_modal.dart'
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
 import 'package:acroworld/provider/riverpod_provider/user_bookings_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -140,9 +141,9 @@ class _TicketsBodyState extends ConsumerState<TicketsBody> {
   }
 
   void _showTicketDetails(BuildContext context, UserBookingModel booking) {
-    showDialog(
-      context: context,
-      builder: (context) => TicketDetailsModal(booking: booking),
+    buildMortal(
+      context,
+      TicketDetailsModal(booking: booking),
     );
   }
 

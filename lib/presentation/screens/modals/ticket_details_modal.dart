@@ -1,15 +1,20 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/presentation/components/buttons/link_button.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/overlays/status_overlay.dart';
+import 'package:acroworld/presentation/components/send_feedback_button.dart';
+import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/share_event.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
-class TicketDetailsModal extends StatefulWidget {
+class TicketDetailsModal extends ConsumerWidget {
   final UserBookingModel booking;
 
   const TicketDetailsModal({
@@ -18,235 +23,84 @@ class TicketDetailsModal extends StatefulWidget {
   });
 
   @override
-  State<TicketDetailsModal> createState() => _TicketDetailsModalState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userRiverpodProvider);
+    final userId = userAsync.value?.id ?? 'unknown';
 
-class _TicketDetailsModalState extends State<TicketDetailsModal> {
-  bool _showQRCode = false;
+    // Create ClassEvent from UserBookingModel data
+    final classEvent = ClassEvent(
+      id: booking.classEventId,
+      startDate: booking.startDate.toIso8601String(),
+      endDate: booking.endDate.toIso8601String(),
+    );
 
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
+    // Create ClassModel from UserBookingModel data
+    final classModel = ClassModel(
+      id: booking.classId,
+      name: booking.eventName,
+      imageUrl: booking.eventImage,
+      locationName: booking.locationName,
+      urlSlug: booking.urlSlug,
+      questions: [],
+    );
 
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
-      ),
+    return BaseModal(
+      noPadding: true,
       child: Container(
-        constraints: const BoxConstraints(maxHeight: 600, maxWidth: 500),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Container(
-              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: colorScheme.outline.withOpacity(0.2),
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      _showQRCode ? "QR Code" : "Ticket Details",
-                      style: textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Event image and status
+              _buildImageSection(context),
+
+              // Content area
+              Padding(
+                padding: const EdgeInsets.all(AppDimensions.spacingLarge),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Event details
+                    _buildEventDetails(context),
+
+                    const SizedBox(height: AppDimensions.spacingMedium),
+
+                    // Status information
+                    _buildStatusInfo(context),
+
+                    const SizedBox(height: AppDimensions.spacingLarge),
+
+                    // Action buttons
+                    ModernButton(
+                      text: "Share",
+                      onPressed: () => shareEvent(classEvent, classModel),
+                      isFilled: true,
+                    ),
+
+                    const SizedBox(height: AppDimensions.spacingSmall),
+
+                    // Contact support
+                    LinkButtonComponent(
+                      text: "Problems? Contact support",
+                      onPressed: () => showCupertinoModalPopup(
+                        context: context,
+                        builder: (context) => FeedbackPopUp(
+                          subject:
+                              'Problem with booking id:${booking.classEventId}, user:$userId',
+                          title: "Booking problem",
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
-                  ),
-                ],
-              ),
-            ),
-
-            // Content area
-            Flexible(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(AppDimensions.spacingLarge),
-                child: _showQRCode
-                    ? _buildQRCodeContent(context)
-                    : _buildDetailsContent(context),
-              ),
-            ),
-
-            // Action buttons
-            Container(
-              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: colorScheme.outline.withOpacity(0.2),
-                  ),
+                  ],
                 ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ModernButton(
-                      text: "Share",
-                      onPressed: () {
-                        // Create ClassEvent from UserBookingModel data
-                        final classEvent = ClassEvent(
-                          id: widget.booking.classEventId,
-                          startDate: widget.booking.startDate.toIso8601String(),
-                          endDate: widget.booking.endDate.toIso8601String(),
-                        );
-
-                        // Create ClassModel from UserBookingModel data
-                        final classModel = ClassModel(
-                          id: widget.booking.classId,
-                          name: widget.booking.eventName,
-                          imageUrl: widget.booking.eventImage,
-                          locationName: widget.booking.locationName,
-                          urlSlug: widget.booking.urlSlug,
-                          questions: [], // Empty list since we don't have question data
-                        );
-
-                        shareEvent(classEvent, classModel);
-                      },
-                      isFilled: false,
-                    ),
-                  ),
-                  const SizedBox(width: AppDimensions.spacingMedium),
-                  Expanded(
-                    child: ModernButton(
-                      text: "",
-                      onPressed: () {
-                        setState(() {
-                          _showQRCode = !_showQRCode;
-                        });
-                      },
-                      isFilled: true,
-                      icon: _showQRCode ? Icons.info : Icons.qr_code,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
-    );
-  }
-
-  Widget _buildDetailsContent(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Event image and status
-        _buildImageSection(context),
-
-        const SizedBox(height: AppDimensions.spacingMedium),
-
-        // Event details
-        _buildEventDetails(context),
-
-        const SizedBox(height: AppDimensions.spacingMedium),
-
-        // Booking details
-        _buildBookingDetails(context),
-
-        const SizedBox(height: AppDimensions.spacingMedium),
-
-        // Status information
-        _buildStatusInfo(context),
-      ],
-    );
-  }
-
-  Widget _buildQRCodeContent(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // Event image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-          child: Container(
-            height: 150,
-            width: double.infinity,
-            color: colorScheme.surfaceContainerHighest,
-            child: widget.booking.eventImage != null &&
-                    widget.booking.eventImage!.isNotEmpty
-                ? Image.network(
-                    widget.booking.eventImage!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.broken_image,
-                      color: colorScheme.onSurfaceVariant,
-                      size: 64,
-                    ),
-                  )
-                : Icon(
-                    Icons.event,
-                    color: colorScheme.onSurfaceVariant,
-                    size: 64,
-                  ),
-          ),
-        ),
-
-        const SizedBox(height: AppDimensions.spacingLarge),
-
-        // QR Code
-        Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
-            border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
-          ),
-          child: QrImageView(
-            data: widget.booking.classEventId ?? "unknown-booking-id",
-            version: QrVersions.auto,
-            size: 200.0,
-            backgroundColor: Colors.white,
-          ),
-        ),
-
-        const SizedBox(height: AppDimensions.spacingMedium),
-
-        // QR Code info
-        Text(
-          "Booking ID",
-          style: textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: AppDimensions.spacingSmall),
-        Container(
-          padding: const EdgeInsets.all(AppDimensions.spacingSmall),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest,
-            borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
-          ),
-          child: Text(
-            widget.booking.classEventId ?? "Unknown",
-            style: textTheme.bodyMedium?.copyWith(
-              fontFamily: 'monospace',
-              color: colorScheme.onSurface,
-            ),
-          ),
-        ),
-
-        const SizedBox(height: AppDimensions.spacingMedium),
-
-        Text(
-          "Show this QR code at the event entrance for easy check-in.",
-          style: textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurface.withOpacity(0.7),
-          ),
-          textAlign: TextAlign.center,
-        ),
-      ],
     );
   }
 
@@ -255,42 +109,36 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
 
     return Stack(
       children: [
-        ClipRRect(
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(AppDimensions.radiusLarge),
-          ),
-          child: Container(
-            height: 200,
-            width: double.infinity,
-            color: colorScheme.surfaceContainerHighest,
-            child: widget.booking.eventImage != null &&
-                    widget.booking.eventImage!.isNotEmpty
-                ? Image.network(
-                    widget.booking.eventImage!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.broken_image,
-                      color: colorScheme.onSurfaceVariant,
-                      size: 64,
-                    ),
-                  )
-                : Icon(
-                    Icons.event,
+        Container(
+          height: 120,
+          width: double.infinity,
+          color: colorScheme.surfaceContainerHighest,
+          child: booking.eventImage != null && booking.eventImage!.isNotEmpty
+              ? Image.network(
+                  booking.eventImage!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Icon(
+                    Icons.broken_image,
                     color: colorScheme.onSurfaceVariant,
-                    size: 64,
+                    size: 48,
                   ),
-          ),
+                )
+              : Icon(
+                  Icons.event,
+                  color: colorScheme.onSurfaceVariant,
+                  size: 48,
+                ),
         ),
 
         // Status overlay (consistent size/placement)
         Positioned(
-          top: AppDimensions.spacingMedium,
-          right: AppDimensions.spacingMedium,
+          top: AppDimensions.spacingSmall,
+          right: AppDimensions.spacingSmall,
           child: ConstrainedBox(
-            constraints: const BoxConstraints(minWidth: 92),
+            constraints: const BoxConstraints(minWidth: 80),
             child: StatusOverlay(
-              status: widget.booking.status ?? "Unknown",
-              isCompact: false,
+              status: booking.status ?? "Unknown",
+              isCompact: true,
             ),
           ),
         ),
@@ -313,72 +161,40 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
           context,
           icon: Icons.event,
           label: "Event",
-          value: widget.booking.eventName ?? "Unknown Event",
+          value: booking.eventName ?? "Unknown Event",
         ),
-        if (widget.booking.bookingTitle != null &&
-            widget.booking.bookingTitle!.isNotEmpty)
+        if (booking.bookingTitle != null && booking.bookingTitle!.isNotEmpty)
           _buildDetailRow(
             context,
             icon: Icons.confirmation_number,
             label: "Booking Option",
-            value: widget.booking.bookingTitle!,
+            value: booking.bookingTitle!,
           ),
         _buildDetailRow(
           context,
           icon: Icons.access_time,
           label: "Date & Time",
-          value: _formatDateRange(
-              widget.booking.startDate, widget.booking.endDate),
+          value: _formatDateRange(booking.startDate, booking.endDate),
         ),
-        if (widget.booking.locationName != null &&
-            widget.booking.locationName!.isNotEmpty)
+        if (booking.locationName != null && booking.locationName!.isNotEmpty)
           _buildDetailRow(
             context,
             icon: Icons.location_on,
             label: "Location",
-            value: widget.booking.locationName!,
+            value: booking.locationName!,
           ),
-      ],
-    );
-  }
-
-  Widget _buildBookingDetails(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Booking Details",
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: AppDimensions.spacingSmall),
-        _buildDetailRow(
-          context,
-          icon: Icons.confirmation_number,
-          label: "Booking ID",
-          value: widget.booking.classEventId ?? "Unknown",
-          isMonospace: true,
-        ),
         _buildDetailRow(
           context,
           icon: Icons.calendar_today,
           label: "Booked On",
-          value:
-              _formatDate(widget.booking.createdAt ?? widget.booking.startDate),
-        ),
-        _buildDetailRow(
-          context,
-          icon: Icons.info,
-          label: "Status",
-          value: widget.booking.status ?? "Unknown",
+          value: _formatDate(booking.createdAt ?? booking.startDate),
         ),
       ],
     );
   }
 
   Widget _buildStatusInfo(BuildContext context) {
-    final isPastBooking = widget.booking.endDate.isBefore(DateTime.now());
+    final isPastBooking = booking.endDate.isBefore(DateTime.now());
 
     return Container(
       padding: const EdgeInsets.all(AppDimensions.spacingMedium),
@@ -425,14 +241,13 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
     bool isMonospace = false,
   }) {
     return Padding(
-      padding:
-          const EdgeInsets.symmetric(vertical: AppDimensions.spacingExtraSmall),
+      padding: const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(
             icon,
-            size: 20,
+            size: 18,
             color: Theme.of(context).colorScheme.onSurfaceVariant,
           ),
           const SizedBox(width: AppDimensions.spacingSmall),
@@ -440,9 +255,7 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
             flex: 2,
             child: Text(
               label,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(context).textTheme.labelMedium,
             ),
           ),
           Expanded(
@@ -450,7 +263,7 @@ class _TicketDetailsModalState extends State<TicketDetailsModal> {
             child: valueWidget ??
                 Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
                         fontFamily: isMonospace ? 'monospace' : null,
                       ),
                   textAlign: TextAlign.end,
