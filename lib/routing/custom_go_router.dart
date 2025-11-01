@@ -29,6 +29,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/prof
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/privacy_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
@@ -345,6 +346,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/loading',
             name: loadingRoute,
             builder: (ctx, state) => LoadingPage()),
+
+        // privacy page
+        GoRoute(
+            parentNavigatorKey: rootNavigatorKey,
+            path: '/privacy',
+            name: privacyRoute,
+            builder: (ctx, state) => const PrivacyPage()),
 
         // error page
         GoRoute(
