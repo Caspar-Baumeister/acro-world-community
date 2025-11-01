@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:graphql_flutter/graphql_flutter.dart';
+
 /// Given a decoded GraphQL response map, returns the most user-friendly
 /// error it can find, with the first letter capitalized.
 String extractGraphqlError(Map<String, dynamic> response) {
@@ -114,4 +116,56 @@ String _humanize(String raw) {
 String _capitalizeFirst(String s) {
   if (s.isEmpty) return s;
   return s[0].toUpperCase() + s.substring(1);
+}
+
+/// Checks if a GraphQL OperationException is an authentication error
+bool isAuthenticationError(OperationException? exception) {
+  if (exception == null) return false;
+
+  // Check if it's a link exception (network errors)
+  if (exception.linkException != null) {
+    return false; // Network errors are not auth errors
+  }
+
+  // Check GraphQL errors for auth-related error codes or messages
+  if (exception.graphqlErrors.isNotEmpty) {
+    for (final error in exception.graphqlErrors) {
+      final message = error.message.toLowerCase();
+      final extensions = error.extensions;
+
+      // Check for auth-related error codes
+      if (extensions is Map<String, dynamic>) {
+        final code = extensions['code'].toString().toLowerCase();
+
+        // Common Hasura auth error codes
+        if (code.contains('unauthorized') ||
+            code.contains('invalid-jwt') ||
+            code.contains('invalid-jwt-key-id') ||
+            code.contains('jwt-expired') ||
+            code.contains('access-denied')) {
+          return true;
+        }
+      }
+
+      // Check error message for auth-related keywords
+      if (message.contains('unauthorized') ||
+          message.contains('authentication failed') ||
+          message.contains('invalid token') ||
+          message.contains('expired token') ||
+          message.contains('jwt') ||
+          message.contains('access denied')) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+/// Checks if a GraphQL OperationException is a network error
+bool isNetworkError(OperationException? exception) {
+  if (exception == null) return false;
+
+  // If there's a linkException, it's a network error
+  return exception.linkException != null;
 }

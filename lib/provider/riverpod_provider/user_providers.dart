@@ -4,6 +4,7 @@ import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/exceptions/gql_exceptions.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/user_image_service.dart';
@@ -30,12 +31,18 @@ final userRiverpodProvider = FutureProvider.autoDispose<User?>((ref) async {
     );
 
     if (result.hasException) {
-      // If token is bad, force logout
-      await ref.read(authProvider.notifier).signOut();
-      CustomErrorHandler.captureException(
-        result.exception.toString(),
-        stackTrace: result.exception!.originalStackTrace,
-      );
+      // Only logout on authentication errors, not network errors
+      if (isAuthenticationError(result.exception)) {
+        CustomErrorHandler.logError(
+          'Authentication error in getMe query, logging out: ${result.exception}',
+        );
+        await ref.read(authProvider.notifier).signOut();
+      } else {
+        // Log network or other errors but don't logout
+        CustomErrorHandler.logError(
+          'Error fetching user data: ${result.exception}',
+        );
+      }
       return null;
     }
 
