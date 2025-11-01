@@ -92,13 +92,6 @@ class _TicketsSearchAndFilterState extends State<TicketsSearchAndFilter> {
                   onTap: () => widget.onFilterChanged("waitingforpayment"),
                   icon: Icons.schedule,
                 ),
-                const SizedBox(width: 8),
-                ModernFilterChip(
-                  label: "Cancelled",
-                  isSelected: widget.selectedFilter == "cancelled",
-                  onTap: () => widget.onFilterChanged("cancelled"),
-                  icon: Icons.cancel,
-                ),
               ],
             ),
           ),
