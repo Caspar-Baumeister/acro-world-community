@@ -25,6 +25,7 @@ class _TeacherPageState extends State<TeacherPage> {
   Widget build(BuildContext context) {
     return BasePage(
       appBar: const TeacherAppBar(),
+      makeScrollable: false,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -36,10 +37,12 @@ class _TeacherPageState extends State<TeacherPage> {
               isFollowed: isFollowed,
             ),
           ),
-          TeacherQuery(
-            search: "", // No search functionality in main view
-            isFollowed: isFollowed,
-          )
+          Expanded(
+            child: TeacherQuery(
+              search: "", // No search functionality in main view
+              isFollowed: isFollowed,
+            ),
+          ),
         ],
       ),
     );

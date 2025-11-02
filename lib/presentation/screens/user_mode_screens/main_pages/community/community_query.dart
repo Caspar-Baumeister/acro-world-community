@@ -125,15 +125,18 @@ class _TeacherQueryState extends ConsumerState<TeacherQuery> {
               );
             }
           },
-          child: CommunityBody(
-            teachers: teachersState.teachers,
-            canFetchMore: teachersState.canFetchMore,
-            isLoadingMore: teachersState.loading,
-            onLoadMore: () {
-              ref.read(teachersPaginationProvider.notifier).fetchMore(
-                    userId: user?.id,
-                  );
-            },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: CommunityBody(
+              teachers: teachersState.teachers,
+              canFetchMore: teachersState.canFetchMore,
+              isLoadingMore: teachersState.loading,
+              onLoadMore: () {
+                ref.read(teachersPaginationProvider.notifier).fetchMore(
+                      userId: user?.id,
+                    );
+              },
+            ),
           ),
         );
       },
