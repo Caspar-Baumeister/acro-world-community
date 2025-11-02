@@ -362,9 +362,6 @@ class EventRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -556,6 +553,84 @@ class ResponsiveEventListSkeleton extends StatelessWidget {
         itemBuilder: (context, index) {
           return const ResponsiveEventCardSkeleton(isGridMode: true);
         },
+      ),
+    );
+  }
+}
+
+/// Skeleton for teacher cards in community page
+class TeacherCardSkeleton extends StatelessWidget {
+  const TeacherCardSkeleton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Skeletonizer(
+      enabled: true,
+      effect: const ShimmerEffect(
+        baseColor: Color(0xFFE0E0E0),
+        highlightColor: Color(0xFFF5F5F5),
+        duration: Duration(milliseconds: 1500),
+      ),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: colorScheme.outline.withOpacity(0.1),
+            width: 1,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: colorScheme.shadow.withOpacity(0.05),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              // Profile image skeleton
+              Bone(
+                width: 60,
+                height: 60,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              const SizedBox(width: 12),
+              // Name and followers skeleton
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Bone.text(
+                      words: 2,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Bone.text(
+                      words: 1,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              // Follow button skeleton
+              Bone(
+                width: 80,
+                height: 32,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

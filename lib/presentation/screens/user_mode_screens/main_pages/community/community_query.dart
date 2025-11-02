@@ -1,6 +1,6 @@
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_body.dart';
 import 'package:acroworld/provider/riverpod_provider/teachers_pagination_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
@@ -53,6 +53,33 @@ class _TeacherQueryState extends ConsumerState<TeacherQuery> {
     });
   }
 
+  Widget _buildLoadingState(BuildContext context, {required String? userId}) {
+    return RefreshIndicator(
+      color: Theme.of(context).colorScheme.primary,
+      onRefresh: () async {
+        try {
+          _fetchTeachers();
+        } catch (e, st) {
+          CustomErrorHandler.captureException(
+            e.toString(),
+            stackTrace: st,
+          );
+        }
+      },
+      child: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 8),
+            ...List.generate(15, (index) => const TeacherCardSkeleton()),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final authAsync = ref.watch(userRiverpodProvider);
@@ -77,21 +104,7 @@ class _TeacherQueryState extends ConsumerState<TeacherQuery> {
       },
       data: (user) {
         if (teachersState.loading && teachersState.teachers.isEmpty) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ModernLoadingWidget(onRefresh: () async {
-                try {
-                  _fetchTeachers();
-                } catch (e, st) {
-                  CustomErrorHandler.captureException(
-                    e.toString(),
-                    stackTrace: st,
-                  );
-                }
-              }),
-            ],
-          );
+          return _buildLoadingState(context, userId: user?.id);
         }
 
         if (teachersState.error != null) {
