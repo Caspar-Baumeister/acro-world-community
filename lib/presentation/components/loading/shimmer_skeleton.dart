@@ -276,6 +276,11 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: true,
+      effect: const ShimmerEffect(
+        baseColor: Color(0xFFE0E0E0),
+        highlightColor: Color(0xFFF5F5F5),
+        duration: Duration(milliseconds: 1500),
+      ),
       child: Container(
         width: width ?? 200,
         decoration: BoxDecoration(
@@ -293,12 +298,9 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
               // Image section skeleton
               Expanded(
                 flex: 3,
-                child: Container(
-                  width: double.infinity,
-                  decoration: const BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(16)),
+                child: Bone(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
                   ),
                 ),
               ),
@@ -311,32 +313,11 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title skeleton
-                      Container(
-                        width: double.infinity,
-                        height: 16,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+                      const Bone(height: 16),
                       const SizedBox(height: 8),
-                      Container(
-                        width: 120,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+                      Bone(width: 120, height: 12),
                       const SizedBox(height: 8),
-                      Container(
-                        width: 80,
-                        height: 12,
-                        decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
+                      Bone(width: 80, height: 12),
                     ],
                   ),
                 ),
@@ -431,6 +412,11 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
 
     return Skeletonizer(
       enabled: true,
+      effect: const ShimmerEffect(
+        baseColor: Color(0xFFE0E0E0),
+        highlightColor: Color(0xFFF5F5F5),
+        duration: Duration(milliseconds: 1500),
+      ),
       child: Container(
         width: cardWidth,
         height: cardHeight,
@@ -448,12 +434,9 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
             // Image skeleton
             Expanded(
               flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius:
-                      const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Bone(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(12),
                 ),
               ),
             ),
@@ -466,32 +449,11 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title skeleton
-                    Container(
-                      height: 16,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    const Bone(height: 16),
                     const SizedBox(height: 4),
-                    Container(
-                      height: 12,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    Bone(width: 120, height: 12),
                     const SizedBox(height: 4),
-                    Container(
-                      height: 12,
-                      width: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+                    Bone(width: 80, height: 12),
                   ],
                 ),
               ),

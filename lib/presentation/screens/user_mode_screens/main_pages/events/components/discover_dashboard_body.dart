@@ -14,15 +14,8 @@ class DiscoverDashboardBody extends ConsumerStatefulWidget {
 }
 
 class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
-  @override
-  void initState() {
-    super.initState();
-
-    // add post frame callback to fetch all event occurences
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await ref.read(discoveryProvider.notifier).fetchAllEventOccurences();
-    });
-  }
+  // Note: DiscoveryNotifier automatically fetches events in its constructor
+  // No need to manually fetch in initState
 
   @override
   Widget build(BuildContext context) {

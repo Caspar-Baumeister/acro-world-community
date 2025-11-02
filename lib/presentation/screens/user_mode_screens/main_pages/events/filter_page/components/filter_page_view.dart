@@ -103,34 +103,36 @@ class FilterPageView extends ConsumerWidget {
             child: Center(
               child: Text(
                 "This filter will show ${discoveryState.filteredEventOccurencesLength.toString()} results",
-                style: Theme.of(context).textTheme.bodyLarge,
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          Center(
-            child: ModernButton(
-              text: "Continue",
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              isFilled: true,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: ModernButton(
-              text: "Reset",
-              onPressed: () {
-                ref.read(discoveryProvider.notifier).resetFilter();
-
-                Navigator.of(context).pop();
-              },
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: ModernButton(
+                  isFilled: false,
+                  text: "Reset",
+                  onPressed: () {
+                    ref.read(discoveryProvider.notifier).resetFilter();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ModernButton(
+                  text: "Continue",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  isFilled: true,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 40),
         ],
