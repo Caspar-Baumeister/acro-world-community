@@ -64,6 +64,8 @@ class _CreateAndEditEventPageState
     final locationError = validations['location'];
     final locationNameError = validations['locationName'];
     final eventTypeError = validations['eventType'];
+    final countryCodeError = validations['countryCode'];
+    final regionError = validations['region'];
     final imageError = validations['image'];
 
     if (titleError != null) {
@@ -84,6 +86,14 @@ class _CreateAndEditEventPageState
     }
     if (eventTypeError != null) {
       showErrorToast(eventTypeError);
+      return;
+    }
+    if (countryCodeError != null) {
+      showErrorToast(countryCodeError);
+      return;
+    }
+    if (regionError != null) {
+      showErrorToast(regionError);
       return;
     }
     if (imageError != null) {
