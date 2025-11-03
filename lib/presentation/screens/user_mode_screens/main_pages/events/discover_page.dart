@@ -1,5 +1,4 @@
 import 'package:acroworld/presentation/components/buttons/floating_action_button.dart';
-import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/modals/insert_event_explanation_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/discover_appbar.dart';
@@ -47,9 +46,7 @@ class DiscoverBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final discoveryState = ref.watch(discoveryProvider);
-    if (discoveryState.loading) {
-      return const ModernLoadingWidget();
-    } else if (discoveryState.isFilter) {
+    if (discoveryState.isFilter) {
       return const FilterOnDiscoveryBody();
     } else {
       return const DiscoverDashboardBody();
