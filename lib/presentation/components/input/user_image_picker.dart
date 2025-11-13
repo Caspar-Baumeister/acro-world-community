@@ -122,13 +122,16 @@ class UserImagePickerComponentState extends State<UserImagePickerComponent> {
             Positioned(
               bottom: 0,
               right: 0,
-              child: CircleAvatar(
-                backgroundColor: theme.colorScheme.primary,
-                radius: widget.size * 0.15,
-                child: Icon(
-                  Icons.camera_alt,
-                  color: theme.colorScheme.onPrimary,
-                  size: widget.size * 0.2,
+              child: GestureDetector(
+                onTap: widget.isLoading ? null : _pickImage,
+                child: CircleAvatar(
+                  backgroundColor: theme.colorScheme.primary,
+                  radius: widget.size * 0.15,
+                  child: Icon(
+                    Icons.camera_alt,
+                    color: theme.colorScheme.onPrimary,
+                    size: widget.size * 0.2,
+                  ),
                 ),
               ),
             ),
