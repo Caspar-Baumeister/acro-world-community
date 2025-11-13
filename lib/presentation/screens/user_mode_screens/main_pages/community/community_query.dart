@@ -35,9 +35,12 @@ class _TeacherQueryState extends ConsumerState<TeacherQuery> {
   void didUpdateWidget(TeacherQuery oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Fetch teachers when search or filter changes
+    // Use addPostFrameCallback to avoid modifying provider during build phase
     if (oldWidget.search != widget.search ||
         oldWidget.isFollowed != widget.isFollowed) {
-      _fetchTeachers();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _fetchTeachers();
+      });
     }
   }
 
