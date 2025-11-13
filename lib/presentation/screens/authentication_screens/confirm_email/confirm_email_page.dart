@@ -243,7 +243,7 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
                     // Resend Button
                     ModernButton(
                       text: _isResendDisabled
-                          ? "Resend in $_timer s"
+                          ? "Resend possible in $_timer s"
                           : "Resend Email",
                       onPressed: _isResendDisabled
                           ? () => showErrorToast(
