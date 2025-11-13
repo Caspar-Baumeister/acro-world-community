@@ -99,7 +99,8 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
             // ─── Secondary Action ───────────────────────────
             const SizedBox(height: 12),
             ModernButton(
-              text: "Maybe Later",
+              text: "Close",
+              isFilled: false,
               onPressed: isLoading ? null : () => Navigator.of(context).pop(),
               backgroundColor: Theme.of(context).colorScheme.secondary,
             ),
