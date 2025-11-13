@@ -19,7 +19,7 @@ class ProfileBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final userAsync = ref.watch(userRiverpodProvider);
+    final userAsync = ref.watch(userNotifierProvider);
 
     return userAsync.when(
       loading: () => const Center(
@@ -46,7 +46,10 @@ class ProfileBody extends ConsumerWidget {
         final isEmailVerified = user.isEmailVerified ?? false;
 
         return RefreshIndicator(
-          onRefresh: () => ref.refresh(userRiverpodProvider.future),
+          onRefresh: () async {
+            ref.invalidate(userRiverpodProvider);
+            await ref.read(userNotifierProvider.future);
+          },
           child: CustomScrollView(
             slivers: [
               // Profile Header
