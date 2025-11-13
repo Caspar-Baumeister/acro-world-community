@@ -45,154 +45,147 @@ class ProfileBody extends ConsumerWidget {
         final hasTeacherProfile = user.teacherProfile != null;
         final isEmailVerified = user.isEmailVerified ?? false;
 
-        return RefreshIndicator(
-          onRefresh: () async {
-            ref.invalidate(userRiverpodProvider);
-            await ref.read(userNotifierProvider.future);
-          },
-          child: CustomScrollView(
-            slivers: [
-              // Profile Header
-              SliverToBoxAdapter(
-                child: HeaderWidget(
-                  imgUrl: user.imageUrl ?? '',
-                  name: user.name ?? 'User',
-                  subtitle: hasTeacherProfile ? 'Creator & User' : 'User',
-                  showEditButton: true,
-                  onEditPressed: () {
-                    context.pushNamed(editUserDataRoute);
-                  },
-                ),
+        return CustomScrollView(
+          slivers: [
+            // Profile Header
+            SliverToBoxAdapter(
+              child: HeaderWidget(
+                imgUrl: user.imageUrl ?? '',
+                name: user.name ?? 'User',
+                subtitle: hasTeacherProfile ? 'Creator & User' : 'User',
+                showEditButton: true,
+                onEditPressed: () {
+                  context.pushNamed(editUserDataRoute);
+                },
               ),
+            ),
 
-              // Main Action Buttons
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 16),
+            // Main Action Buttons
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 16),
 
-                      // Action Buttons Row (3 columns)
-                      Row(
-                        children: [
-                          Expanded(
-                            child: _buildActionButton(
-                              context: context,
-                              icon: Icons.confirmation_number_rounded,
-                              title: "Tickets",
-                              subtitle: "My bookings",
-                              onTap: () {
-                                context.pushNamed(ticketsRoute);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildActionButton(
-                              context: context,
-                              icon: Icons.favorite_rounded,
-                              title: "Favorites",
-                              subtitle: "Saved events",
-                              onTap: () {
-                                context.pushNamed(favoritesRoute);
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: _buildActionButton(
-                              context: context,
-                              icon: Icons.shopping_bag_rounded,
-                              title: "Shop",
-                              subtitle: "Equipment",
-                              onTap: () {
-                                _openShop(context);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
-                    ],
-                  ),
-                ),
-              ),
-
-              // Settings Section
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Settings",
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildSettingsItem(
-                        context: context,
-                        icon: Icons.account_circle_outlined,
-                        title: "Account Settings",
-                        onTap: () => context.pushNamed(accountSettingsRoute),
-                      ),
-                      _buildSettingsItem(
-                        context: context,
-                        icon: Icons.chat_bubble_outline_rounded,
-                        title: "Feedback & Bugs",
-                        onTap: () => showCupertinoModalPopup(
-                          context: context,
-                          builder: (BuildContext context) =>
-                              const FeedbackPopUp(
-                            subject: 'Feedback from AcroWorld App',
-                            title: "Feedback & Bugs",
+                    // Action Buttons Row (3 columns)
+                    Row(
+                      children: [
+                        Expanded(
+                          child: _buildActionButton(
+                            context: context,
+                            icon: Icons.confirmation_number_rounded,
+                            title: "Tickets",
+                            subtitle: "My bookings",
+                            onTap: () {
+                              context.pushNamed(ticketsRoute);
+                            },
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                  ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildActionButton(
+                            context: context,
+                            icon: Icons.favorite_rounded,
+                            title: "Favorites",
+                            subtitle: "Saved events",
+                            onTap: () {
+                              context.pushNamed(favoritesRoute);
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: _buildActionButton(
+                            context: context,
+                            icon: Icons.shopping_bag_rounded,
+                            title: "Shop",
+                            subtitle: "Equipment",
+                            onTap: () {
+                              _openShop(context);
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
+            ),
 
-              // Logout and Delete Account
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      _buildDangerButton(
+            // Settings Section
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Settings",
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildSettingsItem(
+                      context: context,
+                      icon: Icons.account_circle_outlined,
+                      title: "Account Settings",
+                      onTap: () => context.pushNamed(accountSettingsRoute),
+                    ),
+                    _buildSettingsItem(
+                      context: context,
+                      icon: Icons.chat_bubble_outline_rounded,
+                      title: "Feedback & Bugs",
+                      onTap: () => showCupertinoModalPopup(
                         context: context,
-                        icon: Icons.logout_rounded,
-                        title: "Log out",
-                        onTap: () async {
-                          await ref.read(authProvider.notifier).signOut();
-                          ref.invalidate(userRiverpodProvider);
-                          ref.invalidate(userNotifierProvider);
-                          ref.invalidate(navigationProvider);
-                        },
+                        builder: (BuildContext context) => const FeedbackPopUp(
+                          subject: 'Feedback from AcroWorld App',
+                          title: "Feedback & Bugs",
+                        ),
                       ),
-
-                      const SizedBox(height: 24),
-
-                      // Version
-                      const VersionDisplay(),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
+            ),
 
-              // Bottom padding to prevent content from being hidden behind floating button
-              SliverToBoxAdapter(
-                child:
-                    SizedBox(height: 80), // Space for floating button + padding
+            // Logout and Delete Account
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    _buildDangerButton(
+                      context: context,
+                      icon: Icons.logout_rounded,
+                      title: "Log out",
+                      onTap: () async {
+                        await ref.read(authProvider.notifier).signOut();
+                        ref.invalidate(userRiverpodProvider);
+                        ref.invalidate(userNotifierProvider);
+                        ref.invalidate(navigationProvider);
+                      },
+                    ),
+
+                    const SizedBox(height: 24),
+
+                    // Version
+                    const VersionDisplay(),
+                  ],
+                ),
               ),
-            ],
-          ),
+            ),
+
+            // Bottom padding to prevent content from being hidden behind floating button
+            SliverToBoxAdapter(
+              child:
+                  SizedBox(height: 80), // Space for floating button + padding
+            ),
+          ],
         );
       },
     );
