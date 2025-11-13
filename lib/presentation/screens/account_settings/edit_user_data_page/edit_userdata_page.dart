@@ -125,29 +125,6 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
     });
   }
 
-  Future<void> _removeCurrentImage() async {
-    setState(() {
-      _isUploadingImage = true;
-    });
-
-    try {
-      final success =
-          await ref.read(userNotifierProvider.notifier).removeImage();
-
-      if (success) {
-        showSuccessToast("Profile image removed");
-      } else {
-        showErrorToast("Failed to remove profile image");
-      }
-    } catch (e) {
-      showErrorToast("Error removing image: $e");
-    } finally {
-      setState(() {
-        _isUploadingImage = false;
-      });
-    }
-  }
-
   Future<bool> _onWillPop(User user) async {
     final changes = _computeChanges(user);
     if (changes != null) {
@@ -263,32 +240,9 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           onImageRemoved: _handleImageRemoved,
                           size: 100,
                           showEditIcon: true,
-                          showRemoveButton: true,
+                          showRemoveButton: false,
                           isLoading: _isUploadingImage,
                         ),
-                        const SizedBox(height: 12),
-                        if (user.imageUrl != null) ...[
-                          TextButton.icon(
-                            onPressed:
-                                _isUploadingImage ? null : _removeCurrentImage,
-                            icon: _isUploadingImage
-                                ? const SizedBox(
-                                    width: 16,
-                                    height: 16,
-                                    child: CircularProgressIndicator(
-                                        strokeWidth: 2),
-                                  )
-                                : const Icon(Icons.delete, size: 16),
-                            label: Text(
-                              _isUploadingImage
-                                  ? "Removing..."
-                                  : "Remove Current Image",
-                              style: TextStyle(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                            ),
-                          ),
-                        ],
                         if (_selectedImageBytes != null)
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
