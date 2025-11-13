@@ -93,20 +93,31 @@ class _ConfirmEmailPageState extends ConsumerState<ConfirmEmailPage> {
       final ok = await UserService().verifyCode(code);
       if (ok == true) {
         showSuccessToast("Email verified successfully");
-        // Invalidate so new "verified" user is fetched downstream
 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          // Check if we can pop this route
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          } else {
-            // If we can't pop, navigate to home
-            context.go('/');
-          }
+        // Refresh providers first to get updated user data
+        ref.invalidate(userRiverpodProvider);
+        ref.invalidate(userNotifierProvider);
 
-          ref.invalidate(userRiverpodProvider);
-          ref.invalidate(userNotifierProvider);
-        });
+        // Wait for the providers to refresh before navigating
+        try {
+          await ref.read(userNotifierProvider.future);
+        } catch (e) {
+          // If refresh fails, still navigate but log the error
+          CustomErrorHandler.captureException(
+            'Error refreshing user after email verification: $e',
+          );
+        }
+
+        // Navigate after providers are refreshed
+        if (mounted) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (Navigator.canPop(context)) {
+              Navigator.pop(context);
+            } else {
+              context.go('/');
+            }
+          });
+        }
       } else {
         showErrorToast("Wrong verification code");
       }
