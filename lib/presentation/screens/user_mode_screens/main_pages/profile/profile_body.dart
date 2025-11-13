@@ -90,7 +90,7 @@ class ProfileBody extends ConsumerWidget {
                               context: context,
                               icon: Icons.favorite_rounded,
                               title: "Favorites",
-                              subtitle: "Saved classes",
+                              subtitle: "Saved events",
                               onTap: () {
                                 context.pushNamed(favoritesRoute);
                               },

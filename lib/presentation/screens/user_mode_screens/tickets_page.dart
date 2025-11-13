@@ -150,84 +150,63 @@ class _TicketsBodyState extends ConsumerState<TicketsBody> {
   Widget _buildEmptyState(BuildContext context, UserBookingsState state) {
     final bookingsNotifier = ref.read(userBookingsProvider.notifier);
 
-    return Column(
-      children: [
-        // Search and filter section
-        TicketsSearchAndFilter(
-          searchQuery: state.searchQuery,
-          selectedFilter: state.selectedStatus,
-          onSearchChanged: (query) => bookingsNotifier.updateSearchQuery(query),
-          onFilterChanged: (filter) =>
-              bookingsNotifier.updateSelectedStatus(filter),
-          onSearchSubmitted: (query) =>
-              bookingsNotifier.updateSearchQuery(query),
-        ),
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // Search and filter section
+          TicketsSearchAndFilter(
+            searchQuery: state.searchQuery,
+            selectedFilter: state.selectedStatus,
+            onSearchChanged: (query) =>
+                bookingsNotifier.updateSearchQuery(query),
+            onFilterChanged: (filter) =>
+                bookingsNotifier.updateSelectedStatus(filter),
+            onSearchSubmitted: (query) =>
+                bookingsNotifier.updateSearchQuery(query),
+          ),
 
-        // Empty state content
-        Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.all(AppDimensions.spacingLarge),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .primary
-                          .withOpacity(0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
+          // Empty state content
+          SizedBox(
+            height: MediaQuery.of(context).size.height -
+                MediaQuery.of(context).padding.top -
+                kToolbarHeight -
+                200, // Account for search/filter and padding
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(32),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
                       Icons.confirmation_number_outlined,
                       size: 64,
-                      color: Theme.of(context).colorScheme.primary,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    state.bookings.isEmpty
-                        ? "No Tickets Yet"
-                        : "No Matching Tickets",
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    state.bookings.isEmpty
-                        ? "When you book a class, your tickets will appear here"
-                        : "Try adjusting your search or filters",
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.7),
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    icon: const Icon(Icons.explore),
-                    label: const Text("Explore Classes"),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24,
-                        vertical: 12,
-                      ),
+                    const SizedBox(height: 16),
+                    Text(
+                      state.bookings.isEmpty
+                          ? "No Tickets Yet"
+                          : "No Matching Tickets",
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Text(
+                      state.bookings.isEmpty
+                          ? "Here you will see all booked events"
+                          : "Try adjusting your search or filters",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant,
+                          ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
