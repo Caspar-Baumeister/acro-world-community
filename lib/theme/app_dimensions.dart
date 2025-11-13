@@ -35,6 +35,7 @@ class AppDimensions {
   static const double appBarHeight = 56.0;
 
   // Icon Sizes
+  static const double iconSizeTiny = 16.0; // iconTiny
   static const double iconSizeSmall = 24.0; // iconSmall
   static const double iconSizeMedium = 32.0; // iconMedium
   static const double iconSizeLarge = 40.0; // iconLarge
