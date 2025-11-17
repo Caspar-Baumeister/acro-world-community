@@ -32,35 +32,55 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
       });
     });
 
-    return ModernBottomNavigationBar(
-      selectedIndex: selectedIndex,
-      onItemSelected: (index) {
-        notifier.setIndex(index);
-        onItemPressed(index);
-      },
-      items: [
-        ModernNavigationBarItem(
-          icon: IconLibrary.dashboard.icon,
-          selectedIcon: IconLibrary.dashboard.icon,
-          label: "Bookings",
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).colorScheme.primary.withOpacity(0.15),
+            Theme.of(context).colorScheme.surface,
+          ],
         ),
-        ModernNavigationBarItem(
-          icon: IconLibrary.calendar.icon,
-          selectedIcon: IconLibrary.calendar.icon,
-          label: "Listings",
-        ),
-        ModernNavigationBarItem(
-          icon: IconLibrary.invites.icon,
-          selectedIcon: IconLibrary.invites.icon,
-          label: "Invitations",
-          badgeCount: pendingCount,
-        ),
-        ModernNavigationBarItem(
-          icon: IconLibrary.profile.icon,
-          selectedIcon: IconLibrary.profile.icon,
-          label: "Profile",
-        ),
-      ],
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: ModernBottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedIndex: selectedIndex,
+        onItemSelected: (index) {
+          notifier.setIndex(index);
+          onItemPressed(index);
+        },
+        items: [
+          ModernNavigationBarItem(
+            icon: IconLibrary.dashboard.icon,
+            selectedIcon: IconLibrary.dashboard.icon,
+            label: "Bookings",
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.calendar.icon,
+            selectedIcon: IconLibrary.calendar.icon,
+            label: "Listings",
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.invites.icon,
+            selectedIcon: IconLibrary.invites.icon,
+            label: "Invitations",
+            badgeCount: pendingCount,
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.profile.icon,
+            selectedIcon: IconLibrary.profile.icon,
+            label: "Profile",
+          ),
+        ],
+      ),
     );
   }
 }

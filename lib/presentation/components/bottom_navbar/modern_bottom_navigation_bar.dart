@@ -8,12 +8,14 @@ class ModernBottomNavigationBar extends StatelessWidget {
     required this.selectedIndex,
     required this.onItemSelected,
     this.additionalBottomPadding = 0,
+    this.backgroundColor,
   }) : assert(items.length >= 2 && items.length <= 5);
 
   final List<ModernNavigationBarItem> items;
   final int selectedIndex;
   final ValueChanged<int> onItemSelected;
   final double additionalBottomPadding;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,7 @@ class ModernBottomNavigationBar extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: backgroundColor ?? colorScheme.surface,
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withOpacity(0.1),
