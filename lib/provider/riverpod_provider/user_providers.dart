@@ -63,14 +63,20 @@ final userRiverpodProvider = FutureProvider.autoDispose<User?>((ref) async {
 });
 
 class UserNotifier extends AsyncNotifier<User?> {
-  late final UserImageService _userImageService;
+  UserImageService? _userImageService;
 
-  @override
-  Future<User?> build() {
-    _userImageService = UserImageService(
+  UserImageService get _getUserImageService {
+    _userImageService ??= UserImageService(
       GraphQLClientSingleton().client,
       ImageUploadService(),
     );
+    return _userImageService!;
+  }
+
+  @override
+  Future<User?> build() {
+    // Reset _userImageService when provider rebuilds to allow reinitialization
+    _userImageService = null;
     return ref.watch(userRiverpodProvider.future);
   }
 
@@ -112,7 +118,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     state = const AsyncValue.loading();
 
     try {
-      final imageUrl = await _userImageService.uploadAndUpdateUserImage(
+      final imageUrl = await _getUserImageService.uploadAndUpdateUserImage(
         imageBytes,
         current!.id!,
       );
@@ -150,7 +156,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     state = const AsyncValue.loading();
 
     try {
-      await _userImageService.updateUserImage(current!.id!, imageUrl);
+      await _getUserImageService.updateUserImage(current!.id!, imageUrl);
 
       // Update local state with new image URL
       final updatedUser = User(
@@ -185,7 +191,7 @@ class UserNotifier extends AsyncNotifier<User?> {
     state = const AsyncValue.loading();
 
     try {
-      await _userImageService.removeUserImage(current!.id!);
+      await _getUserImageService.removeUserImage(current!.id!);
 
       // Update local state with null image URL
       final updatedUser = User(
@@ -219,7 +225,7 @@ class UserNotifier extends AsyncNotifier<User?> {
   bool get hasImage => currentImageUrl != null && currentImageUrl!.isNotEmpty;
 
   /// Get the UserImageService instance (for external use)
-  UserImageService get userImageService => _userImageService;
+  UserImageService get userImageService => _getUserImageService;
 }
 
 final userNotifierProvider =

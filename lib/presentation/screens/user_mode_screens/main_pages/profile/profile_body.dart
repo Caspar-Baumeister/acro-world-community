@@ -20,6 +20,7 @@ class ProfileBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userAsync = ref.watch(userNotifierProvider);
+    final authState = ref.watch(authProvider);
 
     return userAsync.when(
       loading: () => const Center(
@@ -35,6 +36,13 @@ class ProfileBody extends ConsumerWidget {
         ),
       ),
       error: (e, st) {
+        // If user is unauthenticated, treat it as null user (show guest content)
+        // This handles the case where logout causes an error during provider rebuild
+        final isUnauthenticated =
+            authState.value?.status != AuthStatus.authenticated;
+        if (isUnauthenticated) {
+          return GuestProfileContent();
+        }
         return Center(child: Text('Error loading profile'));
       },
       data: (user) {

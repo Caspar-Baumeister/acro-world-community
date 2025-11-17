@@ -6,6 +6,7 @@ class FloatingModeSwitchButton extends StatelessWidget {
   final String subtitle;
   final VoidCallback onPressed;
   final bool isCreatorMode;
+  final bool isGradient;
 
   const FloatingModeSwitchButton({
     super.key,
@@ -13,6 +14,7 @@ class FloatingModeSwitchButton extends StatelessWidget {
     required this.subtitle,
     required this.onPressed,
     this.isCreatorMode = false,
+    this.isGradient = false,
   });
 
   @override
@@ -37,7 +39,21 @@ class FloatingModeSwitchButton extends StatelessWidget {
               vertical: AppDimensions.spacingSmall,
             ),
             decoration: BoxDecoration(
-              color: isCreatorMode ? colorScheme.primary : colorScheme.secondary,
+              gradient: isGradient
+                  ? LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        colorScheme.primary.withOpacity(0.15),
+                        colorScheme.surface,
+                      ],
+                    )
+                  : null,
+              color: isGradient
+                  ? null
+                  : (isCreatorMode
+                      ? colorScheme.primary
+                      : colorScheme.secondary),
               borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
             ),
             child: Row(
@@ -52,14 +68,18 @@ class FloatingModeSwitchButton extends StatelessWidget {
                       Text(
                         title,
                         style: theme.textTheme.titleSmall?.copyWith(
-                          color: Colors.white,
+                          color: isGradient
+                              ? colorScheme.onSurface
+                              : Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
                         subtitle,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: Colors.white.withOpacity(0.9),
+                          color: isGradient
+                              ? colorScheme.onSurface.withOpacity(0.7)
+                              : Colors.white.withOpacity(0.9),
                         ),
                       ),
                     ],
@@ -68,7 +88,9 @@ class FloatingModeSwitchButton extends StatelessWidget {
                 // Arrow icon
                 Icon(
                   Icons.arrow_forward_ios,
-                  color: Colors.white.withOpacity(0.8),
+                  color: isGradient
+                      ? colorScheme.onSurface.withOpacity(0.7)
+                      : Colors.white.withOpacity(0.8),
                   size: 16,
                 ),
               ],

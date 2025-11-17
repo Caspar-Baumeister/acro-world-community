@@ -38,6 +38,7 @@ class FloatingCreatorModeButton extends ConsumerWidget {
           onPressed: () => _switchToCreatorMode(
               context, ref, isEmailVerified, hasTeacherProfile),
           isCreatorMode: true,
+          isGradient: true,
         );
       },
       loading: () => const SizedBox.shrink(),
