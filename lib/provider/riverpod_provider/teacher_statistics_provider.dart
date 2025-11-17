@@ -112,12 +112,20 @@ class TeacherStatisticsRepositoryImpl implements TeacherStatisticsRepository {
         );
       }
 
-      final aggregate = result.data?['comments_aggregate']?['aggregate'];
-      print('📈 [TeacherStats] Comments aggregate: $aggregate');
+      final commentsList = result.data?['comments'] as List<dynamic>? ?? [];
+      print('📈 [TeacherStats] Comments list: ${commentsList.length} items');
 
-      final totalReviews = aggregate?['count'] ?? 0;
-      final averageRating =
-          (aggregate?['avg']?['rating'] as num?)?.toDouble() ?? 0.0;
+      final totalReviews = commentsList.length;
+
+      // Calculate average rating from comments that have ratings
+      final ratingsWithValues = commentsList
+          .where((comment) => comment['rating'] != null)
+          .map((comment) => (comment['rating'] as num).toDouble())
+          .toList();
+
+      final averageRating = ratingsWithValues.isNotEmpty
+          ? ratingsWithValues.reduce((a, b) => a + b) / ratingsWithValues.length
+          : 0.0;
 
       print(
           '✅ [TeacherStats] Comments stats parsed - Reviews: $totalReviews, Rating: $averageRating');

@@ -823,13 +823,9 @@ query getCommentsCountForTeacher(\$teacher_id: uuid!) {
 
   static final getCommentsStatsForTeacher = gql("""
 query getCommentsStatsForTeacher(\$teacher_id: uuid!) {
-  comments_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
-    aggregate {
-      count
-      avg {
-        rating
-      }
-    }
+  comments(where: {teacher_id: {_eq: \$teacher_id}}) {
+    id
+    rating
   }
 }
 """);
