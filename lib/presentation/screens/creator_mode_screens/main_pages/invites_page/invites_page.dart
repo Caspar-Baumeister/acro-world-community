@@ -9,6 +9,7 @@ class InvitesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BasePage(
       makeScrollable: false,
+      useCreatorGradient: true,
       child: const EmailInvitationsSection(),
     );
   }

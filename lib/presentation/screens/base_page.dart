@@ -1,3 +1,4 @@
+import 'package:acroworld/presentation/components/backgrounds/creator_mode_gradient_background.dart';
 import 'package:flutter/material.dart';
 
 class BasePage extends StatelessWidget {
@@ -6,27 +7,36 @@ class BasePage extends StatelessWidget {
   final PreferredSizeWidget? appBar;
   final bool makeScrollable;
   final Widget? endDrawer;
-  const BasePage(
-      {super.key,
-      required this.child,
-      this.bottomNavigationBar,
-      this.endDrawer,
-      this.appBar,
-      this.makeScrollable = true});
+  final bool useCreatorGradient;
+  const BasePage({
+    super.key,
+    required this.child,
+    this.bottomNavigationBar,
+    this.endDrawer,
+    this.appBar,
+    this.makeScrollable = true,
+    this.useCreatorGradient = false,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final bodyContent = SafeArea(
+      child: makeScrollable
+          ? SingleChildScrollView(
+              child: child,
+            )
+          : child,
+    );
+
     return Scaffold(
       appBar: appBar,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: useCreatorGradient
+          ? Colors.transparent
+          : Theme.of(context).colorScheme.surface,
       resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: makeScrollable
-            ? SingleChildScrollView(
-                child: child,
-              )
-            : child,
-      ),
+      body: useCreatorGradient
+          ? CreatorModeGradientBackground(child: bodyContent)
+          : bodyContent,
       bottomNavigationBar: bottomNavigationBar,
       endDrawer: endDrawer,
     );

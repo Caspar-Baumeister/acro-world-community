@@ -16,6 +16,7 @@ class MyEventsPage extends StatelessWidget {
       children: [
         BasePage(
           makeScrollable: false,
+          useCreatorGradient: true,
           child: const CreatedEventsByMeSection(),
         ),
         // Floating Create Event Button

@@ -18,6 +18,7 @@ class DashboardPage extends ConsumerWidget {
           isBackButton: false,
         ),
         makeScrollable: false,
+        useCreatorGradient: true,
         child: DashboardBody());
   }
 }

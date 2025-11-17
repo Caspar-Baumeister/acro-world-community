@@ -42,13 +42,6 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
             Theme.of(context).colorScheme.surface,
           ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, -2),
-          ),
-        ],
       ),
       child: ModernBottomNavigationBar(
         backgroundColor: Colors.transparent,
