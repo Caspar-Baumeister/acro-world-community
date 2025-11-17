@@ -98,7 +98,7 @@ class TeacherStatisticsRepositoryImpl implements TeacherStatisticsRepository {
       final result = await _client.query(QueryOptions(
         document: Queries.getCommentsStatsForTeacher,
         variables: {'teacher_id': teacherId},
-        fetchPolicy: FetchPolicy.cacheFirst,
+        fetchPolicy: FetchPolicy.networkOnly,
       ));
 
       print('📊 [TeacherStats] Comments query result: ${result.data}');
