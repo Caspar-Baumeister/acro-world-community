@@ -389,6 +389,14 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: () {
+                                  final currentUser = ref.read(userRiverpodProvider).value;
+                                  if (currentUser == null) {
+                                    showAuthRequiredDialog(
+                                      context,
+                                      subtitle: 'Log in or sign up to leave a review for this teacher.',
+                                    );
+                                    return;
+                                  }
                                   setState(() {
                                     _showReviewForm = true;
                                   });
