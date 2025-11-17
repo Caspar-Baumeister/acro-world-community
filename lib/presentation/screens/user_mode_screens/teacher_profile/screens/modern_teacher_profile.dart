@@ -4,6 +4,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/modern_teacher_header.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/teacher_events_section.dart';
 import 'package:acroworld/provider/riverpod_provider/comments_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_statistics_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
@@ -118,6 +119,11 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
       // Refresh the user comment provider to update the Consumer
       ref.invalidate(userCommentProvider(widget.teacher.id!));
 
+      // Reload comments statistics to update rating and review count immediately
+      ref
+          .read(teacherStatisticsNotifierProvider(widget.teacher.id!).notifier)
+          .loadCommentsStats();
+
       // Clear the form
       _commentController.clear();
       setState(() {
@@ -188,6 +194,11 @@ class _ModernTeacherProfileState extends ConsumerState<ModernTeacherProfile> {
 
       // Refresh the user comment provider to update the Consumer
       ref.invalidate(userCommentProvider(widget.teacher.id!));
+
+      // Reload comments statistics to update rating and review count immediately
+      ref
+          .read(teacherStatisticsNotifierProvider(widget.teacher.id!).notifier)
+          .loadCommentsStats();
 
       // Don't clear the form immediately - let the Consumer handle it
       // The Consumer will detect the updated comment and populate the form

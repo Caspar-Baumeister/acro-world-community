@@ -81,15 +81,17 @@ class OptionChoosingStep extends StatelessWidget {
           backgroundColor: Theme.of(context).colorScheme.primary,
           width: double.infinity,
         ),
-        placesLeft != null && maxPlaces != null
+        placesLeft != null &&
+                maxPlaces != null &&
+                (placesLeft! < 5 || placesLeft! < (maxPlaces! * 0.05))
             ? Padding(
                 padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                 child: Text(
-                  "$placesLeft / $maxPlaces places left",
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: placesLeft! <= (maxPlaces! / 2)
-                          ? Theme.of(context).colorScheme.error
-                          : Theme.of(context).colorScheme.primary),
+                  "only ${placesLeft!.toInt()} tickets left",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: Theme.of(context).colorScheme.error),
                 ),
               )
             : Container()
@@ -196,10 +198,29 @@ class _BookingCategorySelectionComponentState
                             ),
                       ),
                     ),
-                    Text(
-                      "Available tickets:  ${snapshot.data != null ? "${widget.bookingCategory.contingent - snapshot.data!}/" : ""}${widget.bookingCategory.contingent}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    if (snapshot.data != null)
+                      Builder(
+                        builder: (context) {
+                          final int availableTickets =
+                              widget.bookingCategory.contingent -
+                                  snapshot.data!;
+                          final int totalTickets =
+                              widget.bookingCategory.contingent;
+                          if (availableTickets < 5 ||
+                              availableTickets < (totalTickets * 0.05)) {
+                            return Text(
+                              "only $availableTickets tickets left",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                   ],
                 ),
                 if (widget.bookingCategory.description != null &&
