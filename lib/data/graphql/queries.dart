@@ -859,20 +859,16 @@ query getUserCommentForTeacher(\$teacher_id: uuid!, \$user_id: uuid!) {
 
   static final getTeacherEventsStats = gql("""
 query getTeacherEventsStats(\$teacher_id: uuid!) {
-  class_events_aggregate(where: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
-    aggregate {
-      count
-    }
+  class_events(where: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+    id
   }
 }
 """);
 
   static final getTeacherParticipatedEventsStats = gql("""
 query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
-  class_events_aggregate(where: {class: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
-    aggregate {
-      count
-    }
+  class_events(where: {class: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+    id
   }
 }
 """);
