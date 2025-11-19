@@ -59,7 +59,7 @@ class FloatingCreatorModeButton extends ConsumerWidget {
       GraphQLClientSingleton().updateClient(true);
       ref.read(userRoleProvider.notifier).setIsCreator(true);
       if (context.mounted) {
-        context.pushNamed(creatorProfileRoute);
+        context.goNamed(creatorProfileRoute);
       }
     } else {
       final roles = await TokenSingletonService().getUserRoles();

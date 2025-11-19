@@ -40,11 +40,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-// 1) The “root” key: for your full‐screen, outside‐the‐shell routes
+// 1) The "root" key: for your full‐screen, outside‐the‐shell routes
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final userShellKey = GlobalKey<NavigatorState>();
-final creatorShellKey = GlobalKey<NavigatorState>();
 
 // class AuthChangeNotifier extends ChangeNotifier {
 //   AuthChangeNotifier(this.ref) {
@@ -132,16 +131,9 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const TeacherSearchPage()),
               ),
-            ]),
-        ////////////////////
-        /// CREATOR MODE ///
-        ////////////////////
-        ShellRoute(
-            navigatorKey: creatorShellKey,
-            builder: (ctx, state, child) {
-              return MainPageShell(child: child);
-            },
-            routes: [
+              ////////////////////
+              /// CREATOR MODE ///
+              ////////////////////
               GoRoute(
                 path: '/creator-profile',
                 name: creatorProfileRoute,
