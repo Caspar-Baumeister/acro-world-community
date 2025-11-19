@@ -228,7 +228,7 @@ class DeleteClassModal extends ConsumerWidget {
                     .deleteClass(classModel.id!)
                     .then((value) {
                   if (value) {
-                    showSuccessToast("Class deleted");
+                    showSuccessToast("Event deleted");
                     if (userAsync.value == null) {
                       showErrorToast("User not found");
                       return;
