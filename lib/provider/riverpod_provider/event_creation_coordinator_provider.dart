@@ -362,6 +362,13 @@ class EventCreationCoordinatorNotifier
         await createClass(creatorId);
       }
 
+      // Check if createClass or updateClass set an error message
+      if (state.errorMessage != null) {
+        CustomErrorHandler.logError(
+            'Event save failed with error: ${state.errorMessage}');
+        return false;
+      }
+
       state = state.copyWith(isLoading: false);
       CustomErrorHandler.logDebug('Event saved successfully');
       return true;
@@ -537,6 +544,7 @@ class EventCreationCoordinatorNotifier
         isLoading: false,
         errorMessage: 'Failed to create event: ${e.toString()}',
       );
+      rethrow; // Rethrow so saveEvent can catch it
     }
   }
 
@@ -733,12 +741,20 @@ class EventCreationCoordinatorNotifier
         bookingOptionIdsToDelete,
         bookingCategoryIdsToDelete,
       );
+
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: null,
+      );
+
+      CustomErrorHandler.logDebug("Event update completed successfully");
     } catch (e) {
       CustomErrorHandler.logError("Error updating event: $e");
       state = state.copyWith(
         isLoading: false,
         errorMessage: 'Failed to update event: ${e.toString()}',
       );
+      rethrow; // Rethrow so saveEvent can catch it
     }
   }
 
