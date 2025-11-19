@@ -51,19 +51,6 @@ class CreatorSettingsActionModal extends ConsumerWidget {
               },
             ),
             ListTile(
-              title: const Text("Bookings"),
-              leading: Icon(Icons.book_outlined,
-                  color: Theme.of(context).iconTheme.color),
-              onTap: () {
-                if (classEventId == null) {
-                  Navigator.of(context).push(DashboardPageRoute());
-                } else {
-                  Navigator.of(context).push(ClassBookingSummaryPageRoute(
-                      classEventId: classEventId!));
-                }
-              },
-            ),
-            ListTile(
               title:
                   Text(classEventId == null ? "Occurences" : "All Occurences"),
               leading: Icon(Icons.calendar_view_month_sharp,
