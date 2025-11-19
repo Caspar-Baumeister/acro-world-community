@@ -198,6 +198,12 @@ class _CreateAndEditEventPageState
             if (success) {
               showSuccessToast(
                   "Event ${widget.isEditing ? "updated" : "created"} successfully");
+              // Show info toast about occurrence update
+              Future.delayed(const Duration(milliseconds: 1000), () {
+                showInfoToast(
+                    "Occurrences will be updated in a few seconds. You can refresh to see them.",
+                    duration: 8);
+              });
               // if successful, pop the page
 
               context.goNamed(myEventsRoute);
@@ -324,6 +330,11 @@ class _CreateAndEditEventPageState
                     if (success) {
                       showSuccessToast(
                           "Event ${widget.isEditing ? "updated" : "created"} successfully");
+                      // Show info toast about occurrence update
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        showInfoToast(
+                            "Occurrences will be updated in a few seconds. You can refresh to see them.");
+                      });
 
                       // Reset page to first step for next time
                       coordinator.setPage(0);
