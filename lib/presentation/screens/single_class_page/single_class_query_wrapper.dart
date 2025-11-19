@@ -50,6 +50,12 @@ class SingleEventQueryWrapper extends ConsumerWidget {
         variables: variables,
       ),
       builder: (result, {refetch, fetchMore}) {
+        // Show loading if query is loading
+        if (result.isLoading) {
+          return const LoadingPage();
+        }
+
+        // Check for exceptions first
         if (result.hasException) {
           CustomErrorHandler.captureException(
             result.exception.toString(),
@@ -57,12 +63,23 @@ class SingleEventQueryWrapper extends ConsumerWidget {
           );
           return ErrorPage(error: "Error in fetching the event");
         }
-        if (result.isLoading) {
+
+        // If query has completed but no data exists yet, show loading
+        // This handles the case where the query hasn't started yet
+        if (result.data == null) {
           return const LoadingPage();
         }
-        print("result: $result");
         final data = result.data?[queryName];
+
+        // Check for null or empty list (for classes query)
+        bool isEmpty = false;
         if (data == null) {
+          isEmpty = true;
+        } else if (queryName == "classes" && data is List && data.isEmpty) {
+          isEmpty = true;
+        }
+
+        if (isEmpty) {
           // Look for GraphQL errors in the response context
           final linkException = result.context.entry<HttpLinkResponseContext>();
           print("Link response: $linkException");
@@ -80,7 +97,7 @@ class SingleEventQueryWrapper extends ConsumerWidget {
           }
 
           CustomErrorHandler.captureException(
-            "GraphQL returned null for $queryName",
+            "GraphQL returned null or empty for $queryName",
             stackTrace: StackTrace.current,
           );
 
