@@ -84,6 +84,8 @@ class ClassesRepository {
             '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns: ${parsedClass.recurringPatterns}');
         print(
             '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns.length: ${parsedClass.recurringPatterns?.length}');
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class invites: ${parsedClass.invites}');
 
         return parsedClass;
       } catch (e, stackTrace) {

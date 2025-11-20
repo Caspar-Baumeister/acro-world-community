@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:uuid/uuid.dart';
+import 'package:collection/collection.dart';
 
 import 'event_basic_info_provider.dart';
 import 'event_booking_provider.dart';
@@ -132,6 +133,7 @@ class EventCreationCoordinatorNotifier
         bookingEmail: classModel.bookingEmail,
         maxBookingSlots: classModel.maxBookingSlots,
         questions: classModel.questions,
+        invites: classModel.invites,
       );
 
       // Copy recurring patterns directly from the fetched class
@@ -677,20 +679,30 @@ class EventCreationCoordinatorNotifier
             );
           }).toList(),
           invites: [
-            ...eventTeachers.pendingEmailInvites.map(
-              (email) => InviteInput(
-                id: const Uuid().v4(),
-                email: email,
-                entity: InviteEntity.classTeacher,
-              ),
-            ),
-            ...eventTeachers.pendingInviteTeachers.map(
-              (teacher) => InviteInput(
-                id: const Uuid().v4(),
-                invitedUserId: teacher.userId,
-                entity: InviteEntity.classTeacher,
-              ),
-            ),
+            ...eventTeachers.pendingEmailInvites
+                .where((invitedEmail) => !(state.classModel?.invites
+                        ?.map((invite) => invite.email)
+                        .contains(invitedEmail) ??
+                    false))
+                .map(
+                  (email) => InviteInput(
+                    id: const Uuid().v4(),
+                    email: email,
+                    entity: InviteEntity.classTeacher,
+                  ),
+                ),
+            ...eventTeachers.pendingInviteTeachers
+                .where((invitedTeacher) => !(state.classModel?.invites
+                        ?.map((invite) => invite.invitedUser?.id)
+                        .contains(invitedTeacher.userId) ??
+                    false))
+                .map(
+                  (teacher) => InviteInput(
+                    id: const Uuid().v4(),
+                    invitedUserId: teacher.userId,
+                    entity: InviteEntity.classTeacher,
+                  ),
+                ),
           ]);
 
       final List<String> questionIdsToDelete = state.isEditing

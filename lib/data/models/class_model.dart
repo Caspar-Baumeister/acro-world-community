@@ -3,6 +3,7 @@ import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/event_model.dart';
+import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
@@ -37,6 +38,7 @@ class ClassModel {
   List<QuestionModel> questions = [];
   List<BookingCategoryModel>? bookingCategories;
   List<ClassFlagsModel>? classFlags;
+  List<InvitationModel>? invites;
   bool? isCashAllowed;
   User? createdBy;
 
@@ -125,7 +127,8 @@ class ClassModel {
       this.bookingCategories,
       this.isCashAllowed,
       this.createdBy,
-      this.classLevels});
+      this.classLevels,
+      this.invites});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
     createdBy =
@@ -203,12 +206,14 @@ class ClassModel {
         classTeachers!.add(ClassTeachers.fromJson(v));
       });
     }
+
     if (json['class_owners'] != null) {
       classOwner = <ClassOwner>[];
       json['class_owners'].forEach((v) {
         classOwner!.add(ClassOwner.fromJson(v));
       });
     }
+
     if (json['class_levels'] != null) {
       classLevels = <ClassLevels>[];
       json['class_levels'].forEach((v) {
@@ -220,6 +225,15 @@ class ClassModel {
       bookingCategories = <BookingCategoryModel>[];
       json['booking_categories'].forEach((v) {
         bookingCategories!.add(BookingCategoryModel.fromJson(v));
+      });
+    }
+
+    if (json['invites'] != null) {
+      invites = [];
+      json['invites'].forEach((invite) {
+        final newInvite = InvitationModel.fromJson(invite);
+        print('newInvite $newInvite');
+        invites!.add(InvitationModel.fromJson(invite));
       });
     }
 
