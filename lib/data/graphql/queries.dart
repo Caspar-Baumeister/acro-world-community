@@ -153,7 +153,8 @@ query GetPendingInvitesCount(\$user_id: uuid!) {
     where: { 
       invited_user_id: { _eq: \$user_id },
       confirmation_status: { _eq: Pending },
-      entity: { _eq: class_teacher }
+      entity: { _eq: class_teacher },
+      _not: {created_by_id :{_eq: \$user_id}}
     }
   ) {
     aggregate {
