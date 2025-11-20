@@ -104,6 +104,20 @@ class Fragments {
       location_country
       location_city
       website_url
+      invites {
+        id
+        entity
+        email
+        invited_user_id
+        confirmation_status
+        created_at
+        invited_user {
+          ${Fragments.userFragment}
+        }
+        class {
+          ${Fragments.classFragmentLazy}
+        }
+      }
       class_teachers {
         id
         teacher {
@@ -141,7 +155,6 @@ class Fragments {
         id
         is_active
         user_id
-        
       }
       is_cash_allowed
       
