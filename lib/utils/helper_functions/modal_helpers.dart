@@ -7,6 +7,7 @@ Future<void> buildMortal(BuildContext context, Widget mordal) {
   return showModalBottomSheet(
     useSafeArea: true,
     isScrollControlled: true,
+    useRootNavigator: true,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(AppDimensions.radiusLarge),
