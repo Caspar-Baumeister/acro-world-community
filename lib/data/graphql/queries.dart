@@ -513,6 +513,13 @@ query IsSlugAvailable(\$slug: String!) {
 }
 """);
 
+  // Get event slug suggestion based on provided name
+  static final getEventSlugSuggestion = gql("""
+query GetEventSlugSuggestion(\$name: String!) {
+  get_event_slug_suggestion(name: \$name)
+}
+""");
+
   static final isClassFavorited = gql("""
 query isClassFavorited(\$class_id: uuid!, \$user_id: uuid!) {
    class_favorits(where: {user_id: {_eq: \$user_id}}, class_id: {_eq: \$class_id}}) {

@@ -220,6 +220,26 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
       state = state.copyWith(isSlugValid: true, isSlugAvailable: null);
     }
   }
+
+  Future<void> suggestSlugFromTitle(String title) async {
+    if (title.trim().isEmpty || state.slug.trim().isNotEmpty) {
+      return;
+    }
+
+    try {
+      final ClassesRepository repository =
+          ClassesRepository(apiService: GraphQLClientSingleton());
+      final String suggestion = await repository.getEventSlugSuggestion(title);
+      state = state.copyWith(
+        slug: suggestion,
+        isSlugValid: true,
+        isSlugAvailable: true,
+        errorMessage: null,
+      );
+    } catch (e) {
+      CustomErrorHandler.logError('Failed to suggest slug: $e');
+    }
+  }
 }
 
 /// Provider for basic event information

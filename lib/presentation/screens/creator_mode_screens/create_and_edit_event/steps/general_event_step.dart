@@ -36,6 +36,19 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   final ScrollController _scrollController = ScrollController();
   Timer? _slugDebounceTimer;
 
+  void _handleTitleEditingComplete() {
+    if (_titleController.text.trim().isEmpty) {
+      FocusScope.of(context).nextFocus();
+      return;
+    }
+    if (_slugController.text.trim().isEmpty) {
+      unawaited(ref
+          .read(eventBasicInfoProvider.notifier)
+          .suggestSlugFromTitle(_titleController.text));
+    }
+    FocusScope.of(context).nextFocus();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -64,16 +77,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
 
     _titleController.addListener(() {
       ref.read(eventBasicInfoProvider.notifier).setTitle(_titleController.text);
-      // Auto-generate slug from title if slug is empty
-      if (_slugController.text.isEmpty) {
-        String slug = _titleController.text
-            .toLowerCase()
-            .replaceAll(' ', '-')
-            .replaceAll(RegExp(r'[^a-z0-9-]'), '');
-        _slugController.text = slug;
-        ref.read(eventBasicInfoProvider.notifier).setSlug(slug);
-        ref.read(eventBasicInfoProvider.notifier).checkSlugAvailability();
-      }
     });
 
     _slugController.addListener(() {
@@ -197,6 +200,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         labelText: 'Event Title',
                         validator: (p0) =>
                             p0!.isEmpty ? 'Name cannot be empty' : null,
+                        onEditingComplete: _handleTitleEditingComplete,
                         textInputAction: TextInputAction.next,
                       ),
                       const SizedBox(height: AppDimensions.spacingMedium),

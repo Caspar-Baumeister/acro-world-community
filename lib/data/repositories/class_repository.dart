@@ -115,6 +115,29 @@ class ClassesRepository {
     return classes.isEmpty; // available if none found
   }
 
+  Future<String> getEventSlugSuggestion(String name) async {
+    final QueryOptions options = QueryOptions(
+      document: Queries.getEventSlugSuggestion,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"name": name},
+    );
+    final GraphQLClient client = apiService.client;
+    final QueryResult<Object?> result = await client.query(options);
+    if (result.hasException) {
+      throw Exception(
+          'Failed to fetch event slug suggestion: ${result.exception?.raw.toString()}');
+    }
+
+    final String? suggestion =
+        result.data?['get_event_slug_suggestion'] as String?;
+
+    if (suggestion == null || suggestion.isEmpty) {
+      throw Exception('Slug suggestion response is empty');
+    }
+
+    return suggestion;
+  }
+
   // Fetches classes with teacher privileges for displaying list of classes
   Future<Map<String, dynamic>> getClassesLazyAsTeacher(
       int limit, int offset, Map where) async {
