@@ -136,16 +136,8 @@ class EventCreationCoordinatorNotifier
         invites: classModel.invites,
       );
 
-      // Copy recurring patterns and reset IDs when using as template
       final List<RecurringPatternModel> recurringPatternsFromClass =
           classModel.recurringPatterns ?? [];
-      final List<RecurringPatternModel> recurringPatternsForState =
-          recurringPatternsFromClass
-              .map((pattern) => _cloneRecurringPattern(
-                    pattern,
-                    keepIdentifiers: isEditing,
-                  ))
-              .toList();
 
       // Convert country name to country code
       String? finalCountryCode;
@@ -247,9 +239,11 @@ class EventCreationCoordinatorNotifier
           );
 
       ref.read(eventScheduleProvider.notifier).setFromTemplate(
-            recurringPatterns: recurringPatternsForState,
-            recurrentPattern: recurringPatternsForState.isNotEmpty
-                ? recurringPatternsForState.first
+            recurringPatterns: isEditing
+                ? recurringPatternsFromClass
+                : <RecurringPatternModel>[],
+            recurrentPattern: isEditing && recurringPatternsFromClass.isNotEmpty
+                ? recurringPatternsFromClass.first
                 : null,
           );
 
@@ -881,25 +875,6 @@ class EventCreationCoordinatorNotifier
     ref.read(eventTeachersProvider.notifier).reset();
 
     state = const EventCreationCoordinatorState();
-  }
-
-  RecurringPatternModel _cloneRecurringPattern(
-    RecurringPatternModel source, {
-    required bool keepIdentifiers,
-  }) {
-    return RecurringPatternModel(
-      id: keepIdentifiers ? source.id : null,
-      classId: keepIdentifiers ? source.classId : null,
-      startTime: source.startTime,
-      endTime: source.endTime,
-      startDate: source.startDate,
-      endDate: source.endDate,
-      isRecurring: source.isRecurring,
-      recurringEveryXWeeks: source.recurringEveryXWeeks,
-      dayOfWeek: source.dayOfWeek,
-      createdAt: source.createdAt,
-      isEndDateFinal: source.isEndDateFinal,
-    );
   }
 }
 
