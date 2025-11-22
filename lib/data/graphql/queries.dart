@@ -516,7 +516,7 @@ query IsSlugAvailable(\$slug: String!) {
   // Get event slug suggestion based on provided name
   static final getEventSlugSuggestion = gql("""
 query GetEventSlugSuggestion(\$name: String!) {
-  get_event_slug_suggestion(name: \$name)
+  get_class_slug_suggestion(name: \$name)
 }
 """);
 

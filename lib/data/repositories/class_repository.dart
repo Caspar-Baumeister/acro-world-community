@@ -129,7 +129,7 @@ class ClassesRepository {
     }
 
     final String? suggestion =
-        result.data?['get_event_slug_suggestion'] as String?;
+        result.data?['get_class_slug_suggestion'] as String?;
 
     if (suggestion == null || suggestion.isEmpty) {
       throw Exception('Slug suggestion response is empty');
