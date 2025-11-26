@@ -111,8 +111,10 @@ class ClassesRepository {
       throw Exception(
           'Failed to check slug availability: ${result.exception?.raw.toString()}');
     }
-    final List classes = (result.data?['classes'] as List?) ?? [];
-    return classes.isEmpty; // available if none found
+    final bool isAvailable =
+        result.data?['is_class_slug_available'] as bool? ?? false;
+    print('isSlugAvailable $slug $isAvailable');
+    return isAvailable;
   }
 
   Future<String> getEventSlugSuggestion(String name) async {

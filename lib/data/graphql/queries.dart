@@ -509,7 +509,7 @@ query getClassById(\$url_slug: String!) {
   // Check if a class url slug is available
   static final isSlugAvailable = gql("""
 query IsSlugAvailable(\$slug: String!) {
-  classes(where: {url_slug: {_eq: \$slug}}) { id }
+  is_class_slug_available(url_slug: \$slug)
 }
 """);
 
