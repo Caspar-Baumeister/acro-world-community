@@ -18,7 +18,7 @@ class ClassModel {
   String? name;
   String? requirements;
   String? websiteUrl;
-  List<ClassTeacher>? classTeachers;
+  List<ClassTeachers>? classTeachers;
   List<ClassLevels>? classLevels;
   num? distance;
   String? bookingEmail;
@@ -201,9 +201,9 @@ class ClassModel {
     isCashAllowed = json['is_cash_allowed'] ?? false;
     country = json['location_country'];
     if (json['class_teachers'] != null) {
-      classTeachers = <ClassTeacher>[];
+      classTeachers = <ClassTeachers>[];
       json['class_teachers'].forEach((v) {
-        classTeachers!.add(ClassTeacher.fromJson(v));
+        classTeachers!.add(ClassTeachers.fromJson(v));
       });
     }
 

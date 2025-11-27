@@ -24,11 +24,11 @@ class SingleClassBody extends StatelessWidget {
   Widget build(BuildContext context) {
     int amountActiveFlags = classe.amountActiveFlaggs?.toInt() ?? 0;
 
-    List<ClassTeacher> classTeachers = [];
+    List<ClassTeachers> classTeachers = [];
 
     if (classe.classTeachers != null) {
       classTeachers = classe.classTeachers!
-          .where((ClassTeacher classTeacher) =>
+          .where((ClassTeachers classTeacher) =>
               classTeacher.teacher?.type != "Anonymous")
           .toList();
     }

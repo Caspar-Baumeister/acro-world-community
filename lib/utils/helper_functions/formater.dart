@@ -9,7 +9,7 @@ String formatDateRangeForInstructor(DateTime start, DateTime end) {
   return '${dayFormatter.format(start)}, ${timeFormatter.format(start)}-${timeFormatter.format(end)}';
 }
 
-String formatInstructors(List<ClassTeacher>? teachers) {
+String formatInstructors(List<ClassTeachers>? teachers) {
   if (teachers == null || teachers.isEmpty) {
     return "";
   }

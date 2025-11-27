@@ -9,6 +9,7 @@ import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
+import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
@@ -272,7 +273,7 @@ class EventCreationCoordinatorNotifier
             .setOldQuestions(copiedQuestions);
 
         // Set old class teachers
-        final oldTeachers = classModel.classTeachers ?? [];
+        final oldTeachers = classModel.classTeachers ?? <ClassTeachers>[];
 
         ref
             .read(eventTeachersProvider.notifier)
