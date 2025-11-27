@@ -1,169 +1,3 @@
-import 'package:acroworld/data/graphql/queries.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/user_bookings/user_bookings_card.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
-import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
-
-class UserBookings extends StatelessWidget {
-  const UserBookings({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Query(
-      options: QueryOptions(
-        document: Queries.userBookings,
-        fetchPolicy: FetchPolicy.networkOnly,
-      ),
-      builder: (QueryResult queryResult,
-          {VoidCallback? refetch, FetchMore? fetchMore}) {
-        if (queryResult.hasException) {
-          CustomErrorHandler.captureException(
-              Exception("Error while transforming user bookings to objects"),
-              stackTrace: StackTrace.current);
-          return ErrorWidget(queryResult.exception.toString());
-        } else if (queryResult.isLoading) {
-          return const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: LoadingWidget(),
-          );
-        } else if (queryResult.data != null &&
-            queryResult.data?["me"] != null) {
-          try {
-            List bookings = queryResult.data!["me"]?[0]?["bookings"];
-
-            // try to convert the bookings to a list of UserBookingModel, when it fails, do not show the item
-            List<UserBookingModel> userBookings = [];
-            if (bookings.isEmpty) {
-              return Center(
-                child: Text(
-                  "You have no bookings",
-                  style: Theme.of(context).textTheme.titleLarge,
-                  textAlign: TextAlign.center,
-                ),
-              );
-            }
-            for (var booking in bookings) {
-              try {
-                userBookings.add(UserBookingModel.fromJson(booking));
-              } catch (e) {
-                CustomErrorHandler.captureException(
-                    Exception(
-                        "Error while transforming user bookings to objects"),
-                    stackTrace: StackTrace.current);
-              }
-            }
-            // split the bookings into past and future bookings
-            List<UserBookingModel> pastBookings = [];
-            List<UserBookingModel> futureBookings = [];
-
-            for (var booking in userBookings) {
-              if (booking.endDate.isBefore(DateTime.now())) {
-                pastBookings.add(booking);
-              } else {
-                futureBookings.add(booking);
-              }
-            }
-
-            pastBookings.sort((a, b) => b.startDate.compareTo(a.startDate));
-            futureBookings.sort((a, b) => a.startDate.compareTo(b.startDate));
-
-            userBookings = [...futureBookings, ...pastBookings];
-            return pastBookings.isEmpty && futureBookings.isEmpty
-                ? Center(
-                    child: Text(
-                      "You have no bookings",
-                      style: Theme.of(context).textTheme.titleLarge,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
-                : ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: userBookings.length,
-                    itemBuilder: (context, index) {
-                      // Check if the current booking is in the past
-                      bool isPastBooking =
-                          userBookings[index].endDate.isBefore(DateTime.now());
-
-                      // Check if the previous booking (if exists) is in the future
-                      bool isPreviousBookingFuture = index > 0
-                          ? userBookings[index - 1]
-                              .endDate
-                              .isAfter(DateTime.now())
-                          : false;
-
-                      // If current booking is past and previous (if exists) is future, show 'Past Bookings' heading
-                      if (isPastBooking && isPreviousBookingFuture) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.all(8.0).copyWith(left: 20),
-                              child: const Text("Past Bookings",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              child: UserBookingsCard(
-                                  userBooking: userBookings[index]),
-                            ),
-                          ],
-                        );
-                      }
-
-                      // If it's the first item and it's a future booking, show 'Upcoming Bookings' heading
-                      if (index == 0 && !isPastBooking) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.all(8.0).copyWith(left: 20),
-                              child: const Text("Upcoming Bookings",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold)),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 20, vertical: 8),
-                              child: UserBookingsCard(
-                                  userBooking: userBookings[index]),
-                            ),
-                          ],
-                        );
-                      }
-
-                      // Default case, just show the booking card
-                      return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 8),
-                          child: UserBookingsCard(
-                              userBooking: userBookings[index]));
-                    },
-                  );
-          } catch (e) {
-            print("error inside user_bookings: $e");
-            return ErrorPage(
-                error:
-                    "An unexpected error occured, when transforming the user bookings to an objects with ${e.toString()} ");
-          }
-        } else {
-          return const ErrorPage(
-              error:
-                  "An unexpected error occured, when fetching user bookmarks");
-        }
-      },
-    );
-  }
-}
-
 class UserBookingModel {
   String? classEventId;
   String? classId;
@@ -175,6 +9,8 @@ class UserBookingModel {
   String? bookingTitle;
   String? status;
   String? locationName;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   UserBookingModel({
     required this.classEventId,
@@ -187,6 +23,8 @@ class UserBookingModel {
     required this.bookingTitle,
     required this.status,
     this.locationName,
+    this.createdAt,
+    this.updatedAt,
   });
 
   // Factory constructor for creating a new UserBookingModel instance from a map.
@@ -194,6 +32,8 @@ class UserBookingModel {
     // define the start and end date if they are not null
     DateTime? startDate;
     DateTime? endDate;
+    DateTime? createdAt;
+    DateTime? updatedAt;
 
     if (json['class_event']?['start_date'] != null) {
       try {
@@ -209,6 +49,20 @@ class UserBookingModel {
         print("error while parsing end date: $e");
       }
     }
+    if (json['created_at'] != null) {
+      try {
+        createdAt = DateTime.parse(json['created_at']);
+      } catch (e) {
+        print("error while parsing created_at: $e");
+      }
+    }
+    if (json['updated_at'] != null) {
+      try {
+        updatedAt = DateTime.parse(json['updated_at']);
+      } catch (e) {
+        print("error while parsing updated_at: $e");
+      }
+    }
 
     return UserBookingModel(
       classEventId: json['class_event']?['id'] as String?,
@@ -221,6 +75,8 @@ class UserBookingModel {
       endDate: endDate ?? DateTime.now(),
       bookingTitle: json['booking_option']?['title'] as String?,
       urlSlug: json['class_event']?['class']?['url_slug'] as String?,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
     );
   }
 }

@@ -1,17 +1,67 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/routes/page_routes/single_event_page_route.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class EventSearchDelegate extends SearchDelegate {
+  @override
+  ThemeData appBarTheme(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return theme.copyWith(
+      appBarTheme: AppBarTheme(
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+      ),
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: colorScheme.surface,
+        hintStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: colorScheme.onSurfaceVariant.withOpacity(0.6),
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: colorScheme.outline.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: colorScheme.outline.withOpacity(0.2),
+            width: 1,
+          ),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(
+            color: colorScheme.primary,
+            width: 2,
+          ),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+      ),
+    );
+  }
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
       IconButton(
-        icon: const Icon(Icons.clear),
+        icon: Icon(
+          Icons.clear,
+          color: Theme.of(context).colorScheme.onSurfaceVariant,
+        ),
         onPressed: () {
           if (query == '') {
             close(context, null);
@@ -25,7 +75,10 @@ class EventSearchDelegate extends SearchDelegate {
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.arrow_back_ios_new_rounded),
+      icon: Icon(
+        Icons.arrow_back_ios_new_rounded,
+        color: Theme.of(context).colorScheme.onSurfaceVariant,
+      ),
       onPressed: () {
         close(context, null);
       },
@@ -33,11 +86,22 @@ class EventSearchDelegate extends SearchDelegate {
   }
 
   @override
+  String get searchFieldLabel => 'Search events...';
+
+  @override
+  TextStyle? get searchFieldStyle {
+    return const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.w400,
+    );
+  }
+
+  @override
   Widget buildResults(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+    final discoveryState =
+        ProviderScope.containerOf(context).read(discoveryProvider);
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
-        discoveryProvider.filteredEventOccurences.where((ClassEvent event) =>
+        discoveryState.filteredEventOccurences.where((ClassEvent event) =>
             event.classModel?.name != null &&
             event.classModel!.name!
                 .toLowerCase()
@@ -56,19 +120,30 @@ class EventSearchDelegate extends SearchDelegate {
       });
       query = "";
     }
+
+    // Convert to EventCardData and display in grid
+    final eventCardData = eventSuggestions
+        .map((event) => EventCardData.fromClassEvent(event))
+        .toList();
+
     return Padding(
-      padding: const EdgeInsets.only(left: AppPaddings.medium),
-      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
+      padding: const EdgeInsets.all(16),
+      child: ResponsiveEventList(
+        events: eventCardData,
+        isGridMode: true,
+        isLoading: false,
+        // Remove onEventTap to use internal navigation logic
+      ),
     );
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+    final discoveryState =
+        ProviderScope.containerOf(context).read(discoveryProvider);
 
     List<ClassEvent> eventSuggestions = List<ClassEvent>.from(
-        discoveryProvider.filteredEventOccurences.where((ClassEvent event) =>
+        discoveryState.filteredEventOccurences.where((ClassEvent event) =>
             event.classModel?.name != null &&
             event.classModel!.name!
                 .toLowerCase()
@@ -76,9 +151,19 @@ class EventSearchDelegate extends SearchDelegate {
 
     eventSuggestions.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
+    // Convert to EventCardData and display in grid
+    final eventCardData = eventSuggestions
+        .map((event) => EventCardData.fromClassEvent(event))
+        .toList();
+
     return Padding(
-      padding: const EdgeInsets.only(left: AppPaddings.medium),
-      child: EventOccurenceMonthlySortedView(sortedEvents: eventSuggestions),
+      padding: const EdgeInsets.all(16),
+      child: ResponsiveEventList(
+        events: eventCardData,
+        isGridMode: true,
+        isLoading: false,
+        // Remove onEventTap to use internal navigation logic
+      ),
     );
   }
 }

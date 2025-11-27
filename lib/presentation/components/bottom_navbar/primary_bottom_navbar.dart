@@ -1,7 +1,7 @@
 import 'package:acroworld/presentation/components/bottom_navbar/base_bottom_navbar.dart';
 import 'package:acroworld/presentation/components/bottom_navbar/primary_bottom_navbar_item.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -58,7 +58,7 @@ class PrimaryBottomNavbar extends StatelessWidget {
     ];
     return BaseBottomNavigationBar(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+      padding: const EdgeInsets.symmetric(horizontal: AppDimensions.spacingSmall),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/components/model_pie_chart.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class ParticipantsStatistics extends StatelessWidget {
@@ -21,7 +21,7 @@ class ParticipantsStatistics extends StatelessWidget {
         .toList();
 
     return Padding(
-      padding: const EdgeInsets.all(AppPaddings.small),
+      padding: const EdgeInsets.all(AppDimensions.spacingSmall),
       child: Row(
         children: [
           Flexible(child: ModelPieChart(modelNames: userGenders)),

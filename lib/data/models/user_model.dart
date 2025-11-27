@@ -25,7 +25,10 @@ class User {
       this.gender,
       this.email,
       this.level,
-      this.imageUrl});
+      this.imageUrl,
+      this.fcmToken,
+      this.teacherProfile,
+      this.isEmailVerified});
 
   User.fromJson(Map<String, dynamic> json) {
     if (json['user_roles'] != null) {

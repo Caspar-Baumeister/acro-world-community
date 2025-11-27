@@ -70,7 +70,7 @@ initMain() async {
     FirebaseOptions options = Firebase.app().options;
     String projectId = options.projectId;
 
-    print('Firebase Project ID: $projectId');
+    CustomErrorHandler.logInfo('Firebase Project ID: $projectId');
 
     ////////////////////////
     // FIREBASE MESSAGING //

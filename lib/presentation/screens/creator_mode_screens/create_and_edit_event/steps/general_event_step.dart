@@ -1,65 +1,135 @@
+import 'dart:async';
 import 'dart:typed_data';
 
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/images/event_image_picker_component.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/custom_location_input_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/display_error_message_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/country_dropdown.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/region_dropdown.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/routing/routes/page_routes/main_page_routes/all_page_routes.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/event_basic_info_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_location_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/split_camel_case_to_lower.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
-class GeneralEventStep extends StatefulWidget {
+class GeneralEventStep extends ConsumerStatefulWidget {
   const GeneralEventStep({super.key, required this.onFinished});
 
   final Function onFinished;
 
   @override
-  State<GeneralEventStep> createState() => _GeneralEventStepState();
+  ConsumerState<GeneralEventStep> createState() => _GeneralEventStepState();
 }
 
-class _GeneralEventStepState extends State<GeneralEventStep> {
+class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   late TextEditingController _titleController;
   late TextEditingController _slugController;
   late TextEditingController _descriptionController;
   late TextEditingController _locationNameController;
   String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
+  Timer? _slugDebounceTimer;
+
+  void _handleTitleEditingComplete() {
+    if (_titleController.text.trim().isEmpty) {
+      FocusScope.of(context).nextFocus();
+      return;
+    }
+    if (_slugController.text.trim().isEmpty) {
+      unawaited(ref
+          .read(eventBasicInfoProvider.notifier)
+          .suggestSlugFromTitle(_titleController.text));
+    }
+    FocusScope.of(context).nextFocus();
+  }
 
   @override
   void initState() {
     super.initState();
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
+
+    final basicInfo = ref.read(eventBasicInfoProvider);
+    final location = ref.read(eventLocationProvider);
+
     _locationNameController =
-        TextEditingController(text: provider.locationName);
-    _titleController = TextEditingController(text: provider.title);
-    _slugController = TextEditingController(text: provider.slug);
-    _descriptionController = TextEditingController(text: provider.description);
+        TextEditingController(text: location.locationName);
+    _titleController = TextEditingController(text: basicInfo.title);
+    _slugController = TextEditingController(text: basicInfo.slug);
+    _descriptionController = TextEditingController(text: basicInfo.description);
 
     // add listener to update provider
     _descriptionController.addListener(() {
-      provider.setDescription(_descriptionController.text);
+      ref
+          .read(eventBasicInfoProvider.notifier)
+          .setDescription(_descriptionController.text);
     });
 
     _locationNameController.addListener(() {
-      provider.setLocationName(_locationNameController.text);
+      ref
+          .read(eventLocationProvider.notifier)
+          .setLocationName(_locationNameController.text);
+    });
+
+    _titleController.addListener(() {
+      ref.read(eventBasicInfoProvider.notifier).setTitle(_titleController.text);
+    });
+
+    _slugController.addListener(() {
+      ref.read(eventBasicInfoProvider.notifier).setSlug(_slugController.text);
+
+      // Cancel previous timer
+      _slugDebounceTimer?.cancel();
+
+      // Check slug availability in real-time with debouncing
+      if (_slugController.text.isNotEmpty) {
+        _slugDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+          ref.read(eventBasicInfoProvider.notifier).checkSlugAvailability();
+        });
+      } else {
+        // Clear validation state when field is empty
+        ref.read(eventBasicInfoProvider.notifier).clearSlugValidation();
+      }
     });
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Update controllers when provider state changes (e.g., when template is loaded)
+    final basicInfo = ref.watch(eventBasicInfoProvider);
+    final location = ref.watch(eventLocationProvider);
+
+    // Update controllers when provider data is available and different from current values
+    if (basicInfo.title.isNotEmpty &&
+        _titleController.text != basicInfo.title) {
+      _titleController.text = basicInfo.title;
+    }
+
+    if (basicInfo.slug.isNotEmpty && _slugController.text != basicInfo.slug) {
+      _slugController.text = basicInfo.slug;
+    }
+
+    if (basicInfo.description.isNotEmpty &&
+        _descriptionController.text != basicInfo.description) {
+      _descriptionController.text = basicInfo.description;
+    }
+
+    if (location.locationName != null &&
+        location.locationName!.isNotEmpty &&
+        _locationNameController.text != location.locationName) {
+      _locationNameController.text = location.locationName!;
+    }
+  }
+
+  @override
   void dispose() {
+    _slugDebounceTimer?.cancel();
     _titleController.dispose();
     _slugController.dispose();
     _descriptionController.dispose();
@@ -69,15 +139,37 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
 
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final basicInfo = ref.watch(eventBasicInfoProvider);
+    final location = ref.watch(eventLocationProvider);
+
+    // Listen to provider changes and update controllers
+    ref.listen<EventBasicInfoState>(eventBasicInfoProvider, (previous, next) {
+      if (next.title.isNotEmpty && _titleController.text != next.title) {
+        _titleController.text = next.title;
+      }
+      if (next.slug.isNotEmpty && _slugController.text != next.slug) {
+        _slugController.text = next.slug;
+      }
+      if (next.description.isNotEmpty &&
+          _descriptionController.text != next.description) {
+        _descriptionController.text = next.description;
+      }
+    });
+
+    ref.listen<EventLocationState>(eventLocationProvider, (previous, next) {
+      if (next.locationName != null &&
+          next.locationName!.isNotEmpty &&
+          _locationNameController.text != next.locationName) {
+        _locationNameController.text = next.locationName!;
+      }
+    });
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
           : null,
       child: Padding(
         padding: EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium,
+          horizontal: AppDimensions.spacingMedium,
         ),
         child: Column(
           children: [
@@ -90,78 +182,51 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                     children: [
                       Container(
                         alignment: Alignment.center,
-                        width: 300,
-                        height: 300,
+                        width: 250,
+                        height: 250,
                         child: EventImahePickerComponent(
-                          currentImage: provider.eventImage,
-                          existingImageUrl: provider.existingImageUrl,
+                          currentImage: basicInfo.eventImage,
+                          existingImageUrl: basicInfo.existingImageUrl,
                           onImageSelected: (Uint8List image) {
-                            provider.setEventImage(image);
+                            ref
+                                .read(eventBasicInfoProvider.notifier)
+                                .setEventImage(image);
                           },
                         ),
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _titleController,
-                        onEditingComplete: () {
-                          provider.setTitle(_titleController.text);
-                          if (_slugController.text.isEmpty) {
-                            String slug = _titleController.text
-                                .toLowerCase()
-                                .replaceAll(' ', '-')
-                                .replaceAll(RegExp(r'[^a-z0-9-]'), '');
-                            _slugController.text = slug;
-                            provider.setSlug(slug);
-                            provider.checkSlugAvailability();
-                          }
-                        },
                         labelText: 'Event Title',
                         validator: (p0) =>
                             p0!.isEmpty ? 'Name cannot be empty' : null,
+                        onEditingComplete: _handleTitleEditingComplete,
                         textInputAction: TextInputAction.next,
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _slugController,
-                        labelText: 'URL Slug',
-                        onEditingComplete: () {
-                          provider.setSlug(_slugController.text);
-                          provider.checkSlugAvailability();
-                        },
-                        footnoteText: provider.isSlugValid == false
+                        labelText: 'Unique Identifier',
+                        footnoteText: basicInfo.isSlugValid == false
                             ? "Please use only lowercase letters, numbers, and hyphens"
-                            : (provider.isSlugAvailable == false
-                                ? "This slug is already taken"
-                                : 'This will be used in the URL of your event page'),
-                        isFootnoteError: provider.isSlugAvailable == false ||
-                            provider.isSlugValid == false,
+                            : (basicInfo.isSlugAvailable == false
+                                ? "This identifier is already taken"
+                                : 'A unique identifier for your event (e.g., "my-acro-workshop-2024"). This will be used in the event URL and must be unique.'),
+                        isFootnoteError: basicInfo.isSlugAvailable == false ||
+                            basicInfo.isSlugValid == false,
                         textInputAction: TextInputAction.next,
-                        suffixIcon: provider.isSlugAvailable == null &&
-                                provider.isSlugValid == null
+                        suffixIcon: basicInfo.isSlugAvailable == null &&
+                                basicInfo.isSlugValid == null
                             ? null
-                            : (provider.isSlugAvailable == false ||
-                                    provider.isSlugValid == false)
-                                ? const Icon(Icons.error,
-                                    color: CustomColors.errorTextColor)
-                                : const Icon(Icons.check_circle,
-                                    color: CustomColors.successTextColor),
+                            : (basicInfo.isSlugAvailable == false ||
+                                    basicInfo.isSlugValid == false)
+                                ? Icon(Icons.error,
+                                    color: Theme.of(context).colorScheme.error)
+                                : Icon(Icons.check_circle,
+                                    color:
+                                        Theme.of(context).colorScheme.primary),
                       ),
-                      const SizedBox(height: AppPaddings.medium),
-                      StandartButton(
-                        text: "Edit event description",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            EditDescriptionPageRoute(
-                              initialText: provider.description,
-                              onTextUpdated: (String text) {
-                                _descriptionController.text = text;
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _locationNameController,
                         labelText: 'Location name',
@@ -169,51 +234,76 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                         footnoteText:
                             "This can be the name of the studio or park and will be displayed in the app instead of the full adress",
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       CustomLocationInputComponent(
-                        currentLocation: provider.location,
+                        currentLocation: location.location,
                         currentLoactionDescription:
-                            provider.locationDescription,
+                            location.locationDescription,
                         onLocationSelected:
                             (LatLng location, String? locationDescription) {
-                          provider.setLocation(location);
-                          provider.setLocationDescription(
-                              locationDescription ?? '');
+                          ref
+                              .read(eventLocationProvider.notifier)
+                              .setLocation(location);
+                          ref
+                              .read(eventLocationProvider.notifier)
+                              .setLocationDescription(
+                                  locationDescription ?? '');
                         },
                       ),
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       // choose from country
                       // choose from country
-                      CountryPicker(
-                        // now pass the ISO code, not the name:
-                        selectedCountryCode: provider.countryCode,
-                        onCountrySelected: (String? code, String? name) {
-                          // code: e.g. "US", name: e.g. "United States"
-                          provider.countryCode = code;
-                          provider.setCountry(name);
-                          // clear out any previously selected region:
-                          provider.setRegion(null);
+                      Builder(
+                        builder: (context) {
+                          return CountryPicker(
+                            key: ValueKey(
+                                'country_${location.countryCode}'), // Force rebuild when country changes
+                            // now pass the ISO code, not the name:
+                            selectedCountryCode: location.countryCode,
+                            onCountrySelected: (String? code, String? name) {
+                              // code: e.g. "US", name: e.g. "United States"
+                              if (code != null) {
+                                ref
+                                    .read(eventLocationProvider.notifier)
+                                    .setCountryCode(code);
+                                // Clear out any previously selected region when country changes
+                                ref
+                                    .read(eventLocationProvider.notifier)
+                                    .setRegion(null);
+                              }
+                            },
+                          );
                         },
                       ),
 
                       // only show regions once we have a valid countryCode
-                      if (provider.countryCode != null)
+                      if (location.countryCode != null)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(top: AppPaddings.medium),
-                          child: RegionPicker(
-                            countryCode: provider.countryCode!,
-                            selectedRegion: provider.locationCity,
-                            onRegionSelected: (String? region) {
-                              provider.setRegion(region);
+                          padding: const EdgeInsets.only(
+                              top: AppDimensions.spacingMedium),
+                          child: Builder(
+                            builder: (context) {
+                              return RegionPicker(
+                                key: ValueKey(
+                                    'region_${location.countryCode}_${location.region}'), // Force rebuild when region changes
+                                countryCode: location.countryCode!,
+                                selectedRegion: location.region,
+                                onRegionSelected: (String? region) {
+                                  if (region != null) {
+                                    ref
+                                        .read(eventLocationProvider.notifier)
+                                        .setRegion(region);
+                                  }
+                                },
+                              );
                             },
                           ),
                         ),
 
-                      const SizedBox(height: AppPaddings.medium),
+                      const SizedBox(height: AppDimensions.spacingMedium),
                       CustomQueryOptionInputComponent(
                         hintText: 'What kind of event is it?',
-                        currentOption: provider.eventType,
+                        currentOption: basicInfo.eventType,
                         identifier: 'event_type',
                         valueIdentifier: "value",
                         query: QueryOptions(
@@ -228,16 +318,10 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                         beatifyValueFunction: splitCamelCaseToLower,
                         setOption: (String? value) {
                           if (value != null) {
-                            provider.setEventType(value);
+                            ref
+                                .read(eventBasicInfoProvider.notifier)
+                                .setEventType(value);
                           }
-                        },
-                      ),
-                      const SizedBox(height: AppPaddings.medium),
-                      CustomSettingComponent(
-                        title: 'Questions',
-                        content: "${provider.questions.length} questions",
-                        onPressed: () {
-                          Navigator.of(context).push(QuestionPageRoute());
                         },
                       ),
                     ],
@@ -245,110 +329,10 @@ class _GeneralEventStepState extends State<GeneralEventStep> {
                 ),
               ),
             ),
-            const SizedBox(height: AppPaddings.large),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Consumer<EventCreationAndEditingProvider>(
-                    builder: (context, provider, child) {
-                  return Container(
-                    constraints: Responsive.isDesktop(context)
-                        ? const BoxConstraints(maxWidth: 200)
-                        : null,
-                    child: StandartButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      text: "Cancel",
-                      width: MediaQuery.of(context).size.width * 0.3,
-                    ),
-                  );
-                }),
-                const SizedBox(width: AppPaddings.medium),
-                Container(
-                  constraints: Responsive.isDesktop(context)
-                      ? const BoxConstraints(maxWidth: 400)
-                      : null,
-                  child: StandartButton(
-                    onPressed: _onNext,
-                    text: "Next",
-                    isFilled: true,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppPaddings.small),
             DisplayErrorMessageComponent(errorMessage: _errorMessage),
           ],
         ),
       ),
     );
-  }
-
-  void _onNext() {
-    setState(() {
-      _errorMessage = null;
-    });
-    EventCreationAndEditingProvider provider =
-        Provider.of<EventCreationAndEditingProvider>(context, listen: false);
-    if (provider.eventImage == null && provider.existingImageUrl == null) {
-      setState(() {
-        _errorMessage = 'Please select an image for your event';
-      });
-    } else if (_titleController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a title for your event';
-      });
-    } else if (_slugController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a slug for your event';
-      });
-    } else if (_descriptionController.text.isEmpty) {
-      setState(() {
-        _errorMessage = 'Please enter a description for your event';
-      });
-    } else if (provider.location == null) {
-      setState(() {
-        _errorMessage = 'Please select a location for your event';
-      });
-    } else if (provider.locationName == null) {
-      setState(() {
-        _errorMessage = 'Please enter a location name for your event';
-      });
-    } else if (provider.isSlugValid == false) {
-      setState(() {
-        _errorMessage =
-            'Please use only lowercase letters, numbers, and hyphens';
-      });
-    } else if (provider.isSlugAvailable == false) {
-      setState(() {
-        _errorMessage = 'This slug is already taken';
-      });
-    } else if (provider.eventType == null) {
-      setState(() {
-        _errorMessage = 'Please select an event type';
-      });
-    }
-
-    if (_errorMessage != null) {
-      _scrollController.animateTo(
-        // max scroll extent
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.easeInOut,
-      );
-      return;
-    }
-
-    setState(() {
-      _errorMessage = null;
-    });
-
-    provider.setTitle(_titleController.text);
-    provider.setSlug(_slugController.text);
-    provider.setDescription(_descriptionController.text);
-    provider.setLocationName(_locationNameController.text);
-    widget.onFinished();
   }
 }

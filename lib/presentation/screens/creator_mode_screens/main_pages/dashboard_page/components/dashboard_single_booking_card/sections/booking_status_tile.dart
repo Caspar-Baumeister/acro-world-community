@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BookingStatusTile extends StatelessWidget {
@@ -15,27 +14,28 @@ class BookingStatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.small, vertical: AppPaddings.tiny),
-      margin: const EdgeInsets.all(AppPaddings.tiny),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingSmall,
+          vertical: AppDimensions.spacingExtraSmall),
+      margin: EdgeInsets.all(AppDimensions.spacingExtraSmall),
       decoration: BoxDecoration(
         color: () {
           switch (bookingStatus) {
             case "Cancelled":
-              return CustomColors.errorTextColor;
+              return Theme.of(context).colorScheme.error;
             case "Confirmed":
             case "Completed":
-              return CustomColors.successTextColor;
+              return Theme.of(context).colorScheme.primary;
             case "Pending":
-              return DARK_GREY;
+              return Theme.of(context).colorScheme.outline;
             case "WaitingForPayment":
-              return CustomColors.warningColor;
+              return Theme.of(context).colorScheme.error;
             default:
-              return DARK_GREY;
+              return Theme.of(context).colorScheme.outline;
           }
         }(),
         // rounded corners
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
       ),
       child: Center(
         child: Text(
@@ -57,8 +57,8 @@ class BookingStatusTile extends StatelessWidget {
           }(),
           style: Theme.of(context)
               .textTheme
-              .labelMedium!
-              .copyWith(color: Colors.white),
+              .labelSmall!
+              .copyWith(color: Theme.of(context).colorScheme.onPrimary),
         ),
       ),
     );

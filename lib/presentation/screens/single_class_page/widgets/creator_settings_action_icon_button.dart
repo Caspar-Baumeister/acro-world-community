@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_modal.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 
@@ -25,9 +24,9 @@ class CreatorSettingsActionIconButton extends StatelessWidget {
               classModel: classModel,
               classEventId: classEventId,
               classEvent: classEvent)),
-      icon: const Icon(
+      icon: Icon(
         Icons.more_vert_outlined,
-        color: CustomColors.iconColor,
+        color: Theme.of(context).iconTheme.color,
       ),
     );
   }

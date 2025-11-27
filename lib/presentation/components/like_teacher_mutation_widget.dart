@@ -1,7 +1,7 @@
 import 'package:acroworld/data/graphql/mutations.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
@@ -33,7 +33,7 @@ class HeartMutationWidget extends ConsumerWidget {
       loading: () => const SizedBox(
         width: 40,
         height: 40,
-        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child: Center(child: ModernSkeleton(width: 20, height: 20)),
       ),
       error: (e, st) => const SizedBox.shrink(),
       data: (user) {
@@ -91,12 +91,12 @@ class HeartWidget extends StatelessWidget {
         Icon(
           Icons.favorite_sharp,
           size: size,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.surface,
         ),
         Icon(
           isLiked ? Icons.favorite_sharp : Icons.favorite_border_sharp,
           size: size,
-          color: CustomColors.primaryColor,
+          color: Theme.of(context).colorScheme.primary,
         ),
         Center(
           child: Text(
@@ -104,7 +104,7 @@ class HeartWidget extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
                   fontWeight: FontWeight.w500,
                   fontSize: 13,
-                  color: isLiked ? Colors.white : CustomColors.primaryColor,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
           ),
         ),

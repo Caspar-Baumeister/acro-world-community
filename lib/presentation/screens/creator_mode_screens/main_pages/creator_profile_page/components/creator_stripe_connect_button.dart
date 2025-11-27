@@ -1,41 +1,41 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/components/custom_setting_component.dart';
-import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/country_helpers.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flag/flag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreatorStripeConnectButton extends StatefulWidget {
+class CreatorStripeConnectButton extends ConsumerStatefulWidget {
   const CreatorStripeConnectButton({
     super.key,
-    required this.creatorProvider,
   });
 
-  final CreatorProvider creatorProvider;
-
   @override
-  State<CreatorStripeConnectButton> createState() =>
+  ConsumerState<CreatorStripeConnectButton> createState() =>
       _CreatorStripeConnectButtonState();
 }
 
 class _CreatorStripeConnectButtonState
-    extends State<CreatorStripeConnectButton> {
+    extends ConsumerState<CreatorStripeConnectButton> {
   bool loading = false;
   @override
   Widget build(BuildContext context) {
+    final creatorState = ref.watch(creatorProvider);
     if (loading) {
       return Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: AppPaddings.medium, vertical: AppPaddings.small),
+            horizontal: AppDimensions.spacingMedium,
+            vertical: AppDimensions.spacingSmall),
         child: Container(
-            padding: const EdgeInsets.all(AppPaddings.medium),
+            padding: const EdgeInsets.all(AppDimensions.spacingMedium),
             decoration: BoxDecoration(
-              color: CustomColors.backgroundColor,
-              borderRadius: AppBorders.smallRadius,
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               boxShadow: [
                 BoxShadow(
                   color: Colors.grey.withOpacity(0.5),
@@ -48,45 +48,44 @@ class _CreatorStripeConnectButtonState
             child: Container(
                 width: double.infinity,
                 alignment: Alignment.center,
-                child: CircularProgressIndicator())),
+                child: ModernSkeleton(width: 100, height: 20))),
       );
     }
 
     return CustomSettingComponent(
       title: "Payment",
-      content: _getButtonText(),
-      onPressed: () => _handleStripeConnection(context),
+      content: _getButtonText(creatorState),
+      onPressed: () => _handleStripeConnection(context, creatorState),
     );
   }
 
   /// Determines the appropriate button text based on the Stripe connection status.
-  String _getButtonText() {
-    print("stripeId: ${widget.creatorProvider.activeTeacher?.stripeId}");
-    print(
-        "isStripeEnabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
-    if (widget.creatorProvider.activeTeacher?.stripeId == null) {
+  String _getButtonText(CreatorState creatorState) {
+    print("stripeId: ${creatorState.activeTeacher?.stripeId}");
+    print("isStripeEnabled: ${creatorState.activeTeacher?.isStripeEnabled}");
+    if (creatorState.activeTeacher?.stripeId == null) {
       return "Connect to Stripe";
     }
-    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (creatorState.activeTeacher?.isStripeEnabled == true) {
       return "View Stripe dashboard";
     }
     return "Continue Stripe setup";
   }
 
   /// Handles the logic for connecting or logging into Stripe.
-  Future<void> _handleStripeConnection(BuildContext context) async {
+  Future<void> _handleStripeConnection(
+      BuildContext context, CreatorState creatorState) async {
     print("Stripe connect button pressed");
-    print("Stripe ID: ${widget.creatorProvider.activeTeacher?.stripeId}");
-    print(
-        "Stripe enabled: ${widget.creatorProvider.activeTeacher?.isStripeEnabled}");
+    print("Stripe ID: ${creatorState.activeTeacher?.stripeId}");
+    print("Stripe enabled: ${creatorState.activeTeacher?.isStripeEnabled}");
 
-    if (widget.creatorProvider.activeTeacher?.stripeId != null &&
-        widget.creatorProvider.activeTeacher?.isStripeEnabled != true) {
+    if (creatorState.activeTeacher?.stripeId != null &&
+        creatorState.activeTeacher?.isStripeEnabled != true) {
       await _createStripeUser();
       return;
     }
 
-    if (widget.creatorProvider.activeTeacher?.isStripeEnabled == true) {
+    if (creatorState.activeTeacher?.isStripeEnabled == true) {
       await _openStripeDashboard();
       return;
     }
@@ -134,7 +133,7 @@ class _CreatorStripeConnectButtonState
               onPressed: () => Navigator.pop(context),
               child: const Text("Cancel"),
             ),
-            StandartButton(
+            ModernButton(
               onPressed: () async {
                 if (selectedCountry != null && selectedCurrency != null) {
                   setState(() {
@@ -212,7 +211,7 @@ class _CreatorStripeConnectButtonState
   /// Creates a new Stripe user and opens the Stripe dashboard link if successful.
   Future<void> _createStripeUser(
       {String? countryCode, String? defaultCurrency}) async {
-    final stripeUrl = await widget.creatorProvider.createStripeUser(
+    final stripeUrl = await ref.read(creatorProvider.notifier).createStripeUser(
         countryCode: countryCode, defaultCurrency: defaultCurrency);
     if (stripeUrl != null) {
       customLaunch(stripeUrl);
@@ -223,7 +222,8 @@ class _CreatorStripeConnectButtonState
 
   /// Retrieves and opens the Stripe login link, or shows an error if unavailable.
   Future<void> _openStripeDashboard() async {
-    final loginUrl = await widget.creatorProvider.getStripeLoginLink();
+    final loginUrl =
+        await ref.read(creatorProvider.notifier).getStripeLoginLink();
     if (loginUrl != null) {
       customLaunch(loginUrl);
     } else {

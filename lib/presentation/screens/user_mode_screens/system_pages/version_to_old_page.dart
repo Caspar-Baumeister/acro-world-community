@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/utils/app_constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +23,8 @@ class VersionToOldPage extends StatelessWidget {
               children: [
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingExtraLarge),
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(children: <TextSpan>[
@@ -32,17 +33,13 @@ class VersionToOldPage extends StatelessWidget {
                             '''The current version $currentVersion is no longer supported. Only versions from version $minVersion onwards are supported.
                                 
     Please download the current version from the''',
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodyLarge!
-                            .copyWith(color: Colors.black)),
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface)),
                     TextSpan(
                       text:
                           " ${Platform.isAndroid ? "Google Playstore." : "Appstore."} ", //"hier.",
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: CustomColors.linkTextColor),
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.secondary),
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
                           String link = Platform.isAndroid

@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/custom_pick_date.dart';
 import 'package:acroworld/utils/helper_functions/custom_time_picker.dart';
 import 'package:acroworld/utils/helper_functions/datetime_helper.dart';
@@ -24,8 +23,8 @@ class RegularEventTabView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppPaddings.large,
-      ).copyWith(top: AppPaddings.medium),
+        horizontal: AppDimensions.spacingLarge,
+      ).copyWith(top: AppDimensions.spacingMedium),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -44,7 +43,7 @@ class RegularEventTabView extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Flexible(
                 child: FloatingButton(
                   headerText: "End time",
@@ -62,11 +61,11 @@ class RegularEventTabView extends StatelessWidget {
           ),
           // const Padding(
           //   padding: EdgeInsets.symmetric(
-          //     vertical: AppPaddings.medium,
+          //     vertical: AppDimensions.spacingMedium,
           //   ),
           //   child: CustomDivider(),
           // ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           FloatingButton(
             headerText: "Weekday",
             insideText: recurringPattern.dayOfWeek != null
@@ -77,7 +76,7 @@ class RegularEventTabView extends StatelessWidget {
               onDaySelected: (p0) => editRecurringPattern("dayOfWeek", p0 + 1),
             ),
           ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           Column(
             children: [
               Text(
@@ -87,7 +86,7 @@ class RegularEventTabView extends StatelessWidget {
                     .bodyMedium!
                     .copyWith(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: AppPaddings.medium),
+              const SizedBox(height: AppDimensions.spacingMedium),
               Center(
                 child: NumberPicker(
                   value: recurringPattern.recurringEveryXWeeks,
@@ -104,7 +103,7 @@ class RegularEventTabView extends StatelessWidget {
                           ),
                   selectedTextStyle:
                       Theme.of(context).textTheme.headlineMedium!.copyWith(
-                            color: CustomColors.accentColor,
+                            color: Theme.of(context).colorScheme.secondary,
                             fontWeight: FontWeight.bold,
                           ),
                   decoration: BoxDecoration(
@@ -117,7 +116,7 @@ class RegularEventTabView extends StatelessWidget {
                       editRecurringPattern("repeatEvery", value),
                 ),
               ),
-              const SizedBox(height: AppPaddings.medium),
+              const SizedBox(height: AppDimensions.spacingMedium),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -139,7 +138,7 @@ class RegularEventTabView extends StatelessWidget {
                           }),
                     ),
                   ),
-                  const SizedBox(width: AppPaddings.medium),
+                  const SizedBox(width: AppDimensions.spacingMedium),
                   Flexible(
                     child: Column(
                       children: [
@@ -159,7 +158,7 @@ class RegularEventTabView extends StatelessWidget {
                                 editRecurringPattern("endDate", date);
                               }),
                         ),
-                        const SizedBox(height: AppPaddings.medium),
+                        const SizedBox(height: AppDimensions.spacingMedium),
                         Text(
                           "You can leave the end date empty and change it later",
                           style: Theme.of(context)

@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:acroworld/data/graphql/http_api_urls.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordSuccess extends StatefulWidget {
@@ -65,7 +64,6 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
     final seconds = strDigits(myDuration.inSeconds.remainder(60));
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: false,
         titleSpacing: 20.0,
@@ -89,21 +87,21 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
                 fontWeight: FontWeight.bold, color: Colors.black, fontSize: 50),
           ),
           const SizedBox(height: 20.0),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30.0),
             child: Text(
               "The link is only valid for one hour, but you can request a new link at any time.",
-              style: TextStyle(color: CustomColors.errorTextColor),
+              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
               textAlign: TextAlign.center,
             ),
           ),
           const SizedBox(height: 15.0),
-          StandartButton(
+          ModernButton(
             text: "send new email",
             onPressed: () {
               onForgotPassword();
             },
-            loading: loading,
+            isLoading: loading,
             isFilled: true,
           ),
           error != ""
@@ -111,7 +109,7 @@ class ForgotPasswordSuccessState extends State<ForgotPasswordSuccess> {
                   padding: const EdgeInsets.only(top: 12.0, left: 10),
                   child: Text(
                     error,
-                    style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error),
                   ),
                 )
               : Container(),

@@ -1,4 +1,4 @@
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class CustomIconButton extends StatelessWidget {
@@ -10,15 +10,12 @@ class CustomIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: onPressed,
-      child: Center(
-        child: Icon(
-          icon,
-          size: AppDimensions.iconSizeSmall,
-        ),
+    return IconButton(
+      icon: Icon(
+        icon,
+        size: AppDimensions.iconSizeSmall,
       ),
+      onPressed: onPressed,
     );
   }
 }

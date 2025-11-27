@@ -1,59 +1,144 @@
 import 'package:acroworld/data/models/booking_category_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
 import 'package:acroworld/presentation/components/custom_check_box.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/modals/add_or_edit_booking_category_modal.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/components/category_creation_card.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/steps/market_step/sections/market_step_create_stripe_account_section.dart';
-import 'package:acroworld/provider/creator_provider.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_booking_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /// This widget represents the "Ticket" section of the "Market Step"
 /// in your event creation or editing flow. It shows existing categories
 /// and allows adding new ticket categories.
-class MarketStepTicketSection extends StatelessWidget {
+class MarketStepTicketSection extends ConsumerWidget {
   const MarketStepTicketSection({
     super.key,
-    required this.eventCreationAndEditingProvider,
   });
 
-  /// Provider responsible for handling all event creation and editing logic,
-  /// including the list of `BookingCategoryModel` and `BookingOption`.
-  final EventCreationAndEditingProvider eventCreationAndEditingProvider;
-
   @override
-  Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final bookingState = ref.watch(eventBookingProvider);
     // Userprovider is only for the ticket section.
     // We'll check if the user teacher account has a stripe account
-    CreatorProvider creatorProvider = Provider.of<CreatorProvider>(context);
+    final creatorState = ref.watch(creatorProvider);
 
-    bool isStripeEnabled = creatorProvider.activeTeacher != null &&
-        creatorProvider.activeTeacher!.stripeId != null &&
-        creatorProvider.activeTeacher!.isStripeEnabled == true;
+    bool isStripeEnabled = creatorState.activeTeacher != null &&
+        creatorState.activeTeacher!.stripeId != null &&
+        creatorState.activeTeacher!.isStripeEnabled == true;
 
     return Expanded(
       child: SingleChildScrollView(
         child: Column(
           children: [
+            // Explanation section with info button
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusMedium),
+                  border: Border.all(
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Ticket Categories & Tickets",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
+                          ),
+                          const SizedBox(height: AppDimensions.spacingSmall),
+                          Text(
+                            "Categories like 'Early Bird' or 'Teacher' can have multiple ticket types. For example, Early Bird can have 'Full Festival', 'One Day', etc.",
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                      height: 1.4,
+                                    ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: AppDimensions.spacingSmall),
+                    IconButton(
+                      icon: Icon(
+                        Icons.info_outline,
+                        size: AppDimensions.iconSizeSmall,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title:
+                                const Text("Understanding Ticket Categories"),
+                            content: const Text(
+                              "Ticket categories help you organize different types of tickets for your event:\n\n"
+                              "• Categories (like 'Early Bird', 'Teacher', 'VIP') set the total number of tickets available\n"
+                              "• Each category can have multiple ticket types (like 'Full Festival', 'One Day', 'Weekend Pass')\n"
+                              "• This helps you manage different pricing and availability for different groups\n\n"
+                              "Example: 'Early Bird' category with 100 tickets total, containing:\n"
+                              "• Early Bird Full Festival (50 tickets)\n"
+                              "• Early Bird One Day (30 tickets)\n"
+                              "• Early Bird Weekend Pass (20 tickets)",
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text("Got it"),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacingMedium),
+
             // List of existing categories
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
-              itemCount:
-                  eventCreationAndEditingProvider.bookingCategories.length,
+              itemCount: bookingState.bookingCategories.length,
               itemBuilder: (context, index) {
-                final bookingCategory =
-                    eventCreationAndEditingProvider.bookingCategories[index];
+                final bookingCategory = bookingState.bookingCategories[index];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.large,
-                  ).copyWith(bottom: AppPaddings.large),
+                    horizontal: AppDimensions.spacingLarge,
+                  ).copyWith(bottom: AppDimensions.spacingLarge),
                   child: CategoryCreationCard(
                     bookingCategory: bookingCategory,
                     onEdit: () {
@@ -63,10 +148,12 @@ class MarketStepTicketSection extends StatelessWidget {
                           onFinished: (BookingCategoryModel updatedCategory) {
                             // Update category in the provider
                             // The provider logic should also update the total tickets internally.
-                            eventCreationAndEditingProvider.editCategory(
-                              index,
-                              updatedCategory,
-                            );
+                            ref
+                                .read(eventBookingProvider.notifier)
+                                .editCategory(
+                                  index,
+                                  updatedCategory,
+                                );
                           },
                           bookingCategory: bookingCategory,
                         ),
@@ -75,95 +162,164 @@ class MarketStepTicketSection extends StatelessWidget {
                     onDelete: () {
                       // Remove category from the provider
                       // The provider logic should also update the total tickets internally.
-                      eventCreationAndEditingProvider.removeCategory(index);
+                      ref
+                          .read(eventBookingProvider.notifier)
+                          .removeCategory(index);
                     },
                   ),
                 );
               },
             ),
-            StandartButton(
-              text: 'Add Ticket-Category',
-              isFilled: true,
-              onPressed: () {
-                buildMortal(
-                  context,
-                  AddOrEditBookingCategoryModal(
-                    onFinished: (BookingCategoryModel bookingCategory) {
-                      // Add a new category to the provider.
-                      // The provider logic should also update the total tickets internally.
-                      eventCreationAndEditingProvider.addCategory(
-                        bookingCategory,
-                      );
-                    },
-                  ),
-                );
-              },
-            ),
-            const SizedBox(height: AppPaddings.small),
-            // little infobox if no categories are added yet
-            if (eventCreationAndEditingProvider.bookingCategories.isEmpty)
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppPaddings.large),
-                child: Text(
-                  "Ticket categories are used to limit the number of tickets available for any group of tickets like Early Bird, Regular, Teacher or Helpers. You need to add at least one category to be able to create tickets.",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.black54,
-                      ),
-                ),
-              ),
-            const SizedBox(height: AppPaddings.medium),
+            // Add category button - smaller icon button
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .outline
+                              .withOpacity(0.3),
+                          style: BorderStyle.solid,
+                          width: 1,
+                        ),
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusMedium),
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            buildMortal(
+                              context,
+                              AddOrEditBookingCategoryModal(
+                                onFinished:
+                                    (BookingCategoryModel bookingCategory) {
+                                  ref
+                                      .read(eventBookingProvider.notifier)
+                                      .addCategory(bookingCategory);
+                                },
+                              ),
+                            );
+                          },
+                          borderRadius:
+                              BorderRadius.circular(AppDimensions.radiusMedium),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppDimensions.spacingMedium,
+                              vertical: AppDimensions.spacingSmall,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.add_circle_outline,
+                                  size: AppDimensions.iconSizeSmall,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
+                                const SizedBox(
+                                    width: AppDimensions.spacingSmall),
+                                Text(
+                                  'Add Category',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppDimensions.spacingMedium),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: AppDimensions.spacingLarge),
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusLarge),
+                  border: Border.all(
+                    color:
+                        Theme.of(context).colorScheme.outline.withOpacity(0.3),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
                 ),
-                padding: const EdgeInsets.all(AppPaddings.medium),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     CustomCheckBox(
-                      isChecked: eventCreationAndEditingProvider.isCashAllowed,
+                      isChecked: bookingState.isCashAllowed,
                       onTap: () {
-                        eventCreationAndEditingProvider
+                        ref
+                            .read(eventBookingProvider.notifier)
                             .switchAllowCashPayments();
                       },
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: AppDimensions.spacingMedium),
                     Expanded(
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
                             "Allow cash payments",
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black87,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
+                                ),
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(
+                              width: AppDimensions.spacingExtraSmall),
                           Builder(
                             builder: (context) => IconButton(
-                              icon: const Icon(Icons.info_outline, size: 18),
+                              icon: Icon(Icons.info_outline,
+                                  size: AppDimensions.iconSizeSmall),
                               tooltip: "More info",
                               onPressed: () {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: const Text("Allow cash payments"),
+                                    title: const Text("Cash Payment Option"),
                                     content: const Text(
-                                      "Cash bookings automatically create a 'to be paid' object in your booking overview and might block slots for paying users. You'll need to confirm cash payment manually in your bookings to include them in statistics.",
+                                      "When enabled, participants can reserve tickets without paying upfront. Here's how it works:\n\n"
+                                      "• Participants book tickets and pay cash on arrival\n"
+                                      "• You manually confirm payment in your booking dashboard\n"
+                                      "• Check-in shows if payment was received\n\n"
+                                      "⚠️ Important: Cash bookings can block spots from paying customers, and participants have no obligation to attend after booking.",
                                     ),
                                     actions: [
                                       TextButton(
                                         onPressed: () =>
                                             Navigator.of(context).pop(),
-                                        child: const Text("OK"),
+                                        child: const Text("Got it"),
                                       ),
                                     ],
                                   ),
@@ -178,14 +334,14 @@ class MarketStepTicketSection extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: AppPaddings.small),
-            creatorProvider.isLoading == true
+            const SizedBox(height: AppDimensions.spacingSmall),
+            creatorState.isLoading == true
                 ? const Center(child: CircularProgressIndicator())
                 : isStripeEnabled // if stripe is enabled, don't need to show infobax
                     ? SizedBox.shrink()
                     : const MarketStepCreateStripeAccountSection(),
 
-            const SizedBox(height: AppPaddings.medium),
+            const SizedBox(height: AppDimensions.spacingMedium),
           ],
         ),
       ),

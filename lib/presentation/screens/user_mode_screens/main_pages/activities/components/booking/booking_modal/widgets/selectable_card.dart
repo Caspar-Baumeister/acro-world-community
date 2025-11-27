@@ -1,5 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class SelectableCard extends StatelessWidget {
@@ -24,11 +23,11 @@ class SelectableCard extends StatelessWidget {
       onTap: onPressed,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: AppBorders.defaultRadius,
-          border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          border: Border.all(color: Theme.of(context).colorScheme.onSurface, width: 1),
         ),
-        padding: const EdgeInsets.all(AppPaddings.small),
-        margin: const EdgeInsets.only(bottom: AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall),
+        margin: const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
         child: Row(
           children: [
             SizedBox(
@@ -36,14 +35,14 @@ class SelectableCard extends StatelessWidget {
               width: 24.0,
               child: IgnorePointer(
                 child: Checkbox(
-                  activeColor: CustomColors.successTextColor,
+                  activeColor: Theme.of(context).colorScheme.primary,
                   value: value,
                   onChanged: (_) {},
                 ),
               ),
             ),
             VerticalDivider(
-              color: CustomColors.primaryTextColor,
+              color: Theme.of(context).colorScheme.onSurface,
               thickness: 1,
             ),
             Expanded(
@@ -55,13 +54,14 @@ class SelectableCard extends StatelessWidget {
                     text,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                     maxLines: 2,
                   ),
                   if (subtitle != null && subtitle!.isNotEmpty)
                     Padding(
-                      padding: const EdgeInsets.only(top: AppPaddings.small),
+                      padding: const EdgeInsets.only(
+                          top: AppDimensions.spacingSmall),
                       child: Text(
                         subtitle!,
                         style: Theme.of(context).textTheme.bodyMedium,
@@ -74,7 +74,7 @@ class SelectableCard extends StatelessWidget {
               Text(
                 trailingText!,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: CustomColors.accentColor,
+                      color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,
                     ),
               ),

@@ -1,29 +1,28 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
 import 'package:acroworld/presentation/shells/creator_side_navigation.dart';
 import 'package:acroworld/presentation/shells/user_side_navigation.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/user_role_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
 
-class ShellSideBar extends StatelessWidget {
+class ShellSideBar extends ConsumerWidget {
   const ShellSideBar({super.key, required this.isCreator});
 
   final bool isCreator;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +41,7 @@ class ShellSideBar extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .titleMedium!
-                  .copyWith(color: CustomColors.accentColor),
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
           const SizedBox(height: 50),
@@ -64,7 +63,15 @@ class ShellSideBar extends StatelessWidget {
                           final userAsync = ref.watch(userRiverpodProvider);
                           return userAsync.when(
                             loading: () => const Center(
-                                child: CircularProgressIndicator()),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ModernSkeleton(width: 200, height: 20),
+                                  SizedBox(height: 16),
+                                  ModernSkeleton(width: 300, height: 100),
+                                ],
+                              ),
+                            ),
                             error: (e, st) {
                               // Optionally log
                               return Center(
@@ -75,7 +82,7 @@ class ShellSideBar extends StatelessWidget {
                                   user?.teacherProfile != null;
                               final isEmailVerified =
                                   user?.isEmailVerified ?? false;
-                              return StandartButton(
+                              return ModernButton(
                                 width: null,
                                 text: "Create Events",
                                 onPressed: () async {
@@ -94,9 +101,8 @@ class ShellSideBar extends StatelessWidget {
                                     context.pushNamed(verifyEmailRoute);
                                   } else if (hasTeacherProfile) {
                                     GraphQLClientSingleton().updateClient(true);
-                                    provider.Provider.of<UserRoleProvider>(
-                                            context,
-                                            listen: false)
+                                    ref
+                                        .read(userRoleProvider.notifier)
                                         .setIsCreator(true);
                                     context.goNamed(myEventsRoute);
                                   } else {
@@ -131,8 +137,8 @@ class ShellSideBar extends StatelessWidget {
                 error: (_, __) => const SizedBox.shrink(),
                 data: (user) {
                   // Common divider for both cases
-                  final divider = const Divider(
-                    color: CustomColors.accentColor,
+                  final divider = Divider(
+                    color: Theme.of(context).colorScheme.primary,
                     thickness: 1,
                   );
 
@@ -144,10 +150,11 @@ class ShellSideBar extends StatelessWidget {
                         divider,
                         ListTile(
                           leading: Icon(Icons.login_rounded,
-                              color: CustomColors.accentColor),
+                              color: Theme.of(context).colorScheme.primary),
                           title: Text(
                             "Create Account",
-                            style: TextStyle(color: CustomColors.accentColor),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary),
                           ),
                           onTap: () => context.pushNamed(
                             authRoute,

@@ -4,19 +4,19 @@ import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/data/repositories/stripe_repository.dart';
 import 'package:acroworld/environment.dart';
-import 'package:acroworld/events/event_bus_provider.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/answer_question_modal.dart';
-import 'package:acroworld/provider/event_answers_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/local_storage_service.dart';
 import 'package:acroworld/services/stripe_service.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/preferences_extension.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/foundation.dart';
@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart' as provider;
 import 'package:url_launcher/url_launcher.dart';
 
 class CheckoutStep extends ConsumerStatefulWidget {
@@ -75,7 +74,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           widget.classEventId!,
           user!,
         ).then((_) {
-          provider.Provider.of<EventAnswerProvider>(context, listen: false)
+          ref
+              .read(eventAnswerProvider.notifier)
               .initAnswers(user.id!, widget.classEventId!)
               .then((_) {
             setState(() {
@@ -99,14 +99,22 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
     print("is kWeb: $kIsWeb");
     print("is direct payment: ${widget.isDirectPayment}");
     return ref.watch(userRiverpodProvider).when(
-          loading: () => const Center(child: CircularProgressIndicator()),
+          loading: () => const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(width: 300, height: 100),
+              ],
+            ),
+          ),
           error: (_, __) => const Center(child: Text("Error loading user")),
           data: (user) {
             if (user?.id == null) {
               return const Center(child: Text("Please log in to continue"));
             }
-            final eventAnswerProvider =
-                provider.Provider.of<EventAnswerProvider>(context);
+            final eventAnswerState = ref.watch(eventAnswerProvider);
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -126,9 +134,9 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
 
                       if (kIsWeb && widget.isDirectPayment == true)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
-                          child: StandartButton(
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
+                          child: ModernButton(
                             text: "Continue to payment",
                             onPressed: () async {
                               final token = await LocalStorageService.get(
@@ -144,16 +152,15 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                       // if event is bookable troguh direct payment
                       if (widget.isDirectPayment == true && !kIsWeb)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
                           child: FutureBuilder(
                               future: _initializeAll(context, ref),
                               builder: (context, snapshot) {
-                                return StandartButton(
+                                return ModernButton(
                                   text: "Continue to payment",
                                   onPressed: () async {
-                                    if (!areRequiredQuestionsAnswered(
-                                        eventAnswerProvider)) {
+                                    if (!areRequiredQuestionsAnswered(ref)) {
                                       showErrorToast(
                                         "Please answer all required questions",
                                       );
@@ -167,7 +174,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                     }
                                     await attemptToPresentPaymentSheet(
                                         paymentIntentId!);
-                                    eventAnswerProvider
+                                    ref
+                                        .read(eventAnswerProvider.notifier)
                                         .mutateAnswers()
                                         .then((ok) {
                                       if (!ok) {
@@ -177,7 +185,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                       }
                                     });
                                   },
-                                  loading: !_isInitAnswersReady ||
+                                  isLoading: !_isInitAnswersReady ||
                                       !_isPaymentIntentInitialized,
                                   width: double.infinity,
                                   isFilled: true,
@@ -187,19 +195,19 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                       // if event is bookable through cash payment
                       if (widget.isCashPayment == true)
                         Padding(
-                          padding:
-                              const EdgeInsets.only(bottom: AppPaddings.medium),
-                          child: StandartButton(
+                          padding: const EdgeInsets.only(
+                              bottom: AppDimensions.spacingMedium),
+                          child: ModernButton(
                             text: "Pay in cash",
                             onPressed: () async {
-                              if (!areRequiredQuestionsAnswered(
-                                  eventAnswerProvider)) {
+                              if (!areRequiredQuestionsAnswered(ref)) {
                                 showErrorToast(
                                   "Please answer all required questions",
                                 );
                                 return;
                               }
-                              eventAnswerProvider
+                              ref
+                                  .read(eventAnswerProvider.notifier)
                                   .mutateAnswers()
                                   .then((ok) async {
                                 if (!ok) {
@@ -250,9 +258,8 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
                                   // close the modal
                                   Navigator.of(context).pop();
                                   // fire the event to refetch the booking query
-                                  provider.Provider.of<EventBusProvider>(
-                                          context,
-                                          listen: false)
+                                  ref
+                                      .read(eventBusProvider.notifier)
                                       .fireRefetchBookingQuery();
                                 }
                               });
@@ -270,13 +277,13 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
         );
   }
 
-  bool areRequiredQuestionsAnswered(EventAnswerProvider eventAnswerProvider) {
-    return eventAnswerProvider.doAllQuestionsHaveAnswers(
-      widget.questions
-          .where((q) => q.isRequired == true && q.id != null)
-          .map((q) => q.id!)
-          .toList(),
-    );
+  bool areRequiredQuestionsAnswered(WidgetRef ref) {
+    return ref.read(eventAnswerProvider.notifier).doAllQuestionsHaveAnswers(
+          widget.questions
+              .where((q) => q.isRequired == true && q.id != null)
+              .map((q) => q.id!)
+              .toList(),
+        );
   }
 
   Future<void> attemptToPresentPaymentSheet(String pi) async {
@@ -287,8 +294,7 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
           .attemptToPresentPaymentSheet(pi)
           .then((_) {
         Navigator.of(context).pop();
-        provider.Provider.of<EventBusProvider>(context, listen: false)
-            .fireRefetchBookingQuery();
+        ref.read(eventBusProvider.notifier).fireRefetchBookingQuery();
       });
     } on StripeException catch (e) {
       CustomErrorHandler.captureException(
@@ -521,7 +527,7 @@ class CheckoutSectionContainer extends StatelessWidget {
     return Container(
       // round corners and add shadow
       decoration: BoxDecoration(
-        color: CustomColors.secondaryBackgroundColor,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(10.0),
         boxShadow: [
           BoxShadow(
@@ -564,9 +570,9 @@ class AnswerSection extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(
-                    left: AppPaddings.medium,
-                    top: AppPaddings.medium,
-                    right: AppPaddings.medium),
+                    left: AppDimensions.spacingMedium,
+                    top: AppDimensions.spacingMedium,
+                    right: AppDimensions.spacingMedium),
                 child: Text(
                   "Questions from the organizer",
                   style: Theme.of(context).textTheme.titleLarge,
@@ -576,7 +582,7 @@ class AnswerSection extends StatelessWidget {
                 (e) =>
                     QuestionCard(question: e, eventOccurence: eventOccurence),
               ),
-              SizedBox(height: AppPaddings.medium),
+              SizedBox(height: AppDimensions.spacingMedium),
             ],
           ),
         ),
@@ -611,11 +617,10 @@ class QuestionCard extends ConsumerWidget {
         }
 
         // The answers provider remains the same
-        final eventAnswerProvider =
-            provider.Provider.of<EventAnswerProvider>(context);
+        final eventAnswerNotifier = ref.read(eventAnswerProvider.notifier);
 
         final hasAnswer = question.id != null
-            ? eventAnswerProvider.doesQuestionIdHaveAnswer(question.id!)
+            ? eventAnswerNotifier.doesQuestionIdHaveAnswer(question.id!)
             : false;
 
         return GestureDetector(
@@ -631,15 +636,15 @@ class QuestionCard extends ConsumerWidget {
           },
           child: Container(
             padding: const EdgeInsets.symmetric(
-              horizontal: AppPaddings.medium,
-              vertical: AppPaddings.small,
+              horizontal: AppDimensions.spacingMedium,
+              vertical: AppDimensions.spacingSmall,
             ),
             decoration: BoxDecoration(
               border: Border(
                 left: BorderSide(
                   color: hasAnswer || !(question.isRequired == true)
-                      ? CustomColors.secondaryBackgroundColor
-                      : CustomColors.errorBorderColor,
+                      ? Theme.of(context).colorScheme.surface
+                      : Theme.of(context).colorScheme.error,
                   width: 4.0,
                 ),
               ),
@@ -647,15 +652,16 @@ class QuestionCard extends ConsumerWidget {
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: AppPaddings.small),
+                  padding:
+                      const EdgeInsets.only(right: AppDimensions.spacingSmall),
                   child: hasAnswer
-                      ? const Icon(
+                      ? Icon(
                           Icons.check_circle,
-                          color: CustomColors.successBgColor,
+                          color: Theme.of(context).colorScheme.primary,
                         )
-                      : const Icon(
+                      : Icon(
                           Icons.circle_outlined,
-                          color: CustomColors.errorBorderColor,
+                          color: Theme.of(context).colorScheme.error,
                         ),
                 ),
                 Expanded(
@@ -671,21 +677,21 @@ class QuestionCard extends ConsumerWidget {
                         ),
                       ),
                       if (question.isRequired == true) ...[
-                        const SizedBox(width: AppPaddings.small),
+                        const SizedBox(width: AppDimensions.spacingSmall),
                         Text(
                           "(required)",
                           style:
                               Theme.of(context).textTheme.bodySmall!.copyWith(
                                     color: hasAnswer
-                                        ? CustomColors.successBgColor
-                                        : CustomColors.errorBorderColor,
+                                        ? Theme.of(context).colorScheme.primary
+                                        : Theme.of(context).colorScheme.error,
                                   ),
                         ),
                       ],
                     ],
                   ),
                 ),
-                const SizedBox(width: AppPaddings.medium),
+                const SizedBox(width: AppDimensions.spacingMedium),
                 const Icon(
                   Icons.arrow_forward_ios,
                   size: AppDimensions.iconSizeSmall,

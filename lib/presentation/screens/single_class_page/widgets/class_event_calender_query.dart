@@ -1,7 +1,7 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/class_event_calendar.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +30,7 @@ class ClassEventCalenderQuery extends StatelessWidget {
           }
 
           if (result.isLoading) {
-            return const LoadingWidget();
+            return const ModernLoadingWidget();
           }
 
           List<ClassEvent> classEvents = [];

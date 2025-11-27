@@ -1,4 +1,4 @@
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
 // a widget, that shows the user where he is in the booking process
@@ -17,7 +17,7 @@ class BookingStepIndicator extends StatelessWidget {
           : MediaQuery.of(context).size.width,
       // round corners
       decoration: BoxDecoration(
-        color: CustomColors.secondaryBackgroundColor,
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Padding(
@@ -35,18 +35,19 @@ class BookingStepIndicator extends StatelessWidget {
                 // the style indicates which step is the current one
                 style: currentStep == 0
                     ? Theme.of(context).textTheme.titleSmall
-                    : Theme.of(context)
-                        .textTheme
-                        .bodySmall!
-                        .copyWith(color: CustomColors.lightTextColor),
+                    : Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.7)),
 
                 textAlign: TextAlign.center,
               ),
             ),
             // an arrow
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
-              color: CustomColors.lightTextColor,
+              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
               size: 10,
             ),
 
@@ -56,10 +57,10 @@ class BookingStepIndicator extends StatelessWidget {
               // the style indicates which step is the current one
               style: currentStep == 1
                   ? Theme.of(context).textTheme.bodySmall!
-                  : Theme.of(context)
-                      .textTheme
-                      .bodySmall!
-                      .copyWith(color: CustomColors.lightTextColor),
+                  : Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context)
+                          .extension<AppCustomColors>()!
+                          .textMuted),
               textAlign: TextAlign.center,
             ),
           ],

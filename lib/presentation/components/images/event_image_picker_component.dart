@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/pick_image_function.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,17 +39,16 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
               height: double.infinity, // Maintain the square aspect ratio
               decoration: BoxDecoration(
                 shape: BoxShape.rectangle,
-                borderRadius: AppBorders.defaultRadius,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
                 border: Border.all(
-                  color: CustomColors
-                      .inactiveBorderColor, // Your desired border color
+                  color: Theme.of(context).colorScheme.outline, // Your desired border color
                   width: 1.0, // Adjust the width of the border as needed
                 ),
               ),
               child: widget.currentImage != null
                   ? ClipRRect(
-                      borderRadius: AppBorders
-                          .defaultRadius, // Ensures the image has rounded corners
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusMedium),
                       child: Image.memory(
                         widget.currentImage!,
                         width: double.infinity,
@@ -60,29 +58,29 @@ class EventImahePickerComponentState extends State<EventImahePickerComponent> {
                     )
                   : widget.existingImageUrl != null
                       ? ClipRRect(
-                          borderRadius: AppBorders
-                              .defaultRadius, // Ensures the image has rounded corners
+                          borderRadius:
+                              BorderRadius.circular(AppDimensions.radiusMedium),
                           child: CustomCachedNetworkImage(
                             imageUrl: widget.existingImageUrl!,
                             width: double.infinity,
                             height: double.infinity,
                           ))
-                      : const Icon(
+                      : Icon(
                           Icons.image,
-                          size: AppDimensions.eventCreationImageSize,
-                          color: CustomColors.iconColor,
+                          size: 100,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 10,
               right: 10,
               child: CircleAvatar(
-                backgroundColor: CustomColors.iconColor,
+                backgroundColor: Theme.of(context).colorScheme.surface,
                 radius: AppDimensions.iconSizeMedium,
                 child: Icon(
                   Icons.camera_alt,
-                  color: Colors.white,
-                  size: AppDimensions.iconSizeTiny,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: AppDimensions.iconSizeSmall,
                 ),
               ),
             ),

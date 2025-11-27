@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTabView extends StatelessWidget {
@@ -36,11 +35,11 @@ class CustomTabView extends StatelessWidget {
             Material(
               child: TabBar(
                 onTap: onTap != null ? (value) => onTap!(value) : null,
-                labelColor: CustomColors.accentColor,
-                unselectedLabelColor: CustomColors.lightestTextColor,
+                labelColor: Theme.of(context).colorScheme.primary,
+                unselectedLabelColor: Theme.of(context).colorScheme.outline,
                 indicatorWeight: 1,
                 indicatorSize: TabBarIndicatorSize.tab,
-                indicatorColor: CustomColors.accentColor,
+                indicatorColor: Theme.of(context).colorScheme.primary,
                 tabs: tabTitles.map((title) => Tab(text: title)).toList(),
               ),
             ),

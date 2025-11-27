@@ -1,5 +1,4 @@
 import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class ClassTileLocationWidget extends StatelessWidget {
@@ -15,15 +14,27 @@ class ClassTileLocationWidget extends StatelessWidget {
     return classObject.locationName == null
         ? Container()
         : Padding(
-            padding: const EdgeInsets.only(top: AppPaddings.tiny),
-            child: Text(
-              classObject.locationName ?? '',
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    letterSpacing: -0.5,
-                    height: 1.1,
+            padding: const EdgeInsets.only(top: 2),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.location_on,
+                  size: 14,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    classObject.locationName ?? '',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                          letterSpacing: -0.5,
+                          height: 1.1,
+                        ),
                   ),
+                ),
+              ],
             ),
           );
   }

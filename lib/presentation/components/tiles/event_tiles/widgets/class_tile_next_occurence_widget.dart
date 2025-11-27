@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class ClassTileNextOccurenceWidget extends StatelessWidget {
@@ -31,14 +30,14 @@ class ClassTileNextOccurenceWidget extends StatelessWidget {
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: CustomColors.primaryTextColor)
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface)
                     .copyWith(letterSpacing: -0.5)),
             Text(
               DateTimeService.getDateStringOnlyDate(nextClassEvent.startDate),
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
-                  .copyWith(color: CustomColors.accentColor)
+                  .copyWith(color: Theme.of(context).colorScheme.primary)
                   .copyWith(letterSpacing: -0.5),
             ),
           ],
@@ -51,7 +50,7 @@ class ClassTileNextOccurenceWidget extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodyMedium!
-                  .copyWith(color: CustomColors.primaryTextColor)
+                  .copyWith(color: Theme.of(context).colorScheme.onSurface)
                   .copyWith(letterSpacing: -0.5),
             ),
           ),

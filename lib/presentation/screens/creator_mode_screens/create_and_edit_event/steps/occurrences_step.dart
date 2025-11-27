@@ -1,66 +1,68 @@
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/presentation/components/buttons/floating_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/add_or_edit_recurring_pattern/add_or_edit_recurring_pattern.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/reccurring_pattern_info.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/single_occurence_info.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
-import 'package:acroworld/provider/event_creation_and_editing_provider.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/event_schedule_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class OccurrenceStep extends StatefulWidget {
+class OccurrenceStep extends ConsumerStatefulWidget {
   const OccurrenceStep({super.key, required this.onFinished});
   final Function onFinished;
 
   @override
-  State<OccurrenceStep> createState() => _OccurrenceStepState();
+  ConsumerState<OccurrenceStep> createState() => _OccurrenceStepState();
 }
 
-class _OccurrenceStepState extends State<OccurrenceStep> {
-  void _onNext() {
-    widget.onFinished();
-  }
-
+class _OccurrenceStepState extends ConsumerState<OccurrenceStep> {
   @override
   Widget build(BuildContext context) {
-    EventCreationAndEditingProvider eventCreationAndEditingProvider =
-        Provider.of<EventCreationAndEditingProvider>(context);
+    final scheduleState = ref.watch(eventScheduleProvider);
+
+    // Debug prints for recurring patterns
+    print(
+        '🔍 OCCURRENCES DEBUG - scheduleState.recurringPatterns.length: ${scheduleState.recurringPatterns.length}');
+    print(
+        '🔍 OCCURRENCES DEBUG - scheduleState.recurringPatterns: ${scheduleState.recurringPatterns}');
+
     return Container(
       constraints: Responsive.isDesktop(context)
           ? const BoxConstraints(maxWidth: 800)
           : null,
       child: Column(
         children: [
-          StandartButton(
+          ModernButton(
               text: 'Add Occurences',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => AddOrEditRecurringPatternPage(
                       onFinished: (RecurringPatternModel recurringPattern) {
-                        eventCreationAndEditingProvider.addRecurringPattern(
-                          recurringPattern,
-                        );
+                        ref
+                            .read(eventScheduleProvider.notifier)
+                            .addRecurringPattern(
+                              recurringPattern,
+                            );
                       },
                     ),
                   ),
                 );
               }),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
           Expanded(
             child: ListView.builder(
                 shrinkWrap: true,
-                itemCount:
-                    eventCreationAndEditingProvider.recurringPatterns.length,
+                itemCount: scheduleState.recurringPatterns.length,
                 itemBuilder: (context, index) {
                   RecurringPatternModel pattern =
-                      eventCreationAndEditingProvider.recurringPatterns[index];
+                      scheduleState.recurringPatterns[index];
                   return Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
+                      horizontal: AppDimensions.spacingLarge,
                     ),
                     child: FloatingButton(
                         insideText: "",
@@ -71,11 +73,12 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                                   AddOrEditRecurringPatternPage(
                                 onFinished:
                                     (RecurringPatternModel recurringPattern) {
-                                  eventCreationAndEditingProvider
+                                  ref
+                                      .read(eventScheduleProvider.notifier)
                                       .editRecurringPattern(
-                                    index,
-                                    recurringPattern,
-                                  );
+                                        index,
+                                        recurringPattern,
+                                      );
                                 },
                                 recurringPattern: pattern,
                               ),
@@ -98,62 +101,96 @@ class _OccurrenceStepState extends State<OccurrenceStep> {
                                         .titleLarge!
                                         .copyWith(
                                             fontWeight: FontWeight.bold,
-                                            color: CustomColors.primaryColor)),
-                                IconButton(
-                                    onPressed: () {
-                                      eventCreationAndEditingProvider
-                                          .removeRecurringPattern(index);
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: CustomColors.errorTextColor,
-                                    ))
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .primary)),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  AddOrEditRecurringPatternPage(
+                                                onFinished:
+                                                    (RecurringPatternModel
+                                                        recurringPattern) {
+                                                  ref
+                                                      .read(
+                                                          eventScheduleProvider
+                                                              .notifier)
+                                                      .editRecurringPattern(
+                                                        index,
+                                                        recurringPattern,
+                                                      );
+                                                },
+                                                recurringPattern: pattern,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .primary,
+                                        )),
+                                    IconButton(
+                                        onPressed: () {
+                                          // Show confirmation dialog
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Text(
+                                                    'Delete Occurrence'),
+                                                content: const Text(
+                                                    'Are you sure you want to delete this occurrence? This action cannot be undone.'),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('Cancel'),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      ref
+                                                          .read(
+                                                              eventScheduleProvider
+                                                                  .notifier)
+                                                          .removeRecurringPattern(
+                                                              index);
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: const Text('Delete'),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        },
+                                        icon: Icon(
+                                          Icons.delete,
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .error,
+                                        ))
+                                  ],
+                                )
                               ],
                             ),
                             pattern.isRecurring == true
                                 ? ReccurringPatternInfo(pattern)
                                 : SingleOccurenceInfo(pattern),
-                            const SizedBox(height: AppPaddings.small),
+                            const SizedBox(height: AppDimensions.spacingSmall),
                           ],
                         )),
                   );
                 }),
           ),
-          const SizedBox(height: AppPaddings.medium),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                constraints: Responsive.isDesktop(context)
-                    ? const BoxConstraints(maxWidth: 200)
-                    : null,
-                child: Consumer<EventCreationAndEditingProvider>(
-                    builder: (context, provider, child) {
-                  return StandartButton(
-                    onPressed: () {
-                      provider.setPage(0);
-                      setState(() {});
-                    },
-                    text: "Previous",
-                    width: MediaQuery.of(context).size.width * 0.3,
-                  );
-                }),
-              ),
-              const SizedBox(width: AppPaddings.medium),
-              Container(
-                constraints: Responsive.isDesktop(context)
-                    ? const BoxConstraints(maxWidth: 200)
-                    : null,
-                child: StandartButton(
-                  onPressed: _onNext,
-                  text: "Next",
-                  isFilled: true,
-                  width: MediaQuery.of(context).size.width * 0.5,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppPaddings.large),
         ],
       ),
     );

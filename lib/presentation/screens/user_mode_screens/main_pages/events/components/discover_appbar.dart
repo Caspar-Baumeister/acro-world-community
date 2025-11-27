@@ -1,71 +1,36 @@
 import 'package:acroworld/presentation/components/appbar/base_appbar.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/search_delegate/event_search_delegate.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
-import 'package:acroworld/utils/decorators.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class DiscoveryAppBar extends StatelessWidget implements PreferredSizeWidget {
+class DiscoveryAppBar extends ConsumerWidget implements PreferredSizeWidget {
   const DiscoveryAppBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
+
     return BaseAppbar(
       // if filter is active, show back button
-      title: Row(
-        children: [
-          // Conditionally display the leading icon
-          if (discoveryProvider.isFilterActive())
-            IconButton(
-              padding:
-                  const EdgeInsets.only(left: 0), // Adjust this value as needed
-
+      leading: discoveryState.isFilter
+          ? IconButton(
+              padding: const EdgeInsets.only(left: 0),
               icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => discoveryProvider.resetFilter(),
-            ),
-          Expanded(
-            child: InkWell(
-              onTap: () =>
-                  showSearch(context: context, delegate: EventSearchDelegate()),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.small, vertical: AppPaddings.small),
-                decoration: searchBarDecoration,
-                child: Row(
-                  children: [
-                    const Icon(Icons.search, color: Colors.black),
-                    const SizedBox(width: 10),
-                    Text(
-                      'Search',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
+              onPressed: () =>
+                  ref.read(discoveryProvider.notifier).resetFilter(),
+            )
+          : null,
+      title: ModernSearchBar(
+        hintText: 'Search events...',
+        readOnly: true,
+        onTap: () => context.pushNamed(eventSearchRoute),
+        onFilterPressed: () => context.pushNamed(filterRoute),
+        isFilterActive: discoveryState.isFilter,
+        showFilterButton: true,
       ),
-      actions: [
-        IconButton(
-          padding: const EdgeInsets.only(right: AppPaddings.medium),
-          icon: Icon(Icons.filter_list,
-              color: discoveryProvider.isFilterActive()
-                  ? CustomColors.accentColor
-                  : CustomColors.inactiveBorderColor),
-          onPressed: () {
-            context.pushNamed(
-              filterRoute,
-            );
-          },
-        ),
-      ],
     );
   }
 

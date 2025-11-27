@@ -1,8 +1,8 @@
 import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/class_widgets/class_template_card.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
+import 'package:acroworld/presentation/components/cards/modern_class_event_card.dart';
+import 'package:acroworld/presentation/components/loading/modern_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -28,7 +28,7 @@ class ClassSection extends StatelessWidget {
             return const Padding(
               padding: EdgeInsets.only(top: 20.0),
               child: Center(
-                child: LoadingWidget(),
+                child: ModernLoadingWidget(),
               ),
             );
           }
@@ -62,14 +62,21 @@ class ClassSection extends StatelessWidget {
                   ? const Center(
                       child: Text("No active classes."),
                     )
-                  : ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: classes.length,
-                      itemBuilder: ((context, index) {
-                        ClassModel indexClass = classes[index];
-                        return ClassTemplateCard(indexClass: indexClass);
-                      })),
+                  : SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: classes.map((classModel) {
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 12),
+                            child: ModernClassEventCard(
+                              classModel: classModel,
+                              width: 160,
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
             ),
           );
         });

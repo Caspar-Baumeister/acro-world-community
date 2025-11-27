@@ -1,9 +1,9 @@
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/provider/riverpod_provider/teacher_likes_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,43 +21,85 @@ class TeacherCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Read current user once; .value may be null if not authenticated
     final teacherLikes = ref.watch(teacherLikesProvider);
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: GestureDetector(
-        onTap: teacher.slug != null
-            ? () => context.pushNamed(
-                  partnerSlugRoute,
-                  pathParameters: {"slug": teacher.slug!},
-                )
-            : null,
-        child: ListTile(
-          leading: CustomAvatarCachedNetworkImage(
-            imageUrl: teacher.profilImgUrl ?? "",
-            radius: 64,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.1),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: colorScheme.shadow.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          title: Text(
-            teacher.name ?? "No name",
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          subtitle: Text(
-            "${teacher.likes?.toString() ?? "0"} followers",
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          trailing: teacherLikes.when(
-            data: (likesMap) {
-              final isLiked = likesMap[teacher.id] ?? false;
-              return _FollowButton(
-                teacherId: teacher.id!,
-                isLiked: isLiked,
-              );
-            },
-            loading: () => const SizedBox(
-              width: 100,
-              height: 35,
-              child: Center(child: CircularProgressIndicator()),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: teacher.slug != null
+              ? () => context.pushNamed(
+                    partnerSlugRoute,
+                    pathParameters: {"slug": teacher.slug!},
+                  )
+              : null,
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(12),
+            child: Row(
+              children: [
+                // Profile image
+                CustomAvatarCachedNetworkImage(
+                  imageUrl: teacher.profilImgUrl ?? "",
+                  radius: 60,
+                ),
+                const SizedBox(width: 12),
+                // Name and followers
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        teacher.name ?? "No name",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "${teacher.likes?.toString() ?? "0"} followers",
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Follow button
+                teacherLikes.when(
+                  data: (likesMap) {
+                    final isLiked = likesMap[teacher.id] ?? false;
+                    return _FollowButton(
+                      teacherId: teacher.id!,
+                      isLiked: isLiked,
+                    );
+                  },
+                  loading: () => const SizedBox(
+                    width: 80,
+                    height: 32,
+                    child: Center(child: ModernSkeleton(width: 20, height: 20)),
+                  ),
+                  error: (_, __) => const SizedBox(width: 80, height: 32),
+                ),
+              ],
             ),
-            error: (_, __) => const SizedBox(width: 100, height: 35),
           ),
         ),
       ),
@@ -84,6 +126,9 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return GestureDetector(
       onTap: () {
         final currentUser = ref.read(userRiverpodProvider).value;
@@ -108,34 +153,44 @@ class _FollowButtonState extends ConsumerState<_FollowButton> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: widget.isLiked ? CustomColors.primaryColor : Colors.white,
-          border: Border.all(color: CustomColors.primaryColor),
-          borderRadius: BorderRadius.circular(20),
+          color: widget.isLiked
+              ? colorScheme.primary
+                  .withOpacity(0.1) // Light background for active state
+              : colorScheme.surface,
+          border: Border.all(
+            color: widget.isLiked
+                ? colorScheme.primary.withOpacity(0.3)
+                : colorScheme.outline.withOpacity(0.2),
+            width: 1,
+          ),
+          borderRadius: BorderRadius.circular(16),
         ),
-        height: 35,
-        width: 100,
+        height: 32,
+        width: 80,
         alignment: Alignment.center,
         child: loading
             ? SizedBox(
-                height: 25,
-                width: 25,
+                height: 20,
+                width: 20,
                 child: Padding(
-                  padding: const EdgeInsets.all(5),
-                  child: CircularProgressIndicator(
-                    color: widget.isLiked
-                        ? Colors.white
-                        : CustomColors.primaryColor,
-                    strokeWidth: 2,
+                  padding: const EdgeInsets.all(4),
+                  child: ModernSkeleton(
+                    width: 12,
+                    height: 12,
+                    baseColor: widget.isLiked
+                        ? colorScheme.primary
+                        : colorScheme.onSurfaceVariant,
                   ),
                 ),
               )
             : Text(
                 widget.isLiked ? "Followed" : "Follow",
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: widget.isLiked
-                          ? Colors.white
-                          : CustomColors.primaryColor,
-                    ),
+                style: theme.textTheme.labelMedium?.copyWith(
+                  color: widget.isLiked
+                      ? colorScheme.primary
+                      : colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
       ),

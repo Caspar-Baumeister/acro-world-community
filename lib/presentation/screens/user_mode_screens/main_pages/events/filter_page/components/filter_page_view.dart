@@ -1,30 +1,31 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/filter_chip_cards.dart';
-import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class FilterPageView extends StatelessWidget {
+class FilterPageView extends ConsumerWidget {
   const FilterPageView({
     super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
-    final hasRealRegions = discoveryProvider.filterCountries.any((country) {
-      final regions = discoveryProvider.allRegionsByCountry[country] ?? [];
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
+    final hasRealRegions = discoveryState.filterCountries.any((country) {
+      final regions = discoveryState.allRegionsByCountry[country] ?? [];
       return regions.any((region) => region != "Not specified");
     });
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -38,7 +39,8 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -52,7 +54,8 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -67,7 +70,8 @@ class FilterPageView extends StatelessWidget {
           ),
           if (hasRealRegions) ...[
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+              padding: const EdgeInsets.symmetric(
+                  vertical: AppDimensions.spacingSmall),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -80,7 +84,8 @@ class FilterPageView extends StatelessWidget {
             ),
           ],
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+            padding: const EdgeInsets.symmetric(
+                vertical: AppDimensions.spacingSmall),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -94,38 +99,40 @@ class FilterPageView extends StatelessWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(AppPaddings.small),
+            padding: const EdgeInsets.all(AppDimensions.spacingSmall),
             child: Center(
               child: Text(
-                "This filter will show ${discoveryProvider.filteredEventOccurencesLength.toString()} results",
-                style: Theme.of(context).textTheme.bodyLarge,
+                "This filter will show ${discoveryState.filteredEventOccurencesLength.toString()} results",
+                style: Theme.of(context).textTheme.labelMedium,
               ),
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          Center(
-            child: StandartButton(
-              text: "Continue",
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              isFilled: true,
-            ),
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          Center(
-            child: StandartButton(
-              text: "Reset",
-              onPressed: () {
-                discoveryProvider.resetFilter();
-
-                Navigator.of(context).pop();
-              },
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: ModernButton(
+                  isFilled: false,
+                  text: "Reset",
+                  onPressed: () {
+                    ref.read(discoveryProvider.notifier).resetFilter();
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: ModernButton(
+                  text: "Continue",
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  isFilled: true,
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 40),
         ],

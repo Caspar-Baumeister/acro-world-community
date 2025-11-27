@@ -22,6 +22,26 @@ class ClassEvent {
   DateTime get startDateDT => DateTime.parse(startDate!);
   get endDateDT => endDate != null ? DateTime.parse(endDate!) : null;
 
+  /// Determines if this event can accept bookings
+  bool get isBookable {
+    // Must have booking slots configured
+    if (maxBookingSlots == null || availableBookingSlots == null) {
+      return false;
+    }
+
+    // Must have available slots
+    if (availableBookingSlots! <= 0) {
+      return false;
+    }
+
+    // Must have a class model that is bookable
+    if (classModel == null) {
+      return false;
+    }
+
+    return classModel!.isBookable;
+  }
+
   ClassEventBookingStatus get bookingStatus {
     if (isCancelled!) {
       return ClassEventBookingStatus.canceled;
@@ -158,18 +178,21 @@ class ClassOwner {
   }
 }
 
-class ClassTeacher {
+class ClassTeachers {
   String? id;
   TeacherModel? teacher;
   bool? isOwner;
+  ClassModel? classModel;
 
-  ClassTeacher({this.teacher, this.isOwner});
+  ClassTeachers({this.id, this.teacher, this.isOwner, this.classModel});
 
-  ClassTeacher.fromJson(Map<String, dynamic> json) {
+  ClassTeachers.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     teacher =
         json['teacher'] != null ? TeacherModel.fromJson(json['teacher']) : null;
     isOwner = json['is_owner'];
+    classModel =
+        json['class'] != null ? ClassModel.fromJson(json['class']) : null;
   }
 }
 

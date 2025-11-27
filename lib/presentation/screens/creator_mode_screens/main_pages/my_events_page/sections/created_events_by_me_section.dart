@@ -1,18 +1,16 @@
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/components/loading/shimmer_skeleton.dart';
+import 'package:acroworld/presentation/components/sections/events_search_and_filter.dart';
 import 'package:acroworld/presentation/components/tiles/event_tiles/class_tile.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/modals/create_new_event_from_existing_modal.dart';
+import 'package:acroworld/provider/riverpod_provider/teacher_events_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/teacher_event_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/constants.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart' as provider;
 
 class CreatedEventsByMeSection extends ConsumerWidget {
   const CreatedEventsByMeSection({super.key});
@@ -22,7 +20,9 @@ class CreatedEventsByMeSection extends ConsumerWidget {
     final userAsync = ref.watch(userRiverpodProvider);
 
     return userAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
+      loading: () => const Center(
+        child: ProfileSkeleton(),
+      ),
       error: (e, st) {
         CustomErrorHandler.captureException(e, stackTrace: st);
         return const Center(child: Text("Error loading user"));
@@ -38,28 +38,29 @@ class CreatedEventsByMeSection extends ConsumerWidget {
   }
 }
 
-class _EventsByMeLoader extends StatefulWidget {
+class _EventsByMeLoader extends ConsumerStatefulWidget {
   final String userId;
   const _EventsByMeLoader({required this.userId});
 
   @override
-  State<_EventsByMeLoader> createState() => _EventsByMeLoaderState();
+  ConsumerState<_EventsByMeLoader> createState() => _EventsByMeLoaderState();
 }
 
-class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
+class _EventsByMeLoaderState extends ConsumerState<_EventsByMeLoader> {
   var _didInit = false;
+  String _searchQuery = '';
+  String _selectedFilter = 'all';
 
   @override
   void initState() {
     super.initState();
 
-    // This is *outside* of build, so it's safe to call notifyListeners()
+    // This is *outside* of build, so it's safe to call methods
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_didInit) {
-        final eventsProv =
-            provider.Provider.of<TeacherEventsProvider>(context, listen: false);
-        eventsProv
-            .fetchMyEvents(widget.userId, isRefresh: true)
+        ref
+            .read(teacherEventsProvider.notifier)
+            .fetchEvents(widget.userId, isRefresh: true)
             .catchError((e, st) {
           CustomErrorHandler.captureException(e, stackTrace: st);
         });
@@ -70,106 +71,201 @@ class _EventsByMeLoaderState extends State<_EventsByMeLoader> {
 
   @override
   Widget build(BuildContext context) {
-    final eventsProv = provider.Provider.of<TeacherEventsProvider>(context);
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(top: AppPaddings.medium),
-          child: StandartButton(
-            text: "Create New Event",
-            isFilled: true,
-            onPressed: () => buildMortal(
-              context,
-              const CreateNewEventFromExistingModal(),
-            ),
-          ),
-        ),
-        Expanded(
-          child: RefreshIndicator(
-            onRefresh: () =>
-                eventsProv.fetchMyEvents(widget.userId, isRefresh: true),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (eventsProv.loading)
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      child: const Center(child: CircularProgressIndicator()),
-                    ),
-                  if (!eventsProv.loading &&
-                      eventsProv.myCreatedEvents.isNotEmpty)
-                    _buildEventsList(eventsProv),
-                  if (!eventsProv.loading && eventsProv.myCreatedEvents.isEmpty)
-                    _buildEmptyState(eventsProv),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+    final eventsState = ref.watch(teacherEventsProvider);
 
-  Widget _buildEventsList(TeacherEventsProvider ev) {
     return Column(
       children: [
-        ListView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          itemCount: ev.myCreatedEvents.length,
-          itemBuilder: (ctx, i) {
-            final cls = ev.myCreatedEvents[i];
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
-              ),
-              child: ClassTile(
-                classObject: cls,
-                onTap: () => _onTap(cls),
-              ),
-            );
+        // Search and filter
+        EventsSearchAndFilter(
+          searchQuery: _searchQuery,
+          selectedFilter: _selectedFilter,
+          onSearchChanged: (query) {
+            setState(() {
+              _searchQuery = query;
+            });
+            // Debounce search
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) {
+                _filterEvents();
+              }
+            });
+          },
+          onFilterChanged: (filter) {
+            setState(() {
+              _selectedFilter = filter;
+            });
+            _filterEvents();
+          },
+          onSearchSubmitted: (query) {
+            setState(() {
+              _searchQuery = query;
+            });
+            _filterEvents();
           },
         ),
-        if (ev.canFetchMoreMyEvents)
-          GestureDetector(
-            onTap: () => ev.fetchMore(widget.userId),
-            child: const Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppPaddings.small,
-                vertical: AppPaddings.tiny,
-              ),
-              child: Text("Load more"),
-            ),
+        // Events list
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () => ref
+                .read(teacherEventsProvider.notifier)
+                .fetchEvents(widget.userId, isRefresh: true),
+            child: _buildEventsContent(eventsState),
           ),
-        if (ev.isLoadingMyEvents)
-          const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppPaddings.small,
-              vertical: AppPaddings.tiny,
-            ),
-            child: Center(child: CircularProgressIndicator()),
-          ),
+        ),
+        const SizedBox(height: 80),
       ],
     );
   }
 
-  Widget _buildEmptyState(TeacherEventsProvider ev) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.7,
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text("You have not created any events yet"),
-            const SizedBox(height: AppPaddings.medium),
-            StandartButton(
-              text: "Refresh",
-              onPressed: () => ev.fetchMyEvents(widget.userId, isRefresh: true),
-            ),
-          ],
-        ),
+  Widget _buildEventsContent(TeacherEventsState eventsState) {
+    if (eventsState.loading) {
+      return _buildLoadingState();
+    }
+
+    final filteredEvents = _getFilteredEvents(eventsState.events);
+
+    if (filteredEvents.isEmpty) {
+      return _buildEmptyState(eventsState);
+    }
+
+    return _buildEventsList(eventsState, filteredEvents);
+  }
+
+  Widget _buildLoadingState() {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: 3,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: EventCardSkeleton(),
+        );
+      },
+    );
+  }
+
+  Widget _buildEventsList(
+      TeacherEventsState ev, List<ClassModel> filteredEvents) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      itemCount: filteredEvents.length +
+          (ev.canFetchMore ? 1 : 0) +
+          1, // +1 for bottom padding
+      itemBuilder: (ctx, i) {
+        if (i == filteredEvents.length) {
+          // Load more button
+          if (ev.canFetchMore) {
+            return GestureDetector(
+              onTap: () => ref
+                  .read(teacherEventsProvider.notifier)
+                  .fetchMore(widget.userId),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                child: Center(
+                  child: Text(
+                    "Load more",
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                  ),
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }
+
+        if (i == filteredEvents.length + (ev.canFetchMore ? 1 : 0)) {
+          // Bottom padding for floating button
+          return const SizedBox(height: 80);
+        }
+
+        final cls = filteredEvents[i];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: ClassTile(
+            classObject: cls,
+            onTap: () => _onTap(cls),
+          ),
+        );
+      },
+    );
+  }
+
+  List<ClassModel> _getFilteredEvents(List<ClassModel> events) {
+    var filtered = events.where((event) {
+      // Search filter
+      if (_searchQuery.isNotEmpty) {
+        final query = _searchQuery.toLowerCase();
+        final matchesSearch =
+            event.name?.toLowerCase().contains(query) == true ||
+                event.locationName?.toLowerCase().contains(query) == true ||
+                event.city?.toLowerCase().contains(query) == true ||
+                event.country?.toLowerCase().contains(query) == true;
+        if (!matchesSearch) return false;
+      }
+
+      // Status filter - using amountUpcomingEvents as a proxy for active status
+      // Only Active or All
+      if (_selectedFilter == 'active') {
+        return (event.amountUpcomingEvents ?? 0) > 0;
+      }
+      return true; // 'all'
+    }).toList();
+
+    return filtered;
+  }
+
+  void _filterEvents() {
+    // This will trigger a rebuild with filtered events
+    setState(() {});
+  }
+
+  Widget _buildEmptyState(TeacherEventsState ev) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.event_outlined,
+            size: 64,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _searchQuery.isNotEmpty || _selectedFilter != 'all'
+                ? "No events match your search"
+                : "You have not created any events yet",
+            style: Theme.of(context).textTheme.headlineSmall,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _searchQuery.isNotEmpty || _selectedFilter != 'all'
+                ? "Try adjusting your search or filters"
+                : "Create your first event to get started",
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 16),
+          ModernButton(
+            text: _searchQuery.isNotEmpty || _selectedFilter != 'all'
+                ? "Clear Filters"
+                : "Refresh",
+            onPressed: () {
+              if (_searchQuery.isNotEmpty || _selectedFilter != 'all') {
+                setState(() {
+                  _searchQuery = '';
+                  _selectedFilter = 'all';
+                });
+              } else {
+                ref
+                    .read(teacherEventsProvider.notifier)
+                    .fetchEvents(widget.userId, isRefresh: true);
+              }
+            },
+          ),
+        ],
       ),
     );
   }

@@ -1,6 +1,6 @@
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -26,11 +26,14 @@ class CustomOptionInputComponent extends StatelessWidget {
       children: [
         InputDecorator(
           decoration: InputDecoration(
-            labelStyle: const TextStyle(color: CustomColors.primaryTextColor),
+            labelStyle: Theme.of(context)
+                .textTheme
+                .bodyMedium!
+                .copyWith(color: Theme.of(context).colorScheme.onSurface),
             alignLabelWithHint: true,
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-                    .copyWith(bottom: AppPaddings.tiny),
+            contentPadding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingMedium)
+                .copyWith(bottom: AppDimensions.spacingExtraSmall),
           ).applyDefaults(Theme.of(context).inputDecorationTheme),
           child: SizedBox(
             child: DropdownButtonHideUnderline(
@@ -72,7 +75,7 @@ class CustomOptionInputComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0, left: 10),
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: CustomColors.primaryTextColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                         )),
               )
             : const SizedBox(height: 0),
@@ -143,7 +146,9 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
               } else if (result.isLoading) {
                 return const SizedBox(
                   height: 50,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(
+                    child: ModernSkeleton(width: 100, height: 20),
+                  ),
                 );
               } else {
                 try {
@@ -154,10 +159,10 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surfaceContainer,
                       contentPadding: const EdgeInsets.symmetric(
-                              horizontal: AppPaddings.medium)
-                          .copyWith(bottom: AppPaddings.tiny),
+                              horizontal: AppDimensions.spacingMedium)
+                          .copyWith(bottom: AppDimensions.spacingExtraSmall),
                     ).applyDefaults(Theme.of(context).inputDecorationTheme),
                     child: DropdownButtonHideUnderline(
                       child: DropdownButton<String>(
@@ -195,7 +200,7 @@ class CustomQueryOptionInputComponent extends StatelessWidget {
                 padding: const EdgeInsets.only(top: 8.0, left: 10),
                 child: Text(footnoteText!,
                     style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color: CustomColors.primaryTextColor,
+                          color: Theme.of(context).colorScheme.onSurface,
                         )),
               )
             : const SizedBox(height: 0),

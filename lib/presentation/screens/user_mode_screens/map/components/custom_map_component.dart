@@ -2,15 +2,13 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/map_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/marker_component.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/components/new_area_component.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/map_events_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
-class CustomMapComponent extends StatefulWidget {
+class CustomMapComponent extends ConsumerStatefulWidget {
   const CustomMapComponent({
     super.key,
     required this.initialLocation,
@@ -21,10 +19,10 @@ class CustomMapComponent extends StatefulWidget {
   final double initialZoom;
 
   @override
-  State<CustomMapComponent> createState() => _CustomMapComponentState();
+  ConsumerState<CustomMapComponent> createState() => _CustomMapComponentState();
 }
 
-class _CustomMapComponentState extends State<CustomMapComponent> {
+class _CustomMapComponentState extends ConsumerState<CustomMapComponent> {
   MapController mapController = MapController();
   bool isReady = false;
   LatLng? currentCenter;
@@ -32,16 +30,7 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
   @override
   void initState() {
     super.initState();
-    // add listener so that if the provider updates, the map updates
-    Provider.of<PlaceProvider>(context, listen: false).addListener(() {
-      mapController.move(
-        Provider.of<PlaceProvider>(
-          context,
-          listen: false,
-        ).locationSingelton.place.latLng,
-        mapController.camera.zoom,
-      );
-    });
+    // Map will update automatically when placeProvider changes via ref.watch
     // set isReady to true after the first frame is rendered
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -58,8 +47,9 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
 
   @override
   Widget build(BuildContext context) {
-    MapEventsProvider mapEventProvider =
-        Provider.of<MapEventsProvider>(context, listen: false);
+    final mapEventsState = ref.watch(mapEventsProvider);
+    final mapEventsNotifier = ref.read(mapEventsProvider.notifier);
+
     return Stack(
       children: [
         FlutterMap(
@@ -75,10 +65,9 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
               });
             },
             onTap: (_, __) {
-              mapEventProvider.setSelectedClassEvent(null);
+              mapEventsNotifier.setSelectedClassEvent(null);
             },
-            initialCenter:
-                mapEventProvider.place.latLng, // Initial center of the map
+            initialCenter: widget.initialLocation, // Initial center of the map
             initialZoom: widget.initialZoom,
           ),
           children: <Widget>[
@@ -87,26 +76,20 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
               urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
             ),
             // CurrentLocationLayer(),
-            Consumer<MapEventsProvider>(
-              builder: (context, mapEventsProvider, child) {
-                return MarkerLayer(
-                  markers: mapEventsProvider.classeEvents
-                      .map((ClassEvent classEvent) {
-                    return Marker(
-                      width: AppDimensions.iconSizeLarge,
-                      height: AppDimensions.iconSizeLarge,
-                      point: LatLng(
-                        classEvent.classModel!.location!.coordinates![1]
-                            .toDouble(),
-                        classEvent.classModel!.location!.coordinates![0]
-                            .toDouble(),
-                      ),
-                      child: MarkerComponent(classEvent: classEvent),
-                    );
-                  }).toList(),
+            MarkerLayer(
+              markers: mapEventsState.classeEvents
+                  .where((classEvent) =>
+                      classEvent.classModel?.location?.coordinates != null)
+                  .map((ClassEvent classEvent) {
+                final coordinates =
+                    classEvent.classModel!.location!.coordinates!;
+                return Marker(
+                  point: LatLng(
+                      coordinates[1].toDouble(), coordinates[0].toDouble()),
+                  child: MarkerComponent(classEvent: classEvent),
                 );
-              },
-            )
+              }).toList(),
+            ),
           ],
         ),
         Positioned(
@@ -118,13 +101,7 @@ class _CustomMapComponentState extends State<CustomMapComponent> {
               children: [
                 const MapAppBar(),
                 isReady && currentCenter != null
-                    ? Consumer<PlaceProvider>(
-                        builder: (context, PlaceProvider placeProvider, child) {
-                        return NewAreaComponent(
-                          placeProvider: placeProvider,
-                          center: currentCenter!,
-                        );
-                      })
+                    ? NewAreaComponent(center: currentCenter!)
                     : Container(),
               ],
             ),

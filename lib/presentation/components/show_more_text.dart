@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionTextWidget extends StatefulWidget {
@@ -57,8 +56,9 @@ class DescriptionTextWidgetState extends State<DescriptionTextWidget> {
                       children: <Widget>[
                         Text(
                           flag ? "read more" : "fold in",
-                          style: const TextStyle(
-                              color: CustomColors.linkTextColor),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
                         ),
                       ],
                     ),

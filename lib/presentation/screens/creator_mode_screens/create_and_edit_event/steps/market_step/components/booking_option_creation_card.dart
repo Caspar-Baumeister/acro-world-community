@@ -1,7 +1,6 @@
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/presentation/components/buttons/custom_icon_button.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BookingOptionCreationCard extends StatelessWidget {
@@ -23,10 +22,21 @@ class BookingOptionCreationCard extends StatelessWidget {
       },
       child: Container(
           decoration: BoxDecoration(
-            borderRadius: AppBorders.defaultRadius,
-            border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+            border: Border.all(
+              color: Theme.of(context).colorScheme.outline.withOpacity(0.3),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Theme.of(context).colorScheme.shadow.withOpacity(0.08),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
           ),
-          padding: const EdgeInsets.all(AppPaddings.small),
+          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           child: Row(
             children: [
               Expanded(
@@ -36,40 +46,45 @@ class BookingOptionCreationCard extends StatelessWidget {
                   children: [
                     Text(
                       bookingOption.title!,
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor),
-                      maxLines: 2,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).colorScheme.onSurface),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    bookingOption.subtitle != null &&
-                            bookingOption.subtitle!.isNotEmpty
-                        ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.small),
-                            child: Text(
-                              bookingOption.subtitle!,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          )
-                        : Container(),
+                    if (bookingOption.subtitle != null &&
+                        bookingOption.subtitle!.isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        bookingOption.subtitle!,
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ],
                 ),
               ),
-              Text(
-                '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomColors.accentColor,
-                    fontWeight: FontWeight.bold),
-              ),
-              VerticalDivider(
-                color: CustomColors.primaryTextColor,
-                thickness: 1,
-              ),
-              CustomIconButton(
-                onPressed: () {
-                  onDelete();
-                },
-                icon: Icons.delete,
+              const SizedBox(width: AppDimensions.spacingSmall),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(height: 4),
+                  CustomIconButton(
+                    onPressed: () {
+                      onDelete();
+                    },
+                    icon: Icons.delete_outline,
+                  ),
+                ],
               ),
             ],
           )),

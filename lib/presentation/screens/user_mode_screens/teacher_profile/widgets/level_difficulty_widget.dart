@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/app_constants.dart';
 import 'package:flutter/material.dart';
 
 class DifficultyWidget extends StatelessWidget {

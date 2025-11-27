@@ -1,6 +1,6 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
+import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 
@@ -17,8 +17,9 @@ class BookingCardMainContentSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.small, vertical: AppPaddings.tiny),
+      padding: EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingSmall,
+          vertical: AppDimensions.spacingExtraSmall),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,7 +27,7 @@ class BookingCardMainContentSection extends StatelessWidget {
           Text(booking.user.name ?? "Unknown User",
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.titleMedium),
-          const SizedBox(height: AppPaddings.tiny),
+          SizedBox(height: AppDimensions.spacingExtraSmall),
           if (showBookingOption != null && showBookingOption!)
             Text(
               "${booking.bookingOption?.title}",
@@ -40,17 +41,15 @@ class BookingCardMainContentSection extends StatelessWidget {
                   .labelMedium!
                   .copyWith(fontWeight: FontWeight.bold),
             ),
-          const SizedBox(height: AppPaddings.small),
+          const SizedBox(height: AppDimensions.spacingSmall),
           Text(
             "Booked at:",
             style: Theme.of(context).textTheme.labelMedium,
           ),
           Text(
             getDatedMMHHmm(booking.createdAt),
-            style: Theme.of(context)
-                .textTheme
-                .labelMedium
-                ?.copyWith(color: CustomColors.accentColor),
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Theme.of(context).colorScheme.secondary),
           )
         ],
       ),

@@ -1,6 +1,5 @@
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class EventCardImageSection extends StatelessWidget {
@@ -16,14 +15,14 @@ class EventCardImageSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AspectRatio(
-      aspectRatio: AspectRatios.ar_1_1,
+      aspectRatio: 1,
       child: SizedBox(
         width: double.infinity,
         child: Stack(
           children: [
             CustomCachedNetworkImage(
               imageUrl: imageUrl,
-              borderRadius: AppBorders.smallRadius,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
             ),
             isHighlighted
                 ? Positioned(
@@ -31,18 +30,20 @@ class EventCardImageSection extends StatelessWidget {
                     left: 5,
                     child: Container(
                         decoration: BoxDecoration(
-                            color: CustomColors.accentColor,
-                            borderRadius: AppBorders.smallRadius),
+                            color: Theme.of(context).colorScheme.primary,
+                            borderRadius: BorderRadius.circular(
+                                AppDimensions.radiusSmall)),
                         child: Center(
                           child: Padding(
-                            padding: const EdgeInsets.all(AppPaddings.tiny),
+                            padding: const EdgeInsets.all(
+                                AppDimensions.spacingExtraSmall),
                             child: Text(
                               "Highlight",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall!
                                   .copyWith(
-                                    color: CustomColors.whiteTextColor,
+                                    color: Theme.of(context).colorScheme.onPrimary,
                                     letterSpacing: -0.5,
                                   ),
                             ),

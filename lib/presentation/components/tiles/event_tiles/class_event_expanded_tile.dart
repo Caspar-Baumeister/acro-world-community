@@ -6,8 +6,7 @@ import 'package:acroworld/presentation/components/tiles/event_tiles/widgets/clas
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_event_tile_image.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -39,7 +38,8 @@ class ClassEventExpandedTile extends StatelessWidget {
               })
           : () => showErrorToast("This class is not available anymore"),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+        padding:
+            const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,8 +51,8 @@ class ClassEventExpandedTile extends StatelessWidget {
             ),
             Expanded(
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: AppPaddings.small),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppDimensions.spacingSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -84,14 +84,14 @@ class ClassTileDateAndDifficultyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return showFullDate == true
         ? Padding(
-            padding: const EdgeInsets.only(top: AppPaddings.small),
+            padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
             child: Text(
                 DateTimeService.getDateString(
                     classEvent.startDate, classEvent.endDate),
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!
-                    .copyWith(color: CustomColors.accentColor)
+                    .copyWith(color: Theme.of(context).colorScheme.primary)
                     .copyWith(letterSpacing: -0.5)),
           )
         : Padding(
@@ -105,7 +105,7 @@ class ClassTileDateAndDifficultyWidget extends StatelessWidget {
                   style: Theme.of(context)
                       .textTheme
                       .bodyMedium!
-                      .copyWith(color: CustomColors.accentColor)
+                      .copyWith(color: Theme.of(context).colorScheme.primary)
                       .copyWith(letterSpacing: -0.5),
                 ),
                 const Spacer(),

@@ -1,68 +1,103 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class HeaderWidget extends StatelessWidget {
-  const HeaderWidget({super.key, required this.imgUrl, required this.name});
+  const HeaderWidget({
+    super.key, 
+    required this.imgUrl, 
+    required this.name,
+    this.subtitle,
+    this.showEditButton = false,
+    this.onEditPressed,
+  });
 
   final String imgUrl;
   final String name;
+  final String? subtitle;
+  final bool showEditButton;
+  final VoidCallback? onEditPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        CachedNetworkImage(
-          fit: BoxFit.cover,
-          imageUrl: imgUrl,
-          imageBuilder: (context, imageProvider) => Container(
-            width: 75,
-            height: 75,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-            ),
+    return Container(
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-          placeholder: (context, url) => Container(
-            width: 75,
-            height: 75,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black12,
-            ),
-          ),
-          errorWidget: (context, url, error) => Container(
-            width: 75,
-            height: 75,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Colors.black12,
-            ),
-            child: const Icon(
-              Icons.error,
-              color: Colors.red,
-            ),
-          ),
-        ),
-        const SizedBox(width: 5),
-        Expanded(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 30,
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              // User Avatar
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                    width: 3,
+                  ),
+                ),
+                child: CustomAvatarCachedNetworkImage(
+                  imageUrl: imgUrl,
+                  radius: 60,
+                ),
               ),
-              child: Text(
-                name,
-                textAlign: TextAlign.start,
-                style: Theme.of(context).textTheme.headlineMedium,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              const SizedBox(width: 16),
+              
+              // User Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      name,
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 4),
+                      Text(
+                        subtitle!,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            ),
+              
+              // Edit Button
+              if (showEditButton)
+                IconButton(
+                  onPressed: onEditPressed,
+                  icon: Icon(
+                    Icons.edit,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+                  style: IconButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                    shape: const CircleBorder(),
+                  ),
+                ),
+            ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

@@ -1,6 +1,7 @@
 // lib/routing/app_router.dart
 
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/screens/account_settings/account_settings_page.dart';
 import 'package:acroworld/presentation/screens/account_settings/edit_user_data_page/edit_userdata_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/authenticate.dart';
@@ -9,9 +10,7 @@ import 'package:acroworld/presentation/screens/authentication_screens/forgot_pas
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
 import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/class_booking_summary_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/components/edit_class_description.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/question_page.dart/question_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/creator_profile_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/dashboard_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/invites_page.dart';
@@ -19,7 +18,7 @@ import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/m
 import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/essentials/essentials.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/favorites_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/activities_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_page.dart';
@@ -27,11 +26,14 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/even
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/filter_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/profile_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/map/map_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/event_search_page.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/search/teacher_search_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/error_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/loading_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/privacy_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
@@ -39,11 +41,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-// 1) The “root” key: for your full‐screen, outside‐the‐shell routes
+// 1) The "root" key: for your full‐screen, outside‐the‐shell routes
 final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final userShellKey = GlobalKey<NavigatorState>();
-final creatorShellKey = GlobalKey<NavigatorState>();
 
 // class AuthChangeNotifier extends ChangeNotifier {
 //   AuthChangeNotifier(this.ref) {
@@ -107,16 +108,33 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const ProfilePage()),
               ),
-            ]),
-        ////////////////////
-        /// CREATOR MODE ///
-        ////////////////////
-        ShellRoute(
-            navigatorKey: creatorShellKey,
-            builder: (ctx, state, child) {
-              return MainPageShell(child: child);
-            },
-            routes: [
+              GoRoute(
+                path: '/tickets',
+                name: ticketsRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const TicketsPage()),
+              ),
+              GoRoute(
+                path: '/favorites',
+                name: favoritesRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const FavoritesPage()),
+              ),
+              GoRoute(
+                path: '/event-search',
+                name: eventSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const EventSearchPage()),
+              ),
+              GoRoute(
+                path: '/teacher-search',
+                name: teacherSearchRoute,
+                pageBuilder: (ctx, state) =>
+                    NoTransitionPage(child: const TeacherSearchPage()),
+              ),
+              ////////////////////
+              /// CREATOR MODE ///
+              ////////////////////
               GoRoute(
                 path: '/creator-profile',
                 name: creatorProfileRoute,
@@ -177,27 +195,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (ctx, state) {
             // default to create; to edit, pass isEditing=true in queryParams
             final isEditing = state.uri.queryParameters['isEditing'] == 'true';
-            return CreateAndEditEventPage(isEditing: isEditing);
-          },
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/edit-description',
-          name: editDescriptionRoute,
-          builder: (ctx, state) {
-            final initialText = state.pathParameters['initialText'] ?? '';
-            // You’ll still need a way to supply onTextUpdated; consider using a provider or passing a callback in extra.
-            return EditClassDescriptionPage(
-              initialText: initialText,
-              onTextUpdated: (newText) {/* … */},
+            final eventSlug = state.uri.queryParameters['eventSlug'];
+            return CreateAndEditEventPage(
+              isEditing: isEditing,
+              eventSlug: eventSlug,
             );
           },
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/question',
-          name: questionRoute,
-          builder: (ctx, state) => const QuestionPage(),
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
@@ -226,13 +229,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           builder: (context, state) => const ConfirmEmailPage(),
         ),
 
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/essentials',
-          name: essentialsRoute,
-          pageBuilder: (ctx, state) =>
-              NoTransitionPage(child: const EssentialsPage()),
-        ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
           path: '/map',
@@ -293,7 +289,7 @@ final routerProvider = Provider<GoRouter>((ref) {
           path: '/event/:urlSlug',
           name: singleEventWrapperRoute,
           builder: (ctx, state) {
-            print("full path: ${state.uri.toString()}");
+            CustomErrorHandler.logDebug("full path: ${state.uri.toString()}");
             final slug = state.pathParameters['urlSlug']!;
             final classEventId = state.uri.queryParameters['event'];
             return SingleEventQueryWrapper(
@@ -386,7 +382,7 @@ class AuthErrorPage extends StatelessWidget {
           children: [
             Text(error),
             const SizedBox(height: 16),
-            StandartButton(
+            ModernButton(
               onPressed: () {
                 context.go('/auth');
               },

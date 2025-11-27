@@ -1,5 +1,5 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BookingCardRevenueSection extends StatelessWidget {
@@ -14,7 +14,7 @@ class BookingCardRevenueSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppPaddings.small),
+        padding: const EdgeInsets.all(AppDimensions.spacingSmall),
         child: Text(
           booking.bookingPriceString,
           style: Theme.of(context).textTheme.titleMedium,

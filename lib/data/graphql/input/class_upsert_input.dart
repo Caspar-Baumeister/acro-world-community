@@ -1,6 +1,6 @@
 import 'package:acroworld/data/graphql/input/booking_category_input.dart';
 import 'package:acroworld/data/graphql/input/class_owner_input.dart';
-import 'package:acroworld/data/graphql/input/class_teacher_input.dart';
+import 'package:acroworld/data/graphql/input/invite_input.dart';
 import 'package:acroworld/data/graphql/input/question_input.dart';
 import 'package:acroworld/data/graphql/input/recurring_patterns_input.dart';
 import 'package:latlong2/latlong.dart';
@@ -23,9 +23,9 @@ class ClassUpsertInput {
 
   final List<RecurringPatternInput> recurringPatterns;
   final List<ClassOwnerInput> classOwners;
-  final List<ClassTeacherInput> classTeachers;
   final List<BookingCategoryInput> bookingCategories;
   final List<QuestionInput> questions;
+  final List<InviteInput> invites;
 
   ClassUpsertInput({
     required this.id,
@@ -38,10 +38,10 @@ class ClassUpsertInput {
     required this.location,
     required this.recurringPatterns,
     required this.classOwners,
-    required this.classTeachers,
     required this.bookingCategories,
     required this.maxBookingSlots,
     required this.questions,
+    required this.invites,
     this.eventType,
     this.locationName,
     this.locationCity,
@@ -79,17 +79,6 @@ class ClassUpsertInput {
               "end_time",
               "recurring_every_x_weeks",
               "is_recurring"
-            ]
-          }
-        },
-        "class_teachers": {
-          "data": classTeachers.map((e) => e.toJson()).toList(),
-          "on_conflict": {
-            "constraint": "class_teachers_pkey",
-            "update_columns": [
-              "id",
-              "class_id",
-              "teacher_id",
             ]
           }
         },
@@ -131,6 +120,18 @@ class ClassUpsertInput {
               "question_type",
               "title",
               "event_id"
+            ]
+          }
+        },
+        "invites": {
+          "data": invites.map((e) => e.toJson()).toList(),
+          "on_conflict": {
+            "constraint": "teacher_invites_pkey",
+            "update_columns": [
+              "id",
+              "invited_user_id",
+              "email",
+              "entity",
             ]
           }
         },

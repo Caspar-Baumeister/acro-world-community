@@ -1,10 +1,9 @@
 import 'package:acroworld/data/graphql/queries.dart';
-import 'package:acroworld/presentation/components/search_bar_widget.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_body.dart';
 import 'package:acroworld/services/location_search_service.dart';
 import 'package:acroworld/services/location_singleton.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -105,13 +104,13 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                           ),
                         ),
                         Flexible(
-                          child: SearchBarWidget(
-                            color: CustomColors.backgroundColor,
+                          child: ModernSearchBar(
                             onChanged: (String value) {
                               setState(() {
                                 query = value;
                               });
                             },
+                            showFilterButton: false,
                           ),
                         ),
                         // const SetToUserLocationWidget(),
@@ -119,7 +118,7 @@ class _MapLocationpickerPageState extends State<MapLocationpickerPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: AppPaddings.medium),
+                          horizontal: AppDimensions.spacingMedium),
                       constraints: BoxConstraints(
                         maxHeight: MediaQuery.of(context).size.height * 0.5,
                       ),

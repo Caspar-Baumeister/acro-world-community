@@ -1,37 +1,36 @@
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/provider/riverpod_provider/map_events_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/place_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:provider/provider.dart';
 
-class NewAreaComponent extends StatelessWidget {
+class NewAreaComponent extends ConsumerWidget {
   const NewAreaComponent({
     super.key,
-    required this.placeProvider,
     required this.center,
   });
 
-  final PlaceProvider placeProvider;
   final LatLng center;
 
   @override
-  Widget build(BuildContext context) {
-    if (center.latitude !=
-            placeProvider.locationSingelton.place.latLng.latitude ||
-        center.longitude !=
-            placeProvider.locationSingelton.place.latLng.longitude) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentPlace = ref.watch(placeProvider);
+    final placeNotifier = ref.read(placeProvider.notifier);
+
+    if (currentPlace == null ||
+        center.latitude != currentPlace.latLng.latitude ||
+        center.longitude != currentPlace.latLng.longitude) {
       return Padding(
-        padding: const EdgeInsets.only(top: AppPaddings.small),
+        padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
         child: SizedBox(
           width: 200,
-          child: StandartButton(
+          child: ModernButton(
               onPressed: () {
-                placeProvider.updatePlaceByLaTLang(center);
+                placeNotifier.updatePlaceByLatLng(center);
                 // update MapEventsProvider
-                Provider.of<MapEventsProvider>(context, listen: false)
-                    .fetchClasseEvents();
+                ref.read(mapEventsProvider.notifier).fetchClasseEvents();
               },
               isFilled: true,
               text: "Search in this area"),

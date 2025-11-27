@@ -3,6 +3,7 @@ import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
 import 'package:acroworld/data/models/event_model.dart';
+import 'package:acroworld/data/models/invitation_model.dart';
 import 'package:acroworld/data/models/recurrent_pattern_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
@@ -37,6 +38,7 @@ class ClassModel {
   List<QuestionModel> questions = [];
   List<BookingCategoryModel>? bookingCategories;
   List<ClassFlagsModel>? classFlags;
+  List<InvitationModel>? invites;
   bool? isCashAllowed;
   User? createdBy;
 
@@ -58,6 +60,22 @@ class ClassModel {
           .toList();
     }
     return [];
+  }
+
+  /// Determines if this class can accept bookings
+  bool get isBookable {
+    // Must have booking options
+    if (bookingOptions.isEmpty) {
+      return false;
+    }
+
+    // Must have payment capability (Stripe teacher OR cash payment allowed)
+    final stripeId = owner?.teacher?.stripeId;
+    final isStripeEnabled = owner?.teacher?.isStripeEnabled;
+    final hasStripeTeacher = stripeId != null && isStripeEnabled == true;
+    final allowsCash = isCashAllowed == true;
+
+    return hasStripeTeacher || allowsCash;
   }
 
   bool flaggedByUser(String userId) {
@@ -109,19 +127,27 @@ class ClassModel {
       this.bookingCategories,
       this.isCashAllowed,
       this.createdBy,
-      this.classLevels});
+      this.classLevels,
+      this.invites});
 
   ClassModel.fromJson(Map<String, dynamic> json) {
     createdBy =
         json['created_by'] != null ? User.fromJson(json['created_by']) : null;
 
     if (json["recurring_patterns"] != null) {
+      print(
+          '🔍 CLASSMODEL DEBUG - Processing recurring_patterns, count: ${json["recurring_patterns"].length}');
       recurringPatterns = <RecurringPatternModel>[];
       json["recurring_patterns"].forEach((v) {
+        print('🔍 CLASSMODEL DEBUG - Processing pattern: $v');
         RecurringPatternModel newRecurrentPattern =
             RecurringPatternModel.fromJson(v);
         recurringPatterns!.add(newRecurrentPattern);
+        print(
+            '🔍 CLASSMODEL DEBUG - Added pattern, total count: ${recurringPatterns!.length}');
       });
+      print(
+          '🔍 CLASSMODEL DEBUG - Final recurringPatterns count: ${recurringPatterns!.length}');
     }
     if (json['class_events'] != null) {
       classEvents = <ClassEvent>[];
@@ -180,12 +206,14 @@ class ClassModel {
         classTeachers!.add(ClassTeacher.fromJson(v));
       });
     }
+
     if (json['class_owners'] != null) {
       classOwner = <ClassOwner>[];
       json['class_owners'].forEach((v) {
         classOwner!.add(ClassOwner.fromJson(v));
       });
     }
+
     if (json['class_levels'] != null) {
       classLevels = <ClassLevels>[];
       json['class_levels'].forEach((v) {
@@ -197,6 +225,15 @@ class ClassModel {
       bookingCategories = <BookingCategoryModel>[];
       json['booking_categories'].forEach((v) {
         bookingCategories!.add(BookingCategoryModel.fromJson(v));
+      });
+    }
+
+    if (json['invites'] != null) {
+      invites = [];
+      json['invites'].forEach((invite) {
+        final newInvite = InvitationModel.fromJson(invite);
+        print('newInvite $newInvite');
+        invites!.add(InvitationModel.fromJson(invite));
       });
     }
 

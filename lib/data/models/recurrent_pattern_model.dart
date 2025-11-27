@@ -49,7 +49,8 @@ class RecurringPatternModel {
   }
 
   factory RecurringPatternModel.fromJson(Map<String, dynamic> json) {
-    print(json);
+    print('🔍 RECURRING PATTERN DEBUG - JSON: $json');
+    print('🔍 RECURRING PATTERN DEBUG - JSON keys: ${json.keys.toList()}');
     return RecurringPatternModel(
       id: json['id'],
       classId: json['class_id'],

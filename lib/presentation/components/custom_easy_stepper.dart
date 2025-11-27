@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:easy_stepper/easy_stepper.dart';
 import 'package:flutter/material.dart';
 
@@ -19,17 +18,18 @@ class CustomEasyStepper extends StatelessWidget {
   Widget build(BuildContext context) {
     return EasyStepper(
       activeStep: activeStep,
-      activeStepTextColor: CustomColors.primaryTextColor,
-      finishedStepTextColor: CustomColors.primaryTextColor,
-      finishedStepBorderColor: CustomColors.primaryTextColor,
-      activeStepBackgroundColor: CustomColors.accentColor,
+      activeStepTextColor: Theme.of(context).colorScheme.onPrimary,
+      finishedStepTextColor: Theme.of(context).colorScheme.onPrimary,
+      finishedStepBorderColor: Theme.of(context).colorScheme.primary,
+      activeStepBackgroundColor: Theme.of(context).colorScheme.primary,
       showLoadingAnimation: false,
       stepRadius: 12,
 
       showStepBorder: false,
       // map steps with the index
       steps: steps
-          .map((step) => buildCustomEasyStep(step, steps.indexOf(step)))
+          .map(
+              (step) => buildCustomEasyStep(step, steps.indexOf(step), context))
           .toList(),
       onStepReached: (index) => onStepReached(index),
       fitWidth: true,
@@ -37,20 +37,19 @@ class CustomEasyStepper extends StatelessWidget {
     );
   }
 
-  EasyStep buildCustomEasyStep(String title, int index) {
+  EasyStep buildCustomEasyStep(String title, int index, BuildContext context) {
     return EasyStep(
       customStep: InkWell(
         onTap: () => setStep(index),
         child: CircleAvatar(
           backgroundColor: activeStep >= index
-              ? CustomColors.accentColor
-              : CustomColors.infoBgColor,
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surfaceContainerHighest,
           child: activeStep == index
-              ? const Icon(Icons.edit,
-                  color: CustomColors.backgroundColor, size: 10)
+              ? Icon(Icons.edit, color: Theme.of(context).colorScheme.onPrimary, size: 10)
               : activeStep > index
-                  ? const Icon(Icons.check,
-                      color: CustomColors.backgroundColor, size: 10)
+                  ? Icon(Icons.check,
+                      color: Theme.of(context).colorScheme.onPrimary, size: 10)
                   : Container(),
         ),
       ),

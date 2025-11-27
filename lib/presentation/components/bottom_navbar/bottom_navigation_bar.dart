@@ -1,4 +1,3 @@
-import 'package:acroworld/utils/colors.dart';
 import 'package:flutter/material.dart';
 
 class BBottomNavigationBar extends StatelessWidget {
@@ -88,8 +87,8 @@ class _NavigationItemState extends State<_NavigationItem> {
     final iconColor = widget.isDisabled
         ? theme.unselectedItemColor?.withAlpha(100)
         : (widget.isSelected || isHovered
-            ? CustomColors.primaryTextColor
-            : CustomColors.secondaryTextColor.withOpacity(0.6));
+            ? theme.selectedItemColor
+            : theme.unselectedItemColor);
 
     final labelStyle = (widget.isSelected
             ? theme.selectedLabelStyle

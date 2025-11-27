@@ -26,3 +26,6 @@ class CreatorNavigationNotifier extends Notifier<int> {
 final creatorNavigationProvider =
     NotifierProvider<CreatorNavigationNotifier, int>(
         CreatorNavigationNotifier.new);
+
+// One-time prefetch guard for creator invites badge
+final creatorInvitesPrefetchProvider = StateProvider<bool>((ref) => false);

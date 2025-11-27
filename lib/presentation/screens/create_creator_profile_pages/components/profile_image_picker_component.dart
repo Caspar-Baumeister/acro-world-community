@@ -1,8 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:acroworld/presentation/components/images/custom_avatar_cached_network_image.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -57,8 +56,9 @@ class ProfileImagePickerComponentState
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
-                  color: CustomColors
-                      .inactiveBorderColor, // Your desired border color
+                  color: Theme.of(context)
+                      .colorScheme
+                      .outline, // Your desired border color
                   width: 2.0, // Adjust the width of the border as needed
                 ),
               ),
@@ -68,26 +68,26 @@ class ProfileImagePickerComponentState
                       radius: AppDimensions.avatarSizeMedium,
                     )
                   : CircleAvatar(
-                      backgroundColor: CustomColors.backgroundColor,
+                      backgroundColor: Theme.of(context).colorScheme.surface,
                       radius: AppDimensions.avatarSizeMedium,
                       backgroundImage: widget.profileImage != null
                           ? MemoryImage(widget.profileImage!)
                           : null,
                       child: widget.profileImage == null
-                          ? const Icon(Icons.person,
+                          ? Icon(Icons.person,
                               size: AppDimensions.avatarSizeMedium,
-                              color: CustomColors.iconColor)
+                              color: Theme.of(context).colorScheme.onSurface)
                           : null,
                     ),
             ),
-            const Positioned(
+            Positioned(
               bottom: 0,
               right: 0,
               child: CircleAvatar(
-                backgroundColor: CustomColors.iconColor,
                 radius: AppDimensions.iconSizeTiny,
                 child: Icon(Icons.camera_alt,
-                    color: Colors.white, size: AppDimensions.iconSizeTiny),
+                    color: Theme.of(context).colorScheme.onSurface,
+                    size: AppDimensions.iconSizeTiny),
               ),
             ),
           ],

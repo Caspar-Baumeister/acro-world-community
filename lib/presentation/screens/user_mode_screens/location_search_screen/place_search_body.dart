@@ -2,19 +2,16 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/places/place.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
+import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/components/loading_indicator/loading_indicator.dart';
-import 'package:acroworld/presentation/components/loading_widget.dart';
-import 'package:acroworld/presentation/components/search_bar_widget.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/set_to_user_location_widget.dart';
-import 'package:acroworld/provider/calendar_provider.dart';
-import 'package:acroworld/provider/map_events_provider.dart';
-import 'package:acroworld/provider/place_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/map_events_provider.dart';
 import 'package:acroworld/services/location_singleton.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
-import 'package:provider/provider.dart';
 
 class PlaceQuery extends StatelessWidget {
   const PlaceQuery(
@@ -38,11 +35,45 @@ class PlaceQuery extends StatelessWidget {
             onPlaceSet(place);
           });
 
-          return const LoadingWidget();
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                SizedBox(height: 8),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+              ],
+            ),
+          );
         } else if (placeResult.hasException || !placeResult.isConcrete) {
           return Container();
         } else {
-          return const LoadingWidget();
+          return const Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ModernSkeleton(width: 200, height: 20),
+                SizedBox(height: 16),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                SizedBox(height: 8),
+                ModernSkeleton(
+                    width: 300,
+                    height: 60,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+              ],
+            ),
+          );
         }
       },
     );
@@ -66,11 +97,12 @@ class PlacesQuery extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium, vertical: AppPaddings.medium),
-      margin: const EdgeInsets.symmetric(vertical: AppPaddings.small),
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingMedium),
+      margin: const EdgeInsets.symmetric(vertical: AppDimensions.spacingSmall),
       decoration: BoxDecoration(
-        color: CustomColors.backgroundColor,
-        borderRadius: AppBorders.smallRadius,
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),
@@ -100,7 +132,7 @@ class PlacesQuery extends StatelessWidget {
                 stackTrace: StackTrace.current);
             return Container(
               alignment: Alignment.center,
-              padding: const EdgeInsets.all(AppPaddings.medium),
+              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
               child: Text(
                   "Something went wrong, just click anywhere in the map and finish the event creation, we will fix it afterwards. Please contact the support"),
             );
@@ -112,7 +144,7 @@ class PlacesQuery extends StatelessWidget {
                 data[selector].isEmpty) {
               return Container(
                 alignment: Alignment.center,
-                padding: const EdgeInsets.all(AppPaddings.medium),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 child: Text("No places found"),
               );
             }
@@ -131,14 +163,15 @@ class PlacesQuery extends StatelessWidget {
                             ['description']);
                   },
                   child: Padding(
-                    padding: const EdgeInsets.only(right: AppPaddings.medium),
+                    padding: const EdgeInsets.only(
+                        right: AppDimensions.spacingMedium),
                     child: Row(
                       children: [
-                        const Icon(
+                        Icon(
                           Icons.location_on,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
-                        const SizedBox(width: AppPaddings.small),
+                        const SizedBox(width: AppDimensions.spacingSmall),
                         Flexible(
                           child: Text(
                             result.data?[selector]?[index]['description'],
@@ -161,14 +194,14 @@ class PlacesQuery extends StatelessWidget {
   }
 }
 
-class PlaceSearchBody extends StatefulWidget {
+class PlaceSearchBody extends ConsumerStatefulWidget {
   const PlaceSearchBody({super.key});
 
   @override
-  State<PlaceSearchBody> createState() => _PlaceSearchBodyState();
+  ConsumerState<PlaceSearchBody> createState() => _PlaceSearchBodyState();
 }
 
-class _PlaceSearchBodyState extends State<PlaceSearchBody> {
+class _PlaceSearchBodyState extends ConsumerState<PlaceSearchBody> {
   String query = '';
   String placeId = '';
   bool isNavigatedBack = false;
@@ -182,7 +215,7 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
           Row(
             children: [
               Flexible(
-                child: SearchBarWidget(
+                child: ModernSearchBar(
                   onChanged: (String value) {
                     setState(() {
                       query = value;
@@ -200,15 +233,14 @@ class _PlaceSearchBodyState extends State<PlaceSearchBody> {
                         placeId: placeId,
                         onPlaceSet: (Place place) {
                           LocationSingleton().setPlace(place);
-                          Provider.of<PlaceProvider>(context, listen: false)
-                              .updatePlace(place);
-                          Provider.of<CalendarProvider>(context, listen: false)
-                              .fetchClasseEvents();
+                          // Place will be updated automatically via LocationSingleton
+                          // Calendar events will be fetched automatically when place changes
                           // updateCurrentCameraPosition MapEventsProvider
-                          Provider.of<MapEventsProvider>(context, listen: false)
+                          ref
+                              .read(mapEventsProvider.notifier)
                               .setPlaceFromPlace(place);
-
-                          Provider.of<MapEventsProvider>(context, listen: false)
+                          ref
+                              .read(mapEventsProvider.notifier)
                               .fetchClasseEvents();
                           if (!isNavigatedBack) {
                             Navigator.of(context).pop();

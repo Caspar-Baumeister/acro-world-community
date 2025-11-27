@@ -1,11 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:acroworld/data/graphql/queries.dart'; // for the dropdown queries
 import 'package:acroworld/data/models/class_event.dart'; // if still needed
 import 'package:acroworld/data/models/gender_model.dart';
 import 'package:acroworld/data/models/user_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/guest_profile_content.dart';
+import 'package:acroworld/presentation/components/input/user_image_picker.dart';
+import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -28,6 +32,10 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
   String? acroLevel;
   String? acroLevelId;
   bool _initialized = false;
+
+  // Image upload state
+  Uint8List? _selectedImageBytes;
+  bool _isUploadingImage = false;
 
   @override
   void initState() {
@@ -56,6 +64,43 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
   }
 
   Future<bool> _onSave(User user) async {
+    // Handle image upload first if there's a selected image
+    if (_selectedImageBytes != null) {
+      setState(() {
+        _isUploadingImage = true;
+      });
+
+      try {
+        final success = await ref
+            .read(userNotifierProvider.notifier)
+            .uploadAndUpdateImage(_selectedImageBytes!);
+
+        if (!success) {
+          showErrorToast("Failed to upload profile image");
+          setState(() {
+            _isUploadingImage = false;
+          });
+          return false;
+        }
+
+        // Clear the selected image after successful upload
+        setState(() {
+          _selectedImageBytes = null;
+        });
+      } catch (e) {
+        showErrorToast("Error uploading image: $e");
+        setState(() {
+          _isUploadingImage = false;
+        });
+        return false;
+      } finally {
+        setState(() {
+          _isUploadingImage = false;
+        });
+      }
+    }
+
+    // Handle other field changes
     final changes = _computeChanges(user);
     if (changes == null) return true; // nothing to do
     final success =
@@ -66,6 +111,18 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
       showErrorToast("Something went wrong, profile not updated");
     }
     return success;
+  }
+
+  Future<void> _handleImageSelected(Uint8List imageBytes) async {
+    setState(() {
+      _selectedImageBytes = imageBytes;
+    });
+  }
+
+  Future<void> _handleImageRemoved() async {
+    setState(() {
+      _selectedImageBytes = null;
+    });
   }
 
   Future<bool> _onWillPop(User user) async {
@@ -98,7 +155,18 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
 
     return userAsync.when(
       loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ModernSkeleton(width: 200, height: 20),
+              SizedBox(height: 16),
+              ModernSkeleton(width: 300, height: 100),
+              SizedBox(height: 16),
+              ModernSkeleton(width: 250, height: 80),
+            ],
+          ),
+        ),
       ),
       error: (err, st) {
         CustomErrorHandler.captureException(err.toString(), stackTrace: st);
@@ -151,7 +219,45 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       filled: true,
-                      fillColor: Colors.white,
+                      fillColor: Theme.of(context).colorScheme.surfaceContainer,
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // — Profile Image Section —
+                  const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text("Profile Picture:")),
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      children: [
+                        UserImagePickerComponent(
+                          currentImageUrl: user.imageUrl,
+                          onImageSelected: _handleImageSelected,
+                          onImageRemoved: _handleImageRemoved,
+                          size: 100,
+                          showEditIcon: true,
+                          showRemoveButton: false,
+                          isLoading: _isUploadingImage,
+                        ),
+                        if (_selectedImageBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'New image selected - will be uploaded when you save',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
 
@@ -180,7 +286,9 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                       if (result.isLoading) {
                         return const SizedBox(
                           height: 50,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: ModernSkeleton(width: 100, height: 20),
+                          ),
                         );
                       }
                       final roles = (result.data!['acro_roles'] as List)
@@ -191,7 +299,8 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
@@ -245,7 +354,9 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                       if (result.isLoading) {
                         return const SizedBox(
                           height: 50,
-                          child: Center(child: CircularProgressIndicator()),
+                          child: Center(
+                            child: ModernSkeleton(width: 100, height: 20),
+                          ),
                         );
                       }
                       final levels = (result.data!['levels'] as List)
@@ -256,7 +367,8 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8)),
                           filled: true,
-                          fillColor: Colors.white,
+                          fillColor:
+                              Theme.of(context).colorScheme.surfaceContainer,
                           contentPadding: const EdgeInsets.symmetric(
                               horizontal: 8, vertical: 0),
                         ),
@@ -289,15 +401,15 @@ class _EditUserdataPageState extends ConsumerState<EditUserdataPage> {
                   const Spacer(),
 
                   // — Save button —
-                  StandartButton(
-                    text: "Save",
-                    onPressed: isSaving
+                  ModernButton(
+                    text: _isUploadingImage ? "Uploading Image..." : "Save",
+                    onPressed: (isSaving || _isUploadingImage)
                         ? () {}
                         : () async {
                             final ok = await _onSave(user);
                             if (ok) context.pop();
                           },
-                    loading: isSaving,
+                    isLoading: isSaving || _isUploadingImage,
                     isFilled: true,
                   ),
                 ],

@@ -2,14 +2,14 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/data/models/teacher_model.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
+import 'package:acroworld/presentation/components/cards/modern_teacher_card.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/components/open_google_maps.dart';
 import 'package:acroworld/presentation/components/open_map.dart';
 import 'package:acroworld/presentation/screens/single_class_page/widgets/link_button.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/classes/class_teacher_chips.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/widgets/level_difficulty_widget.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -34,8 +34,9 @@ class SingleClassBody extends StatelessWidget {
     }
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium)
-          .copyWith(top: 10),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium)
+              .copyWith(top: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -45,14 +46,20 @@ class SingleClassBody extends StatelessWidget {
           if (classEvent != null &&
               classEvent!.startDate != null &&
               classEvent!.endDate != null) ...[
-            Text(
-                DateTimeService.getDateString(
-                    classEvent!.startDate!, classEvent!.endDate!),
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyLarge!
-                    .copyWith(color: CustomColors.accentColor)
-                    .copyWith(letterSpacing: -0.5)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                    DateTimeService.getDateString(
+                        classEvent!.startDate!, classEvent!.endDate!),
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        letterSpacing: -0.5)),
+                if (classe.classLevels != null &&
+                    classe.classLevels!.isNotEmpty)
+                  DifficultyWidget(classe.classLevels),
+              ],
+            ),
             const CustomDivider()
           ],
 
@@ -92,32 +99,27 @@ class SingleClassBody extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Teacher:",
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      "Teachers",
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
+                              ),
                     ),
-                    const SizedBox(height: 2),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const SizedBox(width: 10),
-                            ClassTeacherChips(
-                                classTeacherList: List<TeacherModel>.from(
-                                    classTeachers
-                                        .where((e) => e.teacher != null)
-                                        .map((e) => e.teacher))),
-                          ],
-                        ),
+                    const SizedBox(height: 16),
+                    ModernTeacherList(
+                      teachers: List<TeacherModel>.from(
+                        classTeachers
+                            .where((e) => e.teacher != null)
+                            .map((e) => e.teacher!),
                       ),
+                      isCompact: false, // Always use full vertical layout
+                      maxItems: classTeachers.length, // Show all teachers
                     ),
-                    const CustomDivider()
+                    const SizedBox(height: 24),
+                    const CustomDivider(),
                   ],
                 )
-              : Container(),
+              : const SizedBox.shrink(), // Minimal space when no teachers
 
           classe.location?.coordinates?[1] != null &&
                   classe.location?.coordinates?[0] != null
@@ -137,23 +139,57 @@ class SingleClassBody extends StatelessWidget {
                         )
                       ],
                     ),
-                    classe.locationName != null
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 5),
-                            child: Text(
-                              classe.locationName!,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                    letterSpacing: -0.5,
-                                    height: 1.1,
+                    // Location name and country/region in a modern chip-like design
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (classe.locationName != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    classe.locationName!,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          letterSpacing: -0.5,
+                                          height: 1.1,
+                                        ),
                                   ),
-                            ),
-                          )
-                        : Container(),
+                                ),
+                              // Country and region chips
+                              if (classe.city != null || classe.country != null)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8),
+                                  child: Wrap(
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: [
+                                      if (classe.city != null)
+                                        _buildLocationChip(
+                                          context,
+                                          classe.city!,
+                                          Icons.location_city,
+                                        ),
+                                      if (classe.country != null)
+                                        _buildLocationChip(
+                                          context,
+                                          classe.country!,
+                                          Icons.public,
+                                        ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 10),
                     Container(
                       decoration: BoxDecoration(
@@ -187,8 +223,8 @@ class SingleClassBody extends StatelessWidget {
                     classe.websiteUrl != null && classe.websiteUrl != ""
                         ? Container(
                             alignment: Alignment.centerLeft,
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.medium),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingMedium),
                             child: SmallStandartButtonWithLink(
                                 text: "Website", link: classe.websiteUrl!),
                           )
@@ -197,10 +233,45 @@ class SingleClassBody extends StatelessWidget {
                 )
               : Container(),
           // ClassEventCalenderQuery(classId: classe.id!),
-          const SizedBox(height: AppPaddings.extraLarge)
+          const SizedBox(height: AppDimensions.spacingExtraLarge)
         ],
       ),
     ));
+  }
+
+  Widget _buildLocationChip(BuildContext context, String label, IconData icon) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: colorScheme.outline.withOpacity(0.2),
+          width: 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            icon,
+            size: 14,
+            color: colorScheme.primary,
+          ),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: theme.textTheme.labelSmall?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -224,8 +295,8 @@ class FlagsWarningBox extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: flagWarningLevel == FlagWarningLevel.light
-              ? CustomColors.warningColor.withOpacity(0.9)
-              : CustomColors.errorBorderColor.withOpacity(0.9),
+              ? Theme.of(context).colorScheme.error.withOpacity(0.4)
+              : Theme.of(context).colorScheme.error,
           borderRadius: BorderRadius.circular(12),
           boxShadow: [
             BoxShadow(
@@ -237,20 +308,20 @@ class FlagsWarningBox extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const Icon(Icons.warning_amber_rounded,
-                color: Colors.white, size: 28),
+            Icon(Icons.warning_amber_rounded,
+                color: Theme.of(context).colorScheme.onPrimary, size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 "This class has $amountActiveFlags active flags and ${flagWarningLevel == FlagWarningLevel.light ? "might not happen" : "will most likely not happen"}",
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyMedium!
-                    .copyWith(color: Colors.white, fontWeight: FontWeight.w600),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600),
               ),
             ),
             const SizedBox(width: 12),
-            const Icon(Icons.info_outline, color: Colors.white, size: 24),
+            Icon(Icons.info_outline,
+                color: Theme.of(context).colorScheme.onPrimary, size: 24),
           ],
         ),
       ),
@@ -265,7 +336,7 @@ class FlagsWarningBox extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Theme.of(context).colorScheme.surface,
           child: Padding(
             padding: const EdgeInsets.all(20),
             child: Column(

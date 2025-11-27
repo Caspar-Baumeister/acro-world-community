@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1077598628073",
+    "project_id": "acro-world-development",
+    "storage_bucket": "acro-world-development.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077598628073:android:7e3df14179b75b4669a878",
+        "android_client_info": {
+          "package_name": "com.acroworld.poses.android.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2ijvzTccfy6igvAuCLgU-LiL8vRxj0fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1077598628073:android:79c22bcbfb5ac76269a878",
+        "android_client_info": {
+          "package_name": "com.community.acroworld"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD2ijvzTccfy6igvAuCLgU-LiL8vRxj0fw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

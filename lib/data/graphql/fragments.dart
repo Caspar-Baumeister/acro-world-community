@@ -104,6 +104,20 @@ class Fragments {
       location_country
       location_city
       website_url
+      invites {
+        id
+        entity
+        email
+        invited_user_id
+        confirmation_status
+        created_at
+        invited_user {
+          ${Fragments.userFragment}
+        }
+        class {
+          ${Fragments.classFragmentLazy}
+        }
+      }
       class_teachers {
         id
         teacher_id
@@ -144,7 +158,6 @@ class Fragments {
         id
         is_active
         user_id
-        
       }
       is_cash_allowed
       
@@ -160,6 +173,7 @@ class Fragments {
       url_slug
       name
       class_teachers {
+        id
         teacher {
           $teacherFragmentLazy
         }
@@ -222,6 +236,11 @@ class Fragments {
   stripe_id
   is_stripe_enabled
   
+  user {
+    id
+    email
+    name
+  }
   user_likes_aggregate {
     aggregate {
       count

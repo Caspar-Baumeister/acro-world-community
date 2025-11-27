@@ -24,17 +24,17 @@ extension IconDataExtension on IconLibrary {
   IconData get icon {
     switch (this) {
       case IconLibrary.calendar:
-        return Icons.calendar_month_outlined;
+        return Icons.event_available_rounded;
       case IconLibrary.profile:
-        return Icons.person;
+        return Icons.person_rounded;
       case IconLibrary.community:
-        return Icons.people;
+        return Icons.groups_rounded;
       case IconLibrary.dashboard:
-        return Icons.dashboard;
+        return Icons.dashboard_rounded;
       case IconLibrary.invites:
-        return Icons.mail;
+        return Icons.mail_rounded;
       case IconLibrary.world:
-        return Icons.public;
+        return Icons.explore_rounded;
       default:
         throw Exception("Icon not found");
     }

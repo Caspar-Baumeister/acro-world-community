@@ -1,24 +1,24 @@
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
+import 'package:acroworld/presentation/components/cards/modern_booking_card.dart';
+import 'package:acroworld/presentation/components/sections/bookings_search_and_filter.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboad_bookings_statistics.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_booking_view.dart';
+import 'package:acroworld/provider/riverpod_provider/creator_bookings_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/state/provider/creator_bookings_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:provider/provider.dart' as provider;
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends ConsumerWidget {
   const DashboardPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return BasePage(
-        appBar: const CustomAppbarSimple(
+        appBar: CustomAppbarSimple(
           title: "Bookings",
           isBackButton: false,
         ),
         makeScrollable: false,
+        useCreatorGradient: true,
         child: DashboardBody());
   }
 }
@@ -33,40 +33,109 @@ class _DashboardBodyState extends ConsumerState<DashboardBody> {
   @override
   void initState() {
     super.initState();
-    // initialises the bookings provider with the creator id from the creator provider
-    CreatorBookingsProvider creatorBookingsProvider =
-        provider.Provider.of<CreatorBookingsProvider>(context, listen: false);
-    if (creatorBookingsProvider.confirmedBookings.isEmpty) {
-      // creatorBookingsProvider.creatorUserId =
-      //     provider.Provider.of<UserProvider>(context, listen: false).activeUser!.id!;
+    // Initialize the bookings provider with the creator id after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final creatorBookingsNotifier =
+          ref.read(creatorBookingsProvider.notifier);
       final userId = ref.read(userRiverpodProvider).value?.id;
+
       if (userId != null) {
-        creatorBookingsProvider.creatorUserId = userId;
-        creatorBookingsProvider.fetchBookings();
-        creatorBookingsProvider.getClassEventBookingsAggregate();
+        creatorBookingsNotifier.setCreatorUserId(userId);
+        creatorBookingsNotifier.fetchBookings();
+        creatorBookingsNotifier.getClassEventBookingsAggregate();
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    // get the bookings from the provider
-    final creatorBookingsProvider =
-        provider.Provider.of<CreatorBookingsProvider>(context);
+    final creatorBookingsState = ref.watch(creatorBookingsProvider);
+    final creatorBookingsNotifier = ref.read(creatorBookingsProvider.notifier);
+
     return RefreshIndicator(
       onRefresh: () async {
-        await creatorBookingsProvider.fetchBookings(isRefresh: true);
-        await creatorBookingsProvider.getClassEventBookingsAggregate();
+        await creatorBookingsNotifier.fetchBookings(isRefresh: true);
+        await creatorBookingsNotifier.getClassEventBookingsAggregate();
       },
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          DashboadBookingsStatistics(
-              totalAmountBookings: creatorBookingsProvider.totalBookings),
-          if (creatorBookingsProvider.confirmedBookings.isNotEmpty)
+          // Statistics card
+
+          // Search and filter section
+          BookingsSearchAndFilter(
+            searchQuery: creatorBookingsState.searchQuery,
+            selectedStatus: creatorBookingsState.selectedStatus,
+            onSearchChanged: (query) =>
+                creatorBookingsNotifier.updateSearchQuery(query),
+            onStatusChanged: (status) =>
+                creatorBookingsNotifier.updateSelectedStatus(status),
+            onSearchSubmitted: (query) =>
+                creatorBookingsNotifier.updateSearchQuery(query),
+          ),
+
+          // Bookings list
+          if (creatorBookingsState.filteredBookings.isNotEmpty)
             Expanded(
-                child: DashboardBookingView(
-                    bookings: creatorBookingsProvider.confirmedBookings))
+              child: _buildBookingsList(
+                  creatorBookingsState, creatorBookingsNotifier),
+            )
+          else if (!creatorBookingsState.loading)
+            Expanded(
+              child: _buildEmptyState(context),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBookingsList(
+      CreatorBookingsState state, CreatorBookingsNotifier notifier) {
+    return ListView.builder(
+      itemCount: state.filteredBookings.length + (state.canFetchMore ? 1 : 0),
+      itemBuilder: (context, index) {
+        if (index == state.filteredBookings.length) {
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () => notifier.fetchMore(),
+                child: const Text("Load more"),
+              ),
+            ),
+          );
+        }
+
+        final booking = state.filteredBookings[index];
+        return ModernBookingCard(booking: booking);
+      },
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.event_busy,
+            size: 64,
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "No bookings found",
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            "Try adjusting your search or filters",
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+          ),
         ],
       ),
     );

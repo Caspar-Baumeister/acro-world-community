@@ -2,15 +2,14 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/data/models/class_model.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/send_feedback_button.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/email_helper.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
+import 'package:acroworld/utils/helper_functions/share_event.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:share_plus/share_plus.dart';
 
 class BookingInformationModal extends StatelessWidget {
   const BookingInformationModal(
@@ -23,43 +22,30 @@ class BookingInformationModal extends StatelessWidget {
   final String userId;
   final ClassEventBooking booking;
 
-  void shareEvent(ClassEvent classEvent, ClassModel clas) {
-    String deeplinkUrl = "https://acroworld.net/event/${clas.urlSlug}";
-    if (classEvent.id != null) {
-      deeplinkUrl += "?event=${classEvent.id!}";
-    }
-    final String content = '''
-Hi, 
-I just booked ${clas.name} 
-on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)} 
-in the AcroWorld app
-
-You can join me here: $deeplinkUrl
-''';
-
-    Share.share(content);
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     ClassModel clas = classEvent.classModel!;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 24.0),
+      padding: const EdgeInsets.fromLTRB(
+          AppDimensions.spacingLarge,
+          AppDimensions.spacingExtraSmall,
+          AppDimensions.spacingLarge,
+          AppDimensions.spacingLarge),
       child: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Divider(
-              color: CustomColors.primaryColor,
+              color: Theme.of(context).colorScheme.primary,
               thickness: 5.0,
               indent: width * 0.40,
               endIndent: width * 0.40,
             ),
-            const SizedBox(height: 12.0),
+            const SizedBox(height: AppDimensions.spacingSmall),
             Text(
-              "You have successfully booked ${clas.name} on ${DateFormat('EEEE, H:mm').format(classEvent.startDateDT)}",
+              "You have successfully booked ${clas.name} on ${getDateStringMonthDay(classEvent.startDateDT)}",
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
@@ -67,18 +53,20 @@ You can join me here: $deeplinkUrl
             if (booking.status == "WaitingForPayment")
               // show a box with the information, that you still have to pay, the amount and so on
               Container(
-                margin: const EdgeInsets.only(bottom: 16.0),
-                padding: const EdgeInsets.all(16.0),
+                margin:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingMedium),
+                padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                 decoration: BoxDecoration(
-                  color: CustomColors.backgroundWarningColor,
-                  borderRadius: BorderRadius.circular(8.0),
+                  color: Theme.of(context).colorScheme.error.withOpacity(0.2),
+                  borderRadius:
+                      BorderRadius.circular(AppDimensions.radiusMedium),
                 ),
                 child: Text(
                   "You still have to pay ${(booking.amount / 100).toStringAsFixed(2)} ${booking.currency} for this booking before the event starts.",
                   textAlign: TextAlign.center,
                 ),
               ),
-            StandartButton(
+            ModernButton(
               text: "Share with friends",
               onPressed: () => shareEvent(classEvent, clas),
               isFilled: true,
@@ -86,7 +74,8 @@ You can join me here: $deeplinkUrl
             const SizedBox(height: 15),
             if (booking.teacherEmail != null)
               Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
+                padding:
+                    const EdgeInsets.only(bottom: AppDimensions.spacingSmall),
                 child: LinkButtonComponent(
                     text: "Contact organiser",
                     onPressed: () {

@@ -17,7 +17,7 @@ dependencies:
   url_strategy: ^0.2.0
   stripe_platform_interface: 11.5.0
   cupertino_icons: ^1.0.2
-  provider: ^6.0.1
+  # provider: ^6.0.1  # Temporarily commented out - migrating to Riverpod
   shared_preferences: ^2.0.11
   flutter_launcher_icons: ^0.14.1
   flutter_map: ^7.0.2
@@ -48,6 +48,7 @@ dependencies:
   flutter_svg: ^2.0.10+1
   app_links: ^6.1.1
   firebase_auth: ^5.3.1
+  skeletonizer: ^2.1.0+1
   image_picker: ^1.1.2
   easy_stepper: ^0.8.5+1
   numberpicker: ^2.1.2
@@ -56,6 +57,7 @@ dependencies:
   fl_chart: ^0.69.0
   uuid: ^4.5.1
   quill_html_editor: ^2.2.8
+  qr_flutter: ^4.1.0
   # for quill_html_editor to work:
   webview_flutter_wkwebview: ^3.18.1
 
@@ -63,6 +65,7 @@ dependencies:
   go_router: ^15.0.0
   riverpod: ^2.6.1
   flutter_riverpod: ^2.6.1
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
@@ -95,8 +98,8 @@ scripts:
 
   build-prod: flutter build api --flavor prod --dart-define=app.flavor=prod
 
-  run-android-dev: flutter run --dart-define=app.flavor=dev
-  run-android-prod: flutter run --dart-define=app.flavor=prod --release
+  run:android:dev: flutter run --dart-define=app.flavor=dev
+  run:android:prod: flutter run --dart-define=app.flavor=prod --release
 
 flutter:
   uses-material-design: true

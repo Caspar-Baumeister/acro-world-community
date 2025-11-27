@@ -1,13 +1,11 @@
-// Filename: base_bottom_navigation_bar.dart
-
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BaseBottomNavigationBar extends StatelessWidget {
   const BaseBottomNavigationBar({
     super.key,
     required this.child,
-    this.height = AppDimensions.bottomNavBarHeight,
+    this.height = AppDimensions.buttonHeight, // Changed to buttonHeight for consistency
     this.adjustForKeyboard = true,
   });
 
@@ -27,7 +25,7 @@ class BaseBottomNavigationBar extends StatelessWidget {
         child: SafeArea(
           child: Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: AppPaddings.medium, vertical: 2),
+                  horizontal: AppDimensions.spacingMedium, vertical: 2),
               child: child),
         ),
       ),

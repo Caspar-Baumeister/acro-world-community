@@ -1,6 +1,6 @@
 import 'package:acroworld/data/graphql/mutations.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
@@ -88,30 +88,40 @@ class _ReportButtonMutationWrapperState
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.flag_circle_outlined,
-                  color: Colors.redAccent, size: 48),
-              const SizedBox(height: 16),
+              Icon(Icons.flag_circle_outlined,
+                  color: Theme.of(context).colorScheme.error, size: 48),
+              SizedBox(height: 16),
               Text(
                 "Flag Event",
                 style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                    fontWeight: FontWeight.bold, color: Colors.black87),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
               ),
-              const SizedBox(height: 12),
-              const Text(
+              SizedBox(height: 12),
+              Text(
                 "Are you sure this event is not happening or incorrect?",
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(ctx).pop(),
-                    child: const Text("Close",
-                        style: TextStyle(color: Colors.grey)),
+                    child: Text("Close",
+                        style: TextStyle(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.7),
+                        )),
                   ),
-                  StandartButton(
+                  ModernButton(
                     text: "Report Event",
                     width: MediaQuery.of(context).size.width * 0.3,
                     isFilled: true,
@@ -137,15 +147,15 @@ class _ReportButtonMutationWrapperState
   @override
   Widget build(BuildContext context) {
     return ref.watch(userRiverpodProvider).when(
-          loading: () => const SizedBox(
+          loading: () => SizedBox(
             width: 40,
             height: 40,
             child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
           ),
-          error: (_, __) => const SizedBox.shrink(),
+          error: (_, __) => SizedBox.shrink(),
           data: (user) {
             final userId = user?.id;
-            if (userId == null) return const SizedBox.shrink();
+            if (userId == null) return SizedBox.shrink();
 
             return SizedBox(
               width: 40,
@@ -153,7 +163,7 @@ class _ReportButtonMutationWrapperState
               child: IconButton(
                 icon: Icon(
                   _isReported ? Icons.flag : Icons.flag_outlined,
-                  color: _isReported ? Colors.red : Colors.black,
+                  color: Theme.of(context).colorScheme.error,
                 ),
                 onPressed: () => _onIconPressed(userId),
                 tooltip: _isReported

@@ -2,11 +2,10 @@ import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/booking_option.dart';
 import 'package:acroworld/data/repositories/bookings_repository.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/custom_divider.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 
@@ -51,7 +50,7 @@ class OptionChoosingStep extends StatelessWidget {
                   return true;
                 }).map((bookingCategory) => Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: AppPaddings.tiny),
+                          vertical: AppDimensions.spacingExtraSmall),
                       child: BookingCategorySelectionComponent(
                         bookingCategory: bookingCategory,
                         currentId: currentOption,
@@ -67,7 +66,7 @@ class OptionChoosingStep extends StatelessWidget {
         ),
 
         const SizedBox(height: 20),
-        StandartButton(
+        ModernButton(
           text: "Continue",
           onPressed: () {
             if (currentOption != null) {
@@ -79,18 +78,20 @@ class OptionChoosingStep extends StatelessWidget {
             }
           },
           isFilled: true,
-          buttonFillColor: CustomColors.accentColor,
+          backgroundColor: Theme.of(context).colorScheme.primary,
           width: double.infinity,
         ),
-        placesLeft != null && maxPlaces != null
+        placesLeft != null &&
+                maxPlaces != null &&
+                (placesLeft! < 5 || placesLeft! < (maxPlaces! * 0.05))
             ? Padding(
-                padding: const EdgeInsets.only(top: AppPaddings.small),
+                padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                 child: Text(
-                  "$placesLeft / $maxPlaces places left",
-                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                      color: placesLeft! <= (maxPlaces! / 2)
-                          ? CustomColors.errorTextColor
-                          : CustomColors.accentColor),
+                  "only ${placesLeft!.toInt()} tickets left",
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleSmall!
+                      .copyWith(color: Theme.of(context).colorScheme.error),
                 ),
               )
             : Container()
@@ -131,10 +132,10 @@ class _BookingCategorySelectionComponentState
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(AppPaddings.medium),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         decoration: BoxDecoration(
-          color: CustomColors.secondaryBackgroundColor,
-          borderRadius: AppBorders.defaultRadius,
+          color: Theme.of(context).colorScheme.surface,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
         ),
         child: FutureBuilder<int?>(
           future: _confirmedBookingsFuture,
@@ -158,10 +159,10 @@ class _BookingCategorySelectionComponentState
                     widget.bookingCategory.name,
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                   ),
-                  SizedBox(height: AppPaddings.small),
+                  SizedBox(height: AppDimensions.spacingSmall),
                   Text(widget.bookingCategory.description ?? "",
                       overflow: TextOverflow.ellipsis,
                       maxLines: 2,
@@ -169,11 +170,12 @@ class _BookingCategorySelectionComponentState
                   // a line
                   const CustomDivider(),
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
+                          color: Theme.of(context).colorScheme.error,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -192,20 +194,40 @@ class _BookingCategorySelectionComponentState
                         widget.bookingCategory.name,
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               fontWeight: FontWeight.bold,
-                              color: CustomColors.primaryColor,
+                              color: Theme.of(context).colorScheme.primary,
                             ),
                       ),
                     ),
-                    Text(
-                      "Available tickets:  ${snapshot.data != null ? "${widget.bookingCategory.contingent - snapshot.data!}/" : ""}${widget.bookingCategory.contingent}",
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    if (snapshot.data != null)
+                      Builder(
+                        builder: (context) {
+                          final int availableTickets =
+                              widget.bookingCategory.contingent -
+                                  snapshot.data!;
+                          final int totalTickets =
+                              widget.bookingCategory.contingent;
+                          if (availableTickets < 5 ||
+                              availableTickets < (totalTickets * 0.05)) {
+                            return Text(
+                              "only $availableTickets tickets left",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium!
+                                  .copyWith(
+                                    color: Theme.of(context).colorScheme.error,
+                                  ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
                   ],
                 ),
                 if (widget.bookingCategory.description != null &&
                     widget.bookingCategory.description!.isNotEmpty)
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(widget.bookingCategory.description ?? "",
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
@@ -216,11 +238,12 @@ class _BookingCategorySelectionComponentState
                 if (snapshot.data != null &&
                     snapshot.data! >= widget.bookingCategory.contingent)
                   Padding(
-                    padding: const EdgeInsets.only(top: AppPaddings.small),
+                    padding:
+                        const EdgeInsets.only(top: AppDimensions.spacingSmall),
                     child: Text(
                       "No more places left",
                       style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                          color: CustomColors.errorTextColor,
+                          color: Theme.of(context).colorScheme.error,
                           fontWeight: FontWeight.bold),
                     ),
                   ),
@@ -230,7 +253,7 @@ class _BookingCategorySelectionComponentState
                   ...widget.bookingCategory.bookingOptions!
                       .map((BookingOption e) => Padding(
                             padding: const EdgeInsets.only(
-                                bottom: AppPaddings.medium),
+                                bottom: AppDimensions.spacingMedium),
                             child: BookingOptionSelectionCard(
                               bookingOption: e,
                               value: widget.currentId == e.id,
@@ -273,10 +296,11 @@ class BookingOptionSelectionCard extends StatelessWidget {
       },
       child: Container(
           decoration: BoxDecoration(
-            borderRadius: AppBorders.defaultRadius,
-            border: Border.all(color: CustomColors.primaryTextColor, width: 1),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+            border: Border.all(
+                color: Theme.of(context).colorScheme.onSurface, width: 1),
           ),
-          padding: const EdgeInsets.all(AppPaddings.small),
+          padding: const EdgeInsets.all(AppDimensions.spacingSmall),
           child: Row(
             children: [
               SizedBox(
@@ -284,14 +308,14 @@ class BookingOptionSelectionCard extends StatelessWidget {
                 width: 24.0,
                 child: IgnorePointer(
                   child: Checkbox(
-                    activeColor: CustomColors.successTextColor,
+                    activeColor: Theme.of(context).colorScheme.primary,
                     value: value,
                     onChanged: (_) => onChanged(bookingOption.id!),
                   ),
                 ),
               ),
               VerticalDivider(
-                color: CustomColors.primaryTextColor,
+                color: Theme.of(context).colorScheme.onSurface,
                 thickness: 1,
               ),
               Expanded(
@@ -303,14 +327,14 @@ class BookingOptionSelectionCard extends StatelessWidget {
                       bookingOption.title!,
                       style: Theme.of(context).textTheme.titleLarge!.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: CustomColors.primaryColor),
+                          color: Theme.of(context).colorScheme.primary),
                       maxLines: 2,
                     ),
                     bookingOption.subtitle != null &&
                             bookingOption.subtitle!.isNotEmpty
                         ? Padding(
-                            padding:
-                                const EdgeInsets.only(top: AppPaddings.small),
+                            padding: const EdgeInsets.only(
+                                top: AppDimensions.spacingSmall),
                             child: Text(
                               bookingOption.subtitle!,
                               style: Theme.of(context).textTheme.bodyMedium,
@@ -323,7 +347,7 @@ class BookingOptionSelectionCard extends StatelessWidget {
               Text(
                 '${bookingOption.price != null ? (bookingOption.price! / 100).toStringAsFixed(2) : "n/a"} ${bookingOption.currency.symbol}',
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                    color: CustomColors.accentColor,
+                    color: Theme.of(context).colorScheme.primary,
                     fontWeight: FontWeight.bold),
               ),
             ],

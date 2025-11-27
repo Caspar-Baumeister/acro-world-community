@@ -3430,6 +3430,13 @@ const Map<String, List<String>> countryRegions = {
     "Skåne",
     "Västra Götaland"
   ],
+  "SG": [
+    "Central Region",
+    "East Region",
+    "North Region",
+    "North-East Region",
+    "West Region"
+  ],
   "CH": [
     "Zurich",
     "Zug",

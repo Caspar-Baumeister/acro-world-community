@@ -1,17 +1,17 @@
 import 'package:acroworld/data/models/event/answer_model.dart';
 import 'package:acroworld/data/models/event/question_model.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/phone_question_input.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/widgets/selectable_card.dart';
-import 'package:acroworld/provider/event_answers_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/provider/riverpod_provider/event_answer_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AnswerQuestionModal extends StatefulWidget {
+class AnswerQuestionModal extends ConsumerStatefulWidget {
   const AnswerQuestionModal({
     super.key,
     required this.question,
@@ -24,10 +24,11 @@ class AnswerQuestionModal extends StatefulWidget {
   final String userId;
 
   @override
-  State<AnswerQuestionModal> createState() => _AnswerQuestionModalState();
+  ConsumerState<AnswerQuestionModal> createState() =>
+      _AnswerQuestionModalState();
 }
 
-class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
+class _AnswerQuestionModalState extends ConsumerState<AnswerQuestionModal> {
   late TextEditingController _answerController;
   late TextEditingController _phonePrefixController;
   final List<String> _selectedOptions = <String>[];
@@ -38,9 +39,9 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
     _phonePrefixController = TextEditingController();
     super.initState();
 
-    final AnswerModel? editAnswer =
-        Provider.of<EventAnswerProvider>(context, listen: false)
-            .getAnswersByQuestionId(widget.question.id!);
+    final AnswerModel? editAnswer = ref
+        .read(eventAnswerProvider.notifier)
+        .getAnswersByQuestionId(widget.question.id!);
     if (editAnswer != null) {
       _answerController.text = editAnswer.answer ?? "";
       if (widget.question.type == QuestionType.phoneNumber) {
@@ -60,9 +61,10 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
 
   @override
   Widget build(BuildContext context) {
-    final provider = Provider.of<EventAnswerProvider>(context);
-    final AnswerModel? editAnswer =
-        provider.getAnswersByQuestionId(widget.question.id!);
+    final eventAnswerState = ref.watch(eventAnswerProvider);
+    final AnswerModel? editAnswer = ref
+        .read(eventAnswerProvider.notifier)
+        .getAnswersByQuestionId(widget.question.id!);
 
     if (editAnswer != null) {
       print("Edit answer: ${editAnswer.toString()}");
@@ -84,8 +86,8 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
               if (questionType != QuestionType.phoneNumber &&
                   widget.question.question != null) ...[
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: AppPaddings.large),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: AppDimensions.spacingLarge),
                   child: Text(
                     widget.question.question!,
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -96,8 +98,8 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 // answer input
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
-                      vertical: AppPaddings.medium),
+                      horizontal: AppDimensions.spacingLarge,
+                      vertical: AppDimensions.spacingMedium),
                   child: InputFieldComponent(
                     controller: _answerController,
                     minLines: 5,
@@ -107,12 +109,12 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 ),
               ],
               if (questionType == QuestionType.multipleChoice) ...[
-                const SizedBox(height: AppPaddings.medium),
+                const SizedBox(height: AppDimensions.spacingMedium),
                 widget.question.isMultipleChoice == true
                     ? Padding(
                         // padding only left
                         padding: const EdgeInsets.only(
-                          bottom: AppPaddings.tiny,
+                          bottom: AppDimensions.spacingExtraSmall,
                         ),
                         child: Text("(✓) You can choose multiple options",
                             style: Theme.of(context).textTheme.bodyMedium),
@@ -121,7 +123,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                 // multiple choice options
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: AppPaddings.large,
+                    horizontal: AppDimensions.spacingLarge,
                   ),
                   child: Column(
                     children: widget.question.choices!
@@ -145,32 +147,32 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                         .toList(),
                   ),
                 ),
-                const SizedBox(height: AppPaddings.medium),
+                const SizedBox(height: AppDimensions.spacingMedium),
               ],
               if (questionType == QuestionType.phoneNumber) ...[
                 // phone number input
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: AppPaddings.large,
-                      vertical: AppPaddings.medium),
+                      horizontal: AppDimensions.spacingLarge,
+                      vertical: AppDimensions.spacingMedium),
                   child: PhoneQuestionInput(
                       controller: _answerController,
                       prefixController: _phonePrefixController),
                 ),
               ],
 
-              SizedBox(height: AppPaddings.medium),
+              SizedBox(height: AppDimensions.spacingMedium),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  StandartButton(
+                  ModernButton(
                       width: MediaQuery.of(context).size.width * 0.3,
                       text: "Cancel",
                       onPressed: () {
                         Navigator.of(context).pop();
                       }),
-                  SizedBox(width: AppPaddings.small),
-                  StandartButton(
+                  SizedBox(width: AppDimensions.spacingSmall),
+                  ModernButton(
                       width: MediaQuery.of(context).size.width * 0.5,
                       text: editAnswer != null ? "Save" : "Add",
                       isFilled: true,
@@ -183,7 +185,7 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                             showErrorToast("Please enter an answer");
                             return;
                           }
-                          provider.updateAnswer(
+                          ref.read(eventAnswerProvider.notifier).updateAnswer(
                               editAnswer.questionId!,
                               AnswerModel(
                                   answer: _answerController.text,
@@ -202,18 +204,20 @@ class _AnswerQuestionModalState extends State<AnswerQuestionModal> {
                         } else {
                           if (_answerController.text.isNotEmpty ||
                               questionType == QuestionType.multipleChoice) {
-                            provider.addAnswer(AnswerModel(
-                                answer: _answerController.text,
-                                countryDialCode: _phonePrefixController.text,
-                                eventOccurence: widget.eventOccurence,
-                                userId: widget.userId,
-                                questionId: widget.question.id,
-                                multipleChoiceAnswers: _selectedOptions
-                                    .map((e) => MultipleChoiceAnswerModel(
-                                        isCorrect: true,
-                                        multipleChoiceOptionId: e,
-                                        userId: widget.userId))
-                                    .toList()));
+                            ref.read(eventAnswerProvider.notifier).addAnswer(
+                                AnswerModel(
+                                    answer: _answerController.text,
+                                    countryDialCode:
+                                        _phonePrefixController.text,
+                                    eventOccurence: widget.eventOccurence,
+                                    userId: widget.userId,
+                                    questionId: widget.question.id,
+                                    multipleChoiceAnswers: _selectedOptions
+                                        .map((e) => MultipleChoiceAnswerModel(
+                                            isCorrect: true,
+                                            multipleChoiceOptionId: e,
+                                            userId: widget.userId))
+                                        .toList()));
                           } else {
                             showErrorToast("Please enter an answer");
                             return;

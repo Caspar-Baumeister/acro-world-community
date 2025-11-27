@@ -1,12 +1,19 @@
+import 'dart:typed_data';
+
 import 'package:acroworld/exceptions/auth_exception.dart';
 import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/link_button.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
+import 'package:acroworld/presentation/components/input/user_image_picker.dart';
+// TODO: UNCOMMENT WHEN READY TO IMPLEMENT IMAGE UPLOAD DURING REGISTRATION
+// import 'package:acroworld/presentation/components/input/user_image_picker.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/agbsCheckBox.dart';
 import 'package:acroworld/presentation/shells/responsive.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/utils/colors.dart';
+import 'package:acroworld/services/user_image_service.dart';
+// TODO: UNCOMMENT WHEN READY TO IMPLEMENT IMAGE UPLOAD DURING REGISTRATION
+// import 'package:acroworld/services/user_image_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -30,6 +37,10 @@ class _SignUpState extends ConsumerState<SignUp> {
 
   bool passwordObscure = true;
   bool passwordConfirmObscure = true;
+
+  // Image upload state
+  Uint8List? _selectedImageBytes;
+  bool _isUploadingImage = false;
 
   late final TextEditingController nameController;
   late final TextEditingController emailController;
@@ -71,15 +82,52 @@ class _SignUpState extends ConsumerState<SignUp> {
     }
 
     try {
+      String? imageUrl;
+
+      // 1. Upload profile image first if selected
+      if (_selectedImageBytes != null) {
+        setState(() {
+          _isUploadingImage = true;
+        });
+
+        try {
+          // Generate a temporary user ID for the image path
+          // This will be used to create a unique path for the image
+          final tempUserId = DateTime.now().millisecondsSinceEpoch.toString();
+          final imagePath = 'user-images/$tempUserId/profile.png';
+
+          // Upload image directly to Firebase Storage
+          final imageUploadService = ImageUploadService();
+          imageUrl = await imageUploadService.uploadImage(
+            _selectedImageBytes!,
+            path: imagePath,
+          );
+          print('📝 DEBUG: SignUp - Image uploaded successfully: $imageUrl');
+        } catch (e) {
+          // Don't fail registration if image upload fails
+          print('Warning: Failed to upload profile image: $e');
+          imageUrl = null;
+        } finally {
+          if (mounted) {
+            setState(() {
+              _isUploadingImage = false;
+            });
+          }
+        }
+      }
+
+      // 2. Register the user with the image URL (if uploaded successfully)
       await ref.read(authProvider.notifier).register(
             name: nameController.text.trim(),
             email: emailController.text.trim(),
             password: passwordController.text,
             isNewsletter: isNewsletter,
+            imageUrl: imageUrl,
           );
 
       if (!mounted) return;
 
+      // 3. Navigate to next screen
       if (widget.redirectAfter != null) {
         context.go(widget.redirectAfter!);
       } else {
@@ -115,7 +163,7 @@ class _SignUpState extends ConsumerState<SignUp> {
                     minHeight:
                         isKeyboardOpen ? 0 : MediaQuery.of(context).size.height,
                   )
-                : BoxConstraints(),
+                : const BoxConstraints(),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50.0),
               child: Column(
@@ -185,6 +233,59 @@ class _SignUpState extends ConsumerState<SignUp> {
                         : null,
                   ),
                   const SizedBox(height: 20.0),
+
+                  // Profile Image Section
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Profile Picture (Optional)',
+                          style:
+                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.7),
+                                  ),
+                        ),
+                        const SizedBox(height: 12.0),
+                        UserImagePickerComponent(
+                          currentImageUrl: null,
+                          onImageSelected: (imageBytes) {
+                            setState(() {
+                              _selectedImageBytes = imageBytes;
+                            });
+                          },
+                          onImageRemoved: () {
+                            setState(() {
+                              _selectedImageBytes = null;
+                            });
+                          },
+                          size: 80,
+                          showEditIcon: true,
+                          showRemoveButton: true,
+                          isLoading: _isUploadingImage,
+                        ),
+                        if (_selectedImageBytes != null)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: Text(
+                              'Image selected',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20.0),
                   AGBCheckbox(
                     isAgb: isAgb,
                     setAgb: (val) => setState(() => isAgb = val),
@@ -195,20 +296,20 @@ class _SignUpState extends ConsumerState<SignUp> {
                     setNewsletter: (val) => setState(() => isNewsletter = val),
                   ),
                   const SizedBox(height: 20.0),
-                  StandartButton(
-                    text: "Register",
-                    onPressed: isLoading ? () {} : _onRegister,
-                    loading: isLoading,
+                  ModernButton(
+                    text: _isUploadingImage ? "Uploading Image..." : "Register",
+                    onPressed:
+                        (isLoading || _isUploadingImage) ? null : _onRegister,
+                    isLoading: isLoading || _isUploadingImage,
                     isFilled: true,
-                    buttonFillColor: CustomColors.primaryColor,
                   ),
                   if (error.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.only(top: 12.0),
                       child: Text(
                         error,
-                        style:
-                            const TextStyle(color: Colors.red, fontSize: 14.0),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.error),
                       ),
                     ),
                   const SizedBox(height: 20),

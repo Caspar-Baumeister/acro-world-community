@@ -1,27 +1,27 @@
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/filter_page/components/base_chip_wrapper.dart';
-import 'package:acroworld/provider/discover_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
-import 'package:acroworld/utils/colors.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-class CountryFilterCards extends StatelessWidget {
+class CountryFilterCards extends ConsumerWidget {
   const CountryFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
     return BaseChipWrapper(
       children: <Widget>[
-        ...discoveryProvider.allCountries
+        ...discoveryState.allCountries
             .where((country) => country.isNotEmpty)
             .map((String country) {
-          bool isSelected = discoveryProvider.filterCountries.contains(country);
+          bool isSelected = discoveryState.filterCountries.contains(country);
           return GestureDetector(
-            onTap: () => discoveryProvider.changeActiveCountry(country),
+            onTap: () => ref
+                .read(discoveryProvider.notifier)
+                .changeActiveCountry(country),
             child: FilterChipCard(
               label: country,
               isActive: isSelected,
@@ -33,19 +33,18 @@ class CountryFilterCards extends StatelessWidget {
   }
 }
 
-class RegionFilterCards extends StatelessWidget {
+class RegionFilterCards extends ConsumerWidget {
   const RegionFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
 
     // Collect all regions matching selected countries
     List<String> selectedRegions = [];
-    for (var country in discoveryProvider.filterCountries) {
-      if (discoveryProvider.allRegionsByCountry.containsKey(country)) {
-        selectedRegions.addAll(discoveryProvider.allRegionsByCountry[country]!);
+    for (var country in discoveryState.filterCountries) {
+      if (discoveryState.allRegionsByCountry.containsKey(country)) {
+        selectedRegions.addAll(discoveryState.allRegionsByCountry[country]!);
       }
     }
     selectedRegions = selectedRegions.toSet().toList(); // remove duplicates
@@ -58,9 +57,10 @@ class RegionFilterCards extends StatelessWidget {
         ...selectedRegions
             .where((region) => region != notSpecifiedKey)
             .map((String region) {
-          bool isSelected = discoveryProvider.filterRegions.contains(region);
+          bool isSelected = discoveryState.filterRegions.contains(region);
           return GestureDetector(
-            onTap: () => discoveryProvider.changeActiveRegion(region),
+            onTap: () =>
+                ref.read(discoveryProvider.notifier).changeActiveRegion(region),
             child: FilterChipCard(
               label: region,
               isActive: isSelected,
@@ -68,10 +68,12 @@ class RegionFilterCards extends StatelessWidget {
           );
         }),
         GestureDetector(
-          onTap: () => discoveryProvider.changeActiveRegion(notSpecifiedKey),
+          onTap: () => ref
+              .read(discoveryProvider.notifier)
+              .changeActiveRegion(notSpecifiedKey),
           child: FilterChipCard(
             label: notSpecifiedKey,
-            isActive: discoveryProvider.filterRegions.contains(notSpecifiedKey),
+            isActive: discoveryState.filterRegions.contains(notSpecifiedKey),
           ),
         ),
       ],
@@ -79,27 +81,28 @@ class RegionFilterCards extends StatelessWidget {
   }
 }
 
-class QuickFilterCards extends StatelessWidget {
+class QuickFilterCards extends ConsumerWidget {
   const QuickFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
     return BaseChipWrapper(
       children: <Widget>[
         GestureDetector(
-          onTap: () => discoveryProvider.setToOnlyHighlightedFilter(),
+          onTap: () =>
+              ref.read(discoveryProvider.notifier).setToOnlyHighlightedFilter(),
           child: FilterChipCard(
             label: "Highlights",
-            isActive: discoveryProvider.isOnlyHighlightedFilter,
+            isActive: discoveryState.isOnlyHighlightedFilter,
           ),
         ),
         GestureDetector(
-          onTap: () => discoveryProvider.setToOnlyBookableFilter(),
+          onTap: () =>
+              ref.read(discoveryProvider.notifier).setToOnlyBookableFilter(),
           child: FilterChipCard(
             label: "Bookable Events",
-            isActive: discoveryProvider.isOnlyBookableFilter,
+            isActive: discoveryState.isOnlyBookableFilter,
           ),
         )
       ],
@@ -107,22 +110,22 @@ class QuickFilterCards extends StatelessWidget {
   }
 }
 
-class CategorieFilterCards extends StatelessWidget {
+class CategorieFilterCards extends ConsumerWidget {
   const CategorieFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
 
     return BaseChipWrapper(
       children: <Widget>[
-        ...discoveryProvider.allEventTypes.map((EventType eventType) {
-          bool isSelected =
-              discoveryProvider.filterCategories.contains(eventType);
+        ...discoveryState.allEventTypes.map((EventType eventType) {
+          bool isSelected = discoveryState.filterCategories.contains(eventType);
 
           return GestureDetector(
-            onTap: () => discoveryProvider.changeActiveCategory(eventType),
+            onTap: () => ref
+                .read(discoveryProvider.notifier)
+                .changeActiveCategory(eventType),
             child: FilterChipCard(
               label: eventType.name,
               isActive: isSelected,
@@ -134,14 +137,13 @@ class CategorieFilterCards extends StatelessWidget {
   }
 }
 
-class DateFilterCards extends StatelessWidget {
+class DateFilterCards extends ConsumerWidget {
   const DateFilterCards({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
-    final List<DateTime> allDates = discoveryProvider.allDates..sort();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
+    final List<DateTime> allDates = discoveryState.allDates..sort();
 
     // Group dates by year
     final Map<int, List<DateTime>> datesGroupedByYear = {};
@@ -171,9 +173,11 @@ class DateFilterCards extends StatelessWidget {
                 runSpacing: 0.0,
                 children: yearDates.map((date) {
                   bool isSelected = isDateMonthAndYearInList(
-                      discoveryProvider.filterDates, date);
+                      discoveryState.filterDates, date);
                   return GestureDetector(
-                    onTap: () => discoveryProvider.changeActiveEventDates(date),
+                    onTap: () => ref
+                        .read(discoveryProvider.notifier)
+                        .changeActiveEventDates(date),
                     child: FilterChipCard(
                       label: DateFormat.MMMM().format(date),
                       isActive: isSelected,
@@ -205,14 +209,19 @@ class FilterChipCard extends StatelessWidget {
           label: Text(
             label,
             style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                color: isActive ? Colors.white : CustomColors.primaryColor),
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.onSurface),
           ),
           labelPadding: const EdgeInsets.all(0.0),
-          backgroundColor: isActive ? CustomColors.primaryColor : Colors.white,
+          backgroundColor: isActive
+              ? Theme.of(context).colorScheme.primary
+              : Theme.of(context).colorScheme.surface,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20.0),
           ),
-          side: const BorderSide(color: Colors.grey, width: 1.0),
+          side: BorderSide(
+              color: Theme.of(context).colorScheme.outline, width: 1.0),
         ),
         if (amount != null)
           Positioned(
@@ -221,8 +230,10 @@ class FilterChipCard extends StatelessWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               decoration: BoxDecoration(
-                color: isActive ? Colors.white : CustomColors.primaryColor,
-                borderRadius: BorderRadius.only(
+                color: isActive
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : Theme.of(context).colorScheme.primary,
+                borderRadius: const BorderRadius.only(
                   topRight: Radius.circular(20.0),
                   bottomLeft: Radius.circular(20.0),
                 ),
@@ -230,7 +241,9 @@ class FilterChipCard extends StatelessWidget {
               child: Text(
                 '$amount',
                 style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                    color: isActive ? CustomColors.primaryColor : Colors.white),
+                    color: isActive
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onPrimary),
               ),
             ),
           ),

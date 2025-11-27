@@ -21,8 +21,7 @@ class _LoadingPageState extends State<LoadingPage> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height -
-                AppBar().preferredSize.height,
+            height: MediaQuery.of(context).size.height,
             child: const Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,

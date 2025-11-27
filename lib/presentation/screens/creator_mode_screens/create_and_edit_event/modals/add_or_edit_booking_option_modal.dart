@@ -1,10 +1,9 @@
 import 'package:acroworld/data/models/booking_option.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/custom_option_input_component.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/presentation/screens/modals/base_modal.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/currency_formater.dart';
 import 'package:flutter/material.dart';
 
@@ -78,14 +77,14 @@ class _AddOrEditBookingOptionModalState
             controller: _titleController,
             labelText: 'Title',
           ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
 
           // Subtitle input
           InputFieldComponent(
             controller: _subTitleController,
             labelText: 'Subtitle',
           ),
-          const SizedBox(height: AppPaddings.medium),
+          const SizedBox(height: AppDimensions.spacingMedium),
 
           // Price and currency inputs
           Row(
@@ -98,7 +97,7 @@ class _AddOrEditBookingOptionModalState
                   isNumberInput: true,
                 ),
               ),
-              const SizedBox(width: AppPaddings.medium),
+              const SizedBox(width: AppDimensions.spacingMedium),
               Flexible(
                 flex: 1,
                 child: CustomOptionInputComponent(
@@ -127,10 +126,10 @@ class _AddOrEditBookingOptionModalState
               ),
             ],
           ),
-          const SizedBox(height: AppPaddings.toLarge),
+          const SizedBox(height: AppDimensions.spacingHuge),
 
           // Create/Update button
-          StandartButton(
+          ModernButton(
             text: widget.bookingOption == null ? "Create" : "Update",
             onPressed: _onNext,
           ),
@@ -138,13 +137,13 @@ class _AddOrEditBookingOptionModalState
           // Optional error message
           if (_errorMessage != null)
             Padding(
-              padding: const EdgeInsets.only(top: AppPaddings.medium),
+              padding: const EdgeInsets.only(top: AppDimensions.spacingMedium),
               child: Text(
                 _errorMessage!,
                 style: Theme.of(context)
                     .textTheme
                     .titleSmall!
-                    .copyWith(color: CustomColors.errorTextColor),
+                    .copyWith(color: Theme.of(context).colorScheme.error),
               ),
             ),
         ],

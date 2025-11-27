@@ -1,11 +1,9 @@
 import 'package:acroworld/exceptions/error_handler.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/screens/modals/base_modal.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/colors.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -24,92 +22,130 @@ class _CreateCreatorProfileModalState extends State<CreateCreatorProfileModal> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseModal(
-      child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.large,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // ─── Icon + Title + Subtitle ───────────────────
-            Icon(
-              Icons.auto_awesome,
-              size: 48,
-              color: CustomColors.subtitleText,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Ready to Create?',
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Unlock a world of possibilities and share your passion with others.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyMedium!
-                  .copyWith(color: CustomColors.subtitleText),
-            ),
-            const SizedBox(height: 24),
-
-            // ─── Feature List ──────────────────────────────
-            _FeatureItem(
-              icon: Icons.group_add,
-              title: 'Grow Your Audience',
-              description: 'Connect with followers and build your community.',
-            ),
-            const SizedBox(height: 16),
-            _FeatureItem(
-              icon: Icons.event,
-              title: 'Host Unique Events',
-              description:
-                  'Easily set up and manage bookings for your activities.',
-            ),
-            const SizedBox(height: 16),
-            _FeatureItem(
-              icon: Icons.star,
-              title: 'Get Featured',
-              description:
-                  'Be discovered and featured for your amazing content.',
-            ),
-            const SizedBox(height: 24),
-
-            // ─── Footnote ───────────────────────────────────
-            Text(
-              'Setting up your creator profile is quick, easy, and completely free. It only takes a few minutes to get started!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall!
-                  .copyWith(color: CustomColors.subtitleText),
-            ),
-            const SizedBox(height: 24),
-
-            // ─── Primary Action ─────────────────────────────
-            StandartButton(
-              text: "Let's Go!",
-              onPressed: isLoading ? () {} : _onContinue,
-              buttonFillColor: CustomColors.subtitleText,
-              loading: isLoading,
-              disabled: isLoading,
-              isFilled: true,
-            ),
-
-            // ─── Secondary Action ───────────────────────────
-            const SizedBox(height: 12),
-            StandartButton(
-              text: "Maybe Later",
-              onPressed: isLoading ? () {} : () => Navigator.of(context).pop(),
-              buttonFillColor: CustomColors.subtitleText,
-              disabled: isLoading,
-            ),
+    final colorScheme = Theme.of(context).colorScheme;
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            colorScheme.primaryContainer.withOpacity(0.3),
+            colorScheme.secondaryContainer.withOpacity(0.2),
+            colorScheme.tertiaryContainer.withOpacity(0.1),
           ],
+          stops: const [0.0, 0.5, 1.0],
         ),
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(AppDimensions.radiusLarge),
+        ),
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 40,
+            height: 5,
+            margin: const EdgeInsets.only(top: AppDimensions.spacingMedium),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSurface,
+              borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppDimensions.spacingLarge,
+              vertical: AppDimensions.spacingLarge,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ─── Icon + Title + Subtitle ───────────────────
+                Icon(
+                  Icons.auto_awesome,
+                  size: 48,
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Ready to Create?',
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall!
+                      .copyWith(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Unlock a world of possibilities and share your passion with others.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7)),
+                ),
+                const SizedBox(height: 24),
+
+                // ─── Feature List ──────────────────────────────
+                _FeatureItem(
+                  icon: Icons.group_add,
+                  title: 'Grow Your Audience',
+                  description:
+                      'Connect with followers and build your community.',
+                ),
+                const SizedBox(height: 16),
+                _FeatureItem(
+                  icon: Icons.event,
+                  title: 'Host Unique Events',
+                  description:
+                      'Easily set up and manage bookings for your activities.',
+                ),
+                const SizedBox(height: 16),
+                _FeatureItem(
+                  icon: Icons.star,
+                  title: 'Get Featured',
+                  description:
+                      'Be discovered and featured for your amazing content.',
+                ),
+                const SizedBox(height: 24),
+
+                // ─── Footnote ───────────────────────────────────
+                Text(
+                  'Setting up your creator profile is quick, easy, and completely free. It only takes a few minutes to get started!',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7)),
+                ),
+                const SizedBox(height: 24),
+
+                // ─── Primary Action ─────────────────────────────
+                ModernButton(
+                  text: "Let's Go!",
+                  onPressed: isLoading ? null : _onContinue,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  isLoading: isLoading,
+                  isFilled: true,
+                ),
+
+                // ─── Secondary Action ───────────────────────────
+                const SizedBox(height: 12),
+                ModernButton(
+                  text: "Close",
+                  isFilled: false,
+                  onPressed:
+                      isLoading ? null : () => Navigator.of(context).pop(),
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: AppDimensions.spacingMedium),
+        ],
       ),
     );
   }
@@ -176,7 +212,6 @@ class _FeatureItem extends StatelessWidget {
   final String description;
 
   const _FeatureItem({
-    super.key,
     required this.icon,
     required this.title,
     required this.description,
@@ -187,7 +222,9 @@ class _FeatureItem extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Icon(icon, color: CustomColors.subtitleText, size: 28),
+        Icon(icon,
+            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+            size: 28),
         const SizedBox(width: 12),
         Expanded(
           child: Column(
@@ -203,10 +240,11 @@ class _FeatureItem extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall!
-                    .copyWith(color: CustomColors.subtitleText),
+                style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.7)),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
-import 'package:acroworld/presentation/components/bottom_navbar/bottom_navigation_bar.dart';
-import 'package:acroworld/presentation/theme.dart';
+import 'package:acroworld/presentation/components/bottom_navbar/modern_bottom_navigation_bar.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/pending_invites_badge_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/utils/icons/icon_library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,34 +18,62 @@ class ShellCreatorBottomNavigationBar extends ConsumerWidget {
         .watch(creatorNavigationProvider); // Listen to the navigation provider
     print("Selected index creator: $selectedIndex");
     final notifier = ref.read(creatorNavigationProvider.notifier);
+    final pendingCount = ref.watch(pendingInvitesBadgeProvider);
 
-    return Theme(
-        // We always use dark theme for the bottom navigation bar
-        data: AppTheme.fromType(ThemeType.dark),
-        child: BBottomNavigationBar(
-          selectedIndex: selectedIndex,
-          onItemSelected: (index) {
-            notifier.setIndex(index);
-            onItemPressed(index);
-          },
-          items: [
-            UiNavigationBarItem(
-              icon: Icon(IconLibrary.dashboard.icon),
-              title: Text("Bookings"),
-            ),
-            UiNavigationBarItem(
-              icon: Icon(IconLibrary.calendar.icon),
-              title: Text("My Events"),
-            ),
-            UiNavigationBarItem(
-              icon: Icon(IconLibrary.invites.icon),
-              title: Text("invitations"),
-            ),
-            UiNavigationBarItem(
-              icon: Icon(IconLibrary.profile.icon),
-              title: Text("Creator Profile"),
-            ),
+    // Initialize pending invites badge when creator mode is active
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final userAsync = ref.read(userRiverpodProvider);
+      userAsync.whenData((user) {
+        if (user?.id != null) {
+          ref
+              .read(pendingInvitesBadgeProvider.notifier)
+              .fetchPendingCount(user!.id!);
+        }
+      });
+    });
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          colors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.surface,
           ],
-        ));
+        ),
+      ),
+      child: ModernBottomNavigationBar(
+        backgroundColor: Colors.transparent,
+        selectedIndex: selectedIndex,
+        onItemSelected: (index) {
+          notifier.setIndex(index);
+          onItemPressed(index);
+        },
+        items: [
+          ModernNavigationBarItem(
+            icon: IconLibrary.dashboard.icon,
+            selectedIcon: IconLibrary.dashboard.icon,
+            label: "Bookings",
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.calendar.icon,
+            selectedIcon: IconLibrary.calendar.icon,
+            label: "Listings",
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.invites.icon,
+            selectedIcon: IconLibrary.invites.icon,
+            label: "Invitations",
+            badgeCount: pendingCount,
+          ),
+          ModernNavigationBarItem(
+            icon: IconLibrary.profile.icon,
+            selectedIcon: IconLibrary.profile.icon,
+            label: "Profile",
+          ),
+        ],
+      ),
+    );
   }
 }

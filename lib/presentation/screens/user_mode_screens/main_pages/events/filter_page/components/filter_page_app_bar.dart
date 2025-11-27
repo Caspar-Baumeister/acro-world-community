@@ -16,5 +16,5 @@ class FilterPageAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize => const Size.fromHeight(kBottomNavigationBarHeight);
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

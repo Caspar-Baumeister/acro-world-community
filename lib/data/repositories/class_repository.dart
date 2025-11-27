@@ -4,6 +4,7 @@ import 'package:acroworld/data/graphql/queries.dart';
 import 'package:acroworld/data/models/booking_category_model.dart';
 import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/data/models/class_model.dart';
+import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
@@ -11,6 +12,40 @@ class ClassesRepository {
   final GraphQLClientSingleton apiService;
 
   ClassesRepository({required this.apiService});
+
+  // Get count of pending invites for a teacher user (by user_id)
+  // Excludes classes created by the current user
+  Future<int?> getPendingInvitesCount(String userId) async {
+    final queryOptions = QueryOptions(
+      document: Queries.getPendingTeacherInvitesCount,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        'user_id': userId,
+      },
+    );
+
+    print("variables getPendingInvitesCount: ${queryOptions.variables}");
+
+    final client = apiService.client;
+    final result = await client.query(queryOptions);
+
+    if (result.hasException) {
+      CustomErrorHandler.logDebug(
+          '🔍 REPOSITORY DEBUG - GraphQL exception: ${result.exception}');
+      return 0;
+    }
+
+    print("result getPendingInvitesCount: ${result.data}");
+
+    final aggregateData = result.data?['class_teachers_aggregate'];
+    final count = aggregateData?['aggregate']?['count'] as int? ?? 0;
+
+    // Keep the aggregate count for debugging
+    CustomErrorHandler.logDebug(
+        '🔍 REPOSITORY DEBUG - Pending invites count: $count');
+
+    return count;
+  }
 
 // Fetches class with full information
   Future<ClassModel> getClassBySlug(String slug) async {
@@ -33,13 +68,76 @@ class ClassesRepository {
 
     if (result.data != null && result.data!["classes"].length > 0) {
       try {
-        return ClassModel.fromJson(result.data!['classes'][0]);
-      } catch (e) {
+        // Debug: Print the raw response to see recurring_patterns
+        print(
+            '🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
+        print(
+            '🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
+        print('🔍 GRAPHQL DEBUG - About to call ClassModel.fromJson');
+
+        final classData = result.data!['classes'][0];
+        print('🔍 GRAPHQL DEBUG - classData type: ${classData.runtimeType}');
+        print('🔍 GRAPHQL DEBUG - classData keys: ${classData.keys.toList()}');
+
+        final parsedClass = ClassModel.fromJson(classData);
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns: ${parsedClass.recurringPatterns}');
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns.length: ${parsedClass.recurringPatterns?.length}');
+        print(
+            '🔍 GRAPHQL DEBUG - Parsed class invites: ${parsedClass.invites}');
+
+        return parsedClass;
+      } catch (e, stackTrace) {
+        print('🔍 GRAPHQL DEBUG - Error parsing class: $e');
+        print('🔍 GRAPHQL DEBUG - Stack trace: $stackTrace');
         throw Exception('Failed to parse class: $e');
       }
     } else {
       throw Exception('Failed to load class, no data, with result $result');
     }
+  }
+
+  // Check if a url slug is already taken (returns true if available)
+  Future<bool> isSlugAvailable(String slug) async {
+    final graphQLClient = GraphQLClientSingleton().client;
+    final options = QueryOptions(
+      document: Queries.isSlugAvailable,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"slug": slug},
+    );
+    final result = await graphQLClient.query(options);
+    if (result.hasException) {
+      throw Exception(
+          'Failed to check slug availability: ${result.exception?.raw.toString()}');
+    }
+    final bool isAvailable =
+        result.data?['is_class_slug_available'] as bool? ?? false;
+    print('isSlugAvailable $slug $isAvailable');
+    return isAvailable;
+  }
+
+  Future<String> getEventSlugSuggestion(String name) async {
+    final QueryOptions options = QueryOptions(
+      document: Queries.getEventSlugSuggestion,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {"name": name},
+    );
+    final GraphQLClient client = apiService.client;
+    final QueryResult<Object?> result = await client.query(options);
+    if (result.hasException) {
+      throw Exception(
+          'Failed to fetch event slug suggestion: ${result.exception?.raw.toString()}');
+    }
+
+    final String? suggestion =
+        result.data?['get_class_slug_suggestion'] as String?;
+
+    if (suggestion == null || suggestion.isEmpty) {
+      throw Exception('Slug suggestion response is empty');
+    }
+
+    return suggestion;
   }
 
   // Fetches classes with teacher privileges for displaying list of classes
@@ -123,11 +221,6 @@ class ClassesRepository {
   ) async {
     pleaseJustPrintTheWholeFuckingStringWhyIsThatSoFuckingHardForYouFlutter(
         'upsertClass ${input.toJson()}');
-    print('deleteQuestionIds $deleteQuestionIds');
-    print('deleteRecurringPatternIds $deleteRecurringPatternIds');
-    print('deleteClassTeacherIds $deleteClassTeacherIds');
-    print('deleteBookingOptionIds $deleteBookingOptionIds');
-    print('deleteBookingCategoryIds $deleteBookingCategoryIds');
 
     MutationOptions mutationOptions = MutationOptions(
       document: Mutations.upsertClass,
@@ -138,7 +231,7 @@ class ClassesRepository {
         "delete_booking_category_ids": deleteBookingCategoryIds,
         "delete_class_teacher_ids": deleteClassTeacherIds,
         "delete_booking_option_ids": deleteBookingOptionIds,
-        "delete_question_ids": deleteQuestionIds
+        "delete_question_ids": deleteQuestionIds,
       },
     );
 

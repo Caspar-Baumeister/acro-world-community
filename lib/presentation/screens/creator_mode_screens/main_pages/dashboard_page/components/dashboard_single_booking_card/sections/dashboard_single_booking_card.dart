@@ -1,7 +1,7 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
 import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/components/dashboard_single_booking_card/sections/booking_status_tile.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class BookingCardImageSection extends StatelessWidget {
@@ -17,11 +17,11 @@ class BookingCardImageSection extends StatelessWidget {
     return Stack(
       children: [
         ClipRRect(
-          borderRadius: AppBorders.smallRadius,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
           child: CustomCachedNetworkImage(
             imageUrl: booking.classEvent.classModel?.imageUrl,
-            width: BOOKING_CARD_HEIGHT,
-            height: BOOKING_CARD_HEIGHT,
+            width: 100,
+            height: 100,
           ),
         ),
         Positioned(

@@ -2,8 +2,7 @@ import 'package:acroworld/data/graphql/fragments.dart';
 import 'package:graphql_flutter/graphql_flutter.dart';
 
 class Queries {
-  /// CATHEGORIES ///
-
+  /// CATEGORIES ///
   static final getConfirmedBookingsForCategoryAggregate = gql("""
 query getConfirmedBookingsForCategory(\$category_id: uuid!, \$class_event_id: uuid!) {
   class_event_bookings_aggregate(where: {booking_option: {category_id: {_eq: \$category_id}}, _and: {class_event_id: {_eq: \$class_event_id}, status: {_in: ["Confirmed","WaitingForPayment"]}}}) {
@@ -56,42 +55,108 @@ query getAnswersOfUserAndEventOccurence(\$user_id: uuid!, \$event_occurence_id: 
 
   /// INVITES ///
 
-  // check if email is already invited or registered
-  static final checkInvitePossible = gql("""
-    query CheckEmail(\$email: String!) {
-      users(where: {email: {_eq: \$email}}) {
-        id
-      }
-      created_invites(where: {email: {_eq: \$email}}) {
-        id
-      }
-    }
-  """);
+  // getInvites - COMMENTED OUT FOR LATER USE
+  // static final getCreatedInvitesPageableQuery = gql("""
+  // query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
+  //   created_invites(
+  //     limit: \$limit
+  //     offset: \$offset
+  //     order_by: { created_at: desc }
+  //   ) {
+  //     id
+  //     email
+  //     confirmation_status
+  //     entity
+  //     created_at
+  //     invited_user {
+  //       name
+  //     }
+  //     class {
+  //       name
+  //     }
+  //     event {
+  //       name
+  //     }
+  //   }
+  //   created_invites_aggregate {
+  //     aggregate {
+  //       count
+  //     }
+  //   }
+  // }
+  // """);
 
-  // getInvites
-  static final getCreatedInvitesPageableQuery = gql("""
-query GetCreatedInvitesPageable(\$limit: Int, \$offset: Int) {
-  created_invites(
+  // getInvites - NEW: Get invites where current user is the invited user
+  static final getInvitedInvitesPageableQuery = gql("""
+query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
+  invites(
     limit: \$limit
     offset: \$offset
     order_by: { created_at: desc }
+    where: { 
+      invited_user_id: { _eq: \$user_id },
+      entity: { _eq: class_teacher }
+    }
   ) {
     id
     email
     confirmation_status
     entity
     created_at
-    invited_user {
+    created_by {
       name
     }
     class {
+      id
       name
+      image_url
+      location_city
+      location_country
+      created_by {
+        name
+      }
+      class_teachers {
+        teacher {
+          name
+        }
+      }
+      class_events(
+        where: { start_date: { _gte: "now()" } }
+        order_by: { start_date: asc }
+        limit: 1
+      ) {
+        start_date
+        end_date
+      }
     }
     event {
       name
     }
   }
-  created_invites_aggregate {
+  invites_aggregate(
+    where: { 
+      invited_user_id: { _eq: \$user_id },
+      entity: { _eq: class_teacher }
+    }
+  ) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  // getPendingInvitesCount - Get count of pending invites for badge
+  static final getPendingInvitesCountQuery = gql("""
+query GetPendingInvitesCount(\$user_id: uuid!) {
+  invites_aggregate(
+    where: { 
+      invited_user_id: { _eq: \$user_id },
+      confirmation_status: { _eq: Pending },
+      entity: { _eq: class_teacher },
+      _not: {created_by_id :{_eq: \$user_id}}
+    }
+  ) {
     aggregate {
       count
     }
@@ -217,6 +282,61 @@ query getClassesLazy(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) 
 }
 """);
 
+  // Optimized query for My Events page with minimal data
+  static final getMyEventsOptimized = gql("""
+query getMyEventsOptimized(\$limit: Int!, \$offset: Int!, \$where: classes_bool_exp!) {
+   classes(where: \$where, limit: \$limit, offset: \$offset, order_by: {created_at: desc}) {
+    id
+    name
+    image_url
+    location_name
+    city
+    location_country
+    url_slug
+    created_at
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}, limit: 1) {
+      id
+      start_date
+      is_highlighted
+    }
+    class_events_aggregate(where: {end_date: {_gte: now}}) {
+      aggregate {
+        count
+      }
+    }
+    class_teachers(limit: 3) {
+      teacher {
+        id
+        name
+        images(where: {is_profile_picture: {_eq: true}}, limit: 1) {
+          image {
+            url
+          }
+        }
+      }
+      is_owner
+    }
+    class_owners {
+      teacher {
+        id
+        name
+        user_id
+        images(where: {is_profile_picture: {_eq: true}}, limit: 1) {
+          image {
+            url
+          }
+        }
+      }
+      is_payment_receiver
+    }
+    class_flags(where: {is_active: {_eq: true}}) {
+      id
+      user_id
+    }
+  }
+}
+""");
+
   static final userBookings = gql("""
 query userBookings {
   me {
@@ -258,6 +378,53 @@ query Me {
         ${Fragments.classFragmentAllInfo}
       }
       
+    }
+  }
+}""");
+
+  static final userFavoriteClassEventsUpcoming = gql("""
+query UserFavoriteClassEventsUpcoming(\$limit: Int, \$offset: Int) {
+  me {
+    class_favorits {
+      classes {
+        id
+        class_events(
+          where: { 
+            start_date: { 
+              _gte: "now()" 
+            }
+          }
+          order_by: { start_date: asc }
+          limit: \$limit
+          offset: \$offset
+        ) {
+          ${Fragments.classEventFragment}
+          class {
+            ${Fragments.classFragmentAllInfo}
+          }
+        }
+      }
+    }
+  }
+}""");
+
+  static final userFavoriteClassEventsAll = gql("""
+query UserFavoriteClassEventsAll(\$limit: Int, \$offset: Int) {
+  me {
+    class_favorits {
+      classes {
+        id
+        class_events(
+          order_by: { start_date: asc }
+          limit: \$limit
+          offset: \$offset
+        ) {
+          ${Fragments.classEventFragment}
+          class {
+            ${Fragments.classFragmentAllInfo}
+          }
+        }
+      }
     }
   }
 }""");
@@ -331,10 +498,27 @@ query getClassById(\$url_slug: String!) {
       start_time
       class_id
     }
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}) {
+      ${Fragments.classEventFragment}
+    }
     
   }
 }
  """);
+
+  // Check if a class url slug is available
+  static final isSlugAvailable = gql("""
+query IsSlugAvailable(\$slug: String!) {
+  is_class_slug_available(url_slug: \$slug)
+}
+""");
+
+  // Get event slug suggestion based on provided name
+  static final getEventSlugSuggestion = gql("""
+query GetEventSlugSuggestion(\$name: String!) {
+  get_class_slug_suggestion(name: \$name)
+}
+""");
 
   static final isClassFavorited = gql("""
 query isClassFavorited(\$class_id: uuid!, \$user_id: uuid!) {
@@ -437,8 +621,13 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
   """);
 
   static final getTeacherForList = gql("""
-    query getTeacherForList(\$user_id: uuid, \$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+    query getTeacherForList(\$user_id: uuid, \$search: String!, \$limit: Int, \$offset: Int) {
+      teachers(
+        limit: \$limit, 
+        offset: \$offset,
+        order_by: {user_likes_aggregate: {count: desc}}, 
+        where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}
+      ) {
         ${Fragments.teacherFragmentAllInfo}
         user_likes(where: {user_id: {_eq: \$user_id}}) {
           user_id
@@ -452,8 +641,13 @@ query getClassEventWithClasById(\$class_event_id: uuid!) {
     }""");
 
   static final getTeacherForListWithoutUserID = gql("""
-    query getTeacherForList(\$search: String!) {
-      teachers(order_by: {user_likes_aggregate: {count: desc}}, where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}) {
+    query getTeacherForList(\$search: String!, \$limit: Int, \$offset: Int) {
+      teachers(
+        limit: \$limit, 
+        offset: \$offset,
+        order_by: {user_likes_aggregate: {count: desc}}, 
+        where: {confirmation_status: {_eq: Confirmed}, _and: {name: {_ilike: \$search}}}
+      ) {
          ${Fragments.teacherFragmentAllInfo}
         user_likes_aggregate {
           aggregate {
@@ -514,10 +708,31 @@ query getClassEventsByClassId (\$class_id: uuid) {
 
   static final getClassesByTeacherId = gql("""
 query getClassesByTeacherId(\$teacher_id: uuid) {
-  classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
+  classes(where: {
+    _or: [
+      {class_teachers: {teacher_id: {_eq: \$teacher_id}}},
+      {class_owners: {teacher_id: {_eq: \$teacher_id}}}
+    ]
+  }) {
     ${Fragments.classFragmentAllInfo}
   }
 }""");
+
+  // Count pending event invitations for a teacher (has_accepted is null)
+  // Excludes classes created by the current user
+  static final getPendingTeacherInvitesCount = gql("""
+  query GetPendingTeacherInvitesCount(\$user_id: uuid!) {
+    class_teachers_aggregate(
+      where: {
+        teacher: {user_id: {_eq: \$user_id}},
+        class_id: {_is_null: false},
+        class: {created_by_id: {_neq: \$user_id}}
+      }
+    ) {
+      aggregate { count }
+    }
+  }
+  """);
 
   static final getAllUsers = gql("""
     query getAllUsers(\$limit: Int, \$offset: Int) {
@@ -573,4 +788,102 @@ query getFollowedTeachers(\$user_id: uuid!) {
       }
     }
       """);
+
+  /// Comments ///
+
+  static final getCommentsForTeacher = gql("""
+query getCommentsForTeacher(\$teacher_id: uuid!, \$limit: Int, \$offset: Int) {
+  comments(
+    where: {teacher_id: {_eq: \$teacher_id}}
+    order_by: {created_at: desc}
+    limit: \$limit
+    offset: \$offset
+  ) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final getCommentsCountForTeacher = gql("""
+query getCommentsCountForTeacher(\$teacher_id: uuid!) {
+  comments_aggregate(where: {teacher_id: {_eq: \$teacher_id}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
+
+  static final getCommentsStatsForTeacher = gql("""
+query getCommentsStatsForTeacher(\$teacher_id: uuid!) {
+  comments(where: {teacher_id: {_eq: \$teacher_id}}) {
+    id
+    rating
+  }
+}
+""");
+
+  static final getUserCommentForTeacher = gql("""
+query getUserCommentForTeacher(\$teacher_id: uuid!, \$user_id: uuid!) {
+  comments(where: {teacher_id: {_eq: \$teacher_id}, user_id: {_eq: \$user_id}}, limit: 1) {
+    id
+    content
+    rating
+    created_at
+    updated_at
+    teacher_id
+    user_id
+    user {
+      id
+      name
+      image_url
+    }
+    teacher {
+      id
+      name
+    }
+  }
+}
+""");
+
+  static final getTeacherEventsStats = gql("""
+query getTeacherEventsStats(\$teacher_id: uuid!) {
+  class_events(where: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+    id
+  }
+}
+""");
+
+  static final getTeacherParticipatedEventsStats = gql("""
+query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
+  class_events(where: {class: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+    id
+  }
+}
+""");
+
+  static final getTeacherBookingsStats = gql("""
+query getTeacherBookingsStats(\$teacher_id: uuid!) {
+  class_event_bookings_aggregate(where: {class_event: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}}}) {
+    aggregate {
+      count
+    }
+  }
+}
+""");
 }

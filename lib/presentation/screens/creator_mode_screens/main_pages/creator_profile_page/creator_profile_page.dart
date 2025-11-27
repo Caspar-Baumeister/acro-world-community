@@ -14,6 +14,7 @@ class CreatorProfilePage extends StatelessWidget {
         isBackButton: false,
       ),
       makeScrollable: false,
+      useCreatorGradient: true,
       child: CreatorProfileBody(),
     );
   }

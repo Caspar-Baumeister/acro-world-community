@@ -1,5 +1,5 @@
 import 'package:acroworld/presentation/screens/authentication_screens/signup_screen/widgets/custom_check_widget.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/utils/app_constants.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -20,13 +20,14 @@ class AGBCheckbox extends StatelessWidget {
         textAlign: TextAlign.left,
         text: TextSpan(
           children: <TextSpan>[
-            const TextSpan(
+            TextSpan(
                 text: "I agree with the ",
-                style: TextStyle(color: Colors.black)),
+                style: Theme.of(context).textTheme.bodyMedium),
             TextSpan(
                 text: "terms and conditions.",
-                style: const TextStyle(
-                    color: Colors.blue, fontWeight: FontWeight.bold),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
                     await customLaunch(AGB_URL);
@@ -51,8 +52,8 @@ class NewsletterCheckbox extends StatelessWidget {
     return CustomCheckWidget(
         isChecked: isNewsletter,
         setChecked: setNewsletter,
-        content: const Text(
+        content: Text(
             "Get newsletter-exclusive special offers and updates for our AcroYoga teachers, studios and organizers.",
-            style: TextStyle(color: Colors.black)));
+            style: Theme.of(context).textTheme.bodyMedium));
   }
 }

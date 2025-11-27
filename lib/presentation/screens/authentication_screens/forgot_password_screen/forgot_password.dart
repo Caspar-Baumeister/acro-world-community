@@ -1,5 +1,5 @@
 import 'package:acroworld/data/graphql/http_api_urls.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/presentation/components/input/input_field_component.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +29,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         elevation: 0.0,
         centerTitle: false,
         titleSpacing: 20.0,
@@ -58,12 +57,12 @@ class ForgotPasswordState extends State<ForgotPassword> {
               onFieldSubmitted: (value) => onForgotPassword(),
             ),
             const SizedBox(height: 20.0),
-            StandartButton(
+            ModernButton(
               text: "Send email",
               onPressed: () {
                 onForgotPassword();
               },
-              loading: loading,
+              isLoading: loading,
               isFilled: true,
             ),
             error != ""
@@ -71,7 +70,7 @@ class ForgotPasswordState extends State<ForgotPassword> {
                     padding: const EdgeInsets.only(top: 12.0, left: 10),
                     child: Text(
                       error,
-                      style: const TextStyle(color: Colors.red, fontSize: 14.0),
+                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.error)
                     ),
                   )
                 : Container(),
@@ -90,7 +89,6 @@ class ForgotPasswordState extends State<ForgotPassword> {
     );
 
     if (response?["data"]["reset_password"]?["success"] == true) {
-      print("Success: ${response?["data"]}");
       WidgetsBinding.instance.addPostFrameCallback((_) {
         context.pushReplacementNamed(forgotPasswordSuccessRoute,
             queryParameters: {"email": emailController.text});
@@ -105,3 +103,4 @@ class ForgotPasswordState extends State<ForgotPassword> {
     });
   }
 }
+

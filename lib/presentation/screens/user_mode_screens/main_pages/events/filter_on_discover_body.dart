@@ -1,25 +1,38 @@
 import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/presentation/components/buttons/standart_button.dart';
-import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_sorted_view.dart';
-import 'package:acroworld/provider/discover_provider.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
+import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/events/components/event_occurence_monthly_grid_view.dart';
+import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // This page body has only one downwards scroll with full with cards
-class FilterOnDiscoveryBody extends StatelessWidget {
+class FilterOnDiscoveryBody extends ConsumerWidget {
   const FilterOnDiscoveryBody({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    DiscoveryProvider discoveryProvider =
-        Provider.of<DiscoveryProvider>(context);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final discoveryState = ref.watch(discoveryProvider);
 
-    List<ClassEvent> activeEvents = discoveryProvider.filteredEventOccurences;
+    List<ClassEvent> activeEvents = discoveryState.filteredEventOccurences;
     activeEvents.sort((a, b) => a.startDate!.compareTo(b.startDate!));
 
+    // Debug: Print filter state and events
+    print('FilterOnDiscoveryBody: Filter active: ${discoveryState.isFilter}');
+    print('FilterOnDiscoveryBody: Filter dates: ${discoveryState.filterDates}');
+    print(
+        'FilterOnDiscoveryBody: Filter categories: ${discoveryState.filterCategories}');
+    print('FilterOnDiscoveryBody: Active events count: ${activeEvents.length}');
+    if (activeEvents.isNotEmpty) {
+      print('FilterOnDiscoveryBody: First few events:');
+      for (final event in activeEvents.take(3)) {
+        print('  - ${event.classModel?.name} (${event.startDate})');
+      }
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPaddings.medium),
+      padding:
+          const EdgeInsets.symmetric(horizontal: AppDimensions.spacingMedium),
       child: activeEvents.isEmpty
           ? SizedBox(
               width: double.infinity,
@@ -35,16 +48,16 @@ class FilterOnDiscoveryBody extends StatelessWidget {
                   const SizedBox(
                     height: 10,
                   ),
-                  StandartButton(
+                  ModernButton(
                     text: "Reset Filter",
                     onPressed: () {
-                      discoveryProvider.resetFilter();
+                      ref.read(discoveryProvider.notifier).resetFilter();
                     },
                   ),
                 ],
               ),
             )
-          : EventOccurenceMonthlySortedView(sortedEvents: activeEvents),
+          : EventOccurenceMonthlyGridView(sortedEvents: activeEvents),
     );
   }
 }
