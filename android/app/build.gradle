@@ -119,6 +119,18 @@ android {
         }
     }
 
+    flavorDimensions = ["environment"]
+    productFlavors {
+        dev {
+            dimension = "environment"
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
+        }
+        prod {
+            dimension = "environment"
+        }
+    }
+
     buildTypes {
         release {
             signingConfig signingConfigs.release
