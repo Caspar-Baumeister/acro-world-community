@@ -123,7 +123,6 @@ android {
     productFlavors {
         dev {
             dimension = "environment"
-            applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
         }
         prod {
