@@ -34,6 +34,7 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/pr
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
+import 'package:acroworld/presentation/screens/talent_profile_wizard/talent_profile_wizard_page.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
@@ -349,6 +350,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/privacy',
             name: privacyRoute,
             builder: (ctx, state) => const PrivacyPage()),
+
+        // talent profile wizard
+        GoRoute(
+            parentNavigatorKey: rootNavigatorKey,
+            path: '/talent-profile-wizard',
+            name: talentProfileWizardRoute,
+            builder: (ctx, state) => const TalentProfileWizardPage()),
 
         // error page
         GoRoute(

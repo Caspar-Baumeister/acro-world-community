@@ -4,8 +4,10 @@ import 'package:acroworld/presentation/components/send_feedback_button.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/profile/header_widget.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
 import 'package:acroworld/provider/riverpod_provider/navigation_provider.dart';
+import 'package:acroworld/provider/riverpod_provider/talent_profile_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/routing/route_names.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -121,6 +123,11 @@ class ProfileBody extends ConsumerWidget {
                   ],
                 ),
               ),
+            ),
+
+            // Teaching Section
+            SliverToBoxAdapter(
+              child: _TalentProfileSection(),
             ),
 
             // Settings Section
@@ -517,6 +524,177 @@ class ProfileBody extends ConsumerWidget {
     } catch (e) {
       showErrorToast('Error opening shop: $e');
     }
+  }
+}
+
+/// Widget to show the talent profile section (button or status card)
+class _TalentProfileSection extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final talentProfileAsync = ref.watch(talentProfileExistsProvider);
+    final theme = Theme.of(context);
+
+    return talentProfileAsync.when(
+      loading: () => const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ModernSkeleton(width: double.infinity, height: 80),
+      ),
+      error: (_, __) => const SizedBox.shrink(),
+      data: (hasProfile) {
+        if (hasProfile) {
+          // Show status card when profile exists
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(AppDimensions.spacingMedium),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    theme.colorScheme.primary.withOpacity(0.1),
+                    theme.colorScheme.primary.withOpacity(0.05),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+                border: Border.all(
+                  color: theme.colorScheme.primary.withOpacity(0.2),
+                ),
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      Icons.search,
+                      color: theme.colorScheme.primary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Looking for opportunities',
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'We are already looking for a job for you. Stay tuned!',
+                          style: theme.textTheme.bodySmall?.copyWith(
+                            color: theme.colorScheme.onSurface.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Icon(
+                    Icons.check_circle,
+                    color: theme.colorScheme.primary,
+                    size: 24,
+                  ),
+                ],
+              ),
+            ),
+          );
+        } else {
+          // Show "Interested in teaching?" button when no profile exists
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: _buildTeachingButton(context),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildTeachingButton(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Container(
+      width: double.infinity,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.primary.withOpacity(0.8),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => context.pushNamed(talentProfileWizardRoute),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.school,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Interested in teaching?',
+                        style: theme.textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Let us help you find teaching opportunities',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.white.withOpacity(0.8),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: Colors.white.withOpacity(0.8),
+                  size: 16,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
