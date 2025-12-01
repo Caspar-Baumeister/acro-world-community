@@ -29,24 +29,26 @@ class GeneralEventStep extends ConsumerStatefulWidget {
 
 class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
   late TextEditingController _titleController;
-  late TextEditingController _slugController;
   late TextEditingController _descriptionController;
   late TextEditingController _locationNameController;
   String? _errorMessage;
   final ScrollController _scrollController = ScrollController();
-  Timer? _slugDebounceTimer;
+  Timer? _titleDebounceTimer;
 
   void _handleTitleEditingComplete() {
-    if (_titleController.text.trim().isEmpty) {
-      FocusScope.of(context).nextFocus();
-      return;
-    }
-    if (_slugController.text.trim().isEmpty) {
-      unawaited(ref
-          .read(eventBasicInfoProvider.notifier)
-          .suggestSlugFromTitle(_titleController.text));
-    }
     FocusScope.of(context).nextFocus();
+  }
+
+  void _onTitleChanged() {
+    _titleDebounceTimer?.cancel();
+    final title = _titleController.text.trim();
+    if (title.isNotEmpty) {
+      _titleDebounceTimer = Timer(const Duration(milliseconds: 500), () {
+        unawaited(ref
+            .read(eventBasicInfoProvider.notifier)
+            .generateSlugFromTitle(_titleController.text));
+      });
+    }
   }
 
   @override
@@ -59,7 +61,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     _locationNameController =
         TextEditingController(text: location.locationName);
     _titleController = TextEditingController(text: basicInfo.title);
-    _slugController = TextEditingController(text: basicInfo.slug);
     _descriptionController = TextEditingController(text: basicInfo.description);
 
     // add listener to update provider
@@ -77,23 +78,7 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
 
     _titleController.addListener(() {
       ref.read(eventBasicInfoProvider.notifier).setTitle(_titleController.text);
-    });
-
-    _slugController.addListener(() {
-      ref.read(eventBasicInfoProvider.notifier).setSlug(_slugController.text);
-
-      // Cancel previous timer
-      _slugDebounceTimer?.cancel();
-
-      // Check slug availability in real-time with debouncing
-      if (_slugController.text.isNotEmpty) {
-        _slugDebounceTimer = Timer(const Duration(milliseconds: 500), () {
-          ref.read(eventBasicInfoProvider.notifier).checkSlugAvailability();
-        });
-      } else {
-        // Clear validation state when field is empty
-        ref.read(eventBasicInfoProvider.notifier).clearSlugValidation();
-      }
+      _onTitleChanged();
     });
   }
 
@@ -111,10 +96,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
       _titleController.text = basicInfo.title;
     }
 
-    if (basicInfo.slug.isNotEmpty && _slugController.text != basicInfo.slug) {
-      _slugController.text = basicInfo.slug;
-    }
-
     if (basicInfo.description.isNotEmpty &&
         _descriptionController.text != basicInfo.description) {
       _descriptionController.text = basicInfo.description;
@@ -129,9 +110,8 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
 
   @override
   void dispose() {
-    _slugDebounceTimer?.cancel();
+    _titleDebounceTimer?.cancel();
     _titleController.dispose();
-    _slugController.dispose();
     _descriptionController.dispose();
     _locationNameController.dispose();
     super.dispose();
@@ -146,9 +126,6 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
     ref.listen<EventBasicInfoState>(eventBasicInfoProvider, (previous, next) {
       if (next.title.isNotEmpty && _titleController.text != next.title) {
         _titleController.text = next.title;
-      }
-      if (next.slug.isNotEmpty && _slugController.text != next.slug) {
-        _slugController.text = next.slug;
       }
       if (next.description.isNotEmpty &&
           _descriptionController.text != next.description) {
@@ -203,29 +180,39 @@ class _GeneralEventStepState extends ConsumerState<GeneralEventStep> {
                         onEditingComplete: _handleTitleEditingComplete,
                         textInputAction: TextInputAction.next,
                       ),
-                      const SizedBox(height: AppDimensions.spacingMedium),
-                      InputFieldComponent(
-                        controller: _slugController,
-                        labelText: 'Unique Identifier',
-                        footnoteText: basicInfo.isSlugValid == false
-                            ? "Please use only lowercase letters, numbers, and hyphens"
-                            : (basicInfo.isSlugAvailable == false
-                                ? "This identifier is already taken"
-                                : 'A unique identifier for your event (e.g., "my-acro-workshop-2024"). This will be used in the event URL and must be unique.'),
-                        isFootnoteError: basicInfo.isSlugAvailable == false ||
-                            basicInfo.isSlugValid == false,
-                        textInputAction: TextInputAction.next,
-                        suffixIcon: basicInfo.isSlugAvailable == null &&
-                                basicInfo.isSlugValid == null
-                            ? null
-                            : (basicInfo.isSlugAvailable == false ||
-                                    basicInfo.isSlugValid == false)
-                                ? Icon(Icons.error,
-                                    color: Theme.of(context).colorScheme.error)
-                                : Icon(Icons.check_circle,
-                                    color:
-                                        Theme.of(context).colorScheme.primary),
-                      ),
+                      if (basicInfo.slug.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            top: AppDimensions.spacingSmall,
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.link,
+                                size: 16,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.6),
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'www.acroworld.net/event/${basicInfo.slug}',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withOpacity(0.6),
+                                      ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       const SizedBox(height: AppDimensions.spacingMedium),
                       InputFieldComponent(
                         controller: _locationNameController,
