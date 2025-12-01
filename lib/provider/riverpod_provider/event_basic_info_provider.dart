@@ -222,6 +222,7 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
   }
 
   /// Generate slug from title using backend suggestion
+  /// The backend guarantees the returned slug is unique and available
   Future<void> generateSlugFromTitle(String title) async {
     if (title.trim().isEmpty) {
       state = state.copyWith(slug: '');
@@ -232,7 +233,11 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
       final ClassesRepository repository =
           ClassesRepository(apiService: GraphQLClientSingleton());
       final String suggestion = await repository.getEventSlugSuggestion(title);
-      state = state.copyWith(slug: suggestion);
+      state = state.copyWith(
+        slug: suggestion,
+        isSlugValid: true,
+        isSlugAvailable: true,
+      );
     } catch (e) {
       CustomErrorHandler.logError('Failed to generate slug: $e');
     }
