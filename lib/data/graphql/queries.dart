@@ -483,10 +483,35 @@ query Config {
 }
 """);
 
+  /// Query for user mode - viewing a class page (no invites)
   static final getClassBySlug = gql("""
 query getClassById(\$url_slug: String!) {
   classes(where: {url_slug: {_eq: \$url_slug}}){
      ${Fragments.classFragmentAllInfo}
+      recurring_patterns {
+      day_of_week
+      end_date
+      end_time
+      is_recurring
+      id
+      recurring_every_x_weeks
+      start_date
+      start_time
+      class_id
+    }
+    class_events(where: {end_date: {_gte: now}}, order_by: {start_date: asc}) {
+      ${Fragments.classEventFragment}
+    }
+    
+  }
+}
+ """);
+
+  /// Query for creator mode - editing a class (includes invites)
+  static final getClassBySlugForCreator = gql("""
+query getClassByIdForCreator(\$url_slug: String!) {
+  classes(where: {url_slug: {_eq: \$url_slug}}){
+     ${Fragments.classFragmentAllInfoWithInvites}
       recurring_patterns {
       day_of_week
       end_date
