@@ -60,10 +60,10 @@ class TalentProfile {
 
   Map<String, dynamic> toJson() {
     return {
-      if (id != null) 'id': id,
       if (userId != null) 'user_id': userId,
       if (workTypesText != null) 'work_types_text': workTypesText,
-      if (locationCitiesText != null) 'location_cities_text': locationCitiesText,
+      if (locationCitiesText != null)
+        'location_cities_text': locationCitiesText,
       if (disciplinesText != null) 'disciplines_text': disciplinesText,
       if (disciplineDetailsText != null)
         'discipline_details_text': disciplineDetailsText,
@@ -119,4 +119,3 @@ class TalentProfile {
     );
   }
 }
-
