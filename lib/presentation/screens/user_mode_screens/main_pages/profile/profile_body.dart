@@ -53,7 +53,6 @@ class ProfileBody extends ConsumerWidget {
         }
 
         final hasTeacherProfile = user.teacherProfile != null;
-        final isEmailVerified = user.isEmailVerified ?? false;
 
         return CustomScrollView(
           slivers: [
@@ -127,7 +126,10 @@ class ProfileBody extends ConsumerWidget {
 
             // Teaching Section
             SliverToBoxAdapter(
-              child: _TalentProfileSection(),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: _TalentProfileSection(),
+              ),
             ),
 
             // Settings Section
@@ -203,112 +205,6 @@ class ProfileBody extends ConsumerWidget {
           ],
         );
       },
-    );
-  }
-
-  Widget _buildProminentButton({
-    required BuildContext context,
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-    bool isProminent = false,
-  }) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        gradient: isProminent
-            ? LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary,
-                  Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              )
-            : null,
-        color: isProminent ? null : Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Theme.of(context).colorScheme.shadow.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16),
-          onTap: onTap,
-          child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: isProminent
-                        ? Colors.white.withOpacity(0.2)
-                        : Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: isProminent
-                        ? Colors.white
-                        : Theme.of(context).colorScheme.primary,
-                    size: 24,
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: isProminent
-                                  ? Colors.white
-                                  : Theme.of(context).colorScheme.onSurface,
-                            ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        subtitle,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: isProminent
-                                  ? Colors.white.withOpacity(0.8)
-                                  : Theme.of(context)
-                                      .colorScheme
-                                      .onSurface
-                                      .withOpacity(0.7),
-                            ),
-                      ),
-                    ],
-                  ),
-                ),
-                Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  color: isProminent
-                      ? Colors.white.withOpacity(0.8)
-                      : Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withOpacity(0.7),
-                  size: 16,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -481,37 +377,6 @@ class ProfileBody extends ConsumerWidget {
     );
   }
 
-  void _showDeleteAccountDialog(BuildContext context, WidgetRef ref) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Delete Account'),
-          content: const Text(
-            'Are you sure you want to delete your account? This action cannot be undone.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                // TODO: Implement account deletion
-                showInfoToast("Account deletion feature coming soon!");
-              },
-              style: TextButton.styleFrom(
-                foregroundColor: Theme.of(context).colorScheme.error,
-              ),
-              child: const Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _openShop(BuildContext context) async {
     final Uri url = Uri.parse('https://acroworld.shop');
 
@@ -620,7 +485,7 @@ class _TalentProfileSection extends ConsumerWidget {
 
   Widget _buildTeachingButton(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
