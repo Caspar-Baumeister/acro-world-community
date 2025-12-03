@@ -16,13 +16,14 @@ class LinkButtonComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final effectiveColor = textColor ?? Theme.of(context).colorScheme.secondary;
     return InkWell(
       onTap: onPressed,
       child: Text(text,
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 decoration: TextDecoration.underline,
-                decorationColor: textColor ?? Theme.of(context).primaryColor,
-                color: textColor ?? Theme.of(context).primaryColor,
+                decorationColor: effectiveColor,
+                color: effectiveColor,
               )),
     );
   }

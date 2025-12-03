@@ -171,11 +171,20 @@ class _SignUpState extends ConsumerState<SignUp> {
                     ? MainAxisAlignment.start
                     : MainAxisAlignment.center,
                 children: <Widget>[
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 40.0),
-                    child: Image(
-                      image: AssetImage('assets/logo/logo_transparent.png'),
-                      height: 100,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40.0),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white
+                            : Colors.transparent,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Image(
+                        image: AssetImage('assets/logo/logo_transparent.png'),
+                        height: 100,
+                      ),
                     ),
                   ),
                   InputFieldComponent(
