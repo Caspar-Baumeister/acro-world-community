@@ -270,17 +270,32 @@ class DiscoveryNotifier extends StateNotifier<DiscoveryState> {
               allEventTypes.add(newEvent.classModel!.eventType!);
             }
 
-            int index = allEvents.indexWhere((existingEvent) =>
-                existingEvent.classId == newEvent.classId &&
-                existingEvent.recurringPattern?.isRecurring == true &&
-                existingEvent.recurringPattern?.id ==
-                    newEvent.recurringPattern?.id);
+            // First check for exact event match by id
+            int existingIndex =
+                allEvents.indexWhere((existing) => existing.id == newEvent.id);
 
-            if (index != -1) {
-              if (newEvent.startDateDT.isBefore(allEvents[index].startDateDT)) {
-                allEvents[index] = newEvent;
+            if (existingIndex != -1) {
+              // Event already exists, update it
+              allEvents[existingIndex] = newEvent;
+            } else if (newEvent.recurringPattern?.isRecurring == true) {
+              // For recurring events, check if we already have one with same classId and pattern
+              int recurringIndex = allEvents.indexWhere((existing) =>
+                  existing.classId == newEvent.classId &&
+                  existing.recurringPattern?.isRecurring == true &&
+                  existing.recurringPattern?.id ==
+                      newEvent.recurringPattern?.id);
+
+              if (recurringIndex != -1) {
+                // Keep the earlier occurrence
+                if (newEvent.startDateDT
+                    .isBefore(allEvents[recurringIndex].startDateDT)) {
+                  allEvents[recurringIndex] = newEvent;
+                }
+              } else {
+                allEvents.add(newEvent);
               }
             } else {
+              // Non-recurring event that doesn't exist yet
               allEvents.add(newEvent);
             }
           }
