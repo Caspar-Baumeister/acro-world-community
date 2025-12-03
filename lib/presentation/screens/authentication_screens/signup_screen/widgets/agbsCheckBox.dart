@@ -30,7 +30,7 @@ class AGBCheckbox extends StatelessWidget {
                     fontWeight: FontWeight.bold),
                 recognizer: TapGestureRecognizer()
                   ..onTap = () async {
-                    await customLaunch(AGB_URL);
+                    await customLaunch(AppConstants.agbUrl);
                   }),
           ],
         ),

@@ -18,6 +18,8 @@ class RouterApp extends ConsumerWidget {
       routerConfig: goRouter,
       debugShowCheckedModeBanner: AppEnvironment.isDev,
       theme: AppTheme.light(),
+      darkTheme: AppTheme.dark(),
+      themeMode: ThemeMode.system,
     );
   }
 }

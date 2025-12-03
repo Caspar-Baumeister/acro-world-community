@@ -1,40 +1,43 @@
+import 'package:acroworld/presentation/components/buttons/modern_button.dart';
 import 'package:acroworld/utils/helper_functions/helper_functions.dart';
 import 'package:flutter/material.dart';
 
-class SmallStandartButtonWithLink extends StatelessWidget {
-  const SmallStandartButtonWithLink(
-      {super.key,
-      required this.link,
-      required this.text,
-      this.color,
-      this.customFunction});
+/// A small outlined button that opens a link when pressed
+class LinkButton extends StatelessWidget {
+  const LinkButton({
+    super.key,
+    required this.link,
+    required this.text,
+    this.icon,
+    this.onPressed,
+  });
 
   final String link;
   final String text;
-  final Color? color;
-  final Function? customFunction;
+  final IconData? icon;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 5.0),
-      child: FilledButton(
-          // set fillcolor to white
-          style: ButtonStyle(
-            backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.surface),
-            // set border to black and width to 1
-            side: WidgetStateProperty.all<BorderSide>(
-                BorderSide(color: Theme.of(context).colorScheme.onSurface, width: 1)),
-          ),
-          onPressed: () async {
-            customFunction ?? await customLaunch(link);
-          },
-          child: Text(text,
-              maxLines: 1,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: color ?? Theme.of(context).colorScheme.secondary))),
+    return ModernButton(
+      text: text,
+      icon: icon ?? Icons.open_in_new,
+      isOutlined: true,
+      isFilled: false,
+      size: ButtonSize.small,
+      onPressed: onPressed ?? () => customLaunch(link),
     );
   }
+}
+
+/// Backwards compatible alias - prefer using LinkButton directly
+@Deprecated('Use LinkButton instead')
+class SmallStandartButtonWithLink extends LinkButton {
+  const SmallStandartButtonWithLink({
+    super.key,
+    required super.link,
+    required super.text,
+    Color? color,
+    Function? customFunction,
+  });
 }

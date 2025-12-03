@@ -8,7 +8,6 @@ import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/services/gql_client_service.dart';
 import 'package:acroworld/services/user_service.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

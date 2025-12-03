@@ -2,7 +2,6 @@ import 'package:acroworld/data/models/class_event.dart';
 import 'package:acroworld/presentation/components/datetime/date_time_service.dart';
 import 'package:acroworld/presentation/components/images/custom_cached_network_image.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
