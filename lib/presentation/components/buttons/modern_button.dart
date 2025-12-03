@@ -9,14 +9,14 @@ enum ButtonSize {
 }
 
 /// Modern button component with consistent styling following Style Guide
-/// 
+///
 /// Usage:
 /// ```dart
 /// ModernButton(
 ///   text: 'Submit',
 ///   onPressed: () {},
 /// )
-/// 
+///
 /// ModernButton(
 ///   text: 'Cancel',
 ///   isOutlined: true,
