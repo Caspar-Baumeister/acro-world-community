@@ -90,7 +90,69 @@ class Fragments {
     category_id
     """;
 
+  /// Class fragment for user mode (without invites)
   static const classFragmentAllInfo = """
+      url_slug
+      booking_email
+      max_booking_slots
+      city
+      description
+      id
+      image_url
+      location
+      location_name
+      name
+      location_country
+      location_city
+      website_url
+      class_teachers {
+        id
+        teacher_id
+        teacher {
+          $teacherFragmentAllInfo
+        }
+        is_owner
+      }
+      class_owners {
+        id
+        teacher_id
+        is_payment_receiver
+        teacher {
+          $teacherFragmentAllInfo
+        }
+      }
+      class_levels {
+        level {
+          name
+          id
+        }
+      }
+      event_type
+      created_by_id
+      questions {
+        ${Fragments.questionFragment}
+      }
+      booking_categories {
+        id
+        name
+        description
+        contingent
+        booking_options {
+          ${Fragments.bookingOptionFragment}
+        }
+      }
+      class_flags {
+        id
+        is_active
+        user_id
+      }
+      is_cash_allowed
+      
+
+""";
+
+  /// Class fragment for creator mode (includes invites for editing)
+  static const classFragmentAllInfoWithInvites = """
       url_slug
       booking_email
       max_booking_slots

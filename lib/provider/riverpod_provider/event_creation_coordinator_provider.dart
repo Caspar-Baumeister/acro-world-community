@@ -113,10 +113,10 @@ class EventCreationCoordinatorNotifier
     try {
       state = state.copyWith(isLoading: true, errorMessage: null);
 
-      // Fetch the class data by slug
+      // Fetch the class data by slug (use creator query to include invites)
       final repository =
           ClassesRepository(apiService: GraphQLClientSingleton());
-      final classModel = await repository.getClassBySlug(slug);
+      final classModel = await repository.getClassBySlugForCreator(slug);
 
       // Create a class model - preserve original data for editing, clear for template creation
       final templateClassModel = ClassModel(

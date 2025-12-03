@@ -43,8 +43,8 @@ class VersionToOldPage extends StatelessWidget {
                       recognizer: TapGestureRecognizer()
                         ..onTap = () async {
                           String link = Platform.isAndroid
-                              ? PLAY_STORE_LINK
-                              : IOS_STORE_LINK;
+                              ? AppConstants.playStoreLink
+                              : AppConstants.iosStoreLink;
                           customLaunch(link);
                         },
                     ),

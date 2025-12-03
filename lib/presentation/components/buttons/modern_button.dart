@@ -1,13 +1,29 @@
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
-/// Button size enum
+/// Button size enum following the Style Guide
 enum ButtonSize {
-  small,
-  medium,
-  large,
+  small, // 36px height
+  medium, // 48px height (standard)
+  large, // 56px height
 }
 
-/// Modern button component with consistent styling
+/// Modern button component with consistent styling following Style Guide
+///
+/// Usage:
+/// ```dart
+/// ModernButton(
+///   text: 'Submit',
+///   onPressed: () {},
+/// )
+///
+/// ModernButton(
+///   text: 'Cancel',
+///   isOutlined: true,
+///   isFilled: false,
+///   onPressed: () {},
+/// )
+/// ```
 class ModernButton extends StatelessWidget {
   final String text;
   final VoidCallback? onPressed;
@@ -45,7 +61,7 @@ class ModernButton extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    // Determine size-based values
+    // Determine size-based values following Style Guide
     final double buttonHeight;
     final double iconSize;
     final TextStyle? textStyle;
@@ -53,25 +69,31 @@ class ModernButton extends StatelessWidget {
 
     switch (size) {
       case ButtonSize.small:
-        buttonHeight = 36;
-        iconSize = 16;
+        buttonHeight = AppDimensions.buttonHeightSmall;
+        iconSize = AppDimensions.iconSizeTiny;
         textStyle = theme.textTheme.labelMedium;
-        defaultPadding =
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 8);
+        defaultPadding = const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingSmall,
+        );
         break;
       case ButtonSize.medium:
-        buttonHeight = 48;
+        buttonHeight = AppDimensions.buttonHeight;
         iconSize = 18;
         textStyle = theme.textTheme.labelLarge;
-        defaultPadding =
-            const EdgeInsets.symmetric(horizontal: 24, vertical: 12);
+        defaultPadding = const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingLarge,
+          vertical: AppDimensions.spacingMedium,
+        );
         break;
       case ButtonSize.large:
-        buttonHeight = 56;
+        buttonHeight = AppDimensions.buttonHeightLarge;
         iconSize = 20;
         textStyle = theme.textTheme.titleMedium;
-        defaultPadding =
-            const EdgeInsets.symmetric(horizontal: 32, vertical: 16);
+        defaultPadding = const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingExtraLarge,
+          vertical: AppDimensions.spacingMedium,
+        );
         break;
     }
 
@@ -86,9 +108,10 @@ class ModernButton extends StatelessWidget {
       borderColor = backgroundColor ?? colorScheme.primary;
     } else if (isFilled) {
       bgColor = backgroundColor ?? colorScheme.primary;
-      // Ensure proper contrast - use white text on colored backgrounds
       fgColor = textColor ??
-          (backgroundColor != null ? Colors.white : colorScheme.onPrimary);
+          (backgroundColor != null
+              ? colorScheme.onPrimary
+              : colorScheme.onPrimary);
       borderColor = backgroundColor ?? colorScheme.primary;
     } else {
       bgColor = Colors.transparent;
@@ -104,12 +127,12 @@ class ModernButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           backgroundColor: bgColor,
           foregroundColor: fgColor,
-          elevation:
-              isFilled ? 0 : 0, // Remove elevation for modern flat design
+          elevation: 0, // Modern flat design
           shadowColor: Colors.transparent,
           surfaceTintColor: Colors.transparent,
           shape: RoundedRectangleBorder(
-            borderRadius: borderRadius ?? BorderRadius.circular(12),
+            borderRadius: borderRadius ??
+                BorderRadius.circular(AppDimensions.radiusLarge),
             side: BorderSide(
               color: borderColor,
               width: isOutlined ? 1.5 : 0,
@@ -131,7 +154,7 @@ class ModernButton extends StatelessWidget {
                 children: [
                   if (icon != null) ...[
                     Icon(icon, size: iconSize),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppDimensions.spacingSmall),
                   ],
                   Text(
                     text,
@@ -168,15 +191,14 @@ class ModernIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     final button = Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
         color: backgroundColor ?? colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         boxShadow: [
           BoxShadow(
             color: colorScheme.shadow.withOpacity(0.1),
@@ -225,17 +247,16 @@ class ModernFAB extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return FloatingActionButton(
       onPressed: onPressed,
       tooltip: tooltip,
       backgroundColor: backgroundColor ?? colorScheme.primary,
       foregroundColor: iconColor ?? colorScheme.onPrimary,
-      elevation: 4,
+      elevation: AppDimensions.elevationMedium,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppDimensions.radiusExtraLarge),
       ),
       child: Icon(icon),
     );

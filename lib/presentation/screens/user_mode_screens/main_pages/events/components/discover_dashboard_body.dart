@@ -1,6 +1,7 @@
 import 'package:acroworld/presentation/components/sections/responsive_event_list.dart';
 import 'package:acroworld/presentation/components/sections/responsive_event_section.dart';
 import 'package:acroworld/provider/riverpod_provider/discovery_provider.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/types_and_extensions/event_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -14,12 +15,12 @@ class DiscoverDashboardBody extends ConsumerStatefulWidget {
 }
 
 class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
-  // Note: DiscoveryNotifier automatically fetches events in its constructor
-  // No need to manually fetch in initState
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final discoveryState = ref.watch(discoveryProvider);
+
     // Build event sections for each event type
     List<Widget> eventSections = discoveryState.allEventTypes
         .map((EventType eventType) => ResponsiveEventSection(
@@ -82,24 +83,38 @@ class _DiscoverDashboardBodyState extends ConsumerState<DiscoverDashboardBody> {
             // Show message if no events at all
             if (discoveryState.allEventOccurences.isEmpty &&
                 !discoveryState.loading)
-              Container(
-                padding: const EdgeInsets.all(32),
-                child: Center(
-                  child: Column(
-                    children: [
-                      Icon(Icons.event_busy, size: 64, color: Colors.grey),
-                      const SizedBox(height: 16),
-                      Text('No events found',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      Text('Try refreshing or check your connection'),
-                    ],
-                  ),
-                ),
-              ),
+              _buildEmptyState(theme, colorScheme),
             // Bottom padding for floating button
-            const SizedBox(height: 80),
+            const SizedBox(height: AppDimensions.bottomNavHeight),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildEmptyState(ThemeData theme, ColorScheme colorScheme) {
+    return Container(
+      padding: const EdgeInsets.all(AppDimensions.spacingExtraLarge),
+      child: Center(
+        child: Column(
+          children: [
+            Icon(
+              Icons.event_busy,
+              size: AppDimensions.iconSizeExtraLarge,
+              color: colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(height: AppDimensions.spacingMedium),
+            Text(
+              'No events found',
+              style: theme.textTheme.titleLarge,
+            ),
+            const SizedBox(height: AppDimensions.spacingSmall),
+            Text(
+              'Try refreshing or check your connection',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurfaceVariant,
+              ),
+            ),
           ],
         ),
       ),

@@ -1,6 +1,6 @@
 import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
-import 'package:acroworld/utils/constants.dart';
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 
 class PrivacyPage extends StatelessWidget {
@@ -15,8 +15,8 @@ class PrivacyPage extends StatelessWidget {
       appBar: const CustomAppbarSimple(title: 'Privacy Policy'),
       child: Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: AppPaddings.medium,
-          vertical: AppPaddings.large,
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingLarge,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

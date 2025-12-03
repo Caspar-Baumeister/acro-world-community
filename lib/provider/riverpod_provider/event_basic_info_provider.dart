@@ -221,8 +221,11 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
     }
   }
 
-  Future<void> suggestSlugFromTitle(String title) async {
-    if (title.trim().isEmpty || state.slug.trim().isNotEmpty) {
+  /// Generate slug from title using backend suggestion
+  /// The backend guarantees the returned slug is unique and available
+  Future<void> generateSlugFromTitle(String title) async {
+    if (title.trim().isEmpty) {
+      state = state.copyWith(slug: '');
       return;
     }
 
@@ -234,10 +237,9 @@ class EventBasicInfoNotifier extends StateNotifier<EventBasicInfoState> {
         slug: suggestion,
         isSlugValid: true,
         isSlugAvailable: true,
-        errorMessage: null,
       );
     } catch (e) {
-      CustomErrorHandler.logError('Failed to suggest slug: $e');
+      CustomErrorHandler.logError('Failed to generate slug: $e');
     }
   }
 }

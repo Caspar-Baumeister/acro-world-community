@@ -133,7 +133,7 @@ class AppTheme {
   }) {
     final isDark = brightness == Brightness.dark;
 
-    // TextTheme with dynamic colors
+    // TextTheme with dynamic colors - includes all text styles from Style Guide
     TextTheme getTextTheme(Brightness mode) {
       Color textColor =
           mode == Brightness.dark ? AppColors.darkText : AppColors.lightText;
@@ -141,13 +141,18 @@ class AppTheme {
         displayLarge: AppTextStyles.displayLarge.copyWith(color: textColor),
         displayMedium: AppTextStyles.displayMedium.copyWith(color: textColor),
         displaySmall: AppTextStyles.displaySmall.copyWith(color: textColor),
+        headlineLarge: AppTextStyles.headlineLarge.copyWith(color: textColor),
         headlineMedium: AppTextStyles.headlineMedium.copyWith(color: textColor),
+        headlineSmall: AppTextStyles.headlineSmall.copyWith(color: textColor),
+        titleLarge: AppTextStyles.titleLarge.copyWith(color: textColor),
         titleMedium: AppTextStyles.titleMedium.copyWith(color: textColor),
+        titleSmall: AppTextStyles.titleSmall.copyWith(color: textColor),
         bodyLarge: AppTextStyles.bodyLarge.copyWith(color: textColor),
         bodyMedium: AppTextStyles.bodyMedium.copyWith(color: textColor),
-        labelSmall: AppTextStyles.labelSmall.copyWith(color: textColor),
-        labelMedium: AppTextStyles.labelMedium.copyWith(color: textColor),
+        bodySmall: AppTextStyles.bodySmall.copyWith(color: textColor),
         labelLarge: AppTextStyles.labelLarge.copyWith(color: textColor),
+        labelMedium: AppTextStyles.labelMedium.copyWith(color: textColor),
+        labelSmall: AppTextStyles.labelSmall.copyWith(color: textColor),
       );
     }
 
@@ -156,7 +161,8 @@ class AppTheme {
       colorScheme: colorScheme,
       brightness: brightness,
       extensions: [customColors],
-      fontFamily: "UntitledSans",
+      // Using system font for optimal performance and native feel
+      // To use a custom font, add it to pubspec.yaml assets and specify here
 
       // Text theme
       textTheme: getTextTheme(brightness),
@@ -216,26 +222,129 @@ class AppTheme {
         ),
       ),
 
-      // Disable splash effects
+      // Disable splash effects for modern feel
       splashFactory: NoSplash.splashFactory,
+      highlightColor: Colors.transparent,
+
+      // Card theme
+      cardTheme: CardThemeData(
+        elevation: AppDimensions.elevationSmall,
+        shadowColor: colorScheme.shadow.withOpacity(0.1),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+        ),
+        color: colorScheme.surfaceContainer,
+        surfaceTintColor: Colors.transparent,
+      ),
+
+      // Chip theme
+      chipTheme: ChipThemeData(
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        selectedColor: colorScheme.primaryContainer,
+        labelStyle: TextStyle(
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.w500,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusFull),
+        ),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingSmall,
+          vertical: AppDimensions.spacingExtraSmall,
+        ),
+      ),
+
+      // Dialog theme
       dialogTheme: DialogThemeData(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         ),
         backgroundColor: colorScheme.surfaceContainer,
+        elevation: AppDimensions.elevationLarge,
       ),
+
+      // Drawer theme
       drawerTheme: DrawerThemeData(
         backgroundColor: colorScheme.surface,
         surfaceTintColor: colorScheme.surface,
       ),
+
+      // Divider theme
+      dividerTheme: DividerThemeData(
+        color: colorScheme.outline.withOpacity(0.2),
+        thickness: 1,
+        space: AppDimensions.spacingMedium,
+      ),
+
+      // List tile theme
+      listTileTheme: ListTileThemeData(
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingSmall,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        ),
+      ),
+
+      // Outlined button theme
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: OutlinedButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          side: BorderSide(color: colorScheme.primary),
+          minimumSize: const Size(88, 48),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          ),
+        ),
+      ),
+
+      // Text button theme
+      textButtonTheme: TextButtonThemeData(
+        style: TextButton.styleFrom(
+          foregroundColor: colorScheme.primary,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+          ),
+        ),
+      ),
+
+      // Floating action button theme
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+        elevation: AppDimensions.elevationMedium,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
+        ),
+      ),
+
+      // Progress indicator theme
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: colorScheme.primary,
+        linearTrackColor: colorScheme.surfaceContainerHighest,
       ),
+
+      // Text selection theme
       textSelectionTheme: TextSelectionThemeData(
         cursorColor: colorScheme.primary,
         selectionHandleColor: colorScheme.primary,
+        selectionColor: colorScheme.primary.withOpacity(0.2),
       ),
-      highlightColor: Colors.transparent, // No highlight on tap
+
+      // Snackbar theme
+      snackBarTheme: SnackBarThemeData(
+        backgroundColor: isDark ? colorScheme.surfaceContainer : colorScheme.inverseSurface,
+        contentTextStyle: TextStyle(
+          color: isDark ? colorScheme.onSurface : colorScheme.onInverseSurface,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
     );
   }
 

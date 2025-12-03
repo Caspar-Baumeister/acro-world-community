@@ -1,6 +1,5 @@
 import 'package:acroworld/data/models/class_event_booking_model.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
-import 'package:acroworld/theme/app_theme.dart';
 import 'package:acroworld/utils/helper_functions/formater.dart';
 import 'package:flutter/material.dart';
 

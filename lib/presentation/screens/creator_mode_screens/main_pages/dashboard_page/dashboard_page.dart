@@ -1,4 +1,3 @@
-import 'package:acroworld/presentation/components/appbar/custom_appbar_simple.dart';
 import 'package:acroworld/presentation/components/cards/modern_booking_card.dart';
 import 'package:acroworld/presentation/components/sections/bookings_search_and_filter.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
@@ -13,10 +12,6 @@ class DashboardPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return BasePage(
-        appBar: CustomAppbarSimple(
-          title: "Bookings",
-          isBackButton: false,
-        ),
         makeScrollable: false,
         useCreatorGradient: true,
         child: DashboardBody());

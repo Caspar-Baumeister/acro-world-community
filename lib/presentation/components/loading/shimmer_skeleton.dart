@@ -1,5 +1,36 @@
+import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+/// Helper to get shimmer colors with proper contrast
+class _SkeletonColors {
+  /// Gets shimmer effect colors based on brightness
+  /// Uses fixed colors that provide good contrast for visible shimmer animation
+  static ShimmerEffect getShimmerEffect(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    if (brightness == Brightness.dark) {
+      return const ShimmerEffect(
+        baseColor: Color(0xFF2A2A2A),
+        highlightColor: Color(0xFF3D3D3D),
+        duration: Duration(milliseconds: 1500),
+      );
+    } else {
+      return const ShimmerEffect(
+        baseColor: Color(0xFFE0E0E0),
+        highlightColor: Color(0xFFF5F5F5),
+        duration: Duration(milliseconds: 1500),
+      );
+    }
+  }
+
+  /// Gets the base skeleton color
+  static Color getBaseColor(BuildContext context) {
+    final brightness = Theme.of(context).brightness;
+    return brightness == Brightness.dark
+        ? const Color(0xFF2A2A2A)
+        : const Color(0xFFE0E0E0);
+  }
+}
 
 /// Modern skeleton loading component using skeletonizer package
 class ShimmerSkeleton extends StatelessWidget {
@@ -22,12 +53,14 @@ class ShimmerSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Skeletonizer(
       enabled: true,
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Container(
         width: width,
         height: height,
         decoration: BoxDecoration(
-          color: baseColor ?? Colors.grey[300],
-          borderRadius: borderRadius ?? BorderRadius.circular(4),
+          color: baseColor ?? _SkeletonColors.getBaseColor(context),
+          borderRadius:
+              borderRadius ?? BorderRadius.circular(AppDimensions.radiusSmall),
         ),
       ),
     );
@@ -40,21 +73,26 @@ class ListItemSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonColor = _SkeletonColors.getBaseColor(context);
     return Skeletonizer(
       enabled: true,
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppDimensions.spacingSmall,
+          horizontal: AppDimensions.spacingMedium,
+        ),
         child: Row(
           children: [
             Container(
               width: 50,
               height: 50,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
+              decoration: BoxDecoration(
+                color: skeletonColor,
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(width: 16),
+            const SizedBox(width: AppDimensions.spacingMedium),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,17 +101,19 @@ class ListItemSkeleton extends StatelessWidget {
                     width: double.infinity,
                     height: 16,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
+                      color: skeletonColor,
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusSmall),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: AppDimensions.spacingSmall),
                   Container(
                     width: 200,
                     height: 12,
                     decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(4),
+                      color: skeletonColor,
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusSmall),
                     ),
                   ),
                 ],
@@ -96,11 +136,7 @@ class EventCardSkeleton extends StatelessWidget {
 
     return Skeletonizer(
       enabled: true,
-      effect: const ShimmerEffect(
-        baseColor: Color(0xFFE0E0E0),
-        highlightColor: Color(0xFFF5F5F5),
-        duration: Duration(milliseconds: 1500),
-      ),
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 8),
         decoration: BoxDecoration(
@@ -215,45 +251,47 @@ class ProfileSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonColor = _SkeletonColors.getBaseColor(context);
     return Skeletonizer(
       enabled: true,
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(AppDimensions.spacingMedium),
         child: Column(
           children: [
             Container(
               width: 100,
               height: 100,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
+              decoration: BoxDecoration(
+                color: skeletonColor,
                 shape: BoxShape.circle,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppDimensions.spacingMedium),
             Container(
               width: 200,
               height: 20,
               decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(4),
+                color: skeletonColor,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppDimensions.spacingSmall),
             Container(
               width: 150,
               height: 16,
               decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(4),
+                color: skeletonColor,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusSmall),
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppDimensions.spacingMedium),
             Container(
               width: double.infinity,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.grey,
-                borderRadius: BorderRadius.circular(8),
+                color: skeletonColor,
+                borderRadius: BorderRadius.circular(AppDimensions.radiusMedium),
               ),
             ),
           ],
@@ -274,23 +312,20 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonColor = _SkeletonColors.getBaseColor(context);
     return Skeletonizer(
       enabled: true,
-      effect: const ShimmerEffect(
-        baseColor: Color(0xFFE0E0E0),
-        highlightColor: Color(0xFFF5F5F5),
-        duration: Duration(milliseconds: 1500),
-      ),
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Container(
         width: width ?? 200,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.grey[300],
+          borderRadius: BorderRadius.circular(AppDimensions.radiusExtraLarge),
+          color: skeletonColor,
         ),
         child: Card(
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppDimensions.radiusExtraLarge),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,8 +334,8 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: Bone(
-                  borderRadius: const BorderRadius.vertical(
-                    top: Radius.circular(16),
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(AppDimensions.radiusExtraLarge),
                   ),
                 ),
               ),
@@ -308,15 +343,15 @@ class EventDiscoveryCardSkeleton extends StatelessWidget {
               Expanded(
                 flex: 2,
                 child: Padding(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppDimensions.spacingMedium),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Title skeleton
                       const Bone(height: 16),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppDimensions.spacingSmall),
                       Bone(width: 120, height: 12),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppDimensions.spacingSmall),
                       Bone(width: 80, height: 12),
                     ],
                   ),
@@ -343,33 +378,43 @@ class EventRowSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonColor = _SkeletonColors.getBaseColor(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Header skeleton
         if (title != null)
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: 150,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
+          Skeletonizer(
+            enabled: true,
+            effect: _SkeletonColors.getShimmerEffect(context),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.spacingMedium,
+                vertical: AppDimensions.spacingSmall,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 150,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      color: skeletonColor,
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusSmall),
+                    ),
                   ),
-                ),
-                Container(
-                  width: 60,
-                  height: 16,
-                  decoration: BoxDecoration(
-                    color: Colors.grey,
-                    borderRadius: BorderRadius.circular(4),
+                  Container(
+                    width: 60,
+                    height: 16,
+                    decoration: BoxDecoration(
+                      color: skeletonColor,
+                      borderRadius:
+                          BorderRadius.circular(AppDimensions.radiusSmall),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         // Cards skeleton
@@ -380,8 +425,8 @@ class EventRowSkeleton extends StatelessWidget {
               cardCount,
               (index) => Padding(
                 padding: const EdgeInsets.only(
-                  left: 16,
-                  right: 8,
+                  left: AppDimensions.spacingMedium,
+                  right: AppDimensions.spacingSmall,
                 ),
                 child: EventDiscoveryCardSkeleton(),
               ),
@@ -406,27 +451,24 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final skeletonColor = _SkeletonColors.getBaseColor(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final cardWidth = width ?? (isGridMode ? (screenWidth - 48) / 2.0 : 160.0);
     final cardHeight = isGridMode ? 240.0 : 200.0;
 
     return Skeletonizer(
       enabled: true,
-      effect: const ShimmerEffect(
-        baseColor: Color(0xFFE0E0E0),
-        highlightColor: Color(0xFFF5F5F5),
-        duration: Duration(milliseconds: 1500),
-      ),
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Container(
         width: cardWidth,
         height: cardHeight,
         margin: EdgeInsets.only(
-          right: isGridMode ? 0 : 12,
-          bottom: isGridMode ? 12 : 0,
+          right: isGridMode ? 0 : AppDimensions.spacingMedium,
+          bottom: isGridMode ? AppDimensions.spacingMedium : 0,
         ),
         decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
+          color: skeletonColor,
+          borderRadius: BorderRadius.circular(AppDimensions.radiusLarge),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -435,8 +477,8 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
             Expanded(
               flex: 3,
               child: Bone(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(AppDimensions.radiusLarge),
                 ),
               ),
             ),
@@ -444,15 +486,15 @@ class ResponsiveEventCardSkeleton extends StatelessWidget {
             Expanded(
               flex: 2,
               child: Padding(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppDimensions.spacingSmall),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Title skeleton
                     const Bone(height: 16),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppDimensions.spacingExtraSmall),
                     Bone(width: 120, height: 12),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppDimensions.spacingExtraSmall),
                     Bone(width: 80, height: 12),
                   ],
                 ),
@@ -531,16 +573,15 @@ class TeacherCardSkeleton extends StatelessWidget {
 
     return Skeletonizer(
       enabled: true,
-      effect: const ShimmerEffect(
-        baseColor: Color(0xFFE0E0E0),
-        highlightColor: Color(0xFFF5F5F5),
-        duration: Duration(milliseconds: 1500),
-      ),
+      effect: _SkeletonColors.getShimmerEffect(context),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        margin: const EdgeInsets.symmetric(
+          horizontal: AppDimensions.spacingMedium,
+          vertical: AppDimensions.spacingExtraSmall,
+        ),
         decoration: BoxDecoration(
           color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppDimensions.radiusExtraLarge),
           border: Border.all(
             color: colorScheme.outline.withOpacity(0.1),
             width: 1,
@@ -554,7 +595,7 @@ class TeacherCardSkeleton extends StatelessWidget {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.all(AppDimensions.spacingMedium),
           child: Row(
             children: [
               // Profile image skeleton
@@ -563,7 +604,7 @@ class TeacherCardSkeleton extends StatelessWidget {
                 height: 60,
                 borderRadius: BorderRadius.circular(30),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppDimensions.spacingMedium),
               // Name and followers skeleton
               Expanded(
                 child: Column(
@@ -576,7 +617,7 @@ class TeacherCardSkeleton extends StatelessWidget {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppDimensions.spacingExtraSmall),
                     Bone.text(
                       words: 1,
                       style: const TextStyle(fontSize: 12),
@@ -588,7 +629,8 @@ class TeacherCardSkeleton extends StatelessWidget {
               Bone(
                 width: 80,
                 height: 32,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius:
+                    BorderRadius.circular(AppDimensions.radiusExtraLarge),
               ),
             ],
           ),

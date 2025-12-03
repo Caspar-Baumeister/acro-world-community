@@ -47,7 +47,7 @@ class ClassesRepository {
     return count;
   }
 
-// Fetches class with full information
+/// Fetches class with full information for user mode (no invites)
   Future<ClassModel> getClassBySlug(String slug) async {
     QueryOptions queryOptions = QueryOptions(
       document: Queries.getClassBySlug,
@@ -68,25 +68,44 @@ class ClassesRepository {
 
     if (result.data != null && result.data!["classes"].length > 0) {
       try {
-        // Debug: Print the raw response to see recurring_patterns
-        print(
-            '🔍 GRAPHQL DEBUG - Raw classes[0] data: ${result.data!['classes'][0]}');
-        print(
-            '🔍 GRAPHQL DEBUG - recurring_patterns in response: ${result.data!['classes'][0]['recurring_patterns']}');
-        print('🔍 GRAPHQL DEBUG - About to call ClassModel.fromJson');
-
         final classData = result.data!['classes'][0];
-        print('🔍 GRAPHQL DEBUG - classData type: ${classData.runtimeType}');
-        print('🔍 GRAPHQL DEBUG - classData keys: ${classData.keys.toList()}');
-
         final parsedClass = ClassModel.fromJson(classData);
-        print(
-            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns: ${parsedClass.recurringPatterns}');
-        print(
-            '🔍 GRAPHQL DEBUG - Parsed class recurringPatterns.length: ${parsedClass.recurringPatterns?.length}');
-        print(
-            '🔍 GRAPHQL DEBUG - Parsed class invites: ${parsedClass.invites}');
+        return parsedClass;
+      } catch (e, stackTrace) {
+        print('🔍 GRAPHQL DEBUG - Error parsing class: $e');
+        print('🔍 GRAPHQL DEBUG - Stack trace: $stackTrace');
+        throw Exception('Failed to parse class: $e');
+      }
+    } else {
+      throw Exception('Failed to load class, no data, with result $result');
+    }
+  }
 
+  /// Fetches class with full information for creator mode (includes invites)
+  Future<ClassModel> getClassBySlugForCreator(String slug) async {
+    QueryOptions queryOptions = QueryOptions(
+      document: Queries.getClassBySlugForCreator,
+      fetchPolicy: FetchPolicy.networkOnly,
+      variables: {
+        "url_slug": slug,
+      },
+    );
+
+    final graphQLClient = GraphQLClientSingleton().client;
+    QueryResult<Object?> result = await graphQLClient.query(queryOptions);
+
+    // Check for a valid response
+    if (result.hasException) {
+      throw Exception(
+          'Failed to load class. Status code: ${result.exception?.raw.toString()}');
+    }
+
+    if (result.data != null && result.data!["classes"].length > 0) {
+      try {
+        final classData = result.data!['classes'][0];
+        final parsedClass = ClassModel.fromJson(classData);
+        CustomErrorHandler.logDebug(
+            '🔍 GRAPHQL DEBUG - Parsed class invites: ${parsedClass.invites}');
         return parsedClass;
       } catch (e, stackTrace) {
         print('🔍 GRAPHQL DEBUG - Error parsing class: $e');

@@ -1,29 +1,33 @@
 // ignore_for_file: constant_identifier_names
 
+/// App-wide constants for business logic and configuration
 class AppConstants {
+  // App behavior settings
   static const int inAppMessageTime = 2;
   static const double maxRadius = 300;
   static const int activeFlaggThreshold = 1;
+  static const int daysUntilCreateNextJam = 7;
+
+  // External URLs
+  static const String agbUrl = 'https://acroworld.de/tac';
+  static const String playStoreLink =
+      'https://play.google.com/store/apps/details?id=com.community.acroworld';
+  static const String iosStoreLink = 'https://apps.apple.com/us/app/acroworld';
 }
 
-const int DAYS_UNTIL_CREATE_NEXT_JAM = 7;
+/// Component-specific dimensions that don't belong in generic AppDimensions
+/// These are specific to certain UI components and their layouts
+class ComponentDimensions {
+  // Card heights
+  static const double classCardHeight = 135;
+  static const double bookingCardHeight = 100;
+  static const double classCardTeacherHeight = 30;
 
-const String AGB_URL = 'https://acroworld.de/tac';
+  // Difficulty level badge
+  static const double difficultyLevelHeight = 22;
+  static const double difficultyLevelWidth = 66;
 
-const String PLAY_STORE_LINK =
-    "https://play.google.com/store/apps/details?id=com.community.acroworld";
-
-const String IOS_STORE_LINK = "https://apps.apple.com/us/app/acroworld";
-
-const double CLASS_CARD_HEIGHT = 135;
-const double BOOKING_CARD_HEIGHT = 100;
-const double CLASS_CARD_TEACHER_HEIGHT = 30;
-const double DIFFICULTY_LEVEL_HEIGHT = 22;
-const double DIFFICULTY_LEVEL_WIDTH = 66;
-const double PARTICIPANT_BUTTON_HEIGHT = 34;
-const double PARTICIPANT_BUTTON_WIDTH = 150;
-const double STANDART_ROUNDNESS_STRONG = 20;
-const double STANDART_ROUNDNESS_LIGHT = 15;
-const double EVENT_DASHBOARD_SLIDER_WIDTH = 250;
-const double EVENT_DASHBOARD_SLIDER_HEIGHT = 280;
-const double INPUTFIELD_HEIGHT = 50;
+  // Participant button
+  static const double participantButtonHeight = 34;
+  static const double participantButtonWidth = 150;
+}
