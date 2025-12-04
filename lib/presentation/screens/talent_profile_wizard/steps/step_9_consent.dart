@@ -96,7 +96,7 @@ class Step9Consent extends ConsumerWidget {
               subtitle: Padding(
                 padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
                 child: Text(
-                  'I agree that Acroworld / MotionHub may send me emails with matching job offers based on my information.',
+                  'I agree that Acroworld may send me emails with matching job offers based on my information.',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurface.withOpacity(0.7),
                   ),
@@ -167,4 +167,3 @@ class Step9Consent extends ConsumerWidget {
     );
   }
 }
-
