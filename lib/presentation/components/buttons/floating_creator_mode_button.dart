@@ -5,6 +5,7 @@ import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:acroworld/services/gql_client_service.dart';
+import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +21,14 @@ class FloatingCreatorModeButton extends ConsumerWidget {
 
     return userState.when(
       data: (user) {
+        final isLoggedIn = user != null;
         final hasTeacherProfile = user?.teacherProfile != null;
         final isEmailVerified = user?.isEmailVerified ?? false;
 
         String subtitle;
-        if (!isEmailVerified) {
+        if (!isLoggedIn) {
+          subtitle = "Sign up to create events";
+        } else if (!isEmailVerified) {
           subtitle = "Verify Email to Access";
         } else if (hasTeacherProfile) {
           subtitle = "Switch to Creator Mode";
@@ -36,7 +40,7 @@ class FloatingCreatorModeButton extends ConsumerWidget {
           title: "Creator Mode",
           subtitle: subtitle,
           onPressed: () => _switchToCreatorMode(
-              context, ref, isEmailVerified, hasTeacherProfile),
+              context, ref, isLoggedIn, isEmailVerified, hasTeacherProfile),
           isCreatorMode: true,
           isGradient: true,
         );
@@ -47,8 +51,15 @@ class FloatingCreatorModeButton extends ConsumerWidget {
   }
 
   Future<void> _switchToCreatorMode(BuildContext context, WidgetRef ref,
-      bool isEmailVerified, bool hasTeacherProfile) async {
-    if (!isEmailVerified) {
+      bool isLoggedIn, bool isEmailVerified, bool hasTeacherProfile) async {
+    if (!isLoggedIn) {
+      showAuthRequiredDialog(
+        context,
+        subtitle:
+            'Create a partner account to upload your events as a creator, teacher, studio or anonymously.',
+        redirectPath: '/profile',
+      );
+    } else if (!isEmailVerified) {
       showInfoToast(
           "You need to verify your email before switching to creator mode",
           context: context);
