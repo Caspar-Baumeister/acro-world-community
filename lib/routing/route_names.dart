@@ -40,3 +40,4 @@ const String ticketsRoute = 'tickets';
 const String favoritesRoute = 'favorites';
 const String eventSearchRoute = 'event-search';
 const String teacherSearchRoute = 'teacher-search';
+const String talentProfileWizardRoute = 'talent-profile-wizard';
