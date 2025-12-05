@@ -169,8 +169,8 @@ class TeacherStatisticsRepositoryImpl implements TeacherStatisticsRepository {
         );
       }
 
-      final eventsList = result.data?['class_events'] as List<dynamic>? ?? [];
-      final totalEvents = eventsList.length;
+      final classesList = result.data?['classes'] as List<dynamic>? ?? [];
+      final totalEvents = classesList.length;
 
       print(
           '✅ [TeacherStats] Events stats parsed - Total Events: $totalEvents');
@@ -215,8 +215,8 @@ class TeacherStatisticsRepositoryImpl implements TeacherStatisticsRepository {
         );
       }
 
-      final eventsList = result.data?['class_events'] as List<dynamic>? ?? [];
-      final eventsParticipated = eventsList.length;
+      final classesList = result.data?['classes'] as List<dynamic>? ?? [];
+      final eventsParticipated = classesList.length;
 
       print(
           '✅ [TeacherStats] Participated events stats parsed - Events Participated: $eventsParticipated');

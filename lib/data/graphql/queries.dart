@@ -121,7 +121,7 @@ query GetInvitedInvitesPageable(\$limit: Int, \$offset: Int, \$user_id: uuid!) {
         }
       }
       class_events(
-        where: { start_date: { _gte: "now()" } }
+        where: { start_date: { _gte: now } }
         order_by: { start_date: asc }
         limit: 1
       ) {
@@ -391,7 +391,7 @@ query UserFavoriteClassEventsUpcoming(\$limit: Int, \$offset: Int) {
         class_events(
           where: { 
             start_date: { 
-              _gte: "now()" 
+              _gte: now 
             }
           }
           order_by: { start_date: asc }
@@ -459,7 +459,7 @@ query getClassEventsByDistance(\$latitude: numeric, \$longitude: numeric, \$dist
 // get all classes and for every class event
   static final getEventOccurences = gql("""
 query getEventOccurences {
-  class_events(where: {end_date: {_gte: "now"}, class: {id: {_is_null: false}}}) {
+  class_events(where: {end_date: {_gte: now}, class: {id: {_is_null: false}}}) {
     ${Fragments.classEventFragment}
     is_highlighted
     recurring_pattern {
@@ -888,7 +888,7 @@ query getUserCommentForTeacher(\$teacher_id: uuid!, \$user_id: uuid!) {
 
   static final getTeacherEventsStats = gql("""
 query getTeacherEventsStats(\$teacher_id: uuid!) {
-  class_events(where: {class: {class_owners: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+  classes(where: {class_owners: {teacher_id: {_eq: \$teacher_id}}}) {
     id
   }
 }
@@ -896,7 +896,7 @@ query getTeacherEventsStats(\$teacher_id: uuid!) {
 
   static final getTeacherParticipatedEventsStats = gql("""
 query getTeacherParticipatedEventsStats(\$teacher_id: uuid!) {
-  class_events(where: {class: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}, end_date: {_lt: "now()"}}) {
+  classes(where: {class_teachers: {teacher_id: {_eq: \$teacher_id}}}) {
     id
   }
 }
