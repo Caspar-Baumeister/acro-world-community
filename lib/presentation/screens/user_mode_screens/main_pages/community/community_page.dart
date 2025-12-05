@@ -2,8 +2,10 @@ import 'package:acroworld/presentation/components/input/modern_search_bar.dart';
 import 'package:acroworld/presentation/screens/base_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_app_bar.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/community/community_query.dart';
+import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class TeacherPage extends StatefulWidget {
   const TeacherPage({super.key});
@@ -49,14 +51,21 @@ class _TeacherPageState extends State<TeacherPage> {
   }
 }
 
-class FilterRow extends StatelessWidget {
+class FilterRow extends ConsumerWidget {
   const FilterRow(
       {super.key, required this.selectFollowed, required this.isFollowed});
   final Function(bool) selectFollowed;
   final bool isFollowed;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final userAsync = ref.watch(userRiverpodProvider);
+    final isLoggedIn = userAsync.valueOrNull != null;
+
+    if (!isLoggedIn) {
+      return const SizedBox.shrink();
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       child: SingleChildScrollView(
