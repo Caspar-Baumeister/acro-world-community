@@ -24,52 +24,33 @@ class QuestionsStep extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            // Header
+            // Description
             Padding(
               padding: const EdgeInsets.symmetric(
                 vertical: AppDimensions.spacingMedium,
               ),
-              child: Column(
-                children: [
-                  Text(
-                    'Event Questions',
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: AppDimensions.spacingSmall),
-                  Text(
-                    'Add questions that participants need to answer when booking your event.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              child: Text(
+                'Add questions that participants need to answer when booking your event.',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    ),
+                textAlign: TextAlign.center,
               ),
             ),
 
-            // Questions list
-            Expanded(
-              child: CurrentQuestionSection(),
+            // Add Question button
+            ModernButton(
+              onPressed: () {
+                buildMortal(context, AskQuestionModal());
+              },
+              text: "Add Question",
             ),
 
             const SizedBox(height: AppDimensions.spacingMedium),
 
-            // Add Question button
-            Container(
-              constraints: Responsive.isDesktop(context)
-                  ? const BoxConstraints(maxWidth: 200)
-                  : null,
-              child: ModernButton(
-                onPressed: () {
-                  buildMortal(context, AskQuestionModal());
-                },
-                text: "Add Question",
-                isFilled: true,
-                width: MediaQuery.of(context).size.width * 0.6,
-              ),
+            // Questions list
+            Expanded(
+              child: CurrentQuestionSection(),
             ),
           ],
         ),
@@ -110,7 +91,7 @@ class CurrentQuestionSection extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppDimensions.spacingSmall),
                     Text(
-                      "Click 'Add Question' below to create questions for participants",
+                      "Click 'Add Question' above to create questions for participants",
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color:
                                 Theme.of(context).colorScheme.onSurfaceVariant,
