@@ -146,27 +146,41 @@ class _DescriptionStepState extends ConsumerState<DescriptionStep> {
                         toolBarConfig: customToolBarList,
                         crossAxisAlignment: WrapCrossAlignment.center,
                         toolBarColor: Colors.transparent,
+                        iconColor: Theme.of(context).colorScheme.onSurface,
+                        activeIconColor: Theme.of(context).colorScheme.primary,
                         mainAxisSize: MainAxisSize.min,
                       ),
                     ),
 
                     // Editor - flexible height
                     Expanded(
-                      child: Container(
-                        padding:
-                            const EdgeInsets.all(AppDimensions.spacingMedium),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.surface,
-                          borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(12),
-                            bottomRight: Radius.circular(12),
-                          ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12),
                         ),
                         child: QuillHtmlEditor(
                           text: basicInfo.description,
                           controller: _controller,
                           minHeight: 300,
                           inputAction: InputAction.newline,
+                          backgroundColor:
+                              Theme.of(context).colorScheme.surfaceContainer,
+                          textStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.onSurface,
+                            fontSize: 16,
+                          ),
+                          hintText: 'Start typing something amazing',
+                          hintTextStyle: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.5),
+                            fontSize: 16,
+                          ),
+                          hintTextPadding: const EdgeInsets.all(
+                            AppDimensions.spacingMedium,
+                          ),
                         ),
                       ),
                     ),
