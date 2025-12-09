@@ -122,9 +122,9 @@ class ModernClassCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(height: 4),
-          // Location
-          if (classModel.locationName != null)
+          if (classModel.locationName != null) ...[
+            const SizedBox(height: 4),
+            // Location
             Text(
               classModel.locationName!,
               style: theme.textTheme.bodySmall?.copyWith(
@@ -134,30 +134,9 @@ class ModernClassCard extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-          const SizedBox(height: 4),
-          // Price or status
-          Text(
-            _getPriceText(classModel),
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.w500,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
+          ],
         ],
       ),
     );
-  }
-
-  String _getPriceText(ClassModel classModel) {
-    final bookingOptions = classModel.bookingOptions;
-    if (bookingOptions.isNotEmpty) {
-      final firstOption = bookingOptions.first;
-      if (firstOption.price != null && firstOption.price! > 0) {
-        return "€${(firstOption.price! / 100).toStringAsFixed(2)}";
-      }
-    }
-    return "Free";
   }
 }
