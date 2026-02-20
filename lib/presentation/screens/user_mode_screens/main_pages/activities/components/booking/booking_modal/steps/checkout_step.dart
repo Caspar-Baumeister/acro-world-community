@@ -114,167 +114,174 @@ class _CheckoutStepState extends ConsumerState<CheckoutStep> {
             if (user?.id == null) {
               return const Center(child: Text("Please log in to continue"));
             }
-            final eventAnswerState = ref.watch(eventAnswerProvider);
+            // Watch to rebuild when answers change
+            ref.watch(eventAnswerProvider);
             return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Column(
-                    children: [
-                      BookingSummarySection(widget: widget),
-                      const SizedBox(height: 20.0),
-                      YourInformationSection(user: user!),
-                      const SizedBox(height: 20.0),
-                      AnswerSection(
-                        question: widget.questions,
-                        eventOccurence: widget.classEventId!,
-                      ),
-                      const SizedBox(height: 20.0),
-
-                      if (kIsWeb && widget.isDirectPayment == true)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: AppDimensions.spacingMedium),
-                          child: ModernButton(
-                            text: "Continue to payment",
-                            onPressed: () async {
-                              final token = await LocalStorageService.get(
-                                  Preferences.token);
-                              launchUrl(Uri.parse(
-                                  '${Uri.base.scheme}://${Uri.base.authority}/booking/checkout.html?bookingOptionId=${widget.bookingOption.id}&classEventId=${widget.classEventId}&token=$token&dev=${AppEnvironment.isDev ? "true" : "false"}'));
-                            },
-                            width: double.infinity,
-                            isFilled: true,
-                          ),
+                // Scrollable content area
+                Expanded(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        BookingSummarySection(widget: widget),
+                        const SizedBox(height: 20.0),
+                        YourInformationSection(user: user!),
+                        const SizedBox(height: 20.0),
+                        AnswerSection(
+                          question: widget.questions,
+                          eventOccurence: widget.classEventId!,
                         ),
-
-                      // if event is bookable troguh direct payment
-                      if (widget.isDirectPayment == true && !kIsWeb)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: AppDimensions.spacingMedium),
-                          child: FutureBuilder(
-                              future: _initializeAll(context, ref),
-                              builder: (context, snapshot) {
-                                return ModernButton(
-                                  text: "Continue to payment",
-                                  onPressed: () async {
-                                    if (!areRequiredQuestionsAnswered(ref)) {
-                                      showErrorToast(
-                                        "Please answer all required questions",
-                                      );
-                                      return;
-                                    }
-                                    if (paymentIntentId == null) {
-                                      showErrorToast(
-                                        "Something went wrong. Try again later or contact support",
-                                      );
-                                      return;
-                                    }
-                                    await attemptToPresentPaymentSheet(
-                                        paymentIntentId!);
-                                    ref
-                                        .read(eventAnswerProvider.notifier)
-                                        .mutateAnswers()
-                                        .then((ok) {
-                                      if (!ok) {
-                                        showErrorToast(
-                                          "Error saving answers, please notify support",
-                                        );
-                                      }
-                                    });
-                                  },
-                                  isLoading: !_isInitAnswersReady ||
-                                      !_isPaymentIntentInitialized,
-                                  width: double.infinity,
-                                  isFilled: true,
-                                );
-                              }),
-                        ),
-                      // if event is bookable through cash payment
-                      if (widget.isCashPayment == true)
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: AppDimensions.spacingMedium),
-                          child: ModernButton(
-                            text: "Pay in cash",
-                            onPressed: () async {
-                              if (!areRequiredQuestionsAnswered(ref)) {
-                                showErrorToast(
-                                  "Please answer all required questions",
-                                );
-                                return;
-                              }
-                              ref
-                                  .read(eventAnswerProvider.notifier)
-                                  .mutateAnswers()
-                                  .then((ok) async {
-                                if (!ok) {
-                                  showErrorToast(
-                                    "Error saving answers, please notify support",
-                                  );
-                                } else {
-                                  GraphQLClientSingleton client =
-                                      GraphQLClientSingleton();
-                                  // insert the booking
-                                  final result = await client.mutate(
-                                    MutationOptions(
-                                      document:
-                                          Mutations.insertClassEventBooking,
-                                      variables: {
-                                        "booking": {
-                                          "amount": widget.bookingOption
-                                                  .realPriceDiscounted() *
-                                              100, // convert to cents
-                                          "booking_option_id":
-                                              widget.bookingOption.id,
-                                          "class_event_id": widget.classEventId,
-                                          "currency": widget
-                                              .bookingOption.currency.value,
-                                          "status": "WaitingForPayment",
-                                          "user_id": user.id,
-                                        },
-                                      },
-                                    ),
-                                  );
-
-                                  if (result.hasException) {
-                                    showErrorToast(
-                                      "Error booking the class, please try again later",
-                                    );
-                                    CustomErrorHandler.captureException(
-                                      result.exception!,
-                                      stackTrace: StackTrace.current,
-                                    );
-                                    return;
-                                  } else {
-                                    // show success toast
-                                    showSuccessToast(
-                                      "Booking successful, please pay in cash at the event",
-                                    );
-                                  }
-
-                                  // close the modal
-                                  Navigator.of(context).pop();
-                                  // fire the event to refetch the booking query
-                                  ref
-                                      .read(eventBusProvider.notifier)
-                                      .fireRefetchBookingQuery();
-                                }
-                              });
-                            },
-                            width: double.infinity,
-                            isFilled: true,
-                          ),
-                        ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
+                // Fixed bottom action area
+                _buildActionButtons(context, ref, user),
               ],
             );
           },
         );
+  }
+
+  Widget _buildActionButtons(BuildContext context, WidgetRef ref, User user) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 24.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (kIsWeb && widget.isDirectPayment == true)
+            ModernButton(
+              text: "Continue to payment",
+              onPressed: () async {
+                final token =
+                    await LocalStorageService.get(Preferences.token);
+                launchUrl(Uri.parse(
+                    '${Uri.base.scheme}://${Uri.base.authority}/booking/checkout.html?bookingOptionId=${widget.bookingOption.id}&classEventId=${widget.classEventId}&token=$token&dev=${AppEnvironment.isDev ? "true" : "false"}'));
+              },
+              width: double.infinity,
+              isFilled: true,
+            ),
+          // if event is bookable through direct payment
+          if (widget.isDirectPayment == true && !kIsWeb)
+            FutureBuilder(
+                future: _initializeAll(context, ref),
+                builder: (context, snapshot) {
+                  return ModernButton(
+                    text: "Continue to payment",
+                    onPressed: () async {
+                      if (!areRequiredQuestionsAnswered(ref)) {
+                        showErrorToast(
+                          "Please answer all required questions",
+                        );
+                        return;
+                      }
+                      if (paymentIntentId == null) {
+                        showErrorToast(
+                          "Something went wrong. Try again later or contact support",
+                        );
+                        return;
+                      }
+                      await attemptToPresentPaymentSheet(paymentIntentId!);
+                      ref
+                          .read(eventAnswerProvider.notifier)
+                          .mutateAnswers()
+                          .then((ok) {
+                        if (!ok) {
+                          showErrorToast(
+                            "Error saving answers, please notify support",
+                          );
+                        }
+                      });
+                    },
+                    isLoading:
+                        !_isInitAnswersReady || !_isPaymentIntentInitialized,
+                    width: double.infinity,
+                    isFilled: true,
+                  );
+                }),
+          // if event is bookable through cash payment
+          if (widget.isCashPayment == true) ...[
+            if (widget.isDirectPayment == true)
+              const SizedBox(height: AppDimensions.spacingSmall),
+            ModernButton(
+              text: "Pay in cash",
+              onPressed: () async {
+                if (!areRequiredQuestionsAnswered(ref)) {
+                  showErrorToast(
+                    "Please answer all required questions",
+                  );
+                  return;
+                }
+                ref
+                    .read(eventAnswerProvider.notifier)
+                    .mutateAnswers()
+                    .then((ok) async {
+                  if (!ok) {
+                    showErrorToast(
+                      "Error saving answers, please notify support",
+                    );
+                  } else {
+                    GraphQLClientSingleton client = GraphQLClientSingleton();
+                    // insert the booking
+                    final result = await client.mutate(
+                      MutationOptions(
+                        document: Mutations.insertClassEventBooking,
+                        variables: {
+                          "booking": {
+                            "amount":
+                                widget.bookingOption.realPriceDiscounted() *
+                                    100, // convert to cents
+                            "booking_option_id": widget.bookingOption.id,
+                            "class_event_id": widget.classEventId,
+                            "currency": widget.bookingOption.currency.value,
+                            "status": "WaitingForPayment",
+                            "user_id": user.id,
+                          },
+                        },
+                      ),
+                    );
+                    if (result.hasException) {
+                      showErrorToast(
+                        "Error booking the class, please try again later",
+                      );
+                      CustomErrorHandler.captureException(
+                        result.exception!,
+                        stackTrace: StackTrace.current,
+                      );
+                      return;
+                    } else {
+                      // show success toast
+                      showSuccessToast(
+                        "Booking successful, please pay in cash at the event",
+                      );
+                    }
+                    // close the modal
+                    Navigator.of(context).pop();
+                    // fire the event to refetch the booking query
+                    ref.read(eventBusProvider.notifier).fireRefetchBookingQuery();
+                  }
+                });
+              },
+              width: double.infinity,
+              isFilled: widget.isDirectPayment != true,
+              isOutlined: widget.isDirectPayment == true,
+            ),
+          ],
+        ],
+      ),
+    );
   }
 
   bool areRequiredQuestionsAnswered(WidgetRef ref) {
@@ -557,35 +564,28 @@ class AnswerSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (question.isEmpty) {
-      return Container();
+      return const SizedBox.shrink();
     }
     return CheckoutSectionContainer(
-      child: Container(
-        constraints:
-            BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.2),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                    left: AppDimensions.spacingMedium,
-                    top: AppDimensions.spacingMedium,
-                    right: AppDimensions.spacingMedium),
-                child: Text(
-                  "Questions from the organizer",
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-              ),
-              ...question.map(
-                (e) =>
-                    QuestionCard(question: e, eventOccurence: eventOccurence),
-              ),
-              SizedBox(height: AppDimensions.spacingMedium),
-            ],
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(
+                left: AppDimensions.spacingMedium,
+                top: AppDimensions.spacingMedium,
+                right: AppDimensions.spacingMedium),
+            child: Text(
+              "Questions from the organizer",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
           ),
-        ),
+          ...question.map(
+            (e) => QuestionCard(question: e, eventOccurence: eventOccurence),
+          ),
+          const SizedBox(height: AppDimensions.spacingMedium),
+        ],
       ),
     );
   }

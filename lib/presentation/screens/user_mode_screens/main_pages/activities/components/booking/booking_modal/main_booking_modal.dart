@@ -39,8 +39,6 @@ class _BookingModalState extends State<BookingModal> {
 
   @override
   Widget build(BuildContext context) {
-    // UserProvider userProvider = Provider.of<UserProvider>(context);
-    double width = MediaQuery.of(context).size.width;
     ClassModel clas = widget.classEvent.classModel!;
 
     BookingOption? currentOptionObject;
@@ -51,20 +49,27 @@ class _BookingModalState extends State<BookingModal> {
 
     String? teacherStripeId = clas.owner?.teacher?.stripeId;
 
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(24.0, 5.0, 24.0, 24.0),
-      child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Divider(
-              color: Theme.of(context).colorScheme.primary,
-              thickness: 5.0,
-              indent: width * 0.40,
-              endIndent: width * 0.40,
+    return SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Drag handle
+          Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(2),
+              ),
             ),
-            const SizedBox(height: 12.0),
-            BookingHeader(
+          ),
+          const SizedBox(height: 12.0),
+          // Header section (fixed)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: BookingHeader(
               className: clas.name,
               teacherName: (clas.classTeachers != null &&
                       clas.classTeachers!.isNotEmpty &&
@@ -75,8 +80,12 @@ class _BookingModalState extends State<BookingModal> {
               endDate: widget.classEvent.endDateDT,
               currentStep: step,
             ),
-            const SizedBox(height: 20.0),
-            BookingStepIndicator(
+          ),
+          const SizedBox(height: 20.0),
+          // Step indicator (fixed)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: BookingStepIndicator(
               currentStep: step,
               setStep: (int newStep) {
                 setState(() {
@@ -84,8 +93,11 @@ class _BookingModalState extends State<BookingModal> {
                 });
               },
             ),
-            const SizedBox(height: 20.0),
-            step == 0
+          ),
+          const SizedBox(height: 20.0),
+          // Content area (flexible/scrollable)
+          Expanded(
+            child: step == 0
                 ? OptionChoosingStep(
                     classEventId: widget.classEvent.id!,
                     className: clas.name!,
@@ -116,8 +128,8 @@ class _BookingModalState extends State<BookingModal> {
                         teacherStripeId != null && teacherStripeId.isNotEmpty,
                     isCashPayment: clas.isCashAllowed ?? false,
                   ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

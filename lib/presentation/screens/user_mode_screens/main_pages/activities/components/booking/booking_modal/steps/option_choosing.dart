@@ -35,11 +35,10 @@ class OptionChoosingStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // show all categories
-        Container(
-          constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height * 0.45),
+        // Scrollable content area
+        Expanded(
           child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -64,37 +63,54 @@ class OptionChoosingStep extends StatelessWidget {
             ),
           ),
         ),
-
-        const SizedBox(height: 20),
-        ModernButton(
-          text: "Continue",
-          onPressed: () {
-            if (currentOption != null) {
-              nextStep();
-            } else {
-              showErrorToast(
-                "Please select an option to continue booking the class",
-              );
-            }
-          },
-          isFilled: true,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          width: double.infinity,
-        ),
-        placesLeft != null &&
-                maxPlaces != null &&
-                (placesLeft! < 5 || placesLeft! < (maxPlaces! * 0.05))
-            ? Padding(
-                padding: const EdgeInsets.only(top: AppDimensions.spacingSmall),
-                child: Text(
-                  "only ${placesLeft!.toInt()} tickets left",
-                  style: Theme.of(context)
-                      .textTheme
-                      .titleSmall!
-                      .copyWith(color: Theme.of(context).colorScheme.error),
+        // Fixed bottom action area
+        Container(
+          padding: const EdgeInsets.fromLTRB(24.0, 16.0, 24.0, 24.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 10,
+                offset: const Offset(0, -4),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ModernButton(
+                text: "Continue",
+                onPressed: () {
+                  if (currentOption != null) {
+                    nextStep();
+                  } else {
+                    showErrorToast(
+                      "Please select an option to continue booking the class",
+                    );
+                  }
+                },
+                isFilled: true,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                width: double.infinity,
+              ),
+              if (placesLeft != null &&
+                  maxPlaces != null &&
+                  (placesLeft! < 5 || placesLeft! < (maxPlaces! * 0.05)))
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: AppDimensions.spacingSmall),
+                  child: Text(
+                    "only ${placesLeft!.toInt()} tickets left",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleSmall!
+                        .copyWith(color: Theme.of(context).colorScheme.error),
+                  ),
                 ),
-              )
-            : Container()
+            ],
+          ),
+        ),
       ],
     );
   }
