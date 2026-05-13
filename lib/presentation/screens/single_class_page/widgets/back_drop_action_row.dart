@@ -1,14 +1,9 @@
 import 'dart:ui';
 
-import 'package:acroworld/data/models/class_event.dart';
-import 'package:acroworld/data/models/class_model.dart';
-import 'package:acroworld/exceptions/error_handler.dart';
 import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/screens/single_class_page/widgets/creator_settings_action_icon_button.dart';
 import 'package:acroworld/provider/riverpod_provider/class_favorites_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/class_flags_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/theme/app_dimensions.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +14,12 @@ class BackDropActionRow extends ConsumerWidget {
     required this.isCollapsed,
     required this.classId,
     required this.shareEvents,
-    required this.classObject,
-    required this.classEventId,
     super.key,
-    this.classEvent,
   });
 
   final bool isCollapsed;
   final String classId;
   final Function shareEvents;
-  final ClassModel classObject;
-  final String? classEventId;
-  final ClassEvent? classEvent;
 
   Future<bool?> _showWarningDialog(BuildContext context) async {
     return showDialog<bool>(
@@ -91,7 +80,6 @@ class BackDropActionRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isCreator = ref.watch(userRoleProvider);
     final favorites = ref.watch(classFavoritesProvider);
     final reports = ref.watch(classReportsProvider);
     final user = ref.watch(userRiverpodProvider);
@@ -108,85 +96,73 @@ class BackDropActionRow extends ConsumerWidget {
       ),
     ];
 
-    if (isCreator) {
-      try {
-        actions.add(CreatorSettingsActionIconButton(
-            classModel: classObject,
-            classEventId: classEventId,
-            classEvent: classEvent));
-      } catch (e, s) {
-        CustomErrorHandler.captureException(e, stackTrace: s);
-      }
-    } else {
-      // Always show the icons, handle authentication in onPressed
-      actions.add(
-        favorites.when(
-          data: (favMap) => IconButton(
+    actions.add(
+      favorites.when(
+        data: (favMap) => IconButton(
+          icon: Icon(
+            favMap[classId] == true ? Icons.favorite : Icons.favorite_border,
+            color: Theme.of(context).iconTheme.color,
+          ),
+          onPressed: () {
+            if (!isAuthenticated) {
+              showAuthRequiredDialog(
+                context,
+                subtitle:
+                    'Log in or sign up to save events to your favorites and build your personal collection.',
+              );
+              return;
+            }
+            ref.read(classFavoritesProvider.notifier).toggleFavorite(classId);
+          },
+        ),
+        loading: () => SizedBox(
+          width: AppDimensions.iconSizeLarge,
+          height: AppDimensions.iconSizeLarge,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        ),
+        error: (_, __) => const SizedBox.shrink(),
+      ),
+    );
+
+    actions.add(
+      reports.when(
+        data: (reportMap) {
+          final reportState = reportMap[classId] ?? const ReportState();
+          return IconButton(
             icon: Icon(
-              favMap[classId] == true ? Icons.favorite : Icons.favorite_border,
-              color: Theme.of(context).iconTheme.color,
+              reportState.isReported ? Icons.flag : Icons.flag_outlined,
+              color: reportState.isReported
+                  ? Theme.of(context).colorScheme.error
+                  : Theme.of(context).iconTheme.color,
             ),
-            onPressed: () {
+            onPressed: () async {
               if (!isAuthenticated) {
                 showAuthRequiredDialog(
                   context,
                   subtitle:
-                      'Log in or sign up to save events to your favorites and build your personal collection.',
+                      'Log in or sign up to report events and help us maintain accurate information.',
                 );
                 return;
               }
-              ref.read(classFavoritesProvider.notifier).toggleFavorite(classId);
+
+              if (!reportState.isReported) {
+                final shouldReport = await _showWarningDialog(context);
+                if (shouldReport != true) return;
+              }
+              if (context.mounted) {
+                ref.read(classReportsProvider.notifier).toggleReport(classId);
+              }
             },
-          ),
-          loading: () => SizedBox(
-            width: AppDimensions.iconSizeLarge,
-            height: AppDimensions.iconSizeLarge,
-            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-          ),
-          error: (_, __) => const SizedBox.shrink(),
+          );
+        },
+        loading: () => SizedBox(
+          width: AppDimensions.iconSizeLarge,
+          height: AppDimensions.iconSizeLarge,
+          child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
         ),
-      );
-
-      actions.add(
-        reports.when(
-          data: (reportMap) {
-            final reportState = reportMap[classId] ?? const ReportState();
-            return IconButton(
-              icon: Icon(
-                reportState.isReported ? Icons.flag : Icons.flag_outlined,
-                color: reportState.isReported
-                    ? Theme.of(context).colorScheme.error
-                    : Theme.of(context).iconTheme.color,
-              ),
-              onPressed: () async {
-                if (!isAuthenticated) {
-                  showAuthRequiredDialog(
-                    context,
-                    subtitle:
-                        'Log in or sign up to report events and help us maintain accurate information.',
-                  );
-                  return;
-                }
-
-                if (!reportState.isReported) {
-                  final shouldReport = await _showWarningDialog(context);
-                  if (shouldReport != true) return;
-                }
-                if (context.mounted) {
-                  ref.read(classReportsProvider.notifier).toggleReport(classId);
-                }
-              },
-            );
-          },
-          loading: () => SizedBox(
-            width: AppDimensions.iconSizeLarge,
-            height: AppDimensions.iconSizeLarge,
-            child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
-          ),
-          error: (_, __) => const SizedBox.shrink(),
-        ),
-      );
-    }
+        error: (_, __) => const SizedBox.shrink(),
+      ),
+    );
 
     return ClipOval(
       child: Container(

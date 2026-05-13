@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 
 class ShellDesktopLayout extends StatelessWidget {
   final Widget child;
-  final bool isCreator;
 
-  const ShellDesktopLayout(
-      {super.key, required this.child, required this.isCreator});
+  const ShellDesktopLayout({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +13,7 @@ class ShellDesktopLayout extends StatelessWidget {
         children: [
           SizedBox(
             width: 200,
-            child: ShellSideBar(
-              isCreator: isCreator,
-            ),
+            child: ShellSideBar(),
           ),
           Container(
             width: 1,

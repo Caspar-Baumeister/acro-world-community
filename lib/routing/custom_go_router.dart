@@ -8,15 +8,6 @@ import 'package:acroworld/presentation/screens/authentication_screens/authentica
 import 'package:acroworld/presentation/screens/authentication_screens/confirm_email/confirm_email_page.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_screen/forgot_password.dart';
 import 'package:acroworld/presentation/screens/authentication_screens/forgot_password_success_screen/forgot_password_success.dart';
-import 'package:acroworld/presentation/screens/create_creator_profile_pages/create_creator_profile_page.dart.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/class_booking_summary_page/class_booking_summary_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/create_and_edit_event/create_and_edit_event_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/creator_profile_page/creator_profile_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/dashboard_page/dashboard_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/invites_page/invites_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/main_pages/my_events_page/my_events_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/stripe_pages/stripe_callback_page.dart';
-import 'package:acroworld/presentation/screens/creator_mode_screens/user_answer_page/user_answer_page.dart';
 import 'package:acroworld/presentation/screens/single_class_page/single_class_query_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/favorites_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/location_search_screen/place_search_screen.dart';
@@ -34,7 +25,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/pr
 import 'package:acroworld/presentation/screens/user_mode_screens/system_pages/splash_page.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/teacher_profile/single_partner_slug_wrapper.dart';
 import 'package:acroworld/presentation/screens/user_mode_screens/tickets_page.dart';
-import 'package:acroworld/presentation/screens/talent_profile_wizard/talent_profile_wizard_page.dart';
 import 'package:acroworld/presentation/shells/main_page_shell.dart';
 import 'package:acroworld/routing/route_names.dart';
 import 'package:flutter/foundation.dart';
@@ -47,26 +37,9 @@ final rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final userShellKey = GlobalKey<NavigatorState>();
 
-// class AuthChangeNotifier extends ChangeNotifier {
-//   AuthChangeNotifier(this.ref) {
-//     // Listen to the AsyncValue<AuthState> from authProvider
-//     ref.listen<AsyncValue<AuthState>>(
-//       authProvider,
-//       (_, __) => notifyListeners(),
-//     );
-//   }
-//   final Ref ref;
-// }
-
-// Expose it as a plain Riverpod provider:
-// final goRouterRefreshProvider = Provider<AuthChangeNotifier>(
-//   (ref) => AuthChangeNotifier(ref),
-// );
-
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
       navigatorKey: rootNavigatorKey,
-      // refreshListenable: ref.watch(goRouterRefreshProvider),
       initialLocation: kIsWeb ? null : '/splash',
       errorBuilder: (context, state) {
         // Get the error message from the state
@@ -133,38 +106,6 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (ctx, state) =>
                     NoTransitionPage(child: const TeacherSearchPage()),
               ),
-              ////////////////////
-              /// CREATOR MODE ///
-              ////////////////////
-              GoRoute(
-                path: '/creator-profile',
-                name: creatorProfileRoute,
-                pageBuilder: (ctx, state) => NoTransitionPage(
-                  child: const CreatorProfilePage(),
-                ),
-              ),
-              GoRoute(
-                path: '/creator-dashboard',
-                name: creatorDashboardRoute,
-                pageBuilder: (ctx, state) => NoTransitionPage(
-                  child: const DashboardPage(),
-                ),
-              ),
-              // invitePage
-              GoRoute(
-                path: '/invite',
-                name: invitesRoute,
-                pageBuilder: (ctx, state) => NoTransitionPage(
-                  child: const InvitesPage(),
-                ),
-              ),
-              GoRoute(
-                path: '/my-events',
-                name: myEventsRoute,
-                pageBuilder: (ctx, state) => NoTransitionPage(
-                  child: const MyEventsPage(),
-                ),
-              ),
             ]),
         GoRoute(
             path: '/splash',
@@ -175,33 +116,9 @@ final routerProvider = Provider<GoRouter>((ref) {
             }),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
-          // add queryParams to the path with ?isEditing
-          path: '/edit-creator-profile',
-          name: editCreatorProfileRoute,
-          builder: (ctx, state) {
-            final isEditing = state.uri.queryParameters['isEditing'] == 'true';
-            return CreateCreatorProfilePage(isEditing: isEditing);
-          },
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
           path: '/place-search',
           name: placeSearchRoute,
           builder: (context, state) => const PlaceSearchScreen(),
-        ),
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/create-edit-event',
-          name: createEditEventRoute,
-          builder: (ctx, state) {
-            // default to create; to edit, pass isEditing=true in queryParams
-            final isEditing = state.uri.queryParameters['isEditing'] == 'true';
-            final eventSlug = state.uri.queryParameters['eventSlug'];
-            return CreateAndEditEventPage(
-              isEditing: isEditing,
-              eventSlug: eventSlug,
-            );
-          },
         ),
         GoRoute(
           parentNavigatorKey: rootNavigatorKey,
@@ -300,43 +217,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           },
         ),
 
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/create-creator-profile',
-          name: createCreatorProfileRoute,
-          builder: (ctx, state) => const CreateCreatorProfilePage(),
-        ),
-
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/stripe-callback',
-          name: stripeCallbackRoute,
-          builder: (ctx, state) => StripeCallbackPage(
-            stripeId: state.pathParameters['stripeId'],
-          ),
-        ),
-
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: "/class-booking-summary/:classEventId",
-          name: classBookingSummaryRoute,
-          pageBuilder: (ctx, state) => NoTransitionPage(
-            child: ClassBookingSummaryPage(
-              classEventId: state.pathParameters['classEventId']!,
-            ),
-          ),
-        ),
-
-        GoRoute(
-          parentNavigatorKey: rootNavigatorKey,
-          path: '/user-answer',
-          name: userAnswerRoute,
-          builder: (ctx, state) {
-            final userId = state.pathParameters['userId']!;
-            final classEventId = state.pathParameters['classEventId']!;
-            return UserAnswerPage(userId: userId, classEventId: classEventId);
-          },
-        ),
         //loading page
         GoRoute(
             parentNavigatorKey: rootNavigatorKey,
@@ -350,13 +230,6 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: '/privacy',
             name: privacyRoute,
             builder: (ctx, state) => const PrivacyPage()),
-
-        // talent profile wizard
-        GoRoute(
-            parentNavigatorKey: rootNavigatorKey,
-            path: '/talent-profile-wizard',
-            name: talentProfileWizardRoute,
-            builder: (ctx, state) => const TalentProfileWizardPage()),
 
         // error page
         GoRoute(

@@ -1,25 +1,13 @@
-import 'package:acroworld/presentation/components/buttons/modern_button.dart';
-import 'package:acroworld/presentation/components/loading/modern_skeleton.dart';
-import 'package:acroworld/presentation/screens/modals/create_teacher_modal/create_creator_profile_modal.dart';
-import 'package:acroworld/presentation/shells/creator_side_navigation.dart';
 import 'package:acroworld/presentation/shells/user_side_navigation.dart';
 import 'package:acroworld/provider/auth/auth_notifier.dart';
-import 'package:acroworld/provider/auth/token_singleton_service.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/routing/route_names.dart';
-import 'package:acroworld/services/gql_client_service.dart';
-import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
-import 'package:acroworld/utils/helper_functions/messanges/toasts.dart';
-import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class ShellSideBar extends ConsumerWidget {
-  const ShellSideBar({super.key, required this.isCreator});
-
-  final bool isCreator;
+  const ShellSideBar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -47,86 +35,8 @@ class ShellSideBar extends ConsumerWidget {
           const SizedBox(height: 50),
           Expanded(
             child: SingleChildScrollView(
-                child: isCreator
-                    ? const CreatorDestopSideNavigationBar()
-                    : const UserDestopSideNavigationBar()),
+                child: const UserDestopSideNavigationBar()),
           ),
-          isCreator
-              ? SizedBox()
-              : Padding(
-                  padding: const EdgeInsets.only(top: 50, bottom: 10),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Consumer(builder: (context, ref, child) {
-                          final userAsync = ref.watch(userRiverpodProvider);
-                          return userAsync.when(
-                            loading: () => const Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ModernSkeleton(width: 200, height: 20),
-                                  SizedBox(height: 16),
-                                  ModernSkeleton(width: 300, height: 100),
-                                ],
-                              ),
-                            ),
-                            error: (e, st) {
-                              // Optionally log
-                              return Center(
-                                  child: Text('Error loading profile'));
-                            },
-                            data: (user) {
-                              final hasTeacherProfile =
-                                  user?.teacherProfile != null;
-                              final isEmailVerified =
-                                  user?.isEmailVerified ?? false;
-                              return ModernButton(
-                                width: null,
-                                text: "Create Events",
-                                onPressed: () async {
-                                  if (user == null) {
-                                    showAuthRequiredDialog(
-                                      subtitle:
-                                          'Create a partner account to upload your events as a creator, teacher, studio or anonymously.',
-                                      context,
-                                      redirectPath: '/',
-                                    );
-                                    return;
-                                  }
-                                  if (!isEmailVerified) {
-                                    showInfoToast(
-                                        "You need to verify your email before switching to creator mode");
-                                    context.pushNamed(verifyEmailRoute);
-                                  } else if (hasTeacherProfile) {
-                                    GraphQLClientSingleton().updateClient(true);
-                                    ref
-                                        .read(userRoleProvider.notifier)
-                                        .setIsCreator(true);
-                                    context.goNamed(myEventsRoute);
-                                  } else {
-                                    final roles = await TokenSingletonService()
-                                        .getUserRoles();
-                                    if (roles.contains("TeacherUser")) {
-                                      GraphQLClientSingleton()
-                                          .updateClient(true);
-                                      context.goNamed(editCreatorProfileRoute);
-                                    } else {
-                                      buildMortal(
-                                        context,
-                                        const CreateCreatorProfileModal(),
-                                      );
-                                    }
-                                  }
-                                },
-                                isFilled: true,
-                              );
-                            },
-                          );
-                        })
-                      ]),
-                ),
           // Authentication section - Sign Up or Logout
           Consumer(
             builder: (context, ref, child) {

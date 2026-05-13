@@ -79,13 +79,10 @@ class _SingleClassPageState extends ConsumerState<SingleClassPage> {
                       return BackDropActionRow(
                         isCollapsed: percentage > AppDimensions.appBarCollapsedThreshold,
                         classId: widget.clas.id!,
-                        classObject: widget.clas,
                         shareEvents: () => shareEvent(
                           widget.classEvent,
                           widget.clas,
                         ),
-                        classEvent: widget.classEvent,
-                        classEventId: widget.classEvent?.id,
                       );
                     },
                   ),

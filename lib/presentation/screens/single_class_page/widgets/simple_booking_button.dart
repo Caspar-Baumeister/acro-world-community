@@ -8,7 +8,6 @@ import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/acti
 import 'package:acroworld/presentation/screens/user_mode_screens/main_pages/activities/components/booking/booking_modal/main_booking_modal.dart';
 import 'package:acroworld/provider/riverpod_provider/event_bus_provider.dart';
 import 'package:acroworld/provider/riverpod_provider/user_providers.dart';
-import 'package:acroworld/provider/riverpod_provider/user_role_provider.dart';
 import 'package:acroworld/utils/helper_functions/auth_helpers.dart';
 import 'package:acroworld/utils/helper_functions/modal_helpers.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +44,6 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
   @override
   Widget build(BuildContext context) {
     final userAsync = ref.watch(userRiverpodProvider);
-    final isCreator = ref.watch(userRoleProvider);
 
     return userAsync.when(
       loading: () => const SizedBox.shrink(),
@@ -62,14 +60,6 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
           return SimpleFloatingButton(
             text: buttonText,
             onPressed: () => _handleAuthRequired(context),
-          );
-        }
-
-        // Handle creator case
-        if (isCreator) {
-          return SimpleFloatingButton(
-            text: "Calendar",
-            onPressed: () => _showCalendarModal(context),
           );
         }
 
@@ -181,7 +171,6 @@ class _SimpleBookingButtonState extends ConsumerState<SimpleBookingButton> {
       context,
       CalenderModal(
         classId: widget.clas.id!,
-        isCreator: ref.read(userRoleProvider),
       ),
     );
   }
