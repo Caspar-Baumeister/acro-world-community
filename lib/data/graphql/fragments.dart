@@ -300,7 +300,6 @@ class Fragments {
   
   user {
     id
-    email
     name
   }
   user_likes_aggregate {
